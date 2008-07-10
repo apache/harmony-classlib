@@ -19,17 +19,13 @@ package org.apache.harmony.unpack200.tests;
 import junit.framework.TestCase;
 
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 public class CPUTF8Test extends TestCase {
 
     public void testEquality() {
-        CPUTF8 one = new CPUTF8("(III)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, 1);
-        CPUTF8 two = new CPUTF8("((I[II)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, 2);
-        CPUTF8 three = new CPUTF8("([III)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, 3);
+        CPUTF8 one = new CPUTF8("(III)V", 1);
+        CPUTF8 two = new CPUTF8("((I[II)V", 2);
+        CPUTF8 three = new CPUTF8("([III)V", 3);
         assertFalse(one.equals(two));
         assertFalse(one.equals(three));
         assertFalse(two.equals(three));

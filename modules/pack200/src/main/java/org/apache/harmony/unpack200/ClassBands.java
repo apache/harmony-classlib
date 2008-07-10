@@ -28,7 +28,6 @@ import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.unpack200.bytecode.DeprecatedAttribute;
@@ -625,7 +624,7 @@ public class ClassBands extends BandSet {
                         className = className.substring(0, index);
                     }
                     // Add .java to the end
-                    value = cpBands.cpUTF8Value(className + ".java", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, true);
+                    value = cpBands.cpUTF8Value(className + ".java", true);
                 }
                 classAttributes[i].add(new SourceFileAttribute((CPUTF8)value));
                 sourceFileIndex++;
@@ -848,11 +847,11 @@ public class ClassBands extends BandSet {
                 CPUTF8 element = localVariableTableTypeRS[x][y];
                 // TODO: come up with a better test for native vs nonnative
                 // signatures?
-                if (element.underlyingString().length() > 2) {
-                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-                } else {
-                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
-                }
+//                if (element.underlyingString().length() > 2) {
+//                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+//                } else {
+//                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
+//                }
             }
         }
 

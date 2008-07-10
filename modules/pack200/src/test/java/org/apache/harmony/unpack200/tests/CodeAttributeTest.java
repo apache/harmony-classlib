@@ -29,7 +29,6 @@ import org.apache.harmony.unpack200.bytecode.CPFieldRef;
 import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
 import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
@@ -64,7 +63,7 @@ public class CodeAttributeTest extends TestCase {
         }
 
         public CPString cpStringValue(int index) {
-            return new CPString(new CPUTF8("Hello", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ), -1);
+            return new CPString(new CPUTF8("Hello"), -1);
         }
 
         public CPMethodRef cpMethodValue(int index) {

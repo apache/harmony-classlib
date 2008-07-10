@@ -142,8 +142,7 @@ public class Segment {
                     fileName = fullName.substring(i) + ".java";
                 }
                 sourceFileAttribute = new SourceFileAttribute(cpBands
-                        .cpUTF8Value(fileName,
-                                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, false));
+                        .cpUTF8Value(fileName, false));
                 classFile.attributes = new Attribute[] { (Attribute) cp
                         .add(sourceFileAttribute) };
             } else {
@@ -197,10 +196,8 @@ public class Segment {
             int descriptorIndex = classBands.getFieldDescrInts()[classNum][i];
             int nameIndex = cpBands.getCpDescriptorNameInts()[descriptorIndex];
             int typeIndex = cpBands.getCpDescriptorTypeInts()[descriptorIndex];
-            CPUTF8 name = cpBands.cpUTF8Value(nameIndex,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
-            CPUTF8 descriptor = cpBands.cpSignatureValue(typeIndex,
-                    ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+            CPUTF8 name = cpBands.cpUTF8Value(nameIndex);
+            CPUTF8 descriptor = cpBands.cpSignatureValue(typeIndex);
             cfFields[i] = cp.add(new CPField(name, descriptor, classBands
                     .getFieldFlags()[classNum][i], classBands
                     .getFieldAttributes()[classNum][i]));
@@ -214,10 +211,8 @@ public class Segment {
 //            int colon = descriptorStr.indexOf(':');
             int nameIndex = cpBands.getCpDescriptorNameInts()[descriptorIndex];
             int typeIndex = cpBands.getCpDescriptorTypeInts()[descriptorIndex];
-            CPUTF8 name = cpBands.cpUTF8Value(nameIndex,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
-            CPUTF8 descriptor = cpBands.cpSignatureValue(typeIndex,
-                    ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+            CPUTF8 name = cpBands.cpUTF8Value(nameIndex);
+            CPUTF8 descriptor = cpBands.cpSignatureValue(typeIndex);
             cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
                     .getMethodFlags()[classNum][i], classBands
                     .getMethodAttributes()[classNum][i]));
@@ -250,10 +245,8 @@ public class Segment {
                     .cpClassValue(innerClassString);
             if (!ic_stored[index].isAnonymous()) {
                 innerName = simpleClassNameIndex != -1 ? cpBands.cpUTF8Value(
-                        simpleClassNameIndex,
-                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ) : cpBands
-                        .cpUTF8Value(simpleClassName,
-                                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+                        simpleClassNameIndex) : cpBands
+                        .cpUTF8Value(simpleClassName);
             }
 
             if (ic_stored[index].isMember()) {

@@ -28,7 +28,6 @@ import org.apache.harmony.unpack200.bytecode.CPFloat;
 import org.apache.harmony.unpack200.bytecode.CPInteger;
 import org.apache.harmony.unpack200.bytecode.CPLong;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.RuntimeVisibleorInvisibleAnnotationsAttribute;
 import org.apache.harmony.unpack200.bytecode.RuntimeVisibleorInvisibleParameterAnnotationsAttribute;
 import org.apache.harmony.unpack200.bytecode.AnnotationsAttribute.Annotation;
@@ -43,16 +42,12 @@ public class MetadataBandGroup {
     private final String type;
     private final CpBands cpBands;
 
-    private final CPUTF8 rvaUTF8 = new CPUTF8("RuntimeVisibleAnnotations",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-    private final CPUTF8 riaUTF8 = new CPUTF8("RuntimeInvisibleAnnotations",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private final CPUTF8 rvaUTF8 = new CPUTF8("RuntimeVisibleAnnotations");
+    private final CPUTF8 riaUTF8 = new CPUTF8("RuntimeInvisibleAnnotations");
     private final CPUTF8 rvpaUTF8 = new CPUTF8(
-            "RuntimeVisibleParameterAnnotations",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+            "RuntimeVisibleParameterAnnotations");
     private final CPUTF8 ripaUTF8 = new CPUTF8(
-            "RuntimeInvisibleParameterAnnotations",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+            "RuntimeInvisibleParameterAnnotations");
 
     public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;

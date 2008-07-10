@@ -29,7 +29,7 @@ public class EnclosingMethodAttribute extends Attribute {
     private final CPClass cpClass;
     private final CPNameAndType method;
     private static final CPUTF8 attributeName = new CPUTF8(
-            "EnclosingMethod", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "EnclosingMethod"); //$NON-NLS-1$
 
     public EnclosingMethodAttribute(CPClass cpClass, CPNameAndType method) {
         super(attributeName);

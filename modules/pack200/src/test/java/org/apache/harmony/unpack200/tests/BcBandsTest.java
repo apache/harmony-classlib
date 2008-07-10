@@ -39,7 +39,6 @@ import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Tests for Pack200 bytecode bands
@@ -55,13 +54,10 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     public class MockCpBands extends CpBands {
 
-        private final CPUTF8 cpUTF8 = new CPUTF8("java/lang/String",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        private final CPUTF8 cpUTF8 = new CPUTF8("java/lang/String");
         private final CPClass cpClass = new CPClass(cpUTF8, -1);
         private final CPNameAndType descriptor = new CPNameAndType(new CPUTF8(
-                "Hello", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8(
-                "(a, b, c)", ClassConstantPool.DOMAIN_NORMALASCIIZ),
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, -1);
+                "Hello"), new CPUTF8("(a, b, c)"), -1);
 
         public MockCpBands(Segment segment) {
             super(segment);
@@ -106,7 +102,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
         public String[] getCpClass() {
             return new String[] {"Hello"};
         }
-        
+
         public String[] getCpFieldClass() {
             return new String[]{};
         }

@@ -38,7 +38,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     private final CPUTF8[] descriptors;
     private int codeLength;
     private static final CPUTF8 attributeName = new CPUTF8(
-            "LocalVariableTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "LocalVariableTable"); //$NON-NLS-1$
 
     public LocalVariableTableAttribute(int local_variable_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,

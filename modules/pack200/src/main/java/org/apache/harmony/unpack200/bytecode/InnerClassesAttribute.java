@@ -28,7 +28,7 @@ import java.util.List;
 public class InnerClassesAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8(
-            "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "InnerClasses"); //$NON-NLS-1$
 
     private static class InnerClassesEntry {
 

@@ -37,7 +37,6 @@ import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Abstract superclass for a set of bands
@@ -478,8 +477,7 @@ public abstract class BandSet {
         CPUTF8[] result = new CPUTF8[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
-            result[i1] = segment.getCpBands().cpUTF8Value(index,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            result[i1] = segment.getCpBands().cpUTF8Value(index);
         }
         return result;
     }
@@ -496,8 +494,7 @@ public abstract class BandSet {
         int[] indices = decodeBandInt(name, in, codec, sum);
         for (int i1 = 0; i1 < sum; i1++) {
             int index = indices[i1];
-            result1[i1] = segment.getCpBands().cpUTF8Value(index,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            result1[i1] = segment.getCpBands().cpUTF8Value(index);
         }
         CPUTF8[] refs = result1;
         int pos = 0;

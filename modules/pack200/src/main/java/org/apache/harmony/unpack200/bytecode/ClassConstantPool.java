@@ -17,7 +17,6 @@
 package org.apache.harmony.unpack200.bytecode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,22 +31,6 @@ import org.apache.harmony.unpack200.Segment;
  * The Class constant pool
  */
 public class ClassConstantPool {
-
-    // These are the domains in sorted order.
-    public static final int DOMAIN_UNDEFINED = 0;
-    public static final int DOMAIN_INTEGER = 1;
-    public static final int DOMAIN_FLOAT = 2;
-    public static final int DOMAIN_STRING = 3;
-    public static final int DOMAIN_NORMALASCIIZ = 4;
-    public static final int DOMAIN_LONG = 5;
-    public static final int DOMAIN_DOUBLE = 6;
-    public static final int DOMAIN_CLASSREF = 7;
-    public static final int DOMAIN_SIGNATUREASCIIZ = 8;
-    public static final int DOMAIN_NAMEANDTYPE = 9;
-    public static final int DOMAIN_FIELD = 10;
-    public static final int DOMAIN_METHOD = 11;
-    public static final int DOMAIN_ATTRIBUTEASCIIZ = 12;
-    public static final int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
 
     protected HashSet entriesContainsSet = new HashSet();
     protected HashSet othersContainsSet = new HashSet();
@@ -66,27 +49,6 @@ public class ClassConstantPool {
     private boolean resolved;
 
     public ClassFileEntry add(ClassFileEntry entry) {
-        // We don't want duplicates.
-        // Only add in constant pools, but resolve all types since they may
-        // introduce new constant pool entries
-        // This is a handy way to see what's adding a ClassFileEntry - set a
-        // breakpoint on the print
-        // if(entry instanceof CPLong) {
-        // org.apache.harmony.unpack200.SegmentUtils.debug("AAH:" +
-        // ((CPUTF8)entry).underlyingString());
-        // if (((CPUTF8)entry).underlyingString().indexOf('\b') != -1) {
-        // boolean halt = false;
-        // for(int index=0; index < entries.size(); index++) {
-        // ClassFileEntry foo = (ClassFileEntry)(entries.get(index));
-        // if(foo instanceof CPUTF8) {
-        // if(((CPUTF8)foo).underlyingString().matches(".*MRUBundleFileList.java.*"))
-        // {
-        // halt = true;
-        // }
-        //
-        // }
-        // }
-        // }
         if (entry instanceof ConstantPoolEntry) {
             if (!entriesContainsSet.contains(entry)) {
                 entriesContainsSet.add(entry);
@@ -247,7 +209,7 @@ public class ClassConstantPool {
         Iterator it = entries.iterator();
         while (it.hasNext()) {
             ConstantPoolEntry entry = (ConstantPoolEntry) it.next();
-            if (entry.getDomain() == DOMAIN_CLASSREF) {
+            if (entry instanceof CPClass) {
                 classesList.add(entry);
             }
         }

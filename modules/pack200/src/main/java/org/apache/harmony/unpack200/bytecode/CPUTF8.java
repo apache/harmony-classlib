@@ -18,7 +18,6 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * UTF8 constant pool entry, used for storing long Strings.
@@ -35,20 +34,16 @@ public class CPUTF8 extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if utf8 is null
      */
-    public CPUTF8(String utf8, int domain, int globalIndex) {
+    public CPUTF8(String utf8, int globalIndex) {
         super(ConstantPoolEntry.CP_UTF8, globalIndex);
         this.utf8 = utf8;
-        this.domain = domain;
-        if (domain == ClassConstantPool.DOMAIN_UNDEFINED) {
-            throw new RuntimeException();
-        }
         if (utf8 == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
     }
 
-    public CPUTF8(String string, int domain) {
-        this(string, domain, -1);
+    public CPUTF8(String string) {
+        this(string, -1);
     }
 
     public boolean equals(Object obj) {
@@ -77,5 +72,9 @@ public class CPUTF8 extends ConstantPoolEntry {
 
     public String underlyingString() {
         return utf8;
+    }
+
+    public void setGlobalIndex(int index) {
+        globalIndex = index;
     }
 }

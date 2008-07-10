@@ -43,11 +43,10 @@ public class CPNameAndType extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if name or descriptor is null
      */
-    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain, int globalIndex) {
+    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int globalIndex) {
         super(ConstantPoolEntry.CP_NameAndType, globalIndex);
         this.name = name;
         this.descriptor = descriptor;
-        this.domain = domain;
         if (name == null || descriptor == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }

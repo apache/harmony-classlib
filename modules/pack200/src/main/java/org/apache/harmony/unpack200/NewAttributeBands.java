@@ -38,7 +38,6 @@ import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.NewAttribute;
 
 /**
@@ -100,8 +99,7 @@ public class NewAttributeBands extends BandSet {
      */
     private Attribute getOneAttribute(int index, List elements) {
         NewAttribute attribute = new NewAttribute(segment.getCpBands()
-                .cpUTF8Value(attributeLayout.getName(),
-                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ),
+                .cpUTF8Value(attributeLayout.getName()),
                 attributeLayout.getIndex());
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             AttributeLayoutElement element = (AttributeLayoutElement) iter

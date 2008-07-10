@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class ExceptionsAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8(
-            "Exceptions", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "Exceptions"); //$NON-NLS-1$
 
     private static int hashCode(Object[] array) {
         final int prime = 31;

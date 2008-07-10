@@ -16,11 +16,11 @@
  */
 package org.apache.harmony.unpack200;
 
+import java.util.List;
+
 import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
-import java.util.List;
 
 /**
  * SegmentConstantPool manages the constant pool used for re-creating class
@@ -64,7 +64,7 @@ public class SegmentConstantPool {
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return bands.cpUTF8Value(index, ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            return bands.cpUTF8Value(index);
         } else if (cp == CP_INT) {
             return bands.cpIntegerValue(index);
         } else if (cp == CP_FLOAT) {
@@ -203,9 +203,9 @@ public class SegmentConstantPool {
      * of the number of hits it finds using the following basis of comparison
      * for a hit: - the primaryArray[index] must be .equals() to the
      * primaryCompareString - the secondaryArray[index] .matches() the
-     * secondaryCompareString. When the desiredIndex number of hits 
-     * has been reached, the index into the original two arrays of 
-     * the element hit is returned. 
+     * secondaryCompareString. When the desiredIndex number of hits
+     * has been reached, the index into the original two arrays of
+     * the element hit is returned.
      *
      * @param primaryArray
      *            The first array to search
@@ -283,8 +283,7 @@ public class SegmentConstantPool {
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return bands.cpUTF8Value(index,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            return bands.cpUTF8Value(index);
         } else if (cp == CP_INT) {
             return bands.cpIntegerValue(index);
         } else if (cp == CP_FLOAT) {
