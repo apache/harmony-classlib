@@ -149,7 +149,7 @@ public class CpBands extends BandSet {
         cpClass = new String[cpClassCount];
         for (int i = 0; i < cpClassCount; i++) {
             cpClass[i] = cpUTF8[cpClassInts[i]];
-            mapClass.put(cpClass[i], Integer.valueOf(i));
+            mapClass.put(cpClass[i], new Integer(i));
         }
     }
 
@@ -182,7 +182,7 @@ public class CpBands extends BandSet {
         cpDescriptor = new String[cpDescriptorCount];
         for (int i = 0; i < cpDescriptorCount; i++) {
             cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i]; //$NON-NLS-1$
-            mapDescriptor.put(cpDescriptor[i], Integer.valueOf(i));
+            mapDescriptor.put(cpDescriptor[i], new Integer(i));
         }
     }
 
@@ -398,7 +398,7 @@ public class CpBands extends BandSet {
         int cpUTF8Count = header.getCpUTF8Count();
         cpUTF8 = new String[cpUTF8Count];
         cpUTF8[0] = ""; //$NON-NLS-1$
-        mapUTF8.put("", Integer.valueOf(0));
+        mapUTF8.put("", new Integer(0));
         int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5,
                 cpUTF8Count - 2);
         int charCount = 0;
@@ -447,12 +447,12 @@ public class CpBands extends BandSet {
                 // surprised if it works first time w/o errors ...
                 cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
                         + new String(bigSuffixData[bigSuffixCount++]);
-                mapUTF8.put(cpUTF8[i], Integer.valueOf(i));
+                mapUTF8.put(cpUTF8[i], new Integer(i));
             } else {
                 cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
                         + new String(data, charCount, suffix[i - 1]);
                 charCount += suffix[i - 1];
-                mapUTF8.put(cpUTF8[i], Integer.valueOf(i));
+                mapUTF8.put(cpUTF8[i], new Integer(i));
             }
         }
     }
