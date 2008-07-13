@@ -1,0 +1,311 @@
+/*
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+//options {
+//  DEBUG_PARSER = true;
+//  DEBUG_TOKEN_MANAGER=true;
+//}
+
+PARSER_BEGIN(RTFParser)
+package org.apache.harmony.x.swing.text.rtf;
+
+import java.io.*;
+import javax.swing.text.Document;
+import javax.swing.text.DefaultStyledDocument;
+
+public class RTFParser {
+
+  private static RTFParserHandler handler; 
+
+  public static void main(String args[]) throws Exception {
+    InputStream in;
+
+    if (args.length > 0)
+      in = new FileInputStream(args[0]);
+    else
+      in = System.in;
+      
+    RTFParser parser = new RTFParser(in);
+    parser.parse(new DefaultStyledDocument(), 0);
+  }
+  
+}
+
+PARSER_END(RTFParser)
+
+/*<*> MORE :
+{
+  "\\" : InControlWord
+}
+
+<InControlWord> TOKEN :
+{
+  <RTF: "rtf"<PARAM>> {System.out.println("rtf");} : DEFAULT
+}
+  (
+    documentBlock()
+<InControlWord> TOKEN :
+{
+  {System.out.println("param");} <PARAM: "123"> 
+}
+
+<InControlWord> MORE:
+{
+ <~[]> : DEFAULT
+}*/
+
+<*>
+MORE:
+{
+  <BACKSLASH: "\\"> : IN_CONTROL
+}
+
+<DEFAULT>
+SKIP :
+{
+  "\n"
+| "\r"
+| "\t"
+}
+
+<*>
+TOKEN:
+{
+  <OPEN_BRACE: "{"> : DEFAULT
+| <CLOSE_BRACE: "}"> : DEFAULT
+}
+
+<DEFAULT>
+TOKEN:
+{
+ <TEXT: (~["\\","{","}","\n","\r", "\t"])+>
+}
+
+<IN_CONTROL>
+SKIP:
+{
+  " " : DEFAULT
+| "\n" : DEFAULT
+| "\r" : DEFAULT
+| "\t" : DEFAULT
+}
+
+<IN_CONTROL>
+TOKEN:
+{
+  <RTF: "rtf">
+| <FONTTBL: "fonttbl">
+| <STYLESHEET: "stylesheet">
+| <INFO: "info"> 
+| <B: "b">
+| <I: "i">
+| <UL: "ul">
+//|  <SECT: "sect">
+//|  <SUBDOCUMENT: "subdocument">
+//|  <PAR: "par">
+}
+
+<IN_CONTROL>
+TOKEN:
+{
+  <IGNORED_DESTINATION: "*">
+}
+
+<IN_CONTROL>
+TOKEN:
+{
+  <CONTROL_WORD: (["a"-"z", "A"-"Z"])+>
+| <CONTROL_SYMBOL: ~["a"-"z", "A"-"Z", "0"-"9", " ", "\t",
+                   "{", "}", "\n", "\r", "\\"]>
+}
+
+<IN_CONTROL>
+TOKEN:
+{
+  <PARAM: (["-"])? (["0"-"9"])+>
+}
+
+<IN_CONTROL>
+SKIP:
+{
+ <~[]> : DEFAULT
+}
+
+
+
+public void parse(Document doc, int position) :
+{}
+{
+  {
+    handler = new RTFParserHandler(doc, position);
+  }
+  file() <EOF>
+}
+
+private int parameter() :
+{
+  Token param = null;
+}
+{
+  [param=<PARAM>] 
+  {
+    return param == null ? -1 : Integer.parseInt(param.image);
+  }
+}
+
+/**
+ *  Catches all unhandled control words.
+ */
+private void unknownControlWord() :
+{}
+{
+  <CONTROL_WORD> [<PARAM>]
+}
+
+/**
+ *  Catches all unhandled control symbols.
+ */
+void unknownControlSymbol() : 
+{}
+{
+  <CONTROL_SYMBOL>
+}
+
+void text() :
+{
+  Token text;
+}
+{
+  text=<TEXT> 
+  { 
+    handler.addText(text.image); 
+  }
+}
+
+void file() :
+{}
+{
+  <OPEN_BRACE> header() document() <CLOSE_BRACE>
+}
+
+void header() :
+{}
+{
+  <RTF>[<PARAM>]
+}
+
+void document() :
+{}
+{
+  (
+    paragraph()
+  | LOOKAHEAD(<OPEN_BRACE> <FONTTBL>)
+    fonttbl()
+  | LOOKAHEAD(<OPEN_BRACE> <STYLESHEET>)
+    stylesheet()
+  | LOOKAHEAD(<OPEN_BRACE> <INFO>)
+    info()
+  | LOOKAHEAD(<OPEN_BRACE> <IGNORED_DESTINATION>)
+    ignoredDestination()   
+  | documentBlock() 
+  | unknownControlWord() 
+  | unknownControlSymbol() 
+  | text() 
+  )+
+}
+
+/**
+ *  A group.
+ */
+void documentBlock() :
+{}
+{
+  <OPEN_BRACE> { handler.startGroup(); }
+  document() 
+  <CLOSE_BRACE> { handler.endGroup(); }
+}
+
+/**
+ *  Ignored block of RTF file, currently is using to ignore unknown parts
+ *  of file.
+ */
+void ignoredBlock() :
+{}
+{
+  (
+    LOOKAHEAD(<OPEN_BRACE> <IGNORED_DESTINATION>)
+    ignoredDestination()
+  | characterFormat() //TODO: Need to find a way to ignore control words declared as TOKENS  
+  | unknownControlWord() 
+  | unknownControlSymbol()
+  | <TEXT>
+  | <OPEN_BRACE> ignoredBlock() <CLOSE_BRACE>
+  )+
+}
+
+/**
+ *  Group which starts with "{\*" and describes destination, currently this part
+ *  is ignored.
+ */
+void ignoredDestination() :
+{}
+{
+  <OPEN_BRACE> <IGNORED_DESTINATION> ignoredBlock() <CLOSE_BRACE>
+}
+
+/**
+ * Part which describes font table group.
+ */
+void fonttbl() :
+{}
+{
+  <OPEN_BRACE> <FONTTBL> ignoredBlock() <CLOSE_BRACE>
+}
+
+/**
+ * Part which describes the style sheet group.
+ */
+void stylesheet() :
+{}
+{
+  <OPEN_BRACE> <STYLESHEET> ignoredBlock() <CLOSE_BRACE>
+}
+
+/**
+ * Part which describes the information group inside document area.
+ */
+void info() :
+{}
+{
+  <OPEN_BRACE> <INFO> ignoredBlock() <CLOSE_BRACE>
+}
+
+void paragraph() :
+{}
+{
+  characterFormat()
+}
+
+void characterFormat() :
+{ 
+  int param;
+}
+{
+  <B> param = parameter() { handler.setBold(param != 0); }
+| <I> param = parameter() { handler.setItalic(param != 0); }
+| <UL> param = parameter() { handler.setUnderline(param != 0); }
+}
