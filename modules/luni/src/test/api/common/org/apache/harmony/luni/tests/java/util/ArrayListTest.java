@@ -146,6 +146,7 @@ public class ArrayListTest extends junit.framework.TestCase {
     /**
      * @tests java.util.ArrayList#addAll(int, java.util.Collection)
      */
+    @SuppressWarnings("unchecked")
     public void test_addAllILjava_util_Collection_2() {
         // Regression for HARMONY-467
         ArrayList obj = new ArrayList();
@@ -179,6 +180,32 @@ public class ArrayListTest extends junit.framework.TestCase {
         }
         assertTrue("The object list is not the same as orginal list", obj
                 .containsAll(list1) && list1.containsAll(obj));
+        
+        // Regression for Harmony-5799
+        list1 = new ArrayList();
+        list2 = new ArrayList();
+        int location = 2;
+        
+        String[] strings = {"0","1","2","3","4","5","6"};
+        int[] integers = {0,1,2,3,4,5,6,7,8,9};        
+        for (int i = 0; i < 7; i++){
+            list1.add(strings[i]);
+        }
+        for (int i = 0; i < 10; i++){
+            list2.add(integers[i]);
+        }
+        list1.remove(location);
+        list1.addAll(location,list2);
+        
+        // Inserted elements should be equal to integers array
+        for(int i = 0; i < integers.length; i ++){
+            assertEquals(integers[i],list1.get(location+i));
+        }
+        // Elements after inserted location should 
+        // be equals to related elements in strings array
+        for(int i = location + 1; i < strings.length; i++){
+            assertEquals(strings[i],list1.get(i+integers.length-1));
+        }
     }
 
     public void test_addAllCollectionOfQextendsE() {

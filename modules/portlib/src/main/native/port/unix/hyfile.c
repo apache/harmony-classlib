@@ -38,6 +38,14 @@
 #include "portnls.h"
 #include "ut_hyprt.h"
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#undef fwrite
+#undef fread
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 static I_32 EsTranslateOpenFlags (I_32 flags);
 static I_32 findError (I_32 errorCode);
@@ -141,7 +149,15 @@ findError (I_32 errorCode)
 I_32 VMCALL
 hyfile_close (struct HyPortLibrary * portLibrary, IDATA fd)
 {
-  return close ((int) fd);
+
+#if (FD_BIAS != 0)
+    if (fd < FD_BIAS) {
+        /* Cannot close STD streams, and no other FD's should exist <FD_BIAS */
+	    return -1;
+    }
+#endif
+
+    return close ((int) (fd - FD_BIAS));
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -202,6 +218,7 @@ hyfile_open (struct HyPortLibrary *portLibrary, const char *path, I_32 flags,
   fdflags = fcntl (fd, F_GETFD, 0);
   fcntl (fd, F_SETFD, fdflags | FD_CLOEXEC);
 
+  fd += FD_BIAS;
   Trc_PRT_file_open_Exit (fd);
   return (IDATA) fd;
 }
@@ -246,8 +263,20 @@ hyfile_write (struct HyPortLibrary * portLibrary, IDATA fd, const void *buf,
 {
   IDATA rc = 0;
 
+#ifdef ZOS
+  if (fd == HYPORT_TTY_OUT) {
+    rc = fwrite(buf, sizeof(char), nbytes, stdout);
+  } else if (fd == HYPORT_TTY_ERR) {
+    rc = fwrite(buf, sizeof(char), nbytes, stderr);
+  } else if (fd < FD_BIAS) {
+    /* Cannot fsync STDIN, and no other FD's should exist <FD_BIAS */
+    return -1;
+  } else 
+#endif /* ZOS */
+  {
   /* write will just do the right thing for HYPORT_TTY_OUT and HYPORT_TTY_ERR */
-  rc = write ((int) fd, buf, nbytes);
+    rc = write ((int) (fd - FD_BIAS), buf, nbytes);
+  }
 
   if (rc == -1)
     {
@@ -280,7 +309,18 @@ hyfile_read (struct HyPortLibrary * portLibrary, IDATA fd, void *buf,
       return 0;
     }
 
-  result = read ((int) fd, buf, nbytes);
+#ifdef ZOS
+  if (fd == HYPORT_TTY_IN) {
+    result = fread(buf, sizeof(char), nbytes, stdin);
+  }  else	if (fd < FD_BIAS) {
+    /* Cannot read from STDOUT/ERR, and no other FD's should exist <FD_BIAS */
+    return -1;
+  } else
+#endif /* ZOS */
+  {
+    result = read ((int) (fd - FD_BIAS), buf, nbytes);
+  }
+
   if (result == 0)
     {
       return -1;
@@ -310,9 +350,10 @@ hyfile_read (struct HyPortLibrary * portLibrary, IDATA fd, void *buf,
  * can be returned when seeking beyond end of file.
  */
 I_64 VMCALL
-hyfile_seek (struct HyPortLibrary * portLibrary, IDATA fd, I_64 offset,
+hyfile_seek (struct HyPortLibrary * portLibrary, IDATA inFD, I_64 offset,
              I_32 whence)
 {
+  int fd = (int)inFD;
   off_t localOffset = (off_t) offset;
 
   if ((whence < HySeekSet) || (whence > HySeekEnd))
@@ -333,7 +374,14 @@ hyfile_seek (struct HyPortLibrary * portLibrary, IDATA fd, I_64 offset,
         }
     }
 
-  return (I_64) lseek ((int) fd, localOffset, whence);
+#if (FD_BIAS != 0)
+	if (fd < FD_BIAS) {
+		/* Cannot seek on STD streams, and no other FD's should exist <FD_BIAS */
+		return -1;
+	}
+#endif
+
+  return (I_64) lseek ((int) (fd - FD_BIAS), localOffset, whence);
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -620,9 +668,22 @@ hyfile_unlinkdir (struct HyPortLibrary * portLibrary, const char *path)
  * @internal @todo return negative portable return code on failure.
  */
 I_32 VMCALL
-hyfile_sync (struct HyPortLibrary * portLibrary, IDATA fd)
+hyfile_sync (struct HyPortLibrary * portLibrary, IDATA inFD)
 {
-  return fsync ((int) fd);
+  int fd = (int)inFD;
+
+#ifdef ZOS
+	 if (fd == HYPORT_TTY_OUT) {
+		return fflush(stdout);
+	} else if (fd == HYPORT_TTY_ERR) {
+		return fflush(stderr);
+	} else if (fd < FD_BIAS) {
+		/* Cannot fsync STDIN, and no other FD's should exist <FD_BIAS */
+		return -1;
+	}
+#endif /* ZOS */
+
+  return fsync ((int) (fd - FD_BIAS));
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -800,10 +861,10 @@ hyfile_printf (struct HyPortLibrary *portLibrary, IDATA fd,
  * @return 0 on success, negative portable error code on failure
  */
 I_32 VMCALL
-hyfile_set_length (struct HyPortLibrary *portLibrary, IDATA fd,
+hyfile_set_length (struct HyPortLibrary *portLibrary, IDATA inFD,
                    I_64 newLength)
 {
-
+  int fd = (int)inFD;
   I_32 rc;
   off_t length = (off_t) newLength;
 
@@ -820,7 +881,14 @@ hyfile_set_length (struct HyPortLibrary *portLibrary, IDATA fd,
         }
     }
 
-  rc = ftruncate (fd, length);
+#if (FD_BIAS != 0)
+	if (fd < FD_BIAS) {
+		/* Cannot ftruncate on STD streams, and no other FD's should exist <FD_BIAS */
+		return -1;
+	}
+#endif
+
+  rc = ftruncate (fd - FD_BIAS, length);
   if (0 != rc)
     {
       rc =

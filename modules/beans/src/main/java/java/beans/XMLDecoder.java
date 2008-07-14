@@ -17,6 +17,7 @@
 
 package java.beans;
 
+import java.beans.Statement.MethodComparator;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -27,6 +28,7 @@ import java.util.Stack;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.harmony.beans.internal.nls.Messages;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -331,15 +333,98 @@ public class XMLDecoder {
                 }
                 Class[] c = new Class[args.size()];
                 for (int i = 0; i < args.size(); i++) {
-                    c[i] = args.get(i).getClass();
+                    Object arg = args.get(i);
+                    c[i] = (arg == null ? null: arg.getClass());
                 }
-                Method m = owner.getClass().getMethod(method, c);
-                return m.invoke(owner, args.toArray());
+
+                // Try actual match method
+                try {
+                    Method m = owner.getClass().getMethod(method, c);
+                    return m.invoke(owner, args.toArray());
+                } catch (NoSuchMethodException e) {
+                    // Do nothing
+                }
+
+                // Find the specific method matching the parameter
+                Method mostSpecificMethod = findMethod(
+                        owner instanceof Class ? (Class) owner : owner
+                                .getClass(), method, c);
+
+                return mostSpecificMethod.invoke(owner, args.toArray());
             }
 
             // execute
             Expression exp = new Expression(elem.target, method, args.toArray());
             return exp.getValue();
+        }
+
+        private Method findMethod(Class clazz, String methodName,
+                Class[] clazzes) throws Exception {
+            Method[] methods = clazz.getMethods();
+            ArrayList<Method> matchMethods = new ArrayList<Method>();
+
+            // Add all matching methods into a ArrayList
+            for (Method method : methods) {
+                if (!methodName.equals(method.getName())) {
+                    continue;
+                }
+                Class[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != clazzes.length) {
+                    continue;
+                }
+                boolean match = true;
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    boolean isNull = (clazzes[i] == null);
+                    boolean isPrimitive = isPrimitiveWrapper(clazzes[i], parameterTypes[i]);
+                    boolean isAssignable = isNull? false : parameterTypes[i].isAssignableFrom(clazzes[i]);
+                    if ( isNull || isPrimitive || isAssignable ) {
+                        continue;
+                    }
+                    match = false;
+                }
+                if (match) {
+                    matchMethods.add(method);
+                }
+            }
+
+            int size = matchMethods.size();
+            if (size == 1) {
+                // Only one method matches, just invoke it
+                return matchMethods.get(0);
+            } else if (size == 0) {
+                // Does not find any matching one, throw exception
+                throw new NoSuchMethodException(Messages.getString(
+                        "beans.41", methodName)); //$NON-NLS-1$
+            }
+
+            // There are more than one method matching the signature
+            // Find the most specific one to invoke
+            MethodComparator comparator = new MethodComparator(methodName,
+                    clazzes);
+            Method chosenOne = matchMethods.get(0);
+            matchMethods.remove(0);
+            for (Method method : matchMethods) {
+                int difference = comparator.compare(chosenOne, method);
+                if (difference > 0) {
+                    chosenOne = method;
+                } else if (difference == 0) {
+                    // if 2 methods have same relevance, throw exception
+                    throw new NoSuchMethodException(Messages.getString(
+                            "beans.62", methodName)); //$NON-NLS-1$
+                }
+            }
+            return chosenOne;
+        }
+
+        private boolean isPrimitiveWrapper(Class<?> wrapper, Class<?> base) {
+            return (base == boolean.class) && (wrapper == Boolean.class)
+                    || (base == byte.class) && (wrapper == Byte.class)
+                    || (base == char.class) && (wrapper == Character.class)
+                    || (base == short.class) && (wrapper == Short.class)
+                    || (base == int.class) && (wrapper == Integer.class)
+                    || (base == long.class) && (wrapper == Long.class)
+                    || (base == float.class) && (wrapper == Float.class)
+                    || (base == double.class) && (wrapper == Double.class);
         }
 
         private String capitalize(String str) {

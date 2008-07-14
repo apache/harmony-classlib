@@ -674,6 +674,74 @@ public class LdapContextImplTest extends TestCase {
         assertEquals("bind", attribute.get(0));
     }
 
+    public void test_bind_LAttributes() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+        
+        Attributes attrs = new BasicAttributes();
+        attrs.put("objectClass", "cn");
+        attrs.put("cn", "testBind");
+        context.bind("cn=testBind", "object", attrs);
+        
+        AddOp op = (AddOp) client.getRequest();
+        assertEquals("cn=testBind,cn=test", op.getEntry());
+        List<LdapAttribute> attrList = op.getAttributeList();
+        // has attribute: objectClass, javaClassNames, javaClassName,
+        // javaSerializedData, cn
+        assertEquals(5, attrList.size());
+        Map<String, LdapAttribute> map = new HashMap<String, LdapAttribute>();
+        for (Iterator iter = attrList.iterator(); iter.hasNext();) {
+            LdapAttribute attr = (LdapAttribute) iter.next();
+            map.put(attr.getID(), attr);
+        }
+
+        assertTrue(map.containsKey("objectClass"));
+        Attribute attribute = map.get("objectClass");
+        NamingEnumeration<?> enu = attribute.getAll();
+        HashSet<Object> valueSet = new HashSet<Object>();
+        while (enu.hasMore()) {
+            valueSet.add(enu.next());
+        }
+        // objectClass has values: top, cn, javaObject, 
+        // javaSerializedObject
+        assertEquals(4, valueSet.size());
+        assertTrue(valueSet.contains("top"));
+        assertTrue(valueSet.contains("cn"));
+        assertTrue(valueSet.contains("javaObject"));
+        assertTrue(valueSet.contains("javaSerializedObject"));
+
+        assertTrue(map.containsKey("javaClassNames"));
+        attribute = map.get("javaClassNames");
+        enu = attribute.getAll();
+        valueSet = new HashSet<Object>();
+        while (enu.hasMore()) {
+            valueSet.add(enu.next());
+        }
+
+        assertEquals(5, valueSet.size());
+        assertTrue(valueSet.contains("java.io.Serializable"));
+        assertTrue(valueSet.contains("java.lang.CharSequence"));
+        assertTrue(valueSet.contains("java.lang.Comparable"));
+        assertTrue(valueSet.contains("java.lang.Object"));
+        assertTrue(valueSet.contains("java.lang.String"));
+
+        assertTrue(map.containsKey("javaClassName"));
+        attribute = map.get("javaClassName");
+        assertEquals(1, attribute.size());
+        assertEquals(String.class.getName(), attribute.get(0));
+
+        assertTrue(map.containsKey("javaSerializedData"));
+        assertEquals(1, attribute.size());
+        attribute = map.get("javaSerializedData");
+
+        assertTrue(map.containsKey("cn"));
+        attribute = map.get("cn");
+        assertEquals(1, attribute.size());
+        assertEquals("testBind", attribute.get(0));
+    }
+    
     public void test_lookup() throws Exception {
         MockLdapClient client = new MockLdapClient();
         Hashtable<Object, Object> env = new Hashtable<Object, Object>();

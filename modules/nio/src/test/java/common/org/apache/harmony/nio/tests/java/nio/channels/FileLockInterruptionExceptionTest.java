@@ -25,6 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for FileLockInterruptionException
  */
 public class FileLockInterruptionExceptionTest extends TestCase {
+    
+    /**
+     * @tests {@link java.nio.channels.FileLockInterruptionException#FileLockInterruptionException()}
+     */
+    public void test_Constructor() {
+        FileLockInterruptionException e = new FileLockInterruptionException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization compatibility.

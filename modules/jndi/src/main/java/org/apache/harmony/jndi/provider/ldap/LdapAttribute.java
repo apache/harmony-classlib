@@ -1,4 +1,4 @@
-/* 
+/*
  *  Licensed to the Apache Software Foundation (ASF) under one or more 
  *  contributor license agreements.  See the NOTICE file distributed with 
  *  this work for additional information regarding copyright ownership. 
@@ -45,20 +45,10 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
     private static final long serialVersionUID = -6492847268062616321L;
 
     /**
-     * TODO: when to initialize it?
-     */
-    private DirContext attributeDefinition = null;
-
-    /**
-     * TODO: when to initialize it?
-     */
-    private DirContext attributeSyntaxDefinition = null;
-
-    /**
      * whether the value of attribute is binary
      */
     private boolean isBinary;
-    
+
     private LdapContextImpl context = null;
 
     private static HashSet<String> BINARY_ATTRIBUTE = new HashSet<String>();
@@ -92,7 +82,7 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         isBinary = isBinary(id);
         context = ctx;
     }
-    
+
     void setContext(LdapContextImpl ctx) {
         context = ctx;
     }
@@ -112,9 +102,6 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
             Object value = enu.next();
             add(value);
         }
-
-        attributeDefinition = null;
-        attributeSyntaxDefinition = null;
         context = ctx;
     }
 
@@ -155,37 +142,35 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
     @Override
     public DirContext getAttributeDefinition() throws NamingException {
-        if (attributeDefinition != null) {
-            return attributeDefinition;
-        }
-        attributeDefinition = context
-                .getSchemaAttributeDefinition(getID());
-        return attributeDefinition;
+        DirContext schema = context.getSchema(""); //$NON-NLS-1$
+
+        return (DirContext) schema
+                .lookup(LdapSchemaContextImpl.ATTRIBUTE_DEFINITION
+                        + "/" + getID()); //$NON-NLS-1$
     }
 
     @Override
     public DirContext getAttributeSyntaxDefinition() throws NamingException {
-        if (attributeSyntaxDefinition != null) {
-            return attributeSyntaxDefinition;
-        }
-        //      get the syntax id from the attribute def
-        DirContext schema = context.getSchema("");
-        DirContext attrDef = (DirContext)schema.lookup(
-                LdapSchemaContextImpl.ATTRIBUTE_DEFINITION + "/" + getID());
+        DirContext schema = context.getSchema(""); //$NON-NLS-1$
+        DirContext attrDef = (DirContext) schema
+                .lookup(LdapSchemaContextImpl.ATTRIBUTE_DEFINITION + "/" //$NON-NLS-1$
+                        + getID());
 
-        Attribute syntaxAttr = attrDef.getAttributes("").get("syntax");
+        Attribute syntaxAttr = attrDef.getAttributes("").get("syntax"); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (syntaxAttr == null || syntaxAttr.size() == 0) {
-            throw new NameNotFoundException(Messages.getString("jndi.90",
+            // jndi.90={0} does not have a syntax associated with it
+            throw new NameNotFoundException(Messages.getString("jndi.90", //$NON-NLS-1$
                     getID()));
         }
 
-        String syntaxName = (String)syntaxAttr.get();
+        String syntaxName = (String) syntaxAttr.get();
 
         // look in the schema tree for the syntax definition
-        return (DirContext)schema.lookup(
-                LdapSchemaContextImpl.SYNTAX_DEFINITION + "/" + syntaxName);
-        
+        return (DirContext) schema
+                .lookup(LdapSchemaContextImpl.SYNTAX_DEFINITION + "/" //$NON-NLS-1$
+                        + syntaxName);
+
     }
 
     private static boolean isBinary(String name) {

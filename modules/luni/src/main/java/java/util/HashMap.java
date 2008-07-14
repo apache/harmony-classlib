@@ -23,24 +23,50 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * HashMap is an implementation of Map. All optional operations are supported,
- * adding and removing. Keys and values can be any objects.
+ * HashMap is the hash table based implementation of the Map interface.
+ * 
+ * This implementation provides all of the optional map operations, and permits
+ * null values and the null key. (The HashMap class is roughly equivalent to
+ * Hashtable, except that it is unsynchronized and permits nulls.)
  */
 public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Cloneable, Serializable {
+
     private static final long serialVersionUID = 362498820763181265L;
 
+    /*
+     * Actual count of entries
+     */
     transient int elementCount;
 
+    /*
+     * The internal data structure to hold Entries
+     */
     transient Entry<K, V>[] elementData;
 
-    final float loadFactor;
-
-    int threshold;
-
+    /*
+     * modification count, to keep track of structural modifications between the
+     * HashMap and the iterator
+     */
     transient int modCount = 0;
 
+    /*
+     * default size that an HashMap created using the default constructor would
+     * have.
+     */
     private static final int DEFAULT_SIZE = 16;
+
+    /*
+     * maximum ratio of (stored elements)/(storage size) which does not lead to
+     * rehash
+     */
+    final float loadFactor;
+
+    /*
+     * maximum number of elements that can be put in this map before having to
+     * rehash
+     */
+    int threshold;
 
     static class Entry<K, V> extends MapEntry<K, V> {
         final int origKeyHash;
@@ -54,7 +80,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         Entry(K theKey, V theValue) {
             super(theKey, theValue);
-            origKeyHash = (theKey == null ? 0 : theKey.hashCode());
+            origKeyHash = (theKey == null ? 0 : computeHashCode(theKey));
         }
 
         @Override
@@ -76,7 +102,6 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Entry<K, V> prevEntry;
 
         final HashMap<K, V> associatedMap;
-
 
         AbstractMapIterator(HashMap<K, V> hm) {
             associatedMap = hm;
@@ -129,7 +154,6 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             }
             if(prevEntry==null){
                 int index = currentEntry.origKeyHash & (associatedMap.elementData.length - 1);
-                //assert associatedMap.elementData[index] == currentEntry;
                 associatedMap.elementData[index] = associatedMap.elementData[index].next;
             } else {
                 prevEntry.next = currentEntry.next;
@@ -217,7 +241,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
                 Map.Entry<?, ?> oEntry = (Map.Entry<?, ?>) object;
-                Entry entry = associatedMap.getEntry(oEntry.getKey());
+                Entry<KT, VT> entry = associatedMap.getEntry(oEntry.getKey());
                 return valuesEq(entry, oEntry);
             }
             return false;
@@ -227,7 +251,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return (entry != null) &&
                                    ((entry.value == null) ?
                                     (oEntry.getValue() == null) :
-                                    (entry.value.equals(oEntry.getValue())));
+                                    (areEqualValues(entry.value, oEntry.getValue())));
         }
 
         @Override
@@ -265,17 +289,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      *                when the capacity is less than zero
      */
     public HashMap(int capacity) {
-        if (capacity >= 0) {
-            capacity = calculateCapacity(capacity);
-            elementCount = 0;
-            elementData = newElementArray(capacity);
-            loadFactor = 0.75f; // Default load factor of 0.75
-            computeMaxSize();
-        } else {
-            throw new IllegalArgumentException();
+        this(capacity, 0.75f);  // default load factor of 0.75
         }
-    }
 
+    /**
+     * Calculates the capacity of storage required for storing given number of
+     * elements
+     * 
+     * @param x
+     *            number of elements
+     * @return storage size
+     */
     private static final int calculateCapacity(int x) {
         if(x >= 1 << 30){
             return 1 << 30;
@@ -310,9 +334,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         if (capacity >= 0 && loadFactor > 0) {
             capacity = calculateCapacity(capacity);
             elementCount = 0;
-            elementData = newElementArray(capacity == 0 ? 1 : capacity);
+            elementData = newElementArray(capacity);
             this.loadFactor = loadFactor;
-            computeMaxSize();
+            computeThreshold();
         } else {
             throw new IllegalArgumentException();
         }
@@ -326,7 +350,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      *            the mappings to add
      */
     public HashMap(Map<? extends K, ? extends V> map) {
-        this(map.size() < 6 ? 11 : map.size() * 2);
+        this(calculateCapacity(map.size()));
         putAllImpl(map);
     }
 
@@ -359,23 +383,18 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             HashMap<K, V> map = (HashMap<K, V>) super.clone();
             map.elementCount = 0;
             map.elementData = newElementArray(elementData.length);
-            Entry<K, V> entry;
-            for (int i = 0; i < elementData.length; i++) {
-                if ((entry = elementData[i]) != null){
-                    map.putImpl(entry.getKey(), entry.getValue());
-                    while (entry.next != null){
-                        entry = entry.next;
-                        map.putImpl(entry.getKey(), entry.getValue());
-                    }
-                }
-            }
+            map.putAll(this);
+            
             return map;
         } catch (CloneNotSupportedException e) {
             return null;
         }
     }
 
-    private void computeMaxSize() {
+    /**
+     * Computes the threshold for rehashing
+     */
+    private void computeThreshold() {
         threshold = (int) (elementData.length * loadFactor);
     }
 
@@ -404,17 +423,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     @Override
     public boolean containsValue(Object value) {
         if (value != null) {
-            for (int i = elementData.length; --i >= 0;) {
+            for (int i = 0; i < elementData.length; i++) {
                 Entry<K, V> entry = elementData[i];
                 while (entry != null) {
-                    if (value.equals(entry.value)) {
+                    if (areEqualValues(value, entry.value)) {
                         return true;
                     }
                     entry = entry.next;
                 }
             }
         } else {
-            for (int i = elementData.length; --i >= 0;) {
+            for (int i = 0; i < elementData.length; i++) {
                 Entry<K, V> entry = elementData[i];
                 while (entry != null) {
                     if (entry.value == null) {
@@ -460,7 +479,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         if (key == null) {
             m = findNullKeyEntry();
         } else {
-            int hash = key.hashCode();
+            int hash = computeHashCode(key);
             int index = hash & (elementData.length - 1);
             m = findNonNullKeyEntry(key, index, hash);
         }
@@ -469,7 +488,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     final Entry<K,V> findNonNullKeyEntry(Object key, int index, int keyHash) {
         Entry<K,V> m = elementData[index];
-        while (m != null && (m.origKeyHash != keyHash || !key.equals(m.key))) {
+        while (m != null && (m.origKeyHash != keyHash || !areEqualKeys(key, m.key))) {
             m = m.next;
         }
         return m;
@@ -562,7 +581,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 entry = createHashedEntry(null, 0, 0);
             }
         } else {
-            int hash = key.hashCode();
+            int hash = computeHashCode(key);
             int index = hash & (elementData.length - 1);
             entry = findNonNullKeyEntry(key, index, hash);
             if (entry == null) {
@@ -636,7 +655,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             }
         }
         elementData = newData;
-        computeMaxSize();
+        computeThreshold();
     }
 
     void rehash() {
@@ -681,10 +700,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Entry<K, V> entry;
         Entry<K, V> last = null;
         if (key != null) {
-            int hash = key.hashCode();
+            int hash = computeHashCode(key);
             index = hash & (elementData.length - 1);
             entry = elementData[index];
-            while (entry != null && !(entry.origKeyHash == hash && key.equals(entry.key))) {
+            while (entry != null && !(entry.origKeyHash == hash && areEqualKeys(key, entry.key))) {
                 last = entry;
                 entry = entry.next;
             }
@@ -775,9 +794,25 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
             K key = (K) stream.readObject();
-            int index = (null == key) ? 0 : (key.hashCode() & (length - 1));
+            int index = (null == key) ? 0 : (computeHashCode(key) & (length - 1));
             createEntry(key, index, (V) stream.readObject());
         }
     }
 
+    /*
+     * Contract-related functionality 
+     */
+    static int computeHashCode(Object key) {
+        return key.hashCode();
+}
+
+    static boolean areEqualKeys(Object key1, Object key2) {
+        return key1.equals(key2);
+    }
+    
+    static boolean areEqualValues(Object value1, Object value2) {
+        return value1.equals(value2);
+    }
+    
+    
 }

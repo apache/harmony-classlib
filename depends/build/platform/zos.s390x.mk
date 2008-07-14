@@ -20,7 +20,7 @@ AS = cc
 CXX = cxx
 
 DEFINES += -DZOS -DZOS_S390X -DHYS390X -DHY_ATOE
-OPT += -Wc,lp64,xplink,convlit\(ISO8859-1\),FLOAT\(IEEE,FOLD,AFP\) -Wc,"langlvl(commonc)" -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL
+OPT += -Wc,lp64,xplink,convlit\(ISO8859-1\),FLOAT\(IEEE,FOLD,AFP\) -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL
 
 CFLAGS += -Wc,"SSCOMM" -Wc,"langlvl(commonc)"
 CXXFLAGS += -+ -Wc,"langlvl(extended)"
@@ -31,6 +31,9 @@ LDFLAGS += -Wl,lp64 -Wl,xplink,dll
 # No need for --start-group and --end-group tags here
 MDLLIBPREFIX =
 MDLLIBSUFFIX =
+
+# No need to specify STDC libs on z/OS
+STDCLIBS =
 
 # Don't use these flags on z/OS
 DLL_LDFLAGS =

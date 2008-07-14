@@ -25,6 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for NotYetConnectedException
  */
 public class NotYetConnectedExceptionTest extends TestCase {
+    
+    /**
+     * @tests {@link java.nio.channels.NotYetConnectedException#NotYetConnectedException()}
+     */
+    public void test_Constructor() {
+        NotYetConnectedException e = new NotYetConnectedException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization compatibility.

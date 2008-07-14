@@ -25,6 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for NotYetBoundException
  */
 public class NotYetBoundExceptionTest extends TestCase {
+    
+    /**
+     * @tests {@link java.nio.channels.NotYetBoundException#NotYetBoundException()}
+     */
+    public void test_Constructor() {
+        NotYetBoundException e = new NotYetBoundException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization compatibility.

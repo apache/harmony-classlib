@@ -368,7 +368,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      */
     private Integer dumpCycle(Object obj) throws IOException {
         // If the object has been saved already, save its handle only
-        Integer handle = registeredObjectHandleFor(obj);
+        Integer handle = objectsWritten.get(obj);
         if (handle != null) {
             writeCyclicReference(handle);
             return handle;
@@ -459,20 +459,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Return the <code>Integer</code> handle used to tag object
-     * <code>obj</code> as an instance that has been dumped already. Return
-     * <code>null</code> if object <code>obj</code> has not been saved yet.
-     * 
-     * @param obj
-     *            the object
-     * @return null if object <code>obj</code> has not been saved yet. Integer
-     *         The handle that this object was assigned when it was saved.
-     */
-    private Integer registeredObjectHandleFor(Object obj) {
-        return objectsWritten.get(obj);
-    }
-
-    /**
      * Assume object <code>obj</code> has not been dumped yet, and assign a
      * handle to it
      * 
@@ -484,7 +470,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      */
     private Integer registerObjectWritten(Object obj) {
         Integer handle = Integer.valueOf(nextHandle());
-        registerObjectWritten(obj, handle);
+        objectsWritten.put(obj, handle);
         return handle;
     }
 
@@ -499,25 +485,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      */
     private void removeUnsharedReference(Object obj, Integer previousHandle) {
         if (previousHandle != null) {
-            registerObjectWritten(obj, previousHandle);
+            objectsWritten.put(obj, previousHandle);
         } else {
             objectsWritten.remove(obj);
         }
-    }
-
-    /**
-     * Assume object <code>obj</code> has not been dumped yet, and assign a
-     * handle to it, <code>handle</code>.
-     * 
-     * @param obj
-     *            Non-null object being dumped.
-     * @param handle
-     *            An Integer, the handle to this object
-     * 
-     * @see #nextHandle
-     */
-    private void registerObjectWritten(Object obj, Integer handle) {
-        objectsWritten.put(obj, handle);
     }
 
     /**
@@ -763,7 +734,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         }
         if (handle == null) {
             Class<?> classToWrite = classDesc.forClass();
-            Integer previousHandle = objectsWritten.get(classDesc);
+            Integer previousHandle = null;
+            if (unshared) {
+                previousHandle = objectsWritten.get(classDesc);
+            }
             // If we got here, it is a new (non-null) classDesc that will have
             // to be registered as well
             handle = registerObjectWritten(classDesc);
@@ -1207,7 +1181,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         output.writeByte(TC_ARRAY);
         writeClassDescForClass(arrayClass);
 
-        Integer previousHandle = objectsWritten.get(array);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(array);
+        }
         Integer handle = registerObjectWritten(array);
         if (unshared) {
             // remove reference to unshared object
@@ -1315,7 +1292,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                     unshared);
         }
 
-        Integer previousHandle = objectsWritten.get(object);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(object);
+        }
         Integer handle = registerObjectWritten(object);
         if (unshared) {
             // remove reference to unshared object
@@ -1449,7 +1429,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         // Either serializable or externalizable, now we can save info
         output.writeByte(TC_OBJECT);
         writeClassDescForClass(theClass);
-        Integer previousHandle = objectsWritten.get(object);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(object);
+        }
         Integer handle = registerObjectWritten(object);
 
         // This is how we know what to do in defaultWriteObject. And it is also
@@ -1521,7 +1504,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         }
         output.writeUTFBytes(object, count);
 
-        Integer previousHandle = objectsWritten.get(object);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(object);
+        }
         Integer handle = registerObjectWritten(object);
         if (unshared) {
             // remove reference to unshared object
@@ -1692,7 +1678,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                         // Make the original object also map to the same
                         // handle.
                         if (replacementHandle != null) {
-                            registerObjectWritten(object, replacementHandle);
+                            objectsWritten.put(object, replacementHandle);
                         }
                         return replacementHandle;
                     }
@@ -1713,7 +1699,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                             computeClassBasedReplacement, false);
                     // Make the original object also map to the same handle.
                     if (replacementHandle != null) {
-                        registerObjectWritten(object, replacementHandle);
+                        objectsWritten.put(object, replacementHandle);
                     }
                     return replacementHandle;
                 }
@@ -1760,7 +1746,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
         // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
         classDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
-        Integer previousHandle = objectsWritten.get(classDesc);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(classDesc);
+        }
         Integer handle = null;
         if (!unshared) {
             handle = dumpCycle(classDesc);
@@ -1816,7 +1805,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         }
         ObjectStreamClass classDesc = writeEnumDesc(theClass, unshared);
 
-        Integer previousHandle = objectsWritten.get(object);
+        Integer previousHandle = null;
+        if (unshared) {
+            previousHandle = objectsWritten.get(object);
+        }
         Integer handle = registerObjectWritten(object);
 
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();

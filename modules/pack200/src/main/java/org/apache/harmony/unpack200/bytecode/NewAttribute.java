@@ -30,9 +30,15 @@ public class NewAttribute extends BCIRenumberedAttribute {
     private final List lengths = new ArrayList(); // List of Integers
     private final List body = new ArrayList();
     private ClassConstantPool pool;
+    private final int layoutIndex;
 
-    public NewAttribute(CPUTF8 attributeName) {
+    public NewAttribute(CPUTF8 attributeName, int layoutIndex) {
         super(attributeName);
+        this.layoutIndex = layoutIndex;
+    }
+
+    public int getLayoutIndex() {
+        return layoutIndex;
     }
 
     /*

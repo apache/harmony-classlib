@@ -21,7 +21,7 @@
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H
 
-#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)
 // common linux section--------------------------------
 #include <dlfcn.h>
 #include <stdint.h>
@@ -35,7 +35,7 @@
 
 #define INIT_GL_GET_PROC_ADDRESS
 
-#if !defined(__INTEL_COMPILER) && !defined(AIX)
+#if !defined(__INTEL_COMPILER) && !defined(AIX) && !defined(ZOS)
     typedef long long __int64;
 #endif
 

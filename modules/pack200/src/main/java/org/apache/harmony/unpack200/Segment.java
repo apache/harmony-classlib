@@ -220,14 +220,12 @@ public class Segment {
                     .getMethodFlags()[classNum][i], classBands
                     .getMethodAttributes()[classNum][i]));
         }
+        cp.addNestedEntries();
 
         // add inner class attribute (if required)
         boolean addInnerClassesAttr = false;
         IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
-        boolean ic_local_sent = false;
-        if (ic_local != null) {
-            ic_local_sent = true;
-        }
+        boolean ic_local_sent = ic_local != null;
         InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute(
                 "InnerClasses");
         IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
@@ -288,9 +286,8 @@ public class Segment {
             }
             newAttrs[newAttrs.length - 1] = innerClassesAttribute;
             classFile.attributes = newAttrs;
-            cp.add(innerClassesAttribute);
+            cp.addWithNestedEntries(innerClassesAttribute);
         }
-        cp.addNestedEntries();
         // sort CP according to cp_All
         cp.resolve(this);
         // NOTE the indexOf is only valid after the cp.resolve()

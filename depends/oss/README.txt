@@ -17,20 +17,6 @@ document please refer to the file THIRD_PARTY_NOTICES.txt.
 
 
 
-ICU4C version 3.4
------------------
-ICU4C is a freely available set of libraries that provide Unicode support to
-C and C++ applications. The file icu4c-3.4-harmony.zip contains a set of C 
-header files (with .h extension) that come straight from the ICU download
-available on the ICU home page. These have been grouped into a directory 
-called "unicode". The icu4c-3.4-harmony.zip file also contains a compiled
-version of the ICU4C Windows .lib file.
-
-The official ICU page is located at
-http://www.ibm.com/software/globalization/icu
-
-
-
 FDLIBM version 5.2
 ------------------
 FDLIBM (Freely Distributable LIBM) is a C math library for supporting IEEE 754
