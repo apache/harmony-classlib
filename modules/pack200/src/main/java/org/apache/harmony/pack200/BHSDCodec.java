@@ -113,6 +113,11 @@ public final class BHSDCodec extends Codec {
     private final long largest;
 
     /**
+     * radix^i powers
+     */
+    private long[] powers;
+
+    /**
      * Constructs an unsigned, non-delta Codec with the given B and H values.
      *
      * @param b
@@ -182,6 +187,11 @@ public final class BHSDCodec extends Codec {
         }
         smallest = calculateSmallest();
         largest = calculateLargest();
+
+        powers = new long[b];
+        for(int c = 0; c < b; c++) {
+            powers[c] = (long)Math.pow(h, c);
+        }
     }
 
     /**
@@ -205,14 +215,16 @@ public final class BHSDCodec extends Codec {
             Pack200Exception {
         int n = 0;
         long z = 0;
-        long x;
+        long x = 0;
+
         do {
             x = in.read();
-            if (x == -1)
-                throw new EOFException("End of stream reached whilst decoding");
-            z += x * Math.pow(h, n);
+            z += x * powers[n];
             n++;
-        } while (n < b & isHigh(x));
+        } while (x >= l && n < b);
+
+        if (x == -1)
+            throw new EOFException("End of stream reached whilst decoding");
 
         if (isSigned()) {
             int u = ((1 << s) - 1);
@@ -248,10 +260,6 @@ public final class BHSDCodec extends Codec {
     // Math.pow(2, 31));
     // return u;
     // }
-
-    private boolean isHigh(long x) {
-        return x >= l;
-    }
 
     /**
      * True if this encoding can code the given value
