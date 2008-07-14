@@ -678,4 +678,8 @@ public class ByteCodeForm {
         // Most ByteCodeForms don't have any fixing up to do.
         return;
     }
+
+    public boolean nestedMustStartClassPool() {
+        return false;
+    }
 }

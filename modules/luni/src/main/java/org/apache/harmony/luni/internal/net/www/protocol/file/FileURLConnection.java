@@ -62,10 +62,6 @@ public class FileURLConnection extends URLConnection {
         if (fileName == null) {
             fileName = ""; //$NON-NLS-1$
         }
-        String host = url.getHost();
-        if (host != null && host.length() > 0) {
-            fileName = "//" + host + fileName; //$NON-NLS-1$
-        }
         fileName = Util.decode(fileName, false);
     }
 

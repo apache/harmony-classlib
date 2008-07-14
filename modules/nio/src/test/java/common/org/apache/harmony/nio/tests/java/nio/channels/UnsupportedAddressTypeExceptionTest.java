@@ -25,6 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for UnsupportedAddressTypeException
  */
 public class UnsupportedAddressTypeExceptionTest extends TestCase {
+    
+    /**
+     * @tests {@link java.nio.channels.UnsupportedAddressTypeException#UnsupportedAddressTypeException()}
+     */
+    public void test_Constructor() {
+        UnsupportedAddressTypeException e = new UnsupportedAddressTypeException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization compatibility.

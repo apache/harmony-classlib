@@ -379,6 +379,16 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < methodAttributes.length; i++) {
             for (int j = 0; j < methodAttributes[i].length; j++) {
                 long flag = methodFlags[i][j];
+             // Non-predefined attributes
+                for (int k = 0; k < otherLayouts.length; k++) {
+                    if (otherLayouts[k] != null
+                            && otherLayouts[k].matches(flag)
+                            && otherLayouts[k].getIndex() < 15) {
+                        // Add the next attribute
+                        methodAttributes[i][j].add(otherAttributes[k].get(0));
+                        otherAttributes[k].remove(0);
+                    }
+                }
                 if (deprecatedLayout.matches(flag)) {
                     methodAttributes[i][j].add(new DeprecatedAttribute());
                 }
@@ -404,16 +414,17 @@ public class ClassBands extends BandSet {
                     // be e.g. KIB or KIH
                     if (type.equals("B") || type.equals("H"))
                         type = "I";
-                    ClassFileEntry value = methodSignatureLayout.getValue(
+                    CPUTF8 value = (CPUTF8) methodSignatureLayout.getValue(
                             result, type, cpBands.getConstantPool());
                     methodAttributes[i][j]
-                            .add(new ConstantValueAttribute(value));
+                            .add(new SignatureAttribute(value));
                     methodSignatureIndex++;
                 }
                 // Non-predefined attributes
                 for (int k = 0; k < otherLayouts.length; k++) {
                     if (otherLayouts[k] != null
-                            && otherLayouts[k].matches(flag)) {
+                            && otherLayouts[k].matches(flag)
+                            && otherLayouts[k].getIndex() >= 15) {
                         // Add the next attribute
                         methodAttributes[i][j].add(otherAttributes[k].get(0));
                         otherAttributes[k].remove(0);
@@ -613,7 +624,7 @@ public class ClassBands extends BandSet {
                         className = className.substring(0, index);
                     }
                     // Add .java to the end
-                    value = cpBands.cpUTF8Value(className + ".java", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, false);
+                    value = cpBands.cpUTF8Value(className + ".java", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, true);
                 }
                 classAttributes[i].add(new SourceFileAttribute((CPUTF8)value));
                 sourceFileIndex++;
@@ -621,17 +632,20 @@ public class ClassBands extends BandSet {
             if (enclosingMethodLayout.matches(flag)) {
                 CPClass theClass = cpBands
                         .cpClassValue(enclosingMethodRC[enclosingMethodIndex]);
-                CPNameAndType theMethod = cpBands
-                        .cpNameAndTypeValue(enclosingMethodRDN[enclosingMethodIndex]);
+                CPNameAndType theMethod = null;
+                if(enclosingMethodRDN[enclosingMethodIndex] != 0) {
+                    theMethod = cpBands
+                            .cpNameAndTypeValue(enclosingMethodRDN[enclosingMethodIndex] - 1);
+                }
                 classAttributes[i].add(new EnclosingMethodAttribute(theClass,
                         theMethod));
                 enclosingMethodIndex++;
             }
             if (signatureLayout.matches(flag)) {
                 long result = classSignature[signatureIndex];
-                ClassFileEntry value = signatureLayout.getValue(result, cpBands
+                CPUTF8 value = (CPUTF8) signatureLayout.getValue(result, cpBands
                         .getConstantPool());
-                classAttributes[i].add(new ConstantValueAttribute(value));
+                classAttributes[i].add(new SignatureAttribute(value));
                 signatureIndex++;
             }
             if (innerClassLayout.matches(flag)) {

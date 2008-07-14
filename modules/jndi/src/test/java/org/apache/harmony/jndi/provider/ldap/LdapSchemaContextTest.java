@@ -22,6 +22,7 @@ import java.util.Hashtable;
 
 import javax.naming.Binding;
 import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
@@ -33,18 +34,27 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SchemaViolationException;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 import junit.framework.TestCase;
 
 public class LdapSchemaContextTest extends TestCase {
     private LdapSchemaContextImpl schema;
 
+    private Hashtable<String, Object> schemaTable;
+
+    private LdapContextImpl context;
+
+    Name name;
+
     @Override
     public void setUp() throws Exception {
         // Construct the schema table.
-        Hashtable<String, Object> schemaTable = new Hashtable<String, Object>();
+        schemaTable = new Hashtable<String, Object>();
 
         Hashtable<String, Object> subSchema = new Hashtable<String, Object>();
         subSchema
@@ -91,9 +101,8 @@ public class LdapSchemaContextTest extends TestCase {
                         "( 0.9.2342.19200300.100.1.49 name 'dsaquality' desc 'rfc1274: dsa quality'  syntax 1.3.6.1.4.1.1466.115.121.1.19 single-value usage userapplications x-schema 'cosine' )");
         schemaTable.put("attributetypes", subSchema);
 
-        LdapContextImpl context = new LdapContextImpl(new MockLdapClient(),
-                null, "");
-        Name name = new CompositeName("");
+        context = new LdapContextImpl(new MockLdapClient(), null, "");
+        name = new CompositeName("");
         schema = new LdapSchemaContextImpl(context, null, name, schemaTable,
                 LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
     }
@@ -211,6 +220,13 @@ public class LdapSchemaContextTest extends TestCase {
 
         try {
             namingEnum = schema.list("classdefinition/javaClass/invalid");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+        
+        try {
+            namingEnum = schema.list("objectclasses");
             fail("Should throw NameNotFoundException.");
         } catch (NameNotFoundException e) {
             // Expected.
@@ -1400,6 +1416,801 @@ public class LdapSchemaContextTest extends TestCase {
             fail("Should throw OperationNotSupportedException");
         } catch (OperationNotSupportedException e) {
             // expected
+        }
+    }
+
+    public void testSimpleSearch() throws NamingException {
+        Attributes matchAttrs = new BasicAttributes();
+
+        // "" as parameter.
+        NamingEnumeration<SearchResult> ne = schema.search("", matchAttrs);
+
+        ArrayList<String> verifyList = new ArrayList<String>();
+        verifyList.add("ClassDefinition");
+        verifyList.add("AttributeDefinition");
+        verifyList.add("MatchingRule");
+        verifyList.add("SyntaxDefinition");
+
+        SearchResult result;
+        int count = 0;
+        int attributeCount = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+            attributeCount += result.getAttributes().size();
+        }
+        assertEquals(4, count);
+        assertEquals(4, attributeCount);
+
+        ne = schema.search("", null);
+        count = 0;
+        attributeCount = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            attributeCount += result.getAttributes().size();
+        }
+        assertEquals(4, count);
+        assertEquals(4, attributeCount);
+
+        ne = schema.search("classdefinition", matchAttrs);
+
+        count = 0;
+        attributeCount = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            attributeCount += result.getAttributes().size();
+        }
+        assertEquals(3, count);
+        assertEquals(18, attributeCount);
+
+        ne = schema.search("classdefinition/javaClass", matchAttrs);
+        assertFalse(ne.hasMore());
+    }
+
+    public void testSearchException() throws NamingException {
+        String nullString = null;
+        Name nullName = null;
+        try {
+            schema.search(nullString, null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search(nullName, null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("invalid/invalid/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("invalid/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("classdefinition/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("classdefinition/javaClass/name", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("classdefinition/javaClass/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testSearch_Filter() throws NamingException {
+        SearchControls controls = new SearchControls();
+        NamingEnumeration<SearchResult> ne = schema.search("",
+                "(objectclass=classdefinition)", controls);
+
+        SearchResult result;
+        int count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(1, count);
+
+        ne = schema.search("", "(!(objectclass=classdefinition))", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(3, count);
+
+        ne = schema.search("",
+                "(|(objectclass=classdefinition)(objectclass=matchingrule))",
+                controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(2, count);
+
+        controls.setSearchScope(SearchControls.OBJECT_SCOPE);
+        controls.setCountLimit(5);
+        ne = schema.search("classdefinition", "(objectclass~=classdefinition)",
+                controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(1, count);
+    }
+
+    public void testSearch_matchAttributes() throws NamingException {
+        Attributes matchAttrs = new BasicAttributes();
+        NamingEnumeration<SearchResult> ne = schema.search("", matchAttrs);
+
+        Attributes returnedAttributes;
+        SearchResult result;
+        int count = 0;
+
+        // TODO
+        // The problem of ldap-jndi conversion
+        // There are too many places to handle the case-sensitive problem.
+        matchAttrs.put("obJectclass", "ClassDefinition");
+        ne = schema.search("", matchAttrs);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(1, count);
+
+        matchAttrs = new BasicAttributes(true);
+        matchAttrs.put("obJectclass", "ClasSDefinition");
+        ne = schema.search("", matchAttrs);
+        assertFalse(ne.hasMore());
+
+        matchAttrs.put("invalid", "ClassDefinition");
+        ne = schema.search("", matchAttrs);
+        assertFalse(ne.hasMore());
+    }
+
+    public void testSearch_AttributesToReturn() throws NamingException {
+        String[] attributesToReturn = new String[] { "objecTClass" };
+        NamingEnumeration<SearchResult> ne = schema.search("", null,
+                attributesToReturn);
+
+        Attributes returnedAttributes;
+        SearchResult result;
+        int count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            returnedAttributes = result.getAttributes();
+            assertEquals(1, returnedAttributes.size());
+            count++;
+        }
+        assertEquals(4, count);
+
+        attributesToReturn = new String[] { "objecTClass", "invalid" };
+        ne = schema.search("", null, attributesToReturn);
+
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            returnedAttributes = result.getAttributes();
+            assertEquals(1, returnedAttributes.size());
+            count++;
+        }
+        assertEquals(4, count);
+
+        attributesToReturn = new String[] { "invalid", "invalid2" };
+        ne = schema.search("", null, attributesToReturn);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            returnedAttributes = result.getAttributes();
+            assertEquals(0, returnedAttributes.size());
+            // System.out.println(result);
+            count++;
+        }
+        assertEquals(4, count);
+
+        attributesToReturn = new String[] {};
+        ne = schema.search("", null, attributesToReturn);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            returnedAttributes = result.getAttributes();
+            assertEquals(0, returnedAttributes.size());
+            count++;
+        }
+        assertEquals(4, count);
+
+        attributesToReturn = new String[] { "name" };
+        ne = schema.search("classdefinition", null, attributesToReturn);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            returnedAttributes = result.getAttributes();
+            assertEquals(1, returnedAttributes.size());
+            count++;
+        }
+        assertEquals(3, count);
+
+        attributesToReturn = new String[] { "name" };
+        ne = schema.search("classdefinition/javaClass", null,
+                attributesToReturn);
+        assertFalse(ne.hasMore());
+
+        attributesToReturn = new String[] { "objecTClass", "invalid", null };
+        ne = schema.search("", null, attributesToReturn);
+
+        count = 0;
+
+        try {
+            // No-bug difference.
+            // RI will throw NullPointerException.
+            while (ne.hasMore()) {
+                result = ne.next();
+                returnedAttributes = result.getAttributes();
+                assertEquals(1, returnedAttributes.size());
+                count++;
+            }
+            assertEquals(4, count);
+        }
+
+        catch (NullPointerException e) {
+            // Expected.
+        }
+    }
+
+    public void testSearch_Filter2() throws NamingException {
+        ArrayList<String> verifyList = new ArrayList<String>();
+        SearchControls controls = new SearchControls();
+        NamingEnumeration<SearchResult> ne = schema.search("",
+                "(objectclass=classdefinition)", controls);
+
+        SearchResult result;
+        int count = 0;
+        verifyList.add("ClassDefinition");
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        verifyList.add("SyntaxDefinition");
+        verifyList.add("AttributeDefinition");
+        verifyList.add("MatchingRule");
+        ne = schema.search("", "(!(objectclass=classdefinition))", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(3, count);
+
+        verifyList.add("MatchingRule");
+        verifyList.add("ClassDefinition");
+        ne = schema.search("",
+                "(|(objectclass=classdefinition)(objectclass=matchingrule))",
+                controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+
+        verifyList.add("ClassDefinition");
+        ne = schema
+                .search(
+                        "",
+                        "(&(objectclass=classdefinition)(!(objectclass=matchingrule)))",
+                        controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        ne = schema.search("", "(objectclass=*)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(4, count);
+
+        verifyList.add("SyntaxDefinition");
+        verifyList.add("ClassDefinition");
+        ne = schema.search("", "(objectclass=*s*defi*)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+
+        verifyList.add("SyntaxDefinition");
+        ne = schema.search("", "(objectclass=s*defi*)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        ne = schema.search("", "(objectclass~=sdefi)", controls);
+        assertFalse(ne.hasMore());
+
+        ne = schema.search("", "(objectclass<=a)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(4, count);
+
+        verifyList.add("MatchingRule");
+        verifyList.add("SyntaxDefinition");
+        ne = schema.search("", "(objectclass>=M)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+        
+        ne = schema.search("",
+                "(|(!(objectclass=classdefinition))(!(objectclass=matchingrule)))",
+                controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(4, count);
+    }
+
+    public void testSearch_Subtree() throws NamingException {
+        addMoreSchemaData();
+
+        ArrayList<String> verifyList = new ArrayList<String>();
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        NamingEnumeration<SearchResult> ne = schema.search("", "(must=cn)",
+                controls);
+
+        SearchResult result;
+        int count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(result.getName().startsWith("ClassDefinition"));
+            assertTrue(result.getAttributes().get("must").contains("cn"));
+        }
+        assertEquals(3, count);
+
+        ne = schema.search("", "(x-schema=*)", controls);
+
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(result.getName().contains("/"));
+            assertNotNull(result.getAttributes().get("x-schema"));
+        }
+        assertEquals(10, count);
+
+        // Nonexist attributename;
+        ne = schema.search("", "(schema=*)", controls);
+        assertFalse(ne.hasMore());
+    }
+
+    public void testSearch_ReturnAtributes() throws NamingException {
+        addMoreSchemaData();
+        ArrayList<String> verifyList = new ArrayList<String>();
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        controls.setReturningAttributes(new String[] {});
+        NamingEnumeration<SearchResult> ne = schema.search("", "(must=cn)",
+                controls);
+
+        SearchResult result;
+        int count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertEquals(0, result.getAttributes().size());
+        }
+        assertEquals(3, count);
+
+        controls.setReturningAttributes(new String[] { "may" });
+        ne = schema.search("", "(&(mUst=cn)(maY=*))", controls);
+
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertEquals(1, result.getAttributes().size());
+            assertNotNull(result.getAttributes().get("MAY"));
+        }
+        assertEquals(3, count);
+    }
+
+    public void testFilterSearchException() throws NamingException {
+        SearchControls controls = new SearchControls();
+        try {
+            schema.search("", "", controls);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (InvalidSearchFilterException e) {
+            // Excpected.
+        } catch (StringIndexOutOfBoundsException e) {
+            // RI's problem.
+        }
+
+        try {
+            schema.search("invalid", "invalid", controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("invalid/invalid/invalid", "invalid", controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("invalid/invalid", "invalid", controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("classdefinition/invalid", "invalid", controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema
+                    .search("classdefinition/javaClass/name", "invalid",
+                            controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.search("classdefinition/javaClass/invalid", "invalid",
+                    controls);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    private void addMoreSchemaData() throws InvalidNameException {
+        // Add more schema data.
+        Hashtable subschemaTable = (Hashtable) schemaTable.get("objectclasses");
+
+        subschemaTable
+                .put(
+                        "applicationprocess",
+                        "( 2.5.6.11 name 'applicationprocess' "
+                                + "desc 'rfc2256: an application process' "
+                                + "sup top structural "
+                                + "must cn may ( seealso $ ou $ l $ description ) x-schema 'core' )");
+
+        subschemaTable
+                .put(
+                        "documentseries",
+                        "( 0.9.2342.19200300.100.4.9 name 'documentseries' "
+                                + "sup top structural must cn "
+                                + "may ( description $ seealso $ telephonenumber $ l $ o $ ou ) "
+                                + "x-schema 'cosine' )");
+
+        subschemaTable
+                .put(
+                        "groupofuniquenames",
+                        "( 2.5.6.17 name 'groupofuniquenames' "
+                                + "desc 'rfc2256: a group of unique names (dn and unique identifier)' "
+                                + "sup top structural must ( uniquemember $ cn ) "
+                                + "may ( businesscategory $ seealso $ owner $ ou $ o $ description ) x-schema 'core' )");
+        schema = new LdapSchemaContextImpl(context, null, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+    }
+
+    public void testSearch_FilterWithArgs() throws NamingException {
+        ArrayList<String> verifyList = new ArrayList<String>();
+        SearchControls controls = new SearchControls();
+        Object[] filterArgs = new Object[] { "ClassDeFInition" };
+        NamingEnumeration<SearchResult> ne = schema.search("",
+                "(objectclass={0})", filterArgs, controls);
+
+        SearchResult result;
+        int count = 0;
+        verifyList.add("ClassDefinition");
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        verifyList.add("SyntaxDefinition");
+        verifyList.add("AttributeDefinition");
+        verifyList.add("MatchingRule");
+        filterArgs = new Object[] { "ClassDeFInition" };
+        ne = schema.search("", "(!(objectclass={0}))", filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(3, count);
+
+        verifyList.add("MatchingRule");
+        verifyList.add("ClassDefinition");
+        filterArgs = new Object[] { "ClassDeFInition", "matchingrule" };
+        ne = schema.search("", "(|(objectclass={0})(objectclass={1}))",
+                filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+
+        verifyList.add("ClassDefinition");
+        filterArgs = new Object[] { "ClassDeFInition", "matchingrule" };
+        ne = schema.search("", "(&(objectclass={0})(!(objectclass={1})))",
+                filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        ne = schema.search("", "(objectclass=*)", controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(4, count);
+
+        verifyList.add("SyntaxDefinition");
+        verifyList.add("ClassDefinition");
+        filterArgs = new Object[] { "defi" };
+        ne = schema.search("", "(objectclass=*s*{0}*)", filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+
+        verifyList.add("SyntaxDefinition");
+        filterArgs = new Object[] { "defi" };
+        ne = schema.search("", "(objectclass=s*{0}*)", filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(1, count);
+
+        filterArgs = new Object[] { "sdefi" };
+        ne = schema.search("", "(objectclass~={0})", filterArgs, controls);
+        assertFalse(ne.hasMore());
+
+        filterArgs = new Object[] { "a" };
+        ne = schema.search("", "(objectclass<={0})", filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+        }
+        assertEquals(4, count);
+
+        verifyList.add("MatchingRule");
+        verifyList.add("SyntaxDefinition");
+        filterArgs = new Object[] { "M" };
+        ne = schema.search("", "(objectclass>={0})", filterArgs, controls);
+        count = 0;
+        while (ne.hasMore()) {
+            result = ne.next();
+            count++;
+            assertTrue(verifyList.remove(result.getName()));
+        }
+        assertEquals(2, count);
+    }
+
+    public void testClassDefinition() throws NamingException {
+        MockLdapSchemaContext mockSchema = new MockLdapSchemaContext(context,
+                null, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+        Attribute attribute = new BasicAttribute("objectClass", "javaClass");
+        attribute.add("extensibleobject");
+        attribute.add("prefNode");
+
+        DirContext classDefSchema = mockSchema.getClassDefinition(attribute);
+        ArrayList<String> verifyList = new ArrayList<String>();
+        verifyList.add("javaclass");
+        verifyList.add("prefnode");
+        verifyList.add("extensibleobject");
+        NamingEnumeration<NameClassPair> ne = classDefSchema.list("");
+        NameClassPair pair;
+        int count = 0;
+        while (ne.hasMore()) {
+            pair = ne.next();
+            count++;
+            assertTrue(verifyList.remove(pair.getName().toLowerCase()));
+        }
+        assertEquals(3, count);
+
+        ne = classDefSchema.list("prefnode");
+        assertFalse(ne.hasMore());
+
+        ne = classDefSchema.list("extensibleobject");
+        assertFalse(ne.hasMore());
+    }
+
+    public void testAttributeDefinition() throws NamingException {
+        addMoreAttributeData();
+        MockLdapContext mockContext = new MockLdapContext(context, null, "");
+        Attribute attr = new LdapAttribute("objectclass", mockContext);
+
+        DirContext attributeDefinition = attr.getAttributeDefinition();
+        NamingEnumeration<NameClassPair> ne = attributeDefinition.list("");
+        assertFalse(ne.hasMore());
+
+        try {
+            ne = attributeDefinition.list("invalid");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        Attributes schemaAttributes = attributeDefinition.getAttributes("");
+        assertEquals(7, schemaAttributes.size());
+        assertEquals("1.3.6.1.4.1.1466.115.121.1.38", schemaAttributes.get(
+                "syntax").get());
+        assertEquals("objectClass", schemaAttributes.get("name").get());
+        assertEquals("2.5.4.0", schemaAttributes.get("numericoid").get());
+        assertEquals("userApplications", schemaAttributes.get("usage").get());
+        assertEquals("objectIdentifierMatch", schemaAttributes.get("equality")
+                .get());
+    }
+
+    public void testSyntaxDefinition() throws NamingException {
+        addMoreAttributeData();
+        MockLdapContext mockContext = new MockLdapContext(context, null, "");
+        Attribute attr = new LdapAttribute("objectclass", mockContext);
+        DirContext attributeDefinition = attr.getAttributeSyntaxDefinition();
+        NamingEnumeration<NameClassPair> ne = attributeDefinition.list("");
+        assertFalse(ne.hasMore());
+
+        try {
+            ne = attributeDefinition.list("invalid");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+        Attributes schemaAttributes = attributeDefinition.getAttributes("");
+        assertEquals(3, schemaAttributes.size());
+        assertEquals("system", schemaAttributes.get("x-schema").get());
+        assertEquals("true", schemaAttributes.get("x-is-human-readable").get());
+        assertEquals("1.3.6.1.4.1.1466.115.121.1.38", schemaAttributes.get(
+                "numericoid").get());
+    }
+
+    private void addMoreAttributeData() throws InvalidNameException {
+        // Add more schema data.
+        Hashtable subschemaTable = (Hashtable) schemaTable
+                .get("attributetypes");
+
+        subschemaTable
+                .put(
+                        "objectclass",
+                        "( 2.5.4.0 NAME 'objectClass' "
+                                + "DESC 'RFC2256: object classes of the entity'  "
+                                + "EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.38 "
+                                + "USAGE userApplications X-SCHEMA 'system' )");
+
+        subschemaTable = (Hashtable) schemaTable.get("ldapsyntaxes");
+        subschemaTable
+                .put(
+                        "1.3.6.1.4.1.1466.115.121.1.38",
+                        "( 1.3.6.1.4.1.1466.115.121.1.38  X-SCHEMA 'system' X-IS-HUMAN-READABLE 'true' )");
+        schema = new LdapSchemaContextImpl(context, null, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+    }
+
+    public class MockLdapContext extends LdapContextImpl {
+        public MockLdapContext(LdapContextImpl context,
+                Hashtable<Object, Object> environment, String dn)
+                throws InvalidNameException {
+            super(context, environment, dn);
+        }
+
+        public DirContext getSchema(String name) {
+            return schema;
+        }
+
+        public Attributes getAttributes(Name name, String returningAttributes[])
+                throws NamingException {
+            Attribute attribute = new BasicAttribute("objectClass", "javaClass");
+            attribute.add("extensibleobject");
+            attribute.add("prefNode");
+            Attributes attributes = new BasicAttributes(true);
+            attributes.put(attribute);
+
+            return attributes;
+        }
+    }
+
+    public class MockLdapSchemaContext extends LdapSchemaContextImpl {
+
+        public MockLdapSchemaContext(LdapContextImpl ctx,
+                Hashtable<Object, Object> env, Name dn,
+                Hashtable<String, Object> schemaTable, int level)
+                throws InvalidNameException {
+            super(ctx, env, dn, schemaTable, level);
+        }
+
+        public DirContext getClassDefinition(Attribute attr)
+                throws NamingException {
+            return super.getClassDefinition(attr);
         }
     }
 }

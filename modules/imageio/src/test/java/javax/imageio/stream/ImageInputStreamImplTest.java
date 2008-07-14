@@ -26,7 +26,7 @@ public class ImageInputStreamImplTest extends TestCase {
 
 	public void testReadLine() throws IOException {
 		final ImageInputStream in = new BasicImageInputStreamImpl(
-				"line1\nline2\rline3\r\nline4".getBytes());
+				"line1\nline2\rline3\r\nline4".getBytes("ISO8859_1"));
 
 		assertEquals("line1", in.readLine());
 		assertEquals("line2", in.readLine());

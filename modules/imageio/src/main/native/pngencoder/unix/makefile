@@ -32,6 +32,10 @@ MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
 
 OSLIBS += $(STDCLIBS)
 
+ifeq ($(HY_OS),zos)
+MDLLIBFILES += $(MDLLIBZLIB)
+endif
+
 DLLNAME=../libpngencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYPNGENCODER_0.1
 

@@ -49,6 +49,9 @@
 #endif
 
 /* a2e overrides nl_langinfo to return ASCII strings. We need the native EBCDIC string */
+#if defined(ZOS) && defined (nl_langinfo)
+#undef nl_langinfo
+#endif
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 #if (defined(HYVM_USE_ICONV))
@@ -105,9 +108,18 @@ hybuf_write_text (struct HyPortLibrary * portLibrary,
   char* outBuf = NULL;
   IDATA i;
   int requiresTranslation = 0;
-
+#ifdef ZOS
+#pragma convlit(suspend)
+#endif /* ZOS */
   const char *utf8Encoding = "UTF-8";
+#ifdef ZOS
+#pragma convlit(resume)
+#endif /* ZOS */
 
+#ifdef ZOS
+  /* z/OS always needs to translate to EBCDIC */
+  requiresTranslation = 1;
+#else
   /* we can short circuit if the string is all ASCII */
   for (i = 0; i < nbytes; i++)
   {
@@ -117,6 +129,7 @@ hybuf_write_text (struct HyPortLibrary * portLibrary,
           break;
       }
   }
+#endif /* ZOS */
 
   if (!requiresTranslation
       || strcmp (nl_langinfo (CODESET), utf8Encoding) == 0)
@@ -157,8 +170,18 @@ hyfile_write_text (struct HyPortLibrary *portLibrary, IDATA fd,
   IDATA result, i;
   int requiresTranslation = 0;
 
+#ifdef ZOS
+#pragma convlit(suspend)
+#endif
   const char *utf8Encoding = "UTF-8";
+#ifdef ZOS
+#pragma convlit(resume)
+#endif
 
+#ifdef ZOS
+  /* z/OS always needs to translate to EBCDIC */
+  requiresTranslation = 1;
+#else
   /* we can short circuit if the string is all ASCII */
   for (i = 0; i < nbytes; i++)
     {
@@ -168,6 +191,7 @@ hyfile_write_text (struct HyPortLibrary *portLibrary, IDATA fd,
           break;
         }
     }
+#endif /* ZOS */
 
   if (!requiresTranslation
       || strcmp (nl_langinfo (CODESET), utf8Encoding) == 0)
@@ -371,8 +395,16 @@ file_write_using_iconv (struct HyPortLibrary *portLibrary, IDATA fd,
   iconv_t converter;
   size_t inbytesleft, outbytesleft;
   char *inbuf, *outbuf;
+
 /* iconv_open is not an a2e function, so we need to pass it honest-to-goodness EBCDIC strings */
+#ifdef ZOS
+#pragma convlit(suspend)
+#endif /* ZOS */
   converter = iconv_open (nl_langinfo (CODESET), "UTF-8");
+#ifdef ZOS
+#pragma convlit(resume)
+#endif /* ZOS */
+
   if (converter == (iconv_t) - 1)
     {
       /* no converter available for this code set. Just dump the UTF-8 chars */

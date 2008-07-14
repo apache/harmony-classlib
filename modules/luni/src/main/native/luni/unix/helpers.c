@@ -175,6 +175,7 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
     struct tm *tmStruct;
     char tzInfo[9];
     int h, m;
+    jboolean fls;
 
     time(&curTime);
     //curTime += 15552000l;
@@ -198,7 +199,7 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
     tzInfo[7] = m % 10 + '0';
     tzInfo[8] = 0;
 
-    jboolean fls = JNI_FALSE;
+    fls = JNI_FALSE;
 
     (*env)->SetBooleanArrayRegion(env, isCustomTimeZone, 0, 1, &fls);
     return (*env)->NewStringUTF(env, tzInfo);

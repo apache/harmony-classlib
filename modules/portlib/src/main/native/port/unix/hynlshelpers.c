@@ -99,6 +99,18 @@ nls_determine_locale (struct HyPortLibrary *portLibrary)
 #else
   /* Query locale data */
   lang = setlocale (LC_CTYPE, NULL);
+
+#if defined (ZOS)
+  if (NULL != lang) {
+    /* z/OS sometimes returns the HFS path to a "locale object" so carve it up to make it look like the corresponding locale name */
+    char *lastSlash = strrchr(lang, '/');
+
+    if (NULL != lastSlash) {
+      lang = lastSlash + 1;
+    }
+  }
+#endif /* defined (ZOS) */
+
 #endif /* LINUX */
 
 

@@ -1113,6 +1113,23 @@ public class URLTest extends TestCase {
             System.setSecurityManager(null);
         }
     }
+    
+    /**
+     * @tests java.net.URL#openConnection()
+     */
+    public void test_openConnection_FileProtocal() throws Exception {
+        // Regression test for Harmony-5779
+        String basedir = new File("temp.java").getAbsolutePath();
+        String fileUrlString = "file://localhost/" + basedir;
+        URLConnection conn  = new URL(fileUrlString).openConnection();
+        assertEquals("file",conn.getURL().getProtocol());
+        assertEquals(new File(basedir),new File(conn.getURL().getFile()));
+
+        String nonLocalUrlString = "file://anything/" + basedir;
+        conn  = new URL(nonLocalUrlString).openConnection();
+        assertEquals("ftp",conn.getURL().getProtocol());
+        assertEquals(new File(basedir),new File(conn.getURL().getFile()));
+    }
 
     /**
      * URLStreamHandler implementation class necessary for tests.

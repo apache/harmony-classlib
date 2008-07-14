@@ -169,6 +169,12 @@ public class CodeAttribute extends BCIRenumberedAttribute {
 
     public void addAttribute(Attribute attribute) {
         attributes.add(attribute);
+        if(attribute instanceof LocalVariableTableAttribute) {
+            ((LocalVariableTableAttribute)attribute).setCodeLength(codeLength);
+        }
+        if(attribute instanceof LocalVariableTypeTableAttribute) {
+            ((LocalVariableTypeTableAttribute)attribute).setCodeLength(codeLength);
+        }
     }
 
     public List attributes() {

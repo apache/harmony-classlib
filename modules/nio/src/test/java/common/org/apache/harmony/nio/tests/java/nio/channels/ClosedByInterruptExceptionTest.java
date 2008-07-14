@@ -25,7 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for ClosedByInterruptException
  */
 public class ClosedByInterruptExceptionTest extends TestCase {
-
+    
+    /**
+     * @tests {@link java.nio.channels.ClosedByInterruptException#ClosedByInterruptException()}
+     */
+    public void test_Constructor() {
+        ClosedByInterruptException e = new ClosedByInterruptException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
     /**
      * @tests serialization/deserialization compatibility.
      */

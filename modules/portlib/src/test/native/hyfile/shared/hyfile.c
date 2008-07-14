@@ -266,6 +266,14 @@ int test_hyfile_printf(struct HyPortLibrary *hyportLibrary)
   IDATA bytes;
   char tmpAbsolutePath[255];
   char buf[255];
+
+#ifdef ZOS
+#pragma convlit(suspend)
+#endif
+  char resultString[] = "000000009   -0002    3.14";
+#ifdef ZOS
+#pragma convlit(resume)
+#endif
   
   printf("testing hyfile_printf......\n");
   generateAbsoluteFilePath(hyportLibrary,tmpAbsolutePath,"hytest.tmp");
@@ -279,9 +287,8 @@ int test_hyfile_printf(struct HyPortLibrary *hyportLibrary)
     cleanup(*hyportLibrary);
     return -1;
   }
-  
+
   hyportLibrary->file_printf(hyportLibrary, fd, "%09d %7.4d %7.2f",9,-2,3.1415926535);
-  
   
   rc = hyportLibrary->file_close(hyportLibrary, fd);
   if (rc != 0) {
@@ -314,8 +321,8 @@ int test_hyfile_printf(struct HyPortLibrary *hyportLibrary)
   }
   
 
-  if (strcmp(buf, "000000009   -0002    3.14") != 0) {
-    Hytest_setErrMsg(hyportLibrary, "Output should be [%s] not [%s] (%s)\n","000000009   -0002    3.14",buf,HY_GET_CALLSITE());
+  if (strcmp(buf, resultString) != 0) {
+    Hytest_setErrMsg(hyportLibrary, "Output should be [%s] not [%s] (%s)\n", resultString, buf, HY_GET_CALLSITE());
     hyportLibrary->file_close(hyportLibrary, fd);
     cleanup(*hyportLibrary);
     return -1;
@@ -544,6 +551,14 @@ int test_hyfile_read(struct HyPortLibrary *hyportLibrary)
   IDATA bytes;
   char tmpAbsolutePath[255];
   char buf[20];
+
+#ifdef ZOS
+#pragma convlit(suspend)
+#endif
+  char resultString[] = "01234";
+#ifdef ZOS
+#pragma convlit(resume)
+#endif
   
   printf("testing hyfile_read......\n");
   generateAbsoluteFilePath(hyportLibrary,tmpAbsolutePath,"hytest.tmp");
@@ -597,8 +612,8 @@ int test_hyfile_read(struct HyPortLibrary *hyportLibrary)
     return -1;
   }
 
-  if (strcmp(buf, "01234") != 0) {
-    Hytest_setErrMsg(hyportLibrary, "Output should be [%s] not [%s] (%s)\n","02134",buf,HY_GET_CALLSITE());
+  if (strcmp(buf, resultString) != 0) {
+    Hytest_setErrMsg(hyportLibrary, "Output should be [%s] not [%s] (%s)\n", resultString, buf, HY_GET_CALLSITE());
     hyportLibrary->file_close(hyportLibrary, fd);
     cleanup(*hyportLibrary);
     return -1;

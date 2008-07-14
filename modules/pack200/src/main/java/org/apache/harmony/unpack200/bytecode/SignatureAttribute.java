@@ -44,6 +44,10 @@ public class SignatureAttribute extends Attribute {
         return 2;
     }
 
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { getAttributeName(), signature };
+    }
+
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         signature.resolve(pool);

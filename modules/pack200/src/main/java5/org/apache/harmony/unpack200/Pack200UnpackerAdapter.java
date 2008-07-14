@@ -24,9 +24,6 @@ import java.io.InputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Unpacker;
 
-import org.apache.harmony.unpack200.Pack200Exception;
-import org.apache.harmony.unpack200.Segment;
-
 /**
  * This class provides the binding between the standard Pack200 interface and
  * the internal interface for (un)packing. As this uses generics for the
@@ -46,13 +43,10 @@ public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 					"Must specify both input and output streams");
 		completed(0);
 		try {
-			while (in.available() > 0) {
-			    new Segment().unpack(in, out);
-				out.flush();
-			}
-		} catch (Pack200Exception e) {
-			throw new IOException("Failed to unpack Jar:" + String.valueOf(e));
-		}
+            new Archive(in, out).unpack();
+        } catch (Pack200Exception e) {
+            throw new IOException("Failed to unpack Jar:" + String.valueOf(e));
+        }
 		completed(1);
 		in.close();
 	}
