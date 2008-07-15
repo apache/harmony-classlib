@@ -61,8 +61,18 @@ public class CPClass extends ConstantPoolEntry {
         return new ClassFileEntry[] { utf8, };
     }
 
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        cachedHashCode = utf8.hashCode();
+    }
+
     public int hashCode() {
-        return utf8.hashCode();
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     protected void resolve(ClassConstantPool pool) {

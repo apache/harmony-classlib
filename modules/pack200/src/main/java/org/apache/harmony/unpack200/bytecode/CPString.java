@@ -53,4 +53,21 @@ public class CPString extends CPConstant {
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { name };
     }
+
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + name.hashCode();
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
+    }
 }

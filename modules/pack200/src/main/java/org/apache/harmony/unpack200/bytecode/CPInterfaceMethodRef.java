@@ -32,4 +32,23 @@ public class CPInterfaceMethodRef extends CPRef {
     public int invokeInterfaceCount() {
         return nameAndType.invokeInterfaceCount();
     }
+
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + className.hashCode();
+        result = PRIME * result + nameAndType.hashCode();
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
+    }
+
 }

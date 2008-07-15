@@ -76,12 +76,22 @@ public class CPNameAndType extends ConstantPoolEntry {
         return "NameAndType: " + name + "(" + descriptor + ")";
     }
 
-    public int hashCode() {
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + descriptor.hashCode();
         result = PRIME * result + name.hashCode();
-        return result;
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public boolean equals(Object obj) {

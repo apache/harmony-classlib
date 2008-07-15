@@ -50,6 +50,10 @@ public abstract class ClassFileEntry {
         return resolved;
     }
 
+    protected int objectHashCode() {
+        return super.hashCode();
+    }
+
     public abstract String toString();
 
     public final void write(DataOutputStream dos) throws IOException {

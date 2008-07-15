@@ -54,14 +54,24 @@ public class CPFieldRef extends ConstantPoolEntry {
         return "FieldRef: " + className + "#" + nameAndType;
     }
 
-    public int hashCode() {
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result
                 + ((className == null) ? 0 : className.hashCode());
         result = PRIME * result
                 + ((nameAndType == null) ? 0 : nameAndType.hashCode());
-        return result;
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public boolean equals(Object obj) {

@@ -57,9 +57,19 @@ public class CPUTF8 extends ConstantPoolEntry {
         return utf8.equals(other.utf8);
     }
 
-    public int hashCode() {
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
         final int PRIME = 31;
-        return PRIME + utf8.hashCode();
+        cachedHashCode = PRIME + utf8.hashCode();
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public String toString() {

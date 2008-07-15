@@ -104,13 +104,17 @@ public class ByteCode extends ClassFileEntry {
         return getByteCodeForm().getOperandType();
     }
 
+    private boolean hashcodeComputed = false;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        cachedHashCode = objectHashCode();
+    }
+
     public int hashCode() {
-        final int prime = 41;
-        int result = 1;
-        result = prime * result + getName().hashCode() + getByteCodeForm().hashCode();
-        // Don't forget to take the operands = rewrite into account
-        result += (prime * rewrite.hashCode());
-        return result;
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     /*
