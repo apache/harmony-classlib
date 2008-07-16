@@ -37,7 +37,7 @@ public class ClassConstantPool {
 
     private final HashSet mustStartClassPool = new HashSet();
 
-    protected Map indexCache = null;
+    protected Map indexCache;
 
     public String toString() {
         return entries.toString();

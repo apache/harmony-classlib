@@ -85,7 +85,7 @@ public abstract class CPRef extends ConstantPoolEntry {
         classNameIndex = pool.indexOf(className);
     }
 
-    protected String cachedToString = null;
+    protected String cachedToString;
 
     public String toString() {
         if (cachedToString == null) {

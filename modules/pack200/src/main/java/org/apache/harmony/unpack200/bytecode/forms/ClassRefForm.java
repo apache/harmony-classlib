@@ -28,7 +28,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  */
 public class ClassRefForm extends ReferenceForm {
 
-    protected boolean widened = false;
+    protected boolean widened;
 
     public ClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

@@ -76,7 +76,7 @@ public class CPNameAndType extends ConstantPoolEntry {
         return "NameAndType: " + name + "(" + descriptor + ")";
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {

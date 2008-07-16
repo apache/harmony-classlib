@@ -54,7 +54,7 @@ public class CPFieldRef extends ConstantPoolEntry {
         return "FieldRef: " + className + "#" + nameAndType;
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {

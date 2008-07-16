@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.Pack200Exception;
  */
 public abstract class BCIRenumberedAttribute extends Attribute {
 
-    protected boolean renumbered = false;
+    protected boolean renumbered;
 
     /*
      * (non-Javadoc)

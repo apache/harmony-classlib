@@ -41,9 +41,9 @@ public class SegmentConstantPoolArrayCache {
 
     protected IdentityHashMap knownArrays = new IdentityHashMap(1000);
 
-    protected List lastIndexes = null;
-    protected String[] lastArray = null;
-    protected String lastKey = null;
+    protected List lastIndexes;
+    protected String[] lastArray;
+    protected String lastKey;
 
     /**
      * Answer the indices for the given key in the given

@@ -69,12 +69,12 @@ public class IcTuple {
     protected String C2; // outer class
     protected String N; // name
 
-    private boolean predictSimple = false;
-    private boolean predictOuter = false;
-    private String cachedOuterClassString = null;
-    private String cachedSimpleClassName = null;
-    private boolean initialized = false;
-    private boolean anonymous = false;
+    private boolean predictSimple;
+    private boolean predictOuter;
+    private String cachedOuterClassString;
+    private String cachedSimpleClassName;
+    private boolean initialized;
+    private boolean anonymous;
     private boolean member = true;
     private int cachedOuterClassIndex = -1;
     private int cachedSimpleClassNameIndex = -1;

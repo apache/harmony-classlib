@@ -33,7 +33,7 @@ public class CPInterfaceMethodRef extends CPRef {
         return nameAndType.invokeInterfaceCount();
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {

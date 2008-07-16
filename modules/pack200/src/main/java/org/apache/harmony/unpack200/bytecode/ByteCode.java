@@ -47,7 +47,7 @@ public class ByteCode extends ClassFileEntry {
     private int[] rewrite;
 
     private int byteCodeOffset = -1;
-    private int[] byteCodeTargets = null;
+    private int[] byteCodeTargets;
 
     protected ByteCode(int opcode) {
         this(opcode, ClassFileEntry.NONE);
@@ -104,7 +104,7 @@ public class ByteCode extends ClassFileEntry {
         return getByteCodeForm().getOperandType();
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {

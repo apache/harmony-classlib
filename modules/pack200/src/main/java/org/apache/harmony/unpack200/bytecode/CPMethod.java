@@ -31,7 +31,7 @@ public class CPMethod extends CPMember {
         return "Method: " + name + "(" + descriptor + ")";
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {

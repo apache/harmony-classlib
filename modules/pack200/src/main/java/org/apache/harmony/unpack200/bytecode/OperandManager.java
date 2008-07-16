@@ -49,33 +49,33 @@ public class OperandManager {
     int[] bcInitRef;
     int[] wideByteCodes;
 
-    int bcCaseCountIndex = 0;
-    int bcCaseValueIndex = 0;
-    int bcByteIndex = 0;
-    int bcShortIndex = 0;
-    int bcLocalIndex = 0;
-    int bcLabelIndex = 0;
-    int bcIntRefIndex = 0;
-    int bcFloatRefIndex = 0;
-    int bcLongRefIndex = 0;
-    int bcDoubleRefIndex = 0;
-    int bcStringRefIndex = 0;
-    int bcClassRefIndex = 0;
-    int bcFieldRefIndex = 0;
-    int bcMethodRefIndex = 0;
-    int bcIMethodRefIndex = 0;
-    int bcThisFieldIndex = 0;
-    int bcSuperFieldIndex = 0;
-    int bcThisMethodIndex = 0;
-    int bcSuperMethodIndex = 0;
-    int bcInitRefIndex = 0;
-    int wideByteCodeIndex = 0;
+    int bcCaseCountIndex;
+    int bcCaseValueIndex;
+    int bcByteIndex;
+    int bcShortIndex;
+    int bcLocalIndex;
+    int bcLabelIndex;
+    int bcIntRefIndex;
+    int bcFloatRefIndex;
+    int bcLongRefIndex;
+    int bcDoubleRefIndex;
+    int bcStringRefIndex;
+    int bcClassRefIndex;
+    int bcFieldRefIndex;
+    int bcMethodRefIndex;
+    int bcIMethodRefIndex;
+    int bcThisFieldIndex;
+    int bcSuperFieldIndex;
+    int bcThisMethodIndex;
+    int bcSuperMethodIndex;
+    int bcInitRefIndex;
+    int wideByteCodeIndex;
 
-    Segment segment = null;
+    Segment segment;
 
-    String currentClass = null;
-    String superClass = null;
-    String newClass = null;
+    String currentClass;
+    String superClass;
+    String newClass;
 
     public OperandManager(int[] bcCaseCount, int[] bcCaseValue, int[] bcByte,
             int[] bcShort, int[] bcLocal, int[] bcLabel, int[] bcIntRef,

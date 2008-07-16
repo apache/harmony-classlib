@@ -54,7 +54,7 @@ public class CPString extends CPConstant {
         return new ClassFileEntry[] { name };
     }
 
-    private boolean hashcodeComputed = false;
+    private boolean hashcodeComputed;
     private int cachedHashCode;
 
     private void generateHashCode() {
