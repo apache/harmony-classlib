@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -71,7 +72,7 @@ public class Archive {
         this.inputFileName = inputFile;
         this.outputFileName = outputFile;
         inputStream = new FileInputStream(inputFile);
-        outputStream = new JarOutputStream(new FileOutputStream(outputFile));
+        outputStream = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile)));
     }
 
     /**
