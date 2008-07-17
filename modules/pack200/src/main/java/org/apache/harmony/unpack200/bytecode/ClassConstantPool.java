@@ -50,64 +50,71 @@ public class ClassConstantPool {
 
     public ClassFileEntry add(ClassFileEntry entry) {
         if (entry instanceof ConstantPoolEntry) {
-            if (!entriesContainsSet.contains(entry)) {
-                entriesContainsSet.add(entry);
+            if (entriesContainsSet.add(entry)) {
                 entries.add(entry);
             }
         } else {
-            if (!othersContainsSet.contains(entry)) {
-                othersContainsSet.add(entry);
+            if (othersContainsSet.add(entry)) {
                 others.add(entry);
             }
         }
+
         return entry;
     }
 
     public void addNestedEntries() {
         boolean added = true;
-        while (added) {
+
+        // initial assignment
+        ArrayList parents = new ArrayList();
+        ArrayList children = new ArrayList();
+
+        // adding old entries
+        parents.addAll(entries);
+        parents.addAll(others);
+
+        // while there any parents to traverse and at least one change in target
+        // storage was made
+        while(added || parents.size() > 0) {
+
+            children.clear();
+
             int entriesOriginalSize = entries.size();
             int othersOriginalSize = others.size();
-            addNested(entries);
-            addNested(others);
-            added = !(entries.size() == entriesOriginalSize && others.size() == othersOriginalSize);
-        }
-    }
 
-    private void addNested(List classFileEntries) {
-        for (int classFileIndex = 0; classFileIndex < classFileEntries.size(); classFileIndex++) {
-            ClassFileEntry entry = (ClassFileEntry) classFileEntries.get(classFileIndex);
-            ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
+            // get the parents' children and add them to buffer
+            // concurrently add parents to target storage
+            Iterator i = parents.iterator();
+            while(i.hasNext()) {
+                ClassFileEntry entry = (ClassFileEntry)i.next();
 
-            // Add all nestedEntries to the newEntries list
-            for(int nestedEntriesIndex = 0; nestedEntriesIndex < nestedEntries.length; nestedEntriesIndex++) {
-                add(nestedEntries[nestedEntriesIndex]);
-            }
+                // traverse children
+                ClassFileEntry[] entryChildren = entry.getNestedClassFileEntries();
+                for(int c = 0; c < entryChildren.length; c++) {
+                    children.add(entryChildren[c]);
+                }
 
-            // If the entry is a bytecode that needs to start the
-            // class pool, add all the nestedEntries to the
-            // mustStartClassPool as well.
-            if(entry instanceof ByteCode) {
-                if(((ByteCode)entry).nestedMustStartClassPool()) {
-                    for(int nestedEntriesIndex = 0; nestedEntriesIndex < nestedEntries.length; nestedEntriesIndex++) {
-                        mustStartClassPool.add(nestedEntries[nestedEntriesIndex]);
+                boolean isAtStart = (entry instanceof ByteCode)
+                        && ((ByteCode) entry).nestedMustStartClassPool();
+
+                if (isAtStart) {
+                    for (int c = 0; c < entryChildren.length; c++) {
+                        mustStartClassPool.add(entryChildren[c]);
                     }
                 }
-            }
-        }
-    }
 
-    protected void initializeIndexCache() {
-        indexCache = new HashMap();
-        for (int index = 0; index < entries.size(); index++) {
-            ClassFileEntry indexEntry = (ClassFileEntry) entries.get(index);
-            if (indexCache.containsKey(indexEntry)) {
-                // key is already in there - do nothing
-                // This will happen if a long or double
-                // is the entry - they take up 2 slots.
-            } else {
-                indexCache.put(indexEntry, new Integer(index));
+                // add parent
+                add(entry);
             }
+
+            added = !(entries.size() == entriesOriginalSize && others.size() == othersOriginalSize);
+
+            // parents are not needed anymore
+            // children now become parents
+            parents.clear();
+            parents.addAll(children);
+
+
         }
     }
 
@@ -116,7 +123,7 @@ public class ClassConstantPool {
             throw new IllegalStateException(
                     "Constant pool is not yet resolved; this does not make any sense");
         if (null == indexCache) {
-            initializeIndexCache();
+            throw new IllegalStateException("Index cache is not initialized!");
         }
         Integer entryIndex = ((Integer) indexCache.get(entry));
         // If the entry isn't found, answer -1. Otherwise answer the entry.
@@ -139,9 +146,11 @@ public class ClassConstantPool {
 
     public void resolve(Segment segment) {
         initialSort();
-        Iterator it;
+        sortClassPool();
+
         resolved = true;
-        it = entries.iterator();
+
+        Iterator it = entries.iterator();
         while (it.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) it.next();
             entry.resolve(this);
@@ -152,7 +161,7 @@ public class ClassConstantPool {
             entry.resolve(this);
         }
 
-        sortClassPool(segment);
+
     }
 
     private void initialSort() {
@@ -216,14 +225,11 @@ public class ClassConstantPool {
         return classesList;
     }
 
-    protected void sortClassPool(Segment segment) {
+    protected void sortClassPool() {
         // Now that everything has been resolved, do one
         // final sort of the class pool. This fixes up
         // references to objects which need to be at the
         // start of the class pool
-
-        // Since we resorted, need to initialize index cache
-        initializeIndexCache();
 
         Iterator it = entries.iterator();
         ArrayList startOfPool = new ArrayList();
@@ -236,39 +242,43 @@ public class ClassConstantPool {
                 finalSort.add(nextEntry);
             }
         }
+
+        // copy over and rebuild the cache
+        //
+        indexCache = new HashMap();
+        int index = 0;
+
         entries.clear();
         Iterator itStart = startOfPool.iterator();
         while (itStart.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) itStart.next();
-            entries.add(entry);
-            if (entry instanceof CPLong || entry instanceof CPDouble)
+            indexCache.put(entry, new Integer(index));
+
+            if (entry instanceof CPLong || entry instanceof CPDouble) {
                 entries.add(entry); // these get 2 slots because of their size
+                entries.add(entry);
+                index += 2;
+            } else {
+                entries.add(entry);
+                index += 1;
+            }
         }
+
         it = finalSort.iterator();
         while (it.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) it.next();
-            entries.add(entry);
-            if (entry instanceof CPLong || entry instanceof CPDouble)
+            indexCache.put(entry, new Integer(index));
+
+            if (entry instanceof CPLong || entry instanceof CPDouble) {
                 entries.add(entry); // these get 2 slots because of their size
+                entries.add(entry);
+                index += 2;
+            } else {
+                entries.add(entry);
+                index += 1;
+            }
         }
 
-        // Since we re-sorted, need to initialize index cache
-        initializeIndexCache();
-
-        // Now that the indices have been re-sorted, need
-        // to re-resolve to update references. This should
-        // not add any new entries this time through.
-        it = entries.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
-            entry.resolve(this);
-        }
-        // Also need to re-resolve the others.
-        it = others.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
-            entry.resolve(this);
-        }
     }
 
     public ClassFileEntry addWithNestedEntries(ClassFileEntry entry) {
