@@ -14,15 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.apache.harmony.x.swing.text.rtf;
 
 import javax.swing.text.*;
 import java.util.Stack;
 
 /**
- * @author ayzen
+ * @author Aleksey Lagoshin
  */
-public class RTFParserHandler {
+public class DocumentRTFHandler implements RTFHandler {
 
   private StyledDocument sdoc;
   private Document doc;
@@ -32,10 +33,9 @@ public class RTFParserHandler {
   private Stack<MutableAttributeSet> stylesStack;
   private MutableAttributeSet currentStyle;
 
-  public RTFParserHandler(Document doc, int position) {
+  public DocumentRTFHandler(Document doc, int position) {
     stylesStack = new Stack<MutableAttributeSet>();
     currentStyle = new SimpleAttributeSet();
-    StyleConstants.setBidiLevel(currentStyle, 1);
 
     if (doc instanceof StyledDocument)
       sdoc = (StyledDocument) doc;
@@ -43,6 +43,15 @@ public class RTFParserHandler {
       this.doc = doc;
 
     offset = position;
+  }
+
+  public void startGroup() {
+    stylesStack.push(currentStyle);
+    currentStyle = new SimpleAttributeSet(currentStyle);
+  }
+
+  public void endGroup() {
+    currentStyle = stylesStack.pop();
   }
 
   public void addText(String text) {
@@ -59,13 +68,8 @@ public class RTFParserHandler {
     }
   }
 
-  public void startGroup() {
-    stylesStack.push(currentStyle);
-    currentStyle = new SimpleAttributeSet(currentStyle);
-  }
-
-  public void endGroup() {
-    currentStyle = stylesStack.pop();
+  public void newParagraph() {
+    addText("\n");
   }
 
   public void setBold(boolean enable) {
@@ -81,3 +85,5 @@ public class RTFParserHandler {
   }
 
 }
+
+

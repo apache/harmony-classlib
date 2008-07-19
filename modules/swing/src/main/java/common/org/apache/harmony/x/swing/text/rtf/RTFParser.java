@@ -2,12 +2,21 @@
 package org.apache.harmony.x.swing.text.rtf;
 
 import java.io.*;
-import javax.swing.text.Document;
+import java.util.Stack;
 import javax.swing.text.DefaultStyledDocument;
 
 public class RTFParser implements RTFParserConstants {
 
-  private static RTFParserHandler handler;
+  private RTFHandler handler;
+
+  private String encoding = RTFEncodings.DEFAULT_ENCODING;
+
+  private int ucValue = 1;
+  /**
+   * This stack contains only UC values as a scope parameter.
+   * It could be modified to contain additional parameters.
+   */
+  private Stack scopeStack = new Stack();
 
   public static void main(String args[]) throws Exception {
     InputStream in;
@@ -18,16 +27,27 @@ public class RTFParser implements RTFParserConstants {
       in = System.in;
 
     RTFParser parser = new RTFParser(in);
-    parser.parse(new DefaultStyledDocument(), 0);
+    RTFHandler handler = new DocumentRTFHandler(new DefaultStyledDocument(), 0);
+    parser.parse(handler);
   }
 
-  static final public void parse(Document doc, int position) throws ParseException {
-    handler = new RTFParserHandler(doc, position);
+  private byte[] getBytes(String str) {
+    char[] chars = str.toCharArray();
+    byte[] bytes = new byte[chars.length];
+    for (int i = 0; i < chars.length; i++)
+      bytes[i] = (byte) chars[i];
+    return bytes;
+  }
+
+  final public void parse(RTFHandler handler) throws ParseException {
+    if (handler == null)
+      {if (true) throw new NullPointerException("Parameter handler cannot be null");}
+    this.handler = handler;
     file();
     jj_consume_token(0);
   }
 
-  static final private int parameter() throws ParseException {
+  final private int parameter() throws ParseException {
   Token param = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PARAM:
@@ -37,11 +57,11 @@ public class RTFParser implements RTFParserConstants {
       jj_la1[0] = jj_gen;
       ;
     }
-    {if (true) return param == null ? -1 : Integer.parseInt(param.image);}
+    {if (true) return param == null ? -1 : Integer.parseInt(param.image.trim());}
     throw new Error("Missing return statement in function");
   }
 
-  static final private void unknownControlWord() throws ParseException {
+  final private void unknownControlWord() throws ParseException {
     jj_consume_token(CONTROL_WORD);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PARAM:
@@ -54,173 +74,323 @@ public class RTFParser implements RTFParserConstants {
   }
 
 /**
- *  Catches all unhandled control symbols.
+ * Catches all unhandled control symbols.
  */
-  static final public void unknownControlSymbol() throws ParseException {
+  final public void unknownControlSymbol() throws ParseException {
     jj_consume_token(CONTROL_SYMBOL);
   }
 
-  static final public void text() throws ParseException {
-  Token text;
-    text = jj_consume_token(TEXT);
-    handler.addText(text.image);
-  }
-
-  static final public void file() throws ParseException {
-    jj_consume_token(OPEN_BRACE);
-    header();
-    document();
-    jj_consume_token(CLOSE_BRACE);
-  }
-
-  static final public void header() throws ParseException {
-    jj_consume_token(RTF);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case PARAM:
-      jj_consume_token(PARAM);
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      ;
-    }
-  }
-
-  static final public void document() throws ParseException {
-    label_1:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case B:
-      case I:
-      case UL:
-        paragraph();
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        if (jj_2_1(2147483647)) {
-          fonttbl();
-        } else if (jj_2_2(2147483647)) {
-          stylesheet();
-        } else if (jj_2_3(2147483647)) {
-          info();
-        } else if (jj_2_4(2147483647)) {
-          ignoredDestination();
-        } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case OPEN_BRACE:
-            documentBlock();
-            break;
-          case CONTROL_WORD:
-            unknownControlWord();
-            break;
-          case CONTROL_SYMBOL:
-            unknownControlSymbol();
-            break;
-          case TEXT:
-            text();
-            break;
-          default:
-            jj_la1[4] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
-        }
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case OPEN_BRACE:
-      case TEXT:
-      case B:
-      case I:
-      case UL:
-      case CONTROL_WORD:
-      case CONTROL_SYMBOL:
-        ;
-        break;
-      default:
-        jj_la1[5] = jj_gen;
-        break label_1;
-      }
-    }
-  }
-
 /**
- *  A group.
+ * Group which starts with "{\*" and describes destination, currently this part
+ * is ignored.
  */
-  static final public void documentBlock() throws ParseException {
-    jj_consume_token(OPEN_BRACE);
-                 handler.startGroup();
-    document();
-    jj_consume_token(CLOSE_BRACE);
-                  handler.endGroup();
-  }
-
-/**
- *  Ignored block of RTF file, currently is using to ignore unknown parts
- *  of file.
- */
-  static final public void ignoredBlock() throws ParseException {
-    label_2:
-    while (true) {
-      if (jj_2_5(2147483647)) {
-        ignoredDestination();
-      } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case B:
-        case I:
-        case UL:
-          characterFormat();
-          break;
-        case CONTROL_WORD:
-          unknownControlWord();
-          break;
-        case CONTROL_SYMBOL:
-          unknownControlSymbol();
-          break;
-        case TEXT:
-          jj_consume_token(TEXT);
-          break;
-        case OPEN_BRACE:
-          jj_consume_token(OPEN_BRACE);
-          ignoredBlock();
-          jj_consume_token(CLOSE_BRACE);
-          break;
-        default:
-          jj_la1[6] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case OPEN_BRACE:
-      case TEXT:
-      case B:
-      case I:
-      case UL:
-      case CONTROL_WORD:
-      case CONTROL_SYMBOL:
-        ;
-        break;
-      default:
-        jj_la1[7] = jj_gen;
-        break label_2;
-      }
-    }
-  }
-
-/**
- *  Group which starts with "{\*" and describes destination, currently this part
- *  is ignored.
- */
-  static final public void ignoredDestination() throws ParseException {
+  final public void ignoredDestination() throws ParseException {
     jj_consume_token(OPEN_BRACE);
     jj_consume_token(IGNORED_DESTINATION);
     ignoredBlock();
     jj_consume_token(CLOSE_BRACE);
   }
 
+  final public String parseText() throws ParseException {
+  byte[] bytes;
+  String text;
+  ByteArrayOutputStream textBytes = new ByteArrayOutputStream();
+  StringBuffer parsedText = new StringBuffer();
+    label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case HEX_CHAR:
+      case TEXT:
+        label_2:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case HEX_CHAR:
+            bytes = parseHexBytes();
+            break;
+          case TEXT:
+            bytes = parseTextBytes();
+            break;
+          default:
+            jj_la1[2] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          try {
+            textBytes.write(bytes);
+          } catch (IOException e) {}
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case HEX_CHAR:
+          case TEXT:
+            ;
+            break;
+          default:
+            jj_la1[3] = jj_gen;
+            break label_2;
+          }
+        }
+      // Decoding collected characters using specified encoding
+      try {
+        parsedText.append(textBytes.toString(encoding));
+        textBytes.reset();
+      }
+      catch (UnsupportedEncodingException e) {
+        {if (true) throw new ParseException("Unsupported encoding");}
+      }
+        break;
+      case ESCAPED_OPEN_BRACE:
+      case ESCAPED_CLOSE_BRACE:
+      case ESCAPED_BACKSLASH:
+      case U:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ESCAPED_OPEN_BRACE:
+        case ESCAPED_CLOSE_BRACE:
+        case ESCAPED_BACKSLASH:
+          text = parseSpecialCharacter();
+          break;
+        case U:
+          text = parseUnicodeText();
+          break;
+        default:
+          jj_la1[4] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        parsedText.append(text);
+        break;
+      default:
+        jj_la1[5] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ESCAPED_OPEN_BRACE:
+      case ESCAPED_CLOSE_BRACE:
+      case ESCAPED_BACKSLASH:
+      case HEX_CHAR:
+      case TEXT:
+      case U:
+        ;
+        break;
+      default:
+        jj_la1[6] = jj_gen;
+        break label_1;
+      }
+    }
+    {if (true) return parsedText.toString();}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public byte[] parseHexBytes() throws ParseException {
+  Token token;
+  byte[] result = new byte[1];
+    token = jj_consume_token(HEX_CHAR);
+    result[0] = (byte) Integer.parseInt(token.image.substring(2), 16);
+    {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public byte[] parseTextBytes() throws ParseException {
+  Token token;
+    token = jj_consume_token(TEXT);
+    {if (true) return getBytes(token.image);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public String parseSpecialCharacter() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ESCAPED_OPEN_BRACE:
+      jj_consume_token(ESCAPED_OPEN_BRACE);
+                          {if (true) return "{";}
+      break;
+    case ESCAPED_CLOSE_BRACE:
+      jj_consume_token(ESCAPED_CLOSE_BRACE);
+                          {if (true) return "}";}
+      break;
+    case ESCAPED_BACKSLASH:
+      jj_consume_token(ESCAPED_BACKSLASH);
+                          {if (true) return "\\";}
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public String parseUnicodeText() throws ParseException {
+  int param;
+  StringBuffer unicodeBuffer = new StringBuffer();
+    label_3:
+    while (true) {
+      jj_consume_token(U);
+      param = parameter();
+      if (param < 0)
+        param += 65536;
+
+      unicodeBuffer.append((char) param);
+      skipAfterUnicode(ucValue);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case U:
+        ;
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        break label_3;
+      }
+    }
+    {if (true) return unicodeBuffer.toString();}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public void file() throws ParseException {
+    jj_consume_token(OPEN_BRACE);
+    jj_consume_token(RTF);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case PARAM:
+      jj_consume_token(PARAM);
+      break;
+    default:
+      jj_la1[9] = jj_gen;
+      ;
+    }
+    document();
+    jj_consume_token(CLOSE_BRACE);
+  }
+
+  final public void document() throws ParseException {
+  boolean skipped;
+  String text;
+    label_4:
+    while (true) {
+      if (jj_2_1(2)) {
+        header();
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case B:
+        case I:
+        case UL:
+        case PAR:
+          paragraph();
+          break;
+        default:
+          jj_la1[10] = jj_gen;
+          if (jj_2_2(2147483647)) {
+            info();
+          } else if (jj_2_3(2147483647)) {
+            ignoredDestination();
+          } else {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case OPEN_BRACE:
+              documentGroup();
+              break;
+            case CONTROL_WORD:
+              unknownControlWord();
+              break;
+            case CONTROL_SYMBOL:
+              unknownControlSymbol();
+              break;
+            case ESCAPED_OPEN_BRACE:
+            case ESCAPED_CLOSE_BRACE:
+            case ESCAPED_BACKSLASH:
+            case HEX_CHAR:
+            case TEXT:
+            case U:
+              text = parseText();
+                         handler.addText(text);
+              break;
+            default:
+              jj_la1[11] = jj_gen;
+              skipped = handleUnexpectedControlWord();
+                                              if (!skipped) {if (true) return;}
+            }
+          }
+        }
+      }
+      ;
+    }
+  }
+
+/**
+ * A group.
+ */
+  final public void documentGroup() throws ParseException {
+    startGroup();
+    document();
+    endGroup();
+  }
+
+  final public void startGroup() throws ParseException {
+    jj_consume_token(OPEN_BRACE);
+    scopeStack.push(ucValue);
+    handler.startGroup();
+  }
+
+  final public void endGroup() throws ParseException {
+    jj_consume_token(CLOSE_BRACE);
+    ucValue = (Integer) scopeStack.pop();
+    handler.endGroup();
+  }
+
+  final public void header() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ANSI:
+    case MAC:
+    case PC:
+    case PCA:
+    case ANSICPG:
+      characterSet();
+      break;
+    default:
+      jj_la1[12] = jj_gen;
+      if (jj_2_4(2147483647)) {
+        fonttbl();
+      } else if (jj_2_5(2147483647)) {
+        colortbl();
+      } else if (jj_2_6(2147483647)) {
+        stylesheet();
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+  }
+
+  final public void characterSet() throws ParseException {
+  int param;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ANSI:
+      jj_consume_token(ANSI);
+              encoding = "Cp1252";
+      break;
+    case MAC:
+      jj_consume_token(MAC);
+              encoding = "MacRoman";
+      break;
+    case PC:
+      jj_consume_token(PC);
+              encoding = "Cp437";
+      break;
+    case PCA:
+      jj_consume_token(PCA);
+              encoding = "Cp850";
+      break;
+    case ANSICPG:
+      jj_consume_token(ANSICPG);
+      param = parameter();
+    encoding = RTFEncodings.getEncoding(param);
+      break;
+    default:
+      jj_la1[13] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
 /**
  * Part which describes font table group.
  */
-  static final public void fonttbl() throws ParseException {
+  final public void fonttbl() throws ParseException {
     jj_consume_token(OPEN_BRACE);
     jj_consume_token(FONTTBL);
     ignoredBlock();
@@ -228,9 +398,19 @@ public class RTFParser implements RTFParserConstants {
   }
 
 /**
+ * Part which describes color table group.
+ */
+  final public void colortbl() throws ParseException {
+    jj_consume_token(OPEN_BRACE);
+    jj_consume_token(COLORTBL);
+    ignoredBlock();
+    jj_consume_token(CLOSE_BRACE);
+  }
+
+/**
  * Part which describes the style sheet group.
  */
-  static final public void stylesheet() throws ParseException {
+  final public void stylesheet() throws ParseException {
     jj_consume_token(OPEN_BRACE);
     jj_consume_token(STYLESHEET);
     ignoredBlock();
@@ -240,18 +420,32 @@ public class RTFParser implements RTFParserConstants {
 /**
  * Part which describes the information group inside document area.
  */
-  static final public void info() throws ParseException {
+  final public void info() throws ParseException {
     jj_consume_token(OPEN_BRACE);
     jj_consume_token(INFO);
     ignoredBlock();
     jj_consume_token(CLOSE_BRACE);
   }
 
-  static final public void paragraph() throws ParseException {
-    characterFormat();
+  final public void paragraph() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case B:
+    case I:
+    case UL:
+      characterFormat();
+      break;
+    case PAR:
+      jj_consume_token(PAR);
+          handler.newParagraph();
+      break;
+    default:
+      jj_la1[14] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
-  static final public void characterFormat() throws ParseException {
+  final public void characterFormat() throws ParseException {
   int param;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case B:
@@ -270,172 +464,343 @@ public class RTFParser implements RTFParserConstants {
                              handler.setUnderline(param != 0);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[15] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
   }
 
-  static final private boolean jj_2_1(int xla) {
+  private void ignoredBlock() throws ParseException {
+  Token token;
+  int nesting = 1;
+  while (true) {
+    token = getToken(1);
+    if (token.kind == OPEN_BRACE)
+      nesting++;
+    else if (token.kind == CLOSE_BRACE) {
+      nesting--;
+      if (nesting == 0)
+        return;
+    }
+    getNextToken();
+  }
+  }
+
+  private boolean handleUnexpectedControlWord() throws ParseException {
+  Token token = getToken(1);
+
+  if (token.kind == UC) {
+    getNextToken();
+    token = getToken(1);
+    if (token.kind == PARAM) {
+      ucValue = Integer.parseInt(token.image);
+      getNextToken();
+    }
+    return true;
+  }
+
+  String text = token.image;
+  if (text.matches("\\\\[a-zA-Z]+")) {
+    getNextToken();
+    token = getToken(1);
+    if (token.kind == PARAM)
+      getNextToken();
+    return true;
+  }
+
+  return false;
+  }
+
+  private void skipAfterUnicode(int n) throws ParseException {
+  while (n-- > 0) {
+    Token token = getToken(1);
+    // If token is a control word or a control symbol
+    if (token.image.startsWith("\\")) {
+      getNextToken();
+      token = getToken(1);
+      // If control word has parameter
+      if (token.kind == PARAM)
+        getNextToken();
+      //TODO: Need to skip \bin data
+    }
+    else if (token.kind == HEX_CHAR)
+      getNextToken();
+    else if (token.kind == TEXT) {
+      String text = token.image;
+      if (text.length() <= n + 1) {
+        n -= text.length() - 1;
+        getNextToken();
+      }
+      else {
+        token.image = text.substring(n + 1);
+        return;
+      }
+    }
+    else throw new ParseException("Wrong token " + token + " while skipping data after Unicode character");
+  }
+  }
+
+  final private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(0, xla); }
   }
 
-  static final private boolean jj_2_2(int xla) {
+  final private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
   }
 
-  static final private boolean jj_2_3(int xla) {
+  final private boolean jj_2_3(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_3(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(2, xla); }
   }
 
-  static final private boolean jj_2_4(int xla) {
+  final private boolean jj_2_4(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_4(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(3, xla); }
   }
 
-  static final private boolean jj_2_5(int xla) {
+  final private boolean jj_2_5(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_5(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(4, xla); }
   }
 
-  static final private boolean jj_3_3() {
+  final private boolean jj_2_6(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_6(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(5, xla); }
+  }
+
+  final private boolean jj_3R_18() {
+    if (jj_scan_token(ANSICPG)) return true;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    if (jj_scan_token(PCA)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
+    if (jj_scan_token(OPEN_BRACE)) return true;
+    if (jj_scan_token(IGNORED_DESTINATION)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_16() {
+    if (jj_scan_token(PC)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
     if (jj_scan_token(OPEN_BRACE)) return true;
     if (jj_scan_token(INFO)) return true;
     return false;
   }
 
-  static final private boolean jj_3_2() {
+  final private boolean jj_3_6() {
     if (jj_scan_token(OPEN_BRACE)) return true;
     if (jj_scan_token(STYLESHEET)) return true;
     return false;
   }
 
-  static final private boolean jj_3_5() {
-    if (jj_scan_token(OPEN_BRACE)) return true;
-    if (jj_scan_token(IGNORED_DESTINATION)) return true;
+  final private boolean jj_3R_15() {
+    if (jj_scan_token(MAC)) return true;
     return false;
   }
 
-  static final private boolean jj_3_1() {
+  final private boolean jj_3R_10() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_14()) {
+    jj_scanpos = xsp;
+    if (jj_3R_15()) {
+    jj_scanpos = xsp;
+    if (jj_3R_16()) {
+    jj_scanpos = xsp;
+    if (jj_3R_17()) {
+    jj_scanpos = xsp;
+    if (jj_3R_18()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_14() {
+    if (jj_scan_token(ANSI)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_scan_token(OPEN_BRACE)) return true;
+    if (jj_scan_token(COLORTBL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_4() {
     if (jj_scan_token(OPEN_BRACE)) return true;
     if (jj_scan_token(FONTTBL)) return true;
     return false;
   }
 
-  static final private boolean jj_3_4() {
-    if (jj_scan_token(OPEN_BRACE)) return true;
-    if (jj_scan_token(IGNORED_DESTINATION)) return true;
+  final private boolean jj_3R_9() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
-  static private boolean jj_initialized_once = false;
-  static public RTFParserTokenManager token_source;
-  static SimpleCharStream jj_input_stream;
-  static public Token token, jj_nt;
-  static private int jj_ntk;
-  static private Token jj_scanpos, jj_lastpos;
-  static private int jj_la;
-  static public boolean lookingAhead = false;
-  static private boolean jj_semLA;
-  static private int jj_gen;
-  static final private int[] jj_la1 = new int[9];
+  final private boolean jj_3R_19() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(38)) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3R_8() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_3R_5()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_7() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_13() {
+    if (jj_scan_token(OPEN_BRACE)) return true;
+    if (jj_scan_token(STYLESHEET)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_6() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_5() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_6()) {
+    jj_scanpos = xsp;
+    if (jj_3R_7()) {
+    jj_scanpos = xsp;
+    if (jj_3R_8()) {
+    jj_scanpos = xsp;
+    if (jj_3R_9()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_12() {
+    if (jj_scan_token(OPEN_BRACE)) return true;
+    if (jj_scan_token(COLORTBL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_11() {
+    if (jj_scan_token(OPEN_BRACE)) return true;
+    if (jj_scan_token(FONTTBL)) return true;
+    return false;
+  }
+
+  public RTFParserTokenManager token_source;
+  SimpleCharStream jj_input_stream;
+  public Token token, jj_nt;
+  private int jj_ntk;
+  private Token jj_scanpos, jj_lastpos;
+  private int jj_la;
+  public boolean lookingAhead = false;
+  private boolean jj_semLA;
+  private int jj_gen;
+  final private int[] jj_la1 = new int[16];
   static private int[] jj_la1_0;
+  static private int[] jj_la1_1;
   static {
       jj_la1_0();
+      jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x400000,0x400000,0x400000,0x70000,0x3000a0,0x3700a0,0x3700a0,0x3700a0,0x70000,};
+      jj_la1_0 = new int[] {0x0,0x0,0x4400,0x4400,0x40000e0,0x40044e0,0x40044e0,0xe0,0x4000000,0x0,0x0,0x40055e0,0x1f00000,0x1f00000,0x0,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[5];
-  static private boolean jj_rescan = false;
-  static private int jj_gc = 0;
+   private static void jj_la1_1() {
+      jj_la1_1 = new int[] {0x40,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x1e,0x20,0x0,0x0,0x1e,0xe,};
+   }
+  final private JJCalls[] jj_2_rtns = new JJCalls[6];
+  private boolean jj_rescan = false;
+  private int jj_gc = 0;
 
   public RTFParser(java.io.InputStream stream) {
      this(stream, null);
   }
   public RTFParser(java.io.InputStream stream, String encoding) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new RTFParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static public void ReInit(java.io.InputStream stream) {
+  public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
-  static public void ReInit(java.io.InputStream stream, String encoding) {
+  public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   public RTFParser(java.io.Reader stream) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new RTFParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static public void ReInit(java.io.Reader stream) {
+  public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   public RTFParser(RTFParserTokenManager tm) {
-    if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
-      System.out.println("       during parser generation.");
-      throw new Error();
-    }
-    jj_initialized_once = true;
     token_source = tm;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -444,11 +809,11 @@ public class RTFParser implements RTFParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static final private Token jj_consume_token(int kind) throws ParseException {
+  final private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -473,8 +838,8 @@ public class RTFParser implements RTFParserConstants {
   }
 
   static private final class LookaheadSuccess extends java.lang.Error { }
-  static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  static final private boolean jj_scan_token(int kind) {
+  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+  final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
       if (jj_scanpos.next == null) {
@@ -495,7 +860,7 @@ public class RTFParser implements RTFParserConstants {
     return false;
   }
 
-  static final public Token getNextToken() {
+  final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
@@ -503,7 +868,7 @@ public class RTFParser implements RTFParserConstants {
     return token;
   }
 
-  static final public Token getToken(int index) {
+  final public Token getToken(int index) {
     Token t = lookingAhead ? jj_scanpos : token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
@@ -512,20 +877,20 @@ public class RTFParser implements RTFParserConstants {
     return t;
   }
 
-  static final private int jj_ntk() {
+  final private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  static private java.util.Vector jj_expentries = new java.util.Vector();
-  static private int[] jj_expentry;
-  static private int jj_kind = -1;
-  static private int[] jj_lasttokens = new int[100];
-  static private int jj_endpos;
+  private java.util.Vector jj_expentries = new java.util.Vector();
+  private int[] jj_expentry;
+  private int jj_kind = -1;
+  private int[] jj_lasttokens = new int[100];
+  private int jj_endpos;
 
-  static private void jj_add_error_token(int kind, int pos) {
+  private void jj_add_error_token(int kind, int pos) {
     if (pos >= 100) return;
     if (pos == jj_endpos + 1) {
       jj_lasttokens[jj_endpos++] = kind;
@@ -553,26 +918,29 @@ public class RTFParser implements RTFParserConstants {
     }
   }
 
-  static public ParseException generateParseException() {
+  public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[24];
-    for (int i = 0; i < 24; i++) {
+    boolean[] la1tokens = new boolean[40];
+    for (int i = 0; i < 40; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 16; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
             la1tokens[j] = true;
           }
+          if ((jj_la1_1[i] & (1<<j)) != 0) {
+            la1tokens[32+j] = true;
+          }
         }
       }
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 40; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -589,15 +957,15 @@ public class RTFParser implements RTFParserConstants {
     return new ParseException(token, exptokseq, tokenImage);
   }
 
-  static final public void enable_tracing() {
+  final public void enable_tracing() {
   }
 
-  static final public void disable_tracing() {
+  final public void disable_tracing() {
   }
 
-  static final private void jj_rescan_token() {
+  final private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -609,6 +977,7 @@ public class RTFParser implements RTFParserConstants {
             case 2: jj_3_3(); break;
             case 3: jj_3_4(); break;
             case 4: jj_3_5(); break;
+            case 5: jj_3_6(); break;
           }
         }
         p = p.next;
@@ -618,7 +987,7 @@ public class RTFParser implements RTFParserConstants {
     jj_rescan = false;
   }
 
-  static final private void jj_save(int index, int xla) {
+  final private void jj_save(int index, int xla) {
     JJCalls p = jj_2_rtns[index];
     while (p.gen > jj_gen) {
       if (p.next == null) { p = p.next = new JJCalls(); break; }

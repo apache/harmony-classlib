@@ -4,31 +4,54 @@ package org.apache.harmony.x.swing.text.rtf;
 public interface RTFParserConstants {
 
   int EOF = 0;
-  int BACKSLASH = 1;
-  int OPEN_BRACE = 5;
-  int CLOSE_BRACE = 6;
-  int TEXT = 7;
-  int RTF = 12;
-  int FONTTBL = 13;
-  int STYLESHEET = 14;
-  int INFO = 15;
-  int B = 16;
-  int I = 17;
-  int UL = 18;
-  int IGNORED_DESTINATION = 19;
-  int CONTROL_WORD = 20;
-  int CONTROL_SYMBOL = 21;
-  int PARAM = 22;
+  int IGNORED_DESTINATION = 4;
+  int ESCAPED_OPEN_BRACE = 5;
+  int ESCAPED_CLOSE_BRACE = 6;
+  int ESCAPED_BACKSLASH = 7;
+  int CONTROL_SYMBOL = 8;
+  int HEX_DIGIT = 9;
+  int HEX_CHAR = 10;
+  int BACKSLASH = 11;
+  int OPEN_BRACE = 12;
+  int CLOSE_BRACE = 13;
+  int TEXT = 14;
+  int RTF = 19;
+  int ANSI = 20;
+  int MAC = 21;
+  int PC = 22;
+  int PCA = 23;
+  int ANSICPG = 24;
+  int UC = 25;
+  int U = 26;
+  int UPR = 27;
+  int UD = 28;
+  int FONTTBL = 29;
+  int COLORTBL = 30;
+  int STYLESHEET = 31;
+  int INFO = 32;
+  int B = 33;
+  int I = 34;
+  int UL = 35;
+  int PAR = 36;
+  int CONTROL_WORD = 37;
+  int PARAM = 38;
 
-  int IN_CONTROL = 0;
-  int DEFAULT = 1;
+  int DEFAULT = 0;
+  int IN_CONTROL_WORD = 1;
 
   String[] tokenImage = {
     "<EOF>",
-    "\"\\\\\"",
     "\"\\n\"",
     "\"\\r\"",
     "\"\\t\"",
+    "\"\\\\*\"",
+    "\"\\\\{\"",
+    "\"\\\\}\"",
+    "\"\\\\\\\\\"",
+    "<CONTROL_SYMBOL>",
+    "<HEX_DIGIT>",
+    "<HEX_CHAR>",
+    "\"\\\\\"",
     "\"{\"",
     "\"}\"",
     "<TEXT>",
@@ -37,17 +60,26 @@ public interface RTFParserConstants {
     "\"\\r\"",
     "\"\\t\"",
     "\"rtf\"",
+    "\"ansi\"",
+    "\"mac\"",
+    "\"pc\"",
+    "\"pca\"",
+    "\"ansicpg\"",
+    "\"uc\"",
+    "\"u\"",
+    "\"upr\"",
+    "\"ud\"",
     "\"fonttbl\"",
+    "\"colortbl\"",
     "\"stylesheet\"",
     "\"info\"",
     "\"b\"",
     "\"i\"",
     "\"ul\"",
-    "\"*\"",
+    "\"par\"",
     "<CONTROL_WORD>",
-    "<CONTROL_SYMBOL>",
     "<PARAM>",
-    "<token of kind 23>",
+    "<token of kind 39>",
   };
 
 }
