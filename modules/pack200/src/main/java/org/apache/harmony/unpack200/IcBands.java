@@ -19,7 +19,6 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -137,9 +136,8 @@ public class IcBands extends BandSet {
         while (changed) {
             changed = false;
             for (int allTupleIndex = 0; allTupleIndex < allTuplesSize; allTupleIndex++) {
-                Iterator it = classPoolClasses.iterator();
-                while (it.hasNext()) {
-                    CPClass classInPool = (CPClass) it.next();
+                for(int cpcIndex = 0; cpcIndex < classPoolClasses.size(); cpcIndex++) {
+                    CPClass classInPool = (CPClass) classPoolClasses.get(cpcIndex);
                     String poolClassName = classInPool.name;
                     if (poolClassName.equals(allTuples[allTupleIndex]
                             .thisClassString())) {
@@ -175,9 +173,8 @@ public class IcBands extends BandSet {
                 }
             }
             if (tuplesToAdd.size() > 0) {
-                Iterator it = tuplesToAdd.iterator();
-                while (it.hasNext()) {
-                    IcTuple tuple = (IcTuple) it.next();
+                for(int index = 0; index < tuplesToAdd.size(); index++) {
+                    IcTuple tuple = (IcTuple) tuplesToAdd.get(index);
                     if (!relevantTuples.contains(tuple)) {
                         changedFixup = true;
                         relevantTuples.add(tuple);

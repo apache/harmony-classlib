@@ -19,7 +19,6 @@ package org.apache.harmony.unpack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -70,8 +69,8 @@ public class CPMember extends ClassFileEntry {
         super.resolve(pool);
         nameIndex = pool.indexOf(name);
         descriptorIndex = pool.indexOf(descriptor);
-        for (Iterator it = attributes.iterator(); it.hasNext();) {
-            Attribute attribute = (Attribute) it.next();
+        for(int it = 0; it < attributes.size(); it++) {
+            Attribute attribute = (Attribute) attributes.get(it);
             attribute.resolve(pool);
         }
     }

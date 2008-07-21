@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -66,8 +65,8 @@ public class ClassConstantPool {
         boolean added = true;
 
         // initial assignment
-        ArrayList parents = new ArrayList();
-        ArrayList children = new ArrayList();
+        ArrayList parents = new ArrayList(512);
+        ArrayList children = new ArrayList(512);
 
         // adding old entries
         parents.addAll(entries);
@@ -84,9 +83,8 @@ public class ClassConstantPool {
 
             // get the parents' children and add them to buffer
             // concurrently add parents to target storage
-            Iterator i = parents.iterator();
-            while(i.hasNext()) {
-                ClassFileEntry entry = (ClassFileEntry)i.next();
+            for(int indexParents = 0; indexParents < parents.size(); indexParents++) {
+                ClassFileEntry entry = (ClassFileEntry) parents.get(indexParents);
 
                 // traverse children
                 ClassFileEntry[] entryChildren = entry.getNestedClassFileEntries();
@@ -150,17 +148,15 @@ public class ClassConstantPool {
 
         resolved = true;
 
-        Iterator it = entries.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
-            entry.resolve(this);
-        }
-        it = others.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
+        for(int it = 0; it < entries.size(); it++) {
+            ClassFileEntry entry = (ClassFileEntry) entries.get(it);
             entry.resolve(this);
         }
 
+        for(int it = 0; it < others.size(); it++) {
+            ClassFileEntry entry = (ClassFileEntry) others.get(it);
+            entry.resolve(this);
+        }
 
     }
 
@@ -184,8 +180,10 @@ public class ClassConstantPool {
             }
 
         });
-        for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
-            ConstantPoolEntry entry = (ConstantPoolEntry) iterator.next();
+
+
+        for(int index = 0; index < entries.size(); index++) {
+            ConstantPoolEntry entry = (ConstantPoolEntry) entries.get(index);
             if(entry.getGlobalIndex() == -1) {
                 if (entry instanceof CPUTF8) {
                     cpUtf8sNotInCpAll.add(entry);
@@ -214,10 +212,9 @@ public class ClassConstantPool {
      * NOTE: when this list is answered, the classes may not yet be resolved.
      */
     public List allClasses() {
-        List classesList = new ArrayList();
-        Iterator it = entries.iterator();
-        while (it.hasNext()) {
-            ConstantPoolEntry entry = (ConstantPoolEntry) it.next();
+        List classesList = new ArrayList(entries.size());
+        for(int i = 0; i < entries.size(); i++) {
+            ConstantPoolEntry entry = (ConstantPoolEntry) entries.get(i);
             if (entry instanceof CPClass) {
                 classesList.add(entry);
             }
@@ -231,11 +228,12 @@ public class ClassConstantPool {
         // references to objects which need to be at the
         // start of the class pool
 
-        Iterator it = entries.iterator();
-        ArrayList startOfPool = new ArrayList();
-        ArrayList finalSort = new ArrayList();
-        while (it.hasNext()) {
-            ClassFileEntry nextEntry = (ClassFileEntry) it.next();
+
+        ArrayList startOfPool = new ArrayList(entries.size());
+        ArrayList finalSort = new ArrayList(entries.size());
+
+        for(int i = 0; i < entries.size(); i++) {
+            ClassFileEntry nextEntry = (ClassFileEntry) entries.get(i);
             if (mustStartClassPool.contains(nextEntry)) {
                 startOfPool.add(nextEntry);
             } else {
@@ -249,9 +247,9 @@ public class ClassConstantPool {
         int index = 0;
 
         entries.clear();
-        Iterator itStart = startOfPool.iterator();
-        while (itStart.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) itStart.next();
+
+        for(int itIndex = 0; itIndex < startOfPool.size(); itIndex++) {
+            ClassFileEntry entry = (ClassFileEntry) startOfPool.get(itIndex);
             indexCache.put(entry, new Integer(index));
 
             if (entry instanceof CPLong || entry instanceof CPDouble) {
@@ -264,9 +262,8 @@ public class ClassConstantPool {
             }
         }
 
-        it = finalSort.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
+        for(int itFinal = 0; itFinal < finalSort.size(); itFinal++) {
+            ClassFileEntry entry = (ClassFileEntry) finalSort.get(itFinal);
             indexCache.put(entry, new Integer(index));
 
             if (entry instanceof CPLong || entry instanceof CPDouble) {

@@ -19,7 +19,6 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -983,15 +982,17 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mb = parseMetadata(in, RxA, RxACount,
                 backwardsCalls, "field");
-        Iterator rvaAttributesIterator = mb[0].getAttributes().iterator();
-        Iterator riaAttributesIterator = mb[1].getAttributes().iterator();
+        List rvaAttributes = mb[0].getAttributes();
+        List riaAttributes = mb[1].getAttributes();
+        int rvaAttributesIndex = 0;
+        int riaAttributesIndex = 0;
         for (int i = 0; i < fieldFlags.length; i++) {
             for (int j = 0; j < fieldFlags[i].length; j++) {
                 if (rvaLayout.matches(fieldFlags[i][j])) {
-                    fieldAttributes[i][j].add(rvaAttributesIterator.next());
+                    fieldAttributes[i][j].add(rvaAttributes.get(rvaAttributesIndex++));
                 }
                 if (riaLayout.matches(fieldFlags[i][j])) {
-                    fieldAttributes[i][j].add(riaAttributesIterator.next());
+                    fieldAttributes[i][j].add(riaAttributes.get(riaAttributesIndex++));
                 }
             }
         }
@@ -1143,16 +1144,18 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, rxaCounts,
                 backwardsCalls, "method");
-        Iterator[] attributeIterators = new Iterator[RxA.length];
+        List[] attributeLists = new List[RxA.length];
+        int[] attributeListIndexes = new int[RxA.length];
         for (int i = 0; i < mbgs.length; i++) {
-            attributeIterators[i] = mbgs[i].getAttributes().iterator();
+            attributeLists[i] = mbgs[i].getAttributes();
+            attributeListIndexes[i] = 0;
         }
         for (int i = 0; i < methodFlags.length; i++) {
             for (int j = 0; j < methodFlags[i].length; j++) {
                 for (int k = 0; k < rxaLayouts.length; k++) {
                     if (rxaLayouts[k].matches(methodFlags[i][j])) {
                         methodAttributes[i][j]
-                                .add(attributeIterators[k].next());
+                                .add(attributeLists[k].get(attributeListIndexes[k]++));
                     }
                 }
             }
@@ -1198,14 +1201,16 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, RxACount,
                 backwardsCalls, "class");
-        Iterator rvaAttributesIterator = mbgs[0].getAttributes().iterator();
-        Iterator riaAttributesIterator = mbgs[1].getAttributes().iterator();
+        List rvaAttributes = mbgs[0].getAttributes();
+        List riaAttributes = mbgs[1].getAttributes();
+        int rvaAttributesIndex = 0;
+        int riaAttributesIndex = 0;
         for (int i = 0; i < classFlags.length; i++) {
             if (rvaLayout.matches(classFlags[i])) {
-                classAttributes[i].add(rvaAttributesIterator.next());
+                classAttributes[i].add(rvaAttributes.get(rvaAttributesIndex++));
             }
             if (riaLayout.matches(classFlags[i])) {
-                classAttributes[i].add(riaAttributesIterator.next());
+                classAttributes[i].add(riaAttributes.get(riaAttributesIndex++));
             }
         }
         return numBackwardsCalls;
@@ -1308,9 +1313,9 @@ public class ClassBands extends BandSet {
      * @return ArrayList
      */
     public ArrayList getOrderedCodeAttributes() {
-        ArrayList orderedAttributeList = new ArrayList();
+        ArrayList orderedAttributeList = new ArrayList(codeAttributes.length);
         for (int classIndex = 0; classIndex < codeAttributes.length; classIndex++) {
-            ArrayList currentAttributes = new ArrayList();
+            ArrayList currentAttributes = new ArrayList(codeAttributes[classIndex].size());
             for (int attributeIndex = 0; attributeIndex < codeAttributes[classIndex]
                     .size(); attributeIndex++) {
                 Attribute attribute = (Attribute) codeAttributes[classIndex]

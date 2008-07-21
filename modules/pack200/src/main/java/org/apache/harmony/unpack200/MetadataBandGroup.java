@@ -75,59 +75,58 @@ public class MetadataBandGroup {
     public int[] nestpair_N;
     public CPUTF8[] nestname_RU;
 
-    private Iterator caseI_Iterator;
+    private int caseI_KI_Index;
 
-    private Iterator caseD_Iterator;
+    private int caseD_KD_Index;
 
-    private Iterator caseF_Iterator;
+    private int caseF_KF_Index;
 
-    private Iterator caseJ_Iterator;
+    private int caseJ_KJ_Index;
 
-    private Iterator casec_Iterator;
+    private int casec_RS_Index;
 
-    private Iterator caseet_Iterator;
+    private int caseet_RS_Index;
 
-    private Iterator caseec_Iterator;
+    private int caseec_RU_Index;
 
-    private Iterator cases_Iterator;
+    private int cases_RU_Index;
 
-    private Iterator casearray_Iterator;
+    private int casearray_N_Index;
 
-    private Iterator T_iterator;
+    private int T_index;
 
-    private Iterator nesttype_RS_Iterator;
+    private int nesttype_RS_Index;
 
-    private Iterator nestpair_N_Iterator;
+    private int nestpair_N_Index;
 
     private Iterator nestname_RU_Iterator;
 
-    private Iterator anno_N_Iterator;
+    private int anno_N_Index;
 
     private Iterator type_RS_Iterator;
 
-    private Iterator pair_N_Iterator;
+    private int pair_N_Index;
 
     public List getAttributes() {
+        // TODO: Optimize iterators!
         if (attributes == null) {
             attributes = new ArrayList();
             if (name_RU != null) {
                 Iterator name_RU_Iterator = Arrays.asList(name_RU).iterator();
                 if (!type.equals("AD")) {
-                    T_iterator = Arrays.asList(boxArray(T)).iterator();
+                    T_index = 0;
                 }
-                caseI_Iterator = Arrays.asList(caseI_KI).iterator();
-                caseD_Iterator = Arrays.asList(caseD_KD).iterator();
-                caseF_Iterator = Arrays.asList(caseF_KF).iterator();
-                caseJ_Iterator = Arrays.asList(caseJ_KJ).iterator();
-                casec_Iterator = Arrays.asList(casec_RS).iterator();
-                caseet_Iterator = Arrays.asList(caseet_RS).iterator();
-                caseec_Iterator = Arrays.asList(caseec_RU).iterator();
-                cases_Iterator = Arrays.asList(cases_RU).iterator();
-                casearray_Iterator = Arrays.asList(boxArray(casearray_N))
-                        .iterator();
-                nesttype_RS_Iterator = Arrays.asList(nesttype_RS).iterator();
-                nestpair_N_Iterator = Arrays.asList(boxArray(nestpair_N))
-                        .iterator();
+                caseI_KI_Index = 0;
+                caseD_KD_Index = 0;
+                caseF_KF_Index = 0;
+                caseJ_KJ_Index = 0;
+                casec_RS_Index = 0;
+                caseet_RS_Index = 0;
+                caseec_RU_Index = 0;
+                cases_RU_Index = 0;
+                casearray_N_Index = 0;
+                nesttype_RS_Index = 0;
+                nestpair_N_Index = 0;
                 nestname_RU_Iterator = Arrays.asList(nestname_RU).iterator();
                 if (type.equals("RVA") || type.equals("RIA")) {
                     for (int i = 0; i < anno_N.length; i++) {
@@ -135,10 +134,9 @@ public class MetadataBandGroup {
                                 pair_N[i], name_RU_Iterator));
                     }
                 } else if (type.equals("RVPA") || type.equals("RIPA")) {
-                    anno_N_Iterator = Arrays.asList(boxArray(anno_N))
-                            .iterator();
+                    anno_N_Index = 0;
                     type_RS_Iterator = Arrays.asList(type_RS).iterator();
-                    pair_N_Iterator = Arrays.asList(pair_N).iterator();
+                    pair_N_Index = 0;
                     for (int i = 0; i < param_NB.length; i++) {
                         attributes.add(getParameterAttribute(param_NB[i],
                                 name_RU_Iterator));
@@ -169,8 +167,8 @@ public class MetadataBandGroup {
             Iterator namesIterator) {
         ParameterAnnotation[] parameter_annotations = new ParameterAnnotation[numParameters];
         for (int i = 0; i < numParameters; i++) {
-            int numAnnotations = ((Integer) anno_N_Iterator.next()).intValue();
-            int[] pairCounts = (int[]) pair_N_Iterator.next();
+            int numAnnotations = anno_N[anno_N_Index++];
+            int[] pairCounts = pair_N[pair_N_Index++];
             Annotation[] annotations = new Annotation[numAnnotations];
             for (int j = 0; j < annotations.length; j++) {
                 annotations[j] = getAnnotation(
@@ -190,7 +188,7 @@ public class MetadataBandGroup {
         ElementValue[] elementValues = new ElementValue[pairCount];
         for (int j = 0; j < elementNames.length; j++) {
             elementNames[j] = (CPUTF8) namesIterator.next();
-            int t = ((Integer) T_iterator.next()).intValue();
+            int t = T[T_index++];
             elementValues[j] = new ElementValue(t, getNextValue(t));
         }
         return new Annotation(pairCount, type, elementNames, elementValues);
@@ -203,46 +201,38 @@ public class MetadataBandGroup {
         case 'I':
         case 'S':
         case 'Z':
-            return caseI_Iterator.next();
+            return caseI_KI[caseI_KI_Index++];
         case 'D':
-            return caseD_Iterator.next();
+            return caseD_KD[caseD_KD_Index++];
         case 'F':
-            return caseF_Iterator.next();
+            return caseF_KF[caseF_KF_Index++];
         case 'J':
-            return caseJ_Iterator.next();
+            return caseJ_KJ[caseJ_KJ_Index++];
         case 'c':
-            return casec_Iterator.next();
+            return casec_RS[casec_RS_Index++];
         case 'e':
             // TODO: check this - it may not work if the first string already
             // has a colon in it
-            String enumString = caseet_Iterator.next() + ":"
-                    + caseec_Iterator.next();
+            String enumString = caseet_RS[caseet_RS_Index++] + ":"
+                    + caseec_RU[caseec_RU_Index++];
             return cpBands.cpNameAndTypeValue(enumString);
         case 's':
-            return cases_Iterator.next();
+            return cases_RU[cases_RU_Index++];
         case '[':
-            int arraySize = ((Integer) casearray_Iterator.next()).intValue();
+            int arraySize = casearray_N[casearray_N_Index++];
             ElementValue[] nestedArray = new ElementValue[arraySize];
             for (int i = 0; i < arraySize; i++) {
-                int nextT = ((Integer) T_iterator.next()).intValue();
+                int nextT = T[T_index++];
                 nestedArray[i] = new ElementValue(nextT, getNextValue(nextT));
             }
             return nestedArray;
         case '@':
-            CPUTF8 type = (CPUTF8) nesttype_RS_Iterator.next();
-            int numPairs = ((Integer) nestpair_N_Iterator.next()).intValue();
+            CPUTF8 type = (CPUTF8) nesttype_RS[nesttype_RS_Index++];
+            int numPairs = nestpair_N[nestpair_N_Index++];
 
             return getAnnotation(type, numPairs, nestname_RU_Iterator);
         }
         return null;
-    }
-
-    private Integer[] boxArray(int[] unboxed) {
-        Integer[] boxed = new Integer[unboxed.length];
-        for (int i = 0; i < boxed.length; i++) {
-            boxed[i] = new Integer(unboxed[i]);
-        }
-        return boxed;
     }
 
 }

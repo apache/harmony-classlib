@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -157,7 +156,7 @@ public class Segment {
         // that will
         // be written out. Keep SourceFileAttributes out since we just
         // did them above.
-        ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList();
+        ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList(classAttributes.size());
         for (int index = 0; index < classAttributes.size(); index++) {
             Attribute attrib = (Attribute) classAttributes.get(index);
             if (!attrib.isSourceFileAttribute()) {
@@ -313,10 +312,10 @@ public class Segment {
      *         have to determine if this is the case.
      */
     private IcTuple[] computeIcStored(IcTuple[] ic_local, IcTuple[] ic_relevant) {
-        List result = new ArrayList();
-        List resultCopy = new ArrayList();
-        List localList = new ArrayList();
-        List relevantList = new ArrayList();
+        List result = new ArrayList(ic_relevant.length);
+        List resultCopy = new ArrayList(ic_relevant.length);
+        List localList = new ArrayList(ic_relevant.length);
+        List relevantList = new ArrayList(ic_relevant.length);
         if (ic_local != null) {
             // If ic_local is null, this code doesn't get
             // executed - which means the list ends up being
@@ -335,14 +334,10 @@ public class Segment {
 
         // Since we're removing while iterating, iterate over
         // a copy.
-        Iterator it = resultCopy.iterator();
-
-        while (it.hasNext()) {
-            IcTuple tuple = (IcTuple) it.next();
+        for(int i = 0; i < resultCopy.size(); i++) {
+            IcTuple tuple = (IcTuple) resultCopy.get(i);
             if (localList.contains(tuple) && relevantList.contains(tuple)) {
-                while (result.remove(tuple)) {
-                }
-                ;
+                while (result.remove(tuple));
             }
         }
         IcTuple[] resultArray = new IcTuple[result.size()];

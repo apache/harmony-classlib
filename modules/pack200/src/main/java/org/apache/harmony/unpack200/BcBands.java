@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -430,9 +429,8 @@ public class BcBands extends BandSet {
                     ArrayList methodAttributesList = methodAttributes[c][m];
                     // Make sure we add the code attribute in the right place
                     int indexForCodeAttr = 0;
-                    for (Iterator iterator = methodAttributesList.iterator(); iterator
-                            .hasNext();) {
-                        Attribute attribute = (Attribute) iterator.next();
+                    for (int index = 0; index < methodAttributesList.size(); index++) {
+                        Attribute attribute = (Attribute) methodAttributesList.get(index);
                         if((attribute instanceof NewAttribute && ((NewAttribute)attribute).getLayoutIndex() < 15)) {
                             indexForCodeAttr ++;
                         } else {
