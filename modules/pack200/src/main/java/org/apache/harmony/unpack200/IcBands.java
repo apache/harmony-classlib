@@ -19,7 +19,9 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
@@ -118,11 +120,13 @@ public class IcBands extends BandSet {
      * @return array of IcTuple
      */
     public IcTuple[] getRelevantIcTuples(String className, ClassConstantPool cp) {
+        Set relevantTuplesContains = new HashSet();
         List relevantTuples = new ArrayList();
         IcTuple[] allTuples = getIcTuples();
         int allTuplesSize = allTuples.length;
         for (int index = 0; index < allTuplesSize; index++) {
             if (allTuples[index].shouldAddToRelevantForClassName(className)) {
+                relevantTuplesContains.add(allTuples[index]);
                 relevantTuples.add(allTuples[index]);
             }
         }
@@ -142,7 +146,7 @@ public class IcBands extends BandSet {
                     if (poolClassName.equals(allTuples[allTupleIndex]
                             .thisClassString())) {
                         // If the tuple isn't already in there, then add it
-                        if (relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
+                        if (relevantTuplesContains.add(allTuples[allTupleIndex])) {
                             relevantTuples.add(allTuples[allTupleIndex]);
                             changed = true;
                         }
@@ -175,7 +179,7 @@ public class IcBands extends BandSet {
             if (tuplesToAdd.size() > 0) {
                 for(int index = 0; index < tuplesToAdd.size(); index++) {
                     IcTuple tuple = (IcTuple) tuplesToAdd.get(index);
-                    if (!relevantTuples.contains(tuple)) {
+                    if (relevantTuplesContains.add(tuple)) {
                         changedFixup = true;
                         relevantTuples.add(tuple);
                     }
@@ -189,7 +193,7 @@ public class IcBands extends BandSet {
         IcTuple[] orderedRelevantTuples = new IcTuple[relevantTuples.size()];
         int orderedRelevantIndex = 0;
         for (int index = 0; index < allTuplesSize; index++) {
-            if (relevantTuples.contains(allTuples[index])) {
+            if (relevantTuplesContains.contains(allTuples[index])) {
                 orderedRelevantTuples[orderedRelevantIndex] = allTuples[index];
                 orderedRelevantIndex++;
             }

@@ -75,6 +75,7 @@ public class IcTuple {
     private String cachedSimpleClassName;
     private boolean initialized;
     private boolean anonymous;
+    private boolean outerIsAnonymous;
     private boolean member = true;
     private int cachedOuterClassIndex = -1;
     private int cachedSimpleClassNameIndex = -1;
@@ -155,7 +156,12 @@ public class IcTuple {
         return anonymous;
     }
 
+
     public boolean outerIsAnonymous() {
+        return outerIsAnonymous;
+    }
+
+    private boolean computeOuterIsAnonymous() {
         String[] result = innerBreakAtDollar(cachedOuterClassString);
         if (result.length == 0) {
             throw new Error(
@@ -250,6 +256,8 @@ public class IcTuple {
                 member = true;
             }
         }
+
+        outerIsAnonymous = computeOuterIsAnonymous();
     }
 
     private boolean isAllDigits(String nameString) {
@@ -303,8 +311,21 @@ public class IcTuple {
         return true;
     }
 
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        cachedHashCode = 17;
+        if(C != null) { cachedHashCode =+ C.hashCode(); }
+        if(C2 != null) { cachedHashCode =+ C2.hashCode(); }
+        if(N != null) { cachedHashCode =+ N.hashCode(); }
+    }
+
     public int hashCode() {
-        return 17 + C.hashCode() + C2.hashCode() + N.hashCode();
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public String getC() {
