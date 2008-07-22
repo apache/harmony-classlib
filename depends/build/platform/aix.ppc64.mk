@@ -18,6 +18,8 @@ OPT += -fpic -q64 -qcpluscmt -O3 -s -q64 -DPPC64 -q mbcs -qlanglvl=extended -qar
 OSLIBS = -lc_r -lC_r -lm -lpthread -liconv
 XLIBS = -L/opt/freeware/lib -lX11 -lXft -lfreetype -lfontconfig -lXext -lXtst
 STDCLIBS = 
+WARNFLAGS =
+HYDEBUGCFLAGS = -g
 
 ARFLAGS = -X64 rcv
 ASFLAGS += -a64 -many
