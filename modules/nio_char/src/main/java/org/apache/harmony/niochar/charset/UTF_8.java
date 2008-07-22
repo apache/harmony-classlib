@@ -149,6 +149,12 @@ public class UTF_8 extends Charset {
                             jchar = (jchar << 6) + nextByte;
                         }
                         jchar -= remainingNumbers[tail];
+                        if (jchar == 0x7F) {
+                            // U+007F should have been encoded in a single octet
+                            in.position(inIndex - in.arrayOffset());
+                            out.position(outIndex - out.arrayOffset());
+                            return CoderResult.malformedForLength(1);
+                        }
                         inIndex += tail;
                     }
                     cArr[outIndex++] = (char) jchar;
@@ -186,6 +192,10 @@ public class UTF_8 extends Charset {
                                 jchar = (jchar << 6) + nextByte;
                             }
                             jchar -= remainingNumbers[tail];
+                            if (jchar == 0x7F) {
+                                // U+007F should have been encoded in a single octet
+                                return CoderResult.malformedForLength(1);
+                            }
                             pos += tail;
                         }
                         pos++;
