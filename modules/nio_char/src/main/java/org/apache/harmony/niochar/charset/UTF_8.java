@@ -61,6 +61,8 @@ public class UTF_8 extends Charset {
               401536, // (011o0000b << 12)+(1o000000b <<  6)+(1o000000b)
             29892736  // (0111o000b << 18)+(1o000000b << 12)+(1o000000b << 6)+(1o000000b)
     };
+    
+    private static final int headerBits[] = { -1, 0x1F, 0x0F, 0x07 };
 
     public UTF_8(String canonicalName, String[] aliases) {
         super(canonicalName, aliases);
@@ -128,10 +130,10 @@ public class UTF_8 extends Charset {
                         jchar = jchar & 0x7F;
                         int tail = remainingBytes[jchar];
 
-                        if (tail == -1) {
+                        if (tail == -1 || (jchar & headerBits[tail]) == 0) {
                             in.position(inIndex - in.arrayOffset());
                             out.position(outIndex - out.arrayOffset());
-                            return CoderResult.unmappableForLength(1);
+                            return CoderResult.malformedForLength(1);
                         }
                         if (inIndexLimit - inIndex < 1 + tail) {
                             break;
@@ -167,8 +169,8 @@ public class UTF_8 extends Charset {
                         if (jchar < 0) {
                             jchar = jchar & 0x7F;
                             int tail = remainingBytes[jchar];
-                            if (tail == -1) {
-                                return CoderResult.unmappableForLength(1);
+                            if ((tail == -1) || (jchar & headerBits[tail]) == 0) {
+                                return CoderResult.malformedForLength(1);
                             }
                             if (limit - pos < 1 + tail) {
                                 return CoderResult.UNDERFLOW;
