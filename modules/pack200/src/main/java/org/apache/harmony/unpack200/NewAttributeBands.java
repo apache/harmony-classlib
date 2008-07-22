@@ -63,7 +63,7 @@ public class NewAttributeBands extends BandSet {
      *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         // does nothing - use parseAttributes instead
     }
 
@@ -947,6 +947,10 @@ public class NewAttributeBands extends BandSet {
                 index++;
             }
         }
+    }
+
+    public void unpack() throws IOException, Pack200Exception {
+
     }
 
 }

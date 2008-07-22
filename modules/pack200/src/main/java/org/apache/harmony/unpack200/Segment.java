@@ -17,7 +17,8 @@
 package org.apache.harmony.unpack200;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,9 +93,19 @@ public class Segment {
 
     private boolean deflateHint;
 
+    private boolean doPreRead;
+
     private int logLevel;
 
     private PrintWriter logStream;
+
+    private byte[][] classFilesContents;
+
+    private boolean[] fileDeflate;
+
+    private boolean[] fileIsClass;
+
+    private InputStream internalBuffer;
 
     private ClassFile buildClassFile(int classNum) throws Pack200Exception {
         ClassFile classFile = new ClassFile();
@@ -348,8 +359,8 @@ public class Segment {
     }
 
     /**
-     * This performs the actual work of parsing against a non-static instance of
-     * Segment.
+     * This performs reading the data from the stream into non-static instance of
+     * Segment. After the completion of this method stream can be freed.
      *
      * @param in
      *            the input stream to read from
@@ -359,23 +370,87 @@ public class Segment {
      *             if a problem occurs with an unexpected value or unsupported
      *             codec
      */
-    private void parseSegment(InputStream in) throws IOException,
+    private void readSegment(InputStream in) throws IOException,
             Pack200Exception {
         log(LOG_LEVEL_VERBOSE, "-------");
-        header = new SegmentHeader(this);
-        header.unpack(in);
         cpBands = new CpBands(this);
-        cpBands.unpack(in);
+        cpBands.read(in);
         attrDefinitionBands = new AttrDefinitionBands(this);
-        attrDefinitionBands.unpack(in);
+        attrDefinitionBands.read(in);
         icBands = new IcBands(this);
-        icBands.unpack(in);
+        icBands.read(in);
         classBands = new ClassBands(this);
-        classBands.unpack(in);
+        classBands.read(in);
         bcBands = new BcBands(this);
-        bcBands.unpack(in);
+        bcBands.read(in);
         fileBands = new FileBands(this);
-        fileBands.unpack(in);
+        fileBands.read(in);
+
+        fileBands.processFileBits();
+    }
+
+   /**
+     * This performs the actual work of parsing against a non-static instance of
+     * Segment. This method is intended to run concurrently for multiple segments.
+     *
+     * @throws IOException
+     *             if a problem occurs during reading from the underlying stream
+     * @throws Pack200Exception
+     *             if a problem occurs with an unexpected value or unsupported
+     *             codec
+     */
+    private void parseSegment() throws IOException, Pack200Exception {
+
+        header.unpack();
+        cpBands.unpack();
+        attrDefinitionBands.unpack();
+        icBands.unpack();
+        classBands.unpack();
+        bcBands.unpack();
+        fileBands.unpack();
+
+        int classNum = 0;
+        int numberOfFiles = header.getNumberOfFiles();
+        String[] fileName = fileBands.getFileName();
+        long[] fileOptions = fileBands.getFileOptions();
+        SegmentOptions options = header.getOptions();
+
+        classFilesContents = new byte[numberOfFiles][];
+        fileDeflate = new boolean[numberOfFiles];
+        fileIsClass = new boolean[numberOfFiles];
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(bos);
+
+        for (int i = 0; i < numberOfFiles; i++) {
+            String name = fileName[i];
+
+            boolean nameIsEmpty = (name == null) || name.equals("");
+            boolean isClass = (fileOptions[i] & 2) == 2 || nameIsEmpty;
+            if (isClass && nameIsEmpty) {
+                name = cpBands.getCpClass()[classBands.getClassThisInts()[classNum]] + ".class";
+                fileName[i] = name;
+            }
+
+            if (!overrideDeflateHint) {
+                fileDeflate[i] = (fileOptions[i] & 1) == 1 || options.shouldDeflate();
+            } else {
+                fileDeflate[i] = deflateHint;
+            }
+
+            fileIsClass[i] = isClass;
+
+            if (isClass) {
+                ClassFile classFile = buildClassFile(classNum);
+                classFile.write(dos);
+                dos.flush();
+
+                classFilesContents[classNum] = bos.toByteArray();
+                bos.reset();
+
+                classNum++;
+            }
+        }
     }
 
     /**
@@ -389,9 +464,40 @@ public class Segment {
      */
     public void unpack(InputStream in, JarOutputStream out) throws IOException,
             Pack200Exception {
+        unpackRead(in);
+        unpackProcess();
+        unpackWrite(out);
+    }
+
+    /*
+     * Package-private accessors for unpacking stages
+     */
+    void unpackRead(InputStream in) throws IOException, Pack200Exception {
         if (!in.markSupported())
             in = new BufferedInputStream(in);
-        parseSegment(in);
+
+        header = new SegmentHeader(this);
+        header.read(in);
+
+        int size = (int)header.getArchiveSize() - header.getArchiveSizeOffset();
+
+        if (doPreRead && header.getArchiveSize() != 0) {
+            byte[] data = new byte[size];
+            in.read(data);
+            internalBuffer = new BufferedInputStream(new ByteArrayInputStream(data));
+        } else {
+            readSegment(in);
+        }
+    }
+
+    void unpackProcess() throws IOException, Pack200Exception {
+        if(internalBuffer != null) {
+            readSegment(internalBuffer);
+        }
+        parseSegment();
+    }
+
+    void unpackWrite(JarOutputStream out) throws IOException, Pack200Exception {
         writeJar(out);
     }
 
@@ -411,12 +517,8 @@ public class Segment {
      */
     public void writeJar(JarOutputStream out) throws IOException,
             Pack200Exception {
-        fileBands.processFileBits();
-        BufferedOutputStream buffer = new BufferedOutputStream(out);
-        DataOutputStream dos = new DataOutputStream(buffer);
         String[] fileName = fileBands.getFileName();
         long[] fileModtime = fileBands.getFileModtime();
-        long[] fileOptions = fileBands.getFileOptions();
         long[] fileSize = fileBands.getFileSize();
         byte[][] fileBits = fileBands.getFileBits();
 
@@ -425,43 +527,31 @@ public class Segment {
         int classNum = 0;
         int numberOfFiles = header.getNumberOfFiles();
         long archiveModtime = header.getArchiveModtime();
-        SegmentOptions options = header.getOptions();
+
         for (int i = 0; i < numberOfFiles; i++) {
             String name = fileName[i];
             long modtime = archiveModtime + fileModtime[i];
-            boolean deflate = (fileOptions[i] & 1) == 1
-                    || options.shouldDeflate();
-            if (overrideDeflateHint) { // Overridden by a command line argument
-                deflate = deflateHint;
-            }
-            boolean isClass = (fileOptions[i] & 2) == 2 || name == null
-                    || name.equals("");
-            if (isClass) {
-                // pull from headers
-                if (name == null || name.equals(""))
-                    name = cpBands.getCpClass()[classBands.getClassThisInts()[classNum]] + ".class";
-            }
+            boolean deflate = fileDeflate[i];
+
             JarEntry entry = new JarEntry(name);
             if (deflate)
                 entry.setMethod(ZipEntry.DEFLATED);
             entry.setTime(modtime);
             out.putNextEntry(entry);
 
-            if (isClass) {
+            if (fileIsClass[i]) {
                 // write to dos
-                ClassFile classFile = buildClassFile(classNum);
-                classFile.write(dos);
-                dos.flush();
+                entry.setSize(classFilesContents[classNum].length);
+                out.write(classFilesContents[classNum]);
                 classNum++;
             } else {
                 long size = fileSize[i];
                 entry.setSize(size);
-                // TODO pull from in
+
                 byte[] data = fileBits[i];
                 out.write(data);
             }
         }
-        dos.flush();
     }
 
     public SegmentConstantPool getConstantPool() {
@@ -470,6 +560,10 @@ public class Segment {
 
     public SegmentHeader getSegmentHeader() {
         return header;
+    }
+
+    public void setPreRead(boolean value) {
+        doPreRead = value;
     }
 
     protected AttrDefinitionBands getAttrDefinitionBands() {

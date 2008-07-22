@@ -43,8 +43,15 @@ import org.apache.harmony.unpack200.bytecode.CPUTF8;
  */
 public abstract class BandSet {
 
-    public abstract void unpack(InputStream inputStream) throws IOException,
+    public abstract void read(InputStream inputStream) throws IOException,
             Pack200Exception;
+
+    public abstract void unpack() throws IOException, Pack200Exception;
+
+    public void unpack(InputStream in) throws IOException, Pack200Exception {
+        read(in);
+        unpack();
+    }
 
     protected Segment segment;
 

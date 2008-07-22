@@ -48,7 +48,7 @@ public class AttrDefinitionBands extends BandSet {
      *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         int attributeDefinitionCount = header.getAttributeDefinitionCount();
         attributeDefinitionHeader = decodeBandInt("attr_definition_headers",
                 in, Codec.BYTE1, attributeDefinitionCount);
@@ -76,6 +76,10 @@ public class AttrDefinitionBands extends BandSet {
             attributeDefinitionMap.add(layout, newBands);
         }
         attributeDefinitionMap.checkMap();
+    }
+
+    public void unpack() throws Pack200Exception, IOException {
+
     }
 
     public AttributeLayoutMap getAttributeDefinitionMap() {

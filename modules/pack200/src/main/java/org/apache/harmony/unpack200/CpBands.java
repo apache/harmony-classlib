@@ -103,7 +103,7 @@ public class CpBands extends BandSet {
         super(segment);
     }
 
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         parseCpUtf8(in);
         parseCpInt(in);
         parseCpFloat(in);
@@ -128,6 +128,10 @@ public class CpBands extends BandSet {
         fieldOffset = descrOffset + cpDescriptor.length;
         methodOffset = fieldOffset + cpFieldClass.length;
         imethodOffset = methodOffset + cpMethodClass.length;
+    }
+
+    public void unpack() {
+
     }
 
     /**

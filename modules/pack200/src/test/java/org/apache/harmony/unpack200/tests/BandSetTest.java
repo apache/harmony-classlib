@@ -40,8 +40,11 @@ public class BandSetTest extends TestCase {
 
     private final BandSet bandSet = new BandSet(new MockSegment()) {
 
-        public void unpack(InputStream inputStream) throws IOException,
+        public void read(InputStream inputStream) throws IOException,
                 Pack200Exception {
+        }
+
+        public void unpack() throws IOException, Pack200Exception {
         }
 
     };

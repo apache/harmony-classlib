@@ -94,8 +94,15 @@ public class SegmentHeader {
         this.segment = segment;
     }
 
-    public void unpack(InputStream in) throws IOException, Pack200Exception,
+    public int getArchiveSizeOffset() {
+        return archiveSizeOffset;
+    }
+
+    private int archiveSizeOffset;
+
+    public void read(InputStream in) throws IOException, Pack200Exception,
             Error, Pack200Exception {
+
         long word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
                 magic.length);
         for (int m = 0; m < magic.length; m++)
@@ -117,6 +124,12 @@ public class SegmentHeader {
             readFully(in, bandHeaders);
             setBandHeadersData(bandHeaders);
         }
+
+        archiveSizeOffset = archiveSizeOffset - in.available();
+    }
+
+    public void unpack() {
+
     }
 
     /**
@@ -272,6 +285,7 @@ public class SegmentHeader {
         if (options.hasArchiveFileCounts()) {
             setArchiveSize(decodeScalar("archive_size_hi", in, Codec.UNSIGNED5) << 32
                     | decodeScalar("archive_size_lo", in, Codec.UNSIGNED5));
+            archiveSizeOffset = in.available();
             setSegmentsRemaining(decodeScalar("archive_next_count", in,
                     Codec.UNSIGNED5));
             setArchiveModtime(decodeScalar("archive_modtime", in,

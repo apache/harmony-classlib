@@ -53,7 +53,7 @@ public class IcBands extends BandSet {
      *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         // Read IC bands
         int innerClassCount = header.getInnerClassCount();
         int[] icThisClassInts = decodeBandInt("ic_this_class", in,
@@ -104,6 +104,11 @@ public class IcBands extends BandSet {
             icAll[i] = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN, cIndex, c2Index, nIndex);
         }
     }
+
+    public void unpack() throws IOException, Pack200Exception {
+
+    }
+
 
     public IcTuple[] getIcTuples() {
         return icAll;

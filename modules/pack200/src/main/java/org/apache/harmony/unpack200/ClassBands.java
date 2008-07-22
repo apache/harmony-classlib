@@ -132,7 +132,7 @@ public class ClassBands extends BandSet {
      *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         int classCount = header.getClassCount();
         classThisInts = decodeBandInt("class_this", in, Codec.DELTA5, classCount);
         classThis = getReferences(classThisInts, cpBands.getCpClass());
@@ -150,6 +150,10 @@ public class ClassBands extends BandSet {
         parseMethodBands(in);
         parseClassAttrBands(in);
         parseCodeBands(in);
+
+    }
+
+    public void unpack() {
 
     }
 

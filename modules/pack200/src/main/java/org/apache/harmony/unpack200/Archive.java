@@ -149,6 +149,8 @@ public class Archive {
                     segment
                             .setLogStream(logFile != null ? (OutputStream) logFile
                                     : (OutputStream) System.out);
+                    segment.setPreRead(false);
+
                     if (i == 1) {
                         segment.log(Segment.LOG_LEVEL_VERBOSE,
                                 "Unpacking from " + inputFileName + " to "
