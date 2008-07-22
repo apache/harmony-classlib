@@ -17,7 +17,7 @@
 package org.apache.harmony.pack200;
 
 
-public class CPClass extends ConstantPoolEntry implements Comparable {
+public class CPClass extends CPConstant implements Comparable {
 
     private final String className;
     private final CPUTF8 utf8;

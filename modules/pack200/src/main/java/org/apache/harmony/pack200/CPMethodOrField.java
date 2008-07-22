@@ -54,11 +54,11 @@ public class CPMethodOrField implements Comparable {
         }
         return 0;
     }
-    
+
     public int getClassIndex() {
         return className.getIndex();
     }
-    
+
     public int getDescIndex() {
         return nameAndType.getIndex();
     }

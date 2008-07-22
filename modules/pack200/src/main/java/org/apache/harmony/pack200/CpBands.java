@@ -71,7 +71,7 @@ public class CpBands extends BandSet {
     private final Map stringsToCpClass = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
 
-    private final Map constantsToCPConstant = new HashMap();
+    private final Map objectsToCPConstant = new HashMap();
 
     private ConstantPool currentConstantPool;
     private JavaClass currentClass;
@@ -366,11 +366,11 @@ public class CpBands extends BandSet {
     public void addConstantDouble(ConstantDouble constant) {
         double d = (constant).getBytes();
         Double bigD = new Double(d);
-        CPDouble cpd = (CPDouble) constantsToCPConstant.get(bigD);
+        CPDouble cpd = (CPDouble) objectsToCPConstant.get(bigD);
         if(cpd == null) {
             cpd = new CPDouble(d);
             cp_Double.add(cpd);
-            constantsToCPConstant.put(bigD, cpd);
+            objectsToCPConstant.put(bigD, cpd);
         }
     }
 
@@ -387,22 +387,22 @@ public class CpBands extends BandSet {
     public void addConstantFloat(ConstantFloat constant) {
         float f = (constant).getBytes();
         Float bigF = new Float(f);
-        CPFloat cpf = (CPFloat) constantsToCPConstant.get(bigF);
+        CPFloat cpf = (CPFloat) objectsToCPConstant.get(bigF);
         if(cpf == null) {
             cpf = new CPFloat(f);
             cp_Float.add(cpf);
-            constantsToCPConstant.put(bigF, cpf);
+            objectsToCPConstant.put(bigF, cpf);
         }
     }
 
     public void addConstantInteger(ConstantInteger constant) {
         int i = (constant).getBytes();
         Integer bigI = new Integer(i);
-        CPInt cpi = (CPInt) constantsToCPConstant.get(bigI);
+        CPInt cpi = (CPInt) objectsToCPConstant.get(bigI);
         if(cpi == null) {
             cpi = new CPInt(i);
             cp_Int.add(cpi);
-            constantsToCPConstant.put(bigI, cpi);
+            objectsToCPConstant.put(bigI, cpi);
         }
     }
 
@@ -420,11 +420,11 @@ public class CpBands extends BandSet {
     public void addConstantLong(ConstantLong constant) {
         long l = (constant).getBytes();
         Long bigL = new Long(l);
-        CPLong cpl = (CPLong) constantsToCPConstant.get(bigL);
+        CPLong cpl = (CPLong) objectsToCPConstant.get(bigL);
         if(cpl == null) {
             cpl = new CPLong(l);
             cp_Long.add(cpl);
-            constantsToCPConstant.put(bigL, cpl);
+            objectsToCPConstant.put(bigL, cpl);
         }
     }
 
@@ -446,11 +446,11 @@ public class CpBands extends BandSet {
 
     public void addConstantString(ConstantString constant) {
         String string = constant.getBytes(currentConstantPool);
-        CPString cpString = (CPString) constantsToCPConstant.get(string);
+        CPString cpString = (CPString) objectsToCPConstant.get(string);
         if (cpString == null) {
             cpString = new CPString(getCPUtf8(string));
             cp_String.add(cpString);
-            constantsToCPConstant.put(string, cpString);
+            objectsToCPConstant.put(string, cpString);
         }
     }
 
@@ -562,21 +562,58 @@ public class CpBands extends BandSet {
     }
 
     public CPConstant getCPConstant(Constant theConstant, ConstantPool cp) {
-        Object key;
+        CPConstant cpC;
         if(theConstant instanceof ConstantDouble) {
-            key = new Double(((ConstantDouble)theConstant).getBytes());
+            Double key = new Double(((ConstantDouble)theConstant).getBytes());
+            cpC = (CPConstant) objectsToCPConstant.get(key);
+            if(cpC == null) {
+                cpC = new CPDouble(key.doubleValue());
+                cp_Double.add(cpC);
+                objectsToCPConstant.put(key, cpC);
+            }
         } else if (theConstant instanceof ConstantFloat) {
-            key = new Float(((ConstantFloat)theConstant).getBytes());
+            Float key = new Float(((ConstantFloat)theConstant).getBytes());
+            cpC = (CPConstant) objectsToCPConstant.get(key);
+            if(cpC == null) {
+                cpC = new CPFloat(key.floatValue());
+                cp_Float.add(cpC);
+                objectsToCPConstant.put(key, cpC);
+            }
         } else if (theConstant instanceof ConstantInteger) {
-            key = new Integer(((ConstantInteger)theConstant).getBytes());
+            Integer key = new Integer(((ConstantInteger)theConstant).getBytes());
+            cpC = (CPConstant) objectsToCPConstant.get(key);
+            if(cpC == null) {
+                cpC = new CPInt(key.intValue());
+                cp_Int.add(cpC);
+                objectsToCPConstant.put(key, cpC);
+            }
         } else if (theConstant instanceof ConstantLong) {
-            key = new Long(((ConstantLong)theConstant).getBytes());
+            Long key = new Long(((ConstantLong)theConstant).getBytes());
+            cpC = (CPConstant) objectsToCPConstant.get(key);
+            if(cpC == null) {
+                cpC = new CPLong(key.longValue());
+                cp_Long.add(cpC);
+                objectsToCPConstant.put(key, cpC);
+            }
         } else if (theConstant instanceof ConstantString) {
-            key = ((ConstantString)theConstant).getBytes(cp);
+            String key = ((ConstantString)theConstant).getBytes(cp);
+            cpC = (CPConstant) objectsToCPConstant.get(key);
+            if(cpC == null) {
+                cpC = new CPString(getCPUtf8(key));
+                cp_String.add(cpC);
+                objectsToCPConstant.put(key, cpC);
+            }
+        } else if (theConstant instanceof ConstantClass) {
+            cpC = getCPClass(((ConstantClass)theConstant).getBytes(cp));
         } else {
             throw new RuntimeException("Unexpected constant type: " + theConstant.getClass());
         }
-        return (CPConstant) constantsToCPConstant.get(key);
+        return cpC;
+    }
+
+    public CPMethodOrField getCPMethodOrField(Constant constant) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

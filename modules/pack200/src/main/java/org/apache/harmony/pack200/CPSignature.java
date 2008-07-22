@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 import java.util.List;
 
 public class CPSignature extends ConstantPoolEntry implements Comparable {
-    
+
     private final CPUTF8 signatureForm;
     private final List classes;
     private final String signature;
@@ -37,11 +37,11 @@ public class CPSignature extends ConstantPoolEntry implements Comparable {
     public int getIndexInCpUtf8() {
         return signatureForm.getIndex();
     }
-    
+
     public List getClasses() {
         return classes;
     }
-    
+
     public String toString() {
         return signature;
     }

@@ -30,7 +30,7 @@ public class FileBands extends BandSet {
         this.files = files;
         int size = files.size();
         if(size > 0) {
-            
+
         }
     }
 

@@ -68,6 +68,10 @@ public class Segment implements Visitor {
     private BcBands bcBands;
     private FileBands fileBands;
 
+    // The current class - only to be used when processing the classes
+    private String currentClass;
+    private String superClass;
+
 
     public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
@@ -75,7 +79,7 @@ public class Segment implements Visitor {
         attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader, cpBands);
         icBands = new IcBands(segmentHeader);
         classBands = new ClassBands(segmentHeader, cpBands, attributeDefinitionBands, classes.size());
-        bcBands = new BcBands();
+        bcBands = new BcBands(cpBands);
         fileBands = new FileBands(segmentHeader, files);
 
         processClasses(classes);
@@ -104,7 +108,7 @@ public class Segment implements Visitor {
     }
 
     public void visitCode(Code obj) {
-        bcBands.addCode(obj);
+        bcBands.addCode(obj, currentClass, superClass);
         Attribute[] attributes = obj.getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             if(attributes[i] instanceof Unknown) {
@@ -198,6 +202,8 @@ public class Segment implements Visitor {
 
     public void visitJavaClass(JavaClass obj) {
         cpBands.setCurrentClass(obj);
+        currentClass = obj.getClassName();
+        superClass = obj.getSuperclassName();
         classBands.addClass(obj);
         segmentHeader.addMinorVersion(obj.getMinor());
         segmentHeader.addMajorVersion(obj.getMajor());

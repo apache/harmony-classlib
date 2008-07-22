@@ -66,10 +66,14 @@ public class ClassBands extends BandSet {
     private final CPNameAndType[][] field_descr;
     private List fieldFlags = new ArrayList();
     private List fieldConstantValueKQ = new ArrayList();
+    private List fieldSignature = new ArrayList();
 
     private final int[] class_method_count;
     private final CPNameAndType[][] method_descr;
     private List methodFlags = new ArrayList();
+    private List methodSignature = new ArrayList();
+    private List methodExceptionNumber = new ArrayList();
+    private List methodExceptionClasses = new ArrayList();
 
     private List codeHeaders = new ArrayList();
     private List codeMaxStack = new ArrayList();
@@ -172,8 +176,14 @@ public class ClassBands extends BandSet {
                     flags |= (1<<17);
                 } else if (attributes[j] instanceof ExceptionTable) {
                     flags |= (1<<18);
+                    String[] exceptionNames = ((ExceptionTable)attributes[j]).getExceptionNames();
+                    methodExceptionNumber.add(new Integer(exceptionNames.length));
+                    for (int k = 0; k < exceptionNames.length; k++) {
+                        methodExceptionClasses.add(cpBands.getCPClass(exceptionNames[k]));
+                    }
                 } else if (attributes[j] instanceof Signature) {
                     flags |= (1<<19);
+                    methodSignature.add(cpBands.getCPSignature(((Signature)attributes[j]).getSignature()));
                 } else if (attributes[j] instanceof Deprecated) {
                     flags |= (1<<20);
 //                } else if (attributes[j] instanceof RuntimeVisibleAnnotations) {
@@ -214,6 +224,7 @@ public class ClassBands extends BandSet {
                     fieldConstantValueKQ.add(cpConstant);
                 } else if (attributes[j] instanceof Signature) {
                     flags |= (1<<19);
+                    fieldSignature.add(cpBands.getCPSignature(((Signature)attributes[j]).getSignature()));
                 } else if (attributes[j] instanceof Deprecated) {
                     flags |= (1<<20);
 //                } else if (attributes[j] instanceof RuntimeVisibleAnnotations) {
@@ -302,22 +313,6 @@ public class ClassBands extends BandSet {
                 codeFlags.add(new Long(flags));
             }
         }
-    }
-
-    private int[] listToArray(List integerList) {
-        int[] array = new int[integerList.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = ((Integer)integerList.get(i)).intValue();
-        }
-        return array;
-    }
-
-    private long[] longListToArray(List longList) {
-        long[] array = new long[longList.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = ((Long)longList.get(i)).longValue();
-        }
-        return array;
     }
 
     private int[] renumberBCI(byte[] code) {
@@ -477,83 +472,41 @@ public class ClassBands extends BandSet {
     }
 
     private void writeFieldAttributeBands(OutputStream out) throws IOException, Pack200Exception {
-        long[] field_flags = longListToArray(fieldFlags);
-        int[] field_constant_value = listToArray(fieldConstantValueKQ);
-
-        out.write(encodeFlags(field_flags, Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_field_flags_hi()));
+        out.write(encodeFlags(longListToArray(fieldFlags), Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_field_flags_hi()));
+        out.write(encodeBandInt(cpEntryListToArray(fieldConstantValueKQ), Codec.UNSIGNED5));
+        out.write(encodeBandInt(cpEntryListToArray(fieldSignature), Codec.UNSIGNED5));
     }
 
     private void writeMethodAttributeBands(OutputStream out) throws IOException, Pack200Exception {
-        long[] method_flags = longListToArray(methodFlags);
+        out.write(encodeFlags(longListToArray(methodFlags), Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_method_flags_hi()));
+        out.write(encodeBandInt(listToArray(methodExceptionNumber), Codec.UNSIGNED5));
+        out.write(encodeBandInt(cpEntryListToArray(methodExceptionClasses), Codec.UNSIGNED5));
+        out.write(encodeBandInt(cpEntryListToArray(methodSignature), Codec.UNSIGNED5));
 
-        out.write(encodeFlags(method_flags, Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_method_flags_hi()));
     }
 
     private void writeClassAttributeBands(OutputStream out) throws IOException, Pack200Exception {
         out.write(encodeFlags(class_flags, Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_class_flags_hi()));
-        int[] class_source_file = new int[classSourceFile.size()];
-        for (int i = 0; i < class_source_file.length; i++) {
-            CPUTF8 sourceFile = (CPUTF8) classSourceFile.get(i);
-            if(sourceFile == null) {
-                class_source_file[i] = 0;
-            } else {
-                class_source_file[i] = sourceFile.getIndex() + 1;
-            }
-        }
-        out.write(encodeBandInt(class_source_file, Codec.UNSIGNED5));
-
+        out.write(encodeBandInt(cpEntryOrNullListToArray(classSourceFile), Codec.UNSIGNED5));
+        out.write(encodeBandInt(cpEntryListToArray(classSignature), Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(classFileVersionMinor), Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(classFileVersionMajor), Codec.UNSIGNED5));
     }
 
     private void writeCodeBands(OutputStream out) throws IOException, Pack200Exception {
-        int[] code_headers = listToArray(codeHeaders);
-        int[] code_max_stack = listToArray(codeMaxStack);
-        int[] code_max_na_locals = listToArray(codeMaxLocals);
-        int[] code_handler_count = listToArray(codeHandlerCount);
-        int[] code_handler_start_P = listToArray(codeHandlerStartP);
-        int[] code_handler_end_PO = listToArray(codeHandlerEndPO);
-        int[] code_handler_catch_PO = listToArray(codeHandlerCatchPO);
-        int[] code_handler_class = new int[codeHandlerClass.size()];
-        for (int j = 0; j < code_handler_class.length; j++) {
-            CPClass cpClass = (CPClass) codeHandlerClass.get(j);
-            code_handler_class[j] = cpClass == null ? 0 : cpClass.getIndex() + 1;
-        }
-        out.write(encodeBandInt(code_headers, Codec.BYTE1));
-        out.write(encodeBandInt(code_max_stack, Codec.UNSIGNED5));
-        out.write(encodeBandInt(code_max_na_locals, Codec.UNSIGNED5));
-        out.write(encodeBandInt(code_handler_count, Codec.UNSIGNED5));
-        out.write(encodeBandInt(code_handler_start_P, Codec.BCI5));
-        out.write(encodeBandInt(code_handler_end_PO, Codec.BRANCH5));
-        out.write(encodeBandInt(code_handler_catch_PO, Codec.BRANCH5));
-        out.write(encodeBandInt(code_handler_class, Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(codeHeaders), Codec.BYTE1));
+        out.write(encodeBandInt(listToArray(codeMaxStack), Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(codeMaxLocals), Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(codeHandlerCount), Codec.UNSIGNED5));
+        out.write(encodeBandInt(listToArray(codeHandlerStartP), Codec.BCI5));
+        out.write(encodeBandInt(listToArray(codeHandlerEndPO), Codec.BRANCH5));
+        out.write(encodeBandInt(listToArray(codeHandlerCatchPO), Codec.BRANCH5));
+        out.write(encodeBandInt(cpEntryOrNullListToArray(codeHandlerClass), Codec.UNSIGNED5));
         writeCodeAttributeBands(out);
     }
 
-    private int[] flatten(int[][] twoDInts) {
-        int[] ints = new int[totalSize(twoDInts)];
-        int index = 0;
-        for (int i = 0; i < twoDInts.length; i++) {
-            for (int j = 0; j < twoDInts[i].length; j++) {
-                ints[index] = twoDInts[i][j];
-                index++;
-            }
-        }
-        return ints;
-    }
-
-    private int totalSize(int[][] ints) {
-        int count = 0;
-        for (int i = 0; i < ints.length; i++) {
-            for (int j = 0; j < ints[i].length; j++) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     private void writeCodeAttributeBands(OutputStream out) throws IOException, Pack200Exception {
-        long[] code_flags = longListToArray(codeFlags);
-
-        out.write(encodeFlags(code_flags, Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_code_flags_hi()));
+        out.write(encodeFlags(longListToArray(codeFlags), Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_code_flags_hi()));
     }
 
 }
