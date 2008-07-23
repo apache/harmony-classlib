@@ -287,21 +287,7 @@ Generating snapshot zip
             />
 
     <target name="-init-hdk">
-        <mkdir dir="${hy.hdk}/build/ant" />
-        <copy file="make/properties.xml"
-              tofile="${hy.hdk}/build/ant/properties.xml"
-              outputencoding="UTF-8" >
-            <filterchain>
-                <tokenfilter>
-                    <replacestring from="Top-Level property definitions"
-                                   to="Common property definitions" />
-                </tokenfilter>
-            </filterchain>
-        </copy>
-        <copy file="make/make.xml"
-              tofile="${hy.hdk}/build/ant/make.xml"
-              outputencoding="UTF-8" >
-        </copy>
+        <init-hdk />
     </target>
 
     <target name="-init-hdk-for-clean">
@@ -310,17 +296,7 @@ Generating snapshot zip
              get called once - before the clean - during a rebuild
              and not called a second time - before the build.
           -->
-        <mkdir dir="${hy.hdk}/build/ant" />
-        <copy file="make/properties.xml"
-              tofile="${hy.hdk}/build/ant/properties.xml"
-              outputencoding="UTF-8" >
-            <filterchain>
-                <tokenfilter>
-                    <replacestring from="Top-Level property definitions"
-                                   to="Common property definitions" />
-                </tokenfilter>
-            </filterchain>
-        </copy>
+        <init-hdk />
     </target>
 
     <target name="-clean-hdk">
@@ -335,6 +311,26 @@ Generating snapshot zip
                       algorithm="@{type}" />
             <echo file="@{file}.@{type}"
                   message="${@{file}.@{type}}  @{file}${line.separator}" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="init-hdk">
+        <sequential>
+            <mkdir dir="${hy.hdk}/build/ant" />
+            <copy file="make/properties.xml"
+                  tofile="${hy.hdk}/build/ant/properties.xml"
+                  outputencoding="UTF-8" >
+                <filterchain>
+                    <tokenfilter>
+                        <replacestring from="Top-Level property definitions"
+                                       to="Common property definitions" />
+                    </tokenfilter>
+                </filterchain>
+            </copy>
+            <copy file="make/make.xml"
+                  tofile="${hy.hdk}/build/ant/make.xml"
+                  outputencoding="UTF-8" >
+            </copy>
         </sequential>
     </macrodef>
 
