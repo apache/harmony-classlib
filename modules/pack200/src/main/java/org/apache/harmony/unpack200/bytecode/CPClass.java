@@ -39,11 +39,11 @@ public class CPClass extends ConstantPoolEntry {
      */
     public CPClass(CPUTF8 name, int globalIndex) {
         super(ConstantPoolEntry.CP_Class, globalIndex);
-        this.name = name.underlyingString();
-        this.utf8 = name;
         if (name == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
+        this.name = name.underlyingString();
+        this.utf8 = name;
     }
 
     public boolean equals(Object obj) {
