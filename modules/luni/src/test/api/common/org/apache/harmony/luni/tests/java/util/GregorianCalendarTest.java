@@ -128,7 +128,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_util_TimeZone() {
 		// Test for method java.util.GregorianCalendar(java.util.TimeZone)
-		Date date = new Date();
+		Date date = new Date(2008,1,1);
 		TimeZone.getDefault();
 		GregorianCalendar gc1 = new GregorianCalendar(TimeZone
 				.getTimeZone("EST"));
@@ -167,7 +167,7 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_util_TimeZoneLjava_util_Locale() {
 		// Test for method java.util.GregorianCalendar(java.util.TimeZone,
 		// java.util.Locale)
-		Date date = new Date();
+		Date date = new Date(2008,1,1);
 		TimeZone.getDefault();
 		GregorianCalendar gc1 = new GregorianCalendar(TimeZone
 				.getTimeZone("EST"), Locale.JAPAN);
