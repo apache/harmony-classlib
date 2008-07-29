@@ -68,7 +68,7 @@ public class Collections {
 
     @SuppressWarnings("unchecked")
     private static final class EmptyList extends AbstractList implements
-            Serializable {
+            RandomAccess, Serializable {
         private static final long serialVersionUID = 8842843931221139166L;
 
         @Override
