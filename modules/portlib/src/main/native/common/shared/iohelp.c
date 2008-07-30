@@ -27,7 +27,7 @@ void
 ioh_convertToPlatform (char *path)
 {
   char *pathIndex;
-  int length = strlen (path);
+  size_t length = strlen (path);
 
   /* Convert all separators to the same type */
   pathIndex = path;
@@ -49,20 +49,20 @@ ioh_convertToPlatform (char *path)
     {
       pathIndex++;
     }
-  if ((pathIndex > path) && (length > (pathIndex - path))
+  if ((pathIndex > path) && ((int)length > (pathIndex - path))
       && (*(pathIndex + 1) == ':'))
     {
       /* For Example '////c:/!*' (! added to avoid gcc warning) */
-      int newlen = length - (pathIndex - path);
+      size_t newlen = length - (pathIndex - path);
       memmove (path, pathIndex, newlen);
       path[newlen] = '\0';
     }
   else
     {
-      if ((pathIndex - path > 3) && (length > (pathIndex - path)))
+      if ((pathIndex - path > 3) && ((int)length > (pathIndex - path)))
         {
           /* For Example '////serverName/!*' (! added to avoid gcc warning) */
-          int newlen = length - (pathIndex - path) + 2;
+          size_t newlen = length - (pathIndex - path) + 2;
           memmove (path, pathIndex - 2, newlen);
           path[newlen] = '\0';
         }

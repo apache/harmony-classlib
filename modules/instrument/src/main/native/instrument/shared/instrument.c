@@ -252,7 +252,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
             
 		  //construct a jvmtiClassDefinition element		  
 		  class_definitions[index].klass=klass;
-		  class_definitions[index].class_bytes=class_bytes;
+		  class_definitions[index].class_bytes=(unsigned char*)class_bytes;
 		  class_definitions[index].class_byte_count=class_byte_count;
 	  }
 

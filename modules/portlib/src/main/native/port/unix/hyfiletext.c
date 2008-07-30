@@ -292,7 +292,7 @@ translateUTF8String (const U_8 * in, U_8 * out, IDATA nbytes)
           int wcresult;
           numberU8Consumed = decodeUTF8Char (cursor, &unicode);
           cursor += numberU8Consumed;
-          wcresult = wctomb (out, (wchar_t) unicode);
+          wcresult = wctomb ((char *) out, (wchar_t) unicode);
           if (wcresult == -1)
             {
               *out++ = '?';
@@ -331,7 +331,7 @@ file_write_using_wctomb (struct HyPortLibrary *portLibrary, IDATA fd,
         }
       if (newBuf)
         {
-          translateUTF8String (buf, newBuf, nbytes);
+          translateUTF8String ((const U_8*)buf, (U_8 *)newBuf, nbytes);
           buf = newBuf;
           nbytes = newLength;
         }
@@ -361,7 +361,7 @@ buf_write_using_wctomb (struct HyPortLibrary *portLibrary, const char *buf,
         outBuf = portLibrary->mem_allocate_memory (portLibrary, newLength + 1);
         if (outBuf)
         {
-            translateUTF8String (buf, outBuf, nbytes);
+            translateUTF8String ((const U_8 *)buf, (U_8 *) outBuf, nbytes);
             nbytes = newLength;
             outBuf[nbytes] = '\0';
         } else

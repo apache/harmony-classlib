@@ -941,7 +941,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
        }
 
        /* FIXME: buffer leak ignored */
-       options[j].optionString = lineBuf->data; 
+       options[j].optionString = (char *)(lineBuf->data); 
        options[j].extraInfo = NULL;
        ++j;
    }
@@ -989,7 +989,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   /* Check that the minimum required -D options have been included.  If not, calculate and add the defaults */
   initDefaultDefines (portLibrary, (void **)&options, argc, argv,
                       isStandaloneJar ? classArg : 0, &classPath2, &javaHome,
-                      &javaLibraryPath, vmdllsubdir, &j);
+                      &javaLibraryPath, vmdllsubdir, (int *) &j);
 
   // Slam in the pointer to the HyPortLibrary
   portLibOptionStr = hymem_allocate_memory (strlen(PORT_LIB_OPTION) + 1);

@@ -126,10 +126,10 @@ JNIEXPORT jobjectArray JNICALL
                 printf ("       %s", family);
 #endif /* DEBUG */
 
-                len = (strlen(family)+1);
+                len = (strlen((char *)family)+1);
                 famList[j] = (char*)malloc(sizeof(char) * len);
 
-                strncpy(famList[j], family, len);
+                strncpy(famList[j], (char *)family, len);
             } else {
                 /* 
                  * TODO
@@ -189,7 +189,7 @@ JNIEXPORT jstring JNICALL
     }
 
     char *path = (char *)(*env)->GetStringUTFChars(env, fName, 0);
-    fontAdded = FcConfigAppFontAddFile(config, path);
+    fontAdded = FcConfigAppFontAddFile(config, (unsigned char*)path);
 
     unsigned short *familyName = 0;
 
@@ -248,13 +248,13 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
     dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
         throwNPException(env, "Cannot connect to XServer");
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     if (jStyle & FONT_BOLD) {
@@ -281,7 +281,7 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
 
@@ -299,7 +299,7 @@ JNIEXPORT jlong JNICALL
             (*env)->ReleaseStringUTFChars(env, jName, name);
         }
         if(faceStyle){
-            (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+            (*env)->ReleaseStringUTFChars(env, jFaceStyle, (char *)faceStyle);
         }
         XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding family name to XFTPattern structure");
@@ -312,7 +312,7 @@ JNIEXPORT jlong JNICALL
 
     if (faceStyle && !XftPatternAddString (pattern, XFT_STYLE, faceStyle)){
         if(faceStyle){
-            (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+            (*env)->ReleaseStringUTFChars(env, jFaceStyle, (char *)faceStyle);
         }
         XftPatternDestroy (pattern);
         throwNPException(env, "Error during adding style name to XFTPattern structure");
@@ -321,7 +321,7 @@ JNIEXPORT jlong JNICALL
     /* We do not need faceStyle any more */
     if(faceStyle){
         XftPatternDestroy (pattern);
-        (*env)->ReleaseStringUTFChars(env, jFaceStyle, faceStyle);
+        (*env)->ReleaseStringUTFChars(env, jFaceStyle, (char *)faceStyle);
     }
 
     if (!XftPatternAddInteger(pattern, XFT_SLANT, slant)){
@@ -414,7 +414,7 @@ JNIEXPORT jlong JNICALL
 
     if (font_type == FONT_TYPE_UNDEF){
         XftFontClose (dpy, xftFnt);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     /* Set Font type in LinuxFont object (upcall) */
@@ -426,7 +426,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
@@ -437,7 +437,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     return (long)xftFnt;
@@ -484,13 +484,13 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
     dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
         throwNPException(env, "Cannot connect to XServer");
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
     
     xlfd = (*env)->GetStringUTFChars(env, jXLFD, &iscopy);
@@ -505,7 +505,7 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
 
@@ -517,7 +517,7 @@ JNIEXPORT jlong JNICALL
 
     if (n == 0){
         free(buffer);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     /* Xft part */
@@ -589,7 +589,7 @@ JNIEXPORT jlong JNICALL
 
     if (font_type == FONT_TYPE_UNDEF){
         XftFontClose (dpy, xftFnt);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     /* Set Font type in LinuxFont object (upcall) */
@@ -601,7 +601,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
  
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
@@ -612,7 +612,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     return (long)xftFnt;
@@ -937,14 +937,14 @@ JNIEXPORT jobjectArray JNICALL
                 fontStyle |= FONT_ITALIC;
             }
 
-            len = snprintf(font, BUF_SIZE, fstr, family, style, fontStyle);
+            len = snprintf((char *)font, BUF_SIZE, fstr, family, style, fontStyle);
 
             if (len < 0){
                 len = BUF_SIZE;
             }
 
             fontList[j] = (char*)malloc(sizeof(char) * (len+1));
-            strncpy(fontList[j], font, len);
+            strncpy(fontList[j], (char *)font, len);
             fontList[j][len] = 0;
         }
         XftFontSetDestroy (fs);
@@ -966,7 +966,7 @@ JNIEXPORT jobjectArray JNICALL
         free(fontList);
 
         throwNPException(env, "Not enough memory to create families list");
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     for (i = 0;i < numFonts;i++){
@@ -1347,7 +1347,7 @@ JNIEXPORT jint JNICALL
     FcStrSetDestroy (subdirs);
     FcStrListDone (list);
 
-    (*env)->ReleaseStringUTFChars(env, fName, dirName);
+    (*env)->ReleaseStringUTFChars(env, fName, (char *)dirName);
 
     return result;
 }
@@ -1387,7 +1387,7 @@ JNIEXPORT jlong JNICALL
 
         XftUnlockFace(font);
     
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     error = FT_Get_Glyph( face->glyph, &glyph );
@@ -1396,7 +1396,7 @@ JNIEXPORT jlong JNICALL
 //        throwNPException(env, "NativeInitGlyphBitmap 1 : FreeType error");
         XftUnlockFace(font);
     
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }        
     // convert to a bitmap (default render mode + destroy old)     
     if ( glyph->format != FT_GLYPH_FORMAT_BITMAP ) {                                                              
@@ -1406,7 +1406,7 @@ JNIEXPORT jlong JNICALL
             // glyph unchanged                              
             FT_Done_Glyph( glyph );
             XftUnlockFace(font);
-            return (jlong)NULL;
+            return (jlong)(int)NULL;
         }
     }                                                              
     
@@ -1633,7 +1633,7 @@ JNIEXPORT jlong JNICALL
         throwNPException(env, "getGlyphOutline : FreeType error");
         XftUnlockFace(font);
     
-        return (jlong)NULL;
+        return (jlong)(int)NULL;
     }
 
     if ((face->glyph->format & ft_glyph_format_outline) != 0){
