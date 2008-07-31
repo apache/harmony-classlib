@@ -248,13 +248,13 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
     dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
         throwNPException(env, "Cannot connect to XServer");
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     if (jStyle & FONT_BOLD) {
@@ -281,7 +281,7 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
 
@@ -391,14 +391,14 @@ JNIEXPORT jlong JNICALL
 
     if (!matchPattern){
         XftPatternDestroy (matchPattern);
-        return (long)NULL;
+        return (jlong)(IDATA)NULL;
     }
     
     xftFnt = XftFontOpenPattern (dpy, matchPattern);
 
     if (!xftFnt){
         XftPatternDestroy (matchPattern);
-        return (long)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     /* defining font type */
@@ -414,7 +414,7 @@ JNIEXPORT jlong JNICALL
 
     if (font_type == FONT_TYPE_UNDEF){
         XftFontClose (dpy, xftFnt);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     /* Set Font type in LinuxFont object (upcall) */
@@ -426,7 +426,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
@@ -437,10 +437,10 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
-    return (long)xftFnt;
+    return (jlong)(IDATA)xftFnt;
 }
 
 /*
@@ -484,13 +484,13 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
     dpy = (Display *)(long)(*env)->GetLongField(env, linuxFont, fid);
 
     if (dpy == NULL){
         throwNPException(env, "Cannot connect to XServer");
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
     
     xlfd = (*env)->GetStringUTFChars(env, jXLFD, &iscopy);
@@ -505,7 +505,7 @@ JNIEXPORT jlong JNICALL
     if (fid == 0) {
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
     scr = (*env)->GetIntField(env, linuxFont, fid);
 
@@ -517,7 +517,7 @@ JNIEXPORT jlong JNICALL
 
     if (n == 0){
         free(buffer);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     /* Xft part */
@@ -589,7 +589,7 @@ JNIEXPORT jlong JNICALL
 
     if (font_type == FONT_TYPE_UNDEF){
         XftFontClose (dpy, xftFnt);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     /* Set Font type in LinuxFont object (upcall) */
@@ -601,7 +601,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
  
     (*env)->CallVoidMethod(env, linuxFont, mid, font_type);
@@ -612,7 +612,7 @@ JNIEXPORT jlong JNICALL
 #endif // DEBUG 
         (*env)->ExceptionDescribe(env);
         (*env)->ExceptionClear(env);
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     return (long)xftFnt;
@@ -966,7 +966,7 @@ JNIEXPORT jobjectArray JNICALL
         free(fontList);
 
         throwNPException(env, "Not enough memory to create families list");
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     for (i = 0;i < numFonts;i++){
@@ -1387,7 +1387,7 @@ JNIEXPORT jlong JNICALL
 
         XftUnlockFace(font);
     
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     error = FT_Get_Glyph( face->glyph, &glyph );
@@ -1396,7 +1396,7 @@ JNIEXPORT jlong JNICALL
 //        throwNPException(env, "NativeInitGlyphBitmap 1 : FreeType error");
         XftUnlockFace(font);
     
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }        
     // convert to a bitmap (default render mode + destroy old)     
     if ( glyph->format != FT_GLYPH_FORMAT_BITMAP ) {                                                              
@@ -1406,7 +1406,7 @@ JNIEXPORT jlong JNICALL
             // glyph unchanged                              
             FT_Done_Glyph( glyph );
             XftUnlockFace(font);
-            return (jlong)(int)NULL;
+            return (jlong)(IDATA)NULL;
         }
     }                                                              
     
@@ -1633,7 +1633,7 @@ JNIEXPORT jlong JNICALL
         throwNPException(env, "getGlyphOutline : FreeType error");
         XftUnlockFace(font);
     
-        return (jlong)(int)NULL;
+        return (jlong)(IDATA)NULL;
     }
 
     if ((face->glyph->format & ft_glyph_format_outline) != 0){
