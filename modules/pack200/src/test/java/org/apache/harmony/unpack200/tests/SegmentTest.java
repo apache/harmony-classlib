@@ -90,7 +90,7 @@ public class SegmentTest extends TestCase {
         JarEntry entry = jarFile
                 .getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
         assertNotNull(entry);
-        
+
         try {
             Process process = Runtime
                     .getRuntime()
@@ -104,7 +104,7 @@ public class SegmentTest extends TestCase {
             String line = reader.readLine();
             assertEquals("Hello world", line);
             reader.close();
-    
+
             Process process2 = Runtime
                     .getRuntime()
                     .exec(
@@ -118,24 +118,33 @@ public class SegmentTest extends TestCase {
                     .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
             BufferedReader reader2 = new BufferedReader(new InputStreamReader(
                     javapCompareFile));
-            String line1 = reader1.readLine();
-            String line2 = reader2.readLine();
+            String line1 = readNextLine(reader1);
+            String line2 = readNextLine(reader2);
             int i = 1;
             while (line1 != null || line2 != null) {
                 assertEquals(line2, line1);
-                line1 = reader1.readLine();
-                line2 = reader2.readLine();
+                line1 = readNextLine(reader1);
+                line2 = readNextLine(reader2);
                 i++;
             }
             reader1.close();
             reader2.close();
         } catch (IOException e) {
-            if (e.getMessage().startsWith("Unable to start program")) {
+            String message = e.getMessage();
+            if (message.startsWith("Unable to start program") || message.startsWith("The creation of the Process has just failed")) {
                 System.out.println("Warning: org.apache.harmony.unpack200.tests.SegmentTest.testHelloWorld() was not completed as java or javap could not be found");
             } else {
                 throw e;
             }
         }
+    }
+
+    private String readNextLine(BufferedReader reader) throws IOException {
+        String line = reader.readLine();
+        while ("".equals(line)) {
+            line = reader.readLine();
+        }
+        return line;
     }
 
 }
