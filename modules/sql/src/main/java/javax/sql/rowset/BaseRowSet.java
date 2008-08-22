@@ -727,9 +727,4 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         return result;
     }
 
-    public BaseRowSet clone() throws CloneNotSupportedException{
-        BaseRowSet result = (BaseRowSet) super.clone();        
-        return result;
-        
-    }
 }
