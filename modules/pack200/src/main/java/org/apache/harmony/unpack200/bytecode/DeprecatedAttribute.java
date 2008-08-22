@@ -24,8 +24,7 @@ import java.io.IOException;
  */
 public class DeprecatedAttribute extends Attribute {
 
-    private static final CPUTF8 attributeName = new CPUTF8("Deprecated",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("Deprecated");
 
     public DeprecatedAttribute() {
         super(attributeName);
@@ -33,7 +32,7 @@ public class DeprecatedAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
@@ -42,7 +41,7 @@ public class DeprecatedAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
@@ -51,7 +50,7 @@ public class DeprecatedAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {

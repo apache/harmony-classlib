@@ -33,7 +33,7 @@ public abstract class CPRef extends ConstantPoolEntry {
 
     /**
      * Create a new CPRef
-     * 
+     *
      * @param type
      * @param className
      * @param descriptor
@@ -85,7 +85,7 @@ public abstract class CPRef extends ConstantPoolEntry {
         classNameIndex = pool.indexOf(className);
     }
 
-    protected String cachedToString = null;
+    protected String cachedToString;
 
     public String toString() {
         if (cachedToString == null) {

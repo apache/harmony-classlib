@@ -142,13 +142,12 @@ public class MulticastSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.MulticastSocket#MulticastSocket(int)
 	 */
-	public void test_ConstructorI() {
-		// Test for method java.net.MulticastSocket(int)
-		// Used in tests
+	public void test_ConstructorI() throws IOException {
+	    MulticastSocket orig = new MulticastSocket();
+        int port = orig.getLocalPort();
+        orig.close();
 		MulticastSocket dup = null;
 		try {
-			mss = new MulticastSocket();
-			int port = mss.getLocalPort();
 			dup = new MulticastSocket(port);
             // regression test for Harmony-1162
             assertTrue(dup.getReuseAddress());

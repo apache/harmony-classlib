@@ -218,8 +218,9 @@ public class Manifest implements Cloneable {
             buf[buf.length - 1] = '\n';
         }
 
-        im = new InitManifest(buf, mainAttributes,
-                Attributes.Name.MANIFEST_VERSION);
+        // Attributes.Name.MANIFEST_VERSION is not used for
+        // the second parameter for RI compatibility
+        im = new InitManifest(buf, mainAttributes, null);
         mainEnd = im.getPos();
         // FIXME
         im.initEntries(entries, chunks);

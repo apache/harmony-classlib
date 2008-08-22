@@ -211,6 +211,11 @@
                showoutput="on"
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
+
+            <assertions enableSystemAssertions="true">
+                <enable />
+            </assertions>
+
             <jvmarg line="${hy.test.vmargs}" />
 
             <env key="JAVA_HOME" value="${test.jre.home}"/>

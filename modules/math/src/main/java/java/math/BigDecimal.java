@@ -743,7 +743,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             
         } else {
             // Checking if:  remainder * 2 >= scaledDivisor 
-            compRem = remainder.abs().shiftLeft(1).compareTo(scaledDivisor.abs());
+            compRem = remainder.abs().shiftLeftOneBit().compareTo(scaledDivisor.abs());
             compRem = roundingBehavior(quotient.testBit(0) ? 1 : 0,
                     sign * (5 + compRem), roundingMode);
         }
@@ -875,7 +875,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         // Calculating the exact quotient with at least 'mc.precision()' digits
         if (quotAndRem[1].signum() != 0) {
             // Checking if:   2 * remainder >= divisor ?
-            compRem = quotAndRem[1].shiftLeft(1).compareTo( divisor.getUnscaledValue() );
+            compRem = quotAndRem[1].shiftLeftOneBit().compareTo( divisor.getUnscaledValue() );
             // quot := quot * 10 + r;     with 'r' in {-6,-5,-4, 0,+4,+5,+6}
             integerQuot = integerQuot.multiply(BigInteger.TEN)
             .add(BigInteger.valueOf(quotAndRem[0].signum() * (5 + compRem)));
@@ -1691,7 +1691,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
             // Computing (mantisa * 2^k) / 10^s
             quotAndRem = mantisa.divideAndRemainder(powerOfTen);
             // To check if the fractional part >= 0.5
-            compRem = quotAndRem[1].shiftLeft(1).compareTo(powerOfTen);
+            compRem = quotAndRem[1].shiftLeftOneBit().compareTo(powerOfTen);
             // To add two rounded bits at end of mantisa
             mantisa = quotAndRem[0].shiftLeft(2).add(
                     BigInteger.valueOf((compRem * (compRem + 3)) / 2 + 1));
@@ -1791,7 +1791,7 @@ public class BigDecimal extends Number implements Comparable<BigDecimal>, Serial
         // If the discarded fraction is non-zero, perform rounding
         if (integerAndFraction[1].signum() != 0) {
             // To check if the discarded fraction >= 0.5
-            compRem = (integerAndFraction[1].abs().shiftLeft(1).compareTo(sizeOfFraction));
+            compRem = (integerAndFraction[1].abs().shiftLeftOneBit().compareTo(sizeOfFraction));
             // To look if there is a carry
             compRem =  roundingBehavior( integerAndFraction[0].testBit(0) ? 1 : 0,
                     integerAndFraction[1].signum() * (5 + compRem),

@@ -17,7 +17,7 @@
 
 #include "US_ASCII.h"
 
-#define jlong2addr(a, x) ((a *)((int)(x)))
+#include "hycomp.h"
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_niochar_charset_US_1ASCII_00024Decoder_nDecode
   (JNIEnv *env, jobject obj, jcharArray outArr, jint arrPosition, jint remaining, jlong inAddr, jint absolutePos) 

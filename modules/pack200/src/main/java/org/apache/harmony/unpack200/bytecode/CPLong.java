@@ -26,7 +26,6 @@ public class CPLong extends CPConstantNumber {
 
     public CPLong(Long value, int globalIndex) {
         super(ConstantPoolEntry.CP_Long, value, globalIndex);
-        this.domain = ClassConstantPool.DOMAIN_LONG;
     }
 
     protected void writeBody(DataOutputStream dos) throws IOException {

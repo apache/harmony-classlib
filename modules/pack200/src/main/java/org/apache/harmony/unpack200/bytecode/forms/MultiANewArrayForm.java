@@ -22,7 +22,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
 /**
  * This class implements the byte code form for the multianewarray instruction.
  * It has a class reference and a byte operand.
- * 
+ *
  * MultiANewArrayForms (like other anewarray forms) do not track the last new().
  */
 public class MultiANewArrayForm extends ClassRefForm {
@@ -45,7 +45,7 @@ public class MultiANewArrayForm extends ClassRefForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.OperandTable,
      *      org.apache.harmony.unpack200.SegmentConstantPool)

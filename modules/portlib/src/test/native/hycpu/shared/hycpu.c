@@ -30,7 +30,7 @@ int main (int argc, char **argv, char **envp)
   HyPortLibraryVersion portLibraryVersion;
   int ret;
 
-  printf("hyerror:\n");
+  printf("hycpu:\n");
 
   HYPORT_SET_VERSION (&portLibraryVersion, HYPORT_CAPABILITY_MASK);
   if (0 != hyport_init_library (&hyportLibrary, &portLibraryVersion,

@@ -551,13 +551,11 @@ void cleanupNetlinkContext(JNIEnv * env, struct netlinkContext_struct *nlc)
     }
 }
 
-getNextNetlinkMsg (JNIEnv * env, 
+jint getNextNetlinkMsg (JNIEnv * env, 
                    struct netlinkContext_struct * netlinkContext,
                    struct nlmsghdr ** nextMessage)
 {
-  struct sockaddr_nl address;
   U_32 receiveLength;
-  socklen_t addressLength = sizeof (address);
 
   PORT_ACCESS_FROM_ENV (env);
 
@@ -611,8 +609,6 @@ getNextNetlinkMsg (JNIEnv * env,
                 int reallocLoop = 1;
 
                 while (reallocLoop) {
-                    int len = recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
-
                     /*
                      *  if the peek shows that we would truncate, realloc to 2x the buffer size
                      */
@@ -673,8 +669,8 @@ getNextNetlinkMsg (JNIEnv * env,
             }
           /* we are done if the NLM_F_MULTI flag is not set in this header */
           *nextMessage = netlinkContext->netlinkHeader;
-          if (netlinkContext->netlinkHeader->nlmsg_flags & NLM_F_MULTI !=
-              NLM_F_MULTI)
+          if (netlinkContext->netlinkHeader->nlmsg_flags & (NLM_F_MULTI !=
+              NLM_F_MULTI))
             {
               netlinkContext->done = 1;
             }

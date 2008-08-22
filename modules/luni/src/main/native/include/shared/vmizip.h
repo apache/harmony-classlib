@@ -93,6 +93,8 @@ typedef struct VMIZipFile
 	char _vmipadding0065[3];  /* 3 bytes of automatic padding */
 } VMIZipFile;
 
+struct HyZipCache; /* forward declaration */
+
 typedef struct VMIZipFunctionTable {
 	I_32 (PVMCALL zip_closeZipFile) (VMInterface * vmi, VMIZipFile * zipFile) ;
 	void (PVMCALL zip_freeZipEntry) (VMInterface * vmi, VMIZipEntry * entry) ;
@@ -109,7 +111,7 @@ typedef struct VMIZipFunctionTable {
 	IDATA (PVMCALL zipCache_enumElement) (void *handle, char *nameBuf, UDATA nameBufSize, UDATA * offset) ;
 	IDATA (PVMCALL zipCache_enumGetDirName) (void *handle, char *nameBuf, UDATA nameBufSize) ;
 	void (PVMCALL zipCache_enumKill) (void *handle) ;
-	IDATA (PVMCALL zipCache_enumNew) (void * zipCache, char *directoryName, void **handle) ;
+	IDATA (PVMCALL zipCache_enumNew) (struct HyZipCache * zipCache, char *directoryName, void **handle) ;
 
 	void *reserved;
 } VMIZipFunctionTable;

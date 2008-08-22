@@ -39,7 +39,7 @@ public abstract class ClassFileEntry {
 
     /**
      * Allows the constant pool entries to resolve their nested entries
-     * 
+     *
      * @param pool
      */
     protected void resolve(ClassConstantPool pool) {
@@ -48,6 +48,10 @@ public abstract class ClassFileEntry {
 
     protected boolean isResolved() {
         return resolved;
+    }
+
+    protected int objectHashCode() {
+        return super.hashCode();
     }
 
     public abstract String toString();

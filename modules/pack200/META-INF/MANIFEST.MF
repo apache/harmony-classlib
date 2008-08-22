@@ -13,10 +13,16 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io;resolution:=optional,
  java.lang;resolution:=optional,
+ java.nio,
  java.util;resolution:=optional,
- java.util.jar;resolution:=optional
+ java.util.jar;resolution:=optional,
+ org.apache.bcel,
+ org.apache.bcel.classfile
 Export-Package: org.apache.harmony.pack200,
- org.apache.harmony.pack200.bytecode
+ org.apache.harmony.pack200.bytecode,
+ org.apache.harmony.unpack200,
+ org.apache.harmony.unpack200.bytecode,
+ org.apache.harmony.unpack200.bytecode.forms
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  J2SE-1.5
 

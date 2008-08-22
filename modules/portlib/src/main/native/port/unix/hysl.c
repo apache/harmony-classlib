@@ -61,12 +61,12 @@
 #if (defined(HYVM_USE_MBTOWC))
 static void convertWithMBTOWC (struct HyPortLibrary *portLibrary, char *error,
                                char *errBuf, UDATA bufLen);
-#endif /* HYVM_USE_MBTOWC (autogen) */
+#endif /* HYVM_USE_MBTOWC */
 
 #if (defined(HYVM_USE_ICONV))
 static void convertWithIConv (struct HyPortLibrary *portLibrary, char *error,
                               char *errBuf, UDATA bufLen);
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 static void getDLError (struct HyPortLibrary *portLibrary, char *errBuf,
                         UDATA bufLen);
@@ -284,7 +284,7 @@ convertWithIConv (struct HyPortLibrary *portLibrary, char *error,
   *outbuf = '\0';
   iconv_close (converter);
 }
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -345,7 +345,7 @@ convertWithMBTOWC (struct HyPortLibrary *portLibrary, char *error,
     }
   *out = '\0';
 }
-#endif /* HYVM_USE_MBTOWC (autogen) */
+#endif /* HYVM_USE_MBTOWC */
 
 #undef CDEV_CURRENT_FUNCTION
 

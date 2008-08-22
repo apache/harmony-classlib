@@ -40,7 +40,7 @@ public class NoArgumentForm extends ByteCodeForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.OperandTable,
      *      org.apache.harmony.unpack200.SegmentConstantPool)

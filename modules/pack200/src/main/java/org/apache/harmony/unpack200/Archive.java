@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +29,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
+
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Archive is the main entry point to unpack200. An archive is constructed with
@@ -57,7 +60,7 @@ public class Archive {
 
     /**
      * Creates an Archive with the given input and output file names.
-     * 
+     *
      * @param inputFile
      * @param outputFile
      * @throws FileNotFoundException
@@ -69,14 +72,14 @@ public class Archive {
         this.inputFileName = inputFile;
         this.outputFileName = outputFile;
         inputStream = new FileInputStream(inputFile);
-        outputStream = new JarOutputStream(new FileOutputStream(outputFile));
+        outputStream = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile)));
     }
 
     /**
      * Creates an Archive with streams for the input and output files. Note: If
      * you use this method then calling {@link #setRemovePackFile(boolean)} will
      * have no effect.
-     * 
+     *
      * @param inputStream
      * @param outputStream
      * @throws IOException
@@ -89,7 +92,7 @@ public class Archive {
 
     /**
      * Unpacks the Archive from the input file to the output file
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -146,6 +149,8 @@ public class Archive {
                     segment
                             .setLogStream(logFile != null ? (OutputStream) logFile
                                     : (OutputStream) System.out);
+                    segment.setPreRead(false);
+
                     if (i == 1) {
                         segment.log(Segment.LOG_LEVEL_VERBOSE,
                                 "Unpacking from " + inputFileName + " to "
@@ -200,7 +205,7 @@ public class Archive {
     /**
      * If removePackFile is set to true, the input file is deleted after
      * unpacking
-     * 
+     *
      * @param removePackFile
      */
     public void setRemovePackFile(boolean removePackFile) {

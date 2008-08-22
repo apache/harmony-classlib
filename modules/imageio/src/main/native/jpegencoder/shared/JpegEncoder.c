@@ -264,7 +264,7 @@ GLOBAL(struct jpeg_compress_struct *) ios_create_compress(JNIEnv *env) {
 JNIEXPORT void JNICALL 
 Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_dispose(JNIEnv *env, jobject obj, jlong handle) {
 
-    struct jpeg_compress_struct * cinfo = (struct jpeg_compress_struct *) handle;
+    struct jpeg_compress_struct * cinfo = (struct jpeg_compress_struct *) (IDATA)handle;
     enc_client_data_ptr cdata = (enc_client_data_ptr) cinfo->client_data;
 
     if (cdata->ios != NULL) {
@@ -307,7 +307,7 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_initWriterIds(JNI
  */
 JNIEXPORT jlong JNICALL 
 Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_initCompressionObj(JNIEnv *env, jobject encoder) {
-    return (jlong) ios_create_compress(env);
+    return (jlong) (IDATA)ios_create_compress(env);
 }
 
 /*
@@ -318,7 +318,7 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_initCompressionOb
 JNIEXPORT void JNICALL 
 Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_setIOS(JNIEnv *env, jobject encoder, jobject iosObj, jlong handle) {
 
-    struct jpeg_compress_struct * cinfo = (struct jpeg_compress_struct *) handle;
+    struct jpeg_compress_struct * cinfo = (struct jpeg_compress_struct *) (IDATA)handle;
     enc_client_data_ptr cdata = (enc_client_data_ptr) cinfo->client_data;
 
     if (cdata->ios != NULL) {
@@ -365,13 +365,13 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_encode(JNIEnv *en
     }
 
     
-    cinfo = (struct jpeg_compress_struct *) handle;
+    cinfo = (struct jpeg_compress_struct *) (IDATA)handle;
     err_mgr = (enc_error_mgr_ptr) cinfo->err;
 
     if (setjmp(err_mgr->jmp_buffer)) {
         if (!(*env)->ExceptionOccurred(env)) {
             char msg_buffer[JMSG_LENGTH_MAX];
-            cinfo->err->format_message(cinfo, msg_buffer);
+            cinfo->err->format_message((j_common_ptr)cinfo, msg_buffer);
             throwNewExceptionByName(env, "javax/imageio/IIOException",
                                     msg_buffer);
         }

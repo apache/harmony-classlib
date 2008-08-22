@@ -32,19 +32,18 @@ public class CPClass extends ConstantPoolEntry {
 
     /**
      * Creates a new CPClass
-     * 
+     *
      * @param name
      * @throws NullPointerException
      *             if name is null
      */
     public CPClass(CPUTF8 name, int globalIndex) {
         super(ConstantPoolEntry.CP_Class, globalIndex);
-        this.name = name.underlyingString();
-        this.domain = ClassConstantPool.DOMAIN_CLASSREF;
-        this.utf8 = name;
         if (name == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
+        this.name = name.underlyingString();
+        this.utf8 = name;
     }
 
     public boolean equals(Object obj) {
@@ -62,8 +61,18 @@ public class CPClass extends ConstantPoolEntry {
         return new ClassFileEntry[] { utf8, };
     }
 
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        cachedHashCode = utf8.hashCode();
+    }
+
     public int hashCode() {
-        return utf8.hashCode();
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     protected void resolve(ClassConstantPool pool) {

@@ -148,6 +148,27 @@ public class ObjectStreamClass implements Serializable {
 
     private transient Method methodReadObjectNoData;
 
+    /**
+     * Indicates whether the class properties resolved
+     * 
+     * @see #resolveProperties()
+     */
+    private transient boolean arePropertiesResolved;
+    
+    /**
+     * Cached class properties
+     * 
+     * @see #resolveProperties()
+     * @see #isSerializable()
+     * @see #isExternalizable() 
+     * @see #isProxy()
+     * @see #isEnum()
+     */
+    private transient boolean isSerializable;
+    private transient boolean isExternalizable;      
+    private transient boolean isProxy;
+    private transient boolean isEnum;   
+    
     // ClassDesc //
 
     // Name of the class this descriptor represents
@@ -203,26 +224,24 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
-     * Compute class descriptor for a given class <code>cl</code>. If
-     * <code>computeSUID</code> is true, this method will compute the SUID for
-     * this class.
+     * Compute class descriptor for a given class <code>cl</code>. 
      * 
      * @param cl
      *            a java.langClass for which to compute the corresponding
-     *            descriptor
-     * @param computeSUID
-     *            a boolean indicating if SUID should be computed or not.
+     *            descriptor 
      * @return the computer class descriptor
      */
-    private static ObjectStreamClass createClassDesc(Class<?> cl,
-            boolean computeSUID) {
+    private static ObjectStreamClass createClassDesc(Class<?> cl) {
 
         ObjectStreamClass result = new ObjectStreamClass();
 
-        boolean isProxy = Proxy.isProxyClass(cl);
-        boolean isEnum = Enum.class.isAssignableFrom(cl);
         boolean isArray = cl.isArray();
+        boolean serializable = isSerializable(cl);
+        boolean externalizable = isExternalizable(cl);          
 
+        result.isSerializable = serializable;
+        result.isExternalizable = externalizable;
+        
         // Now we fill in the values
         result.setName(cl.getName());
         result.setClass(cl);
@@ -232,9 +251,10 @@ public class ObjectStreamClass implements Serializable {
         }
 
         Field[] declaredFields = null;
-        if (computeSUID) {
-            // Lazy computation, to save speed & space
-            if (isEnum || isProxy) {
+        
+        // Compute the SUID
+        if(serializable || externalizable) {
+            if (result.isEnum() || result.isProxy()) {
                 result.setSerialVersionUID(0L);
             } else {
                 declaredFields = cl.getDeclaredFields();
@@ -243,7 +263,6 @@ public class ObjectStreamClass implements Serializable {
             }
         }
 
-        boolean serializable = isSerializable(cl);
         // Serializables need field descriptors
         if (serializable && !isArray) {
             if (declaredFields == null) {
@@ -274,7 +293,6 @@ public class ObjectStreamClass implements Serializable {
         }
 
         byte flags = 0;
-        boolean externalizable = isExternalizable(cl);
         if (externalizable) {
             flags |= ObjectStreamConstants.SC_EXTERNALIZABLE;
             flags |= ObjectStreamConstants.SC_BLOCK_DATA; // use protocol version 2 by default
@@ -688,7 +706,7 @@ public class ObjectStreamClass implements Serializable {
     ObjectStreamField[] fields() {
         if (fields == null) {
             Class<?> forCl = forClass();
-            if (forCl != null && isSerializable(forCl) && !forCl.isArray()) {
+            if (forCl != null && isSerializable() && !forCl.isArray()) {
                 buildFieldDescriptors(forCl.getDeclaredFields());
             } else {
                 // Externalizables or arrays do not need FieldDesc info
@@ -869,6 +887,63 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
+     * Resolves the class properties, if they weren't already
+     */
+    private void resolveProperties() {       
+        if (arePropertiesResolved) {
+            return;
+        }
+           
+        Class<?> cl = forClass();
+        isProxy = Proxy.isProxyClass(cl);
+        isEnum = Enum.class.isAssignableFrom(cl);
+        isSerializable = isSerializable(cl);
+        isExternalizable = isExternalizable(cl);
+        
+        arePropertiesResolved = true;
+    }
+
+    /**
+     * Answers whether the class for this descriptor is serializable
+     * 
+     * @return true if class implements Serializable
+     */
+    boolean isSerializable() {
+        resolveProperties();
+        return isSerializable;    
+    }
+
+    /**
+     * Answers whether the class for this descriptor is serializable
+     * 
+     * @return true if class implements Serializable
+     */
+    boolean isExternalizable() {
+        resolveProperties();        
+        return isExternalizable;
+    }
+     
+    /**
+     * Answers whether the class for this descriptor is proxied class
+     * 
+     * @return true if class is proxied
+     */
+    boolean isProxy() {    
+        resolveProperties();
+        return isProxy;
+    }
+
+    /**
+     * Answers whether the class for this descriptor is subclass of Enum
+     * 
+     * @return true if class is subclass of Enum
+     */
+    boolean isEnum() {     
+        resolveProperties();
+        return isEnum;
+    }
+    
+    /**
      * Return a little endian long stored in a given position of the buffer
      * 
      * @param buffer
@@ -899,15 +974,13 @@ public class ObjectStreamClass implements Serializable {
      *         the class <code>cl</code> is Serializable or Externalizable
      */
     public static ObjectStreamClass lookup(Class<?> cl) {
-        boolean serializable = isSerializable(cl);
-        boolean externalizable = isExternalizable(cl);
-
-        // Has to be either Serializable or Externalizable
-        if (!serializable && !externalizable) {
-            return null;
+        ObjectStreamClass osc = lookupStreamClass(cl);
+        
+        if (osc.isSerializable() || osc.isExternalizable()) {
+            return osc;
         }
-
-        return lookupStreamClass(cl, true);
+        
+        return null;
     }
     
     /**
@@ -922,22 +995,7 @@ public class ObjectStreamClass implements Serializable {
      * @since 1.6
      */
     public static ObjectStreamClass lookupAny(Class<?> cl) {
-        return isSerializable(cl) ? lookupStreamClass(cl, true)
-                : lookupStreamClass(cl, false);
-    }
-
-    /**
-     * Return the descriptor (ObjectStreamClass) corresponding to the class
-     * <code>cl</code>. Returns an ObjectStreamClass even if instances of the
-     * class cannot be serialized
-     * 
-     * @param cl
-     *            a java.langClass for which to obtain the corresponding
-     *            descriptor
-     * @return the corresponding descriptor
-     */
-    static ObjectStreamClass lookupStreamClass(Class<?> cl) {
-        return lookupStreamClass(cl, isSerializable(cl) || isExternalizable(cl));
+        return  lookupStreamClass(cl);
     }
 
     /**
@@ -952,14 +1010,13 @@ public class ObjectStreamClass implements Serializable {
      *            a boolean indicating if SUID should be computed or not.
      * @return the corresponding descriptor
      */
-    private static ObjectStreamClass lookupStreamClass(Class<?> cl,
-            boolean computeSUID) {
+    static ObjectStreamClass lookupStreamClass(Class<?> cl) {
 
         WeakHashMap<Class<?>,ObjectStreamClass> tlc = OSCThreadLocalCache.oscWeakHashMap.get();
 
         ObjectStreamClass cachedValue = tlc.get(cl);
         if (cachedValue == null) {
-            cachedValue = createClassDesc(cl, computeSUID);
+            cachedValue = createClassDesc(cl);
             tlc.put(cl, cachedValue);
         }
         return cachedValue;

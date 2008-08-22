@@ -133,6 +133,33 @@ public class Statement {
                 } else {
                     throw new NoSuchMethodException(this.toString());
                 }
+            } else if (theMethodName.equals("newArray")) {//$NON-NLS-1$
+                // create a new array instance without length attribute
+                int length = theArguments.length;
+                Class clazz = (Class) theTarget;
+
+                // check the element types of array
+                for (int i = 0; i < length; i++) {
+                    boolean isNull = theArguments[i] == null;
+                    boolean isPrimitiveWrapper = isNull ? false
+                            : isPrimitiveWrapper(theArguments[i].getClass(),
+                                    clazz);
+                    boolean isAssignable = isNull ? false : clazz
+                            .isAssignableFrom(theArguments[i].getClass());
+                    if (!isNull && !isPrimitiveWrapper && !isAssignable) {
+                        throw new IllegalArgumentException(Messages
+                                .getString("beans.63")); //$NON-NLS-1$
+                    }
+                }
+                result = Array.newInstance(clazz, length);
+                if (clazz.isPrimitive()) {
+                    // Copy element according to primitive types
+                    arrayCopy(clazz, theArguments, result, length);
+                } else {
+                    // Copy element of Objects
+                    System.arraycopy(theArguments, 0, result, 0, length);
+                }
+                return result;
             } else if (theTarget instanceof Class) {
                 Method method = null;
                 boolean found = false;
@@ -196,6 +223,50 @@ public class Statement {
             throw (t != null) && (t instanceof Exception) ? (Exception) t : ite;
         }
         return result;
+    }
+    
+    private void arrayCopy(Class type, Object[] src, Object dest, int length) {
+        if (type == boolean.class) {
+            boolean[] destination = (boolean[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Boolean) src[i]).booleanValue();
+            }
+        } else if (type == short.class) {
+            short[] destination = (short[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Short) src[i]).shortValue();
+            }
+        } else if (type == byte.class) {
+            byte[] destination = (byte[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Byte) src[i]).byteValue();
+            }
+        } else if (type == char.class) {
+            char[] destination = (char[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Character) src[i]).charValue();
+            }
+        } else if (type == int.class) {
+            int[] destination = (int[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Integer) src[i]).intValue();
+            }
+        } else if (type == long.class) {
+            long[] destination = (long[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Long) src[i]).longValue();
+            }
+        } else if (type == float.class) {
+            float[] destination = (float[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Float) src[i]).floatValue();
+            }
+        } else if (type == double.class) {
+            double[] destination = (double[]) dest;
+            for (int i = 0; i < length; i++) {
+                destination[i] = ((Double) src[i]).doubleValue();
+            }
+        }
     }
 
     private Method findArrayMethod(String theMethodName, Object[] theArguments) throws NoSuchMethodException {
@@ -297,8 +368,23 @@ public class Statement {
         for (int i = 1; i < foundMethodsArr.length; i++) {
             int difference = comparator.compare(chosenOne, foundMethodsArr[i]);
             //if 2 methods have same relevance, throw exception
-            if(difference == 0){
-                throw new NoSuchMethodException("Cannot decide which method to call: "+methodName); //$NON-NLS-1$
+            if (difference == 0) {
+                // if 2 methods have the same signature, check their return type
+                Class<?> oneReturnType = chosenOne.getReturnType();
+                Class<?> foundMethodReturnType = foundMethodsArr[i]
+                        .getReturnType();
+                if (oneReturnType.equals(foundMethodReturnType)) {
+                    // if 2 methods have the same signature and return type,
+                    // throw NoSuchMethodException
+                    throw new NoSuchMethodException(Messages.getString(
+                            "beans.62", methodName)); //$NON-NLS-1$
+                }
+
+                if (oneReturnType.isAssignableFrom(foundMethodReturnType)) {
+                    // if chosenOne is super class or interface of
+                    // foundMethodReturnType, set chosenOne to foundMethodArr[i]
+                    chosenOne = foundMethodsArr[i];
+                }
             }
             if(difference > 0){
                 chosenOne = foundMethodsArr[i];

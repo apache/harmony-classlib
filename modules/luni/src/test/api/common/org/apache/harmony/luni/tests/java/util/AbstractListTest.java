@@ -111,6 +111,13 @@ public class AbstractListTest extends junit.framework.TestCase {
 		ListIterator lit2 = list2.listIterator();
 		lit2.add(new Object());
 		lit2.next();
+        
+        //Regression test for Harmony-5808
+        list = new MockArrayList();
+        ListIterator it = list.listIterator();
+        it.add("one");
+        it.add("two");
+        assertEquals(2,list.size());
 	}
 
 	/**
@@ -222,7 +229,7 @@ public class AbstractListTest extends junit.framework.TestCase {
     	}
     	
     	public void add(int idx, E o) {
-    		modCount++;
+    		modCount += 10;
     		list.add(idx, o);
     	}
     }

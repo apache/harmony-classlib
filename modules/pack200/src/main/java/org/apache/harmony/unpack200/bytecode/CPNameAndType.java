@@ -36,18 +36,17 @@ public class CPNameAndType extends ConstantPoolEntry {
 
     /**
      * Create a new CPNameAndType
-     * 
+     *
      * @param name
      * @param descriptor
      * @param domain
      * @throws NullPointerException
      *             if name or descriptor is null
      */
-    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain, int globalIndex) {
+    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int globalIndex) {
         super(ConstantPoolEntry.CP_NameAndType, globalIndex);
         this.name = name;
         this.descriptor = descriptor;
-        this.domain = domain;
         if (name == null || descriptor == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
@@ -77,12 +76,22 @@ public class CPNameAndType extends ConstantPoolEntry {
         return "NameAndType: " + name + "(" + descriptor + ")";
     }
 
-    public int hashCode() {
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + descriptor.hashCode();
         result = PRIME * result + name.hashCode();
-        return result;
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public boolean equals(Object obj) {
@@ -104,7 +113,7 @@ public class CPNameAndType extends ConstantPoolEntry {
      * Answers the invokeinterface count argument when the receiver is treated
      * as an invokeinterface target. This value is not meaningful if the
      * receiver is not an invokeinterface target.
-     * 
+     *
      * @return count
      */
     public int invokeInterfaceCount() {

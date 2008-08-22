@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A BHSD codec is a means of encoding integer values as a sequence of bytes or
@@ -36,7 +35,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * the integers [1..10] would be represented as a sequence of 10x1s. This allows
  * the absolute value of a coded integer to fall outside of the 'small number'
  * range, whilst still being encoded as a single byte.
- * 
+ *
  * A BHSD codec is configured with four parameters:
  * <dl>
  * <dt>B</dt>
@@ -69,7 +68,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * instance of the Codec to be cloned for each use.)
  * <dt>
  * </dl>
- * 
+ *
  * Codecs are notated as (B,H,S,D) and either D or S,D may be omitted if zero.
  * Thus {@link #BYTE1} is denoted (1,256,0,0) or (1,256). The
  * {@link #toString()} method prints out the condensed form of the encoding.
@@ -78,7 +77,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * {@link #UNSIGNED5}) are unsigned; otherwise, in most cases, they are signed.
  * The presence of the word Delta ({@link #DELTA5}, {@link #UDELTA5})
  * indicates a delta encoding is used.
- * 
+ *
  */
 public final class BHSDCodec extends Codec {
 
@@ -114,8 +113,13 @@ public final class BHSDCodec extends Codec {
     private final long largest;
 
     /**
+     * radix^i powers
+     */
+    private long[] powers;
+
+    /**
      * Constructs an unsigned, non-delta Codec with the given B and H values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -128,7 +132,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Constructs a non-delta Codec with the given B, H and S values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -144,7 +148,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Constructs a Codec with the given B, H, S and D values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -183,12 +187,17 @@ public final class BHSDCodec extends Codec {
         }
         smallest = calculateSmallest();
         largest = calculateLargest();
+
+        powers = new long[b];
+        for(int c = 0; c < b; c++) {
+            powers[c] = (long)Math.pow(h, c);
+        }
     }
 
     /**
      * Returns the cardinality of this codec; that is, the number of distinct
      * values that it can contain.
-     * 
+     *
      * @return the cardinality of this codec
      */
     public long cardinality() {
@@ -206,14 +215,16 @@ public final class BHSDCodec extends Codec {
             Pack200Exception {
         int n = 0;
         long z = 0;
-        long x;
+        long x = 0;
+
         do {
             x = in.read();
-            if (x == -1)
-                throw new EOFException("End of stream reached whilst decoding");
-            z += x * Math.pow(h, n);
+            z += x * powers[n];
             n++;
-        } while (n < b & isHigh(x));
+        } while (x >= l && n < b);
+
+        if (x == -1)
+            throw new EOFException("End of stream reached whilst decoding");
 
         if (isSigned()) {
             int u = ((1 << s) - 1);
@@ -250,13 +261,9 @@ public final class BHSDCodec extends Codec {
     // return u;
     // }
 
-    private boolean isHigh(long x) {
-        return x >= l;
-    }
-
     /**
      * True if this encoding can code the given value
-     * 
+     *
      * @param value
      *            the value to check
      * @return <code>true</code> if the encoding can encode this value
@@ -284,6 +291,11 @@ public final class BHSDCodec extends Codec {
                     z += (z - z % 3) / 3;
                 }
             }
+        } else {
+            if (z < 0) {
+                // Need to use integer overflow here to represent negatives.
+                z += 4294967296L; // this value is equal to (1 << 32).
+            }
         }
         List byteList = new ArrayList();
         for (int n = 0; n < b; n++) {
@@ -309,9 +321,13 @@ public final class BHSDCodec extends Codec {
         return bytes;
     }
 
+    public byte[] encode(long value) throws Pack200Exception {
+        return encode(value, 0);
+    }
+
     /**
      * Returns true if this codec is a delta codec
-     * 
+     *
      * @return true if this codec is a delta codec
      */
     public boolean isDelta() {
@@ -320,7 +336,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns true if this codec is a signed codec
-     * 
+     *
      * @return true if this codec is a signed codec
      */
     public boolean isSigned() {
@@ -329,7 +345,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns the largest value that this codec can represent.
-     * 
+     *
      * @return the largest value that this codec can represent.
      */
     public long largest() {
@@ -358,7 +374,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns the smallest value that this codec can represent.
-     * 
+     *
      * @return the smallest value that this codec can represent.
      */
     public long smallest() {

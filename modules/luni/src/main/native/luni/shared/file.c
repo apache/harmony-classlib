@@ -180,7 +180,6 @@ Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
 JNIEXPORT jlong JNICALL
 Java_java_io_File_getTotalSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
-  PORT_ACCESS_FROM_ENV (env);
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if(!Java_java_io_File_existsImpl(env, recv, path)) {
@@ -197,7 +196,6 @@ Java_java_io_File_getTotalSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path
 JNIEXPORT jlong JNICALL
 Java_java_io_File_getFreeSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
-  PORT_ACCESS_FROM_ENV (env);
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if(!Java_java_io_File_existsImpl(env, recv, path)) {
@@ -214,7 +212,6 @@ Java_java_io_File_getFreeSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
 JNIEXPORT jlong JNICALL
 Java_java_io_File_getUsableSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
-  PORT_ACCESS_FROM_ENV (env);
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if(!Java_java_io_File_existsImpl(env, recv, path)) {

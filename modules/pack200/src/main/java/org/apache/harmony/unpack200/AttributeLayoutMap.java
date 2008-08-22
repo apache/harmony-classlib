@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 /**
  * Stores a mapping from attribute names to their corresponding layout types.
  * Note that names of attribute layouts and their formats are <emph>not</emph>
@@ -243,9 +245,9 @@ public class AttributeLayoutMap {
     /**
      * The map should not contain the same layout and name combination more than
      * once for each context.
-     * 
+     *
      * @throws Pack200Exception
-     * 
+     *
      */
     public void checkMap() throws Pack200Exception {
         for (int i = 0; i < layouts.length; i++) {

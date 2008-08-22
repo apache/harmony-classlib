@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A run codec is a grouping of two nested codecs; K values are decoded from the
@@ -125,5 +124,15 @@ public class RunCodec extends Codec {
     public String toString() {
         return "RunCodec[k=" + k + ";aCodec=" + aCodec + "bCodec=" + bCodec
                 + "]";
+    }
+
+    public byte[] encode(long value, long last) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public byte[] encode(long value) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

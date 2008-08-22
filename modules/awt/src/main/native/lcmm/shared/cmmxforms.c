@@ -75,8 +75,9 @@ void cmmPrecalculatedXformImpl(_LPcmsTRANSFORM p, LPVOID in, LPVOID out, unsigne
   }
 }
 
-int cmmMultiprofileSampler(WORD In[], WORD Out[], cmsHTRANSFORM* Transforms) {
+int cmmMultiprofileSampler(WORD In[], WORD Out[], LPVOID Cargo) {
   int i;
+  cmsHTRANSFORM* Transforms = (cmsHTRANSFORM*)Cargo;
 
   // Need to go from In to Out at least once
   cmsDoTransform(Transforms[0], In, Out, 1);

@@ -781,7 +781,7 @@ parse_catalogues (struct HyPortLibrary *portLibrary, UDATA flags,
                                 {
                                   charPointer = dataBuf;
                                   endPointer =
-                                    charPointer + strlen (charPointer);
+                                    charPointer + strlen ((char *)charPointer);
                                 }
                             }
                           if (charPointer >= endPointer)
@@ -869,7 +869,7 @@ parse_catalogues (struct HyPortLibrary *portLibrary, UDATA flags,
                            BUF_SIZE) != NULL)
                         {
                           charPointer = dataBuf;
-                          endPointer = charPointer + strlen (charPointer);
+                          endPointer = charPointer + strlen ((char *)charPointer);
                         }
                     }
                   if (charPointer >= endPointer)

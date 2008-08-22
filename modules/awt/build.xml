@@ -110,6 +110,12 @@
     <target name="copy-resources" depends="-copy-win-resources">
         <mkdir dir="${hy.build}" />
 
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.awt.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
             <fileset dir="${hy.awt.src.main.resources}/cmm"/>

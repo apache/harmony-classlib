@@ -37,7 +37,9 @@
 /* Ensure we get the recommended XSI-compliant strerror_r() */
 #define _XOPEN_SOURCE 600
 #undef _GNU_SOURCE
+#ifndef __USE_XOPEN2K
 #define __USE_XOPEN2K
+#endif
 #undef __USE_GNU
 #include <string.h>
 

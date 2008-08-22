@@ -19,12 +19,11 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A Codec allows a sequence of bytes to be decoded into integer values (or vice
  * versa).
- * 
+ *
  * There are a number of standard Codecs ({@link #UDELTA5}, {@link #UNSIGNED5},
  * {@link #BYTE1}, {@link #CHAR3}) that are used in the implementation of many
  * bands; but there are a variety of other ones, and indeed the specification
@@ -90,7 +89,7 @@ public abstract class Codec {
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. Note that this method can only be applied for non-delta
      * encodings.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @return the value as a long
@@ -104,12 +103,36 @@ public abstract class Codec {
             Pack200Exception;
 
     /**
+     * Encode a single value into a sequence of bytes.
+     *
+     * @param value
+     *            the value to encode
+     * @param last
+     *            the previous value encoded (for delta encodings)
+     * @return the encoded bytes
+     * @throws Pack200Exception
+     */
+    public abstract byte[] encode(long value, long last)
+            throws Pack200Exception;
+
+    /**
+     * Encode a single value into a sequence of bytes. Note that this method can
+     * only be used for non-delta encodings.
+     *
+     * @param value
+     *            the value to encode
+     * @return the encoded bytes
+     * @throws Pack200Exception
+     */
+    public abstract byte[] encode(long value) throws Pack200Exception;
+
+    /**
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. If this encoding is a delta encoding (d=1) then the
      * previous value must be passed in as a parameter. If it is a non-delta
      * encoding, then it does not matter what value is passed in, so it makes
      * sense for the value to be passed in by default using code similar to:
-     * 
+     *
      * <pre>
      * long last = 0;
      * while (condition) {
@@ -117,7 +140,7 @@ public abstract class Codec {
      *     // do something with last
      * }
      * </pre>
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @param last
@@ -137,10 +160,10 @@ public abstract class Codec {
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
      * This should probably be used in most cases, since some codecs (such as
-     * 
+     *
      * @{link PopCodec}) only work when the number of values to be read is
      *        known.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -167,10 +190,10 @@ public abstract class Codec {
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
      * This should probably be used in most cases, since some codecs (such as
-     * 
+     *
      * @{link PopCodec}) only work when the number of values to be read is
      *        known.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -196,7 +219,7 @@ public abstract class Codec {
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -225,7 +248,7 @@ public abstract class Codec {
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -250,5 +273,30 @@ public abstract class Codec {
             result[i] = last = (int) decode(in, last);
         }
         return result;
+    }
+
+    /**
+     * Encode a sequence of integers into a byte array
+     *
+     * @param ints
+     *            the values to encode
+     * @return byte[] encoded bytes
+     * @throws Pack200Exception
+     *             if there is a problem encoding any of the values
+     */
+    public byte[] encode(int[] ints) throws Pack200Exception {
+        int total = 0;
+        byte[][] bytes = new byte[ints.length][];
+        for (int i = 0; i < ints.length; i++) {
+            bytes[i] = encode(ints[i], i > 0 ? ints[i-1] : 0);
+            total += bytes[i].length;
+        }
+        byte[] encoded = new byte[total];
+        int index = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            System.arraycopy(bytes[i], 0, encoded, index, bytes[i].length);
+            index += bytes[i].length;
+        }
+        return encoded;
     }
 }

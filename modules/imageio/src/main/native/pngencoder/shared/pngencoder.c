@@ -161,8 +161,10 @@ Java_org_apache_harmony_x_imageio_plugins_png_PNGImageWriter_encode
 
       for (i = 0;  i < paletteSize;  i ++) {          
           //printf("n%u = %u\n", i, (tmpPalette[i] & 0xff000000));
-          (pngPalette + i)->red = (png_byte) tmpPalette[i] & 0x00ff0000;
-          (pngPalette + i)->green = (png_byte) tmpPalette[i] & 0x000000ff00;
+          (pngPalette + i)->red =
+             (png_byte) ((tmpPalette[i] & 0x00ff0000) >> 16);
+          (pngPalette + i)->green =
+             (png_byte) ((tmpPalette[i] & 0x0000ff00) >> 8);
           (pngPalette + i)->blue = (png_byte) tmpPalette[i] & 0x000000ff;
 
           //alpha[i] = 256 - (tmpPalette[i] & 0xff000000);

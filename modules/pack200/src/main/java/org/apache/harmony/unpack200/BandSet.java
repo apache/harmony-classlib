@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CodecEncoding;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.PopulationCodec;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
@@ -36,15 +37,21 @@ import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Abstract superclass for a set of bands
  */
 public abstract class BandSet {
 
-    public abstract void unpack(InputStream inputStream) throws IOException,
+    public abstract void read(InputStream inputStream) throws IOException,
             Pack200Exception;
+
+    public abstract void unpack() throws IOException, Pack200Exception;
+
+    public void unpack(InputStream in) throws IOException, Pack200Exception {
+        read(in);
+        unpack();
+    }
 
     protected Segment segment;
 
@@ -57,7 +64,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>int</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -139,7 +146,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>int[]</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -180,7 +187,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>long</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -332,7 +339,7 @@ public abstract class BandSet {
      * <code>reference</code> (which is populated prior to this call). An
      * exception is thrown if a decoded index falls outside the range
      * [0..reference.length-1].
-     * 
+     *
      * @param name
      *            the band name
      * @param in
@@ -343,7 +350,7 @@ public abstract class BandSet {
      *            the number of references to decode
      * @param reference
      *            the array of values to use for the references
-     * 
+     *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
@@ -363,7 +370,7 @@ public abstract class BandSet {
      * exception is thrown if a decoded index falls outside the range
      * [0..reference.length-1]. Unlike the other parseReferences, this
      * post-processes the result into an array of results.
-     * 
+     *
      * @param name
      *            TODO
      * @param in
@@ -374,7 +381,7 @@ public abstract class BandSet {
      *            the numbers of references to decode for each array entry
      * @param reference
      *            the array of values to use for the references
-     * 
+     *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
@@ -477,8 +484,7 @@ public abstract class BandSet {
         CPUTF8[] result = new CPUTF8[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
-            result[i1] = segment.getCpBands().cpUTF8Value(index,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            result[i1] = segment.getCpBands().cpUTF8Value(index);
         }
         return result;
     }
@@ -495,8 +501,7 @@ public abstract class BandSet {
         int[] indices = decodeBandInt(name, in, codec, sum);
         for (int i1 = 0; i1 < sum; i1++) {
             int index = indices[i1];
-            result1[i1] = segment.getCpBands().cpUTF8Value(index,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            result1[i1] = segment.getCpBands().cpUTF8Value(index);
         }
         CPUTF8[] refs = result1;
         int pos = 0;
@@ -632,7 +637,7 @@ public abstract class BandSet {
             result[i] = new String[ints[i].length];
             for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = reference[ints[i][j]];
-                
+
             }
         }
         return result;

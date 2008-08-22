@@ -105,8 +105,7 @@ public class EventHandler implements InvocationHandler {
                     } catch (RuntimeException e) {
                         throw e;
                     } catch (Throwable t) {
-                        System.out
-                                .println(t.getClass() + ": " + t.getMessage()); //$NON-NLS-1$
+                        throw new RuntimeException(t);
                     }
                 } else {
                     // in order to be compatible with RI

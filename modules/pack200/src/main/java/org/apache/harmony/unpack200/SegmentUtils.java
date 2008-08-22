@@ -32,7 +32,7 @@ public final class SegmentUtils {
     /**
      * Count the number of arguments in the descriptor. Each long or double
      * counts as widthOfLongsAndDoubles; all other arguments count as 1.
-     * 
+     *
      * @param descriptor
      *            String for which arguments are counted
      * @param widthOfLongsAndDoubles
@@ -129,7 +129,7 @@ public final class SegmentUtils {
      * used instead of indexOf('$') because inner classes may be separated by
      * any character <= '$' (in other words, Foo#Bar is as valid as Foo$Bar). If
      * no $ character is found, answer -1.
-     * 
+     *
      * @param string
      *            String to search for $
      * @return first index of $ character, or -1 if not found
@@ -151,7 +151,7 @@ public final class SegmentUtils {
      * This is a debugging message to aid the developer in writing this class.
      * If the property 'debug.unpack200' is set, this will generate messages to
      * stderr; otherwise, it will be silent.
-     * 
+     *
      * @param message
      * @deprecated this may be removed from production code
      */

@@ -450,7 +450,65 @@ public class IntrospectorTest extends TestCase {
         } catch (IntrospectionException e) {
         }
     }
+    
+    /*
+     * Introspect static methods
+     */
+    public void testGetBeanInfo_StaticMethods() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(StaticClazz.class);
+        PropertyDescriptor[] propertyDescriptors = beanInfo
+                .getPropertyDescriptors();
+        assertEquals(1, propertyDescriptors.length);
+        assertTrue(contains("class", Class.class, propertyDescriptors));
+        MethodDescriptor[] methodDescriptors = beanInfo.getMethodDescriptors();
+        assertTrue(contains("getStaticMethod", methodDescriptors));
+        assertTrue(contains("setStaticMethod", methodDescriptors));
 
+        beanInfo = Introspector.getBeanInfo(StaticClazzWithProperty.class);
+        propertyDescriptors = beanInfo.getPropertyDescriptors();
+        assertEquals(1, propertyDescriptors.length);
+        methodDescriptors = beanInfo.getMethodDescriptors();
+        assertTrue(contains("getStaticName", methodDescriptors));
+        assertTrue(contains("setStaticName", methodDescriptors));
+    }
+
+    public static class StaticClazz {
+
+        /*
+         * public static get method
+         */
+        public static String getStaticMethod() {
+            return "static class";
+        }
+
+        /*
+         * public static set method
+         */
+        public static void setStaticMethod(String content) {
+            // do nothing
+        }
+
+    }
+
+    public static class StaticClazzWithProperty {
+
+        private static String staticName = "Static Clazz";
+
+        /*
+         * public static get method
+         */
+        public static String getStaticName() {
+            return staticName;
+        }
+
+        /*
+         * public static set method
+         */
+        public static void setStaticName(String name) {
+            staticName = name;
+        }
+    }
+    
     public void testGetBeanInfoClassClass_StopNull()
             throws IntrospectionException {
         BeanInfo info = Introspector.getBeanInfo(MockFoo.class);// , null);

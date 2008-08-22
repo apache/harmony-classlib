@@ -188,7 +188,7 @@ JNIEXPORT jfloat JNICALL Java_org_apache_harmony_luni_util_FloatingPointParser_p
 
 /* NativesCommonNetHelpers*/
 void throwJavaNetBindException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
-jobject newJavaNetInetAddressGenericBS PROTOTYPE((JNIEnv * env, jbyte *address, U_32 length, char *hostName, U_32 scope_id ));
+jobject newJavaNetInetAddressGenericBS PROTOTYPE((JNIEnv * env, jbyte *address, U_32 length, const char *hostName, U_32 scope_id ));
 void throwJavaNetUnknownHostException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 jobject newJavaNetInetAddressGenericB PROTOTYPE((JNIEnv * env, jbyte *address, U_32 length, U_32 scope_id ));
 jobject newJavaLangByte PROTOTYPE((JNIEnv * env, U_8 aByte));
@@ -196,7 +196,7 @@ U_8 byteValue PROTOTYPE((JNIEnv * env, jobject aByte));
 I_32 intValue PROTOTYPE((JNIEnv * env, jobject anInteger));
 void throwJavaNetPortUnreachableException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 jobject newJavaByteArray PROTOTYPE((JNIEnv * env, jbyte *bytes, jint length));
-jobjectArray createAliasArrayFromAddrinfo PROTOTYPE((JNIEnv* env, hyaddrinfo_t addresses, char* hName ));
+jobjectArray createAliasArrayFromAddrinfo PROTOTYPE((JNIEnv* env, hyaddrinfo_t addresses, const char* hName ));
 BOOLEAN booleanValue PROTOTYPE((JNIEnv * env, jobject aBoolean));
 jobject newJavaLangInteger PROTOTYPE((JNIEnv * env, I_32 anInt));
 BOOLEAN preferIPv4Stack PROTOTYPE((JNIEnv * env));
@@ -211,7 +211,7 @@ void callThreadYield PROTOTYPE((JNIEnv * env));
 void throwJavaNetConnectException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 void netGetJavaNetInetAddressScopeId PROTOTYPE((JNIEnv * env, jobject anInetAddress, U_32 *scope_id));
 BOOLEAN preferIPv6Addresses PROTOTYPE((JNIEnv * env));
-jobjectArray createAliasArray PROTOTYPE((JNIEnv* env, jbyte **addresses, I_32 *family, U_32 count, char* hName, U_32* scope_id_array ));
+jobjectArray createAliasArray PROTOTYPE((JNIEnv* env, jbyte **addresses, I_32 *family, U_32 count, const char* hName, U_32* scope_id_array ));
 void throwJavaNetSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 I_32 netGetSockAddr PROTOTYPE((JNIEnv *env, jobject fileDescriptor, hysockaddr_t sockaddrP, jboolean preferIPv6Addresses));
 

@@ -17,7 +17,7 @@
 
 #include "ISO_8859_8.h"
 
-#define jlong2addr(a, x) ((a *)((int)(x)))
+#include "hycomp.h"
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_ISO_18859_18_00024Encoder_nEncode
   (JNIEnv *env, jobject obj, jlong outAddr, jint absolutePos, jcharArray array, jint arrayOffset, jintArray result){

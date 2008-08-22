@@ -19,6 +19,10 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
+# TODO: Fix the warnings see HARMONY-4959 and
+# http://www.mail-archive.com/dev@harmony.apache.org/msg10469.html 
+WARNFLAGS :=
+
 BUILDFILES = \
   ../shared/CP_1250.o \
   ../shared/CP_1251.o \

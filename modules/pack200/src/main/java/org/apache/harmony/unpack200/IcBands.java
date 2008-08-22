@@ -19,10 +19,12 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
@@ -48,10 +50,10 @@ public class IcBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         // Read IC bands
         int innerClassCount = header.getInnerClassCount();
         int[] icThisClassInts = decodeBandInt("ic_this_class", in,
@@ -103,6 +105,11 @@ public class IcBands extends BandSet {
         }
     }
 
+    public void unpack() throws IOException, Pack200Exception {
+
+    }
+
+
     public IcTuple[] getIcTuples() {
         return icAll;
     }
@@ -110,7 +117,7 @@ public class IcBands extends BandSet {
     /**
      * Answer the relevant IcTuples for the specified className and class
      * constant pool.
-     * 
+     *
      * @param className
      *            String name of the class X for ic_relevant(X)
      * @param cp
@@ -118,11 +125,13 @@ public class IcBands extends BandSet {
      * @return array of IcTuple
      */
     public IcTuple[] getRelevantIcTuples(String className, ClassConstantPool cp) {
+        Set relevantTuplesContains = new HashSet();
         List relevantTuples = new ArrayList();
         IcTuple[] allTuples = getIcTuples();
         int allTuplesSize = allTuples.length;
         for (int index = 0; index < allTuplesSize; index++) {
             if (allTuples[index].shouldAddToRelevantForClassName(className)) {
+                relevantTuplesContains.add(allTuples[index]);
                 relevantTuples.add(allTuples[index]);
             }
         }
@@ -136,14 +145,13 @@ public class IcBands extends BandSet {
         while (changed) {
             changed = false;
             for (int allTupleIndex = 0; allTupleIndex < allTuplesSize; allTupleIndex++) {
-                Iterator it = classPoolClasses.iterator();
-                while (it.hasNext()) {
-                    CPClass classInPool = (CPClass) it.next();
+                for(int cpcIndex = 0; cpcIndex < classPoolClasses.size(); cpcIndex++) {
+                    CPClass classInPool = (CPClass) classPoolClasses.get(cpcIndex);
                     String poolClassName = classInPool.name;
                     if (poolClassName.equals(allTuples[allTupleIndex]
                             .thisClassString())) {
                         // If the tuple isn't already in there, then add it
-                        if (relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
+                        if (relevantTuplesContains.add(allTuples[allTupleIndex])) {
                             relevantTuples.add(allTuples[allTupleIndex]);
                             changed = true;
                         }
@@ -174,10 +182,9 @@ public class IcBands extends BandSet {
                 }
             }
             if (tuplesToAdd.size() > 0) {
-                Iterator it = tuplesToAdd.iterator();
-                while (it.hasNext()) {
-                    IcTuple tuple = (IcTuple) it.next();
-                    if (!relevantTuples.contains(tuple)) {
+                for(int index = 0; index < tuplesToAdd.size(); index++) {
+                    IcTuple tuple = (IcTuple) tuplesToAdd.get(index);
+                    if (relevantTuplesContains.add(tuple)) {
                         changedFixup = true;
                         relevantTuples.add(tuple);
                     }
@@ -191,7 +198,7 @@ public class IcBands extends BandSet {
         IcTuple[] orderedRelevantTuples = new IcTuple[relevantTuples.size()];
         int orderedRelevantIndex = 0;
         for (int index = 0; index < allTuplesSize; index++) {
-            if (relevantTuples.contains(allTuples[index])) {
+            if (relevantTuplesContains.contains(allTuples[index])) {
                 orderedRelevantTuples[orderedRelevantIndex] = allTuples[index];
                 orderedRelevantIndex++;
             }

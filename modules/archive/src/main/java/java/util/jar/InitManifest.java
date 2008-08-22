@@ -46,7 +46,7 @@ class InitManifest {
         this.buf = buf;
 
         // check a version attribute
-        if (!readHeader() || !name.equals(ver)) {
+        if (!readHeader() || (ver != null && !name.equals(ver))) {
             throw new IOException(Messages.getString(
                     "archive.2D", ver)); //$NON-NLS-1$
         }

@@ -712,7 +712,6 @@ Java_org_apache_harmony_math_util_BigInteger_remImpl (JNIEnv * env, jclass cls,
     {
       if (topSize >= topLength * 2)
         {                       /* allocate extra space */
-          IDATA i;
           U_32 *tempPtr;
           jlongArray tempObject;
           if (!(tempObject = NEW_OBJECT (topLength + 1)))

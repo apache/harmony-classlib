@@ -80,12 +80,12 @@ fint	Font::getMissingGlyphCode()
 
 bool Font::canDisplay(ufshort c)
 {
-	return NULL;
+	return 0;
 }
 
 ufshort Font::getUnicodeByIndex(ufshort ind)
 {
-	return NULL;
+	return 0;
 }
 
 //unicode = 0 - default glyph

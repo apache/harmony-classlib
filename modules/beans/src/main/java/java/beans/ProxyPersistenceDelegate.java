@@ -35,14 +35,15 @@ class ProxyPersistenceDelegate extends DefaultPersistenceDelegate {
         // check for consistency
         assert oldInstance instanceof Proxy : oldInstance;
         assert newInstance instanceof Proxy : newInstance;
-        assert newInstance == oldInstance;
         super.initialize(type, oldInstance, newInstance, out);
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance instanceof Proxy : oldInstance;
-        assert oldInstance == newInstance;
-        return super.mutatesTo(oldInstance, newInstance);
+        if((oldInstance instanceof Proxy) && (newInstance instanceof Proxy)){
+            return super.mutatesTo(oldInstance, newInstance);
+        }
+        
+        return false;
     }
 }

@@ -95,7 +95,6 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     StandardBeanInfo(Class<?> beanClass, BeanInfo explicitBeanInfo, Class<?> stopClass)
             throws IntrospectionException {
-        assert (beanClass != null);
         this.beanClass = beanClass;
         /*--------------------------------------------------------------------------------------
          * There are 3 aspects of BeanInfo that must be supplied:
@@ -525,7 +524,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         // Loop over the methods found, looking for public non-static methods
         for (int i = 0; i < basicMethods.length; i++) {
             int modifiers = basicMethods[i].getModifiers();
-            if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
+            if (Modifier.isPublic(modifiers)) {
                 // Allocate a MethodDescriptor for this method
                 MethodDescriptor theDescriptor = new MethodDescriptor(
                         basicMethods[i]);
@@ -558,10 +557,32 @@ class StandardBeanInfo extends SimpleBeanInfo {
             throws IntrospectionException {
 
         // Get descriptors for the public methods
-        MethodDescriptor[] theMethods = introspectMethods();
-
-        if (theMethods == null)
+        MethodDescriptor[] methodDescriptors = introspectMethods();
+        if (methodDescriptors == null) {
             return null;
+        }
+
+        ArrayList<MethodDescriptor> methodList = new ArrayList<MethodDescriptor>();
+
+        // Loop over the methods found, looking for public non-static methods
+        for (int index = 0; index < methodDescriptors.length; index++) {
+            int modifiers = methodDescriptors[index].getMethod().getModifiers();
+            if (!Modifier.isStatic(modifiers)) {
+                methodList.add(methodDescriptors[index]);
+            }
+        }
+
+        // Get the list of public non-static methods into an array
+        int methodCount = methodList.size();
+        MethodDescriptor[] theMethods = null;
+        if (methodCount > 0) {
+            theMethods = new MethodDescriptor[methodCount];
+            theMethods = methodList.toArray(theMethods);
+        }
+
+        if (theMethods == null) {
+            return null;
+        }
 
         HashMap<String, HashMap> propertyTable = new HashMap<String, HashMap>(
                 theMethods.length);

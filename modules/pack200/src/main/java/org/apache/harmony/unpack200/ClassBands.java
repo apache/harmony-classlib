@@ -19,15 +19,14 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.unpack200.bytecode.DeprecatedAttribute;
@@ -90,7 +89,7 @@ public class ClassBands extends BandSet {
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
-    
+
     private int[][] methodDescrInts;
 
     private long[][] methodFlags;
@@ -133,7 +132,7 @@ public class ClassBands extends BandSet {
      *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         int classCount = header.getClassCount();
         classThisInts = decodeBandInt("class_this", in, Codec.DELTA5, classCount);
         classThis = getReferences(classThisInts, cpBands.getCpClass());
@@ -151,6 +150,10 @@ public class ClassBands extends BandSet {
         parseMethodBands(in);
         parseClassAttrBands(in);
         parseCodeBands(in);
+
+    }
+
+    public void unpack() {
 
     }
 
@@ -624,7 +627,7 @@ public class ClassBands extends BandSet {
                         className = className.substring(0, index);
                     }
                     // Add .java to the end
-                    value = cpBands.cpUTF8Value(className + ".java", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, true);
+                    value = cpBands.cpUTF8Value(className + ".java", true);
                 }
                 classAttributes[i].add(new SourceFileAttribute((CPUTF8)value));
                 sourceFileIndex++;
@@ -661,7 +664,7 @@ public class ClassBands extends BandSet {
                     int icTupleF = classInnerClassesF[innerClassIndex][j];
                     String icTupleC2 = null;
                     String icTupleN = null;
-                    
+
                     if (icTupleF != 0) {
                         icTupleC2Index = classInnerClassesOuterRCN[innerClassC2NIndex];
                         icTupleNIndex = classInnerClassesNameRUN[innerClassC2NIndex];
@@ -764,9 +767,6 @@ public class ClassBands extends BandSet {
                 Codec.BRANCH5, codeHandlerCount);
         codeHandlerClassRCN = decodeBandInt(
                 "code_handler_class_RCN", in, Codec.UNSIGNED5, codeHandlerCount);
-        // The codeHandlerClassRCN band contains incremented references to
-        // cp_Class so we can't use parseReferences(..) here.
-        String[] cpClass = cpBands.getCpClass();
 
         int codeFlagsCount = segment.getSegmentHeader().getOptions()
                 .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
@@ -850,11 +850,11 @@ public class ClassBands extends BandSet {
                 CPUTF8 element = localVariableTableTypeRS[x][y];
                 // TODO: come up with a better test for native vs nonnative
                 // signatures?
-                if (element.underlyingString().length() > 2) {
-                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-                } else {
-                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
-                }
+//                if (element.underlyingString().length() > 2) {
+//                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+//                } else {
+//                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
+//                }
             }
         }
 
@@ -986,15 +986,17 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mb = parseMetadata(in, RxA, RxACount,
                 backwardsCalls, "field");
-        Iterator rvaAttributesIterator = mb[0].getAttributes().iterator();
-        Iterator riaAttributesIterator = mb[1].getAttributes().iterator();
+        List rvaAttributes = mb[0].getAttributes();
+        List riaAttributes = mb[1].getAttributes();
+        int rvaAttributesIndex = 0;
+        int riaAttributesIndex = 0;
         for (int i = 0; i < fieldFlags.length; i++) {
             for (int j = 0; j < fieldFlags[i].length; j++) {
                 if (rvaLayout.matches(fieldFlags[i][j])) {
-                    fieldAttributes[i][j].add(rvaAttributesIterator.next());
+                    fieldAttributes[i][j].add(rvaAttributes.get(rvaAttributesIndex++));
                 }
                 if (riaLayout.matches(fieldFlags[i][j])) {
-                    fieldAttributes[i][j].add(riaAttributesIterator.next());
+                    fieldAttributes[i][j].add(riaAttributes.get(riaAttributesIndex++));
                 }
             }
         }
@@ -1146,16 +1148,18 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, rxaCounts,
                 backwardsCalls, "method");
-        Iterator[] attributeIterators = new Iterator[RxA.length];
+        List[] attributeLists = new List[RxA.length];
+        int[] attributeListIndexes = new int[RxA.length];
         for (int i = 0; i < mbgs.length; i++) {
-            attributeIterators[i] = mbgs[i].getAttributes().iterator();
+            attributeLists[i] = mbgs[i].getAttributes();
+            attributeListIndexes[i] = 0;
         }
         for (int i = 0; i < methodFlags.length; i++) {
             for (int j = 0; j < methodFlags[i].length; j++) {
                 for (int k = 0; k < rxaLayouts.length; k++) {
                     if (rxaLayouts[k].matches(methodFlags[i][j])) {
                         methodAttributes[i][j]
-                                .add(attributeIterators[k].next());
+                                .add(attributeLists[k].get(attributeListIndexes[k]++));
                     }
                 }
             }
@@ -1166,7 +1170,7 @@ public class ClassBands extends BandSet {
     /**
      * Parse the class metadata bands and return the number of backwards
      * callables
-     * 
+     *
      * @param in
      * @param classAttrCalls
      * @return
@@ -1201,14 +1205,16 @@ public class ClassBands extends BandSet {
         }
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, RxACount,
                 backwardsCalls, "class");
-        Iterator rvaAttributesIterator = mbgs[0].getAttributes().iterator();
-        Iterator riaAttributesIterator = mbgs[1].getAttributes().iterator();
+        List rvaAttributes = mbgs[0].getAttributes();
+        List riaAttributes = mbgs[1].getAttributes();
+        int rvaAttributesIndex = 0;
+        int riaAttributesIndex = 0;
         for (int i = 0; i < classFlags.length; i++) {
             if (rvaLayout.matches(classFlags[i])) {
-                classAttributes[i].add(rvaAttributesIterator.next());
+                classAttributes[i].add(rvaAttributes.get(rvaAttributesIndex++));
             }
             if (riaLayout.matches(classFlags[i])) {
-                classAttributes[i].add(riaAttributesIterator.next());
+                classAttributes[i].add(riaAttributes.get(riaAttributesIndex++));
             }
         }
         return numBackwardsCalls;
@@ -1304,16 +1310,16 @@ public class ClassBands extends BandSet {
     /**
      * Answer an ArrayList of ArrayLists which hold the the code attributes
      * corresponding to all classes in order.
-     * 
+     *
      * If a class doesn't have any attributes, the corresponding element in this
      * list will be an empty ArrayList.
-     * 
+     *
      * @return ArrayList
      */
     public ArrayList getOrderedCodeAttributes() {
-        ArrayList orderedAttributeList = new ArrayList();
+        ArrayList orderedAttributeList = new ArrayList(codeAttributes.length);
         for (int classIndex = 0; classIndex < codeAttributes.length; classIndex++) {
-            ArrayList currentAttributes = new ArrayList();
+            ArrayList currentAttributes = new ArrayList(codeAttributes[classIndex].size());
             for (int attributeIndex = 0; attributeIndex < codeAttributes[classIndex]
                     .size(); attributeIndex++) {
                 Attribute attribute = (Attribute) codeAttributes[classIndex]
@@ -1358,7 +1364,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the major version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file major version numbers, or null if none specified
      */
     public int[] getClassVersionMajor() {
@@ -1369,7 +1375,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the minor version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file minor version numbers, or null if none specified
      */
     public int[] getClassVersionMinor() {

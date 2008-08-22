@@ -17,7 +17,7 @@
 
 #include "CP_1250.h"
 
-#define jlong2addr(a, x) ((a *)((int)(x)))
+#include "hycomp.h"
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_CP_11250_00024Encoder_nEncode
   (JNIEnv *env, jobject obj, jlong outAddr, jint absolutePos, jcharArray array, jint arrayOffset, jintArray result){

@@ -35,7 +35,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
      * Given an int operand, set the rewrite bytes for the next available
      * operand position and the three immediately following it to a
      * highest-byte, mid-high, mid-low, low-byte encoding of the operand.
-     * 
+     *
      * Note that unlike the ByteCode setOperand* operations, this starts with an
      * actual bytecode rewrite array (rather than a ByteCodeForm prototype
      * rewrite array). Also, this method overwrites -1 values in the rewrite
@@ -44,7 +44,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
      * first time will convert it to: {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
      * Calling setRewrite4Bytes(0, rewrite) a second time will convert it to:
      * {100, 0, 0, 0, 0, 200, 0, 0, 0, 0}
-     * 
+     *
      * @param operand
      *            int to set the rewrite bytes to
      * @param rewrite
@@ -68,7 +68,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
      * Given an int operand, set the rewrite bytes for the next available
      * operand position and the byte immediately following it to a high-byte,
      * low-byte encoding of the operand.
-     * 
+     *
      * Note that unlike the ByteCode setOperand* operations, this starts with an
      * actual bytecode rewrite array (rather than a ByteCodeForm prototype
      * rewrite array). Also, this method overwrites -1 values in the rewrite
@@ -77,7 +77,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
      * first time will convert it to: {100, 0, 0, -1, -1, 200, -1, -1, -1, -1}
      * Calling setRewrite2Bytes(0, rewrite) a second time will convert it to:
      * {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
-     * 
+     *
      * @param operand
      *            int to set the rewrite bytes to
      * @param rewrite
@@ -99,7 +99,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     /**
      * This method writes operand directly into the rewrite array at index
      * position specified.
-     * 
+     *
      * @param operand
      *            value to write
      * @param absPosition
@@ -132,7 +132,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     /**
      * This method writes operand directly into the rewrite array at index
      * position specified.
-     * 
+     *
      * @param operand
      *            value to write
      * @param absPosition

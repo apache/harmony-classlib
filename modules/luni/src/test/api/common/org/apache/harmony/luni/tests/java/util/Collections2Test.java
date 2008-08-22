@@ -457,4 +457,11 @@ public class Collections2Test extends TestCase {
         c = Collections.checkedSortedMap(c, String.class, String.class);
         SerializationTester.assertCompabilityEquals(c, "serialization/java/util/Collections_CheckedSortedMap.golden.ser");
     }
+    
+    public void test_emptyList(){
+        List<Object> emptyList = Collections.emptyList();
+        assertEquals(0, emptyList.size());
+        assertTrue(emptyList instanceof RandomAccess);
+    }
+
 }

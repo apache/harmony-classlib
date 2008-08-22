@@ -429,6 +429,11 @@
                    showoutput="on"
                    dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
+
+                <assertions enableSystemAssertions="true">
+                    <enable />
+                </assertions>
+
                 <jvmarg line="${hy.test.vmargs}" />
                 <!-- Used by Support_Exec.execJava() -->
                 <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />

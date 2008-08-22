@@ -15,6 +15,7 @@
  */
 
 #include <jni.h>
+#include "hycomp.h"
 
 JNIEXPORT jobject JNICALL NewDirectByteBuffer(JNIEnv * , void*, jlong );
 JNIEXPORT void* JNICALL GetDirectBufferAddress(JNIEnv * , jobject );
@@ -49,7 +50,7 @@ JNIEXPORT jobject JNICALL NewDirectByteBuffer
 	  if (!onMethod){
 	      	  return NULL;
 	  }
-	  platformaddress = (*env)->CallStaticObjectMethod(env, platformaddressClass, onMethod, (jlong)address);
+	  platformaddress = (*env)->CallStaticObjectMethod(env, platformaddressClass, onMethod, (jlong)(IDATA)address);
 	  return (*env)->NewObject(env, directBufferClass, newBufferMethod, 
                                 platformaddress, (jint)capacity, (jint)0);
   }
@@ -89,7 +90,7 @@ JNIEXPORT void* JNICALL GetDirectBufferAddress
 	  if (!toLongMethod){
 	      	  return 0;
 	  }
-	  return (void*)(*env)->CallLongMethod(env, platformAddr, toLongMethod);	  
+	  return (void*)(IDATA)(*env)->CallLongMethod(env, platformAddr, toLongMethod);	  
   }
 
 /*

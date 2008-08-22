@@ -15,13 +15,11 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include
 
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include -I$(JPEG_DIR)
+BUILDFILES = $(SHAREDSUB)JpegEncoder.o
 
-BUILDFILES = \
-  $(SHAREDSUB)JpegEncoder.o \
-  libjpeg.a
+OSLIBS += -ljpeg
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
@@ -33,15 +31,4 @@ MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
 DLLNAME=../libjpegencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYJPEGENCODER_0.1
 
-CLEANFILES=jconfig.h
-
 include $(HY_HDK)/build/make/rules.mk
-
-$(SHAREDSUB)JpegEncoder.o: jconfig.h
-
-jconfig.h: $(JPEG_DIR)jconfig.lnx
-	cp $< $@
-
-libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
-	cp $< $@
-

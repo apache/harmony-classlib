@@ -102,25 +102,6 @@ public class MappedByteBufferTest extends TestCase {
     }
 
     /**
-     * @tests {@link java.nio.MappedByteBuffer#isLoaded()}
-     */
-    public void test_isload() throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(tmpFile);
-        FileChannel fileChannelRead = fileInputStream.getChannel();
-        MappedByteBuffer mmbRead = fileChannelRead.map(MapMode.READ_ONLY, 0,
-                fileChannelRead.size());
-
-        assertFalse(mmbRead.isLoaded());
-
-        RandomAccessFile randomFile = new RandomAccessFile(tmpFile, "rw");
-        FileChannel fileChannelReadWrite = randomFile.getChannel();
-        MappedByteBuffer mmbReadWrite = fileChannelReadWrite.map(
-                FileChannel.MapMode.READ_WRITE, 0, fileChannelReadWrite.size());
-
-        assertFalse(mmbReadWrite.isLoaded());
-    }
-
-    /**
      * @tests {@link java.nio.MappedByteBuffer#load()}
      */
     public void test_load() throws IOException {

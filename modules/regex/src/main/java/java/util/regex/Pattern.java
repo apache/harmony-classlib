@@ -90,7 +90,8 @@ public final class Pattern implements Serializable {
     static final int flagsBitMask = Pattern.UNIX_LINES | 
                                     Pattern.CASE_INSENSITIVE | 
                                     Pattern.COMMENTS | 
-                                    Pattern.MULTILINE |  
+                                    Pattern.MULTILINE |
+                                    Pattern.LITERAL |
                                     Pattern.DOTALL | 
                                     Pattern.UNICODE_CASE | 
                                     Pattern.CANON_EQ;

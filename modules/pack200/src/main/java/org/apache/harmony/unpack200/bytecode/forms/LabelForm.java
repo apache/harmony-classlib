@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  */
 public class LabelForm extends ByteCodeForm {
 
-    protected boolean widened = false;
+    protected boolean widened;
 
     public LabelForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
@@ -47,7 +47,7 @@ public class LabelForm extends ByteCodeForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTarget(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.CodeAttribute)
      */
@@ -73,7 +73,7 @@ public class LabelForm extends ByteCodeForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.OperandTable,
      *      org.apache.harmony.unpack200.SegmentConstantPool)

@@ -29,7 +29,6 @@ public class CPString extends CPConstant {
 
     public CPString(CPUTF8 value, int globalIndex) {
         super(ConstantPoolEntry.CP_String, value, globalIndex);
-        this.domain = ClassConstantPool.DOMAIN_STRING;
         this.name = value;
     }
 
@@ -43,7 +42,7 @@ public class CPString extends CPConstant {
 
     /**
      * Allows the constant pool entries to resolve their nested entries
-     * 
+     *
      * @param pool
      */
     protected void resolve(ClassConstantPool pool) {
@@ -53,5 +52,22 @@ public class CPString extends CPConstant {
 
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { name };
+    }
+
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + name.hashCode();
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 }

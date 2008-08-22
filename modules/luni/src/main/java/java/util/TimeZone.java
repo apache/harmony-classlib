@@ -72,6 +72,24 @@ public abstract class TimeZone implements Serializable, Cloneable {
             AvailableZones.put(zones[i].getID(), zones[i]);
         }
     }
+    
+    private static boolean isAvailableIDInICU(String name) {
+        String[] availableIDs = com.ibm.icu.util.TimeZone.getAvailableIDs();
+        for (int i = 0; i < availableIDs.length; i++) {
+            if (availableIDs[i].equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static void appendAvailableZones(String name) {
+        com.ibm.icu.util.TimeZone icuTZ = com.ibm.icu.util.TimeZone
+                .getTimeZone(name);
+        int raw = icuTZ.getRawOffset();
+        TimeZone zone = new SimpleTimeZone(raw, name);
+        AvailableZones.put(name, zone);
+    }
 
     /**
      * Constructs a new instance of this class.
@@ -104,16 +122,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * @return an array of time zone ID strings
      */
     public static synchronized String[] getAvailableIDs() {
-        if (AvailableZones == null) {
-            initializeAvailable();
-        }
-        int length = AvailableZones.size();
-        String[] answer = new String[length];
-        Iterator<String> keys = AvailableZones.keySet().iterator();
-        for (int i = 0; i < length; i++) {
-            answer[i] = keys.next();
-        }
-        return answer;
+        return com.ibm.icu.util.TimeZone.getAvailableIDs();
     }
 
     /**
@@ -125,14 +134,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * @return an array of time zone ID strings
      */
     public static synchronized String[] getAvailableIDs(int offset) {
-        if (AvailableZones == null) {
-            initializeAvailable();
-        }
-        int count = 0, length = AvailableZones.size();
+        String[] availableIDs = com.ibm.icu.util.TimeZone.getAvailableIDs();
+        int count = 0;
+        int length = availableIDs.length;
         String[] all = new String[length];
-        Iterator<TimeZone> zones = AvailableZones.values().iterator();
         for (int i = 0; i < length; i++) {
-            TimeZone tz = zones.next();
+            com.ibm.icu.util.TimeZone tz = com.ibm.icu.util.TimeZone
+                    .getTimeZone(availableIDs[i]);
             if (tz.getRawOffset() == offset) {
                 all[count++] = tz.getID();
             }
@@ -303,7 +311,11 @@ public abstract class TimeZone implements Serializable, Cloneable {
             initializeAvailable();
         }
 
-        TimeZone zone = AvailableZones.get(name);
+        TimeZone zone = AvailableZones.get(name);        
+        if(zone == null && isAvailableIDInICU(name)){
+            appendAvailableZones(name);
+            zone = AvailableZones.get(name); 
+        }
         if (zone == null) {
             if (name.startsWith("GMT") && name.length() > 3) {
                 char sign = name.charAt(3);

@@ -57,7 +57,6 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
 // Alternative Select function
 int
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
-  PORT_ACCESS_FROM_ENV (env);
   I_32 result = 0;
   I_32 timeout;
   struct pollfd my_pollfd;
@@ -269,7 +268,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
       (*env)->DeleteLocalRef(env, gotFD);
 
       /* hysocketP is -1 if the socket is closed */
-      my_pollfds[val].fd = hysocketP == -1 ? -1 : hysocketP->sock;
+      my_pollfds[val].fd = (IDATA)hysocketP == -1 ? -1 : hysocketP->sock;
       my_pollfds[val].events = POLLIN | POLLPRI;
       my_pollfds[val].revents = 0;
   }
@@ -280,7 +279,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
       (*env)->DeleteLocalRef(env, gotFD);
 
       /* hysocketP is -1 if the socket is closed */
-      my_pollfds[countReadC + val].fd = hysocketP == -1 ? -1 : hysocketP->sock;
+      my_pollfds[countReadC + val].fd = (IDATA)hysocketP == -1 ? -1 : hysocketP->sock;
       my_pollfds[countReadC + val].events = POLLOUT;
       my_pollfds[countReadC + val].revents = 0;
   }

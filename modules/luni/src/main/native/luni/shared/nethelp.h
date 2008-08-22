@@ -46,7 +46,7 @@ void *
 getJavaIoFileDescriptorContentsAsAPointer (JNIEnv * env, jobject fd);
 void throwJavaNetBindException (JNIEnv * env, I_32 errorNumber);
 jobject newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address,
-          U_32 length, char *hostName,
+          U_32 length, const char *hostName,
           U_32 scope_id);
 void throwJavaNetUnknownHostException (JNIEnv * env, I_32 errorNumber);
 jobject newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address,
@@ -58,7 +58,7 @@ void throwJavaNetPortUnreachableException (JNIEnv * env, I_32 errorNumber);
 jobject newJavaByteArray (JNIEnv * env, jbyte * bytes, jint length);
 jobjectArray createAliasArrayFromAddrinfo (JNIEnv * env,
              hyaddrinfo_t addresses,
-             char *hName);
+             const char *hName);
 BOOLEAN booleanValue (JNIEnv * env, jobject aBoolean);
 BOOLEAN harmony_supports_ipv6 (JNIEnv * env);
 jobject newJavaLangInteger (JNIEnv * env, I_32 anInt);
@@ -77,7 +77,7 @@ void netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
               U_32 * scope_id);
 BOOLEAN preferIPv6Addresses (JNIEnv * env);
 jobjectArray createAliasArray (JNIEnv * env, jbyte ** addresses,
-             I_32 * family, U_32 count, char *hName,
+             I_32 * family, U_32 count, const char *hName,
              U_32 * scope_id_array);
 void throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber);
 I_32 netGetSockAddr (JNIEnv * env, jobject fileDescriptor,

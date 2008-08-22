@@ -28,8 +28,17 @@ import org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm;
 public class ByteCode extends ClassFileEntry {
 
     public static ByteCode getByteCode(int opcode) {
-        return new ByteCode(0xFF & opcode);
+        int byteOpcode = 0xFF & opcode;
+        if(ByteCodeForm.get(byteOpcode).hasNoOperand()) {
+            if(null == noArgByteCodes[byteOpcode]) {
+                noArgByteCodes[byteOpcode] = new ByteCode(byteOpcode);
+            }
+            return noArgByteCodes[byteOpcode];
+        }
+        return new ByteCode(byteOpcode);
     }
+
+    private static ByteCode[] noArgByteCodes = new ByteCode[255];
 
     private final ByteCodeForm byteCodeForm;
 
@@ -38,7 +47,7 @@ public class ByteCode extends ClassFileEntry {
     private int[] rewrite;
 
     private int byteCodeOffset = -1;
-    private int[] byteCodeTargets = null;
+    private int[] byteCodeTargets;
 
     protected ByteCode(int opcode) {
         this(opcode, ClassFileEntry.NONE);
@@ -57,18 +66,7 @@ public class ByteCode extends ClassFileEntry {
     }
 
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final ByteCode other = (ByteCode) obj;
-        if (getByteCodeForm() != other.getByteCodeForm())
-            return false;
-        if (rewrite != other.rewrite)
-            return false;
-        return true;
+    	return this == obj;
     }
 
     public void extractOperands(OperandManager operandManager, Segment segment,
@@ -106,20 +104,22 @@ public class ByteCode extends ClassFileEntry {
         return getByteCodeForm().getOperandType();
     }
 
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        cachedHashCode = objectHashCode();
+    }
+
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + getByteCodeForm().getOpcode();
-        // Don't forget to take the operands = rewrite into account
-        for (int index = 1; index < rewrite.length; index++) {
-            result = result + rewrite[index];
-        }
-        return result;
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
     protected void resolve(ClassConstantPool pool) {
@@ -153,7 +153,7 @@ public class ByteCode extends ClassFileEntry {
      * bytecode, set the rewrite bytes of the operand to be the appropriate
      * values. All values in operands[] will be masked with 0xFF so they fit
      * into a byte.
-     * 
+     *
      * @param operands
      *            int[] rewrite operand bytes
      */
@@ -181,7 +181,7 @@ public class ByteCode extends ClassFileEntry {
      * Given an int operand, set the rewrite bytes for that position and the one
      * immediately following it to a high-byte, low-byte encoding of the
      * operand.
-     * 
+     *
      * @param operand
      *            int to set the rewrite bytes to
      * @param position
@@ -211,7 +211,7 @@ public class ByteCode extends ClassFileEntry {
     /**
      * This is just like setOperandInt, but takes special care when the operand
      * is less than 0 to make sure it's written correctly.
-     * 
+     *
      * @param operand
      *            int to set the rewrite bytes to
      * @param position
@@ -229,7 +229,7 @@ public class ByteCode extends ClassFileEntry {
     /**
      * Given an int operand, treat it as a byte and set the rewrite byte for
      * that position to that value. Mask of anything beyond 0xFF.
-     * 
+     *
      * @param operand
      *            int to set the rewrite byte to (unsigned)
      * @param position
@@ -267,14 +267,14 @@ public class ByteCode extends ClassFileEntry {
      * nestedPositions is an array of arrays of ints. Each subarray specifies a
      * position of a nested element (from the nested[] array) and the length of
      * that element.
-     * 
+     *
      * For instance, one might have a nested of: {CPClass java/lang/Foo, CPFloat
      * 3.14} The nestedPositions would then be: {{0,2},{2,2}} In other words,
      * when the bytecode is resolved, the CPClass will be resolved to an int and
      * inserted at position 0 and 1 of the rewrite arguments (the first
      * occurrences of -1). The CPFloat will be resolved to an int position and
      * inserted at positions 2 and 3 of the rewrite arguments.
-     * 
+     *
      * @param nestedPositions
      */
     public void setNestedPositions(int[][] nestedPositions) {
@@ -293,7 +293,7 @@ public class ByteCode extends ClassFileEntry {
      * This method will answer true if the receiver is a multi-bytecode
      * instruction (such as aload0_putfield_super); otherwise, it will answer
      * false.
-     * 
+     *
      * @return boolean true if multibytecode, false otherwise
      */
     public boolean hasMultipleByteCodes() {
@@ -305,10 +305,10 @@ public class ByteCode extends ClassFileEntry {
      * particular, label byte codes need to know where they are in order to
      * calculate their targets). This method lets the CodeAttribute specify
      * where the byte code is.
-     * 
+     *
      * Since there are no aload0+label instructions, this method doesn't worry
      * about multioperation bytecodes.
-     * 
+     *
      * @param byteCodeOffset
      *            int position in code array.
      */
@@ -326,7 +326,7 @@ public class ByteCode extends ClassFileEntry {
      * relative to the byteCodeOffset, but later get fixed up to point to the
      * absolute position in the CodeAttribute array. This method sets the
      * targets.
-     * 
+     *
      * @param byteCodeTargets
      *            int index in array
      */
@@ -352,10 +352,10 @@ public class ByteCode extends ClassFileEntry {
      * Some bytecodes (the ones with variable lengths) can't have a static
      * rewrite array - they need the ability to update the array. This method
      * permits that.
-     * 
+     *
      * Note that this should not be called from bytecodes which have a static
      * rewrite; use the table in ByteCodeForm instead to specify those rewrites.
-     * 
+     *
      * @param rewrite
      */
     public void setRewrite(int[] rewrite) {
@@ -366,7 +366,7 @@ public class ByteCode extends ClassFileEntry {
      * Some bytecodes (the ones with variable lengths) can't have a static
      * rewrite array - they need the ability to update the array. This method
      * permits their associated bytecode formst to query their rewrite array.
-     * 
+     *
      * Note that this should not be called from bytecodes which have a static
      * rewrite; use the table in ByteCodeForm instead to specify those rewrites.
      */

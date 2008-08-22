@@ -20,6 +20,7 @@
 #include "vmi.h"
 #include "hysock.h"
 
+struct stat;
 /* structure for returning interface address information */
 typedef struct interfaceAddress_struct
 {

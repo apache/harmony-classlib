@@ -20,17 +20,35 @@ public class CPInterfaceMethodRef extends CPRef {
 
     public CPInterfaceMethodRef(CPClass className, CPNameAndType descriptor, int globalIndex) {
         super(ConstantPoolEntry.CP_InterfaceMethodref, className, descriptor, globalIndex);
-        this.domain = ClassConstantPool.DOMAIN_METHOD;
     }
 
     /**
      * This method answers the value this method will use for an invokeinterface
      * call. This is equal to 1 + the count of all the args, where longs and
      * doubles count for 2 and all others count for 1.
-     * 
+     *
      * @return integer count
      */
     public int invokeInterfaceCount() {
         return nameAndType.invokeInterfaceCount();
     }
+
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + className.hashCode();
+        result = PRIME * result + nameAndType.hashCode();
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
+    }
+
 }
