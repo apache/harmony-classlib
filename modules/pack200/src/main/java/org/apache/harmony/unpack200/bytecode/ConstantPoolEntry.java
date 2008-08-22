@@ -55,9 +55,7 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 
     byte tag;
 
-    protected int domain = ClassConstantPool.DOMAIN_UNDEFINED;
-
-    protected final int globalIndex;
+    protected int globalIndex;
 
     ConstantPoolEntry(byte tag, int globalIndex) {
         this.tag = tag;
@@ -68,14 +66,6 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 
     public byte getTag() {
         return tag;
-    }
-
-    public int getDomain() {
-        return domain;
-    }
-
-    public void setDomain(int newDomain) {
-        this.domain = newDomain;
     }
 
     public abstract int hashCode();

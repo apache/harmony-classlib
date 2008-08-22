@@ -43,7 +43,12 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
 
     private LdapSearchResult result;
 
+    private int batchSize = 0;
+
     public LdapSearchResult getSearchResult() {
+        if (result == null) {
+            result = new LdapSearchResult();
+        }
         return result;
     }
 
@@ -144,6 +149,14 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
 
     public void setFilter(Filter filter) {
         this.filter = filter;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
     }
 
 }

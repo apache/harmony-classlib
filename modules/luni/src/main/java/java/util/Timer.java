@@ -45,114 +45,115 @@ public class Timer {
 
     private static final class TimerImpl extends Thread {
 
-        private static final class TimerNode {
-            TimerNode parent, left, right;
+        private static final class TimerHeap {
+            private int DEFAULT_HEAP_SIZE = 256;
 
-            TimerTask task;
+            private TimerTask[] timers = new TimerTask[DEFAULT_HEAP_SIZE];
 
-            public TimerNode(TimerTask value) {
-                this.task = value;
+            private int size = 0;
+
+            private int deletedCancelledNumber = 0;
+
+            public TimerTask minimum() {
+                return timers[0];
             }
 
-            public void deleteIfCancelled(TimerTree tasks) {
-                /*
-                 * All changes in the tree structure during deleting this node
-                 * affect only the structure of the subtree having this node as
-                 * its root
-                 */
-                if (left != null) {
-                    left.deleteIfCancelled(tasks);
-                }
-                if (right != null) {
-                    right.deleteIfCancelled(tasks);
-                }
-                if (task.cancelled) {
-                    tasks.delete(this);
-                    tasks.deletedCancelledNumber++;
-                }
-            }
-        }
-
-        private static final class TimerTree {
-
-            int deletedCancelledNumber;
-
-            TimerNode root;
-
-            boolean isEmpty() {
-                return root == null;
+            public boolean isEmpty() {
+                return size == 0;
             }
 
-            void insert(TimerNode z) {
-                TimerNode y = null, x = root;
-                while (x != null) {
-                    y = x;
-                    if (z.task.getWhen() < x.task.getWhen()) {
-                        x = x.left;
-                    } else {
-                        x = x.right;
+            public void insert(TimerTask task) {
+                if (timers.length == size) {
+                    TimerTask[] appendedTimers = new TimerTask[size * 2];
+                    System.arraycopy(timers, 0, appendedTimers, 0, size);
+                    timers = appendedTimers;
+                }                    
+                timers[size++] = task;
+                upHeap();
+            }
+
+            public void delete(int pos) {
+                // posible to delete any position of the heap
+                if (pos >= 0 && pos < size) {
+                    timers[pos] = timers[--size];
+                    timers[size] = null;
+                    downHeap(pos);
+                }
+            }
+
+            private void upHeap() {
+                int current = size - 1;
+                int parent = (current - 1) / 2;
+
+                while (timers[current].when < timers[parent].when) {
+                    // swap the two
+                    TimerTask tmp = timers[current];
+                    timers[current] = timers[parent];
+                    timers[parent] = tmp;
+
+                    // update pos and current
+                    current = parent;
+                    parent = (current - 1) / 2;
+                }
+            }
+
+            private void downHeap(int pos) {
+                int current = pos;
+                int child = 2 * current + 1;
+
+                while (child < size && size > 0) {
+                    // compare the children if they exist
+                    if (child + 1 < size
+                            && timers[child + 1].when < timers[child].when) {
+                        child++;
+                    }
+
+                    // compare selected child with parent
+                    if (timers[current].when < timers[child].when)
+                        break;
+
+                    // swap the two
+                    TimerTask tmp = timers[current];
+                    timers[current] = timers[child];
+                    timers[child] = tmp;
+
+                    // update pos and current
+                    current = child;
+                    child = 2 * current + 1;
+                }
+            }
+
+            public void reset() {
+                timers = new TimerTask[DEFAULT_HEAP_SIZE];
+                size = 0;
+            }
+
+            public void adjustMinimum() {
+                downHeap(0);
+            }
+
+            public void deleteIfCancelled() {
+                for (int i = 0; i < size; i++) {
+                    if (timers[i].cancelled) {
+                        deletedCancelledNumber++;
+                        delete(i);
+                        // re-try this point
+                        i--;
                     }
                 }
-                z.parent = y;
-                if (y == null) {
-                    root = z;
-                } else if (z.task.getWhen() < y.task.getWhen()) {
-                    y.left = z;
-                } else {
-                    y.right = z;
+            }
+            
+            private int getTask(TimerTask task) {
+                for (int i = 0; i < timers.length; i++) {
+                    if (timers[i] == task){
+                        return i;
+                    }
                 }
+                return -1;
             }
 
-            void delete(TimerNode z) {
-                TimerNode y = null, x = null;
-                if (z.left == null || z.right == null) {
-                    y = z;
-                } else {
-                    y = successor(z);
-                }
-                if (y.left != null) {
-                    x = y.left;
-                } else {
-                    x = y.right;
-                }
-                if (x != null) {
-                    x.parent = y.parent;
-                }
-                if (y.parent == null) {
-                    root = x;
-                } else if (y == y.parent.left) {
-                    y.parent.left = x;
-                } else {
-                    y.parent.right = x;
-                }
-                if (y != z) {
-                    z.task = y.task;
-                }
-            }
-
-            private TimerNode successor(TimerNode x) {
-                if (x.right != null) {
-                    return minimum(x.right);
-                }
-                TimerNode y = x.parent;
-                while (y != null && x == y.right) {
-                    x = y;
-                    y = y.parent;
-                }
-                return y;
-            }
-
-            private TimerNode minimum(TimerNode x) {
-                while (x.left != null) {
-                    x = x.left;
-                }
-                return x;
-            }
-
-            TimerNode minimum() {
-                return minimum(root);
-            }
         }
+
 
         /**
          * True if the method cancel() of the Timer was called or the !!!stop()
@@ -169,7 +170,7 @@ public class Timer {
          * Vector consists of scheduled events, sorted according to
          * <code>when</code> field of TaskScheduled object.
          */
-        private TimerTree tasks = new TimerTree();
+        private TimerHeap tasks = new TimerHeap();
 
         /**
          * Starts a new timer.
@@ -214,13 +215,12 @@ public class Timer {
 
                     long currentTime = System.currentTimeMillis();
 
-                    TimerNode taskNode = tasks.minimum();
-                    task = taskNode.task;
+                    task = tasks.minimum();
                     long timeToSleep;
 
                     synchronized (task.lock) {
                         if (task.cancelled) {
-                            tasks.delete(taskNode);
+                            tasks.delete(0);
                             continue;
                         }
 
@@ -241,8 +241,12 @@ public class Timer {
                     // no sleep is necessary before launching the task
 
                     synchronized (task.lock) {
+                        int pos = 0;
+                        if(tasks.minimum().when != task.when){
+                            pos = tasks.getTask(task);
+                        }
                         if (task.cancelled) {
-                            tasks.delete(taskNode);
+                            tasks.delete(tasks.getTask(task));
                             continue;
                         }
 
@@ -250,7 +254,7 @@ public class Timer {
                         task.setScheduledTime(task.when);
 
                         // remove task from queue
-                        tasks.delete(taskNode);
+                        tasks.delete(pos);
 
                         // set when the next task should be launched
                         if (task.period >= 0) {
@@ -283,7 +287,7 @@ public class Timer {
 
         private void insertTask(TimerTask newTask) {
             // callers are synchronized
-            tasks.insert(new TimerNode(newTask));
+            tasks.insert(newTask);
             this.notify();
         }
 
@@ -292,7 +296,7 @@ public class Timer {
          */
         public synchronized void cancel() {
             cancelled = true;
-            tasks = new TimerTree();
+            tasks.reset();
             this.notify();
         }
 
@@ -302,7 +306,7 @@ public class Timer {
             }
             // callers are synchronized
             tasks.deletedCancelledNumber = 0;
-            tasks.root.deleteIfCancelled(tasks);
+            tasks.deleteIfCancelled();
             return tasks.deletedCancelledNumber;
         }
 

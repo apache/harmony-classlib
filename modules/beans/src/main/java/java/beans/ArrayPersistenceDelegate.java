@@ -71,25 +71,23 @@ class ArrayPersistenceDelegate extends PersistenceDelegate {
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance != null && oldInstance.getClass().isArray() : oldInstance;
-
-        if (newInstance != null) {
-            Class<? extends Object> newCl = newInstance.getClass();
-
-            if (!newCl.isArray()) {
-                return false;
-            }
-            // both are arrays
-            int l1 = Array.getLength(oldInstance);
-            int l2 = Array.getLength(newInstance);
-            Class<?> cType1 = oldInstance.getClass().getComponentType();
-            Class<?> cType2 = newCl.getComponentType();
-
-            if (l1 == l2 && cType1.equals(cType2)) {
-                return true;
-            }
+        if(null == oldInstance || null == newInstance){
             return false;
         }
+        
+        if(!oldInstance.getClass().isArray() || !newInstance.getClass().isArray()){
+            return false;
+        }
+        
+        // both are array
+        int l1 = Array.getLength(oldInstance);
+        int l2 = Array.getLength(newInstance);
+        Class<?> cType1 = oldInstance.getClass().getComponentType();
+        Class<?> cType2 = newInstance.getClass().getComponentType();
+        if(l1 == l2 && cType1.equals(cType2)){
+            return true;
+        }
+        
         return false;
     }
 }

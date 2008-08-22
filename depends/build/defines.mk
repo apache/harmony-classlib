@@ -34,6 +34,7 @@ EXELDFLAGS = $(LDFLAGS)
 EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
 	-Xlinker \$$ORIGIN/ -Xlinker -rpath-link \
 	-Xlinker
+WARNFLAGS=-Werror
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
 

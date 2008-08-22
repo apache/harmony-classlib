@@ -18,9 +18,9 @@ package org.apache.harmony.unpack200.tests;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.AttrDefinitionBands;
 import org.apache.harmony.unpack200.AttributeLayoutMap;
-import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentHeader;
 import org.apache.harmony.unpack200.SegmentOptions;

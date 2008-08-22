@@ -30,7 +30,7 @@ strBufferCat (struct HyPortLibrary * portLibrary, HyStringBuffer * buffer,
   buffer = strBufferEnsure (portLibrary, buffer, len);
   if (buffer)
     {
-      strcat (buffer->data, string);
+      strcat ((char *)(buffer->data), string);
       buffer->remaining -= len;
     }
 
@@ -60,12 +60,12 @@ strBufferEnsure (struct HyPortLibrary * portLibrary, HyStringBuffer * buffer,
       PORT_ACCESS_FROM_PORT (portLibrary);
       UDATA newSize = len > MIN_GROWTH ? len : MIN_GROWTH;
       HyStringBuffer *new =
-        hymem_allocate_memory (strlen (buffer->data) + newSize +
+        hymem_allocate_memory (strlen ((char *)(buffer->data)) + newSize +
                                sizeof (UDATA) + 1);
       if (new)
         {
           new->remaining = newSize;
-          strcpy (new->data, buffer->data);
+          strcpy ((char *)(new->data), (char *)(buffer->data));
         }
       hymem_free_memory (buffer);
       return new;
@@ -83,8 +83,8 @@ strBufferPrepend (struct HyPortLibrary * portLibrary, HyStringBuffer * buffer,
   buffer = strBufferEnsure (portLibrary, buffer, len);
   if (buffer)
     {
-      memmove (buffer->data + len, buffer->data, strlen (buffer->data) + 1);
-      strncpy (buffer->data, string, len);
+      memmove (buffer->data + len, buffer->data, strlen ((char *)(buffer->data)) + 1);
+      strncpy ((char *)(buffer->data), string, len);
       buffer->remaining -= len;
     }
 
@@ -94,5 +94,5 @@ strBufferPrepend (struct HyPortLibrary * portLibrary, HyStringBuffer * buffer,
 char *
 strBufferData (HyStringBuffer * buffer)
 {
-  return buffer ? buffer->data : NULL;
+  return buffer ? (char *)(buffer->data) : NULL;
 }

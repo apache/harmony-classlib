@@ -45,7 +45,7 @@ str_concat (HyPortLibrary * portLibrary, ...)
         char *chunk = va_arg (argp, char *);
         if (chunk)
         {
-            concatenatedSize += strlen (chunk);
+            concatenatedSize += (UDATA)strlen (chunk);
         }
         else
         {
@@ -111,8 +111,8 @@ prop_alloc(HyPortLibrary * portLibrary, key_value_pair* property,
     /* missing delimiter means the whole line is the key and value is empty */
     size_t keyLength = (delim ? delim : end) - start;
     size_t valueLength = delim ? end - delim - 1 : 0;
-    property->key = hymem_allocate_memory (keyLength + 1);
-    property->value = hymem_allocate_memory (valueLength + 1);
+    property->key = hymem_allocate_memory ((UDATA)(keyLength + 1));
+    property->value = hymem_allocate_memory ((UDATA)(valueLength + 1));
     if (!property->key || !property->value)
     {
         return 0;

@@ -28,7 +28,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     private final int[] start_pcs;
     private final int[] line_numbers;
     private static final CPUTF8 attributeName = new CPUTF8(
-            "LineNumberTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "LineNumberTable"); //$NON-NLS-1$
 
     public LineNumberTableAttribute(int line_number_table_length,
             int[] start_pcs, int[] line_numbers) {
@@ -52,7 +52,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
@@ -61,7 +61,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#getNestedClassFileEntries()
      */
     protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -75,7 +75,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
     protected void resolve(ClassConstantPool pool) {

@@ -121,7 +121,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
     // This content is a point used to set in connect_withtimeout() in pending
     // mode.
-    private Long connectContext = Long.valueOf(0L);
+    // Must be a new instance of Long (i.e. not valueOf) as it's value may
+    // be modified by native code.
+    private Long connectContext = new Long(0L);
 
     // Used to store the trafficClass value which is simply returned
     // as the value that was set. We also need it to pass it to methods

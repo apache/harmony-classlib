@@ -312,6 +312,14 @@
         </not>
      </condition>
 
+    <condition property="hy.portlib.stubs" value="true">
+        <or>
+            <equals arg1="${hy.os}" arg2="aix" />
+            <equals arg1="${hy.os}" arg2="zos" />
+        </or>
+    </condition>
+    <property name="hy.portlib.stubs" value="false" />
+
     <condition property="hy.libstdc++.suffix" value=".libstdc++6">
         <isset property="use.libstdc++6"/>
     </condition>
@@ -489,6 +497,7 @@ properties in preference to these:
                   executable="${make.command}"
                   dir="@{dir}">
                 <env key="HY_ZIP_API" value="${hy.zip.api}" />
+                <env key="HY_PORTLIB_STUBS" value="${hy.portlib.stubs}" />
                 <env key="HY_HDK" value="${hy.hdk}" />
                 <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />

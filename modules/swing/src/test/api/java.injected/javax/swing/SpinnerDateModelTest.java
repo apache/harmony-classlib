@@ -60,7 +60,7 @@ public class SpinnerDateModelTest extends BasicSwingTestCase {
 
     @SuppressWarnings("deprecation")
     public void testSpinnerDateModel() {
-        assertEquals(model.getDate().getDay(), now.getDay() + 1);
+        assertEquals(model.getDate().getDay(), (now.getDay() + 1) % 7);
         assertEquals(Calendar.DAY_OF_MONTH, model.getCalendarField());
         assertNull(model.getStart());
         assertNull(model.getEnd());

@@ -15,9 +15,11 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-PNG_DIR=$(HY_HDK)/../depends/libs/build/png
+# TODO: Fix the warnings see HARMONY-5885
+WARNFLAGS :=
 
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR) -I/usr/X11R6/include -I/usr/include -Iinclude
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include \
+            -I/usr/X11R6/include -I/usr/include -Iinclude
 
 BUILDFILES = \
   $(SHAREDSUB)/blitter.o \
@@ -28,8 +30,9 @@ BUILDFILES = \
   gl.o \
   XBlitter.o \
   XGraphics2D.o \
-  LockingKeys.o \
-  libpng.a
+  LockingKeys.o
+
+OSLIBS += -lpng
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a
@@ -45,6 +48,3 @@ DLLNAME=../libgl$(HY_SHLIB_SUFFIX)
 EXPNAME=HYGL_0.1
 
 include $(HY_HDK)/build/make/rules.mk
-
-libpng.a: $(PNG_DIR)/libpng.$(HY_PLATFORM)
-	cp $< $@

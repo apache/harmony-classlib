@@ -220,6 +220,21 @@ public class EventHandlerTest extends TestCase {
 
         assertEquals("setSomeValue", getMethodName());
     }
+    
+    /**
+     * fileSampleEvent scenario by throwing RuntimeException
+     */
+    public void test_Create_WithThrowRuntimeException() {
+        // Regression for Harmony-2434
+        InvocationObject invocationObject = new InvocationObject();
+        SampleListener listener = EventHandler.create(SampleListener.class,invocationObject, "throwRuntimeException");
+        try {
+            listener.fireSampleEvent(new SampleEvent("bean"));
+            fail("Expected RuntimeException thrown");
+        } catch (RuntimeException re) {
+            // Expected
+        }
+    }
 
     /**
      * 
@@ -1255,6 +1270,10 @@ public class EventHandlerTest extends TestCase {
         public void setSomeValue(int i) {
             logMethodCall(this, "setSomeValue", new Object[] { new Integer(
                     intValue) });
+        }
+        
+        public void throwRuntimeException() {
+            throw new RuntimeException("forced throw RuntimeException");
         }
     }
 }

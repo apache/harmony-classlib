@@ -19,7 +19,6 @@ package org.apache.harmony.unpack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ import java.util.List;
 public class InnerClassesAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8(
-            "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "InnerClasses"); //$NON-NLS-1$
 
     private static class InnerClassesEntry {
 
@@ -52,7 +51,7 @@ public class InnerClassesAttribute extends Attribute {
         /**
          * Determine the indices of the things in the receiver which point to
          * elements of the ClassConstantPool
-         * 
+         *
          * @param pool
          *            ClassConstantPool which holds the CPClass and CPUTF8
          *            objects.
@@ -138,9 +137,8 @@ public class InnerClassesAttribute extends Attribute {
 
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
-        Iterator it = innerClasses.iterator();
-        while (it.hasNext()) {
-            InnerClassesEntry entry = (InnerClassesEntry) it.next();
+        for(int it = 0; it < innerClasses.size(); it++) {
+            InnerClassesEntry entry = (InnerClassesEntry) innerClasses.get(it);
             entry.resolve(pool);
         }
     }
@@ -156,9 +154,9 @@ public class InnerClassesAttribute extends Attribute {
 
     protected void writeBody(DataOutputStream dos) throws IOException {
         dos.writeShort(innerClasses.size());
-        Iterator it = innerClasses.iterator();
-        while (it.hasNext()) {
-            InnerClassesEntry entry = (InnerClassesEntry) it.next();
+
+        for(int it = 0; it < innerClasses.size(); it++) {
+            InnerClassesEntry entry = (InnerClassesEntry) innerClasses.get(it);
             entry.write(dos);
         }
     }

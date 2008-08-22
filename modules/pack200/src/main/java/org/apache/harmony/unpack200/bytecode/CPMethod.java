@@ -31,4 +31,22 @@ public class CPMethod extends CPMember {
         return "Method: " + name + "(" + descriptor + ")";
     }
 
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + name.hashCode();
+        result = PRIME * result + descriptor.hashCode();
+        cachedHashCode = result;
+    }
+
+    public int hashCode() {
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
+    }
+
 }

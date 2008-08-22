@@ -16,7 +16,7 @@
  */
 
 #include "windows_31j.h"
-#define jlong2addr(a, x) ((a *)((int)(x)))
+#include "hycomp.h"
 
         static const int decodeIndex[] = {
          0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,

@@ -26,7 +26,6 @@ public class CPFloat extends CPConstantNumber {
 
     public CPFloat(Float value, int globalIndex) {
         super(ConstantPoolEntry.CP_Float, value, globalIndex);
-        this.domain = ClassConstantPool.DOMAIN_FLOAT;
     }
 
     protected void writeBody(DataOutputStream dos) throws IOException {

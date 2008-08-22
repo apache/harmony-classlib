@@ -182,6 +182,11 @@
                showoutput="on"
                dir="${basedir}"
                jvm="${test.jre.home}/bin/java">
+
+            <assertions enableSystemAssertions="true">
+                <enable />
+            </assertions>
+
             <jvmarg line="${hy.test.vmargs}" />
 
             <jvmarg value="-Xbootclasspath/a:${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>

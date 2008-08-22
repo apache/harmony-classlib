@@ -548,22 +548,11 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
 
             LdapSearchResult result = context.doSearch(dn, filter, controls);
             
-            List<SearchResult> list = new ArrayList<SearchResult>();
-            Map<String, Attributes> entries = result.getEntries();
-            for (String name : entries.keySet()) {
-                String relativeName = convertToRelativeName(dn, name);
-                SearchResult sr = new SearchResult(relativeName, null, entries
-                        .get(name));
-                sr.setNameInNamespace(name);
-                list.add(sr);
-            }
-
-            if (list.size() == 0 && result.getException() != null) {
+            if (result.isEmpty() && result.getException() != null) {
                 throw result.getException();
             }
-
-            return new LdapNamingEnumeration<SearchResult>(list, result
-                    .getException());
+            
+            return result.toSearchResultEnumeration(dn);
         } finally {
             if (context != null) {
                 context.close();
@@ -609,22 +598,11 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
             LdapSearchResult result = context.doSearch(dn, f,
                     searchControls);
             
-            List<SearchResult> list = new ArrayList<SearchResult>();
-            Map<String, Attributes> entries = result.getEntries();
-            for (String name : entries.keySet()) {
-                String relativeName = convertToRelativeName(dn, name);
-                SearchResult sr = new SearchResult(relativeName, null, entries
-                        .get(name));
-                sr.setNameInNamespace(name);
-                list.add(sr);
-            }
-
-            if (list.size() == 0 && result.getException() != null) {
+            if (result.isEmpty() && result.getException() != null) {
                 throw result.getException();
             }
-
-            return new LdapNamingEnumeration<SearchResult>(list, result
-                    .getException());
+            
+            return result.toSearchResultEnumeration(dn);
         } finally {
             if (context != null) {
                 context.close();

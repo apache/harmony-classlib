@@ -61,6 +61,8 @@ public class UTF_8 extends Charset {
               401536, // (011o0000b << 12)+(1o000000b <<  6)+(1o000000b)
             29892736  // (0111o000b << 18)+(1o000000b << 12)+(1o000000b << 6)+(1o000000b)
     };
+    
+    private static final int lowerEncodingLimit[] = { -1, 0x80, 0x800, 0x10000 };
 
     public UTF_8(String canonicalName, String[] aliases) {
         super(canonicalName, aliases);
@@ -131,7 +133,7 @@ public class UTF_8 extends Charset {
                         if (tail == -1) {
                             in.position(inIndex - in.arrayOffset());
                             out.position(outIndex - out.arrayOffset());
-                            return CoderResult.unmappableForLength(1);
+                            return CoderResult.malformedForLength(1);
                         }
                         if (inIndexLimit - inIndex < 1 + tail) {
                             break;
@@ -147,6 +149,12 @@ public class UTF_8 extends Charset {
                             jchar = (jchar << 6) + nextByte;
                         }
                         jchar -= remainingNumbers[tail];
+                        if (jchar < lowerEncodingLimit[tail]) {
+                            // Should have been encoded in fewer octets
+                            in.position(inIndex - in.arrayOffset());
+                            out.position(outIndex - out.arrayOffset());
+                            return CoderResult.malformedForLength(1);
+                        }
                         inIndex += tail;
                     }
                     cArr[outIndex++] = (char) jchar;
@@ -168,7 +176,7 @@ public class UTF_8 extends Charset {
                             jchar = jchar & 0x7F;
                             int tail = remainingBytes[jchar];
                             if (tail == -1) {
-                                return CoderResult.unmappableForLength(1);
+                                return CoderResult.malformedForLength(1);
                             }
                             if (limit - pos < 1 + tail) {
                                 return CoderResult.UNDERFLOW;
@@ -184,6 +192,10 @@ public class UTF_8 extends Charset {
                                 jchar = (jchar << 6) + nextByte;
                             }
                             jchar -= remainingNumbers[tail];
+                            if (jchar < lowerEncodingLimit[tail]) {
+                                // Should have been encoded in a fewer octets
+                                return CoderResult.malformedForLength(1);
+                            }
                             pos += tail;
                         }
                         pos++;

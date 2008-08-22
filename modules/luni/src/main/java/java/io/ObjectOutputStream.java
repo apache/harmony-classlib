@@ -115,6 +115,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     private ObjectAccessor accessor = AccessorFactory.getObjectAccessor();
 
+    /*
+     * Descriptor for java.lang.reflect.Proxy
+     */
+    private final ObjectStreamClass proxyClassDesc = ObjectStreamClass.lookup(Proxy.class); 
+  
     /**
      * Inner class to provide access to serializable fields
      */
@@ -468,8 +473,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      * 
      * @see #nextHandle
      */
-    private Integer registerObjectWritten(Object obj) {
-        Integer handle = Integer.valueOf(nextHandle());
+    private int registerObjectWritten(Object obj) {
+        int handle = nextHandle();
         objectsWritten.put(obj, handle);
         return handle;
     }
@@ -740,9 +745,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             }
             // If we got here, it is a new (non-null) classDesc that will have
             // to be registered as well
-            handle = registerObjectWritten(classDesc);
+            handle = nextHandle();
+            objectsWritten.put(classDesc, handle);
 
-            if (Proxy.isProxyClass(classToWrite)) {
+            if (classDesc.isProxy()) {
                 output.writeByte(TC_PROXYCLASSDESC);
                 Class<?>[] interfaces = classToWrite.getInterfaces();
                 output.writeInt(interfaces.length);
@@ -751,7 +757,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                 }
                 annotateProxyClass(classToWrite);
                 output.writeByte(TC_ENDBLOCKDATA);
-                writeClassDescForClass(Proxy.class);
+                writeClassDesc(proxyClassDesc, false);
                 if (unshared) {
                     // remove reference to unshared object
                     removeUnsharedReference(classDesc, previousHandle);
@@ -780,25 +786,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             }
         }
         return handle;
-    }
-
-    /**
-     * Writes a class descriptor (an <code>ObjectStreamClass</code>) that
-     * corresponds to the <code>java.lang.Class objClass</code> to the stream.
-     * 
-     * @param objClass
-     *            The class for which a class descriptor (an
-     *            <code>ObjectStreamClass</code>) will be dumped.
-     * @return the handle assigned to the class descriptor
-     * 
-     * @throws IOException
-     *             If an IO exception happened when writing the class
-     *             descriptor.
-     * 
-     */
-    private Integer writeClassDescForClass(Class<?> objClass)
-            throws IOException {
-        return writeClassDesc(ObjectStreamClass.lookup(objClass), false);
     }
 
     /**
@@ -1176,19 +1163,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      * @throws IOException
      *             If an IO exception happened when writing the array.
      */
-    private Integer writeNewArray(Object array, Class<?> arrayClass,
+    private Integer writeNewArray(Object array, Class<?> arrayClass, ObjectStreamClass arrayClDesc,
             Class<?> componentType, boolean unshared) throws IOException {
         output.writeByte(TC_ARRAY);
-        writeClassDescForClass(arrayClass);
+        writeClassDesc(arrayClDesc, false);
 
-        Integer previousHandle = null;
-        if (unshared) {
-            previousHandle = objectsWritten.get(array);
-        }
-        Integer handle = registerObjectWritten(array);
-        if (unshared) {
-            // remove reference to unshared object
-            removeUnsharedReference(array, previousHandle);
+        int handle = nextHandle();
+
+        if (!unshared) {
+            objectsWritten.put(array, handle);
         }
 
         // Now we have code duplication just because Java is typed. We have to
@@ -1253,6 +1236,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             Object[] objectArray = (Object[]) array;
             output.writeInt(objectArray.length);
             for (int i = 0; i < objectArray.length; i++) {
+                // TODO: This place is the opportunity for enhancement
+                //      We can implement writing elements through fast-path,
+                //      without setting up the context (see writeObject()) for 
+                //      each element with public API
                 writeObject(objectArray[i]);
             }
         }
@@ -1282,24 +1269,20 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         // We cannot call lookup because it returns null if the parameter
         // represents instances that cannot be serialized, and that is not what
         // we want.
-
+        ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(object);
+        
         // The handle for the classDesc is NOT the handle for the class object
         // being dumped. We must allocate a new handle and return it.
-        if (object.isEnum()) {
-            writeEnumDesc(object, unshared);
+        if (clDesc.isEnum()) {
+            writeEnumDesc(object, clDesc, unshared);
         } else {
-            writeClassDesc(ObjectStreamClass.lookupStreamClass(object),
-                    unshared);
+            writeClassDesc(clDesc, unshared);
         }
+     
+        int handle = nextHandle();
 
-        Integer previousHandle = null;
-        if (unshared) {
-            previousHandle = objectsWritten.get(object);
-        }
-        Integer handle = registerObjectWritten(object);
-        if (unshared) {
-            // remove reference to unshared object
-            removeUnsharedReference(object, previousHandle);
+        if (!unshared) {
+            objectsWritten.put(object, handle);
         }
 
         return handle;
@@ -1324,9 +1307,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         output.writeUTF(classDesc.getName());
         output.writeLong(classDesc.getSerialVersionUID());
         byte flags = classDesc.getFlags();
-        boolean externalizable = false;
-        externalizable = ObjectStreamClass.isExternalizable(classDesc
-                .forClass());
+        
+        boolean externalizable = classDesc.isExternalizable();
 
         if (externalizable) {
             if (protocolVersion == PROTOCOL_VERSION_1) {
@@ -1411,7 +1393,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      * @throws IOException
      *             If an IO exception happened when writing the object.
      */
-    private Integer writeNewObject(Object object, Class<?> theClass,
+    private Integer writeNewObject(Object object, Class<?> theClass, ObjectStreamClass clDesc, 
             boolean unshared) throws IOException {
         // Not String, not null, not array, not cyclic reference
 
@@ -1419,8 +1401,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         currentPutField = null; // null it, to make sure one will be computed if
         // needed
 
-        boolean externalizable = ObjectStreamClass.isExternalizable(theClass);
-        boolean serializable = ObjectStreamClass.isSerializable(theClass);
+        boolean externalizable = clDesc.isExternalizable();
+        boolean serializable = clDesc.isSerializable();
         if (!externalizable && !serializable) {
             // Object is neither externalizable nor serializable. Error
             throw new NotSerializableException(theClass.getName());
@@ -1428,19 +1410,20 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
         // Either serializable or externalizable, now we can save info
         output.writeByte(TC_OBJECT);
-        writeClassDescForClass(theClass);
+        writeClassDesc(clDesc, false);
         Integer previousHandle = null;
         if (unshared) {
             previousHandle = objectsWritten.get(object);
         }
-        Integer handle = registerObjectWritten(object);
+        int handle = nextHandle();
+        objectsWritten.put(object, handle);
 
         // This is how we know what to do in defaultWriteObject. And it is also
         // used by defaultWriteObject to check if it was called from an invalid
         // place.
         // It allows writeExternal to call defaultWriteObject and have it work.
         currentObject = object;
-        currentClass = ObjectStreamClass.lookup(theClass);
+        currentClass = clDesc;
         try {
             if (externalizable) {
                 boolean noBlockData = protocolVersion == PROTOCOL_VERSION_1;
@@ -1478,7 +1461,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
         return handle;
     }
-
+    
     /**
      * Write String <code>object</code> into the receiver. It is assumed the
      * String has not been dumped yet. Return an <code>Integer</code> that
@@ -1503,16 +1486,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             output.writeLong(count);
         }
         output.writeUTFBytes(object, count);
+     
+        int handle = nextHandle();
 
-        Integer previousHandle = null;
-        if (unshared) {
-            previousHandle = objectsWritten.get(object);
+        if (!unshared) {
+            objectsWritten.put(object, handle);
         }
-        Integer handle = registerObjectWritten(object);
-        if (unshared) {
-            // remove reference to unshared object
-            removeUnsharedReference(object, previousHandle);
-        }
+        
         return handle;
     }
 
@@ -1634,6 +1614,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
         // Non-null object, first time seen...
         Class<?> objClass = object.getClass();
+        ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(objClass);        
+        
         nestedLevels++;
         try {
 
@@ -1648,9 +1630,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                 }
             }
 
-            if (ObjectStreamClass.isSerializable(object.getClass())
+            if (clDesc.isSerializable()
                     && computeClassBasedReplacement) {
-                ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(objClass);
                 if(clDesc.hasMethodWriteReplace()){
                     Method methodWriteReplace = clDesc.getMethodWriteReplace();
                     Object replObj = null; 
@@ -1724,7 +1705,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
             // Is it an Array ?
             if (objClass.isArray()) {
-                return writeNewArray(object, objClass, objClass
+                return writeNewArray(object, objClass, clDesc, objClass
                         .getComponentType(), unshared);
             }
 
@@ -1733,17 +1714,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             }
 
             // Not a String or Class or Array. Default procedure.
-            return writeNewObject(object, objClass, unshared);
+            return writeNewObject(object, objClass, clDesc, unshared);
         } finally {
             nestedLevels--;
         }
     }
 
     // write for Enum Class Desc only, which is different from other classes
-    private ObjectStreamClass writeEnumDesc(Class<?> theClass, boolean unshared)
+    private ObjectStreamClass writeEnumDesc(Class<?> theClass, ObjectStreamClass classDesc, boolean unshared)
             throws IOException {
         // write classDesc, classDesc for enum is different
-        ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
+
         // set flag for enum, the flag is (SC_SERIALIZABLE | SC_ENUM)
         classDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
         Integer previousHandle = null;
@@ -1758,7 +1739,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             Class<?> classToWrite = classDesc.forClass();
             // If we got here, it is a new (non-null) classDesc that will have
             // to be registered as well
-            registerObjectWritten(classDesc);
+            objectsWritten.put(classDesc, nextHandle());
 
             output.writeByte(TC_CLASSDESC);
             if (protocolVersion == PROTOCOL_VERSION_1) {
@@ -1775,11 +1756,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             drain(); // flush primitive types in the annotation
             output.writeByte(TC_ENDBLOCKDATA);
             // write super class
-            ObjectStreamClass superClass = classDesc.getSuperclass();
-            if (null != superClass) {
+            ObjectStreamClass superClassDesc = classDesc.getSuperclass();
+            if (null != superClassDesc) {
                 // super class is also enum
-                superClass.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
-                writeEnumDesc(superClass.forClass(), unshared);
+                superClassDesc.setFlags((byte) (SC_SERIALIZABLE | SC_ENUM));
+                writeEnumDesc(superClassDesc.forClass(), superClassDesc, unshared);
             } else {
                 output.writeByte(TC_NULL);
             }
@@ -1803,13 +1784,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             // write enum only
             theClass = theClass.getSuperclass();
         }
-        ObjectStreamClass classDesc = writeEnumDesc(theClass, unshared);
+        ObjectStreamClass classDesc = ObjectStreamClass.lookup(theClass);
+        writeEnumDesc(theClass, classDesc, unshared);
 
         Integer previousHandle = null;
         if (unshared) {
             previousHandle = objectsWritten.get(object);
         }
-        Integer handle = registerObjectWritten(object);
+        int handle = nextHandle();
+        objectsWritten.put(object, handle);
 
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();
         Class<?> declaringClass = classDesc.getSuperclass().forClass();

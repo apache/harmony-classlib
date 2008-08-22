@@ -3900,7 +3900,6 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   I_32 err = 0;
 
 #if (defined(HAS_RTNETLINK))
-  struct rtattr *rta;
   U_32 sendLength = 0;
   struct linkReq_struct linkRequest;
   struct addrReq_struct addrRequest;
@@ -3954,7 +3953,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   /* send the request  and count the number of interfaces */
   if (sendLength != linkRequest.netlinkHeader.nlmsg_len)
     {
-      I_32 err = errno;
+      err = errno;
       close (netlinkSocketHandle);
       hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
       
@@ -5207,7 +5206,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
                 {
                   /* ok we have more work to do to figure it out */
                   if (getsockopt (SOCKET_CAST(sock), SOL_SOCKET, SO_ERROR,
-                                  (char *) &errorVal, &errorValLen) >= 0) {
+                                  (char *) &errorVal, (unsigned int *)&errorValLen) >= 0) {
                       return errorVal ? findError(errorVal):0; 
                   } else {
                       rc = errno;
@@ -5221,7 +5220,7 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
           /* if the descriptor is in the exception set then the connect failed */
           if (my_pollfd.revents & (POLLERR | POLLHUP | POLLNVAL)) {
               if (getsockopt(SOCKET_CAST(sock), SOL_SOCKET, SO_ERROR,
-                             (char *) &errorVal, &errorValLen) >= 0) {
+                             (char *) &errorVal, (unsigned int *)&errorValLen) >= 0) {
                   return errorVal ? findError(errorVal):0; 
               }
               rc = errno;

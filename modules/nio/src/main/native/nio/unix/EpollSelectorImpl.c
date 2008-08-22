@@ -192,7 +192,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_nio_internal_EpollSelectorImpl_ep
     jint * fdsArray;
     jint * opsArray;
     int result;
-    int isCopy;
+    jboolean isCopy;
     int c;
     int temp;
     
@@ -225,10 +225,10 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_nio_internal_EpollSelectorImpl_ep
 #endif
 
     // copying out the results, pinning might help here...
-    isCopy = NULL;
+    isCopy = JNI_FALSE;
     fdsArray = (*env)->GetIntArrayElements(env, fds, &isCopy);
 
-    isCopy = NULL;
+    isCopy = JNI_FALSE;
     opsArray = (*env)->GetIntArrayElements(env, ops, &isCopy);
 
     for(c = 0; c < result; c++) {

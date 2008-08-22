@@ -28,7 +28,7 @@ main_appendToClassPath (HyPortLibrary * portLib, U_16 sep,
 {
 
   /* append a separator, first */
-  if (*classPath && (*classPath)->data[strlen ((*classPath)->data)] != sep)
+  if (*classPath && (*classPath)->data[strlen ((char *)((*classPath)->data))] != sep)
     {
       char separator[2];
       separator[0] = (char) sep;
@@ -65,8 +65,8 @@ main_initializeClassPath (HyPortLibrary * portLib,
           if (*classPath == NULL)
             return -1;
           hysysinfo_get_env (envvar,
-                             (*classPath)->data + strlen ((*classPath)->data),
-                             rc);
+                             (char *)((*classPath)->data) + strlen ((char *)((*classPath)->data)),
+                             (U_32)rc);
           (*classPath)->remaining -= rc;
           break;
         }
@@ -266,7 +266,7 @@ convertString (JNIEnv * env, HyPortLibrary * hyportLibrary,
   if (((*env)->ExceptionCheck (env)))
     return 1;
 
-  (*env)->SetByteArrayRegion (env, bytearray, (UDATA) 0, strLength, chars);
+  (*env)->SetByteArrayRegion (env, bytearray, (UDATA) 0, strLength, (jbyte*)chars);
 
   string =
     (*env)->NewObject (env, stringClass, stringMid, bytearray, (UDATA) 0,

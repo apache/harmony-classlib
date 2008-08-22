@@ -330,7 +330,10 @@ public abstract class JComponent extends Container implements Serializable {
     private static final String ILLEGAL_CONDITION_MESSAGE = 
             Messages.getString("swing.B3","JComponent.WHEN_IN_FOCUSED_WINDOW, JComponent.WHEN_FOCUSED ", //$NON-NLS-1$ //$NON-NLS-2$
                     "JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT"); //$NON-NLS-1$ 
-
+    
+    private static final String NULL_MAP_MESSAGE =
+            Messages.getString("swing.03", "map"); //$NON-NLS-1$ //$NON-NLS-2$
+    
     private boolean opaque;
 
     private boolean doubleBuffered;
@@ -686,6 +689,9 @@ public abstract class JComponent extends Container implements Serializable {
         }
         if (condition < FIRST_INPUT_MAP_INDEX || condition > LAST_INPUT_MAP_INDEX) {
             throw new IllegalArgumentException(ILLEGAL_CONDITION_MESSAGE);
+        }
+        if (condition == WHEN_IN_FOCUSED_WINDOW && map == null) {
+                	throw new IllegalArgumentException(NULL_MAP_MESSAGE);
         }
         inputMaps[condition] = map;
         inputMapsCreated[condition] = true;
@@ -1085,7 +1091,10 @@ public abstract class JComponent extends Container implements Serializable {
         }
         result.setFont(getFont());
         result.setColor(getForeground());
-        ((Graphics2D) result).setBackground(getBackground());
+        if (result instanceof Graphics2D) { 		// DebugGraphics class does not have the setBackground method
+        	((Graphics2D) result).setBackground(getBackground());
+        }
+                
         return result;
     }
 

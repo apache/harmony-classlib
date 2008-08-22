@@ -21,6 +21,7 @@
  */
 
 #include "NativeCMM.h"
+#include <string.h>
 
 static LCMSBOOL cmsInitialized = FALSE; 
 static char *errMsg = NULL;
@@ -28,10 +29,10 @@ static char *errMsg = NULL;
 int gl_cmsErrorHandler(int errorCode, const char *msg) {
   if(errorCode == LCMS_ERRC_ABORTED) {
     // Throw exception later, after returning control from cmm
-#ifndef ZOS
-    errMsg = _strdup(msg);
-#else
+#if defined(ZOS) || defined(LINUX)
     errMsg = strdup(msg);
+#else
+    errMsg = _strdup(msg);
 #endif
   }
 
@@ -57,7 +58,7 @@ JNIEXPORT jlong JNICALL
     cmsInitialized = TRUE;
   }
 
-    hProfile = cmmOpenProfile(byteData, dataSize);
+    hProfile = cmmOpenProfile((LPBYTE)byteData, dataSize);
 
     (*env)->ReleaseByteArrayElements (env, data, byteData, 0);
 
@@ -115,7 +116,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
     unsigned profileSize = (unsigned) (*env)->GetArrayLength (env, data);
     jbyte *byteData = (*env)->GetByteArrayElements(env, data, 0);
 
-  cmmGetProfile(hProfile, byteData, profileSize);
+  cmmGetProfile(hProfile, (LPBYTE)byteData, profileSize);
 
     (*env)->ReleaseByteArrayElements (env, data, byteData, 0);
 }
@@ -136,13 +137,13 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmGetProf
 
 
   if(ts == HEADER_TAG_ID) {
-        if(!cmmGetProfileHeader(hProfile, byteData, dataSize)) {
+        if(!cmmGetProfileHeader(hProfile, (LPBYTE)byteData, dataSize)) {
             newCMMException(env, errMsg); // Throw java exception if error occured
             free(errMsg);
             errMsg = NULL;
         }
     } else {
-        if(!cmmGetProfileElement(hProfile, ts, byteData, &dataSize)) {
+        if(!cmmGetProfileElement(hProfile, ts, (LPBYTE)byteData, &dataSize)) {
             newCMMException(env, errMsg); // Throw java exception if error occured
             free(errMsg);
             errMsg = NULL;
@@ -194,7 +195,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmSetProf
     if(dataSize != sizeof(icHeader))
       newCMMException(env, "Invalid size of the data"); // Throw java exception 
 
-        if(!cmmSetProfileHeader(hProfile, byteData))
+        if(!cmmSetProfileHeader(hProfile, (LPBYTE)byteData))
             newCMMException(env, "Invalid header data"); // Throw java exception if error occured
 
     } else {

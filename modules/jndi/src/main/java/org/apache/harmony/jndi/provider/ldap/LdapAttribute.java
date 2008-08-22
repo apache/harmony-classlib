@@ -20,7 +20,9 @@ package org.apache.harmony.jndi.provider.ldap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -44,29 +46,24 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
     private static final long serialVersionUID = -6492847268062616321L;
 
-    /**
-     * whether the value of attribute is binary
-     */
-    private boolean isBinary;
-
     private LdapContextImpl context = null;
 
     private static HashSet<String> BINARY_ATTRIBUTE = new HashSet<String>();
     static {
-        BINARY_ATTRIBUTE.add("photo");
-        BINARY_ATTRIBUTE.add("personalSignature");
-        BINARY_ATTRIBUTE.add("audio");
-        BINARY_ATTRIBUTE.add("jpegPhoto");
-        BINARY_ATTRIBUTE.add("javaSerializedData");
-        BINARY_ATTRIBUTE.add("thumbnailPhoto");
-        BINARY_ATTRIBUTE.add("thumbnailLogo");
-        BINARY_ATTRIBUTE.add("userPassword");
-        BINARY_ATTRIBUTE.add("userCertificate");
-        BINARY_ATTRIBUTE.add("cACertificate");
-        BINARY_ATTRIBUTE.add("authorityRevocationList");
-        BINARY_ATTRIBUTE.add("certificateRevocationList");
-        BINARY_ATTRIBUTE.add("crossCertificatePair");
-        BINARY_ATTRIBUTE.add("x500UniqueIdentifier");
+        BINARY_ATTRIBUTE.add("photo".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("personalSignature".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("audio".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("jpegPhoto".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("javaSerializedData".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("thumbnailPhoto".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("thumbnailLogo".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("userPassword".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("userCertificate".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("cACertificate".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("authorityRevocationList".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("certificateRevocationList".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("crossCertificatePair".toLowerCase()); //$NON-NLS-1$
+        BINARY_ATTRIBUTE.add("x500UniqueIdentifier".toLowerCase()); //$NON-NLS-1$
     }
 
     /**
@@ -79,7 +76,6 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
     public LdapAttribute(String id, LdapContextImpl ctx) {
         super(id, false);
-        isBinary = isBinary(id);
         context = ctx;
     }
 
@@ -94,9 +90,9 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
      *            may never be <code>null</code>
      * @throws NamingException
      */
-    public LdapAttribute(Attribute attr, LdapContextImpl ctx) throws NamingException {
+    public LdapAttribute(Attribute attr, LdapContextImpl ctx)
+            throws NamingException {
         super(attr.getID(), attr.isOrdered());
-        isBinary = isBinary(getID());
         NamingEnumeration<?> enu = attr.getAll();
         while (enu.hasMore()) {
             Object value = enu.next();
@@ -109,19 +105,10 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
     public void decodeValues(Object[] vs) {
         byte[] type = (byte[]) vs[0];
         attrID = Utils.getString(type);
-        isBinary = isBinary(attrID);
         Collection<byte[]> list = (Collection<byte[]>) vs[1];
-        // FIXME: deal with java.naming.ldap.attributes.binary
-        if (!isBinary) {
-            for (byte[] bs : list) {
-                add(Utils.getString(bs));
-            }
-        } else {
-            for (byte[] bs : list) {
-                add(bs);
-            }
+        for (byte[] bs : list) {
+            add(bs);
         }
-
     }
 
     public void encodeValues(Object[] vs) {
@@ -130,7 +117,7 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         List<Object> list = new ArrayList<Object>(this.values.size());
 
         for (Object object : this.values) {
-            if (!isBinary && object instanceof String) {
+            if (object instanceof String) {
                 String str = (String) object;
                 object = Utils.getBytes(str);
             }
@@ -173,7 +160,35 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
     }
 
-    private static boolean isBinary(String name) {
-        return BINARY_ATTRIBUTE.contains(name) || name.endsWith(";binary");
+    public void convertValueToString() {
+        // values can't be null
+        if (values.size() == 0) {
+            return;
+        }
+
+        Vector<Object> newValues = new Vector<Object>(values.size());
+        for (Iterator<Object> iter = values.iterator(); iter.hasNext();) {
+            Object value = iter.next();
+            newValues.add(Utils.getString(value));
+        }
+
+        values.clear();
+        values = newValues;
+    }
+
+    public static boolean isBinary(String name, String[] attrs) {
+        if (BINARY_ATTRIBUTE.contains(name.toLowerCase())
+                || name.endsWith(";binary")) { //$NON-NLS-1$
+            return true;
+        }
+
+        if (attrs != null) {
+            for (int i = 0; i < attrs.length; i++) {
+                if (name.equalsIgnoreCase(attrs[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

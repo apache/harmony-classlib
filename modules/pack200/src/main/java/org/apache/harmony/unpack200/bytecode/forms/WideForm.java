@@ -44,7 +44,7 @@ public class WideForm extends VariableInstructionForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.OperandTable,
      *      org.apache.harmony.unpack200.SegmentConstantPool)
@@ -65,7 +65,7 @@ public class WideForm extends VariableInstructionForm {
      * This method sets the rewrite array for the bytecode using Format 1 of the
      * JVM spec: an opcode and two index bytes. This is used for
      * ?load/?store/ret
-     * 
+     *
      * @param instruction
      *            should be 132
      * @param byteCode
@@ -114,7 +114,7 @@ public class WideForm extends VariableInstructionForm {
      * This method sets the rewrite array for the bytecode using Format 2 of the
      * JVM spec: an opcode, two index bytes, and two constant bytes. This is
      * used for iinc.
-     * 
+     *
      * @param instruction
      *            int should be 132
      * @param byteCode

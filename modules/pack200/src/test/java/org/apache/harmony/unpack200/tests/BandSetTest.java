@@ -24,8 +24,8 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.BandSet;
-import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentHeader;
 
@@ -40,8 +40,11 @@ public class BandSetTest extends TestCase {
 
     private final BandSet bandSet = new BandSet(new MockSegment()) {
 
-        public void unpack(InputStream inputStream) throws IOException,
+        public void read(InputStream inputStream) throws IOException,
                 Pack200Exception {
+        }
+
+        public void unpack() throws IOException, Pack200Exception {
         }
 
     };

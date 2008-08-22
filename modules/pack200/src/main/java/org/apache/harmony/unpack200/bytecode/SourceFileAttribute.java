@@ -27,7 +27,7 @@ public class SourceFileAttribute extends Attribute {
     private final CPUTF8 name;
     private int nameIndex;
     private static final CPUTF8 attributeName = new CPUTF8(
-            "SourceFile", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "SourceFile"); //$NON-NLS-1$
 
     public SourceFileAttribute(CPUTF8 name) {
         super(attributeName);
@@ -52,7 +52,7 @@ public class SourceFileAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#isSourceFileAttribute()
      */
     public boolean isSourceFileAttribute() {

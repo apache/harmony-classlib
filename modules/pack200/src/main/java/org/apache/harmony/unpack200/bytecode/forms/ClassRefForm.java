@@ -16,7 +16,7 @@
  */
 package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
@@ -28,7 +28,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  */
 public class ClassRefForm extends ReferenceForm {
 
-    protected boolean widened = false;
+    protected boolean widened;
 
     public ClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

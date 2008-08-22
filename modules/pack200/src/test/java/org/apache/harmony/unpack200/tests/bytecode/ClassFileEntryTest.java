@@ -1,18 +1,18 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.apache.harmony.unpack200.tests.bytecode;
 
@@ -25,18 +25,14 @@ import org.apache.harmony.unpack200.bytecode.CPLong;
 import org.apache.harmony.unpack200.bytecode.CPMember;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
 
 public class ClassFileEntryTest extends TestCase {
 
     public void testUTF8() {
-        CPUTF8 u1 = new CPUTF8(
-                new String("thing"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 1); //$NON-NLS-1$
-        CPUTF8 u2 = new CPUTF8(
-                new String("thing"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 1); //$NON-NLS-1$
-        CPUTF8 u3 = new CPUTF8(
-                new String("otherthing"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 2); //$NON-NLS-1$
+        CPUTF8 u1 = new CPUTF8(new String("thing"), 1); //$NON-NLS-1$
+        CPUTF8 u2 = new CPUTF8(new String("thing"), 1); //$NON-NLS-1$
+        CPUTF8 u3 = new CPUTF8(new String("otherthing"), 2); //$NON-NLS-1$
         checkEquality(u1, u2, "thing", u3);
     }
 
@@ -52,15 +48,12 @@ public class ClassFileEntryTest extends TestCase {
     }
 
     public void testSourceAttribute() {
-        SourceFileAttribute sfa1 = new SourceFileAttribute(
-                new CPUTF8(
-                        new String("Thing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 1)); //$NON-NLS-1$
-        SourceFileAttribute sfa2 = new SourceFileAttribute(
-                new CPUTF8(
-                        new String("Thing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 1)); //$NON-NLS-1$
-        SourceFileAttribute sfa3 = new SourceFileAttribute(
-                new CPUTF8(
-                        new String("OtherThing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ, 2)); //$NON-NLS-1$
+        SourceFileAttribute sfa1 = new SourceFileAttribute(new CPUTF8(
+                new String("Thing.java"), 1)); //$NON-NLS-1$
+        SourceFileAttribute sfa2 = new SourceFileAttribute(new CPUTF8(
+                new String("Thing.java"), 1)); //$NON-NLS-1$
+        SourceFileAttribute sfa3 = new SourceFileAttribute(new CPUTF8(
+                new String("OtherThing.java"), 2)); //$NON-NLS-1$
         checkEquality(sfa1, sfa2, "Thing.java", sfa3); //$NON-NLS-1$
     }
 
@@ -93,28 +86,21 @@ public class ClassFileEntryTest extends TestCase {
     }
 
     public void testCPString() {
-        CPString cp1 = new CPString(new CPUTF8(new String("3"),
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 3), 3);
-        CPString cp2 = new CPString(new CPUTF8(new String("3"),
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 3), 3);
-        CPString cp3 = new CPString(new CPUTF8(new String("5"),
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 5), 5);
+        CPString cp1 = new CPString(new CPUTF8(new String("3"), 3), 3);
+        CPString cp2 = new CPString(new CPUTF8(new String("3"), 3), 3);
+        CPString cp3 = new CPString(new CPUTF8(new String("5"), 5), 5);
         checkEquality(cp1, cp2, "3", cp3); //$NON-NLS-1$
     }
 
     public void testCPField() {
-        CPMember cp1 = new CPMember(new CPUTF8("Name",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 3), new CPUTF8("I",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 4), 0, null);
-        CPMember cp2 = new CPMember(new CPUTF8("Name",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 3), new CPUTF8("I",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 4), 0, null);
-        CPMember cp3 = new CPMember(new CPUTF8("Name",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 3), new CPUTF8("Z",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 5), 0, null);
-        CPMember cp4 = new CPMember(new CPUTF8("GName",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 6), new CPUTF8("I",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ, 4), 0, null);
+        CPMember cp1 = new CPMember(new CPUTF8("Name", 3), new CPUTF8("I", 4),
+                0, null);
+        CPMember cp2 = new CPMember(new CPUTF8("Name", 3), new CPUTF8("I", 4),
+                0, null);
+        CPMember cp3 = new CPMember(new CPUTF8("Name", 3), new CPUTF8("Z", 5),
+                0, null);
+        CPMember cp4 = new CPMember(new CPUTF8("GName", 6), new CPUTF8("I", 4),
+                0, null);
         checkEquality(cp1, cp2, "Name", cp3); //$NON-NLS-1$
         checkEquality(cp1, cp2, "I", cp4); //$NON-NLS-1$
     }

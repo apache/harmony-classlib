@@ -43,20 +43,20 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
         int length = 0;
-        for (Iterator iter = lengths.iterator(); iter.hasNext();) {
-            length += ((Integer) iter.next()).intValue();
+        for(int iter = 0; iter < lengths.size(); iter++) {
+            length += ((Integer)lengths.get(iter)).intValue();
         }
         return length;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
@@ -86,7 +86,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
@@ -150,8 +150,8 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
-        for (Iterator iter = body.iterator(); iter.hasNext();) {
-            Object element = iter.next();
+        for(int iter = 0; iter < body.size(); iter++) {
+            Object element = body.get(iter);
             if (element instanceof ClassFileEntry) {
                 ((ClassFileEntry) element).resolve(pool);
             }

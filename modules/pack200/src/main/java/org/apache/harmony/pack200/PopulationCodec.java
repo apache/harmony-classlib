@@ -19,7 +19,6 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A PopulationCodec is a Codec that is well suited to encoding data that shows
@@ -137,5 +136,15 @@ public class PopulationCodec extends Codec {
 
     public Codec getUnvafouredCodec() {
         return unvafouredCodec;
+    }
+
+    public byte[] encode(long value, long last) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public byte[] encode(long value) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

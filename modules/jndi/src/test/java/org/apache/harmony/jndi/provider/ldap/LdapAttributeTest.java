@@ -81,9 +81,18 @@ public class LdapAttributeTest extends TestCase {
         id = "cn";
         values = new Object[] { Utils.getBytes(id), valueList };
         la = new LdapAttribute();
-        // 'cn' is not binary attribute, should return string value
+        /*
+         * 'cn' is not binary attribute, but LdapAttribute.decodeValues()
+         * doesn't convert values to string, must call convertValueToString() to
+         * do it.
+         */
         la.decodeValues(values);
 
+        for (int i = 0; i < la.size(); ++i) {
+            assertTrue(la.get() instanceof byte[]);
+        }
+
+        la.convertValueToString();
         for (int i = 0; i < la.size(); ++i) {
             assertTrue(la.get() instanceof String);
         }
@@ -97,5 +106,42 @@ public class LdapAttributeTest extends TestCase {
         for (int i = 0; i < la.size(); ++i) {
             assertTrue(la.get() instanceof byte[]);
         }
+    }
+
+    public void test_isBinary() {
+        assertTrue(LdapAttribute.isBinary("photo", null));
+        assertTrue(LdapAttribute.isBinary("Photo", null));
+        assertTrue(LdapAttribute.isBinary("photo", new String[0]));
+        assertTrue(LdapAttribute.isBinary("cn;binary", null));
+        assertTrue(LdapAttribute.isBinary("cn;binary", new String[0]));
+
+        assertFalse(LdapAttribute.isBinary("cn", null));
+        assertFalse(LdapAttribute.isBinary("cn",
+                new String[] { "ou", "person" }));
+        assertTrue(LdapAttribute.isBinary("cn", new String[] { "ou", "person",
+                "cn" }));
+        assertTrue(LdapAttribute.isBinary("cn", new String[] { "ou", "person",
+                "Cn" }));
+    }
+
+    public void test_convertValueToString() throws Exception {
+        LdapAttribute attr = new LdapAttribute();
+
+        // do nothing
+        attr.convertValueToString();
+
+        BasicAttribute basicAttribute = new BasicAttribute("cn");
+        attr = new LdapAttribute(basicAttribute, null);
+
+        // do nothing
+        attr.convertValueToString();
+        attr.add(Utils.getBytes("test"));
+        attr.add(Utils.getBytes("binary"));
+
+        attr.convertValueToString();
+
+        assertEquals(2, attr.size());
+        assertEquals("test", attr.get(0));
+        assertEquals("binary", attr.get(1));
     }
 }

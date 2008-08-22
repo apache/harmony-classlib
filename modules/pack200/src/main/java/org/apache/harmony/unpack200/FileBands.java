@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Parses the file band headers (not including the actual bits themselves). At
@@ -54,10 +55,10 @@ public class FileBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
         int numberOfFiles = header.getNumberOfFiles();
         SegmentOptions options = header.getOptions();
 
@@ -92,11 +93,15 @@ public class FileBands extends BandSet {
             // not the right choice, and we should just serialize it here?
             fileBits[i] = new byte[size];
             int read = in.read(fileBits[i]);
-            if (read < size) {
+            if (size != 0 && read < size) {
                 throw new Pack200Exception("Expected to read " + size
                         + " bytes but read " + read);
             }
         }
+    }
+
+    public void unpack() {
+
     }
 
     public byte[][] getFileBits() {

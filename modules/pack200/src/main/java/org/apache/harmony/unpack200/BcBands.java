@@ -20,10 +20,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
@@ -69,6 +69,8 @@ public class BcBands extends BandSet {
     private int[] bcEscSize;
     private int[][] bcEscByte;
 
+    private List wideByteCodes;
+
     /**
      * @param segment
      */
@@ -78,20 +80,15 @@ public class BcBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException, Pack200Exception {
+    public void read(InputStream in) throws IOException, Pack200Exception {
 
         AttributeLayoutMap attributeDefinitionMap = segment
                 .getAttrDefinitionBands().getAttributeDefinitionMap();
         int classCount = header.getClassCount();
         long[][] methodFlags = segment.getClassBands().getMethodFlags();
-        int[] codeMaxNALocals = segment.getClassBands().getCodeMaxNALocals();
-        int[] codeMaxStack = segment.getClassBands().getCodeMaxStack();
-        ArrayList[][] methodAttributes = segment.getClassBands()
-                .getMethodAttributes();
-        String[][] methodDescr = segment.getClassBands().getMethodDescr();
 
         int bcCaseCountCount = 0;
         int bcByteCount = 0;
@@ -121,14 +118,12 @@ public class BcBands extends BandSet {
         AttributeLayout nativeModifier = attributeDefinitionMap
                 .getAttributeLayout(AttributeLayout.ACC_NATIVE,
                         AttributeLayout.CONTEXT_METHOD);
-        AttributeLayout staticModifier = attributeDefinitionMap
-                .getAttributeLayout(AttributeLayout.ACC_STATIC,
-                        AttributeLayout.CONTEXT_METHOD);
+
         methodByteCodePacked = new byte[classCount][][];
         int bcParsed = 0;
 
         List switchIsTableSwitch = new ArrayList();
-        List wideByteCodes = new ArrayList();
+        wideByteCodes = new ArrayList();
         for (int c = 0; c < classCount; c++) {
             int numberOfMethods = methodFlags[c].length;
             methodByteCodePacked[c] = new byte[numberOfMethods][];
@@ -360,6 +355,31 @@ public class BcBands extends BandSet {
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
 
+
+    }
+
+    public void unpack() throws Pack200Exception {
+        int classCount = header.getClassCount();
+        long[][] methodFlags = segment.getClassBands().getMethodFlags();
+        int[] codeMaxNALocals = segment.getClassBands().getCodeMaxNALocals();
+        int[] codeMaxStack = segment.getClassBands().getCodeMaxStack();
+        ArrayList[][] methodAttributes = segment.getClassBands()
+                .getMethodAttributes();
+        String[][] methodDescr = segment.getClassBands().getMethodDescr();
+
+        AttributeLayoutMap attributeDefinitionMap = segment
+                .getAttrDefinitionBands().getAttributeDefinitionMap();
+
+        AttributeLayout abstractModifier = attributeDefinitionMap
+                .getAttributeLayout(AttributeLayout.ACC_ABSTRACT,
+                        AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout nativeModifier = attributeDefinitionMap
+                .getAttributeLayout(AttributeLayout.ACC_NATIVE,
+                        AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout staticModifier = attributeDefinitionMap
+                .getAttributeLayout(AttributeLayout.ACC_STATIC,
+                        AttributeLayout.CONTEXT_METHOD);
+
         int[] wideByteCodeArray = new int[wideByteCodes.size()];
         for (int index = 0; index < wideByteCodeArray.length; index++) {
             wideByteCodeArray[index] = ((Integer) wideByteCodes.get(index))
@@ -401,10 +421,10 @@ public class BcBands extends BandSet {
                     maxLocal += SegmentUtils
                             .countInvokeInterfaceArgs(methodDescr[c][m]);
                     String[] cpClass = segment.getCpBands().getCpClass();
-                    operandManager.setCurrentClass(cpClass[segment.getClassBands()
-                            .getClassThisInts()[c]]);
-                    operandManager.setSuperClass(cpClass[segment.getClassBands()
-                            .getClassSuperInts()[c]]);
+                    operandManager.setCurrentClass(cpClass[segment
+                            .getClassBands().getClassThisInts()[c]]);
+                    operandManager.setSuperClass(cpClass[segment
+                            .getClassBands().getClassSuperInts()[c]]);
                     List exceptionTable = new ArrayList();
                     if (handlerCount != null) {
                         for (int j = 0; j < handlerCount[i]; j++) {
@@ -429,9 +449,8 @@ public class BcBands extends BandSet {
                     ArrayList methodAttributesList = methodAttributes[c][m];
                     // Make sure we add the code attribute in the right place
                     int indexForCodeAttr = 0;
-                    for (Iterator iterator = methodAttributesList.iterator(); iterator
-                            .hasNext();) {
-                        Attribute attribute = (Attribute) iterator.next();
+                    for (int index = 0; index < methodAttributesList.size(); index++) {
+                        Attribute attribute = (Attribute) methodAttributesList.get(index);
                         if((attribute instanceof NewAttribute && ((NewAttribute)attribute).getLayoutIndex() < 15)) {
                             indexForCodeAttr ++;
                         } else {

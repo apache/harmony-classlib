@@ -19,12 +19,11 @@ package org.apache.harmony.unpack200.tests;
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.AttributeLayout;
-import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
-import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 public class AttributeLayoutTest extends TestCase {
@@ -60,7 +59,7 @@ public class AttributeLayoutTest extends TestCase {
         }
 
         private ClassFileEntry entry(String string) {
-            return new CPUTF8(string, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+            return new CPUTF8(string);
         }
     }
 

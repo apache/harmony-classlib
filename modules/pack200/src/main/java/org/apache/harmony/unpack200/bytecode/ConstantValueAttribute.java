@@ -29,7 +29,7 @@ public class ConstantValueAttribute extends Attribute {
     private final ClassFileEntry entry;
 
     private static final CPUTF8 attributeName = new CPUTF8(
-            "ConstantValue", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "ConstantValue"); //$NON-NLS-1$
 
     public ConstantValueAttribute(ClassFileEntry entry) {
         super(attributeName);

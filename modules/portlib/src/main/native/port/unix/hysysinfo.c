@@ -50,13 +50,17 @@
 #include "hyportpg.h"
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
+#if !defined(FREEBSD)
+static IDATA readSymbolicLink (struct HyPortLibrary *portLibrary,
+                               char *linkFilename, char **result);
+#if !defined(LINUX)
 static BOOLEAN isSymbolicLink (struct HyPortLibrary *portLibrary,
                                char *filename);
 static IDATA cwdname (struct HyPortLibrary *portLibrary, char **result);
-static IDATA readSymbolicLink (struct HyPortLibrary *portLibrary,
-                               char *linkFilename, char **result);
 static IDATA searchSystemPath (struct HyPortLibrary *portLibrary,
                                char *filename, char **result);
+#endif
+#endif
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -456,6 +460,48 @@ cleanup:
 
 #undef CDEV_CURRENT_FUNCTION
 
+#if !defined(FREEBSD)
+#define CDEV_CURRENT_FUNCTION readSymbolicLink
+/**
+ * @internal  Attempts to read the contents of a symbolic link.  (The contents are the relative pathname of
+ * the thing linked to).  A buffer large enough to hold the result (and the terminating NUL) is
+ * allocated with portLibrary->mem_allocate_memory.  The caller should free this buffer with
+ * portLibrary->mem_free_memory when it is no longer needed.
+ * On success, returns 0.  On error, returns -1.
+ */
+static IDATA
+readSymbolicLink (struct HyPortLibrary *portLibrary, char *linkFilename,
+                  char **result)
+{
+  /* TODO: remove this ifdef and find out what other builds break (if any) */
+#if defined(LINUX)
+  char fixedBuffer[PATH_MAX + 1];
+  int size = readlink (linkFilename, fixedBuffer, sizeof (fixedBuffer) - 1);
+#if defined(DEBUG)
+  portLibrary->tty_printf (portLibrary, "readSymbolicLink: \"%s\"\n%i\n",
+                           linkFilename, size);
+#endif
+  if (size <= 0)
+    {
+      return -1;
+    }
+  fixedBuffer[size++] = '\0';
+  *result = (portLibrary->mem_allocate_memory) (portLibrary, size);
+  if (!*result)
+    {
+      return -1;
+    }
+  strcpy (*result, fixedBuffer);
+  return 0;
+#else
+  return -1;
+#endif
+
+}
+
+#undef CDEV_CURRENT_FUNCTION
+
+#if !defined(LINUX)
 #define CDEV_CURRENT_FUNCTION cwdname
 /**
  * @internal  Returns the current working directory.  
@@ -523,46 +569,6 @@ isSymbolicLink (struct HyPortLibrary *portLibrary, char *filename)
 #endif
 
   return FALSE;
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
-#define CDEV_CURRENT_FUNCTION readSymbolicLink
-/**
- * @internal  Attempts to read the contents of a symbolic link.  (The contents are the relative pathname of
- * the thing linked to).  A buffer large enough to hold the result (and the terminating NUL) is
- * allocated with portLibrary->mem_allocate_memory.  The caller should free this buffer with
- * portLibrary->mem_free_memory when it is no longer needed.
- * On success, returns 0.  On error, returns -1.
- */
-static IDATA
-readSymbolicLink (struct HyPortLibrary *portLibrary, char *linkFilename,
-                  char **result)
-{
-  /* TODO: remove this ifdef and find out what other builds break (if any) */
-#if defined(LINUX)
-  char fixedBuffer[PATH_MAX + 1];
-  int size = readlink (linkFilename, fixedBuffer, sizeof (fixedBuffer) - 1);
-#if defined(DEBUG)
-  portLibrary->tty_printf (portLibrary, "readSymbolicLink: \"%s\"\n%i\n",
-                           linkFilename, size);
-#endif
-  if (size <= 0)
-    {
-      return -1;
-    }
-  fixedBuffer[size++] = '\0';
-  *result = (portLibrary->mem_allocate_memory) (portLibrary, size);
-  if (!*result)
-    {
-      return -1;
-    }
-  strcpy (*result, fixedBuffer);
-  return 0;
-#else
-  return -1;
-#endif
-
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -655,6 +661,8 @@ searchSystemPath (struct HyPortLibrary *portLibrary, char *filename,
 }
 
 #undef CDEV_CURRENT_FUNCTION
+#endif
+#endif
 
 #define CDEV_CURRENT_FUNCTION hysysinfo_get_number_CPUs
 /**

@@ -343,8 +343,8 @@ extern "C"
   /* NativesCommonNetHelpers*/
   void throwJavaNetBindException PROTOTYPE ((JNIEnv * env, I_32 errorNumber));
   jobject newJavaNetInetAddressGenericBS
-    PROTOTYPE ((JNIEnv * env, jbyte * address, U_32 length, char *hostName,
-                U_32 scope_id));
+    PROTOTYPE ((JNIEnv * env, jbyte * address, U_32 length,
+                const char *hostName, U_32 scope_id));
   void throwJavaNetUnknownHostException
     PROTOTYPE ((JNIEnv * env, I_32 errorNumber));
   jobject newJavaNetInetAddressGenericB
@@ -357,7 +357,7 @@ extern "C"
   jobject newJavaByteArray
     PROTOTYPE ((JNIEnv * env, jbyte * bytes, jint length));
   jobjectArray createAliasArrayFromAddrinfo
-    PROTOTYPE ((JNIEnv * env, hyaddrinfo_t addresses, char *hName));
+    PROTOTYPE ((JNIEnv * env, hyaddrinfo_t addresses, const char *hName));
   BOOLEAN booleanValue PROTOTYPE ((JNIEnv * env, jobject aBoolean));
   jobject newJavaLangInteger PROTOTYPE ((JNIEnv * env, I_32 anInt));
   BOOLEAN preferIPv4Stack PROTOTYPE ((JNIEnv * env));
@@ -382,7 +382,7 @@ extern "C"
   BOOLEAN preferIPv6Addresses PROTOTYPE ((JNIEnv * env));
   jobjectArray createAliasArray
     PROTOTYPE ((JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
-                char *hName, U_32 * scope_id_array));
+                const char *hName, U_32 * scope_id_array));
   void throwJavaNetSocketException
     PROTOTYPE ((JNIEnv * env, I_32 errorNumber));
   I_32 netGetSockAddr

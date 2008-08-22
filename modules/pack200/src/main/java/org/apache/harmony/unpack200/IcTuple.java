@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 /**
  * An IcTuple is the set of information that describes an inner class.
- * 
+ *
  * C is the fully qualified class name<br>
  * F is the flags<br>
  * C2 is the outer class name, or null if it can be inferred from C<br>
@@ -33,7 +33,7 @@ public class IcTuple {
     private final int nIndex;
 
     /**
-     * 
+     *
      * @param C
      * @param F
      * @param C2
@@ -69,12 +69,13 @@ public class IcTuple {
     protected String C2; // outer class
     protected String N; // name
 
-    private boolean predictSimple = false;
-    private boolean predictOuter = false;
-    private String cachedOuterClassString = null;
-    private String cachedSimpleClassName = null;
-    private boolean initialized = false;
-    private boolean anonymous = false;
+    private boolean predictSimple;
+    private boolean predictOuter;
+    private String cachedOuterClassString;
+    private String cachedSimpleClassName;
+    private boolean initialized;
+    private boolean anonymous;
+    private boolean outerIsAnonymous;
     private boolean member = true;
     private int cachedOuterClassIndex = -1;
     private int cachedSimpleClassNameIndex = -1;
@@ -115,7 +116,7 @@ public class IcTuple {
     /**
      * Answer the outer class name for the receiver. This may either be
      * specified or inferred from inner class name.
-     * 
+     *
      * @return String name of outer class
      */
     public String outerClassString() {
@@ -124,7 +125,7 @@ public class IcTuple {
 
     /**
      * Answer the inner class name for the receiver.
-     * 
+     *
      * @return String name of inner class
      */
     public String simpleClassName() {
@@ -134,7 +135,7 @@ public class IcTuple {
     /**
      * Answer the full name of the inner class represented by this tuple
      * (including its outer component)
-     * 
+     *
      * @return String full name of inner class
      */
     public String thisClassString() {
@@ -155,7 +156,12 @@ public class IcTuple {
         return anonymous;
     }
 
+
     public boolean outerIsAnonymous() {
+        return outerIsAnonymous;
+    }
+
+    private boolean computeOuterIsAnonymous() {
         String[] result = innerBreakAtDollar(cachedOuterClassString);
         if (result.length == 0) {
             throw new Error(
@@ -250,6 +256,8 @@ public class IcTuple {
                 member = true;
             }
         }
+
+        outerIsAnonymous = computeOuterIsAnonymous();
     }
 
     private boolean isAllDigits(String nameString) {
@@ -303,8 +311,21 @@ public class IcTuple {
         return true;
     }
 
+    private boolean hashcodeComputed;
+    private int cachedHashCode;
+
+    private void generateHashCode() {
+        hashcodeComputed = true;
+        cachedHashCode = 17;
+        if(C != null) { cachedHashCode =+ C.hashCode(); }
+        if(C2 != null) { cachedHashCode =+ C2.hashCode(); }
+        if(N != null) { cachedHashCode =+ N.hashCode(); }
+    }
+
     public int hashCode() {
-        return 17 + C.hashCode() + C2.hashCode() + N.hashCode();
+        if (!hashcodeComputed)
+            generateHashCode();
+        return cachedHashCode;
     }
 
     public String getC() {

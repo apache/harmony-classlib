@@ -136,7 +136,7 @@ class Division {
             if (guessDigit != 0) {
                 int borrow = Division.multiplyAndSubtract(normA, j
                         - normBLength, normB, normBLength,
-                        guessDigit & 0xffffffffL);
+                        guessDigit);
                 // Step D5: check the borrow
                 if (borrow != 0) {
                     // Step D6: compensating addition
@@ -353,29 +353,21 @@ class Division {
      * @param c the multiplier of b
      * @return the carry element of subtraction
      */
-    static int multiplyAndSubtract(int a[], int start, int b[], int bLen, long c) {
-        int i;
-        int carry = 0;
-        long product;
-        int productInt;
-
-        for (i = 0; i < bLen; i++) {
-            product = c * (b[i] & 0xffffffffL);
-            productInt = (int) product;
-            productInt += carry;
-            carry = (int) (product >> 32)
-                    + ((productInt ^ 0x80000000) < (carry ^ 0x80000000) ? 1 : 0);
-            productInt = a[start + i] - productInt;
-            if ((productInt ^ 0x80000000) > (a[start + i] ^ 0x80000000)) {
-                carry++;
-            }
-            a[start + i] = productInt;
+    static int multiplyAndSubtract(int a[], int start, int b[], int bLen, int c) {
+        long carry0 = 0;
+        long carry1 = 0;
+        
+        for (int i = 0; i < bLen; i++) {
+            carry0 = Multiplication.unsignedMultAddAdd(b[i], c, (int)carry0, 0);
+            carry1 = (a[start+i] & 0xffffffffL) - (carry0 & 0xffffffffL) + carry1;
+            a[start+i] = (int)carry1;
+            carry1 >>=  32; // -1 or 0
+            carry0 >>>= 32;
         }
-        product = (a[start + i] & 0xffffffffL)
-                - (carry & 0xffffffffL);
-        a[start + i] = (int) product;
-        carry = (int) (product >> 32); // -1 or 0
-        return carry;
+        
+        carry1 = (a[start + bLen] & 0xffffffffL) - carry0 + carry1;
+        a[start + bLen] = (int)carry1;
+        return (int)(carry1 >> 32); // -1 or 0
     }
 
     /**
@@ -503,52 +495,10 @@ class Division {
         }
         
         int m = p.numberLength * 32;
-        
-        Object[] save = almostMonInv(a, p);
-        BigInteger r = ( (BigInteger) save[0] );
-        int k = ( (Integer) save[1] ).intValue();
-//		assert ( k >= n && k <= m + n );
-        
-        long n1 = calcN(p);
-        
-        if (k > m) {
-            r = monPro(r, BigInteger.ONE, p, n1);
-            k = k - m;
-//			assert k < m;
-        }
-        r = monPro(r, BigInteger.ONE.shiftLeft(m - k), p, n1);
-        return r;
-        }
-    
-    /**
-     * Calculate the first digit of the inverse
-     */
-    private static long calcN(BigInteger a) {
-        long m0 = a.digits[0] & 0xFFFFFFFFL;
-        long n2 = 1L; // this is a'[0]
-        long powerOfTwo = 2L;
-        
-        do {
-            if (( ( m0 * n2 ) & powerOfTwo ) != 0) {
-                n2 |= powerOfTwo;
-        }
-            powerOfTwo <<= 1;
-        } while (powerOfTwo < 0x100000000L);
-        n2 = -n2;
-        return n2;
-        }
-    
-    /**
-     * Used for an intermediate result of the modInverse algorithm
-     * @return the pair: ((BigInteger)r, (Integer)k) where r == a^(-1) * 2^k mod (module)
-     */
-    private static Object[] almostMonInv(BigInteger a, BigInteger module) {
         // PRE: a \in [1, p - 1]
         BigInteger u, v, r, s;
-        // make copy to use inplace method
-        u = module.copy();
+        u = p.copy();  // make copy to use inplace method
         v = a.copy();
-        
         int max = Math.max(v.numberLength, u.numberLength);
         r = new BigInteger(1, 1, new int[max + 1]);
         s = new BigInteger(1, 1, new int[max + 1]);
@@ -571,9 +521,8 @@ class Division {
             BitLevel.inplaceShiftRight(v, lsbv);
             BitLevel.inplaceShiftLeft(s, lsbu);
             k += lsbv - lsbu;
-            
-    }
-
+        }
+        
         r.sign = 1;
         while (v.signum() > 0) {
             // INV v >= 0, u >= 0, v odd, u odd (except last iteration when v is even (0))
@@ -584,8 +533,7 @@ class Division {
                 BitLevel.inplaceShiftRight(u, toShift);
                 Elementary.inplaceAdd(r, s);
                 BitLevel.inplaceShiftLeft(s, toShift);
-                k += toShift;
-                
+                k += toShift;                
             }
             
             while (u.compareTo(v) <= BigInteger.EQUALS) {
@@ -597,24 +545,47 @@ class Division {
                 Elementary.inplaceAdd(s, r);
                 BitLevel.inplaceShiftLeft(r, toShift);
                 k += toShift;
-                
             }
-            
         }
         if (!u.isOne()){
             // in u is stored the gcd
             // math.19: BigInteger not invertible.
             throw new ArithmeticException(Messages.getString("math.19"));
         }
-        
-        if (r.compareTo(module) >= BigInteger.EQUALS) {
-            Elementary.inplaceSubtract(r, module);
+        if (r.compareTo(p) >= BigInteger.EQUALS) {
+            Elementary.inplaceSubtract(r, p);
         }
-        r = module.subtract(r);
         
-        return new Object[] { r, k };
+        r = p.subtract(r);
+
+        // Have pair: ((BigInteger)r, (Integer)k) where r == a^(-1) * 2^k mod (module)		
+        int n1 = calcN(p);
+        if (k > m) {
+            r = monPro(r, BigInteger.ONE, p, n1);
+            k = k - m;
+        }
+        
+        r = monPro(r, BigInteger.getPowerOfTwo(m - k), p, n1);
+        return r;
     }
     
+    /**
+     * Calculate the first digit of the inverse
+     */
+    private static int calcN(BigInteger a) {
+        long m0 = a.digits[0] & 0xFFFFFFFFL;
+        long n2 = 1L; // this is a'[0]
+        long powerOfTwo = 2L;
+        do {
+            if (((m0 * n2) & powerOfTwo) != 0) {
+                n2 |= powerOfTwo;
+            }
+            powerOfTwo <<= 1;
+        } while (powerOfTwo < 0x100000000L);
+        n2 = -n2;
+        return (int)(n2 & 0xFFFFFFFFL);
+    }
+
     /**
      * @return bi == abs(2^exp)
      */
@@ -754,7 +725,7 @@ class Division {
         return r;
     }
     
-    static BigInteger squareAndMultiply(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, long n2  ){
+    static BigInteger squareAndMultiply(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, int n2  ){
         BigInteger res = x2;
         for (int i = exponent.bitLength() - 1; i >= 0; i--) {
             res = monPro(res,res,modulus, n2);
@@ -771,7 +742,7 @@ class Division {
      *@see #oddModPow(BigInteger, BigInteger,
      *                           BigInteger)
      */
-    static BigInteger slidingWindow(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, long n2){
+    static BigInteger slidingWindow(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, int n2){
         // fill odd low pows of a2
         BigInteger pows[] = new BigInteger[8];
         BigInteger res = x2;
@@ -780,7 +751,7 @@ class Division {
         int acc3;
         pows[0] = a2;
         
-        x3 = monSquare(a2,modulus,n2);
+        x3 = monPro(a2,a2,modulus,n2);
         for (int i = 1; i <= 7; i++){
             pows[i] = monPro(pows[i-1],x3,modulus,n2) ;
         }
@@ -802,12 +773,12 @@ class Division {
                 }
                 
                 for(int j = acc3; j <= i; j++) {
-                    res = monSquare(res,modulus,n2);
+                    res = monPro(res,res,modulus,n2);
                 }
                 res = monPro(pows[(lowexp-1)>>1], res, modulus,n2);
                 i = acc3 ;
             }else{
-                res = monSquare(res, modulus, n2) ;
+                res = monPro(res, res, modulus, n2) ;
             }
         }
         return res;
@@ -818,11 +789,11 @@ class Division {
      * requires that all parameters be positive and the modulus be odd. >
      * 
      * @see BigInteger#modPow(BigInteger, BigInteger)
-     * @see #monPro(BigInteger, BigInteger, BigInteger, long)
+     * @see #monPro(BigInteger, BigInteger, BigInteger, int)
      * @see #slidingWindow(BigInteger, BigInteger, BigInteger, BigInteger,
-     *                      long)
+     *                      int)
      * @see #squareAndMultiply(BigInteger, BigInteger, BigInteger, BigInteger,
-     *                      long)
+     *                      int)
      */
     static BigInteger oddModPow(BigInteger base, BigInteger exponent,
             BigInteger modulus) {
@@ -831,22 +802,11 @@ class Division {
         // n-residue of base [base * r (mod modulus)]
         BigInteger a2 = base.shiftLeft(k).mod(modulus);
         // n-residue of base [1 * r (mod modulus)]
-        BigInteger x2 = BigInteger.ZERO.setBit(k).mod(modulus);
+        BigInteger x2 = BigInteger.getPowerOfTwo(k).mod(modulus);
         BigInteger res;
         // Compute (modulus[0]^(-1)) (mod 2^32) for odd modulus
         
-        long m0 = modulus.digits[0] & 0xFFFFFFFFL;
-        long n2 = 1L; // this is n'[0]
-        long powerOfTwo = 2L;
-        // compute n2
-        do {
-            if (((m0 * n2) & powerOfTwo) != 0) {
-                n2 |= powerOfTwo;
-            }
-            powerOfTwo <<= 1;
-        } while (powerOfTwo < 0x100000000L);
-        n2 = -n2;
-
+        int n2 = calcN(modulus);
         if( modulus.numberLength == 1 ){
             res = squareAndMultiply(x2,a2, exponent, modulus,n2);
         } else {
@@ -884,7 +844,7 @@ class Division {
         BigInteger y = (x2.subtract(x1)).multiply(qInv);
         inplaceModPow2(y, j);
         if (y.sign < 0) {
-            y = y.add(BigInteger.ZERO.setBit(j));
+            y = y.add(BigInteger.getPowerOfTwo(j));
         }
         // STEP 5: Compute and return: x1 + q * y
         return x1.add(q.multiply(y));
@@ -924,75 +884,33 @@ class Division {
         return res;
     }
 
-    /** Implements the Montgomery Square of a BigInteger.
-     * @see #monPro(BigInteger, BigInteger, BigInteger,
-     * long)
-     */
-    static BigInteger monSquare(BigInteger aBig, BigInteger modulus,
-            long n2){
-        if(modulus.numberLength == 1){
-            return monPro(aBig, aBig, modulus, n2);
-        }
-        //Squaring
-        int [] a = aBig.digits;
-        int [] n = modulus.digits;
-        int s = modulus.numberLength;
+    private static void monReduction(int[] res, BigInteger modulus, int n2) {
+
+        /* res + m*modulus_digits */
+        int[] modulus_digits = modulus.digits;
+        int modulusLen = modulus.numberLength;
+        long outerCarry = 0;
         
-        //Multiplying...
-        int [] t = new int [(s<<1) + 1];
-        long cs;
-        
-        int limit = Math.min(s,aBig.numberLength );
-        for(int i=0; i<limit; i++){
-            cs = 0;
-            for (int j=i+1; j<limit; j++){
-                cs += (0xFFFFFFFFL & t[i+j]) + (0xFFFFFFFFL & a[i]) * (0xFFFFFFFFL & a[j]) ;
-                t[i+j] = (int) cs;
-                cs >>>= 32;
+        for (int i = 0; i < modulusLen; i++){
+            long innnerCarry = 0;
+            int m = (int) Multiplication.unsignedMultAddAdd(res[i],n2,0,0);
+            for(int j = 0; j < modulusLen; j++){
+                innnerCarry =  Multiplication.unsignedMultAddAdd(m, modulus_digits[j], res[i+j], (int)innnerCarry);
+                res[i+j] = (int) innnerCarry;
+                innnerCarry >>>= 32;
             }
-            
-            t[i+limit] = (int) cs;
-        }
-        BitLevel.shiftLeft( t, t, 0, 1 );
-        
-        cs = 0;
-        long carry = 0;
-        for(int i=0, index = 0; i< s; i++, index++){
-            cs += (0xFFFFFFFFL & a[i]) * (0xFFFFFFFFL & a[i]) + (t[index] & 0xFFFFFFFFL);
-            t[index] = (int) cs;
-            cs >>>= 32;
-            index++;
-            cs += t[index] & 0xFFFFFFFFL ;
-            t[index] = (int)cs;
-            cs >>>= 32;
+
+            outerCarry += (res[i+modulusLen] & 0xFFFFFFFFL) + innnerCarry;
+            res[i+modulusLen] = (int) outerCarry;
+            outerCarry >>>= 32;
         }
         
-        //Reducing...
-        /* t + m*n */
-        int m = 0;
-        int i, j;
-        cs = carry = 0;
-        for (i=0; i<s; i++){
-            cs = 0;
-            m = (int) ((t[i] & 0xFFFFFFFFL) * (n2 & 0xFFFFFFFFL));
-            for(j=0; j<s; j++){
-                cs = (t[i+j] & 0xFFFFFFFFL) +  (m & 0xFFFFFFFFL)  * (n[j] & 0xFFFFFFFFL) + (cs >>> 32);
-                t[i+j] = (int) cs;
-            }
-            //Adding C to the result
-            carry += (t[i+s] & 0xFFFFFFFFL) + ( (cs>>>32) & 0xFFFFFFFFL);
-            t[i+s] = (int) carry;
-            carry >>>=32;
-        }
+        res[modulusLen << 1] = (int) outerCarry;
         
-        t[s<<1] = (int) carry;
-        
-        /* t / r  */
-        for(j=0; j<s+1; j++){
-            t[j] = t[j+s];
+        /* res / r  */        
+        for(int j = 0; j < modulusLen+1; j++){
+            res[j] = res[j+modulusLen];
         }
-        /*step 3*/
-        return finalSubtraction(t, s, s, modulus );
     }
     
     /**
@@ -1008,82 +926,46 @@ class Division {
      *                  Multiplication Algorithms"
      * @see #modPowOdd(BigInteger, BigInteger, BigInteger)
      */
-    static BigInteger monPro(BigInteger a, BigInteger b, BigInteger modulus,
-            long n2) {
-        int aFirst = a.numberLength - 1;
-        int bFirst = b.numberLength - 1;
-        int s = modulus.numberLength;
-        int n[] = modulus.digits;
-
-        int m;
-        int i, j;
-        int t[] = new int[(s << 1) + 1];
-        long product;
-        long C;
-        long aI;
-
-        for (i = 0; i < s; i++) {
-            C = 0;
-            aI = (i > aFirst) ? 0 : (a.digits[i] & 0xFFFFFFFFL);
-            for (j = 0; j < s; j++) {
-                product = (t[j] & 0xFFFFFFFFL) + C
-                        + ((j > bFirst) ? 0 : (b.digits[j] & 0xFFFFFFFFL) * aI);
-                C = product >>> 32;
-                t[j] = (int) product;
-            }
-            product = (t[s] & 0xFFFFFFFFL) + C;
-            C = product >>> 32;
-            t[s] = (int) product;
-            t[s + 1] = (int) C;
-
-            m = (int) ((t[0] & 0xFFFFFFFFL) * n2);
-            product = (t[0] & 0xFFFFFFFFL) + (m & 0xFFFFFFFFL)
-                    * (n[0] & 0xFFFFFFFFL);
-            C = (int) (product >>> 32);
-            for (j = 1; j < s; j++) {
-                product = (t[j] & 0xFFFFFFFFL) + (C & 0xFFFFFFFFL)
-                        + (m & 0xFFFFFFFFL) * (n[j] & 0xFFFFFFFFL);
-                C = product >>> 32;
-                t[j - 1] = (int) product;
-            }
-            product = (t[s] & 0xFFFFFFFFL) + (C & 0xFFFFFFFFL);
-            C = product >>> 32;
-            t[s - 1] = (int) product;
-            t[s] = t[s + 1] + (int) C;
-        }
-        
-        return finalSubtraction(t, t.length-1 ,s, modulus);
+    static BigInteger monPro(BigInteger a, BigInteger b, BigInteger modulus, int n2) {
+        int modulusLen = modulus.numberLength;
+        int res[] = new int[(modulusLen << 1) + 1];
+        Multiplication.multArraysPAP(a.digits, Math.min(modulusLen, a.numberLength),
+                                      b.digits, Math.min(modulusLen, b.numberLength), res);
+        monReduction(res,modulus,n2);
+        return finalSubtraction(res, modulus);
         
     }
-    /*Performs the final reduction of the Montgomery algorithm.
-     *@see monPro(BigInteger, BigInteger, BigInteger,
-     *long )
-     *@see monSquare(BigInteger, BigInteger ,
-     *long)
+    
+    /**
+     * Performs the final reduction of the Montgomery algorithm.
+     * @see monPro(BigInteger, BigInteger, BigInteger, long)
+     * @see monSquare(BigInteger, BigInteger, long)
      */
-    static BigInteger finalSubtraction(int t[], int tLength ,int s, BigInteger modulus){
-        // skipping leading zeros
-        int i;
-        int n[] = modulus.digits;
-        boolean lower = false;
+    static BigInteger finalSubtraction(int res[], BigInteger modulus){
         
-        for (i = tLength; (i > 0) && (t[i] == 0); i--)
-            ;
-
-        if (i == s - 1) {
-            for (; (i >= 0) && (t[i] == n[i]); i--)
-                ;
-            lower = (i >= 0) && (t[i] & 0xFFFFFFFFL) < (n[i] & 0xFFFFFFFFL);
-        } else {
-            lower = (i < s - 1);
+        // skipping leading zeros
+        int modulusLen = modulus.numberLength;
+        boolean doSub = res[modulusLen]!=0;
+        if(!doSub) {
+            int modulusDigits[] = modulus.digits;
+            doSub = true;
+            for(int i = modulusLen - 1; i >= 0; i--) {
+                if(res[i] != modulusDigits[i]) {
+                    doSub = (res[i] != 0) && ((res[i] & 0xFFFFFFFFL) > (modulusDigits[i] & 0xFFFFFFFFL));
+                    break;
+                }
+            }
         }
-        BigInteger res = new BigInteger(1, s+1, t);
-        // if (t >= n) compute (t - n)
-        if (!lower) {
-            Elementary.inplaceSubtract(res, modulus);
+        
+        BigInteger result = new BigInteger(1, modulusLen+1, res);
+        
+        // if (res >= modulusDigits) compute (res - modulusDigits)
+        if (doSub) {
+            Elementary.inplaceSubtract(result, modulus);
         }
-        res.cutOffLeadingZeroes();
-        return res;
+        
+        result.cutOffLeadingZeroes();
+        return result;
     }
 
     /**

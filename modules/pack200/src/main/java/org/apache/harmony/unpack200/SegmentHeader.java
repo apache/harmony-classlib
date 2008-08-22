@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * SegmentHeader is the header band of a {@link Segment}
@@ -93,8 +94,15 @@ public class SegmentHeader {
         this.segment = segment;
     }
 
-    public void unpack(InputStream in) throws IOException, Pack200Exception,
+    public int getArchiveSizeOffset() {
+        return archiveSizeOffset;
+    }
+
+    private int archiveSizeOffset;
+
+    public void read(InputStream in) throws IOException, Pack200Exception,
             Error, Pack200Exception {
+
         long word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
                 magic.length);
         for (int m = 0; m < magic.length; m++)
@@ -116,11 +124,17 @@ public class SegmentHeader {
             readFully(in, bandHeaders);
             setBandHeadersData(bandHeaders);
         }
+
+        archiveSizeOffset = archiveSizeOffset - in.available();
+    }
+
+    public void unpack() {
+
     }
 
     /**
      * Sets the minor version of this archive
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -134,7 +148,7 @@ public class SegmentHeader {
 
     /**
      * Sets the major version of this archive.
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -239,11 +253,11 @@ public class SegmentHeader {
      * Obtain the band headers data as an input stream. If no band headers are
      * present, this will return an empty input stream to prevent any further
      * reads taking place.
-     * 
+     *
      * Note that as a stream, data consumed from this input stream can't be
      * re-used. Data is only read from this stream if the encoding is such that
      * additional information needs to be decoded from the stream itself.
-     * 
+     *
      * @return the band headers input stream
      */
     public InputStream getBandHeadersInputStream() {
@@ -271,6 +285,7 @@ public class SegmentHeader {
         if (options.hasArchiveFileCounts()) {
             setArchiveSize(decodeScalar("archive_size_hi", in, Codec.UNSIGNED5) << 32
                     | decodeScalar("archive_size_lo", in, Codec.UNSIGNED5));
+            archiveSizeOffset = in.available();
             setSegmentsRemaining(decodeScalar("archive_next_count", in,
                     Codec.UNSIGNED5));
             setArchiveModtime(decodeScalar("archive_modtime", in,
@@ -329,7 +344,7 @@ public class SegmentHeader {
     /**
      * Decode a number of scalars from the band file. A scalar is like a band,
      * but does not perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -355,7 +370,7 @@ public class SegmentHeader {
     /**
      * Decode a scalar from the band file. A scalar is like a band, but does not
      * perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -404,7 +419,7 @@ public class SegmentHeader {
      * Completely reads in a byte array, akin to the implementation in
      * {@link java.lang.DataInputStream}. TODO Refactor out into a separate
      * InputStream handling class
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @param data

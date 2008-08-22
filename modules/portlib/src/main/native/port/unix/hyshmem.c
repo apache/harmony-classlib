@@ -125,7 +125,7 @@ hyshmem_open (HyPortLibrary * portLibrary, struct hyshmem_handle **handle,
 {
   /*TODO: Do we need the length to be longer? */
   char controlFile[HYSH_MAXPATH];
-  IDATA retryCount, exist, rc;
+  IDATA retryCount, exist;
   key_t fkey;
   void *region;
   int retry = RETRY_COUNT;

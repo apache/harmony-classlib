@@ -19,7 +19,8 @@ package java.util;
 
 final class TimeZones {
 
-    private static final int ONE_HOUR = 3600000;
+    private static final int HALF_HOUR = 1800000;
+    private static final int ONE_HOUR = HALF_HOUR * 2;
 
     public static TimeZone[] getTimeZones() {
         return new TimeZone[] {
@@ -582,7 +583,7 @@ final class TimeZones {
                 new SimpleTimeZone(6 * ONE_HOUR, "Asia/Almaty", Calendar.MARCH,//$NON-NLS-1$
                         -1, Calendar.SUNDAY, 0 * ONE_HOUR, Calendar.OCTOBER,
                         -1, Calendar.SUNDAY, 0 * ONE_HOUR),
-                new SimpleTimeZone(6 * ONE_HOUR, "Asia/Colombo"),//$NON-NLS-1$
+                new SimpleTimeZone(5 * ONE_HOUR + HALF_HOUR, "Asia/Colombo"),//$NON-NLS-1$
                 new SimpleTimeZone(6 * ONE_HOUR, "Asia/Dacca"),//$NON-NLS-1$
                 new SimpleTimeZone(6 * ONE_HOUR, "Asia/Dhaka"),//$NON-NLS-1$
                 new SimpleTimeZone(6 * ONE_HOUR,

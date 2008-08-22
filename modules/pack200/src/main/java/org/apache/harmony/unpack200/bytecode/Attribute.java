@@ -66,7 +66,7 @@ public abstract class Attribute extends ClassFileEntry {
      * when attributes are nested within other attributes - the outer attribute
      * needs to take the inner attribute headers into account when calculating
      * its length.
-     * 
+     *
      * @return int adjusted length
      */
     protected int getLengthIncludingHeader() {
@@ -80,7 +80,7 @@ public abstract class Attribute extends ClassFileEntry {
     /**
      * Answer true if the receiver needs to have BCI renumbering applied to it;
      * otherwise answer false.
-     * 
+     *
      * @return boolean BCI renumbering required
      */
     public boolean hasBCIRenumbering() {
@@ -90,7 +90,7 @@ public abstract class Attribute extends ClassFileEntry {
     /**
      * Answer true if the receiver is a source file attribute (which gets
      * special handling when the class is built); otherwise answer false.
-     * 
+     *
      * @return boolean source file attribute
      */
     public boolean isSourceFileAttribute() {

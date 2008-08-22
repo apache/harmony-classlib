@@ -19,7 +19,6 @@ package org.apache.harmony.unpack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.unpack200.Segment;
@@ -34,8 +33,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public List exceptionTable; // of ExceptionTableEntry
     public int maxLocals;
     public int maxStack;
-    private static final CPUTF8 attributeName = new CPUTF8("Code",
-            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("Code");
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
             Segment segment, OperandManager operandManager, List exceptionTable) {
@@ -90,9 +88,8 @@ public class CodeAttribute extends BCIRenumberedAttribute {
 
     protected int getLength() {
         int attributesSize = 0;
-        Iterator it = attributes.iterator();
-        while (it.hasNext()) {
-            Attribute attribute = (Attribute) it.next();
+        for(int it = 0; it < attributes.size(); it++) {
+            Attribute attribute = (Attribute) attributes.get(it);
             attributesSize += attribute.getLengthIncludingHeader();
         }
         return 2 + 2 + 4 + codeLength + 2 + exceptionTable.size()
@@ -100,13 +97,13 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     }
 
     protected ClassFileEntry[] getNestedClassFileEntries() {
-        ArrayList nestedEntries = new ArrayList();
+        ArrayList nestedEntries = new ArrayList(attributes.size() + byteCodes.size() + 10);
         nestedEntries.add(getAttributeName());
         nestedEntries.addAll(byteCodes);
         nestedEntries.addAll(attributes);
         // Don't forget to add the ExceptionTable catch_types
-        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
-            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+        for(int iter = 0; iter < exceptionTable.size(); iter++) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTable.get(iter);
             CPClass catchType = entry.getCatchType();
             // If the catch type is null, this is a finally
             // block. If it's not null, we need to add the
@@ -123,18 +120,18 @@ public class CodeAttribute extends BCIRenumberedAttribute {
 
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
-        Iterator it = attributes.iterator();
-        while (it.hasNext()) {
-            Attribute attribute = (Attribute) it.next();
+        for(int it = 0; it < attributes.size(); it++) {
+            Attribute attribute = (Attribute) attributes.get(it);
             attribute.resolve(pool);
         }
-        it = byteCodes.iterator();
-        while (it.hasNext()) {
-            ByteCode byteCode = (ByteCode) it.next();
+
+        for(int it = 0; it < byteCodes.size(); it++) {
+            ByteCode byteCode = (ByteCode) byteCodes.get(it);
             byteCode.resolve(pool);
         }
-        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
-            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+
+        for(int it = 0; it < exceptionTable.size(); it++) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTable.get(it);
             entry.resolve(pool);
         }
     }
@@ -146,23 +143,22 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     protected void writeBody(DataOutputStream dos) throws IOException {
         dos.writeShort(maxStack);
         dos.writeShort(maxLocals);
+
         dos.writeInt(codeLength);
-        Iterator it = byteCodes.iterator();
-        while (it.hasNext()) {
-            ByteCode byteCode = (ByteCode) it.next();
+        for(int it = 0; it < byteCodes.size(); it++) {
+            ByteCode byteCode = (ByteCode) byteCodes.get(it);
             byteCode.write(dos);
         }
+
         dos.writeShort(exceptionTable.size());
-        Iterator exceptionTableEntries = exceptionTable.iterator();
-        while (exceptionTableEntries.hasNext()) {
-            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTableEntries
-                    .next();
+        for(int it = 0; it < exceptionTable.size(); it++) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTable.get(it);
             entry.write(dos);
         }
+
         dos.writeShort(attributes.size());
-        it = attributes.iterator();
-        while (it.hasNext()) {
-            Attribute attribute = (Attribute) it.next();
+        for(int it = 0; it < attributes.size(); it++) {
+            Attribute attribute = (Attribute) attributes.get(it);
             attribute.write(dos);
         }
     }
@@ -191,8 +187,8 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     }
 
     public void renumber(List byteCodeOffsets) {
-        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
-            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+        for(int iter = 0; iter < exceptionTable.size(); iter++) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTable.get(iter);
             entry.renumber(byteCodeOffsets);
         }
     }

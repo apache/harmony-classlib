@@ -23,8 +23,9 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.BHSDCodec;
+import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CodecEncoding;
-import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Tests for BHSDCodec
@@ -61,6 +62,16 @@ public class BHSDCodecTest extends TestCase {
             // Test encode-decode with 0
             assertEquals(0, codec.decode(new ByteArrayInputStream(codec.encode(
                     0, 0)), 0));
+        }
+    }
+
+    public void testDeltaEncodings() throws IOException, Pack200Exception {
+        Codec c = Codec.UDELTA5;
+        int[] sequence = new int[] {0, 2, 4, 2, 2, 4};
+        byte[] encoded = c.encode(sequence);
+        int[] decoded = c.decodeInts(6, new ByteArrayInputStream(encoded));
+        for (int i = 0; i < decoded.length; i++) {
+            assertEquals(sequence[i], decoded[i]);
         }
     }
 

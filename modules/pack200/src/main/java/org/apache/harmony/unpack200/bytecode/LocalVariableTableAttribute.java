@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Local variable table
@@ -38,7 +38,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     private final CPUTF8[] descriptors;
     private int codeLength;
     private static final CPUTF8 attributeName = new CPUTF8(
-            "LocalVariableTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+            "LocalVariableTable"); //$NON-NLS-1$
 
     public LocalVariableTableAttribute(int local_variable_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,
@@ -108,7 +108,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute#renumber(java.util.List)
      */
     public void renumber(List byteCodeOffsets) throws Pack200Exception {

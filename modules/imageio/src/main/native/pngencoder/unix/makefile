@@ -15,13 +15,11 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-PNG_DIR=$(HY_HDK)/../depends/libs/build/png/
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include
 
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include -I$(PNG_DIR)
+BUILDFILES = $(SHAREDSUB)pngencoder.o
 
-BUILDFILES = \
-  $(SHAREDSUB)pngencoder.o \
-  libpng.a
+OSLIBS += -lpng
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
@@ -39,9 +37,4 @@ endif
 DLLNAME=../libpngencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYPNGENCODER_0.1
 
-CLEANFILES=jconfig.h
-
 include $(HY_HDK)/build/make/rules.mk
-
-libpng.a: $(PNG_DIR)libpng.$(HY_PLATFORM)
-	cp $< $@

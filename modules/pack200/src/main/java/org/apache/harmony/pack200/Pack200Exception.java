@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200;
+package org.apache.harmony.pack200;
 
 /**
  * Represents a problem with a Pack200 coding/decoding issue.
@@ -25,7 +25,7 @@ public class Pack200Exception extends Exception {
 
     /**
      * Create a new Pack200 exception with the given message and cause
-     * 
+     *
      * @param message
      *            the text message to display
      */
@@ -35,7 +35,7 @@ public class Pack200Exception extends Exception {
 
     /**
      * Create a new Pack200 exception with the given message and cause
-     * 
+     *
      * @param message
      *            the text message to display
      * @param cause
@@ -47,7 +47,7 @@ public class Pack200Exception extends Exception {
 
     /**
      * Create a new Pack200 exception with the given message and cause
-     * 
+     *
      * @param cause
      *            the {@link Throwable} that caused this problem
      */

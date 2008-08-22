@@ -219,6 +219,7 @@ typedef double				SYS_FLOAT;
 #define PLATFORM_LINE_DELIMITER	"\012"
 #define DIR_SEPARATOR '/'
 #define DIR_SEPARATOR_STR "/"
+#define PATH_SEPARATOR ':'
 #define PATH_SEPARATOR_STR ":"
 #define LIBPATH_ENV_VAR "LIBPATH"
 
@@ -511,5 +512,11 @@ typedef float ESSINGLE;
 #if !defined(HY_SORT)
 #define HY_SORT(base, nmemb, size, compare) qsort((base), (nmemb), (size), (compare))
 #endif
+
+/**
+ * Helper macros for storing/restoring pointers to jlong.
+ */
+#define jlong2addr(a, x) ((a *)((IDATA)(x)))
+#define addr2jlong(x) ((jlong)((IDATA)(x)))
 
 #endif /* hycomp_h */

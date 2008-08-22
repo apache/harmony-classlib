@@ -103,7 +103,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
                 pos++;
                 lastPosition = -1;
                 if (modCount != expectedModCount) {
-                    expectedModCount++;
+                    expectedModCount = modCount;
                 }
             } else {
                 throw new ConcurrentModificationException();

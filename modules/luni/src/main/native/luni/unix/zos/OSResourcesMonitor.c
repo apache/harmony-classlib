@@ -14,23 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200.tests;
 
-/**
- * This is intended to be used as a test class for unpacking a packed Jar file.
+/*
+ * Utilities to monitor system resources.
  */
-public class HelloWorld {
+#include <hyport.h>
+#include "OSResourcesMonitor.h"
 
-    int i = 97, j = 42, k = 12345;
-    float f = 3.142f, g = 2.718f;
-    long l = 299792458;
-    double d = 4.0d;
-
-    public static void main(String[] args) {
-        System.out.println("Hello world");
-    }
-
-    public HelloWorld[][] method(int a, int b, int c) {
-        return null;
-    }
+/*
+ * Class:     org_apache_harmony_luni_platform_OSResourcesMonitor
+ * Method:    isSystemPhysicalMemoryLow
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSResourcesMonitor_isSystemPhysicalMemoryLow
+  (JNIEnv *env, jclass thizClass)
+{
+    /* TODO: implement for z/OS */
+    return FALSE;	
 }
+ 

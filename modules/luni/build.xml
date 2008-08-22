@@ -70,24 +70,12 @@
             </fileset>
         </copy>
 
-        <antcall target="copy-native-includes-windows" />
-        <antcall target="copy-native-includes-unix" />
-    </target>
-
-    <target name="copy-native-includes-windows" if="is.windows">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/windows">
+            <fileset dir="${hy.luni.src.main.native}/include/${hy.os.family}">
                 <include name="jclprots.h" />
             </fileset>
         </copy>
-    </target>
 
-    <target name="copy-native-includes-unix" if="is.unix">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/unix">
-                <include name="jclprots.h" />
-            </fileset>
-        </copy>
     </target>
 
     <!-- Build native code -->
@@ -170,10 +158,11 @@
     </target>
 
     <!-- Overlay OSS packages into their required locations -->
-    <target name="overlay-oss" >
+    <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion" />
+
+    <target name="-unzip-oss">
         <unzip src="${fdlibm.zip}" dest="${hy.luni.src.main.native}/fdlibm_dist" />
         <chmod dir="${hy.luni.src.main.native}/fdlibm_dist" perm="ugo+r" />
-        <antcall target="-ascii2ebcdic-conversion" />
     </target>
 
     <target name="-ascii2ebcdic-conversion" if="is.zos">
@@ -224,14 +213,13 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
-    <target name="clean">
+    <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
         <delete failonerror="false" dir="bin"/>
-        <antcall target="clean-native-includes" />
     </target>
 
     <target name="clean-native-includes">
@@ -482,6 +470,10 @@
                    showoutput="on"
                    dir="${basedir}"
                    jvm="${test.jre.home}/bin/java">
+
+                <assertions enableSystemAssertions="true">
+                   <enable />
+                </assertions>
 
                 <jvmarg line="${hy.test.vmargs}" />
                 <!-- Used by Support_Exec.execJava() -->

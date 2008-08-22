@@ -57,8 +57,8 @@ void JNICALL callbackClassFileLoadHook(jvmtiEnv *jvmti_env,
 	jbyteArray jname_bytes = (*jni_env)->NewByteArray(jni_env, name_len);
 	
 	//construct java byteArray for old class data and class name
-	(*jni_env)->SetByteArrayRegion(jni_env, jold_bytes, 0, class_data_len, (unsigned char *)class_data);
-	(*jni_env)->SetByteArrayRegion(jni_env, jname_bytes, 0, name_len, (char *)name);
+	(*jni_env)->SetByteArrayRegion(jni_env, jold_bytes, 0, class_data_len, (jbyte *)class_data);
+	(*jni_env)->SetByteArrayRegion(jni_env, jname_bytes, 0, name_len, (jbyte *)name);
 	
 	//invoke transform method
 	jnew_bytes = (jbyteArray)(*jni_env)->CallObjectMethod(jni_env, *(gdata->inst), transform_method, loader, jname_bytes, class_being_redefined, protection_domain, jold_bytes);	
@@ -133,13 +133,13 @@ void JNICALL callbackVMInit(jvmtiEnv *jvmti, JNIEnv *env, jthread thread){
 		jbyteArray joptions=NULL, jclass_name;
 		if(class_name){
 			jclass_name = (*env)->NewByteArray(env, strlen(class_name));
-			(*env)->SetByteArrayRegion(env, jclass_name, 0, strlen(class_name), class_name);
+			(*env)->SetByteArrayRegion(env, jclass_name, 0, strlen(class_name), (jbyte*)class_name);
 		}else{
 			goto DEALLOCATE;
 		}
 		if(agent_options){
 			joptions = (*env)->NewByteArray(env, strlen(agent_options));
-			(*env)->SetByteArrayRegion(env, joptions, 0, strlen(agent_options), agent_options);
+			(*env)->SetByteArrayRegion(env, joptions, 0, strlen(agent_options), (jbyte*)agent_options);
 		}
 		
 		(*env)->CallObjectMethod(env, *(gdata->inst), *(gdata->premain_method), jclass_name, joptions);
@@ -208,7 +208,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	size = zipEntry.uncompressedSize;
 	result = (char *)hymem_allocate_memory(size*sizeof(char));
 #ifndef HY_ZIP_API
-	retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, result, size);
+	retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, (unsigned char*)result, size);
 #else /* HY_ZIP_API */
 	retval = zipFuncs->zip_getZipEntryData(VMI, &zipFile, &zipEntry, result, size);
 #endif /* HY_ZIP_API */
@@ -370,7 +370,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
 	
 	if(!gdata){		
 		jvmtiCapabilities capabilities;		
-		jvmtiError err;
+		jvmtiError jvmti_err;
 		jvmtiEventCallbacks callbacks;
 		JNIEnv *env = NULL;
 		static jvmtiEnv *jvmti;
@@ -390,19 +390,20 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
 		capabilities.can_redefine_classes = 1;
 		//FIXME VM doesnot support the capbility right now.
 		//capabilities.can_redefine_any_class = 1;
-		err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
-		check_jvmti_error(env, err, "Cannot add JVMTI capabilities.");
+		jvmti_err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
+		check_jvmti_error(env, jvmti_err,
+                                  "Cannot add JVMTI capabilities.");
 
 		//set events callback function
 		(void)memset(&callbacks, 0, sizeof(callbacks));
 		callbacks.ClassFileLoadHook = &callbackClassFileLoadHook;
 		callbacks.VMInit = &callbackVMInit;
-		err = (*jvmti)->SetEventCallbacks(jvmti, &callbacks, sizeof(jvmtiEventCallbacks));
-		check_jvmti_error(env, err, "Cannot set JVMTI event callback functions.");
+		jvmti_err = (*jvmti)->SetEventCallbacks(jvmti, &callbacks, sizeof(jvmtiEventCallbacks));
+		check_jvmti_error(env, jvmti_err, "Cannot set JVMTI event callback functions.");
 
 		//enable classfileloadhook event
-		err = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_VM_INIT, NULL);
-		check_jvmti_error(env, err, "Cannot set JVMTI VMInit event notification mode.");
+		jvmti_err = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_VM_INIT, NULL);
+		check_jvmti_error(env, jvmti_err, "Cannot set JVMTI VMInit event notification mode.");
 	}		
 	
 	return Parse_Options(vm,jnienv, gdata->jvmti,options);	

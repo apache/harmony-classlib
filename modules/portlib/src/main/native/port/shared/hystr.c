@@ -1071,7 +1071,7 @@ writeUnicodeStringToBuffer (char *buf, U_32 bufLen, U_64 width,
       currentU16 = value;
       while (numberOfUnicodeChar-- > 0)
         {
-          buf += encodeUTF8Char ((UDATA) * currentU16++, buf);
+          buf += encodeUTF8Char ((UDATA) * currentU16++, (U_8 *)buf);
         }
     }
   bufLen -= numberOfUTF8Char;
