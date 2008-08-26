@@ -322,7 +322,7 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
             // endElementInBits + 1 is the number of consecutive ones.
             // 63 - endElementInBits is the following zeros of the right most one.
-            range = -1l >>> (BIT_IN_LONG - (endElementInBits + 1)) << (63 - endElementInBits);
+            range = -1l >>> (BIT_IN_LONG - (endElementInBits + 1));
             size -= Long.bitCount(bits[endBitsIndex]);
             bits[endBitsIndex] |= range;
             size += Long.bitCount(bits[endBitsIndex]);

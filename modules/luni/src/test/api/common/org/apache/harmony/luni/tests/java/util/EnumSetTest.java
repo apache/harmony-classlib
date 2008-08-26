@@ -55,6 +55,17 @@ public class EnumSetTest extends TestCase {
         a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, kk, ll, mm,
     }
 
+    static enum HugeEnumCount {
+        NO1, NO2, NO3, NO4, NO5, NO6, NO7, NO8, NO9, NO10, NO11, NO12, NO13, NO14, NO15, NO16, NO17, NO18, NO19, NO20, 
+        NO21, NO22, NO23, NO24, NO25, NO26, NO27, NO28, NO29, NO30, NO31, NO32, NO33, NO34, NO35, NO36, NO37, NO38, NO39, NO40, 
+        NO41, NO42, NO43, NO44, NO45, NO46, NO47, NO48, NO49, NO50, NO51, NO52, NO53, NO54, NO55, NO56, NO57, NO58, NO59, NO60,
+        NO61, NO62, NO63, NO64, NO65, NO66, NO67, NO68, NO69, NO70, NO71, NO72, NO73, NO74, NO75, NO76, NO77, NO78, NO79, NO80,
+        NO81, NO82, NO83, NO84, NO85, NO86, NO87, NO88, NO89, NO90, NO91, NO92, NO93, NO94, NO95, NO96, NO97, NO98, NO99, NO100,
+        NO101, NO102, NO103, NO104, NO105, NO106, NO107, NO108, NO109, NO110, NO111, NO112, NO113, NO114, NO115, NO116, NO117, NO118, NO119, NO120,
+        NO121, NO122, NO123, NO124, NO125, NO126, NO127, NO128, NO129, NO130,
+    }
+
+
     /**
      * @tests java.util.EnumSet#noneOf(java.lang.Class)
      */
@@ -102,6 +113,30 @@ public class EnumSetTest extends TestCase {
         assertNotNull(hugeSetWithInnerClass);
     }
     
+    /**
+     * @tests java.util.HugeEnumSet#iterator()
+     */
+    public void test_iterator_HugeEnumSet() {
+        EnumSet<HugeEnumCount> set;
+        Object[] array;
+
+        // Test HugeEnumSet with 65 elements
+        // which is more than the bits of Long
+        set = EnumSet.range(HugeEnumCount.NO1, HugeEnumCount.NO65);
+        array = set.toArray();
+        for (HugeEnumCount count : set) {
+            assertEquals(count, (HugeEnumCount) array[count.ordinal()]);
+        }
+
+        // Test HugeEnumSet with 130 elements
+        // which is more than twice of the bits of Long
+        set = EnumSet.range(HugeEnumCount.NO1, HugeEnumCount.NO130);
+        array = set.toArray();
+        for (HugeEnumCount count : set) {
+            assertEquals(count, (HugeEnumCount) array[count.ordinal()]);
+        }
+    }
+
     /**
      * @tests java.util.EnumSet#allOf(java.lang.Class)
      */
