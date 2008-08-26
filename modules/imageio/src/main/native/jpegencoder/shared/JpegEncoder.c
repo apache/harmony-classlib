@@ -92,6 +92,7 @@ static void setupDQTs(JNIEnv *env, j_compress_ptr cinfo, jobjectArray dqts) {
         }
         quant_ptr->sent_table = FALSE;
         (*env)->ReleasePrimitiveArrayCritical(env, slot, arrPtr, 0);
+        (*env)->DeleteLocalRef(env, slot);
     }
 }
 
