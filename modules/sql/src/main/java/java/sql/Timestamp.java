@@ -309,62 +309,43 @@ public class Timestamp extends Date {
     @SuppressWarnings("deprecation")
     @Override
     public String toString() {
-        /*
-         * Use a DecimalFormat to lay out the nanosecond value as a simple
-         * string of 9 integers, with leading Zeros
-         */
-        DecimalFormat decimalFormat = new DecimalFormat("0"); //$NON-NLS-1$
-        decimalFormat.setMinimumIntegerDigits(9);
-        decimalFormat.setMaximumIntegerDigits(9);
-        String theNanos = decimalFormat.format(nanos);
-        theNanos = stripTrailingZeros(theNanos);
+        StringBuilder sb = new StringBuilder(29);
 
-        String year = format((getYear() + 1900), 4);
-        String month = format((getMonth() + 1), 2);
-        String date = format(getDate(), 2);
-        String hours = format(getHours(), 2);
-        String minutes = format(getMinutes(), 2);
-        String seconds = format(getSeconds(), 2);
-
-        return year + '-' + month + '-' + date + ' ' + hours + ':' + minutes
-                + ':' + seconds + '.' + theNanos;
-    }
-
-    /*
-     * Private method to format the time
-     */
-    private String format(int date, int digits) {
-        StringBuilder dateStringBuffer = new StringBuilder(String.valueOf(date));
-        while (dateStringBuffer.length() < digits) {
-            dateStringBuffer = dateStringBuffer.insert(0, '0');
-        }
-        return dateStringBuffer.toString();
-    }
-
-    /*
-     * Private method to strip trailing '0' characters from a string. @param
-     * inputString the starting string @return a string with the trailing zeros
-     * stripped - will leave a single 0 at the beginning of the string
-     */
-    private String stripTrailingZeros(String inputString) {
-        String finalString;
-
-        int i;
-        for (i = inputString.length(); i > 0; i--) {
-            if (inputString.charAt(i - 1) != '0') {
-                break;
-            }
-            /*
-             * If the string has a 0 as its first character, return a string
-             * with a single '0'
-             */
-            if (i == 1) {
-                return "0"; //$NON-NLS-1$
+        format((getYear() + 1900), 4, sb);
+        sb.append('-');
+        format((getMonth() + 1), 2, sb);
+        sb.append('-');
+        format(getDate(), 2, sb);
+        sb.append(' ');
+        format(getHours(), 2, sb);
+        sb.append(':');
+        format(getMinutes(), 2, sb);
+        sb.append(':');
+        format(getSeconds(), 2, sb);
+        sb.append('.');
+        if (nanos == 0) {
+            sb.append('0');
+        } else {
+            format(nanos, 9, sb);
+            while (sb.charAt(sb.length() - 1) == '0') {
+                sb.setLength(sb.length() - 1);
             }
         }
 
-        finalString = inputString.substring(0, i);
-        return finalString;
+        return sb.toString();
+    }
+
+    private static final String PADDING = "000000000";  //$NON-NLS-1$
+
+    /* 
+    * Private method to format the time 
+    */ 
+    private void format(int date, int digits, StringBuilder sb) { 
+        String str = String.valueOf(date);
+        if (digits - str.length() > 0) {
+            sb.append(PADDING.substring(0, digits - str.length()));
+        }
+        sb.append(str); 
     }
 
     /**
