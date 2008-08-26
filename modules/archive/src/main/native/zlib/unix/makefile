@@ -17,6 +17,16 @@
 # Makefile for module 'zlib'
 #
 
+# We don't need to debug into zlib
+HY_CFG=release
+
+HYRELEASECFLAGS = -O3
+
+# Further performance improvement on x86 and x86_64
+ifneq (,$(findstring x86,$(HY_ARCH)))
+HYRELEASECFLAGS += -DUNALIGNED_OK
+endif
+
 include $(HY_HDK)/build/make/defines.mk
 
 ZLIB_DIST=../../zlib_dist/# Path to zlib
