@@ -25,7 +25,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -236,15 +239,16 @@ public class Segment {
         InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute(
                 "InnerClasses");
         IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
-        IcTuple[] ic_stored = computeIcStored(ic_local, ic_relevant);
-        for (int index = 0; index < ic_stored.length; index++) {
-            int innerClassIndex = ic_stored[index].thisClassIndex();
-            int outerClassIndex = ic_stored[index].outerClassIndex();
-            int simpleClassNameIndex = ic_stored[index].simpleClassNameIndex();
+        List ic_stored = computeIcStored(ic_local, ic_relevant);
+        for (int index = 0; index < ic_stored.size(); index++) {
+        	IcTuple icStored = (IcTuple)ic_stored.get(index);
+            int innerClassIndex = icStored.thisClassIndex();
+            int outerClassIndex = icStored.outerClassIndex();
+            int simpleClassNameIndex = icStored.simpleClassNameIndex();
 
-            String innerClassString = ic_stored[index].thisClassString();
-            String outerClassString = ic_stored[index].outerClassString();
-            String simpleClassName = ic_stored[index].simpleClassName();
+            String innerClassString = icStored.thisClassString();
+            String outerClassString = icStored.outerClassString();
+            String simpleClassName = icStored.simpleClassName();
 
             CPClass innerClass = null;
             CPUTF8 innerName = null;
@@ -253,18 +257,18 @@ public class Segment {
             innerClass = innerClassIndex != -1 ? cpBands
                     .cpClassValue(innerClassIndex) : cpBands
                     .cpClassValue(innerClassString);
-            if (!ic_stored[index].isAnonymous()) {
+            if (!icStored.isAnonymous()) {
                 innerName = simpleClassNameIndex != -1 ? cpBands.cpUTF8Value(
                         simpleClassNameIndex) : cpBands
                         .cpUTF8Value(simpleClassName);
             }
 
-            if (ic_stored[index].isMember()) {
+            if (icStored.isMember()) {
                 outerClass = outerClassIndex != -1 ? cpBands
                         .cpClassValue(outerClassIndex) : cpBands
                         .cpClassValue(outerClassString);
             }
-            int flags = ic_stored[index].F;
+            int flags = icStored.F;
             innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass,
                     innerName, flags);
             addInnerClassesAttr = true;
@@ -318,44 +322,43 @@ public class Segment {
      *            IcTuple[] array of local transmitted tuples
      * @param ic_relevant
      *            IcTuple[] array of relevant tuples
-     * @return IcTuple[] array of tuples to be stored. If ic_local is null or
+     * @return List of tuples to be stored. If ic_local is null or
      *         empty, the values returned may not be correct. The caller will
      *         have to determine if this is the case.
      */
-    private IcTuple[] computeIcStored(IcTuple[] ic_local, IcTuple[] ic_relevant) {
-        List result = new ArrayList(ic_relevant.length);
-        List resultCopy = new ArrayList(ic_relevant.length);
-        List localList = new ArrayList(ic_relevant.length);
-        List relevantList = new ArrayList(ic_relevant.length);
-        if (ic_local != null) {
-            // If ic_local is null, this code doesn't get
-            // executed - which means the list ends up being
-            // ic_relevant.
-            for (int index = 0; index < ic_local.length; index++) {
-                result.add(ic_local[index]);
-                resultCopy.add(ic_local[index]);
-                localList.add(ic_local[index]);
-            }
-        }
-        for (int index = 0; index < ic_relevant.length; index++) {
-            result.add(ic_relevant[index]);
-            resultCopy.add(ic_relevant[index]);
-            relevantList.add(ic_relevant[index]);
-        }
+    private List computeIcStored(IcTuple[] ic_local, IcTuple[] ic_relevant) {
+    	List result = new ArrayList(ic_relevant.length);
+    	List duplicates = new ArrayList(ic_relevant.length);
+    	Set isInResult = new HashSet(ic_relevant.length);
 
-        // Since we're removing while iterating, iterate over
-        // a copy.
-        for(int i = 0; i < resultCopy.size(); i++) {
-            IcTuple tuple = (IcTuple) resultCopy.get(i);
-            if (localList.contains(tuple) && relevantList.contains(tuple)) {
-                while (result.remove(tuple));
-            }
-        }
-        IcTuple[] resultArray = new IcTuple[result.size()];
-        for (int index = 0; index < resultArray.length; index++) {
-            resultArray[index] = (IcTuple) result.get(index);
-        }
-        return resultArray;
+    	// need to compute:
+    	//   result = ic_local XOR ic_relevant
+    	
+    	// add ic_local
+    	if (ic_local != null) {
+    		for(int index = 0; index < ic_local.length; index++) {
+    			if (isInResult.add(ic_local[index])) { 
+    				result.add(ic_local[index]);
+    			}
+    		}
+    	}
+
+    	// add ic_relevant
+		for(int index = 0; index < ic_relevant.length; index++) {
+			if (isInResult.add(ic_relevant[index])) { 
+				result.add(ic_relevant[index]);
+			} else {
+				duplicates.add(ic_relevant[index]);
+			}
+		}
+
+		// eliminate "duplicates"
+		for(int index = 0; index < duplicates.size(); index++) {
+			IcTuple tuple = (IcTuple)duplicates.get(index);
+			result.remove(tuple);
+		}
+		
+        return result;
     }
 
     /**
