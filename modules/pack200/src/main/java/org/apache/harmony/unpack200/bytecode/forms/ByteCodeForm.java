@@ -59,9 +59,9 @@ public class ByteCodeForm {
 
     protected static final boolean WIDENED = true;
 
-    protected static final Map byteCodes = new HashMap();
+    protected static final ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
+    protected static final Map byteCodesByName = new HashMap(256);
     static {
-        final ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
         byteCodeArray[0] = new NoArgumentForm(0, "nop");
         byteCodeArray[1] = new NoArgumentForm(1, "aconst_null");
         byteCodeArray[2] = new NoArgumentForm(2, "iconst_m1");
@@ -391,8 +391,7 @@ public class ByteCodeForm {
         for (int i = 0; i < byteCodeArray.length; i++) {
             final ByteCodeForm byteCode = byteCodeArray[i];
             if (byteCode != null) {
-                byteCodes.put(new Integer(i), byteCode);
-                byteCodes.put(byteCode.getName(), byteCode);
+                byteCodesByName.put(byteCode.getName(), byteCode);
             }
         }
     }
@@ -478,11 +477,11 @@ public class ByteCodeForm {
     }
 
     public static ByteCodeForm get(int opcode) {
-        return (ByteCodeForm) byteCodes.get(new Integer(opcode));
+        return (ByteCodeForm) byteCodeArray[opcode];
     }
 
     public static ByteCodeForm get(String name) {
-        return (ByteCodeForm) byteCodes.get(name);
+        return (ByteCodeForm) byteCodesByName.get(name);
     }
 
     public String toString() {

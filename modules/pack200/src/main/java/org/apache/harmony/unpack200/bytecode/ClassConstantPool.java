@@ -243,7 +243,7 @@ public class ClassConstantPool {
 
         // copy over and rebuild the cache
         //
-        indexCache = new HashMap();
+        indexCache = new HashMap(entries.size());
         int index = 0;
 
         entries.clear();
