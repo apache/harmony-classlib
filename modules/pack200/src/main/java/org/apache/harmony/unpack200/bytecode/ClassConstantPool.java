@@ -49,6 +49,9 @@ public class ClassConstantPool {
     private boolean resolved;
 
     public ClassFileEntry add(ClassFileEntry entry) {
+        if (entry instanceof ByteCode) {
+            return null;
+        }
         if (entry instanceof ConstantPoolEntry) {
             if (entriesContainsSet.add(entry)) {
                 entries.add(entry);
