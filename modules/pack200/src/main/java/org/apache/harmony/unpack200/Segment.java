@@ -333,11 +333,11 @@ public class Segment {
 
     	// need to compute:
     	//   result = ic_local XOR ic_relevant
-    	
+
     	// add ic_local
     	if (ic_local != null) {
     		for(int index = 0; index < ic_local.length; index++) {
-    			if (isInResult.add(ic_local[index])) { 
+    			if (isInResult.add(ic_local[index])) {
     				result.add(ic_local[index]);
     			}
     		}
@@ -345,7 +345,7 @@ public class Segment {
 
     	// add ic_relevant
 		for(int index = 0; index < ic_relevant.length; index++) {
-			if (isInResult.add(ic_relevant[index])) { 
+			if (isInResult.add(ic_relevant[index])) {
 				result.add(ic_relevant[index]);
 			} else {
 				duplicates.add(ic_relevant[index]);
@@ -357,7 +357,7 @@ public class Segment {
 			IcTuple tuple = (IcTuple)duplicates.get(index);
 			result.remove(tuple);
 		}
-		
+
         return result;
     }
 

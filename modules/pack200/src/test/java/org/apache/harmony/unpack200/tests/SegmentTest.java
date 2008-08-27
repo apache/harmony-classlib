@@ -114,53 +114,6 @@ public class SegmentTest extends TestCase {
         }
         reader1.close();
         reader2.close();
-
-//        try {
-//            Process process = Runtime
-//                    .getRuntime()
-//                    .exec(
-//                            "java -cp "
-//                                    + file.getName()
-//                                    + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
-//                            new String[] {}, file.getParentFile());
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(
-//                    process.getInputStream()));
-//            String line = reader.readLine();
-//            assertEquals("Hello world", line);
-//            reader.close();
-//
-//            Process process2 = Runtime
-//                    .getRuntime()
-//                    .exec(
-//                            "javap -c -verbose -classpath "
-//                                    + file.getName()
-//                                    + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
-//                            new String[] {}, file.getParentFile());
-//            BufferedReader reader1 = new BufferedReader(new InputStreamReader(process2
-//                    .getInputStream()));
-//            InputStream javapCompareFile = Segment.class
-//                    .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
-//            BufferedReader reader2 = new BufferedReader(new InputStreamReader(
-//                    javapCompareFile));
-//            String line1 = readNextLine(reader1);
-//            String line2 = readNextLine(reader2);
-//            int i = 1;
-//            while (line1 != null || line2 != null) {
-//                assertEquals(line2, line1);
-//                line1 = readNextLine(reader1);
-//                line2 = readNextLine(reader2);
-//                i++;
-//            }
-//            reader1.close();
-//            reader2.close();
-//        } catch (IOException e) {
-//            String message = e.getMessage();
-//            if (message.startsWith("Unable to start program") || message.startsWith("The creation of the Process has just failed")) {
-//                System.out.println("Warning: org.apache.harmony.unpack200.tests.SegmentTest.testHelloWorld() was not completed as java or javap could not be found");
-//            } else {
-//                throw e;
-//            }
-//        }
     }
 
     private String readNextLine(BufferedReader reader) throws IOException {
