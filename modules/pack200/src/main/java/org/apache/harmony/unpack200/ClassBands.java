@@ -685,7 +685,7 @@ public class ClassBands extends BandSet {
                     }
 
                     IcTuple icTuple = new IcTuple(icTupleC, icTupleF,
-                            icTupleC2, icTupleN, icTupleCIndex, icTupleC2Index, icTupleNIndex);
+                            icTupleC2, icTupleN, icTupleCIndex, icTupleC2Index, icTupleNIndex, j);
                     icLocal[i][j] = icTuple;
                 }
                 innerClassIndex++;

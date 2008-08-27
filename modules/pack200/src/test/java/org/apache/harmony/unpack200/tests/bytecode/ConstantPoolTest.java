@@ -61,9 +61,9 @@ public class ConstantPoolTest extends TestCase {
         assertTrue(pool.indexOf(u1) > 0);
     }
 
-    public void testAllClasses() {
+    public void testEntries() {
         pool.add(new CPClass(new CPUTF8("RandomClass", 1), 10));
         pool.add(new CPClass(new CPUTF8("RandomClass2", 2), 20));
-        assertEquals(2, pool.allClasses().size());
+        assertEquals(2, pool.entries().size());
     }
 }

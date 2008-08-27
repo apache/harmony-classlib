@@ -86,8 +86,8 @@ public class CpBands extends BandSet {
     private Map mapClass;
     private Map mapDescriptor;
     private Map mapUTF8;
-    
-// TODO: Not used 
+
+// TODO: Not used
 //    private Map mapSignature;
 
     private int intOffset;
