@@ -650,22 +650,7 @@ public class CpBands extends BandSet {
         if (cpNameAndType == null) {
             int nameIndex = cpDescriptorNameInts[index];
             int descriptorIndex = cpDescriptorTypeInts[index];
-            String descriptorString = cpSignature[descriptorIndex];
 
-            // For some reason, descriptors which have just plain
-            // native types are stored in DOMAIN_NORMALASCIIZ rather
-            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
-            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
-            boolean nativeDescriptor = true;
-            for (int i = 0; i < descriptorString.length(); i++) {
-                char currentChar = descriptorString.charAt(i);
-                if (Character.isLetter(currentChar)) {
-                    if (currentChar == 'L') {
-                        nativeDescriptor = false;
-                    }
-                    break;
-                }
-            }
             CPUTF8 name = cpUTF8Value(nameIndex);
             CPUTF8 descriptorU = cpSignatureValue(descriptorIndex);
             cpNameAndType = new CPNameAndType(name, descriptorU, index + descrOffset);
@@ -719,20 +704,7 @@ public class CpBands extends BandSet {
             int colon = descriptor.indexOf(':');
             String nameString = descriptor.substring(0, colon);
             String descriptorString = descriptor.substring(colon + 1);
-            // For some reason, descriptors which have just plain
-            // native types are stored in DOMAIN_NORMALASCIIZ rather
-            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
-            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
-            boolean nativeDescriptor = true;
-            for (int i = 0; i < descriptorString.length(); i++) {
-                char currentChar = descriptorString.charAt(i);
-                if (Character.isLetter(currentChar)) {
-                    if (currentChar == 'L') {
-                        nativeDescriptor = false;
-                    }
-                    break;
-                }
-            }
+
             CPUTF8 name = cpUTF8Value(nameString, true);
             CPUTF8 descriptorU = cpUTF8Value(descriptorString, true);
             cpNameAndType = new CPNameAndType(name, descriptorU, -1 + descrOffset);

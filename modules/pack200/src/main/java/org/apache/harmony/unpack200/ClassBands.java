@@ -841,23 +841,6 @@ public class ClassBands extends BandSet {
                 "code_LocalVariableTable_slot", in, Codec.UNSIGNED5,
                 localVariableTableN);
 
-        // Fix up localVariableTableTypeRS - for some reason,
-        // native signatures end up in DOMAINNORMALASCIIZ
-        // while nonnatives end up in DOMAINSIGNATUREASCIIZ.
-        // TODO: is this the right thing to do?
-        for (int x = 0; x < localVariableTableTypeRS.length; x++) {
-            for (int y = 0; y < localVariableTableTypeRS[x].length; y++) {
-                CPUTF8 element = localVariableTableTypeRS[x][y];
-                // TODO: come up with a better test for native vs nonnative
-                // signatures?
-//                if (element.underlyingString().length() > 2) {
-//                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-//                } else {
-//                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
-//                }
-            }
-        }
-
         int lengthLocalVariableTypeTableNBand = SegmentUtils.countMatches(
                 codeFlags, localVariableTypeTableLayout);
         int[] localVariableTypeTableN = decodeBandInt(

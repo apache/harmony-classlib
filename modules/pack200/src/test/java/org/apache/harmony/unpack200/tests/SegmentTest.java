@@ -116,12 +116,4 @@ public class SegmentTest extends TestCase {
         reader2.close();
     }
 
-    private String readNextLine(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        while ("".equals(line)) {
-            line = reader.readLine();
-        }
-        return line;
-    }
-
 }
