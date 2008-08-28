@@ -459,16 +459,18 @@ public class BcBands extends BandSet {
                     }
                     methodAttributesList.add(indexForCodeAttr, codeAttr);
                     codeAttr.renumber(codeAttr.byteCodeOffsets);
-                    ArrayList currentAttributes = (ArrayList) orderedCodeAttributes
-                            .get(i);
-                    for (int index = 0; index < currentAttributes.size(); index++) {
-                        Attribute currentAttribute = (Attribute) currentAttributes
-                                .get(index);
-                        codeAttr.addAttribute(currentAttribute);
-                        // Fix up the line numbers if needed
-                        if (currentAttribute.hasBCIRenumbering()) {
-                            ((BCIRenumberedAttribute) currentAttribute)
-                                    .renumber(codeAttr.byteCodeOffsets);
+                    if(orderedCodeAttributes.size() > 0) {
+                        ArrayList currentAttributes = (ArrayList) orderedCodeAttributes
+                                .get(i);
+                        for (int index = 0; index < currentAttributes.size(); index++) {
+                            Attribute currentAttribute = (Attribute) currentAttributes
+                                    .get(index);
+                            codeAttr.addAttribute(currentAttribute);
+                            // Fix up the line numbers if needed
+                            if (currentAttribute.hasBCIRenumbering()) {
+                                ((BCIRenumberedAttribute) currentAttribute)
+                                        .renumber(codeAttr.byteCodeOffsets);
+                            }
                         }
                     }
                     i++;
