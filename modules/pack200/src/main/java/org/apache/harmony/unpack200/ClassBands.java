@@ -68,7 +68,7 @@ public class ClassBands extends BandSet {
 
     private IcTuple[][] icLocal;
 
-    private ArrayList[] codeAttributes;
+    private List[] codeAttributes;
 
     private int[] codeHandlerCount;
 
@@ -113,6 +113,8 @@ public class ClassBands extends BandSet {
     private int[][] codeHandlerCatchPO;
 
     private int[][] codeHandlerClassRCN;
+
+    private boolean [] codeHasAttributes;
 
     /**
      * @param segment
@@ -718,10 +720,19 @@ public class ClassBands extends BandSet {
         int codeCount = SegmentUtils.countMatches(methodFlags, layout);
         int[] codeHeaders = decodeBandInt("code_headers", in, Codec.BYTE1,
                 codeCount);
+
+        boolean allCodeHasFlags = segment.getSegmentHeader().getOptions().hasAllCodeFlags();
+        if(!allCodeHasFlags) {
+            codeHasAttributes = new boolean[codeCount];
+        }
         int codeSpecialHeader = 0;
         for (int i = 0; i < codeCount; i++) {
-            if (codeHeaders[i] == 0)
+            if (codeHeaders[i] == 0) {
                 codeSpecialHeader++;
+                if(!allCodeHasFlags) {
+                    codeHasAttributes[i] = true;
+                }
+            }
         }
         int[] codeMaxStackSpecials = decodeBandInt("code_max_stack", in,
                 Codec.UNSIGNED5, codeSpecialHeader);
@@ -768,10 +779,9 @@ public class ClassBands extends BandSet {
         codeHandlerClassRCN = decodeBandInt(
                 "code_handler_class_RCN", in, Codec.UNSIGNED5, codeHandlerCount);
 
-        int codeFlagsCount = segment.getSegmentHeader().getOptions()
-                .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
+        int codeFlagsCount = allCodeHasFlags ? codeCount : codeSpecialHeader;
 
-        codeAttributes = new ArrayList[codeFlagsCount];
+        codeAttributes = new List[codeFlagsCount];
         for (int i = 0; i < codeAttributes.length; i++) {
             codeAttributes[i] = new ArrayList();
         }
@@ -1387,6 +1397,10 @@ public class ClassBands extends BandSet {
 
     public IcTuple[][] getIcLocal() {
         return icLocal;
+    }
+
+    public boolean[] getCodeHasAttributes() {
+        return codeHasAttributes;
     }
 
 }
