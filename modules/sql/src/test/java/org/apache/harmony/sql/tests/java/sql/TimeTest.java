@@ -299,5 +299,13 @@ public class TimeTest extends TestCase {
             // expected
         }
     }
+    
+    
+    // Reset defualt timezone
+    static TimeZone defaultTimeZone = TimeZone.getDefault();
+    
+    protected void tearDown(){
+    	TimeZone.setDefault(defaultTimeZone);
+    }
 } // end class TimeTest
 
