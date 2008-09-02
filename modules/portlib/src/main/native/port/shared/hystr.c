@@ -865,7 +865,7 @@ writeFormattedString (struct HyPortLibrary *portLibrary, HyFormatData * data,
             {
               result[index] = *format;
             }
-          *format++;
+          format++;
           index++;
         }
     }
