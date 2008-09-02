@@ -36,10 +36,6 @@ BUILDFILES = \
   $(SHAREDSUB)hystrftime.obj $(SHAREDSUB)hystsl.obj hysysinfo.obj hytime.obj \
   $(SHAREDSUB)hytlshelpers.obj hytty.obj hyvmem.obj
 
-!IF "$(HY_NO_SIG)" == "false"
-BUILDFILES = $(BUILDFILES) hysignal.obj
-!ENDIF
-
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
 VIRTFILES = hyprt.res
 

@@ -80,8 +80,5 @@ typedef struct LUNIJniIDCache
 #define JniIDCache LUNIJniIDCache
 /* Now that the module-specific defines are in place, include the shared file */
 #include "libglob.h"
-/* all UNIX platforms */
-#if defined(LINUX)
-#include "hysignal.h"
-#endif /* UNIX */
+
 #endif /* harmonyglob_h */

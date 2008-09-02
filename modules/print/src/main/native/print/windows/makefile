@@ -38,7 +38,7 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = #\
-#  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib \
+#  $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib \
 #  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
 
 DLLBASE=0x13300000

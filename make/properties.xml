@@ -291,13 +291,6 @@
         </not>
     </condition>
 
-    <property name="hy.no.sig" value="${hy.no.thr}" />
-    <condition property="hy.skip.sig" value="true">
-        <not>
-            <equals arg1="${hy.no.sig}" arg2="false" />
-        </not>
-    </condition>
-
     <property name="hy.local.zlib" value="false" />
     <condition property="hy.skip.zlib" value="true">
         <not>
@@ -506,7 +499,6 @@ properties in preference to these:
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
-                <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
                 <env key="HY_THR_NO_DEPLOY" value="${hy.thr.nodeploy}" />
                 <env key="HY_LOCAL_ZLIB" value="${hy.local.zlib}" />

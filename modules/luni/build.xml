@@ -57,7 +57,6 @@
                 <include name="gp.h" />
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
-                <include name="jsig.h" />
                 <include name="vmizip.h"/>
             </fileset>
         </copy>
@@ -232,7 +231,6 @@
                 <include name="gp.h" />
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
-                <include name="jsig.h" />
             </fileset>
         </delete>
         <delete failonerror="false">
