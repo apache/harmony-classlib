@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.net.URI;
 
 import tests.support.resource.Support_Resources;
 
@@ -123,4 +124,13 @@ public class WinFileTest extends TestCase {
         assertEquals("Invalid content was red", CONTENT, wasRed);
     }
 
+    /**
+     * @test java.io.File#toURI()
+     */
+    public void test_toURI_UNC() throws Exception {
+        File f = new File("\\\\unchost\\[dir]\\file.txt");
+        assertNotNull(f.toURI());
+        assertEquals("incorrect URI for UNC path: " + f.toURI(), f.toURI(),
+                new URI("file:////unchost/%5Bdir%5D/file.txt"));
+    }
 }

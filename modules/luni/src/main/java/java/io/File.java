@@ -1279,7 +1279,7 @@ public class File implements Serializable, Comparable<File> {
                         name.length() + 1).append('/').append(name).toString(),
                         null, null);
             } else if (name.startsWith("//")) {
-                return new URI("file", name, null); // UNC path
+                return new URI("file", "", name, null); // UNC path
             }
             return new URI("file", null, name, null, null);
         } catch (URISyntaxException e) {
