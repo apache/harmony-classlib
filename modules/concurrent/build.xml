@@ -61,7 +61,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="prepare-exclude" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar" />
@@ -77,8 +77,8 @@
 
         <mkdir dir="${hy.build}" />
 
-        <javac sourcepath=""
-               destdir="${hy.build}"
+        <javac destdir="${hy.build}"
+               sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -125,8 +125,7 @@
 
         <mkdir dir="${hy.concurrent.bin.test}" />
 
-        <javac srcdir="${hy.concurrent.src.test.java}"
-               destdir="${hy.concurrent.bin.test}"
+        <javac destdir="${hy.concurrent.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -184,6 +183,13 @@
 
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                 <fileset dir="${hy.concurrent.src.test.java}">
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${concurrent.exclude.file}" unless="test.case" />
+                </fileset>
+                <fileset dir="${hy.concurrent.src.test.standard}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
