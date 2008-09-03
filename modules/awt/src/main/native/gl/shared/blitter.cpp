@@ -595,7 +595,7 @@ void src_over_intrgb_intargb
                                   sb = *sp++;
                                   sg = *sp++;
                                   sr = *sp++;
-                                  *sp++;
+                                  sp++;
                                   sa = MUL(alpha, 255);
                                   sb = MUL(sa, sb);
                                   sg = MUL(sa, sg);
