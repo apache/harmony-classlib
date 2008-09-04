@@ -95,14 +95,20 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
   	  jboolean result = 0;
   	  IDATA m_addr = (IDATA)addr;
 	  int page_size = getPageSize();
-	  unsigned char* vec = NULL;
+#if defined(FREEBSD)
+#define HY_VEC_T char
+#else
+#define HY_VEC_T unsigned char
+#endif
+	  HY_VEC_T* vec = NULL;
 	  int page_count = 0;
 	  int align_offset = m_addr%page_size;//addr should align with the boundary of a page.
 	  m_addr -= align_offset;
 	  size   += align_offset;
 	  page_count = (size+page_size-1)/page_size;
-	  vec = (unsigned char*) hymem_allocate_memory(page_count*sizeof(char));
-	  if(mincore((void *)m_addr, size , vec)==0) //or else there is error about the mincore and return false;
+	  vec = (HY_VEC_T *) hymem_allocate_memory(page_count*sizeof(char));
+	  if(mincore((void *)m_addr, size, vec)==0) //or else there is error about the mincore and return false;
+#undef HY_VEC_T
 	  {
 	  	  int i;
 		  for(i=0 ;i<page_count;i++)
