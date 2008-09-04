@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.BHSDCodec;
@@ -82,7 +83,7 @@ public class NewAttributeBands extends BandSet {
 
         List attributes = new ArrayList(occurrenceCount);
         for (int i = 0; i < occurrenceCount; i++) {
-            attributes.add(getOneAttribute(i, attributeLayoutElements));
+        	attributes.add(getOneAttribute(i, attributeLayoutElements));
         }
         return attributes;
     }
@@ -137,48 +138,66 @@ public class NewAttributeBands extends BandSet {
                     .get(i);
             if (element instanceof Callable) {
                 Callable callable = (Callable) element;
+                if(i == 0) {
+                	callable.setFirstCallable(true);
+                }
                 List body = callable.body; // Look for calls in the body
                 for(int iIndex = 0; iIndex < body.size(); iIndex++) {
-                    LayoutElement layoutElement = (LayoutElement) body.get(iIndex);
-                    if (layoutElement instanceof Call) {
-                        // Set the callable for each call
-                        Call call = (Call) layoutElement;
-                        int index = call.callableIndex;
-                        if (index == 0) { // Calls the parent callable
-                            backwardsCalls++;
-                            call.setCallable(callable);
-                        } else if (index > 0) { // Forwards call
-                            for (int k = i; k < attributeLayoutElements.size(); k++) {
-                                AttributeLayoutElement el = (AttributeLayoutElement) attributeLayoutElements
-                                        .get(k);
-                                if (el instanceof Callable) {
-                                    index--;
-                                    if (index == 0) {
-                                        call.setCallable((Callable) el);
-                                        break;
-                                    }
-                                }
-                            }
-                        } else { // Backwards call
-                            backwardsCalls++;
-                            for (int k = i; k >= 0; k--) {
-                                AttributeLayoutElement el = (AttributeLayoutElement) attributeLayoutElements
-                                        .get(k);
-                                if (el instanceof Callable) {
-                                    index++;
-                                    if (index == 0) {
-                                        call.setCallable((Callable) el);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    LayoutElement layoutElement = (LayoutElement) body
+							.get(iIndex);
+					// Set the callable for each call
+					backwardsCalls += resolveCallsForElement(i, callable,
+							layoutElement);
                 }
             }
         }
         backwardsCallCount = backwardsCalls;
     }
+
+	private int resolveCallsForElement(int i,
+			Callable currentCallable, LayoutElement layoutElement) {
+		int backwardsCalls = 0;
+		if (layoutElement instanceof Call) {
+            Call call = (Call) layoutElement;
+			int index = call.callableIndex;
+			if (index == 0) { // Calls the parent callable
+			    backwardsCalls++;
+			    call.setCallable(currentCallable);
+			} else if (index > 0) { // Forwards call
+			    for (int k = i + 1; k < attributeLayoutElements.size(); k++) {
+			        AttributeLayoutElement el = (AttributeLayoutElement) attributeLayoutElements
+			                .get(k);
+			        if (el instanceof Callable) {
+			            index--;
+			            if (index == 0) {
+			                call.setCallable((Callable) el);
+			                break;
+			            }
+			        }
+			    }
+			} else { // Backwards call
+			    backwardsCalls++;
+			    for (int k = i; k >= 0; k--) {
+			        AttributeLayoutElement el = (AttributeLayoutElement) attributeLayoutElements
+			                .get(k);
+			        if (el instanceof Callable) {
+			            index++;
+			            if (index == 0) {
+			                call.setCallable((Callable) el);
+			                break;
+			            }
+			        }
+			    }
+			}
+		} else if (layoutElement instanceof Replication) {
+			List children = ((Replication)layoutElement).layoutElements;
+			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+				LayoutElement object = (LayoutElement) iterator.next();
+				backwardsCalls += resolveCallsForElement(i, currentCallable, object);
+			}
+		}
+		return backwardsCalls;
+	}
 
     private AttributeLayoutElement readNextAttributeElement(StringReader stream)
             throws IOException {
@@ -196,7 +215,7 @@ public class NewAttributeBands extends BandSet {
 
     private LayoutElement readNextLayoutElement(StringReader stream)
             throws IOException {
-        int nextChar = stream.read();
+        char nextChar = (char)stream.read();
         if (nextChar == -1) {
             return null;
         }
@@ -206,10 +225,10 @@ public class NewAttributeBands extends BandSet {
         case 'H':
         case 'I':
         case 'V':
-            return new Integral(new String(new char[] { (char) nextChar }));
+            return new Integral(new String(new char[] { nextChar }));
         case 'S':
         case 'F':
-            return new Integral(new String(new char[] { (char) nextChar,
+            return new Integral(new String(new char[] { nextChar,
                     (char) stream.read() }));
         case 'P':
             stream.mark(1);
@@ -247,7 +266,7 @@ public class NewAttributeBands extends BandSet {
                 unionCases.add(c);
             }
             stream.read(); // '('
-            stream.read(); // '('
+            stream.read(); // ')'
             stream.read(); // '['
             List body = null;
             stream.mark(1);
@@ -260,7 +279,7 @@ public class NewAttributeBands extends BandSet {
 
             // Call
         case '(':
-            int number = readNumber(stream);
+            int number = readNumber(stream).intValue();
             stream.read(); // ')'
             return new Call(number);
             // Reference
@@ -291,12 +310,19 @@ public class NewAttributeBands extends BandSet {
         if (next == ')') {
             stream.reset();
             return null;
+        } else {
+            stream.reset();
+            stream.read(); // '('
         }
         List tags = new ArrayList();
-        while (next != ')') {
-            tags.add(new Integer(readNumber(stream)));
-            next = (char) stream.read();
-        }
+        Integer nextTag;
+        do {
+        	nextTag = readNumber(stream);
+            if(nextTag != null) {
+            	tags.add(nextTag);
+                stream.read(); // ',' or ')'
+            }
+        } while (nextTag != null);
         stream.read(); // '['
         stream.mark(1);
         next = (char) stream.read();
@@ -619,7 +645,7 @@ public class NewAttributeBands extends BandSet {
 
         public Reference(String tag) {
             this.tag = tag;
-            length = getLength(tag.charAt(tag.length()));
+            length = getLength(tag.charAt(tag.length() - 1));
         }
 
         public void readBands(InputStream in, int count) throws IOException,
@@ -700,6 +726,8 @@ public class NewAttributeBands extends BandSet {
 
         private boolean isBackwardsCallable;
 
+		private boolean isFirstCallable;
+
         public Callable(List body) throws IOException {
             this.body = body;
         }
@@ -732,7 +760,11 @@ public class NewAttributeBands extends BandSet {
 
         public void readBands(InputStream in, int count) throws IOException,
                 Pack200Exception {
-            count += this.count;
+        	if(isFirstCallable) {
+        		count += this.count;
+        	} else {
+        		count = this.count;
+        	}
             for(int i = 0; i < body.size(); i++) {
                 LayoutElement element = (LayoutElement) body.get(i);
                 element.readBands(in, count);
@@ -740,12 +772,14 @@ public class NewAttributeBands extends BandSet {
         }
 
         public void addToAttribute(int n, NewAttribute attribute) {
-            // Ignore n because bands also contain element parts from calls
-            for(int i = 0; i < body.size(); i++) {
-                LayoutElement element = (LayoutElement) body.get(i);
-                element.addToAttribute(index, attribute);
-            }
-            index++;
+        	if(isFirstCallable) {
+	            // Ignore n because bands also contain element parts from calls
+	            for(int i = 0; i < body.size(); i++) {
+	                LayoutElement element = (LayoutElement) body.get(i);
+	                element.addToAttribute(index, attribute);
+	            }
+	            index++;
+        	}
         }
 
         public boolean isBackwardsCallable() {
@@ -758,6 +792,10 @@ public class NewAttributeBands extends BandSet {
         public void setBackwardsCallable() {
             this.isBackwardsCallable = true;
         }
+
+		public void setFirstCallable(boolean isFirstCallable) {
+			this.isFirstCallable = isFirstCallable;
+		}
     }
 
     /**
@@ -884,7 +922,7 @@ public class NewAttributeBands extends BandSet {
      * @return
      * @throws IOException
      */
-    private int readNumber(StringReader stream) throws IOException {
+    private Integer readNumber(StringReader stream) throws IOException {
         stream.mark(1);
         char first = (char) stream.read();
         boolean negative = first == '-';
@@ -898,12 +936,15 @@ public class NewAttributeBands extends BandSet {
             length++;
         }
         stream.reset();
+        if(length == 0) {
+        	return null;
+        }
         char[] digits = new char[length];
         int read = stream.read(digits);
         if (read != digits.length) {
             throw new IOException("Error reading from the input stream");
         }
-        return Integer.parseInt((negative ? "-" : "") + new String(digits));
+        return new Integer(Integer.parseInt((negative ? "-" : "") + new String(digits)));
     }
 
     /**
