@@ -64,7 +64,8 @@ static void convertWithMBTOWC (struct HyPortLibrary *portLibrary, const char *er
 #endif /* HYVM_USE_MBTOWC */
 
 #if (defined(HYVM_USE_ICONV))
-static void convertWithIConv (struct HyPortLibrary *portLibrary, char *error,
+static void convertWithIConv (struct HyPortLibrary *portLibrary,
+                              const char *error,
                               char *errBuf, UDATA bufLen);
 #endif /* HYVM_USE_ICONV */
 
@@ -246,7 +247,7 @@ getDLError (struct HyPortLibrary *portLibrary, char *errBuf, UDATA bufLen)
 #define CDEV_CURRENT_FUNCTION convertWithIConv
 #if (defined(HYVM_USE_ICONV))
 static void
-convertWithIConv (struct HyPortLibrary *portLibrary, char *error,
+convertWithIConv (struct HyPortLibrary *portLibrary, const char *error,
                   char *errBuf, UDATA bufLen)
 {
   iconv_t converter;
