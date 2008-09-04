@@ -59,7 +59,7 @@
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 #if (defined(HYVM_USE_MBTOWC))
-static void convertWithMBTOWC (struct HyPortLibrary *portLibrary, char *error,
+static void convertWithMBTOWC (struct HyPortLibrary *portLibrary, const char *error,
                                char *errBuf, UDATA bufLen);
 #endif /* HYVM_USE_MBTOWC */
 
@@ -209,7 +209,7 @@ hysl_lookup_name (struct HyPortLibrary * portLibrary, UDATA descriptor,
 static void
 getDLError (struct HyPortLibrary *portLibrary, char *errBuf, UDATA bufLen)
 {
-  char *error;
+  const char *error;
 
   if (bufLen == 0)
     {
@@ -291,10 +291,11 @@ convertWithIConv (struct HyPortLibrary *portLibrary, char *error,
 #define CDEV_CURRENT_FUNCTION convertWithMBTOWC
 #if (defined(HYVM_USE_MBTOWC))
 static void
-convertWithMBTOWC (struct HyPortLibrary *portLibrary, char *error,
+convertWithMBTOWC (struct HyPortLibrary *portLibrary, const char *error,
                    char *errBuf, UDATA bufLen)
 {
-  char *out, *end, *walk;
+  char *out, *end;
+  const char* walk;
   wchar_t ch;
   int ret;
   out = errBuf;

@@ -184,7 +184,11 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
     // tmStruct->tm_isdst is set to 1 if DST is in effect
     strcpy(tzInfo, "GMT");
     tzInfo[3] = timezone > 0 ? '-' : '+';
+#if defined (FREEBSD)
+    h = labs(tmStruct->tm_gmtoff) / 3600;
+#else /* !FREEBSD */
     h = labs(timezone) / 3600;
+#endif /* FREEBSD */
     if (tmStruct->tm_isdst) {
         if (timezone > 0) {
             h--;
@@ -192,8 +196,12 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
             h++;
         }
     }
+#if defined (FREEBSD)
+    m = (labs(tmStruct->tm_isdst) % 3600) / 60;
+#else /* !FREEBSD */
     m = (labs(timezone) % 3600) / 60;
-    tzInfo[4] = h / 10 + '0';
+#endif /* FREEBSD */
+   tzInfo[4] = h / 10 + '0';
     tzInfo[5] = h % 10 + '0';
     tzInfo[6] = m / 10 + '0';
     tzInfo[7] = m % 10 + '0';

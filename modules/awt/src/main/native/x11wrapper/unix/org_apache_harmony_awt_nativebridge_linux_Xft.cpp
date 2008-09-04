@@ -39,7 +39,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_Xft_XftDr
     if (pXftDrawDestroy == NULL) {
         pXftDrawDestroy = (void (*) (void *)) FindFunction(libXft, "XftDrawDestroy");
     }
-    (* pXftDrawDestroy)((void *) draw);
+    (* pXftDrawDestroy)((void *)(size_t) draw);
 }
 
 int (* pXftDrawSetClip) (void *, void *) = NULL;
@@ -48,7 +48,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_Xft_XftDr
     if (pXftDrawSetClip == NULL) {
         pXftDrawSetClip = (int (*) (void *, void *)) FindFunction(libXft, "XftDrawSetClip");
     }
-    return (jint) (* pXftDrawSetClip)((void *) draw, (void *) r);
+    return (jint) (* pXftDrawSetClip)((void *)(size_t) draw, (void *)(size_t) r);
 }
 
 int (* pXftDrawSetClipRectangles) (void *, int, int, void *, int) = NULL;
@@ -57,6 +57,6 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_Xft_XftDr
     if (pXftDrawSetClipRectangles == NULL) {
         pXftDrawSetClipRectangles = (int (*) (void *, int, int, void *, int)) FindFunction(libXft, "XftDrawSetClipRectangles");
     }
-    return (jint) (* pXftDrawSetClipRectangles)((void *) draw, (int) xOrigin, (int) yOrigin, (void *) rects, (int) n);
+    return (jint) (* pXftDrawSetClipRectangles)((void *)(size_t) draw, (int) xOrigin, (int) yOrigin, (void *)(size_t) rects, (int) n);
 }
 

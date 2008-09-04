@@ -60,25 +60,25 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_init (
 }
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall0( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0, jlong param_1, jint param_2, jint param_3, jint param_4, jlong param_5, jint param_6, jint param_7, jint param_8, jint param_9) {
-    return (jlong)((void * ( *) (void *, void *, int, int, int, void *, int, int, int, int)) fnptr1234)((void *) param_0, (void *) param_1, (int) param_2, (int) param_3, (int) param_4, (void *) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
+    return (jlong)(size_t)((void * ( *) (void *, void *, int, int, int, void *, int, int, int, int)) (size_t)fnptr1234)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (int) param_3, (int) param_4, (void*)(size_t) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
 }
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall1( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0) {
-    return (jint)((int ( *) (void *)) fnptr1234)((void *) param_0);
+    return (jint)((int ( *) (void *)) (size_t)fnptr1234)((void*)(size_t) param_0);
 }
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall2( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0, jint param_1, jint param_2) {
-    return (jlong)((long ( *) (void *, int, int)) fnptr1234)((void *) param_0, (int) param_1, (int) param_2);
+    return (jlong)((long ( *) (void *, int, int)) (size_t)fnptr1234)((void*)(size_t) param_0, (int) param_1, (int) param_2);
 }
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall3( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0, jint param_1, jint param_2, jlong param_3) {
-    return (jint)((int ( *) (void *, int, int, long)) fnptr1234)((void *) param_0, (int) param_1, (int) param_2, (long) param_3);
+    return (jint)((int ( *) (void *, int, int, long)) (size_t)fnptr1234)((void*)(size_t) param_0, (int) param_1, (int) param_2, (long) param_3);
 }
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall4( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0, jint param_1, jint param_2, jint param_3, jint param_4) {
-    return (jlong)((void * ( *) (void *, int, int, int, int)) fnptr1234)((void *) param_0, (int) param_1, (int) param_2, (int) param_3, (int) param_4);
+    return (jlong)(size_t)((void * ( *) (void *, int, int, int, int)) (size_t)fnptr1234)((void*)(size_t) param_0, (int) param_1, (int) param_2, (int) param_3, (int) param_4);
 }
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall5( JNIEnv *env, jobject self, jlong fnptr1234, jlong param_0, jlong param_1) {
-    return (jint)((int ( *) (void *, long)) fnptr1234)((void *) param_0, (long) param_1);
+    return (jint)((int ( *) (void *, long)) (size_t)fnptr1234)((void*)(size_t) param_0, (long) param_1);
 }
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_proxycall6( JNIEnv *env, jobject self, jlong fnptr1234, jlong extension) {
-    return (jint)((int ( *) (void *)) fnptr1234)((void *) extension);
+    return (jint)((int ( *) (void *)) (size_t)fnptr1234)((void*)(size_t) extension);
 }
 
 void * (* p_nbridge_XGetSubImage) (void *, long, int, int, int, int, long, int, void *, int, int) = NULL;
@@ -87,7 +87,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetSubImage == NULL) {
         p_nbridge_XGetSubImage = (void * (*) (void *, long, int, int, int, int, long, int, void *, int, int)) FindFunction(libX11, "XGetSubImage");
     }
-    return (jlong) (* p_nbridge_XGetSubImage)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (int) param_7, (void *) param_8, (int) param_9, (int) param_10);
+    return (jlong)(size_t) (* p_nbridge_XGetSubImage)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (int) param_7, (void*)(size_t) param_8, (int) param_9, (int) param_10);
 }
 
 int (* p_nbridge_XAllocColor) (void *, long, void *) = NULL;
@@ -96,7 +96,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XAllo
     if (p_nbridge_XAllocColor == NULL) {
         p_nbridge_XAllocColor = (int (*) (void *, long, void *)) FindFunction(libX11, "XAllocColor");
     }
-    return (jint) (* p_nbridge_XAllocColor)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XAllocColor)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XLookupString) (void *, void *, int, void *, void *) = NULL;
@@ -105,7 +105,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XLook
     if (p_nbridge_XLookupString == NULL) {
         p_nbridge_XLookupString = (int (*) (void *, void *, int, void *, void *)) FindFunction(libX11, "XLookupString");
     }
-    return (jint) (* p_nbridge_XLookupString)((void *) param_0, (void *) param_1, (int) param_2, (void *) param_3, (void *) param_4);
+    return (jint) (* p_nbridge_XLookupString)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4);
 }
 
 int (* p_nbridge_XGetWMNormalHints) (void *, long, void *, void *) = NULL;
@@ -114,7 +114,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetW
     if (p_nbridge_XGetWMNormalHints == NULL) {
         p_nbridge_XGetWMNormalHints = (int (*) (void *, long, void *, void *)) FindFunction(libX11, "XGetWMNormalHints");
     }
-    return (jint) (* p_nbridge_XGetWMNormalHints)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3);
+    return (jint) (* p_nbridge_XGetWMNormalHints)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3);
 }
 
 unsigned long  (* p_nbridge_XCreatePixmapCursor) (void *, long, long, void *, void *, int, int) = NULL;
@@ -123,7 +123,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreatePixmapCursor == NULL) {
         p_nbridge_XCreatePixmapCursor = (unsigned long  (*) (void *, long, long, void *, void *, int, int)) FindFunction(libX11, "XCreatePixmapCursor");
     }
-    return (jlong) (* p_nbridge_XCreatePixmapCursor)((void *) param_0, (long) param_1, (long) param_2, (void *) param_3, (void *) param_4, (int) param_5, (int) param_6);
+    return (jlong) (* p_nbridge_XCreatePixmapCursor)((void*)(size_t) param_0, (long) param_1, (long) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4, (int) param_5, (int) param_6);
 }
 
 int (* p_nbridge_XSetInputFocus) (void *, long, int, long) = NULL;
@@ -132,25 +132,25 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetI
     if (p_nbridge_XSetInputFocus == NULL) {
         p_nbridge_XSetInputFocus = (int (*) (void *, long, int, long)) FindFunction(libX11, "XSetInputFocus");
     }
-    return (jint) (* p_nbridge_XSetInputFocus)((void *) param_0, (long) param_1, (int) param_2, (long) param_3);
+    return (jint) (* p_nbridge_XSetInputFocus)((void*)(size_t) param_0, (long) param_1, (int) param_2, (long) param_3);
 }
 
-void * (* p_nbridge_XOpenDisplay) (void *) = NULL;
+void * (* p_nbridge_XOpenDisplay) (void*) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XOpenDisplay( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XOpenDisplay == NULL) {
         p_nbridge_XOpenDisplay = (void * (*) (void *)) FindFunction(libX11, "XOpenDisplay");
     }
-    return (jlong) (* p_nbridge_XOpenDisplay)((void *) param_0);
+    return (jlong)(size_t) (* p_nbridge_XOpenDisplay)((void*)(size_t) param_0);
 }
 
-int (* p_nbridge_XGrabServer) (void *) = NULL;
+int (* p_nbridge_XGrabServer) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGrabServer( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XGrabServer == NULL) {
         p_nbridge_XGrabServer = (int (*) (void *)) FindFunction(libX11, "XGrabServer");
     }
-    return (jint) (* p_nbridge_XGrabServer)((void *) param_0);
+    return (jint) (* p_nbridge_XGrabServer)((void*)(size_t) param_0);
 }
 
 unsigned long  (* p_nbridge_XCreateFontCursor) (void *, int) = NULL;
@@ -159,7 +159,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateFontCursor == NULL) {
         p_nbridge_XCreateFontCursor = (unsigned long  (*) (void *, int)) FindFunction(libX11, "XCreateFontCursor");
     }
-    return (jlong) (* p_nbridge_XCreateFontCursor)((void *) param_0, (int) param_1);
+    return (jlong) (* p_nbridge_XCreateFontCursor)((void*)(size_t) param_0, (int) param_1);
 }
 
 void * (* p_nbridge_XCreateImage) (void *, void *, int, int, int, void *, int, int, int, int) = NULL;
@@ -168,7 +168,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateImage == NULL) {
         p_nbridge_XCreateImage = (void * (*) (void *, void *, int, int, int, void *, int, int, int, int)) FindFunction(libX11, "XCreateImage");
     }
-    return (jlong) (* p_nbridge_XCreateImage)((void *) param_0, (void *) param_1, (int) param_2, (int) param_3, (int) param_4, (void *) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
+    return (jlong)(size_t) (* p_nbridge_XCreateImage)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (int) param_3, (int) param_4, (void*)(size_t) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
 }
 
 int (* p_nbridge_XRestackWindows) (void *, void *, int) = NULL;
@@ -177,7 +177,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XRest
     if (p_nbridge_XRestackWindows == NULL) {
         p_nbridge_XRestackWindows = (int (*) (void *, void *, int)) FindFunction(libX11, "XRestackWindows");
     }
-    return (jint) (* p_nbridge_XRestackWindows)((void *) param_0, (void *) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XRestackWindows)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2);
 }
 
 int (* p_nbridge_XDefaultDepth) (void *, int) = NULL;
@@ -186,16 +186,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefa
     if (p_nbridge_XDefaultDepth == NULL) {
         p_nbridge_XDefaultDepth = (int (*) (void *, int)) FindFunction(libX11, "XDefaultDepth");
     }
-    return (jint) (* p_nbridge_XDefaultDepth)((void *) param_0, (int) param_1);
+    return (jint) (* p_nbridge_XDefaultDepth)((void*)(size_t) param_0, (int) param_1);
 }
 
-int (* p_nbridge_XFree) (void *) = NULL;
+int (* p_nbridge_XFree) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFree( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XFree == NULL) {
         p_nbridge_XFree = (int (*) (void *)) FindFunction(libX11, "XFree");
     }
-    return (jint) (* p_nbridge_XFree)((void *) param_0);
+    return (jint) (* p_nbridge_XFree)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XMoveWindow) (void *, long, int, int) = NULL;
@@ -204,25 +204,25 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XMove
     if (p_nbridge_XMoveWindow == NULL) {
         p_nbridge_XMoveWindow = (int (*) (void *, long, int, int)) FindFunction(libX11, "XMoveWindow");
     }
-    return (jint) (* p_nbridge_XMoveWindow)((void *) param_0, (long) param_1, (int) param_2, (int) param_3);
+    return (jint) (* p_nbridge_XMoveWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3);
 }
 
-int (* p_nbridge_XScreenCount) (void *) = NULL;
+int (* p_nbridge_XScreenCount) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XScreenCount( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XScreenCount == NULL) {
         p_nbridge_XScreenCount = (int (*) (void *)) FindFunction(libX11, "XScreenCount");
     }
-    return (jint) (* p_nbridge_XScreenCount)((void *) param_0);
+    return (jint) (* p_nbridge_XScreenCount)((void*)(size_t) param_0);
 }
 
-unsigned long  (* p_nbridge_XDefaultRootWindow) (void *) = NULL;
+unsigned long  (* p_nbridge_XDefaultRootWindow) (void*) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefaultRootWindow( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XDefaultRootWindow == NULL) {
         p_nbridge_XDefaultRootWindow = (unsigned long  (*) (void *)) FindFunction(libX11, "XDefaultRootWindow");
     }
-    return (jlong) (* p_nbridge_XDefaultRootWindow)((void *) param_0);
+    return (jlong) (* p_nbridge_XDefaultRootWindow)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XResizeWindow) (void *, long, int, int) = NULL;
@@ -231,7 +231,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XResi
     if (p_nbridge_XResizeWindow == NULL) {
         p_nbridge_XResizeWindow = (int (*) (void *, long, int, int)) FindFunction(libX11, "XResizeWindow");
     }
-    return (jint) (* p_nbridge_XResizeWindow)((void *) param_0, (long) param_1, (int) param_2, (int) param_3);
+    return (jint) (* p_nbridge_XResizeWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3);
 }
 
 int (* p_nbridge_XFillPolygon) (void *, long, void *, void *, int, int, int) = NULL;
@@ -240,7 +240,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFill
     if (p_nbridge_XFillPolygon == NULL) {
         p_nbridge_XFillPolygon = (int (*) (void *, long, void *, void *, int, int, int)) FindFunction(libX11, "XFillPolygon");
     }
-    return (jint) (* p_nbridge_XFillPolygon)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (int) param_4, (int) param_5, (int) param_6);
+    return (jint) (* p_nbridge_XFillPolygon)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (int) param_4, (int) param_5, (int) param_6);
 }
 
 int (* p_nbridge_XTestFakeMotionEvent) (void *, int, int, int, long) = NULL;
@@ -249,7 +249,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTest
     if (p_nbridge_XTestFakeMotionEvent == NULL) {
         p_nbridge_XTestFakeMotionEvent = (int (*) (void *, int, int, int, long)) FindFunction(libXtst, "XTestFakeMotionEvent");
     }
-    return (jint) (* p_nbridge_XTestFakeMotionEvent)((void *) param_0, (int) param_1, (int) param_2, (int) param_3, (long) param_4);
+    return (jint) (* p_nbridge_XTestFakeMotionEvent)((void*)(size_t) param_0, (int) param_1, (int) param_2, (int) param_3, (long) param_4);
 }
 
 void * (* p_nbridge_XCreateGC) (void *, long, long, void *) = NULL;
@@ -258,7 +258,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateGC == NULL) {
         p_nbridge_XCreateGC = (void * (*) (void *, long, long, void *)) FindFunction(libX11, "XCreateGC");
     }
-    return (jlong) (* p_nbridge_XCreateGC)((void *) param_0, (long) param_1, (long) param_2, (void *) param_3);
+    return (jlong)(size_t) (* p_nbridge_XCreateGC)((void*)(size_t) param_0, (long) param_1, (long) param_2, (void*)(size_t) param_3);
 }
 
 int (* p_nbridge_XTestFakeKeyEvent) (void *, int, int, long) = NULL;
@@ -267,7 +267,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTest
     if (p_nbridge_XTestFakeKeyEvent == NULL) {
         p_nbridge_XTestFakeKeyEvent = (int (*) (void *, int, int, long)) FindFunction(libXtst, "XTestFakeKeyEvent");
     }
-    return (jint) (* p_nbridge_XTestFakeKeyEvent)((void *) param_0, (int) param_1, (int) param_2, (long) param_3);
+    return (jint) (* p_nbridge_XTestFakeKeyEvent)((void*)(size_t) param_0, (int) param_1, (int) param_2, (long) param_3);
 }
 
 int (* p_nbridge_XCopyArea) (void *, long, long, void *, int, int, int, int, int, int) = NULL;
@@ -276,7 +276,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCopy
     if (p_nbridge_XCopyArea == NULL) {
         p_nbridge_XCopyArea = (int (*) (void *, long, long, void *, int, int, int, int, int, int)) FindFunction(libX11, "XCopyArea");
     }
-    return (jint) (* p_nbridge_XCopyArea)((void *) param_0, (long) param_1, (long) param_2, (void *) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
+    return (jint) (* p_nbridge_XCopyArea)((void*)(size_t) param_0, (long) param_1, (long) param_2, (void*)(size_t) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
 }
 
 unsigned long  (* p_nbridge_XKeycodeToKeysym) (void *, int, int) = NULL;
@@ -285,25 +285,25 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XKey
     if (p_nbridge_XKeycodeToKeysym == NULL) {
         p_nbridge_XKeycodeToKeysym = (unsigned long  (*) (void *, int, int)) FindFunction(libX11, "XKeycodeToKeysym");
     }
-    return (jlong) (* p_nbridge_XKeycodeToKeysym)((void *) param_0, (int) param_1, (int) param_2);
+    return (jlong) (* p_nbridge_XKeycodeToKeysym)((void*)(size_t) param_0, (int) param_1, (int) param_2);
 }
 
-int (* p_nbridge_XImageByteOrder) (void *) = NULL;
+int (* p_nbridge_XImageByteOrder) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XImageByteOrder( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XImageByteOrder == NULL) {
         p_nbridge_XImageByteOrder = (int (*) (void *)) FindFunction(libX11, "XImageByteOrder");
     }
-    return (jint) (* p_nbridge_XImageByteOrder)((void *) param_0);
+    return (jint) (* p_nbridge_XImageByteOrder)((void*)(size_t) param_0);
 }
 
-int (* p_nbridge_XDefaultScreen) (void *) = NULL;
+int (* p_nbridge_XDefaultScreen) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefaultScreen( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XDefaultScreen == NULL) {
         p_nbridge_XDefaultScreen = (int (*) (void *)) FindFunction(libX11, "XDefaultScreen");
     }
-    return (jint) (* p_nbridge_XDefaultScreen)((void *) param_0);
+    return (jint) (* p_nbridge_XDefaultScreen)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XConvertSelection) (void *, long, long, long, long, long) = NULL;
@@ -312,7 +312,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XConv
     if (p_nbridge_XConvertSelection == NULL) {
         p_nbridge_XConvertSelection = (int (*) (void *, long, long, long, long, long)) FindFunction(libX11, "XConvertSelection");
     }
-    return (jint) (* p_nbridge_XConvertSelection)((void *) param_0, (long) param_1, (long) param_2, (long) param_3, (long) param_4, (long) param_5);
+    return (jint) (* p_nbridge_XConvertSelection)((void*)(size_t) param_0, (long) param_1, (long) param_2, (long) param_3, (long) param_4, (long) param_5);
 }
 
 unsigned long  (* p_nbridge_XGetSelectionOwner) (void *, long) = NULL;
@@ -321,7 +321,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetSelectionOwner == NULL) {
         p_nbridge_XGetSelectionOwner = (unsigned long  (*) (void *, long)) FindFunction(libX11, "XGetSelectionOwner");
     }
-    return (jlong) (* p_nbridge_XGetSelectionOwner)((void *) param_0, (long) param_1);
+    return (jlong) (* p_nbridge_XGetSelectionOwner)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XFillRectangles) (void *, long, void *, void *, int) = NULL;
@@ -330,7 +330,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFill
     if (p_nbridge_XFillRectangles == NULL) {
         p_nbridge_XFillRectangles = (int (*) (void *, long, void *, void *, int)) FindFunction(libX11, "XFillRectangles");
     }
-    return (jint) (* p_nbridge_XFillRectangles)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (int) param_4);
+    return (jint) (* p_nbridge_XFillRectangles)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (int) param_4);
 }
 
 int (* p_nbridge_XSetIconName) (void *, long, void *) = NULL;
@@ -339,7 +339,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetI
     if (p_nbridge_XSetIconName == NULL) {
         p_nbridge_XSetIconName = (int (*) (void *, long, void *)) FindFunction(libX11, "XSetIconName");
     }
-    return (jint) (* p_nbridge_XSetIconName)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XSetIconName)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XDisplayWidthMM) (void *, int) = NULL;
@@ -348,7 +348,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDisp
     if (p_nbridge_XDisplayWidthMM == NULL) {
         p_nbridge_XDisplayWidthMM = (int (*) (void *, int)) FindFunction(libX11, "XDisplayWidthMM");
     }
-    return (jint) (* p_nbridge_XDisplayWidthMM)((void *) param_0, (int) param_1);
+    return (jint) (* p_nbridge_XDisplayWidthMM)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XMapWindow) (void *, long) = NULL;
@@ -357,7 +357,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XMapW
     if (p_nbridge_XMapWindow == NULL) {
         p_nbridge_XMapWindow = (int (*) (void *, long)) FindFunction(libX11, "XMapWindow");
     }
-    return (jint) (* p_nbridge_XMapWindow)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XMapWindow)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XParseColor) (void *, long, void *, void *) = NULL;
@@ -366,7 +366,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XPars
     if (p_nbridge_XParseColor == NULL) {
         p_nbridge_XParseColor = (int (*) (void *, long, void *, void *)) FindFunction(libX11, "XParseColor");
     }
-    return (jint) (* p_nbridge_XParseColor)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3);
+    return (jint) (* p_nbridge_XParseColor)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3);
 }
 
 int (* p_nbridge_XTestFakeButtonEvent) (void *, int, int, long) = NULL;
@@ -375,7 +375,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTest
     if (p_nbridge_XTestFakeButtonEvent == NULL) {
         p_nbridge_XTestFakeButtonEvent = (int (*) (void *, int, int, long)) FindFunction(libXtst, "XTestFakeButtonEvent");
     }
-    return (jint) (* p_nbridge_XTestFakeButtonEvent)((void *) param_0, (int) param_1, (int) param_2, (long) param_3);
+    return (jint) (* p_nbridge_XTestFakeButtonEvent)((void*)(size_t) param_0, (int) param_1, (int) param_2, (long) param_3);
 }
 
 int (* p_nbridge_XGetWindowProperty) (void *, long, long, long, long, int, long, void *, void *, void *, void *, void *) = NULL;
@@ -384,7 +384,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetW
     if (p_nbridge_XGetWindowProperty == NULL) {
         p_nbridge_XGetWindowProperty = (int (*) (void *, long, long, long, long, int, long, void *, void *, void *, void *, void *)) FindFunction(libX11, "XGetWindowProperty");
     }
-    return (jint) (* p_nbridge_XGetWindowProperty)((void *) param_0, (long) param_1, (long) param_2, (long) param_3, (long) param_4, (int) param_5, (long) param_6, (void *) param_7, (void *) param_8, (void *) param_9, (void *) param_10, (void *) param_11);
+    return (jint) (* p_nbridge_XGetWindowProperty)((void*)(size_t) param_0, (long) param_1, (long) param_2, (long) param_3, (long) param_4, (int) param_5, (long) param_6, (void*)(size_t) param_7, (void*)(size_t) param_8, (void*)(size_t) param_9, (void*)(size_t) param_10, (void*)(size_t) param_11);
 }
 
 int (* p_nbridge_XIconifyWindow) (void *, long, int) = NULL;
@@ -393,7 +393,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XIcon
     if (p_nbridge_XIconifyWindow == NULL) {
         p_nbridge_XIconifyWindow = (int (*) (void *, long, int)) FindFunction(libX11, "XIconifyWindow");
     }
-    return (jint) (* p_nbridge_XIconifyWindow)((void *) param_0, (long) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XIconifyWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2);
 }
 
 void * (* p_nbridge_XAllocWMHints) (void) = NULL;
@@ -402,7 +402,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XAll
     if (p_nbridge_XAllocWMHints == NULL) {
         p_nbridge_XAllocWMHints = (void * (*) (void)) FindFunction(libX11, "XAllocWMHints");
     }
-    return (jlong) (* p_nbridge_XAllocWMHints)();
+    return (jlong)(size_t) (* p_nbridge_XAllocWMHints)();
 }
 
 int (* p_nbridge_XGetRGBColormaps) (void *, long, void *, void *, long) = NULL;
@@ -411,7 +411,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetR
     if (p_nbridge_XGetRGBColormaps == NULL) {
         p_nbridge_XGetRGBColormaps = (int (*) (void *, long, void *, void *, long)) FindFunction(libX11, "XGetRGBColormaps");
     }
-    return (jint) (* p_nbridge_XGetRGBColormaps)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (long) param_4);
+    return (jint) (* p_nbridge_XGetRGBColormaps)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (long) param_4);
 }
 
 void * (* p_nbridge_XGetVisualInfo) (void *, long, void *, void *) = NULL;
@@ -420,7 +420,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetVisualInfo == NULL) {
         p_nbridge_XGetVisualInfo = (void * (*) (void *, long, void *, void *)) FindFunction(libX11, "XGetVisualInfo");
     }
-    return (jlong) (* p_nbridge_XGetVisualInfo)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3);
+    return (jlong)(size_t) (* p_nbridge_XGetVisualInfo)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3);
 }
 
 int (* p_nbridge_XSetFunction) (void *, void *, int) = NULL;
@@ -429,7 +429,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetF
     if (p_nbridge_XSetFunction == NULL) {
         p_nbridge_XSetFunction = (int (*) (void *, void *, int)) FindFunction(libX11, "XSetFunction");
     }
-    return (jint) (* p_nbridge_XSetFunction)((void *) param_0, (void *) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XSetFunction)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2);
 }
 
 int (* p_nbridge_XDestroyWindow) (void *, long) = NULL;
@@ -438,7 +438,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDest
     if (p_nbridge_XDestroyWindow == NULL) {
         p_nbridge_XDestroyWindow = (int (*) (void *, long)) FindFunction(libX11, "XDestroyWindow");
     }
-    return (jint) (* p_nbridge_XDestroyWindow)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XDestroyWindow)((void*)(size_t) param_0, (long) param_1);
 }
 
 unsigned long  (* p_nbridge_XRootWindow) (void *, int) = NULL;
@@ -447,7 +447,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XRoo
     if (p_nbridge_XRootWindow == NULL) {
         p_nbridge_XRootWindow = (unsigned long  (*) (void *, int)) FindFunction(libX11, "XRootWindow");
     }
-    return (jlong) (* p_nbridge_XRootWindow)((void *) param_0, (int) param_1);
+    return (jlong) (* p_nbridge_XRootWindow)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XLowerWindow) (void *, long) = NULL;
@@ -456,7 +456,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XLowe
     if (p_nbridge_XLowerWindow == NULL) {
         p_nbridge_XLowerWindow = (int (*) (void *, long)) FindFunction(libX11, "XLowerWindow");
     }
-    return (jint) (* p_nbridge_XLowerWindow)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XLowerWindow)((void*)(size_t) param_0, (long) param_1);
 }
 
 void * (* p_nbridge_XGetAtomName) (void *, long) = NULL;
@@ -465,7 +465,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetAtomName == NULL) {
         p_nbridge_XGetAtomName = (void * (*) (void *, long)) FindFunction(libX11, "XGetAtomName");
     }
-    return (jlong) (* p_nbridge_XGetAtomName)((void *) param_0, (long) param_1);
+    return (jlong)(size_t) (* p_nbridge_XGetAtomName)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XSelectInput) (void *, long, long) = NULL;
@@ -474,7 +474,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSele
     if (p_nbridge_XSelectInput == NULL) {
         p_nbridge_XSelectInput = (int (*) (void *, long, long)) FindFunction(libX11, "XSelectInput");
     }
-    return (jint) (* p_nbridge_XSelectInput)((void *) param_0, (long) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XSelectInput)((void*)(size_t) param_0, (long) param_1, (long) param_2);
 }
 
 void * (* p_nbridge_XGetImage) (void *, long, int, int, int, int, long, int) = NULL;
@@ -483,7 +483,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetImage == NULL) {
         p_nbridge_XGetImage = (void * (*) (void *, long, int, int, int, int, long, int)) FindFunction(libX11, "XGetImage");
     }
-    return (jlong) (* p_nbridge_XGetImage)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (int) param_7);
+    return (jlong)(size_t) (* p_nbridge_XGetImage)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (int) param_7);
 }
 
 int (* p_nbridge_XDrawRectangle) (void *, long, void *, int, int, int, int) = NULL;
@@ -492,7 +492,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDraw
     if (p_nbridge_XDrawRectangle == NULL) {
         p_nbridge_XDrawRectangle = (int (*) (void *, long, void *, int, int, int, int)) FindFunction(libX11, "XDrawRectangle");
     }
-    return (jint) (* p_nbridge_XDrawRectangle)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
+    return (jint) (* p_nbridge_XDrawRectangle)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
 }
 
 int (* p_nbridge_XUngrabPointer) (void *, long) = NULL;
@@ -501,7 +501,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XUngr
     if (p_nbridge_XUngrabPointer == NULL) {
         p_nbridge_XUngrabPointer = (int (*) (void *, long)) FindFunction(libX11, "XUngrabPointer");
     }
-    return (jint) (* p_nbridge_XUngrabPointer)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XUngrabPointer)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XSetForeground) (void *, void *, long) = NULL;
@@ -510,7 +510,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetF
     if (p_nbridge_XSetForeground == NULL) {
         p_nbridge_XSetForeground = (int (*) (void *, void *, long)) FindFunction(libX11, "XSetForeground");
     }
-    return (jint) (* p_nbridge_XSetForeground)((void *) param_0, (void *) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XSetForeground)((void*)(size_t) param_0, (void*)(size_t) param_1, (long) param_2);
 }
 
 int (* p_nbridge_XMapRaised) (void *, long) = NULL;
@@ -519,7 +519,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XMapR
     if (p_nbridge_XMapRaised == NULL) {
         p_nbridge_XMapRaised = (int (*) (void *, long)) FindFunction(libX11, "XMapRaised");
     }
-    return (jint) (* p_nbridge_XMapRaised)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XMapRaised)((void*)(size_t) param_0, (long) param_1);
 }
 
 long (* p_nbridge_XAllPlanes) (void) = NULL;
@@ -537,7 +537,7 @@ JNIEXPORT jbyte  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XKey
     if (p_nbridge_XKeysymToKeycode == NULL) {
         p_nbridge_XKeysymToKeycode = (unsigned char  (*) (void *, long)) FindFunction(libX11, "XKeysymToKeycode");
     }
-    return (jbyte) (* p_nbridge_XKeysymToKeycode)((void *) param_0, (long) param_1);
+    return (jbyte) (* p_nbridge_XKeysymToKeycode)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XQueryPointer) (void *, long, void *, void *, void *, void *, void *, void *, void *) = NULL;
@@ -546,7 +546,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XQuer
     if (p_nbridge_XQueryPointer == NULL) {
         p_nbridge_XQueryPointer = (int (*) (void *, long, void *, void *, void *, void *, void *, void *, void *)) FindFunction(libX11, "XQueryPointer");
     }
-    return (jint) (* p_nbridge_XQueryPointer)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (void *) param_4, (void *) param_5, (void *) param_6, (void *) param_7, (void *) param_8);
+    return (jint) (* p_nbridge_XQueryPointer)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4, (void*)(size_t) param_5, (void*)(size_t) param_6, (void*)(size_t) param_7, (void*)(size_t) param_8);
 }
 
 int (* p_nbridge_XDisplayWidth) (void *, int) = NULL;
@@ -555,7 +555,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDisp
     if (p_nbridge_XDisplayWidth == NULL) {
         p_nbridge_XDisplayWidth = (int (*) (void *, int)) FindFunction(libX11, "XDisplayWidth");
     }
-    return (jint) (* p_nbridge_XDisplayWidth)((void *) param_0, (int) param_1);
+    return (jint) (* p_nbridge_XDisplayWidth)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XDisplayHeightMM) (void *, int) = NULL;
@@ -564,7 +564,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDisp
     if (p_nbridge_XDisplayHeightMM == NULL) {
         p_nbridge_XDisplayHeightMM = (int (*) (void *, int)) FindFunction(libX11, "XDisplayHeightMM");
     }
-    return (jint) (* p_nbridge_XDisplayHeightMM)((void *) param_0, (int) param_1);
+    return (jint) (* p_nbridge_XDisplayHeightMM)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XChangeProperty) (void *, long, long, long, int, int, void *, int) = NULL;
@@ -573,7 +573,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XChan
     if (p_nbridge_XChangeProperty == NULL) {
         p_nbridge_XChangeProperty = (int (*) (void *, long, long, long, int, int, void *, int)) FindFunction(libX11, "XChangeProperty");
     }
-    return (jint) (* p_nbridge_XChangeProperty)((void *) param_0, (long) param_1, (long) param_2, (long) param_3, (int) param_4, (int) param_5, (void *) param_6, (int) param_7);
+    return (jint) (* p_nbridge_XChangeProperty)((void*)(size_t) param_0, (long) param_1, (long) param_2, (long) param_3, (int) param_4, (int) param_5, (void*)(size_t) param_6, (int) param_7);
 }
 
 int (* p_nbridge_XCheckTypedEvent) (void *, int, void *) = NULL;
@@ -582,7 +582,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XChec
     if (p_nbridge_XCheckTypedEvent == NULL) {
         p_nbridge_XCheckTypedEvent = (int (*) (void *, int, void *)) FindFunction(libX11, "XCheckTypedEvent");
     }
-    return (jint) (* p_nbridge_XCheckTypedEvent)((void *) param_0, (int) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XCheckTypedEvent)((void*)(size_t) param_0, (int) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XPutImage) (void *, long, void *, void *, int, int, int, int, int, int) = NULL;
@@ -591,7 +591,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XPutI
     if (p_nbridge_XPutImage == NULL) {
         p_nbridge_XPutImage = (int (*) (void *, long, void *, void *, int, int, int, int, int, int)) FindFunction(libX11, "XPutImage");
     }
-    return (jint) (* p_nbridge_XPutImage)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
+    return (jint) (* p_nbridge_XPutImage)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (int) param_9);
 }
 
 int (* p_nbridge_XmuLookupStandardColormap) (void *, int, long, int, long, int, int) = NULL;
@@ -600,7 +600,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XmuLo
     if (p_nbridge_XmuLookupStandardColormap == NULL) {
         p_nbridge_XmuLookupStandardColormap = (int (*) (void *, int, long, int, long, int, int)) FindFunction(libXmu, "XmuLookupStandardColormap");
     }
-    return (jint) (* p_nbridge_XmuLookupStandardColormap)((void *) dpy, (int) screen, (long) visualid, (int) depth, (long) property, (int) replace, (int) retain);
+    return (jint) (* p_nbridge_XmuLookupStandardColormap)((void*)(size_t) dpy, (int) screen, (long) visualid, (int) depth, (long) property, (int) replace, (int) retain);
 }
 
 int (* p_nbridge_XStoreName) (void *, long, void *) = NULL;
@@ -609,7 +609,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XStor
     if (p_nbridge_XStoreName == NULL) {
         p_nbridge_XStoreName = (int (*) (void *, long, void *)) FindFunction(libX11, "XStoreName");
     }
-    return (jint) (* p_nbridge_XStoreName)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XStoreName)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 void * (* p_nbridge_XAllocStandardColormap) (void) = NULL;
@@ -618,7 +618,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XAll
     if (p_nbridge_XAllocStandardColormap == NULL) {
         p_nbridge_XAllocStandardColormap = (void * (*) (void)) FindFunction(libX11, "XAllocStandardColormap");
     }
-    return (jlong) (* p_nbridge_XAllocStandardColormap)();
+    return (jlong)(size_t) (* p_nbridge_XAllocStandardColormap)();
 }
 
 int (* p_nbridge_XSetClipRectangles) (void *, void *, int, int, void *, int, int) = NULL;
@@ -627,7 +627,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetC
     if (p_nbridge_XSetClipRectangles == NULL) {
         p_nbridge_XSetClipRectangles = (int (*) (void *, void *, int, int, void *, int, int)) FindFunction(libX11, "XSetClipRectangles");
     }
-    return (jint) (* p_nbridge_XSetClipRectangles)((void *) param_0, (void *) param_1, (int) param_2, (int) param_3, (void *) param_4, (int) param_5, (int) param_6);
+    return (jint) (* p_nbridge_XSetClipRectangles)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (int) param_3, (void*)(size_t) param_4, (int) param_5, (int) param_6);
 }
 
 int (* p_nbridge_XChangeWindowAttributes) (void *, long, long, void *) = NULL;
@@ -636,16 +636,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XChan
     if (p_nbridge_XChangeWindowAttributes == NULL) {
         p_nbridge_XChangeWindowAttributes = (int (*) (void *, long, long, void *)) FindFunction(libX11, "XChangeWindowAttributes");
     }
-    return (jint) (* p_nbridge_XChangeWindowAttributes)((void *) param_0, (long) param_1, (long) param_2, (void *) param_3);
+    return (jint) (* p_nbridge_XChangeWindowAttributes)((void*)(size_t) param_0, (long) param_1, (long) param_2, (void*)(size_t) param_3);
 }
 
-void * (* p_nbridge_XDisplayString) (void *) = NULL;
+void * (* p_nbridge_XDisplayString) (void*) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDisplayString( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XDisplayString == NULL) {
         p_nbridge_XDisplayString = (void * (*) (void *)) FindFunction(libX11, "XDisplayString");
     }
-    return (jlong) (* p_nbridge_XDisplayString)((void *) param_0);
+    return (jlong)(size_t) (* p_nbridge_XDisplayString)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XSetFillRule) (void *, void *, int) = NULL;
@@ -654,16 +654,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetF
     if (p_nbridge_XSetFillRule == NULL) {
         p_nbridge_XSetFillRule = (int (*) (void *, void *, int)) FindFunction(libX11, "XSetFillRule");
     }
-    return (jint) (* p_nbridge_XSetFillRule)((void *) param_0, (void *) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XSetFillRule)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2);
 }
 
-int (* p_nbridge_XInitImage) (void *) = NULL;
+int (* p_nbridge_XInitImage) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XInitImage( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XInitImage == NULL) {
         p_nbridge_XInitImage = (int (*) (void *)) FindFunction(libX11, "XInitImage");
     }
-    return (jint) (* p_nbridge_XInitImage)((void *) param_0);
+    return (jint) (* p_nbridge_XInitImage)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XSetDashes) (void *, void *, int, void *, int) = NULL;
@@ -672,7 +672,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetD
     if (p_nbridge_XSetDashes == NULL) {
         p_nbridge_XSetDashes = (int (*) (void *, void *, int, void *, int)) FindFunction(libX11, "XSetDashes");
     }
-    return (jint) (* p_nbridge_XSetDashes)((void *) param_0, (void *) param_1, (int) param_2, (void *) param_3, (int) param_4);
+    return (jint) (* p_nbridge_XSetDashes)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (void*)(size_t) param_3, (int) param_4);
 }
 
 int (* p_nbridge_XSetWMHints) (void *, long, void *) = NULL;
@@ -681,25 +681,25 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetW
     if (p_nbridge_XSetWMHints == NULL) {
         p_nbridge_XSetWMHints = (int (*) (void *, long, void *)) FindFunction(libX11, "XSetWMHints");
     }
-    return (jint) (* p_nbridge_XSetWMHints)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XSetWMHints)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
-int (* p_nbridge_XPending) (void *) = NULL;
+int (* p_nbridge_XPending) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XPending( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XPending == NULL) {
         p_nbridge_XPending = (int (*) (void *)) FindFunction(libX11, "XPending");
     }
-    return (jint) (* p_nbridge_XPending)((void *) param_0);
+    return (jint) (* p_nbridge_XPending)((void*)(size_t) param_0);
 }
 
-unsigned long  (* p_nbridge_XVisualIDFromVisual) (void *) = NULL;
+unsigned long  (* p_nbridge_XVisualIDFromVisual) (void*) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XVisualIDFromVisual( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XVisualIDFromVisual == NULL) {
         p_nbridge_XVisualIDFromVisual = (unsigned long  (*) (void *)) FindFunction(libX11, "XVisualIDFromVisual");
     }
-    return (jlong) (* p_nbridge_XVisualIDFromVisual)((void *) param_0);
+    return (jlong) (* p_nbridge_XVisualIDFromVisual)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XSendEvent) (void *, long, int, long, void *) = NULL;
@@ -708,7 +708,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSend
     if (p_nbridge_XSendEvent == NULL) {
         p_nbridge_XSendEvent = (int (*) (void *, long, int, long, void *)) FindFunction(libX11, "XSendEvent");
     }
-    return (jint) (* p_nbridge_XSendEvent)((void *) param_0, (long) param_1, (int) param_2, (long) param_3, (void *) param_4);
+    return (jint) (* p_nbridge_XSendEvent)((void*)(size_t) param_0, (long) param_1, (int) param_2, (long) param_3, (void*)(size_t) param_4);
 }
 
 int (* p_nbridge_XDrawLine) (void *, long, void *, int, int, int, int) = NULL;
@@ -717,7 +717,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDraw
     if (p_nbridge_XDrawLine == NULL) {
         p_nbridge_XDrawLine = (int (*) (void *, long, void *, int, int, int, int)) FindFunction(libX11, "XDrawLine");
     }
-    return (jint) (* p_nbridge_XDrawLine)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
+    return (jint) (* p_nbridge_XDrawLine)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
 }
 
 unsigned long  (* p_nbridge_XCreatePixmap) (void *, long, int, int, int) = NULL;
@@ -726,7 +726,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreatePixmap == NULL) {
         p_nbridge_XCreatePixmap = (unsigned long  (*) (void *, long, int, int, int)) FindFunction(libX11, "XCreatePixmap");
     }
-    return (jlong) (* p_nbridge_XCreatePixmap)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4);
+    return (jlong) (* p_nbridge_XCreatePixmap)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4);
 }
 
 int (* p_nbridge_XDefineCursor) (void *, long, long) = NULL;
@@ -735,7 +735,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefi
     if (p_nbridge_XDefineCursor == NULL) {
         p_nbridge_XDefineCursor = (int (*) (void *, long, long)) FindFunction(libX11, "XDefineCursor");
     }
-    return (jint) (* p_nbridge_XDefineCursor)((void *) param_0, (long) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XDefineCursor)((void*)(size_t) param_0, (long) param_1, (long) param_2);
 }
 
 int (* p_nbridge_XDrawLines) (void *, long, void *, void *, int, int) = NULL;
@@ -744,7 +744,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDraw
     if (p_nbridge_XDrawLines == NULL) {
         p_nbridge_XDrawLines = (int (*) (void *, long, void *, void *, int, int)) FindFunction(libX11, "XDrawLines");
     }
-    return (jint) (* p_nbridge_XDrawLines)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (int) param_4, (int) param_5);
+    return (jint) (* p_nbridge_XDrawLines)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (int) param_4, (int) param_5);
 }
 
 void (* p_nbridge_XSetWMNormalHints) (void *, long, void *) = NULL;
@@ -753,7 +753,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetW
     if (p_nbridge_XSetWMNormalHints == NULL) {
         p_nbridge_XSetWMNormalHints = (void (*) (void *, long, void *)) FindFunction(libX11, "XSetWMNormalHints");
     }
-    (* p_nbridge_XSetWMNormalHints)((void *) param_0, (long) param_1, (void *) param_2);
+    (* p_nbridge_XSetWMNormalHints)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XTranslateCoordinates) (void *, long, long, int, int, void *, void *, void *) = NULL;
@@ -762,7 +762,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTran
     if (p_nbridge_XTranslateCoordinates == NULL) {
         p_nbridge_XTranslateCoordinates = (int (*) (void *, long, long, int, int, void *, void *, void *)) FindFunction(libX11, "XTranslateCoordinates");
     }
-    return (jint) (* p_nbridge_XTranslateCoordinates)((void *) param_0, (long) param_1, (long) param_2, (int) param_3, (int) param_4, (void *) param_5, (void *) param_6, (void *) param_7);
+    return (jint) (* p_nbridge_XTranslateCoordinates)((void*)(size_t) param_0, (long) param_1, (long) param_2, (int) param_3, (int) param_4, (void*)(size_t) param_5, (void*)(size_t) param_6, (void*)(size_t) param_7);
 }
 
 int (* p_nbridge_XSetStandardProperties) (void *, long, void *, void *, long, void *, int, void *) = NULL;
@@ -771,7 +771,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetS
     if (p_nbridge_XSetStandardProperties == NULL) {
         p_nbridge_XSetStandardProperties = (int (*) (void *, long, void *, void *, long, void *, int, void *)) FindFunction(libX11, "XSetStandardProperties");
     }
-    return (jint) (* p_nbridge_XSetStandardProperties)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (long) param_4, (void *) param_5, (int) param_6, (void *) param_7);
+    return (jint) (* p_nbridge_XSetStandardProperties)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (long) param_4, (void*)(size_t) param_5, (int) param_6, (void*)(size_t) param_7);
 }
 
 void (* p_nbridge_Xutf8SetWMProperties) (void *, long, void *, void *, void *, int, void *, void*, void*) = NULL;
@@ -780,7 +780,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_Xutf8
     if (p_nbridge_Xutf8SetWMProperties == NULL) {
         p_nbridge_Xutf8SetWMProperties = (void (*) (void *, long, void *, void *, void*, int, void*, void*, void*)) FindFunction(libX11, "Xutf8SetWMProperties");
     }
-   (* p_nbridge_Xutf8SetWMProperties)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (void *) param_4, (int) param_5, (void *) param_6, (void *) param_7, (void *) param_8);
+   (* p_nbridge_Xutf8SetWMProperties)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4, (int) param_5, (void*)(size_t) param_6, (void*)(size_t) param_7, (void*)(size_t) param_8);
 }
 
 unsigned long  (* p_nbridge_XDefaultColormap) (void *, int) = NULL;
@@ -789,7 +789,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDef
     if (p_nbridge_XDefaultColormap == NULL) {
         p_nbridge_XDefaultColormap = (unsigned long  (*) (void *, int)) FindFunction(libX11, "XDefaultColormap");
     }
-    return (jlong) (* p_nbridge_XDefaultColormap)((void *) param_0, (int) param_1);
+    return (jlong) (* p_nbridge_XDefaultColormap)((void*)(size_t) param_0, (int) param_1);
 }
 
 void * (* p_nbridge_XAllocSizeHints) (void) = NULL;
@@ -798,16 +798,16 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XAll
     if (p_nbridge_XAllocSizeHints == NULL) {
         p_nbridge_XAllocSizeHints = (void * (*) (void)) FindFunction(libX11, "XAllocSizeHints");
     }
-    return (jlong) (* p_nbridge_XAllocSizeHints)();
+    return (jlong)(size_t) (* p_nbridge_XAllocSizeHints)();
 }
 
-int (* p_nbridge_XFlush) (void *) = NULL;
+int (* p_nbridge_XFlush) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFlush( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XFlush == NULL) {
         p_nbridge_XFlush = (int (*) (void *)) FindFunction(libX11, "XFlush");
     }
-    return (jint) (* p_nbridge_XFlush)((void *) param_0);
+    return (jint) (* p_nbridge_XFlush)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XGetWindowAttributes) (void *, long, void *) = NULL;
@@ -816,7 +816,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetW
     if (p_nbridge_XGetWindowAttributes == NULL) {
         p_nbridge_XGetWindowAttributes = (int (*) (void *, long, void *)) FindFunction(libX11, "XGetWindowAttributes");
     }
-    return (jint) (* p_nbridge_XGetWindowAttributes)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XGetWindowAttributes)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XFreePixmap) (void *, long) = NULL;
@@ -825,7 +825,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFree
     if (p_nbridge_XFreePixmap == NULL) {
         p_nbridge_XFreePixmap = (int (*) (void *, long)) FindFunction(libX11, "XFreePixmap");
     }
-    return (jint) (* p_nbridge_XFreePixmap)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XFreePixmap)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XGetGeometry) (void *, long, void *, void *, void *, void *, void *, void *, void *) = NULL;
@@ -834,7 +834,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetG
     if (p_nbridge_XGetGeometry == NULL) {
         p_nbridge_XGetGeometry = (int (*) (void *, long, void *, void *, void *, void *, void *, void *, void *)) FindFunction(libX11, "XGetGeometry");
     }
-    return (jint) (* p_nbridge_XGetGeometry)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (void *) param_4, (void *) param_5, (void *) param_6, (void *) param_7, (void *) param_8);
+    return (jint) (* p_nbridge_XGetGeometry)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4, (void*)(size_t) param_5, (void*)(size_t) param_6, (void*)(size_t) param_7, (void*)(size_t) param_8);
 }
 
 int (* p_nbridge_XQueryColors) (void *, long, void *, int) = NULL;
@@ -843,7 +843,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XQuer
     if (p_nbridge_XQueryColors == NULL) {
         p_nbridge_XQueryColors = (int (*) (void *, long, void *, int)) FindFunction(libX11, "XQueryColors");
     }
-    return (jint) (* p_nbridge_XQueryColors)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3);
+    return (jint) (* p_nbridge_XQueryColors)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3);
 }
 
 int (* p_nbridge_XQueryBestCursor) (void *, long, int, int, void *, void *) = NULL;
@@ -852,7 +852,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XQuer
     if (p_nbridge_XQueryBestCursor == NULL) {
         p_nbridge_XQueryBestCursor = (int (*) (void *, long, int, int, void *, void *)) FindFunction(libX11, "XQueryBestCursor");
     }
-    return (jint) (* p_nbridge_XQueryBestCursor)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (void *) param_4, (void *) param_5);
+    return (jint) (* p_nbridge_XQueryBestCursor)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (void*)(size_t) param_4, (void*)(size_t) param_5);
 }
 
 int (* p_nbridge_XNextEvent) (void *, void *) = NULL;
@@ -861,7 +861,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XNext
     if (p_nbridge_XNextEvent == NULL) {
         p_nbridge_XNextEvent = (int (*) (void *, void *)) FindFunction(libX11, "XNextEvent");
     }
-    return (jint) (* p_nbridge_XNextEvent)((void *) param_0, (void *) param_1);
+    return (jint) (* p_nbridge_XNextEvent)((void*)(size_t) param_0, (void*)(size_t) param_1);
 }
 
 void * (* p_nbridge_XDefaultVisual) (void *, int) = NULL;
@@ -870,7 +870,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDef
     if (p_nbridge_XDefaultVisual == NULL) {
         p_nbridge_XDefaultVisual = (void * (*) (void *, int)) FindFunction(libX11, "XDefaultVisual");
     }
-    return (jlong) (* p_nbridge_XDefaultVisual)((void *) param_0, (int) param_1);
+    return (jlong)(size_t) (* p_nbridge_XDefaultVisual)((void*)(size_t) param_0, (int) param_1);
 }
 
 unsigned long  (* p_nbridge_XCreateWindow) (void *, long, int, int, int, int, int, int, int, void *, long, void *) = NULL;
@@ -879,7 +879,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateWindow == NULL) {
         p_nbridge_XCreateWindow = (unsigned long  (*) (void *, long, int, int, int, int, int, int, int, void *, long, void *)) FindFunction(libX11, "XCreateWindow");
     }
-    return (jlong) (* p_nbridge_XCreateWindow)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (void *) param_9, (long) param_10, (void *) param_11);
+    return (jlong) (* p_nbridge_XCreateWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8, (void*)(size_t) param_9, (long) param_10, (void*)(size_t) param_11);
 }
 
 int (* p_nbridge_XFreeGC) (void *, void *) = NULL;
@@ -888,16 +888,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFree
     if (p_nbridge_XFreeGC == NULL) {
         p_nbridge_XFreeGC = (int (*) (void *, void *)) FindFunction(libX11, "XFreeGC");
     }
-    return (jint) (* p_nbridge_XFreeGC)((void *) param_0, (void *) param_1);
+    return (jint) (* p_nbridge_XFreeGC)((void*)(size_t) param_0, (void*)(size_t) param_1);
 }
 
-int (* p_nbridge_XBitmapPad) (void *) = NULL;
+int (* p_nbridge_XBitmapPad) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XBitmapPad( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XBitmapPad == NULL) {
         p_nbridge_XBitmapPad = (int (*) (void *)) FindFunction(libX11, "XBitmapPad");
     }
-    return (jint) (* p_nbridge_XBitmapPad)((void *) param_0);
+    return (jint) (* p_nbridge_XBitmapPad)((void*)(size_t) param_0);
 }
 
 unsigned long  (* p_nbridge_XCreateColormap) (void *, long, void *, int) = NULL;
@@ -906,7 +906,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateColormap == NULL) {
         p_nbridge_XCreateColormap = (unsigned long  (*) (void *, long, void *, int)) FindFunction(libX11, "XCreateColormap");
     }
-    return (jlong) (* p_nbridge_XCreateColormap)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3);
+    return (jlong) (* p_nbridge_XCreateColormap)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3);
 }
 
 int (* p_nbridge_XGetPointerMapping) (void *, void *, int) = NULL;
@@ -915,16 +915,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetP
     if (p_nbridge_XGetPointerMapping == NULL) {
         p_nbridge_XGetPointerMapping = (int (*) (void *, void *, int)) FindFunction(libX11, "XGetPointerMapping");
     }
-    return (jint) (* p_nbridge_XGetPointerMapping)((void *) param_0, (void *) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XGetPointerMapping)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2);
 }
 
-void * (* p_nbridge_XSetErrorHandler) (void *) = NULL;
+void * (* p_nbridge_XSetErrorHandler) (void*) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetErrorHandler( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XSetErrorHandler == NULL) {
         p_nbridge_XSetErrorHandler = (void * (*) (void *)) FindFunction(libX11, "XSetErrorHandler");
     }
-    return (jlong) (* p_nbridge_XSetErrorHandler)((void *) param_0);
+    return (jlong)(size_t) (* p_nbridge_XSetErrorHandler)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XSetTransientForHint) (void *, long, long) = NULL;
@@ -933,7 +933,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetT
     if (p_nbridge_XSetTransientForHint == NULL) {
         p_nbridge_XSetTransientForHint = (int (*) (void *, long, long)) FindFunction(libX11, "XSetTransientForHint");
     }
-    return (jint) (* p_nbridge_XSetTransientForHint)((void *) param_0, (long) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XSetTransientForHint)((void*)(size_t) param_0, (long) param_1, (long) param_2);
 }
 
 int (* p_nbridge_XFreeCursor) (void *, long) = NULL;
@@ -942,7 +942,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFree
     if (p_nbridge_XFreeCursor == NULL) {
         p_nbridge_XFreeCursor = (int (*) (void *, long)) FindFunction(libX11, "XFreeCursor");
     }
-    return (jint) (* p_nbridge_XFreeCursor)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XFreeCursor)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XFillRectangle) (void *, long, void *, int, int, int, int) = NULL;
@@ -951,7 +951,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFill
     if (p_nbridge_XFillRectangle == NULL) {
         p_nbridge_XFillRectangle = (int (*) (void *, long, void *, int, int, int, int)) FindFunction(libX11, "XFillRectangle");
     }
-    return (jint) (* p_nbridge_XFillRectangle)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
+    return (jint) (* p_nbridge_XFillRectangle)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6);
 }
 
 int (* p_nbridge_XSetWMProtocols) (void *, long, void *, int) = NULL;
@@ -960,16 +960,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetW
     if (p_nbridge_XSetWMProtocols == NULL) {
         p_nbridge_XSetWMProtocols = (int (*) (void *, long, void *, int)) FindFunction(libX11, "XSetWMProtocols");
     }
-    return (jint) (* p_nbridge_XSetWMProtocols)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3);
+    return (jint) (* p_nbridge_XSetWMProtocols)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3);
 }
 
-int (* p_nbridge_XCloseDisplay) (void *) = NULL;
+int (* p_nbridge_XCloseDisplay) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCloseDisplay( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XCloseDisplay == NULL) {
         p_nbridge_XCloseDisplay = (int (*) (void *)) FindFunction(libX11, "XCloseDisplay");
     }
-    return (jint) (* p_nbridge_XCloseDisplay)((void *) param_0);
+    return (jint) (* p_nbridge_XCloseDisplay)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XQueryTree) (void *, long, void *, void *, void *, void *) = NULL;
@@ -978,7 +978,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XQuer
     if (p_nbridge_XQueryTree == NULL) {
         p_nbridge_XQueryTree = (int (*) (void *, long, void *, void *, void *, void *)) FindFunction(libX11, "XQueryTree");
     }
-    return (jint) (* p_nbridge_XQueryTree)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (void *) param_4, (void *) param_5);
+    return (jint) (* p_nbridge_XQueryTree)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4, (void*)(size_t) param_5);
 }
 
 int (* p_nbridge_XGetInputFocus) (void *, void *, void *) = NULL;
@@ -987,7 +987,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGetI
     if (p_nbridge_XGetInputFocus == NULL) {
         p_nbridge_XGetInputFocus = (int (*) (void *, void *, void *)) FindFunction(libX11, "XGetInputFocus");
     }
-    return (jint) (* p_nbridge_XGetInputFocus)((void *) param_0, (void *) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XGetInputFocus)((void*)(size_t) param_0, (void*)(size_t) param_1, (void*)(size_t) param_2);
 }
 
 unsigned long  (* p_nbridge_XInternAtom) (void *, void *, int) = NULL;
@@ -996,7 +996,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XInt
     if (p_nbridge_XInternAtom == NULL) {
         p_nbridge_XInternAtom = (unsigned long  (*) (void *, void *, int)) FindFunction(libX11, "XInternAtom");
     }
-    return (jlong) (* p_nbridge_XInternAtom)((void *) param_0, (void *) param_1, (int) param_2);
+    return (jlong) (* p_nbridge_XInternAtom)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2);
 }
 
 int (* p_nbridge_XSetClipOrigin) (void *, void *, int, int) = NULL;
@@ -1005,7 +1005,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetC
     if (p_nbridge_XSetClipOrigin == NULL) {
         p_nbridge_XSetClipOrigin = (int (*) (void *, void *, int, int)) FindFunction(libX11, "XSetClipOrigin");
     }
-    return (jint) (* p_nbridge_XSetClipOrigin)((void *) param_0, (void *) param_1, (int) param_2, (int) param_3);
+    return (jint) (* p_nbridge_XSetClipOrigin)((void*)(size_t) param_0, (void*)(size_t) param_1, (int) param_2, (int) param_3);
 }
 
 int (* p_nbridge_XTestQueryExtension) (void *, void *, void *, void *, void *) = NULL;
@@ -1014,7 +1014,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTest
     if (p_nbridge_XTestQueryExtension == NULL) {
         p_nbridge_XTestQueryExtension = (int (*) (void *, void *, void *, void *, void *)) FindFunction(libXtst, "XTestQueryExtension");
     }
-    return (jint) (* p_nbridge_XTestQueryExtension)((void *) param_0, (void *) param_1, (void *) param_2, (void *) param_3, (void *) param_4);
+    return (jint) (* p_nbridge_XTestQueryExtension)((void*)(size_t) param_0, (void*)(size_t) param_1, (void*)(size_t) param_2, (void*)(size_t) param_3, (void*)(size_t) param_4);
 }
 
 unsigned long  (* p_nbridge_XCreateSimpleWindow) (void *, long, int, int, int, int, int, long, long) = NULL;
@@ -1023,16 +1023,16 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateSimpleWindow == NULL) {
         p_nbridge_XCreateSimpleWindow = (unsigned long  (*) (void *, long, int, int, int, int, int, long, long)) FindFunction(libX11, "XCreateSimpleWindow");
     }
-    return (jlong) (* p_nbridge_XCreateSimpleWindow)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (long) param_7, (long) param_8);
+    return (jlong) (* p_nbridge_XCreateSimpleWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (long) param_7, (long) param_8);
 }
 
-int (* p_nbridge_XUngrabServer) (void *) = NULL;
+int (* p_nbridge_XUngrabServer) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XUngrabServer( JNIEnv *env, jobject self, jlong param_0) {
     if (p_nbridge_XUngrabServer == NULL) {
         p_nbridge_XUngrabServer = (int (*) (void *)) FindFunction(libX11, "XUngrabServer");
     }
-    return (jint) (* p_nbridge_XUngrabServer)((void *) param_0);
+    return (jint) (* p_nbridge_XUngrabServer)((void*)(size_t) param_0);
 }
 
 int (* p_nbridge_XFillArc) (void *, long, void *, int, int, int, int, int, int) = NULL;
@@ -1041,7 +1041,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XFill
     if (p_nbridge_XFillArc == NULL) {
         p_nbridge_XFillArc = (int (*) (void *, long, void *, int, int, int, int, int, int)) FindFunction(libX11, "XFillArc");
     }
-    return (jint) (* p_nbridge_XFillArc)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8);
+    return (jint) (* p_nbridge_XFillArc)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8);
 }
 
 void * (* p_nbridge_XScreenOfDisplay) (void *, int) = NULL;
@@ -1050,7 +1050,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XScr
     if (p_nbridge_XScreenOfDisplay == NULL) {
         p_nbridge_XScreenOfDisplay = (void * (*) (void *, int)) FindFunction(libX11, "XScreenOfDisplay");
     }
-    return (jlong) (* p_nbridge_XScreenOfDisplay)((void *) param_0, (int) param_1);
+    return (jlong)(size_t) (* p_nbridge_XScreenOfDisplay)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XSetClipMask) (void *, void *, long) = NULL;
@@ -1059,7 +1059,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetC
     if (p_nbridge_XSetClipMask == NULL) {
         p_nbridge_XSetClipMask = (int (*) (void *, void *, long)) FindFunction(libX11, "XSetClipMask");
     }
-    return (jint) (* p_nbridge_XSetClipMask)((void *) param_0, (void *) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XSetClipMask)((void*)(size_t) param_0, (void*)(size_t) param_1, (long) param_2);
 }
 
 int (* p_nbridge_XChangeGC) (void *, void *, long, void *) = NULL;
@@ -1068,7 +1068,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XChan
     if (p_nbridge_XChangeGC == NULL) {
         p_nbridge_XChangeGC = (int (*) (void *, void *, long, void *)) FindFunction(libX11, "XChangeGC");
     }
-    return (jint) (* p_nbridge_XChangeGC)((void *) param_0, (void *) param_1, (long) param_2, (void *) param_3);
+    return (jint) (* p_nbridge_XChangeGC)((void*)(size_t) param_0, (void*)(size_t) param_1, (long) param_2, (void*)(size_t) param_3);
 }
 
 unsigned long  (* p_nbridge_XCreateBitmapFromData) (void *, long, void *, int, int) = NULL;
@@ -1077,7 +1077,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XCre
     if (p_nbridge_XCreateBitmapFromData == NULL) {
         p_nbridge_XCreateBitmapFromData = (unsigned long  (*) (void *, long, void *, int, int)) FindFunction(libX11, "XCreateBitmapFromData");
     }
-    return (jlong) (* p_nbridge_XCreateBitmapFromData)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4);
+    return (jlong) (* p_nbridge_XCreateBitmapFromData)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4);
 }
 
 int (* p_nbridge_XDeleteProperty) (void *, long, long) = NULL;
@@ -1086,7 +1086,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDele
     if (p_nbridge_XDeleteProperty == NULL) {
         p_nbridge_XDeleteProperty = (int (*) (void *, long, long)) FindFunction(libX11, "XDeleteProperty");
     }
-    return (jint) (* p_nbridge_XDeleteProperty)((void *) param_0, (long) param_1, (long) param_2);
+    return (jint) (* p_nbridge_XDeleteProperty)((void*)(size_t) param_0, (long) param_1, (long) param_2);
 }
 
 void * (* p_nbridge_XGetWMHints) (void *, long) = NULL;
@@ -1095,7 +1095,7 @@ JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGet
     if (p_nbridge_XGetWMHints == NULL) {
         p_nbridge_XGetWMHints = (void * (*) (void *, long)) FindFunction(libX11, "XGetWMHints");
     }
-    return (jlong) (* p_nbridge_XGetWMHints)((void *) param_0, (long) param_1);
+    return (jlong)(size_t) (* p_nbridge_XGetWMHints)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XSetSelectionOwner) (void *, long, long, long) = NULL;
@@ -1104,16 +1104,16 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetS
     if (p_nbridge_XSetSelectionOwner == NULL) {
         p_nbridge_XSetSelectionOwner = (int (*) (void *, long, long, long)) FindFunction(libX11, "XSetSelectionOwner");
     }
-    return (jint) (* p_nbridge_XSetSelectionOwner)((void *) param_0, (long) param_1, (long) param_2, (long) param_3);
+    return (jint) (* p_nbridge_XSetSelectionOwner)((void*)(size_t) param_0, (long) param_1, (long) param_2, (long) param_3);
 }
 
-int (* p_nbridge_XDestroyImage) (void *) = NULL;
+int (* p_nbridge_XDestroyImage) (void*) = NULL;
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDestroyImage( JNIEnv *env, jobject self, jlong ximage) {
     if (p_nbridge_XDestroyImage == NULL) {
         p_nbridge_XDestroyImage = (int (*) (void *)) FindFunction(libX11, "XDestroyImage");
     }
-    return (jint) (* p_nbridge_XDestroyImage)((void *) ximage);
+    return (jint) (* p_nbridge_XDestroyImage)((void*)(size_t) ximage);
 }
 
 int (* p_nbridge_XDrawArc) (void *, long, void *, int, int, int, int, int, int) = NULL;
@@ -1122,7 +1122,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDraw
     if (p_nbridge_XDrawArc == NULL) {
         p_nbridge_XDrawArc = (int (*) (void *, long, void *, int, int, int, int, int, int)) FindFunction(libX11, "XDrawArc");
     }
-    return (jint) (* p_nbridge_XDrawArc)((void *) param_0, (long) param_1, (void *) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8);
+    return (jint) (* p_nbridge_XDrawArc)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2, (int) param_3, (int) param_4, (int) param_5, (int) param_6, (int) param_7, (int) param_8);
 }
 
 int (* p_nbridge_XGrabPointer) (void *, long, int, int, int, int, long, long, long) = NULL;
@@ -1131,7 +1131,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XGrab
     if (p_nbridge_XGrabPointer == NULL) {
         p_nbridge_XGrabPointer = (int (*) (void *, long, int, int, int, int, long, long, long)) FindFunction(libX11, "XGrabPointer");
     }
-    return (jint) (* p_nbridge_XGrabPointer)((void *) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (long) param_7, (long) param_8);
+    return (jint) (* p_nbridge_XGrabPointer)((void*)(size_t) param_0, (long) param_1, (int) param_2, (int) param_3, (int) param_4, (int) param_5, (long) param_6, (long) param_7, (long) param_8);
 }
 
 int (* p_nbridge_XDisplayHeight) (void *, int) = NULL;
@@ -1140,7 +1140,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDisp
     if (p_nbridge_XDisplayHeight == NULL) {
         p_nbridge_XDisplayHeight = (int (*) (void *, int)) FindFunction(libX11, "XDisplayHeight");
     }
-    return (jint) (* p_nbridge_XDisplayHeight)((void *) param_0, (int) param_1);
+    return (jint) (* p_nbridge_XDisplayHeight)((void*)(size_t) param_0, (int) param_1);
 }
 
 int (* p_nbridge_XQueryColor) (void *, long, void *) = NULL;
@@ -1149,7 +1149,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XQuer
     if (p_nbridge_XQueryColor == NULL) {
         p_nbridge_XQueryColor = (int (*) (void *, long, void *)) FindFunction(libX11, "XQueryColor");
     }
-    return (jint) (* p_nbridge_XQueryColor)((void *) param_0, (long) param_1, (void *) param_2);
+    return (jint) (* p_nbridge_XQueryColor)((void*)(size_t) param_0, (long) param_1, (void*)(size_t) param_2);
 }
 
 int (* p_nbridge_XRaiseWindow) (void *, long) = NULL;
@@ -1158,7 +1158,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XRais
     if (p_nbridge_XRaiseWindow == NULL) {
         p_nbridge_XRaiseWindow = (int (*) (void *, long)) FindFunction(libX11, "XRaiseWindow");
     }
-    return (jint) (* p_nbridge_XRaiseWindow)((void *) param_0, (long) param_1);
+    return (jint) (* p_nbridge_XRaiseWindow)((void*)(size_t) param_0, (long) param_1);
 }
 
 int (* p_nbridge_XWithdrawWindow) (void *, long, int) = NULL;
@@ -1167,7 +1167,7 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XWith
     if (p_nbridge_XWithdrawWindow == NULL) {
         p_nbridge_XWithdrawWindow = (int (*) (void *, long, int)) FindFunction(libX11, "XWithdrawWindow");
     }
-    return (jint) (* p_nbridge_XWithdrawWindow)((void *) param_0, (long) param_1, (int) param_2);
+    return (jint) (* p_nbridge_XWithdrawWindow)((void*)(size_t) param_0, (long) param_1, (int) param_2);
 }
 
 
