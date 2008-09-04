@@ -37,7 +37,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSResourcesMoni
 {
   unsigned long free;
   unsigned long total;
-  int len = sizeof(free);
+  size_t len = sizeof(free);
   
   if (sysctlbyname("vm.stats.vm.v_free_count", &free, &len, NULL, 0) == -1) {
     return FALSE;	
