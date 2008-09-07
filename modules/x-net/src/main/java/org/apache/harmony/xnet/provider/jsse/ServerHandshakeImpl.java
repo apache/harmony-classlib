@@ -323,31 +323,25 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
      * @param bytes
      */
     public void unwrapSSLv2(byte[] bytes) {
+        io_stream.append(bytes);
+        io_stream.mark();
         try {
-            io_stream.append(bytes);
-            io_stream.mark();
-            try {
-                clientHello = new ClientHello(io_stream);
-            } catch (IOException e) {
-                io_stream.reset();
-                return;
-            }
-            if (nonBlocking) {
-                delegatedTasks.add(new DelegatedTask(
-                        new PrivilegedExceptionAction(){ 
-                    public Object run() throws Exception {
-                        processClientHello();
-                        return null;
-                        }
-                    },
-                    this,
-                    AccessController.getContext()));
-                return;
-            }
-            processClientHello();
-        } catch (Exception e) {
-            fatalAlert(AlertProtocol.INTERNAL_ERROR, "INTERNAL ERROR", e);
+            clientHello = new ClientHello(io_stream);
+        } catch (IOException e) {
+            io_stream.reset();
+            return;
         }
+        if (nonBlocking) {
+            delegatedTasks.add(new DelegatedTask(
+                    new PrivilegedExceptionAction() {
+                        public Object run() throws Exception {
+                            processClientHello();
+                            return null;
+                        }
+                    }, this, AccessController.getContext()));
+            return;
+        }
+        processClientHello();
     }
 
     /**
