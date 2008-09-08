@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -532,13 +533,20 @@ public class Segment {
 
         for (int i = 0; i < numberOfFiles; i++) {
             String name = fileName[i];
-            long modtime = archiveModtime + fileModtime[i];
+            // For Pack200 archives, modtime is in seconds
+            // from the epoch. JarEntries need it to be in
+            // milliseconds from the epoch.
+            // Even though we're adding two longs and multiplying
+            // by 1000, we won't overflow because both longs are
+            // always under 2^32.
+            long modtime = 1000 * (archiveModtime + fileModtime[i]);
             boolean deflate = fileDeflate[i];
 
             JarEntry entry = new JarEntry(name);
             if (deflate)
                 entry.setMethod(ZipEntry.DEFLATED);
-            entry.setTime(modtime);
+            // On Windows at least, need to correct for timezone
+            entry.setTime(modtime - TimeZone.getDefault().getRawOffset());
             out.putNextEntry(entry);
 
             if (fileIsClass[i]) {
