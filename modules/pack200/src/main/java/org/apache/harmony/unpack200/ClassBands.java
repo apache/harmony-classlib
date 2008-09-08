@@ -406,9 +406,6 @@ public class ClassBands extends BandSet {
                             exceptionClasses));
                     methodExceptionsIndex++;
                 }
-                if (deprecatedLayout.matches(flag)) {
-                    methodAttributes[i][j].add(new DeprecatedAttribute());
-                }
                 if (methodSignatureLayout.matches(flag)) {
                     // We've got a signature attribute
                     long result = methodSignatureRS[methodSignatureIndex];
@@ -424,6 +421,9 @@ public class ClassBands extends BandSet {
                     methodAttributes[i][j]
                             .add(new SignatureAttribute(value));
                     methodSignatureIndex++;
+                }
+                if (deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
                 }
                 // Non-predefined attributes
                 for (int k = 0; k < otherLayouts.length; k++) {
