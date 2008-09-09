@@ -95,26 +95,13 @@
 
     <!-- Build the portlib native components -->
     <target name="build-native"
-        depends="-build-native,-build-native-sig,-build-native-thread,-build-native-thrstub,-build-native-port" />
+        depends="-build-native,-build-native-thread,-build-native-thrstub,-build-native-port" />
     <target name="-build-native">
        <!-- Build common lib -->
         <make dir="${hy.portlib.src.main.native}/common/${hy.os.family}" />
 
         <!-- Build pool lib -->
         <make dir="${hy.portlib.src.main.native}/pool/${hy.os.family}" />
-    </target>
-
-    <target name="-build-native-sig" unless="hy.skip.sig">
-        <!-- Build sig dll -->
-        <make dir="${hy.portlib.src.main.native}/sig/${hy.os.family}" />
-
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.portlib.src.main.native}/sig">
-                <include name="*${shlib.suffix}*" />
-                <include name="*${progdb.suffix}*" if="is.windows" />
-                <exclude name="*${manifest.suffix}"/>
-            </fileset>
-        </copy>
     </target>
 
     <target name="-build-native-thread" unless="hy.skip.thr">
@@ -179,7 +166,6 @@
 
     <!-- Clean natives -->
     <target name="clean-native" depends="-clean-native-tests">
-        <make dir="${hy.portlib.src.main.native}/sig/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/thread/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/thrstub/${hy.os.family}" target="clean" />
         <make dir="${hy.portlib.src.main.native}/port/${hy.os.family}" target="clean" />

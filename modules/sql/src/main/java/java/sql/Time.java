@@ -17,7 +17,6 @@
 
 package java.sql;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -180,8 +179,28 @@ public class Time extends Date {
      */
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
-        return dateFormat.format(this);
+        StringBuilder sb = new StringBuilder(8);
+
+        format(getHours(), 2, sb);
+        sb.append(':');
+        format(getMinutes(), 2, sb);
+        sb.append(':');
+        format(getSeconds(), 2, sb);
+
+        return sb.toString();
+    }
+
+    private static final String PADDING = "00";  //$NON-NLS-1$
+
+    /* 
+    * Private method to format the time 
+    */ 
+    private void format(int date, int digits, StringBuilder sb) { 
+        String str = String.valueOf(date);
+        if (digits - str.length() > 0) {
+            sb.append(PADDING.substring(0, digits - str.length()));
+        }
+        sb.append(str); 
     }
 
     /**

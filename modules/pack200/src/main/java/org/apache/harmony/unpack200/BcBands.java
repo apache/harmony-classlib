@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -396,6 +397,7 @@ public class BcBands extends BandSet {
         int i = 0;
         ArrayList orderedCodeAttributes = segment.getClassBands()
                 .getOrderedCodeAttributes();
+        int codeAttributeIndex = 0;
 
         // Exception table fields
         int[] handlerCount = segment.getClassBands().getCodeHandlerCount();
@@ -406,6 +408,9 @@ public class BcBands extends BandSet {
                 .getCodeHandlerCatchPO();
         int[][] handlerClassTypes = segment.getClassBands()
                 .getCodeHandlerClassRCN();
+
+        boolean allCodeHasFlags = segment.getSegmentHeader().getOptions().hasAllCodeFlags();
+        boolean[] codeHasFlags = segment.getClassBands().getCodeHasAttributes();
 
         for (int c = 0; c < classCount; c++) {
             int numberOfMethods = methodFlags[c].length;
@@ -459,8 +464,18 @@ public class BcBands extends BandSet {
                     }
                     methodAttributesList.add(indexForCodeAttr, codeAttr);
                     codeAttr.renumber(codeAttr.byteCodeOffsets);
-                    ArrayList currentAttributes = (ArrayList) orderedCodeAttributes
-                            .get(i);
+                    List currentAttributes;
+                    if (allCodeHasFlags) {
+                        currentAttributes = (List) orderedCodeAttributes.get(i);
+                    } else {
+                        if (codeHasFlags[i]) {
+                            currentAttributes = (List) orderedCodeAttributes
+                                    .get(codeAttributeIndex);
+                            codeAttributeIndex++;
+                        } else {
+                            currentAttributes = Collections.EMPTY_LIST;
+                        }
+                    }
                     for (int index = 0; index < currentAttributes.size(); index++) {
                         Attribute currentAttribute = (Attribute) currentAttributes
                                 .get(index);

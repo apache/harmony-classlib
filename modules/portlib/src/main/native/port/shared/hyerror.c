@@ -317,6 +317,7 @@ hyerror_set_last_error_with_message (struct HyPortLibrary * portLibrary,
     {
       portLibrary->str_printf (portLibrary, ptBuffers->errorMessageBuffer,
                                ptBuffers->errorMessageBufferSize,
+                               "%s",
                                errorMessage);
       ptBuffers->errorMessageBuffer[ptBuffers->errorMessageBufferSize - 1] =
         '\0';

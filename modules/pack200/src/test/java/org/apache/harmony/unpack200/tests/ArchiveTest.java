@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -69,41 +70,41 @@ public class ArchiveTest extends TestCase {
         archive.unpack();
         JarFile jarFile = new JarFile(file);
         file.deleteOnExit();
-        JarEntry entry = jarFile
-                .getJarEntry("bin/test/org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl.class");
-        assertNotNull(entry);
-        try {
-        Process process2 = Runtime
-                .getRuntime()
-                .exec(
-                        "javap -c -verbose -classpath "
-                                + file.getName()
-                                + " bin/test/org.apache.harmony.sql.tests.javax.sql.rowset.BaseRowSetTest$BaseRowSetImpl",
-                        new String[] {}, file.getParentFile());
 
-            BufferedReader reader1 = new BufferedReader(new InputStreamReader(
-                    process2.getInputStream()));
-            InputStream javapCompareFile = Archive.class
-                    .getResourceAsStream("/org/apache/harmony/pack200/tests/sqlJavap.out");
+        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+
+        Enumeration entries = jarFile.entries();
+        Enumeration entries2 = jarFile2.entries();
+        while(entries.hasMoreElements() && entries2.hasMoreElements()) {
+
+            JarEntry entry = (JarEntry) entries.nextElement();
+            assertNotNull(entry);
+            String name = entry.getName();
+
+            JarEntry entry2 = (JarEntry) entries2.nextElement();
+            assertNotNull(entry2);
+            String name2 = entry2.getName();
+
+            assertEquals(name, name2);
+
+            InputStream ours = jarFile.getInputStream(entry);
+            InputStream expected = jarFile2.getInputStream(entry2);
+
+            BufferedReader reader1 = new BufferedReader(new InputStreamReader(ours));
             BufferedReader reader2 = new BufferedReader(new InputStreamReader(
-                    javapCompareFile));
+                    expected));
             String line1 = reader1.readLine();
             String line2 = reader2.readLine();
             int i = 1;
             while (line1 != null || line2 != null) {
-                assertEquals(line2, line1);
+                assertEquals("Unpacked class files differ for " + name, line2, line1);
                 line1 = reader1.readLine();
                 line2 = reader2.readLine();
                 i++;
             }
             reader1.close();
             reader2.close();
-        } catch (IOException e) {
-            if(e.getMessage().startsWith("Unable to start program")) {
-                System.out.println("Warning: org.apache.harmony.unpack200.tests.ArchiveTest.testWithSql() was not completed as javap could not be found");
-            } else {
-                throw e;
-            }
         }
     }
 
@@ -184,7 +185,7 @@ public class ArchiveTest extends TestCase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        file.delete();
+        file.delete();
     }
 
 }

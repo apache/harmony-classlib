@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200.bytecode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +49,9 @@ public class ClassConstantPool {
     private boolean resolved;
 
     public ClassFileEntry add(ClassFileEntry entry) {
+        if (entry instanceof ByteCode) {
+            return null;
+        }
         if (entry instanceof ConstantPoolEntry) {
             if (entriesContainsSet.add(entry)) {
                 entries.add(entry);
@@ -202,24 +206,8 @@ public class ClassConstantPool {
         entries.addAll(cpClassesNotInCpAll);
     }
 
-    /**
-     * Answer the collection of CPClasses currently held by the ClassPoolSet.
-     * This is used to calculate relevant classes when generating the set of
-     * relevant inner classes (ic_relevant())
-     *
-     * @return ArrayList collection of all classes.
-     *
-     * NOTE: when this list is answered, the classes may not yet be resolved.
-     */
-    public List allClasses() {
-        List classesList = new ArrayList(entries.size());
-        for(int i = 0; i < entries.size(); i++) {
-            ConstantPoolEntry entry = (ConstantPoolEntry) entries.get(i);
-            if (entry instanceof CPClass) {
-                classesList.add(entry);
-            }
-        }
-        return classesList;
+    public List entries() {
+    	return Collections.unmodifiableList(entries);
     }
 
     protected void sortClassPool() {
@@ -243,7 +231,7 @@ public class ClassConstantPool {
 
         // copy over and rebuild the cache
         //
-        indexCache = new HashMap();
+        indexCache = new HashMap(entries.size());
         int index = 0;
 
         entries.clear();

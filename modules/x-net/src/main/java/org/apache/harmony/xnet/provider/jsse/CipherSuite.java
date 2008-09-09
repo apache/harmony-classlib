@@ -364,7 +364,7 @@ public class CipherSuite {
      * @return
      */
     public static CipherSuite getByCode(byte b1, byte b2) {
-        if (b1 != 0 || b2 > cuitesByCode.length) {
+        if (b1 != 0 || (b2 & 0xFF) > cuitesByCode.length) {
             // Unknoun
             return new CipherSuite("UNKNOUN_" + b1 + "_" + b2, false, 0, "",
                     "", new byte[] { b1, b2 });
@@ -383,7 +383,7 @@ public class CipherSuite {
      */
     public static CipherSuite getByCode(byte b1, byte b2, byte b3) {
         if (b1 == 0 && b2 == 0) {
-            if (b3 <= cuitesByCode.length) {
+            if ((b3 & 0xFF) <= cuitesByCode.length) {
                 return cuitesByCode[b3];
             }
         }

@@ -44,6 +44,13 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
     private static int creationYear = new Date().getYear();
 
     private transient long milliseconds;
+    
+    private static String[] dayOfWeekNames = { "Sun", "Mon", "Tue", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "Wed", "Thu", "Fri", "Sat" }; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    
+    private static String[] monthNames = { "Jan", "Feb", "Mar", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        "Apr", "May", "Jun", "Jul", //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        "Aug", "Sep", "Oct", "Nov", "Dec"};  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     /**
      * Initializes this Date instance to the current date and time.
@@ -698,11 +705,21 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
      */
     @Override
     public String toString() {
-        return new SimpleDateFormat("E MMM dd HH:mm:ss z ", Locale.US) //$NON-NLS-1$
-                .format(this)
-                + new GregorianCalendar(milliseconds).get(Calendar.YEAR);
+        Calendar cal = new GregorianCalendar(milliseconds);
+        return dayOfWeekNames[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + monthNames[cal.get(Calendar.MONTH)]//$NON-NLS-1$
+                + " " + toTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) + " " + toTwoDigits(cal.get(Calendar.HOUR_OF_DAY))//$NON-NLS-1$ //$NON-NLS-2$
+                + ":" + toTwoDigits(cal.get(Calendar.MINUTE)) + ":" + toTwoDigits(cal.get(Calendar.SECOND))//$NON-NLS-1$ //$NON-NLS-2$
+                + " " + cal.getTimeZone().getID() + " " + cal.get(Calendar.YEAR);//$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    private String toTwoDigits(int digit) {
+        if(digit >= 10) {
+            return "" + digit;//$NON-NLS-1$
+        } else {
+            return "0" + digit;//$NON-NLS-1$
+        }
+    }
+    
     /**
      * Answers the millisecond value of the specified date and time in GMT.
      * 

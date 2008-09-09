@@ -68,7 +68,7 @@ public class ClassBands extends BandSet {
 
     private IcTuple[][] icLocal;
 
-    private ArrayList[] codeAttributes;
+    private List[] codeAttributes;
 
     private int[] codeHandlerCount;
 
@@ -113,6 +113,8 @@ public class ClassBands extends BandSet {
     private int[][] codeHandlerCatchPO;
 
     private int[][] codeHandlerClassRCN;
+
+    private boolean [] codeHasAttributes;
 
     /**
      * @param segment
@@ -392,9 +394,6 @@ public class ClassBands extends BandSet {
                         otherAttributes[k].remove(0);
                     }
                 }
-                if (deprecatedLayout.matches(flag)) {
-                    methodAttributes[i][j].add(new DeprecatedAttribute());
-                }
                 if (methodExceptionsLayout.matches(flag)) {
                     int n = numExceptions[methodExceptionsIndex];
                     int[] exceptions = methodExceptionsRS[methodExceptionsIndex];
@@ -406,6 +405,9 @@ public class ClassBands extends BandSet {
                     methodAttributes[i][j].add(new ExceptionsAttribute(
                             exceptionClasses));
                     methodExceptionsIndex++;
+                }
+                if (deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
                 }
                 if (methodSignatureLayout.matches(flag)) {
                     // We've got a signature attribute
@@ -685,7 +687,7 @@ public class ClassBands extends BandSet {
                     }
 
                     IcTuple icTuple = new IcTuple(icTupleC, icTupleF,
-                            icTupleC2, icTupleN, icTupleCIndex, icTupleC2Index, icTupleNIndex);
+                            icTupleC2, icTupleN, icTupleCIndex, icTupleC2Index, icTupleNIndex, j);
                     icLocal[i][j] = icTuple;
                 }
                 innerClassIndex++;
@@ -718,10 +720,19 @@ public class ClassBands extends BandSet {
         int codeCount = SegmentUtils.countMatches(methodFlags, layout);
         int[] codeHeaders = decodeBandInt("code_headers", in, Codec.BYTE1,
                 codeCount);
+
+        boolean allCodeHasFlags = segment.getSegmentHeader().getOptions().hasAllCodeFlags();
+        if(!allCodeHasFlags) {
+            codeHasAttributes = new boolean[codeCount];
+        }
         int codeSpecialHeader = 0;
         for (int i = 0; i < codeCount; i++) {
-            if (codeHeaders[i] == 0)
+            if (codeHeaders[i] == 0) {
                 codeSpecialHeader++;
+                if(!allCodeHasFlags) {
+                    codeHasAttributes[i] = true;
+                }
+            }
         }
         int[] codeMaxStackSpecials = decodeBandInt("code_max_stack", in,
                 Codec.UNSIGNED5, codeSpecialHeader);
@@ -768,10 +779,9 @@ public class ClassBands extends BandSet {
         codeHandlerClassRCN = decodeBandInt(
                 "code_handler_class_RCN", in, Codec.UNSIGNED5, codeHandlerCount);
 
-        int codeFlagsCount = segment.getSegmentHeader().getOptions()
-                .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
+        int codeFlagsCount = allCodeHasFlags ? codeCount : codeSpecialHeader;
 
-        codeAttributes = new ArrayList[codeFlagsCount];
+        codeAttributes = new List[codeFlagsCount];
         for (int i = 0; i < codeAttributes.length; i++) {
             codeAttributes[i] = new ArrayList();
         }
@@ -840,23 +850,6 @@ public class ClassBands extends BandSet {
         int[][] localVariableTableSlot = decodeBandInt(
                 "code_LocalVariableTable_slot", in, Codec.UNSIGNED5,
                 localVariableTableN);
-
-        // Fix up localVariableTableTypeRS - for some reason,
-        // native signatures end up in DOMAINNORMALASCIIZ
-        // while nonnatives end up in DOMAINSIGNATUREASCIIZ.
-        // TODO: is this the right thing to do?
-        for (int x = 0; x < localVariableTableTypeRS.length; x++) {
-            for (int y = 0; y < localVariableTableTypeRS[x].length; y++) {
-                CPUTF8 element = localVariableTableTypeRS[x][y];
-                // TODO: come up with a better test for native vs nonnative
-                // signatures?
-//                if (element.underlyingString().length() > 2) {
-//                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-//                } else {
-//                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
-//                }
-            }
-        }
 
         int lengthLocalVariableTypeTableNBand = SegmentUtils.countMatches(
                 codeFlags, localVariableTypeTableLayout);
@@ -1404,6 +1397,10 @@ public class ClassBands extends BandSet {
 
     public IcTuple[][] getIcLocal() {
         return icLocal;
+    }
+
+    public boolean[] getCodeHasAttributes() {
+        return codeHasAttributes;
     }
 
 }

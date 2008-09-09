@@ -146,6 +146,14 @@ public class BcBandsTest extends AbstractBandsTestCase {
             return new int[totalMethods];
         }
 
+        public boolean[] getCodeHasAttributes() {
+            int totalMethods = 0;
+            for (int i = 0; i < numClasses; i++) {
+                totalMethods += numMethods[i];
+            }
+            return new boolean[totalMethods];
+        }
+
         public String[][] getMethodDescr() {
             String[][] descr = new String[numClasses][];
             for (int i = 0; i < descr.length; i++) {

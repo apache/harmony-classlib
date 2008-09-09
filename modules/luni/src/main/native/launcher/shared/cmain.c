@@ -100,9 +100,6 @@ main (int argc, char **argv, char **envp)
   HyPortLibraryVersion portLibraryVersion;
   struct haCmdlineOptions options;
   int rc = 257;
-#if !defined(HY_NO_SIG)
-  UDATA result;
-#endif /* HY_NO_SIG */
 #ifdef HY_NO_THR
   UDATA portLibDescriptor;
   hyport_init_library_type port_init_library_func;
@@ -140,23 +137,7 @@ main (int argc, char **argv, char **envp)
       options.envp = envp;
       options.portLibrary = &hyportLibrary;
 
-#if !defined(HY_NO_SIG)
-      if (hyportLibrary.sysinfo_get_env(&hyportLibrary, "HARMONY_INSTALL_SIG_HANDLER", NULL, 0) == -1) {
-#endif /* HY_NO_SIG */
-         rc = gpProtectedMain (&options);
-#if !defined(HY_NO_SIG)
-      } else {
-         if (hyportLibrary.sig_protect (&hyportLibrary,
-                                        signalProtectedMain,
-                                        &options,
-                                        genericSignalHandler,
-                                        NULL,
-                                        HYPORT_SIG_FLAG_SIGALLSYNC,
-                                        &result) == 0) {
-            rc = result;
-          }
-      }
-#endif /* HY_NO_SIG */
+      rc = gpProtectedMain (&options);
       hyportLibrary.port_shutdown_library (&hyportLibrary);
     } else {
         fprintf( stderr,

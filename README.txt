@@ -252,11 +252,11 @@ Linux users may need to update the value of their LD_LIBRARY_PATH environment
 variable if they see the following error message when attempting to run a Java
 application with the built class library components on a compatible VM : 
 
-error while loading shared libraries: libhysig.so: cannot open shared 
+error while loading shared libraries: libhyprt.so: cannot open shared 
 object file: No such file or directory
 
 On some systems this error can occur even when the shared library
-(e.g. <EXTRACT_DIR>/deploy/jdk/jre/bin/libhysig.so) has been built correctly
+(e.g. <EXTRACT_DIR>/deploy/jdk/jre/bin/libhyprt.so) has been built correctly
 and is present in the correct location. This is not a problem with the built
 shared library but instead is dependent on how the operating system locates and 
 loads dynamically linked libraries at runtime. Updating the LD_LIBRARY_PATH 

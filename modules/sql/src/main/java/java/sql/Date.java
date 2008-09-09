@@ -17,8 +17,6 @@
 
 package java.sql;
 
-import java.text.SimpleDateFormat;
-
 /**
  * A Date class which can consume and produce dates in SQL Date format.
  * <p>
@@ -175,8 +173,28 @@ public class Date extends java.util.Date {
      */
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-        return dateFormat.format(this);
+        StringBuilder sb = new StringBuilder(10);
+
+        format((getYear() + 1900), 4, sb);
+        sb.append('-');
+        format((getMonth() + 1), 2, sb);
+        sb.append('-');
+        format(getDate(), 2, sb);
+
+        return sb.toString();
+    }
+
+    private static final String PADDING = "0000";  //$NON-NLS-1$
+
+    /* 
+    * Private method to format the time 
+    */ 
+    private void format(int date, int digits, StringBuilder sb) { 
+        String str = String.valueOf(date);
+        if (digits - str.length() > 0) {
+            sb.append(PADDING.substring(0, digits - str.length()));
+        }
+        sb.append(str); 
     }
 
     /**

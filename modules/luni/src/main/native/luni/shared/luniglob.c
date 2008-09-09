@@ -28,7 +28,6 @@
 #include "harmonyglob.h"
 #include "hyport.h"
 #include "strhelp.h"
-#include "jsig.h"
 #include "hycomp.h"
 
 static UDATA keyInitCount = 0;
@@ -54,12 +53,6 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   char *bootPath = NULL;
   char *propVal = NULL;
   vmiError propRes;
-
-#if defined(LINUX) && !defined(HY_NO_SIG)
-  /* all UNIX platforms */
-  HySignalHandler previousGpHandler;
-  HySigSet (SIGPIPE, SIG_IGN, previousGpHandler);
-#endif
 
   /* Query the VM interface */
   vmInterface = VMI_GetVMIFromJavaVM (vm);

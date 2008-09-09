@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.harmony.luni.util.Msg;
 
@@ -34,6 +36,14 @@ import org.apache.harmony.luni.util.Msg;
 public class SimpleTimeZone extends TimeZone {
 
     private static final long serialVersionUID = -403250971215465050L;
+    
+    private static com.ibm.icu.util.TimeZone getICUTimeZone(final String name){
+        return AccessController.doPrivileged(new PrivilegedAction<com.ibm.icu.util.TimeZone>(){
+            public com.ibm.icu.util.TimeZone run() {
+                return com.ibm.icu.util.TimeZone.getTimeZone(name);
+            }
+        });
+    }
 
     private int rawOffset;
 
@@ -69,9 +79,9 @@ public class SimpleTimeZone extends TimeZone {
 
     private int dstSavings = 3600000;
 
-    private transient com.ibm.icu.util.TimeZone icuTZ;
+    private final transient com.ibm.icu.util.TimeZone icuTZ;
 
-    private boolean isSimple;
+    private final transient boolean isSimple;
 
     /**
      * Constructs a new SimpleTimeZone using the specified offset for standard
@@ -82,13 +92,15 @@ public class SimpleTimeZone extends TimeZone {
      * @param name
      *            the time zone ID
      */
-    public SimpleTimeZone(int offset, String name) {
+    public SimpleTimeZone(int offset, final String name) {
         setID(name);
         rawOffset = offset;
-        icuTZ = com.ibm.icu.util.TimeZone.getTimeZone(name);
+        icuTZ = getICUTimeZone(name); 
         if (icuTZ instanceof com.ibm.icu.util.SimpleTimeZone) {
             isSimple = true;
             icuTZ.setRawOffset(offset);
+        } else {
+            isSimple = false;
         }
         useDaylight = icuTZ.useDaylightTime();
     }
@@ -169,7 +181,7 @@ public class SimpleTimeZone extends TimeZone {
     public SimpleTimeZone(int offset, String name, int startMonth,
             int startDay, int startDayOfWeek, int startTime, int endMonth,
             int endDay, int endDayOfWeek, int endTime, int daylightSavings) {
-        icuTZ = com.ibm.icu.util.TimeZone.getTimeZone(name);
+        icuTZ = getICUTimeZone(name);
         if (icuTZ instanceof com.ibm.icu.util.SimpleTimeZone) {
             isSimple = true;
             com.ibm.icu.util.SimpleTimeZone tz = (com.ibm.icu.util.SimpleTimeZone)icuTZ;
@@ -177,6 +189,8 @@ public class SimpleTimeZone extends TimeZone {
             tz.setStartRule(startMonth, startDay, startDayOfWeek, startTime);
             tz.setEndRule(endMonth, endDay, endDayOfWeek, endTime);
             tz.setDSTSavings(daylightSavings);
+        } else {
+            isSimple = false;
         }
         setID(name);
         rawOffset = offset;

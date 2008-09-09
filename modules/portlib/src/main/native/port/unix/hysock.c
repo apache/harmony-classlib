@@ -4564,9 +4564,8 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
                         sizeof (struct in6_addr);
                       interfaces[currentAdapterIndex].
                         addresses[currentIPAddressIndex].scope =
-                        &(((struct sockaddr_in6 *) (&currentIfReq->
-                                                    ifr_addr))->
-                          sin6_scope_id);
+                        ((struct sockaddr_in6 *) (&currentIfReq->
+                                                  ifr_addr))->sin6_scope_id;
                       currentIPAddressIndex++;
                     }
 #endif
@@ -4820,9 +4819,8 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
                         sizeof (struct in6_addr);
                       interfaces[currentAdapterIndex].
                         addresses[currentIPAddressIndex].scope =
-                        &(((struct sockaddr_in6 *) (&ifc.ifc_req[counter].
-                                                    ifr_addr))->
-                          sin6_scope_id);
+                        ((struct sockaddr_in6 *) (&ifc.ifc_req[counter].
+                                                  ifr_addr))->sin6_scope_id;
                       currentIPAddressIndex++;
                     }
 #endif

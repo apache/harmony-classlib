@@ -337,7 +337,7 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     public synchronized Object clone() {
         try {
             Hashtable<K, V> hashtable = (Hashtable<K, V>) super.clone();
-            hashtable.elementData = elementData.clone();
+            hashtable.elementData = new Entry[elementData.length];
             Entry<K, V> entry;
             for (int i = elementData.length; --i >= 0;) {
                 if ((entry = elementData[i]) != null) {

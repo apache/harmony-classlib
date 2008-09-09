@@ -291,13 +291,6 @@
         </not>
     </condition>
 
-    <property name="hy.no.sig" value="${hy.no.thr}" />
-    <condition property="hy.skip.sig" value="true">
-        <not>
-            <equals arg1="${hy.no.sig}" arg2="false" />
-        </not>
-    </condition>
-
     <property name="hy.local.zlib" value="false" />
     <condition property="hy.skip.zlib" value="true">
         <not>
@@ -461,10 +454,13 @@ properties in preference to these:
         <condition property="hy.test.vm.name" value="drl" else="ibm" >
             <contains string="${test.vm.info.tmp}" substring="harmony" />
         </condition>
-        <echo level="verbose" message="hy.test.vm.name = ${hy.test.vm.name}" />
+        <echo level="info" message="hy.test.vm.name = ${hy.test.vm.name}" />
     </target>
 
-    <target name="-get-test-vm-output" if="test.jre.home">
+    <target name="-get-test-vm-output">
+        <condition property="test.jre.home" value="${hy.jdk}/jre">
+            <not><isset property="test.jre.home" /></not>
+        </condition>
         <exec executable="${test.jre.home}/bin/java" failifexecutionfails="false">
             <arg value="-version" />
             <redirector outputproperty="test.vm.info.tmp"/>
@@ -503,7 +499,6 @@ properties in preference to these:
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
-                <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
                 <env key="HY_THR_NO_DEPLOY" value="${hy.thr.nodeploy}" />
                 <env key="HY_LOCAL_ZLIB" value="${hy.local.zlib}" />

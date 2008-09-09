@@ -234,16 +234,26 @@ public class DateTest extends TestCase {
      * toString() method.
      */
     public void testToString() {
-        // This test is set up for GMT time zone, so need to set the time zone
-        // to GMT first
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+		// Loop through the timezones testing the String conversion for each
+		for (int i = 0; i < TIMEZONES.length; i++) {
+			testToString(TIMEZONES[i], TIME_ARRAY, SQL_TZ_DATEARRAYS[i]);
+		} // end for
 
-        for (int i = 0; i < TIME_ARRAY.length; i++) {
-            Date theDate = new Date(TIME_ARRAY[i]);
-            assertEquals(SQL_DATEARRAY[i], theDate.toString());
+	} // end method testToString()
+
+    private void testToString(String timeZone, long[] theDates, String[] theDateStrings) {
+        // Set the timezone
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+
+        for (int i = 0; i < theDates.length; i++) {
+            // Create the Date object
+            Date theDate = new Date(theDates[i]);
+            // Convert to a date string ... and compare
+            String JDBCString = theDate.toString();
+            assertEquals(theDateStrings[i], JDBCString);
         } // end for
 
-    } // end method testToString()
+    } // end testToString( String, long[], String[] )
 
     /*
      * Test of the void setTime(int) method This does depend on the Time Zone
@@ -373,6 +383,13 @@ public class DateTest extends TestCase {
         } catch (NumberFormatException e) {
             // expected
         }
+    }
+    
+    // Reset defualt timezone
+    static TimeZone defaultTimeZone = TimeZone.getDefault();
+    
+    protected void tearDown(){
+    	TimeZone.setDefault(defaultTimeZone);
     }
 
 } // end class DateTest

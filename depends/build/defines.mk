@@ -94,12 +94,6 @@ else
 DEFINES += -DHY_NO_THR
 endif
 
-ifeq ($(HY_NO_SIG),false)
-MDLLIBFILES += $(DLLPATH)libhysig$(HY_LINKLIB_SUFFIX)
-else
-DEFINES += -DHY_NO_SIG
-endif
-
 ifeq ($(HY_ZIP_API),true)
 DEFINES += -DHY_ZIP_API
 endif
