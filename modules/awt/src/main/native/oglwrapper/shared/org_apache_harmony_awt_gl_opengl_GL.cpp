@@ -37,7 +37,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glVertexPointer
     if (p_nbridge_glVertexPointer == NULL) {
         p_nbridge_glVertexPointer = (void (__stdcall*) (int, int, int, void *)) FindFunction(libGL, "glVertexPointer");
     }
-    (* p_nbridge_glVertexPointer)((int) size, (int) type, (int) stride, (void *) pointer);
+    (* p_nbridge_glVertexPointer)((int) size, (int) type, (int) stride, (void *)(size_t) pointer);
 }
 
 void (__stdcall* p_nbridge_glPixelStoref) (int, float) = NULL;
@@ -91,7 +91,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glColor4ubv( JN
     if (p_nbridge_glColor4ubv == NULL) {
         p_nbridge_glColor4ubv = (void (__stdcall*) (void *)) FindFunction(libGL, "glColor4ubv");
     }
-    (* p_nbridge_glColor4ubv)((void *) v);
+    (* p_nbridge_glColor4ubv)((void *)(size_t) v);
 }
 
 void (__stdcall* p_nbridge_glTexImage1D) (int, int, int, int, int, int, int, void *) = NULL;
@@ -100,7 +100,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glTexImage1D( J
     if (p_nbridge_glTexImage1D == NULL) {
         p_nbridge_glTexImage1D = (void (__stdcall*) (int, int, int, int, int, int, int, void *)) FindFunction(libGL, "glTexImage1D");
     }
-    (* p_nbridge_glTexImage1D)((int) target, (int) level, (int) internalformat, (int) width, (int) border, (int) format, (int) type, (void *) pixels);
+    (* p_nbridge_glTexImage1D)((int) target, (int) level, (int) internalformat, (int) width, (int) border, (int) format, (int) type, (void *)(size_t) pixels);
 }
 
 void (__stdcall* p_nbridge_gluOrtho2D) (double, double, double, double) = NULL;
@@ -154,7 +154,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glGetIntegerv( 
     if (p_nbridge_glGetIntegerv == NULL) {
         p_nbridge_glGetIntegerv = (void (__stdcall*) (int, void *)) FindFunction(libGL, "glGetIntegerv");
     }
-    (* p_nbridge_glGetIntegerv)((int) pname, (void *) params);
+    (* p_nbridge_glGetIntegerv)((int) pname, (void *)(size_t) params);
 }
 
 void (__stdcall* p_nbridge_glTexGendv) (int, int, void *) = NULL;
@@ -163,7 +163,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glTexGendv( JNI
     if (p_nbridge_glTexGendv == NULL) {
         p_nbridge_glTexGendv = (void (__stdcall*) (int, int, void *)) FindFunction(libGL, "glTexGendv");
     }
-    (* p_nbridge_glTexGendv)((int) coord, (int) pname, (void *) params);
+    (* p_nbridge_glTexGendv)((int) coord, (int) pname, (void *)(size_t) params);
 }
 
 void (__stdcall* p_nbridge_glTexCoord2d) (double, double) = NULL;
@@ -271,7 +271,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glDrawPixels( J
     if (p_nbridge_glDrawPixels == NULL) {
         p_nbridge_glDrawPixels = (void (__stdcall*) (int, int, int, int, void *)) FindFunction(libGL, "glDrawPixels");
     }
-    (* p_nbridge_glDrawPixels)((int) width, (int) height, (int) format, (int) type, (void *) pixels);
+    (* p_nbridge_glDrawPixels)((int) width, (int) height, (int) format, (int) type, (void *)(size_t) pixels);
 }
 
 void (__stdcall* p_nbridge_glCopyPixels) (int, int, int, int, int) = NULL;
@@ -307,7 +307,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glMultMatrixd( 
     if (p_nbridge_glMultMatrixd == NULL) {
         p_nbridge_glMultMatrixd = (void (__stdcall*) (void *)) FindFunction(libGL, "glMultMatrixd");
     }
-    (* p_nbridge_glMultMatrixd)((void *) m);
+    (* p_nbridge_glMultMatrixd)((void *)(size_t) m);
 }
 
 void (__stdcall* p_nbridge_glClear) (int) = NULL;
@@ -334,7 +334,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glColorPointer(
     if (p_nbridge_glColorPointer == NULL) {
         p_nbridge_glColorPointer = (void (__stdcall*) (int, int, int, void *)) FindFunction(libGL, "glColorPointer");
     }
-    (* p_nbridge_glColorPointer)((int) size, (int) type, (int) stride, (void *) pointer);
+    (* p_nbridge_glColorPointer)((int) size, (int) type, (int) stride, (void *)(size_t) pointer);
 }
 
 void (__stdcall* p_nbridge_glScaled) (double, double, double) = NULL;
@@ -379,7 +379,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glBitmap( JNIEn
     if (p_nbridge_glBitmap == NULL) {
         p_nbridge_glBitmap = (void (__stdcall*) (int, int, float, float, float, float, void *)) FindFunction(libGL, "glBitmap");
     }
-    (* p_nbridge_glBitmap)((int) width, (int) height, (float) xorig, (float) yorig, (float) xmove, (float) ymove, (void *) bitmap);
+    (* p_nbridge_glBitmap)((int) width, (int) height, (float) xorig, (float) yorig, (float) xmove, (float) ymove, (void *)(size_t) bitmap);
 }
 
 void (__stdcall* p_nbridge_glColorTable) (int, int, int, int, int, void *) = NULL;
@@ -388,7 +388,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glColorTable( J
     if (p_nbridge_glColorTable == NULL) {
         p_nbridge_glColorTable = (void (__stdcall*) (int, int, int, int, int, void *)) FindFunction(libGL, "glColorTable");
     }
-    (* p_nbridge_glColorTable)((int) param_0, (int) param_1, (int) param_2, (int) param_3, (int) param_4, (void *) param_5);
+    (* p_nbridge_glColorTable)((int) param_0, (int) param_1, (int) param_2, (int) param_3, (int) param_4, (void *)(size_t) param_5);
 }
 
 void (__stdcall* p_nbridge_glGenTextures) (int, void *) = NULL;
@@ -397,7 +397,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glGenTextures( 
     if (p_nbridge_glGenTextures == NULL) {
         p_nbridge_glGenTextures = (void (__stdcall*) (int, void *)) FindFunction(libGL, "glGenTextures");
     }
-    (* p_nbridge_glGenTextures)((int) n, (void *) textures);
+    (* p_nbridge_glGenTextures)((int) n, (void *)(size_t) textures);
 }
 
 void (__stdcall* p_nbridge_glFinish) (void) = NULL;
@@ -415,7 +415,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glDeleteTexture
     if (p_nbridge_glDeleteTextures == NULL) {
         p_nbridge_glDeleteTextures = (void (__stdcall*) (int, void *)) FindFunction(libGL, "glDeleteTextures");
     }
-    (* p_nbridge_glDeleteTextures)((int) n, (void *) textures);
+    (* p_nbridge_glDeleteTextures)((int) n, (void *)(size_t) textures);
 }
 
 void (__stdcall* p_nbridge_glDisableClientState) (int) = NULL;
@@ -460,7 +460,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glLoadMatrixd( 
     if (p_nbridge_glLoadMatrixd == NULL) {
         p_nbridge_glLoadMatrixd = (void (__stdcall*) (void *)) FindFunction(libGL, "glLoadMatrixd");
     }
-    (* p_nbridge_glLoadMatrixd)((void *) m);
+    (* p_nbridge_glLoadMatrixd)((void *)(size_t) m);
 }
 
 void (__stdcall* p_nbridge_glReadPixels) (int, int, int, int, int, int, void *) = NULL;
@@ -469,7 +469,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glReadPixels( J
     if (p_nbridge_glReadPixels == NULL) {
         p_nbridge_glReadPixels = (void (__stdcall*) (int, int, int, int, int, int, void *)) FindFunction(libGL, "glReadPixels");
     }
-    (* p_nbridge_glReadPixels)((int) x, (int) y, (int) width, (int) height, (int) format, (int) type, (void *) pixels);
+    (* p_nbridge_glReadPixels)((int) x, (int) y, (int) width, (int) height, (int) format, (int) type, (void *)(size_t) pixels);
 }
 
 void (__stdcall* p_nbridge_glBindTexture) (int, int) = NULL;
@@ -514,7 +514,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glTexImage2D( J
     if (p_nbridge_glTexImage2D == NULL) {
         p_nbridge_glTexImage2D = (void (__stdcall*) (int, int, int, int, int, int, int, int, void *)) FindFunction(libGL, "glTexImage2D");
     }
-    (* p_nbridge_glTexImage2D)((int) target, (int) level, (int) internalformat, (int) width, (int) height, (int) border, (int) format, (int) type, (void *) pixels);
+    (* p_nbridge_glTexImage2D)((int) target, (int) level, (int) internalformat, (int) width, (int) height, (int) border, (int) format, (int) type, (void *)(size_t) pixels);
 }
 
 void (__stdcall* p_nbridge_glPixelMapusv) (int, int, void *) = NULL;
@@ -523,7 +523,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glPixelMapusv( 
     if (p_nbridge_glPixelMapusv == NULL) {
         p_nbridge_glPixelMapusv = (void (__stdcall*) (int, int, void *)) FindFunction(libGL, "glPixelMapusv");
     }
-    (* p_nbridge_glPixelMapusv)((int) map, (int) mapsize, (void *) values);
+    (* p_nbridge_glPixelMapusv)((int) map, (int) mapsize, (void *)(size_t) values);
 }
 
 void (__stdcall* p_nbridge_glViewport) (int, int, int, int) = NULL;
@@ -550,7 +550,7 @@ JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_gl_opengl_GL_glTexSubImage2D
     if (p_nbridge_glTexSubImage2D == NULL) {
         p_nbridge_glTexSubImage2D = (void (__stdcall*) (int, int, int, int, int, int, int, int, void *)) FindFunction(libGL, "glTexSubImage2D");
     }
-    (* p_nbridge_glTexSubImage2D)((int) target, (int) level, (int) xoffset, (int) yoffset, (int) width, (int) height, (int) format, (int) type, (void *) pixels);
+    (* p_nbridge_glTexSubImage2D)((int) target, (int) level, (int) xoffset, (int) yoffset, (int) width, (int) height, (int) format, (int) type, (void *)(size_t) pixels);
 }
 
 void (__stdcall* p_nbridge_glDrawBuffer) (int) = NULL;

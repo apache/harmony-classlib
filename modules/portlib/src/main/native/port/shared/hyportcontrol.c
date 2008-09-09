@@ -52,22 +52,5 @@ hyport_control (struct HyPortLibrary * portLibrary, char *key, UDATA value)
       return 0;
     }
 
-#if defined(WIN32) && !defined(HY_NO_SIG)
-  if (!strcmp ("SIG_INTERNAL_HANDLER", key))
-    {
-      /* used by optimized code to implement fast signal handling on Windows */
-      extern int structuredExceptionHandler (struct HyPortLibrary
-                                             *portLibrary,
-                                             hysig_handler_fn handler,
-                                             void *handler_arg, U_32 flags,
-                                             EXCEPTION_POINTERS *
-                                             exceptionInfo);
-      *(int (**)
-        (struct HyPortLibrary *, hysig_handler_fn, void *, U_32,
-         EXCEPTION_POINTERS *)) value = structuredExceptionHandler;
-      return 0;
-    }
-#endif
-
   return 1;
 }

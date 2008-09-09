@@ -221,6 +221,12 @@ public class InetAddress extends Object implements Serializable {
         }
 
         byte[] hBytes = Inet6Util.createByteArrayFromIPAddressString(host);
+        if (hBytes.length == 4) {
+            return (new InetAddress[] { new Inet4Address(hBytes) });
+        } else if (hBytes.length == 16) {
+            return (new InetAddress[] { new Inet6Address(hBytes) });
+        }
+
         return (new InetAddress[] { new InetAddress(hBytes) });
     }
 

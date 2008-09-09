@@ -249,6 +249,16 @@ public class WinFileTest extends TestCase {
 		assertTrue(testDir.canRead());
 	}
 
+    /**
+     * @test java.io.File#toURI()
+     */
+    public void test_toURI_UNC() throws Exception {
+        File f = new File("\\\\unchost\\[dir]\\file.txt");
+        assertNotNull(f.toURI());
+        assertEquals("incorrect URI for UNC path: " + f.toURI(), f.toURI(),
+                new URI("file:////unchost/%5Bdir%5D/file.txt"));
+    }
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();

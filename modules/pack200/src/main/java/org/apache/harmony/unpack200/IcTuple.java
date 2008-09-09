@@ -31,6 +31,7 @@ public class IcTuple {
     private final int cIndex;
     private final int c2Index;
     private final int nIndex;
+    private final int tIndex;
 
     /**
      *
@@ -42,7 +43,7 @@ public class IcTuple {
      * @param c2Index the index of C2 in cpClass, or -1 if C2 is null
      * @param nIndex the index of N in cpUTF8, or -1 if N is null
      */
-    public IcTuple(String C, int F, String C2, String N, int cIndex, int c2Index, int nIndex) {
+    public IcTuple(String C, int F, String C2, String N, int cIndex, int c2Index, int nIndex, int tIndex) {
         this.C = C;
         this.F = F;
         this.C2 = C2;
@@ -50,6 +51,7 @@ public class IcTuple {
         this.cIndex = cIndex;
         this.c2Index = c2Index;
         this.nIndex = nIndex;
+        this.tIndex = tIndex;
         if (null == N) {
             predictSimple = true;
         }
@@ -60,7 +62,7 @@ public class IcTuple {
     }
 
     public IcTuple(String C, int F, int cIndex) {
-        this(C, F, null, null, cIndex, -1, -1);
+        this(C, F, null, null, cIndex, -1, -1, -1);
     }
 
     public static final int NESTED_CLASS_FLAG = 0x00010000;
@@ -173,22 +175,6 @@ public class IcTuple {
                 return true;
             }
         }
-        return false;
-    }
-
-    public boolean shouldAddToRelevantForClassName(String className) {
-        // If the outerClassString of the tuple doesn't match the
-        // class name of the class we're looking through, don't
-        // consider it relevant.
-        if (!outerClassString().equals(className)) {
-            return false;
-        }
-        // If it's not anon and the outer is not anon, it's relevant
-        if (!isAnonymous() && !outerIsAnonymous()) {
-            return true;
-        }
-
-        // Otherwise it's not relevant.
         return false;
     }
 
@@ -342,6 +328,10 @@ public class IcTuple {
 
     public String getN() {
         return N;
+    }
+
+    public int getTupleIndex() {
+    	return tIndex;
     }
 
     public String realOuterClassString() {

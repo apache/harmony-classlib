@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
@@ -73,19 +74,21 @@ public class CpBands extends BandSet {
     private int[] cpStringInts;
     private String[] cpUTF8;
 
-    private final HashMap stringsToCPUTF8 = new HashMap();
-    private final HashMap stringsToCPStrings = new HashMap();
-    private final HashMap longsToCPLongs = new HashMap();
-    private final HashMap integersToCPIntegers = new HashMap();
-    private final HashMap floatsToCPFloats = new HashMap();
-    private final HashMap stringsToCPClass = new HashMap();
-    private final HashMap doublesToCPDoubles = new HashMap();
-    private final HashMap descriptorsToCPNameAndTypes = new HashMap();
+    private final Map stringsToCPUTF8 = new HashMap();
+    private final Map stringsToCPStrings = new HashMap();
+    private final Map longsToCPLongs = new HashMap();
+    private final Map integersToCPIntegers = new HashMap();
+    private final Map floatsToCPFloats = new HashMap();
+    private final Map stringsToCPClass = new HashMap();
+    private final Map doublesToCPDoubles = new HashMap();
+    private final Map descriptorsToCPNameAndTypes = new HashMap();
 
-    private HashMap mapClass = new HashMap();
-    private HashMap mapDescriptor = new HashMap();
-    private HashMap mapUTF8 = new HashMap();
-    private HashMap mapSignature = new HashMap();
+    private Map mapClass;
+    private Map mapDescriptor;
+    private Map mapUTF8;
+
+// TODO: Not used
+//    private Map mapSignature;
 
     private int intOffset;
     private int floatOffset;
@@ -151,6 +154,7 @@ public class CpBands extends BandSet {
         int cpClassCount = header.getCpClassCount();
         cpClassInts = decodeBandInt("cp_Class", in, Codec.UDELTA5, cpClassCount);
         cpClass = new String[cpClassCount];
+        mapClass = new HashMap(cpClassCount);
         for (int i = 0; i < cpClassCount; i++) {
             cpClass[i] = cpUTF8[cpClassInts[i]];
             mapClass.put(cpClass[i], new Integer(i));
@@ -184,6 +188,7 @@ public class CpBands extends BandSet {
         String[] cpDescriptorTypes = getReferences(cpDescriptorTypeInts,
                 cpSignature);
         cpDescriptor = new String[cpDescriptorCount];
+        mapDescriptor = new HashMap(cpDescriptorCount);
         for (int i = 0; i < cpDescriptorCount; i++) {
             cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i]; //$NON-NLS-1$
             mapDescriptor.put(cpDescriptor[i], new Integer(i));
@@ -401,6 +406,7 @@ public class CpBands extends BandSet {
             Pack200Exception {
         int cpUTF8Count = header.getCpUTF8Count();
         cpUTF8 = new String[cpUTF8Count];
+        mapUTF8 = new HashMap(cpUTF8Count+1);
         cpUTF8[0] = ""; //$NON-NLS-1$
         mapUTF8.put("", new Integer(0));
         int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5,
@@ -547,9 +553,10 @@ public class CpBands extends BandSet {
             if(index != null) {
             	return cpUTF8Value(index.intValue());
             }
-            if(searchForIndex) {
-            	index = (Integer)mapSignature.get(string);
-            }
+// TODO: mapSignature is not filled anywhere
+//            if(searchForIndex) {
+//            	index = (Integer)mapSignature.get(string);
+//            }
             if(index != null) {
             	return cpSignatureValue(index.intValue());
             }
@@ -643,22 +650,7 @@ public class CpBands extends BandSet {
         if (cpNameAndType == null) {
             int nameIndex = cpDescriptorNameInts[index];
             int descriptorIndex = cpDescriptorTypeInts[index];
-            String descriptorString = cpSignature[descriptorIndex];
 
-            // For some reason, descriptors which have just plain
-            // native types are stored in DOMAIN_NORMALASCIIZ rather
-            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
-            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
-            boolean nativeDescriptor = true;
-            for (int i = 0; i < descriptorString.length(); i++) {
-                char currentChar = descriptorString.charAt(i);
-                if (Character.isLetter(currentChar)) {
-                    if (currentChar == 'L') {
-                        nativeDescriptor = false;
-                    }
-                    break;
-                }
-            }
             CPUTF8 name = cpUTF8Value(nameIndex);
             CPUTF8 descriptorU = cpSignatureValue(descriptorIndex);
             cpNameAndType = new CPNameAndType(name, descriptorU, index + descrOffset);
@@ -712,20 +704,7 @@ public class CpBands extends BandSet {
             int colon = descriptor.indexOf(':');
             String nameString = descriptor.substring(0, colon);
             String descriptorString = descriptor.substring(colon + 1);
-            // For some reason, descriptors which have just plain
-            // native types are stored in DOMAIN_NORMALASCIIZ rather
-            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
-            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
-            boolean nativeDescriptor = true;
-            for (int i = 0; i < descriptorString.length(); i++) {
-                char currentChar = descriptorString.charAt(i);
-                if (Character.isLetter(currentChar)) {
-                    if (currentChar == 'L') {
-                        nativeDescriptor = false;
-                    }
-                    break;
-                }
-            }
+
             CPUTF8 name = cpUTF8Value(nameString, true);
             CPUTF8 descriptorU = cpUTF8Value(descriptorString, true);
             cpNameAndType = new CPNameAndType(name, descriptorU, -1 + descrOffset);

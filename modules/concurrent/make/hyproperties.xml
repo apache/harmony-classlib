@@ -21,10 +21,12 @@
       <src>
          <main>
             <java location="src/main/java" />
+            <standard location="standard/src/main/java" />
             <resources location="src/main/resources" />
          </main>
          <test>
             <java location="src/test/java" />
+            <standard location="standard/src/test/java" />
             <resources location="src/test/resources" />
          </test>
       </src>

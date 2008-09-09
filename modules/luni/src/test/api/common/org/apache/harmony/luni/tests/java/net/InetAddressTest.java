@@ -185,6 +185,7 @@ public class InetAddressTest extends junit.framework.TestCase {
     /**
      * @tests java.net.InetAddress#getAllByName(java.lang.String)
      */
+    @SuppressWarnings("nls")
     public void test_getAllByNameLjava_lang_String() throws Exception {
         // Test for method java.net.InetAddress []
         // java.net.InetAddress.getAllByName(java.lang.String)
@@ -225,6 +226,14 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals("Assert 2: No loopback address", 1, ia.length);
         assertTrue("Assert 3: getAllByName(\"\") not loopback",
                 ia[0].isLoopbackAddress());
+        
+        // Check that getting addresses by dotted string distinguish
+        // IPv4 and IPv6 subtypes.
+        InetAddress[] list = InetAddress.getAllByName("192.168.0.1");
+        for (InetAddress addr : list) {
+            assertFalse("Expected subclass returned",
+                    addr.getClass().equals(InetAddress.class));
+        }
     }
 
     /**

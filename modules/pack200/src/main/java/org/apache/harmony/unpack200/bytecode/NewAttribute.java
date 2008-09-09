@@ -159,6 +159,27 @@ public class NewAttribute extends BCIRenumberedAttribute {
         this.pool = pool;
     }
 
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+    	int total = 1;
+    	for(int iter = 0; iter < body.size(); iter++) {
+            Object element = body.get(iter);
+            if (element instanceof ClassFileEntry) {
+                total++;
+            }
+        }
+    	ClassFileEntry[] nested = new ClassFileEntry[total];
+    	nested[0] = getAttributeName();
+    	int i = 1;
+    	for(int iter = 0; iter < body.size(); iter++) {
+            Object element = body.get(iter);
+            if (element instanceof ClassFileEntry) {
+            	nested[i] = (ClassFileEntry) element;
+                i++;
+            }
+        }
+    	return nested;
+    }
+
     private static class BCOffset extends BCValue {
 
         private final int offset;

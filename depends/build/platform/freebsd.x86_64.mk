@@ -13,15 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#
-# Makefile for module 'hysig'
-#
-
-include $(HY_HDK)/build/make/defines.mk
-
-BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
-MDLLIBFILES =
-DLLNAME = ../libhysig$(HY_SHLIB_SUFFIX)
-EXPNAME = HYSIG_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+DEFINES += -DFREEBSD -DFREEBSD_X86_64 -DHYX86_64 -DNEEDS_SYS_TYPES -DIPv6_FUNCTION_SUPPORT
+OPT += -fpic
+OSLIBS = -L/usr/local/lib -lpthread -lm
+INCLUDES += -I/usr/local/include
+XLIBS = -lX11 -lXft -lXext -lXtst

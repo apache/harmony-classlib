@@ -35,6 +35,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.Permission;
 import java.security.PermissionCollection;
+import java.security.UnresolvedPermission;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -297,10 +299,87 @@ public abstract class SerializationTest extends TestCase {
             Collection<Permission> tstCollection = new HashSet<Permission>(
                     Collections.list(dserPC.elements()));
 
-            Assert.assertEquals(refCollection, tstCollection);
+            Assert.assertEquals(refCollection.size(), tstCollection.size());
+            int size = refCollection.size();
+            if (size > 0) {
+				ArrayList<Permission> refList = Collections.list(initPC
+						.elements());
+				ArrayList<Permission> tstList = Collections.list(dserPC
+						.elements());
+				if (refList.get(0) instanceof UnresolvedPermission
+						&& tstList.get(0) instanceof UnresolvedPermission) {
+					boolean found;
+					UnresolvedPermission refPerm, tstPerm;
+					for (int i = 0; i < size; i++) {
+						found = false;
+						refPerm = (UnresolvedPermission) refList.get(i);
+						for (int j = 0; j < size; j++) {
+							tstPerm = (UnresolvedPermission) tstList.get(i);
+							if (equalsUnresolvedPermission(refPerm, tstPerm)) {
+								found = true;
+								break;
+							}
+						}
+
+						Assert.assertTrue(found);
+					}
+				} else {
+					Assert.assertEquals(refCollection, tstCollection);
+				}
+			}
         }
+    
+        /*
+		 * check whether the given two UnresolvedPermission objects equal to
+		 * each other
+		 */
+		private boolean equalsUnresolvedPermission(UnresolvedPermission up1,
+				UnresolvedPermission up2) {
+			java.security.cert.Certificate[] certs = up1.getUnresolvedCerts();
+			if (certs != null && certs.length == 0) {
+				if (null == up2.getUnresolvedCerts()) {
+					if (up1.getName().equals(up2.getName())) {
+						String up1Name = up1.getUnresolvedName();
+						String up2Name = up2.getUnresolvedName();
+						if (up1Name == null ? up2Name == null : up1Name
+								.equals(up2Name)) {
+							String up1Actions = up1.getUnresolvedActions();
+							String up2Actions = up2.getUnresolvedActions();
+							return up1Actions == null ? up2Actions == null
+									: up1Actions.equals(up2Actions);
+						}
+					}
+				}
+				return false;
+			}
+			return up1.equals(up2);
+		}
     };
 
+    /**
+	 * Comparator for java.security.UnresolvedPermission objects
+	 */
+	public final static SerializableAssert UNRESOLVED_PERMISSION_COMPARATOR = new SerializableAssert() {
+		public void assertDeserialized(Serializable initial,
+				Serializable deserialized) {
+			UnresolvedPermission initPerm = (UnresolvedPermission) initial;
+			UnresolvedPermission dserPerm = (UnresolvedPermission) deserialized;
+			java.security.cert.Certificate[] certs = initPerm
+					.getUnresolvedCerts();
+			if (certs != null && certs.length == 0) {
+				Assert.assertEquals(initPerm.getUnresolvedType(), dserPerm
+						.getUnresolvedType());
+				Assert.assertEquals(initPerm.getUnresolvedName(), dserPerm
+						.getUnresolvedName());
+				Assert.assertEquals(initPerm.getUnresolvedActions(), dserPerm
+						.getUnresolvedActions());
+				Assert.assertNull(dserPerm.getUnresolvedCerts());
+			} else {
+				Assert.assertEquals(initPerm, dserPerm);
+			}
+		}
+	};
+    
     /**
      * Returns <code>comparator</code> for provided serializable
      * <code>object</code>.
@@ -332,6 +411,11 @@ public abstract class SerializationTest extends TestCase {
                 new Class[] { Object.class });
 
         if (m.getDeclaringClass() != Object.class) {
+        	if (object instanceof UnresolvedPermission) {
+				// object is an instance of UnresolvedPermission, use
+				// UNRESOLVED_PERMISSION_COMPARATOR
+				return UNRESOLVED_PERMISSION_COMPARATOR;
+			}
             // one of classes overrides Object.equals(Object) method
             // use default comparator
             return DEFAULT_COMPARATOR;

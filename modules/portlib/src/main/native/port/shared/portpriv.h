@@ -583,46 +583,6 @@ extern HY_CFUNC IDATA VMCALL
   hysysinfo_get_env
 PROTOTYPE ((struct HyPortLibrary * portLibrary, char *envVar,
             char *infoString, UDATA bufSize));
-#if !defined(HY_NO_SIG)
-/* HySourceHySignal*/
-struct HyPortLibrary;
-extern HY_CFUNC I_32 VMCALL
-  hysig_startup PROTOTYPE ((struct HyPortLibrary * portLibrary));
-struct HyPortLibrary;
-extern HY_CFUNC U_32 VMCALL
-  hysig_get_options PROTOTYPE ((struct HyPortLibrary * portLibrary));
-struct HyPortLibrary;
-extern HY_CFUNC I_32 VMCALL
-  hysig_can_protect
-PROTOTYPE ((struct HyPortLibrary * portLibrary, U_32 flags));
-struct HyPortLibrary;
-extern HY_CFUNC void VMCALL
-  hysig_shutdown PROTOTYPE ((struct HyPortLibrary * portLibrary));
-struct HyPortLibrary;
-extern HY_CFUNC U_32 VMCALL
-  hysig_info_count
-PROTOTYPE ((struct HyPortLibrary * portLibrary, void *info, U_32 category));
-struct HyPortLibrary;
-extern HY_CFUNC I_32 VMCALL
-  hysig_set_options
-PROTOTYPE ((struct HyPortLibrary * portLibrary, U_32 options));
-struct HyPortLibrary;
-extern HY_CFUNC I_32 VMCALL
-  hysig_protect
-PROTOTYPE ((struct HyPortLibrary * portLibrary, hysig_protected_fn fn,
-            void *fn_arg, hysig_handler_fn handler, void *handler_arg,
-            U_32 flags, UDATA * result));
-struct HyPortLibrary;
-extern HY_CFUNC U_32 VMCALL
-  hysig_set_async_signal_handler
-PROTOTYPE ((struct HyPortLibrary * portLibrary, hysig_handler_fn handler,
-            void *handler_arg, U_32 flags));
-struct HyPortLibrary;
-extern HY_CFUNC U_32 VMCALL
-  hysig_info
-PROTOTYPE ((struct HyPortLibrary * portLibrary, void *info, U_32 category,
-            I_32 index, const char **name, void **value));
-#endif /* HY_NO_SIG */
 /* HySourceHySL*/
 struct HyPortLibrary;
 extern HY_CFUNC UDATA VMCALL
@@ -1307,17 +1267,6 @@ hytty_startup,                /* tty_startup */
   hyipcmutex_acquire,           /* ipcmutex_acquire */
   hyipcmutex_release,           /* ipcmutex_release */
   hyport_control,               /* port_control */
-#if !defined(HY_NO_SIG)
-  hysig_startup,                /* sig_startup */
-  hysig_shutdown,               /* sig_shutdown */
-  hysig_protect,                /* sig_protect */
-  hysig_can_protect,            /* sig_can_protect */
-  hysig_set_async_signal_handler,       /* sig_set_async_signal_handler */
-  hysig_info,                   /* sig_info */
-  hysig_info_count,             /* sig_info_count */
-  hysig_set_options,            /* sig_set_options */
-  hysig_get_options,            /* sig_get_options */
-#else
   NULL,                /* sig_startup */
   NULL,               /* sig_shutdown */
   NULL,                /* sig_protect */
@@ -1327,7 +1276,6 @@ hytty_startup,                /* tty_startup */
   NULL,             /* sig_info_count */
   NULL,            /* sig_set_options */
   NULL,            /* sig_get_options */
-#endif /* HY_NO_SIG */
   NULL,                         /* attached_thread */
   hysysinfo_DLPAR_enabled,      /* sysinfo_DLPAR_enabled */
   hysysinfo_DLPAR_max_CPUs,     /* sysinfo_DLPAR_max_CPUs */

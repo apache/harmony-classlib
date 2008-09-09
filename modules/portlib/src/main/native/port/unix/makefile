@@ -31,10 +31,6 @@ BUILDFILES = \
 	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
 	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o
 
-ifeq ($(HY_NO_SIG),false)
-BUILDFILES += hysignal.o $(HY_PLATFORM)/hysignal_context.o
-endif
-
 ifeq ($(HY_PORTLIB_STUBS),true)
 BUILDFILES += stubs/hycpu.o stubs/hyipcmutex.o stubs/hyshmem.o \
               stubs/hyshsem.o stubs/hyvmem.o

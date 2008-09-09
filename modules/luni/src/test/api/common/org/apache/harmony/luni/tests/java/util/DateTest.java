@@ -449,6 +449,13 @@ public class DateTest extends junit.framework.TestCase {
 		} finally {
 			TimeZone.setDefault(tz);
 		}
+        
+        // Test for HARMONY-5468
+        TimeZone.setDefault(TimeZone.getTimeZone("MST"));
+        Date d2 = new Date(108, 7, 27);
+        assertTrue("Returned incorrect string: " + d2, d2.toString()
+                .startsWith("Wed Aug 27 00:00:00 MST")
+                && d2.toString().endsWith("2008"));
 	}
 
 	/**
@@ -461,6 +468,8 @@ public class DateTest extends junit.framework.TestCase {
 		assertTrue("Returned incorrect UTC value for epoch +1yr", Date.UTC(71,
 				0, 1, 0, 0, 0) == (long) 365 * 24 * 60 * 60 * 1000);
 	}
+	
+	static TimeZone defaultTimeZone = TimeZone.getDefault();
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -474,5 +483,6 @@ public class DateTest extends junit.framework.TestCase {
 	 * method is called after a test is executed.
 	 */
 	protected void tearDown() {
+		TimeZone.setDefault(defaultTimeZone);
 	}
 }
