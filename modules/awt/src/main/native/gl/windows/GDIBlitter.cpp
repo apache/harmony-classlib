@@ -564,7 +564,7 @@ void findNonExistColor(DWORD &tcolor, DWORD *colormap, UINT size){
              break;
          }
      }
-     delete(tmp);
+     free(tmp);
  }
 
 BOOL isRepeatColor(UINT idx, DWORD *colormap, UINT size){
