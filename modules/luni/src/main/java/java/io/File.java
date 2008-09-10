@@ -682,7 +682,7 @@ public class File implements Serializable, Comparable<File> {
      * Answers if this File is an absolute pathname. Whether a pathname is
      * absolute is platform specific. On UNIX it is if the path starts with the
      * character '/', on Windows it is absolute if either it starts with '\',
-     * '/', '\\' (to represent a file server), or a letter followed by a colon.
+     * '/', '\\' (to represent a file server), or a letter followed by ':\'.
      * 
      * @return <code>true</code> if this File is absolute, <code>false</code>
      *         otherwise.
