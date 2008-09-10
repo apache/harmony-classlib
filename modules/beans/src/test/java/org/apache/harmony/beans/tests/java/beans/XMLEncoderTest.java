@@ -24,12 +24,14 @@ import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 import java.beans.Statement;
 import java.beans.XMLEncoder;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 
 import junit.framework.TestCase;
 
@@ -372,13 +374,13 @@ public class XMLEncoderTest extends TestCase {
 
         InputStream refIn;
         InputStreamReader xml;
-        InputStreamReader refXml;
 
         XMLReader xmlReader;
         XMLReader refXmlReader;
         TestEventHandler handler = new TestEventHandler();
         TestEventHandler refHandler = new TestEventHandler();
         String saxParserClassName = System.getProperty("org.xml.sax.driver");
+        String version = System.getProperty("java.version");
 
         if (enc == null || temp == null) {
             temp = new ByteArrayOutputStream();
@@ -387,15 +389,24 @@ public class XMLEncoderTest extends TestCase {
         enc.writeObject(obj);
         enc.close();
         byte bytes[] = temp.toByteArray();
-
+        xml = new InputStreamReader(new ByteArrayInputStream(bytes), "UTF-8");
         refIn = XMLEncoderTest.class.getResourceAsStream(xmlFile);
         if (refIn == null) {
             throw new Error("resource " + xmlFile + " not exist in "
                     + XMLEncoderTest.class.getPackage());
         }
-        xml = new InputStreamReader(new ByteArrayInputStream(bytes), "UTF-8");
-        refXml = new InputStreamReader(refIn, "UTF-8");
-
+        BufferedReader br = new BufferedReader(new InputStreamReader(refIn, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while((line = br.readLine()) != null){
+        	sb.append(line + "\n");
+        }
+        refIn.close();
+        String refString = sb.toString();
+        refString = refString.replace("${version}", version);
+        if(obj != null){
+        	refString = refString.replace("${classname}", obj.getClass().getName());
+        }
         if (saxParserClassName == null) {
             saxParserClassName = "org.apache.xerces.parsers.SAXParser";
         }
@@ -408,7 +419,7 @@ public class XMLEncoderTest extends TestCase {
         refXmlReader = XMLReaderFactory.createXMLReader(saxParserClassName);
         refXmlReader.setContentHandler(refHandler);
         refXmlReader.setErrorHandler(refHandler);
-        refXmlReader.parse(new InputSource(refXml));
+        refXmlReader.parse(new InputSource(new StringReader(refString)));
 
         assertEquals("Generated XML differs from the sample,", refHandler.root,
                 handler.root);
