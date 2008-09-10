@@ -39,11 +39,11 @@ public abstract class BandSet {
     }
 
     public boolean isPredictableSourceFileName(String className, String sourceFileName) {
-        if (className.indexOf(".") != -1) {
-            className = className.substring(className.lastIndexOf(".") + 1);
+        if (className.indexOf('.') != -1) {
+            className = className.substring(className.lastIndexOf('.') + 1);
         }
-        if (className.indexOf("$") != -1) {
-            className = className.substring(0, className.indexOf("$"));
+        if (className.indexOf('$') != -1) {
+            className = className.substring(0, className.indexOf('$'));
         }
         className += ".java";
         return className.equals(sourceFileName);

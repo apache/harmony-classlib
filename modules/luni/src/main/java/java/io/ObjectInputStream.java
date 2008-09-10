@@ -2523,7 +2523,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     private static String getBaseName(String fullName) {
-        int k = fullName.lastIndexOf("."); //$NON-NLS-1$
+        int k = fullName.lastIndexOf('.');
 
         if (k == -1 || k == (fullName.length() - 1)) {
             return fullName;

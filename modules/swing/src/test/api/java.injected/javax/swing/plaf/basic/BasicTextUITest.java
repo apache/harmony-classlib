@@ -387,7 +387,7 @@ public class BasicTextUITest extends SwingTestCase {
     private String getKeymapName(final JTextComponent c) {
         BasicTextUI ui = (BasicTextUI) jta.getUI();
         String className = ui.getClass().getName();
-        int start = className.lastIndexOf(".");
+        int start = className.lastIndexOf('.');
         int end = className.length();
         String keymapName = className.substring(start + 1, end);
         return keymapName;
