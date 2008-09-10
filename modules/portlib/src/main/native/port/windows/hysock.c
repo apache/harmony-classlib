@@ -2778,7 +2778,7 @@ I_32 VMCALL
 hysock_set_nonblocking (struct HyPortLibrary * portLibrary,
 			hysocket_t socketP, BOOLEAN nonblocking)
 {
-  I_32 rc;
+  I_32 rc = 0;
   U_32 param = nonblocking;
 
   /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,
