@@ -117,4 +117,6 @@ BUILDFILES = \
 
 DLLNAME = ../libhycharset.so
 
+MDLLIBFILES += $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+
 include $(HY_HDK)/build/make/rules.mk
