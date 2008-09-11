@@ -66,7 +66,7 @@ int PointSizetoLogical(HDC hDC, int points, int divisor)
 
     DPtoLP(hDC, P, 2); // map device coordinate to logical size
 
-    return abs(P[1].y - P[0].y) / 72 / divisor;
+    return labs(P[1].y - P[0].y) / 72 / divisor;
 }
 
 /* Returns font style of the LOGFONT structure */
@@ -367,7 +367,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontFamiliesNames(JNIEnv *env,
     
     res = enumFamilies();
 
-    if (res = FONTLIB_ERROR){
+    if (res == FONTLIB_ERROR){
         throwNPException(env, "Not enough memory to enumerate font family names list.");
         return NULL;
     }
@@ -405,7 +405,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystem
     jobjectArray faces;
     res = enumFonts();
 
-    if (res = FONTLIB_ERROR){
+    if (res == FONTLIB_ERROR){
         throwNPException(env, "Not enough memory to enumerate font names list.");
         return;
     }
