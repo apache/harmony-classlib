@@ -2597,7 +2597,7 @@ hysock_readfrom (struct HyPortLibrary * portLibrary, hysocket_t sock,
  * \arg null, block indefinitely for a ready descriptor
  *
  * @param[in] portLibrary The port library.
- * @param[in] nfds Maximum number of file descriptors to be tested.
+ * @param[in] nfds Maximum number of file descriptors to be tested.  Ignored by Windows Socket API.
  * @param[in] readfds Tthe set of descriptors to be checked if ready for read operations.
  * @param[in] writefds The set of descriptors to be checked if ready for write operations.
  * @param[in] exceptfds The set of descriptors to be checked for exceptional conditions.
