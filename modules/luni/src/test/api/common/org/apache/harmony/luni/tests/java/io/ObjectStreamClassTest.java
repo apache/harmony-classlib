@@ -17,10 +17,13 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import java.io.File;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import junit.framework.TestCase;
 
@@ -45,8 +48,8 @@ public class ObjectStreamClassTest extends TestCase {
         // Need to test during serialization to be sure an instance is
         // returned
         ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
-        assertTrue("forClass returned an object: " + osc.forClass(), osc
-                .forClass().equals(DummyClass.class));
+        assertEquals("forClass returned an object: " + osc.forClass(),
+                DummyClass.class, osc.forClass());
     }
 
     /**
@@ -66,9 +69,9 @@ public class ObjectStreamClassTest extends TestCase {
     public void test_getFields() {
         ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
         ObjectStreamField[] osfArray = osc.getFields();
-        assertTrue(
+        assertEquals(
                 "Array of fields should be of length 2 but is instead of length: "
-                        + osfArray.length, osfArray.length == 2);
+                        + osfArray.length, 2, osfArray.length);
     }
 
     /**
@@ -76,12 +79,10 @@ public class ObjectStreamClassTest extends TestCase {
      */
     public void test_getName() {
         ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
-        assertTrue(
+        assertEquals(
                 "getName returned incorrect name: " + osc.getName(),
-                osc
-                        .getName()
-                        .equals(
-                                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass"));
+                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass",
+                osc.getName());
     }
 
     /**
@@ -89,10 +90,61 @@ public class ObjectStreamClassTest extends TestCase {
      */
     public void test_getSerialVersionUID() {
         ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
-        assertTrue("getSerialversionUID returned incorrect uid: "
+        assertEquals("getSerialversionUID returned incorrect uid: "
                 + osc.getSerialVersionUID() + " instead of "
-                + DummyClass.getUID(), osc.getSerialVersionUID() == DummyClass
-                .getUID());
+                + DummyClass.getUID(), DummyClass.getUID(), osc
+                .getSerialVersionUID());
+    }
+
+    static class SyntheticTest implements Serializable {
+        private int i;
+
+        private class X implements Serializable {
+            public int get() {
+                return i;
+            }
+        }
+
+        public X foo() {
+            return new X();
+        }
+    }
+
+    /**
+     * @tests java.io.ObjectStreamClass#getSerialVersionUID()
+     */
+    public void test_getSerialVersionUID_inner_private_class() {
+        ObjectStreamClass osc1 = ObjectStreamClass.lookup(SyntheticTest.class);
+        assertEquals("SyntheticTest unexpected UID: "
+                + osc1.getSerialVersionUID(), -7784078941584535183L, osc1
+                .getSerialVersionUID());
+
+        ObjectStreamClass osc2 = ObjectStreamClass
+                .lookup(SyntheticTest.X.class);
+        assertEquals("SyntheticTest.X unexpected UID: "
+                + osc2.getSerialVersionUID(), -7703000075736397332L, osc2
+                .getSerialVersionUID());
+    }
+
+    /**
+     * @tests java.io.ObjectStreamClass#getSerialVersionUID()
+     */
+    public void test_getSerialVersionUID_classloader() throws Exception {
+        File file = new File(
+                "src/test/resources/org/apache/harmony/luni/tests/ObjectStreamClassTest.jar");
+        ClassLoader loader = new URLClassLoader(new URL[] { file.toURL() },
+                null);
+        Class cl1 = Class.forName("Test1$TestVarArgs", false, loader);
+        ObjectStreamClass osc1 = ObjectStreamClass.lookup(cl1);
+        assertEquals("Test1$TestVarArgs unexpected UID: "
+                + osc1.getSerialVersionUID(), -6051121963037986215L, osc1
+                .getSerialVersionUID());
+
+        Class cl2 = Class.forName("Test1$TestBridge", false, loader);
+        ObjectStreamClass osc2 = ObjectStreamClass.lookup(cl2);
+        assertEquals("Test1$TestBridge unexpected UID: "
+                + osc2.getSerialVersionUID(), 568585976855071180L, osc2
+                .getSerialVersionUID());
     }
 
     /**
@@ -100,12 +152,10 @@ public class ObjectStreamClassTest extends TestCase {
      */
     public void test_lookupLjava_lang_Class() {
         ObjectStreamClass osc = ObjectStreamClass.lookup(DummyClass.class);
-        assertTrue(
+        assertEquals(
                 "lookup returned wrong class: " + osc.getName(),
-                osc
-                        .getName()
-                        .equals(
-                                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass"));
+                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass",
+                osc.getName());
     }
 
     /**
@@ -120,7 +170,6 @@ public class ObjectStreamClassTest extends TestCase {
         assertTrue("toString returned incorrect string: " + osc.toString(),
                 oscString.indexOf("serialVersionUID") >= 0
                         && oscString.indexOf("999999999999999L") >= 0);
-        ;
     }
 
     public void testSerialization() {

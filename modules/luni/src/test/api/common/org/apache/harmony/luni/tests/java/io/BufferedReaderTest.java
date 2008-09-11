@@ -194,10 +194,26 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 		char[] ca = new char[2];
 		BufferedReader toRet = new BufferedReader(new InputStreamReader(
 				new ByteArrayInputStream(new byte[0])));
+		
+		/* Null buffer should throw NPE even when len == 0 */
+		try {
+			toRet.read(null, 1, 0);
+			fail("null buffer reading zero bytes should throw NPE");
+		} catch (NullPointerException e) {
+			//expected
+		}
+		
 		try {
 			toRet.close();
 		} catch (IOException e) {
 			fail("unexpected 1: " + e);
+		}
+		
+		try {
+			toRet.read(null, 1, 0);
+			fail("null buffer reading zero bytes on closed stream should throw IOException");
+		} catch (IOException e) {
+			//expected
 		}
 
 		/* Closed reader should throw IOException reading zero bytes */
