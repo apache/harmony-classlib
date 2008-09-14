@@ -18,7 +18,7 @@ package org.apache.harmony.x.print.ipp;
 
 public class IppException extends Exception {
     
-    static final long serialVersionUID = -5855422273043510539L;
+    private static final long serialVersionUID = -5855422273043510539L;
     
     IppException(String message) {
         super(message);

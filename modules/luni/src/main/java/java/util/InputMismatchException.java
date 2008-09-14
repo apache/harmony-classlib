@@ -26,7 +26,7 @@ import java.io.Serializable;
 public class InputMismatchException extends NoSuchElementException implements
         Serializable {
 
-    static final long serialVersionUID = 8811230760997066428L;
+    private static final long serialVersionUID = 8811230760997066428L;
 
     /**
      * Constructs a InputMismatchException with no error message

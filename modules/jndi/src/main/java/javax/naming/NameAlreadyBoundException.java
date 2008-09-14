@@ -31,7 +31,7 @@ public class NameAlreadyBoundException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -8491441000356780586L;
+    private static final long serialVersionUID = -8491441000356780586L;
 
     /**
      * Constructor a <code>NameAlreadyBoundException</code> instance with all

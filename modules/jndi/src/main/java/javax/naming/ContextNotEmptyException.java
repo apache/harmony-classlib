@@ -31,7 +31,7 @@ public class ContextNotEmptyException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 1090963683348219877L;
+    private static final long serialVersionUID = 1090963683348219877L;
 
     /**
      * Constructs a <code>ContextNotEmptyException</code> instance with all

@@ -190,7 +190,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      */
     protected static class BCSSServiceProvider implements Serializable {
 
-        static final long serialVersionUID = 861278251667444782L;
+        private static final long serialVersionUID = 861278251667444782L;
 
         /**
          * The service provider of the related service.
@@ -212,7 +212,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
 
     }
 
-    static final long serialVersionUID = -8494482757288719206L;
+    private static final long serialVersionUID = -8494482757288719206L;
 
     /**
      * A map of all registered services - key is service class, value is

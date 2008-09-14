@@ -56,7 +56,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
     private static class MockBeanContextServiceRevokedEvent extends
             BeanContextServiceRevokedEvent {
 
-        static final long serialVersionUID = -705194281645674622L;
+        private static final long serialVersionUID = -705194281645674622L;
 
         /**
          * @param bcs

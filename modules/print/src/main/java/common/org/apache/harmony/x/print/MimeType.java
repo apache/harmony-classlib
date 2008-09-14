@@ -28,7 +28,7 @@ import java.util.Vector;
 
 public class MimeType implements Serializable, Cloneable {
     
-    static final long serialVersionUID = -1062742668693502508L;
+    private static final long serialVersionUID = -1062742668693502508L;
 
     private String aType = null; // Media type
     private String aSubtype = null; // Media subtype

@@ -19,7 +19,7 @@ package java.beans.beancontext;
 @SuppressWarnings("unchecked")
 public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
-    static final long serialVersionUID = -1295543154724961754L;
+    private static final long serialVersionUID = -1295543154724961754L;
 
     /**
      * @serial

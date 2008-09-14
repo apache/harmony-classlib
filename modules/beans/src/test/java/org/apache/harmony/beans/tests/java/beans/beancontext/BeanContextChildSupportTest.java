@@ -57,7 +57,7 @@ public class BeanContextChildSupportTest extends TestCase {
     private static class MockBeanContextChildSupport extends
             BeanContextChildSupport {
 
-        static final long serialVersionUID = -8602521752077435319L;
+        private static final long serialVersionUID = -8602521752077435319L;
 
         public BeanContext lastInitBeanContext = null;
 

@@ -2019,7 +2019,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
      */
     private class DestinationChooser extends JFileChooser {
         
-        static final long serialVersionUID = 5429146989329327138L;
+        private static final long serialVersionUID = 5429146989329327138L;
         
         public void approveSelection() {
             boolean doesFileExists = false; // Does selected file exist?

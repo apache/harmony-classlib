@@ -40,7 +40,7 @@ public class NoInitialContextException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -3413733186901258623L;
+    private static final long serialVersionUID = -3413733186901258623L;
 
     /**
      * Constructs an <code>NoInitialContextException</code> instance with all

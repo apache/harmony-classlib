@@ -27,7 +27,7 @@ package javax.naming;
  */
 public class PartialResultException extends NamingException {
 
-    static final long serialVersionUID = 2572144970049426786L;
+    private static final long serialVersionUID = 2572144970049426786L;
 
     /**
      * Constructs a <code>PartialResultException</code> instance with all data

@@ -35,7 +35,7 @@ public abstract class RefAddr implements Serializable {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -1468165120479154358L;
+    private static final long serialVersionUID = -1468165120479154358L;
 
     /**
      * The type of the address.

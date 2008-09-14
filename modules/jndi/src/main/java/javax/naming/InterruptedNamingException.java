@@ -31,7 +31,7 @@ public class InterruptedNamingException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 6404516648893194728L;
+    private static final long serialVersionUID = 6404516648893194728L;
 
     /**
      * Constructs an <code>InterruptedNamingException</code> instance with all

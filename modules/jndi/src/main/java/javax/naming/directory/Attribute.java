@@ -78,7 +78,7 @@ public interface Attribute extends Cloneable, Serializable {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 0x78d7ee3675a55244L;
+    private static final long serialVersionUID = 0x78d7ee3675a55244L;
 
     /**
      * Adds a value at the specified index. The index is only meaningful if the
