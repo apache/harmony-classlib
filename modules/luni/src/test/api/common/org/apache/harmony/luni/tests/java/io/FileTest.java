@@ -700,14 +700,16 @@ public class FileTest extends TestCase {
         new FileOutputStream(f1).close(); // create the file
         if (f1.equals(f2)) {
             try {
-                new FileInputStream(f2);
+                FileInputStream fis = new FileInputStream(f2);
+                fis.close();
             } catch (IOException e) {
                 fail("File system is case sensitive");
             }
         } else {
             boolean exception = false;
             try {
-                new FileInputStream(f2);
+                FileInputStream fis = new FileInputStream(f2);
+                fis.close();
             } catch (IOException e) {
                 exception = true;
             }
