@@ -411,6 +411,7 @@ public class OutputStreamWriterTest extends TestCase {
         }
 
         File f = File.createTempFile("one", "by_one");
+        f.deleteOnExit();
         FileWriter fw = new FileWriter(f);
         fw.write(strChars);
         fw.close();
@@ -432,6 +433,7 @@ public class OutputStreamWriterTest extends TestCase {
         String inputStr = new String(bytes);
         int len = inputStr.length();
         File f = File.createTempFile("FileWriterBugTest ", null); //$NON-NLS-1$
+        f.deleteOnExit();
         FileWriter writer = new FileWriter(f);
         writer.write(inputStr);
         writer.close();
@@ -442,7 +444,6 @@ public class OutputStreamWriterTest extends TestCase {
         int outCount = reader.read(outChars);
         String outStr = new String(outChars, 0, outCount);
 
-        f.deleteOnExit();
         assertEquals(len, flen);
         assertEquals(inputStr, outStr);
     }

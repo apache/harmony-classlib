@@ -118,6 +118,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.write(fileString.getBytes(), 0, 1000);
         assertEquals("Incorrect filePointer returned", 1000, raf
                 .getFilePointer());
+        raf.close();
     }
 
     /**
@@ -129,6 +130,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.write(fileString.getBytes());
         assertEquals("Incorrect length returned", fileString.length(), raf
                 .length());
+        raf.close();
     }
 
     /**
@@ -143,6 +145,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
         assertEquals("Incorrect bytes returned from read",
                 fileString.charAt(0), raf.read());
+        raf.close();
     }
 
     /**
@@ -159,7 +162,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.read(rbuf);
         assertEquals("Incorrect bytes returned from read", fileString,
                 new String(rbuf, 0, fileString.length()));
-
+        raf.close();
     }
 
     /**
@@ -175,6 +178,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.read(rbuf, 0, fileString.length());
         assertEquals("Incorrect bytes returned from read", fileString,
                 new String(rbuf, 0, fileString.length()));
+        raf.close();
     }
 
     /**
@@ -271,6 +275,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             raf.readFully(buf, 0, buf.length);
             fail("Reading past end of buffer did not throw EOFException");
         } catch (EOFException e) {}
+        raf.close();
     }
 
     /**
@@ -299,6 +304,8 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         assertEquals("Goodbye", raf.readLine());
         assertEquals("Cruel", raf.readLine());
         assertEquals("World", raf.readLine());
+        
+        raf.close();
     }
 
     /**
@@ -374,6 +381,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.write(fileString.getBytes(), 0, fileString.length());
         raf.seek(12);
         assertEquals("Seek failed to set filePointer", 12, raf.getFilePointer());
+        raf.close();
     }
 
     /**
@@ -431,6 +439,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         fis.read(rbuf, 0, fileString.length());
         assertEquals("Incorrect bytes written", fileString, new String(rbuf, 0,
                 fileString.length()));    
+        fis.close();
     }
 
     /**
@@ -447,6 +456,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         fis.read(rbuf, 0, fileString.length());
         assertEquals("Incorrect bytes written", fileString, new String(rbuf, 0,
                 fileString.length()));
+        fis.close();
     }
     
     /**
@@ -601,6 +611,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         FileInputStream fis = new java.io.FileInputStream(fileName);
         fis.read(rbuf, 0, 1);
         assertEquals("Incorrect byte written", 't', rbuf[0]);
+        fis.close();
     }
 
     /**
@@ -762,6 +773,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
             fail("IOException must be thrown if pos < 0");
         } catch (IOException e) {
         }
+        raf.close();
     }
 
     /**
@@ -857,8 +869,9 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
      * @tests java.io.RandomAccessFile#read(byte[],int,int) 
      */
     public void test_read_$BII_NullPointerException() throws IOException {
-        RandomAccessFile raf = new RandomAccessFile(File.createTempFile("tmp",
-                "tmp"), "r");
+        File f = File.createTempFile("tmp", "tmp");
+        f.deleteOnExit();
+        RandomAccessFile raf = new RandomAccessFile(f, "r");
         byte[] rbuf = null;
         try {
             raf.read(rbuf, 0, -1);
@@ -866,6 +879,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+        raf.close();
     }
 
     /**
