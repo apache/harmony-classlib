@@ -59,6 +59,7 @@ public class MappedByteBufferTest extends TestCase {
             int val = ibuffer.get();
             assertEquals("Got wrong int value", i + 1, val); //$NON-NLS-1$
         }
+        fc.close();
     }
     
     /**
@@ -99,6 +100,11 @@ public class MappedByteBufferTest extends TestCase {
 
         // Invoking force() will change the buffer
         assertFalse(mmbReadWrite.equals(resultReadWrite));
+        
+        fileChannelRead.close();
+        fileChannelR.close();
+        fileChannelReadWrite.close();
+        fileChannelRW.close();
     }
 
     /**
@@ -118,6 +124,9 @@ public class MappedByteBufferTest extends TestCase {
                 FileChannel.MapMode.READ_WRITE, 0, fileChannelReadWrite.size());
 
         assertEquals(mmbReadWrite, mmbReadWrite.load());
+        
+        fileChannelRead.close();
+        fileChannelReadWrite.close();
     }
 
     protected void setUp() throws IOException {
