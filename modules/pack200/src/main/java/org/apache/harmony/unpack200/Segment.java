@@ -112,12 +112,15 @@ public class Segment {
 
     private ClassFile buildClassFile(int classNum) throws Pack200Exception {
         ClassFile classFile = new ClassFile();
-        classFile.major = header.getDefaultClassMajorVersion(); // TODO If
-        // classVersionMajor[] use
-        // that instead
-        classFile.minor = header.getDefaultClassMinorVersion(); // TODO if
-        // classVersionMinor[] use
-        // that instead
+        int[] major = classBands.getClassVersionMajor();
+        int[] minor = classBands.getClassVersionMinor();
+        if(major != null) {
+            classFile.major = major[classNum];
+            classFile.minor = minor[classNum];
+        } else {
+            classFile.major = header.getDefaultClassMajorVersion();
+            classFile.minor = header.getDefaultClassMinorVersion();
+        }
         // build constant pool
         ClassConstantPool cp = classFile.pool;
         int fullNameIndexInCpClass = classBands.getClassThisInts()[classNum];

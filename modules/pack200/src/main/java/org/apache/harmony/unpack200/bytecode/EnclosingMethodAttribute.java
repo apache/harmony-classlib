@@ -28,8 +28,11 @@ public class EnclosingMethodAttribute extends Attribute {
     private int method_index;
     private final CPClass cpClass;
     private final CPNameAndType method;
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "EnclosingMethod"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public EnclosingMethodAttribute(CPClass cpClass, CPNameAndType method) {
         super(attributeName);

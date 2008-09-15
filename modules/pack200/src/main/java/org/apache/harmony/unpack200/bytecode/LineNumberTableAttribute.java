@@ -27,8 +27,11 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     private final int line_number_table_length;
     private final int[] start_pcs;
     private final int[] line_numbers;
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "LineNumberTable"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public LineNumberTableAttribute(int line_number_table_length,
             int[] start_pcs, int[] line_numbers) {
