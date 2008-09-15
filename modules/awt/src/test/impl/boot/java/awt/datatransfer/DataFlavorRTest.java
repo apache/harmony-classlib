@@ -32,35 +32,29 @@ import junit.framework.TestCase;
 
 public class DataFlavorRTest extends TestCase {
 
-    public void testSerializeDefaultDataFlavor() {
+    public void testSerializeDefaultDataFlavor() throws IOException,
+            ClassNotFoundException {
         DataFlavor flavor = new DataFlavor();
-        DataFlavor restored = (DataFlavor)writeAndRead(flavor);
+        DataFlavor restored = (DataFlavor) writeAndRead(flavor);
         assertEquals(restored, flavor);
     }
 
+    private Serializable writeAndRead(Serializable original)
+            throws IOException, ClassNotFoundException {
+        File tempFile = File.createTempFile("save", ".object");
+        tempFile.deleteOnExit();
 
-    private Serializable writeAndRead(Serializable original) {
+        FileOutputStream fos = new FileOutputStream(tempFile);
 
-        try {
-            File tempFile = File.createTempFile("save", ".object");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(original);
+        oos.close();
 
-            FileOutputStream fos = new FileOutputStream(tempFile);
+        FileInputStream fis = new FileInputStream(tempFile);
+        ObjectInputStream ois = new ObjectInputStream(fis);
 
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(original);
-            oos.close();
-
-            FileInputStream fis = new FileInputStream(tempFile);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-
-            Serializable restored = (Serializable) ois.readObject();
-            tempFile.delete();
-            return restored;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Serializable restored = (Serializable) ois.readObject();
+        ois.close();
+        return restored;
     }
-
 }
