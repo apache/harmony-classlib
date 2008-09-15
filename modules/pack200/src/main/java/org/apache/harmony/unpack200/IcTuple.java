@@ -90,7 +90,7 @@ public class IcTuple {
         return predictOuter || predictSimple;
     }
 
-    
+
     /**
      * Answer true if the receiver's bit 16 is set (indicating
      * that explicit outer class and name fields are set).
