@@ -88,12 +88,11 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      *            the amount to increase the capacity when this Vector is full
      */
     public Vector(int capacity, int capacityIncrement) {
-        elementCount = 0;
-        try {
-            elementData = newElementArray(capacity);
-        } catch (NegativeArraySizeException e) {
+        if (capacity < 0) {
             throw new IllegalArgumentException();
         }
+        elementData = newElementArray(capacity);
+        elementCount = 0;
         this.capacityIncrement = capacityIncrement;
     }
 
@@ -760,7 +759,9 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      * @see #size
      */
     public synchronized void removeAllElements() {
-        Arrays.fill(elementData, 0, elementCount, null);
+        for (int i = 0; i < elementCount; i++) {
+            elementData[i] = null;
+        }
         modCount++;
         elementCount = 0;
     }
