@@ -30,9 +30,9 @@ public class BitSetTest extends TestCase {
      */
     public void test_Constructor() {
         BitSet bs = new BitSet();
-        assertTrue("Create BitSet of incorrect size", bs.size() == 64);
-        assertEquals("New BitSet had invalid string representation", "{}", bs
-                .toString());
+        assertEquals("Create BitSet of incorrect size", 64, bs.size());
+        assertEquals("New BitSet had invalid string representation", "{}",
+                     bs.toString());
     }
 
     /**
@@ -40,12 +40,12 @@ public class BitSetTest extends TestCase {
      */
     public void test_ConstructorI() {
         BitSet bs = new BitSet(128);
-        assertTrue("Create BitSet of incorrect size", bs.size() == 128);
+        assertEquals("Create BitSet of incorrect size", 128, bs.size());
         assertEquals("New BitSet had invalid string representation: "
                 + bs.toString(), "{}", bs.toString());
         // All BitSets are created with elements of multiples of 64
         bs = new BitSet(89);
-        assertTrue("Failed to round BitSet element size", bs.size() == 128);
+        assertEquals("Failed to round BitSet element size", 128, bs.size());
 
         try {
             bs = new BitSet(-9);
@@ -93,12 +93,10 @@ public class BitSetTest extends TestCase {
         BitSet bs = (BitSet) eightbs.clone();
         bs.clear(2);
         bs.clear(6);
-        assertTrue("BitSet returns wrong hash value: " + bs.hashCode(), bs
-                .hashCode() == 1129);
+        assertEquals("BitSet returns wrong hash value", 1129, bs.hashCode());
         bs.set(10);
         bs.clear(3);
-        assertTrue("BitSet returns wrong hash value: " + bs.hashCode(), bs
-                .hashCode() == 97);
+        assertEquals("BitSet returns wrong hash value", 97, bs.hashCode());
     }
 
     /**
@@ -176,7 +174,7 @@ public class BitSetTest extends TestCase {
     /**
      * @tests java.util.BitSet#clear(int, int)
      */
-    public void test_clearII() {
+    public void test_clearII() throws IndexOutOfBoundsException {
         // Regression for HARMONY-98
         BitSet bitset = new BitSet();
         for (int i = 0; i < 20; i++) {
@@ -217,7 +215,7 @@ public class BitSetTest extends TestCase {
         initialSize = bs.size();
         bs.set(0, initialSize);
         bs.clear(7, 64);
-        assertTrue("Failed to grow BitSet", bs.size() == 64);
+        assertEquals("Failed to grow BitSet", 64, bs.size());
         for (int i = 0; i < 7; i++)
             assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
         for (int i = 7; i < 64; i++)
@@ -310,12 +308,8 @@ public class BitSetTest extends TestCase {
         }
 
         bs.set(2, 4);
-        try {
-            bs.clear(2, 2);
-            assertTrue("Bit got cleared incorrectly ", bs.get(2));
-        } catch (IndexOutOfBoundsException e) {
-            fail("unexpected IndexOutOfBoundsException: " + e);
-        }
+        bs.clear(2, 2);
+        assertTrue("Bit got cleared incorrectly ", bs.get(2));
 
         try {
             bs.clear(4, 2);
@@ -570,14 +564,14 @@ public class BitSetTest extends TestCase {
 
         // Try setting a bit on a 64 boundary
         bs.flip(128);
-        assertTrue("Failed to grow BitSet", bs.size() == 192);
+        assertEquals("Failed to grow BitSet", 192, bs.size());
         assertTrue("Failed to flip bit", bs.get(128));
 
         bs = new BitSet(64);
         for (int i = bs.size(); --i >= 0;) {
             bs.flip(i);
             assertTrue("Test1: Incorrectly flipped bit" + i, bs.get(i));
-            assertTrue("Incorrect length", bs.length() == (i + 1));
+            assertEquals("Incorrect length", i+1, bs.length());
             for (int j = bs.size(); --j > i;) {
                 assertTrue("Test2: Incorrectly flipped bit" + j, !bs.get(j));
             }
@@ -588,16 +582,16 @@ public class BitSetTest extends TestCase {
         }
 
         BitSet bs0 = new BitSet(0);
-        assertTrue("Test1: Wrong size", bs0.size() == 0);
-        assertTrue("Test1: Wrong length", bs0.length() == 0);
+        assertEquals("Test1: Wrong size", 0, bs0.size());
+        assertEquals("Test1: Wrong length", 0, bs0.length());
 
         bs0.flip(0);
-        assertTrue("Test2: Wrong size", bs0.size() == 64);
-        assertTrue("Test2: Wrong length", bs0.length() == 1);
+        assertEquals("Test2: Wrong size", 64, bs0.size());
+        assertEquals("Test2: Wrong length", 1, bs0.length());
 
         bs0.flip(63);
-        assertTrue("Test3: Wrong size", bs0.size() == 64);
-        assertTrue("Test3: Wrong length", bs0.length() == 64);
+        assertEquals("Test3: Wrong size", 64, bs0.size());
+        assertEquals("Test3: Wrong length", 64, bs0.length());
 
         eightbs.flip(7);
         assertTrue("Failed to flip bit 7", !eightbs.get(7));
@@ -645,7 +639,7 @@ public class BitSetTest extends TestCase {
         bs.set(7);
         bs.set(10);
         bs.flip(7, 64);
-        assertTrue("Failed to grow BitSet", bs.size() == 64);
+        assertEquals("Failed to grow BitSet", 64, bs.size());
         for (int i = 0; i < 7; i++) {
             assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
         }
@@ -780,14 +774,14 @@ public class BitSetTest extends TestCase {
 
         // Try setting a bit on a 64 boundary
         bs.set(128);
-        assertTrue("Failed to grow BitSet", bs.size() == 192);
+        assertEquals("Failed to grow BitSet", 192, bs.size());
         assertTrue("Failed to set bit", bs.get(128));
 
         bs = new BitSet(64);
         for (int i = bs.size(); --i >= 0;) {
             bs.set(i);
             assertTrue("Incorrectly set", bs.get(i));
-            assertTrue("Incorrect length", bs.length() == (i + 1));
+            assertEquals("Incorrect length", i+1, bs.length());
             for (int j = bs.size(); --j > i;)
                 assertFalse("Incorrectly set bit " + j, bs.get(j));
             for (int j = i; --j >= 0;)
@@ -796,9 +790,9 @@ public class BitSetTest extends TestCase {
         }
 
         bs = new BitSet(0);
-        assertTrue("Test1: Wrong length, " + bs.size(), bs.length() == 0);
+        assertEquals("Test1: Wrong length", 0, bs.length());
         bs.set(0);
-        assertTrue("Test2: Wrong length" + bs.size(), bs.length() == 1);
+        assertEquals("Test2: Wrong length", 1, bs.length());
     }
 
     /**
@@ -816,7 +810,7 @@ public class BitSetTest extends TestCase {
     /**
      * @tests java.util.BitSet#set(int, int)
      */
-    public void test_setII() {
+    public void test_setII() throws IndexOutOfBoundsException {
         BitSet bitset = new BitSet(30);
         bitset.set(29, 29);
         
@@ -844,7 +838,7 @@ public class BitSetTest extends TestCase {
         // pos1 and pos2 is in the same bitset element, boundry testing
         bs = new BitSet(16);
         bs.set(7, 64);
-        assertTrue("Failed to grow BitSet", bs.size() == 64);
+        assertEquals("Failed to grow BitSet", 64, bs.size());
         for (int i = 0; i < 7; i++) {
             assertFalse("Shouldn't have set bit " + i, bs.get(i));
         }
@@ -927,12 +921,8 @@ public class BitSetTest extends TestCase {
             // Correct behavior
         }
 
-        try {
-            bs.set(2, 2);
-            assertFalse("Bit got set incorrectly ", bs.get(2));
-        } catch (IndexOutOfBoundsException e) {
-            fail("Unexpected IndexOutOfBoundsException: " + e);
-        }
+        bs.set(2, 2);
+        assertFalse("Bit got set incorrectly ", bs.get(2));
 
         try {
             bs.set(4, 2);
@@ -1066,12 +1056,12 @@ public class BitSetTest extends TestCase {
         bs2.set(2);
         bs2.set(3);
         bs.andNot(bs2);
-        assertTrue("Incorrect bitset after andNot", bs.toString().equals(
-                "{0, 1, 4, 6, 7}"));
+        assertEquals("Incorrect bitset after andNot",
+                     "{0, 1, 4, 6, 7}", bs.toString());
 
         bs = new BitSet(0);
         bs.andNot(bs2);
-        assertTrue("Incorrect size", bs.size() == 0);
+        assertEquals("Incorrect size", 0, bs.size());
     }
 
     /**
@@ -1130,7 +1120,7 @@ public class BitSetTest extends TestCase {
      */
     public void test_size() {
         // Test for method int java.util.BitSet.size()
-        assertTrue("Returned incorrect size", eightbs.size() == 64);
+        assertEquals("Returned incorrect size", 64, eightbs.size());
         eightbs.set(129);
         assertTrue("Returned incorrect size", eightbs.size() >= 129);
 
@@ -1141,11 +1131,11 @@ public class BitSetTest extends TestCase {
      */
     public void test_toString() {
         // Test for method java.lang.String java.util.BitSet.toString()
-        assertTrue("Returned incorrect string representation", eightbs
-                .toString().equals("{0, 1, 2, 3, 4, 5, 6, 7}"));
+        assertEquals("Returned incorrect string representation",
+                     "{0, 1, 2, 3, 4, 5, 6, 7}", eightbs.toString());
         eightbs.clear(2);
-        assertTrue("Returned incorrect string representation", eightbs
-                .toString().equals("{0, 1, 3, 4, 5, 6, 7}"));
+        assertEquals("Returned incorrect string representation",
+                     "{0, 1, 3, 4, 5, 6, 7}", eightbs.toString());
     }
 
     /**
@@ -1153,20 +1143,15 @@ public class BitSetTest extends TestCase {
      */
     public void test_length() {
         BitSet bs = new BitSet();
-        assertTrue("BitSet returned wrong length--wanted 0, got: "
-                + bs.length(), bs.length() == 0);
+        assertEquals("BitSet returned wrong length", 0, bs.length());
         bs.set(5);
-        assertTrue("BitSet returned wrong length--wanted 6, got: "
-                + bs.length(), bs.length() == 6);
+        assertEquals("BitSet returned wrong length", 6, bs.length());
         bs.set(10);
-        assertTrue("BitSet returned wrong length--wanted 11, got: "
-                + bs.length(), bs.length() == 11);
+        assertEquals("BitSet returned wrong length", 11, bs.length());
         bs.set(432);
-        assertTrue("BitSet returned wrong length--wanted 433, got: "
-                + bs.length(), bs.length() == 433);
+        assertEquals("BitSet returned wrong length", 433, bs.length());
         bs.set(300);
-        assertTrue("BitSet returned wrong length--wanted 433 (again), got: "
-                + bs.length(), bs.length() == 433);
+        assertEquals("BitSet returned wrong length", 433, bs.length());
     }
 
     /**
