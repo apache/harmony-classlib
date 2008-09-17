@@ -495,13 +495,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     /**
-     * Return the next <code>int</code> handle to be used to indicate cyclic
+     * Return the next <code>Integer</code> handle to be used to indicate cyclic
      * references being loaded from the stream.
      * 
      * @return the next handle to represent the next cyclic reference
      */
-    private int nextHandle() {
-        return this.currentHandle++;
+    private Integer nextHandle() {
+        return Integer.valueOf(this.currentHandle++);
     }
 
     /**
@@ -1121,7 +1121,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                             byte srcByte = input.readByte();
                             if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
                                 accessor.setByte(obj, fieldID, srcByte);
-                            };
+                            }
                             break;
                         case 'C':
                             char srcChar = input.readChar();
@@ -1457,7 +1457,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * 
      * @deprecated Use BufferedReader
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public String readLine() throws IOException {
         return primitiveTypes.readLine();
@@ -1626,7 +1625,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc;
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
-        descriptorHandle = Integer.valueOf(nextHandle());
+        descriptorHandle = nextHandle();
         classDesc = readClassDescriptor();
         registerObjectRead(classDesc, descriptorHandle, false);
         descriptorHandle = oldHandle;
@@ -1660,7 +1659,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first
         ObjectStreamClass classDesc = readEnumDesc();
-        int newHandle = nextHandle();
+        Integer newHandle = nextHandle();
         // read name after class desc
         String name;
         byte tc = nextTC();
