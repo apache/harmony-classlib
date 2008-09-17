@@ -91,27 +91,21 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		}
 
 		if (atLeastOneInterface) {
-			Enumeration theAddresses = networkInterface1.getInetAddresses();
-			if (theAddresses != null) {
-				while (theAddresses.hasMoreElements()) {
-					InetAddress theAddress = (InetAddress) theAddresses
-							.nextElement();
-					assertTrue("validate that address is not null",
-							null != theAddress);
-				}
-			}
-		}
+            Enumeration theAddresses = networkInterface1.getInetAddresses();
+            while (theAddresses.hasMoreElements()) {
+                InetAddress theAddress = (InetAddress) theAddresses
+                        .nextElement();
+                assertNotNull("validate that address is not null", theAddress);
+            }
+        }
 
 		if (atLeastTwoInterfaces) {
 			Enumeration theAddresses = networkInterface2.getInetAddresses();
-			if (theAddresses != null) {
-				while (theAddresses.hasMoreElements()) {
-					InetAddress theAddress = (InetAddress) theAddresses
-							.nextElement();
-					assertTrue("validate that address is not null",
-							null != theAddress);
-				}
-			}
+			while (theAddresses.hasMoreElements()) {
+                InetAddress theAddress = (InetAddress) theAddresses
+                        .nextElement();
+                assertNotNull("validate that address is not null", theAddress);
+            }
 		}
 
 		// create the list of ok and not ok addresses to return
@@ -120,7 +114,20 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			Enumeration addresses = networkInterface1.getInetAddresses();
 			int index = 0;
 			ArrayList notOkAddresses = new ArrayList();
-			if (addresses != null) {
+			while (addresses.hasMoreElements()) {
+                InetAddress theAddress = (InetAddress) addresses.nextElement();
+                if (index != 0) {
+                    okAddresses.add(theAddress);
+                } else {
+                    notOkAddresses.add(theAddress);
+                }
+                index++;
+            }
+
+			// do the same for network interface 2 if it exists
+			if (atLeastTwoInterfaces) {
+				addresses = networkInterface2.getInetAddresses();
+				index = 0;
 				while (addresses.hasMoreElements()) {
 					InetAddress theAddress = (InetAddress) addresses
 							.nextElement();
@@ -133,24 +140,6 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				}
 			}
 
-			// do the same for network interface 2 it it exists
-			if (atLeastTwoInterfaces) {
-				addresses = networkInterface2.getInetAddresses();
-				index = 0;
-				if (addresses != null) {
-					while (addresses.hasMoreElements()) {
-						InetAddress theAddress = (InetAddress) addresses
-								.nextElement();
-						if (index != 0) {
-							okAddresses.add(theAddress);
-						} else {
-							notOkAddresses.add(theAddress);
-						}
-						index++;
-					}
-				}
-			}
-
 			// set the security manager that will make the first address not
 			// visible
 			System.setSecurityManager(new mySecurityManager(notOkAddresses));
@@ -159,25 +148,21 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			for (int i = 0; i < notOkAddresses.size(); i++) {
 				Enumeration reducedAddresses = networkInterface1
 						.getInetAddresses();
-				if (reducedAddresses != null) {
+				while (reducedAddresses.hasMoreElements()) {
+                    InetAddress nextAddress = (InetAddress) reducedAddresses
+                            .nextElement();
+                    assertTrue(
+                            "validate that address without permission is not returned",
+                            !nextAddress.equals(notOkAddresses.get(i)));
+                }
+				if (atLeastTwoInterfaces) {
+                    reducedAddresses = networkInterface2.getInetAddresses();
 					while (reducedAddresses.hasMoreElements()) {
 						InetAddress nextAddress = (InetAddress) reducedAddresses
 								.nextElement();
 						assertTrue(
 								"validate that address without permission is not returned",
 								!nextAddress.equals(notOkAddresses.get(i)));
-					}
-				}
-				if (atLeastTwoInterfaces) {
-					reducedAddresses = networkInterface2.getInetAddresses();
-					if (reducedAddresses != null) {
-						while (reducedAddresses.hasMoreElements()) {
-							InetAddress nextAddress = (InetAddress) reducedAddresses
-									.nextElement();
-							assertTrue(
-									"validate that address without permission is not returned",
-									!nextAddress.equals(notOkAddresses.get(i)));
-						}
 					}
 				}
 			}
@@ -187,24 +172,20 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				boolean addressReturned = false;
 				Enumeration reducedAddresses = networkInterface1
 						.getInetAddresses();
-				if (reducedAddresses != null) {
+				while (reducedAddresses.hasMoreElements()) {
+                    InetAddress nextAddress = (InetAddress) reducedAddresses
+                            .nextElement();
+                    if (nextAddress.equals(okAddresses.get(i))) {
+                        addressReturned = true;
+                    }
+                }
+				if (atLeastTwoInterfaces) {
+					reducedAddresses = networkInterface2.getInetAddresses();
 					while (reducedAddresses.hasMoreElements()) {
 						InetAddress nextAddress = (InetAddress) reducedAddresses
 								.nextElement();
 						if (nextAddress.equals(okAddresses.get(i))) {
 							addressReturned = true;
-						}
-					}
-				}
-				if (atLeastTwoInterfaces) {
-					reducedAddresses = networkInterface2.getInetAddresses();
-					if (reducedAddresses != null) {
-						while (reducedAddresses.hasMoreElements()) {
-							InetAddress nextAddress = (InetAddress) reducedAddresses
-									.nextElement();
-							if (nextAddress.equals(okAddresses.get(i))) {
-								addressReturned = true;
-							}
 						}
 					}
 				}
@@ -215,22 +196,22 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			// validate that we can get the interface by specifying the address.
 			// This is to be compatible
 			for (int i = 0; i < notOkAddresses.size(); i++) {
-                                assertNotNull(
-                                                "validate we cannot get the NetworkInterface with an address for which we have no privs",
-                                                NetworkInterface
-                                                                .getByInetAddress((InetAddress) notOkAddresses
-                                                                                .get(i)));
-			}
+                assertNotNull(
+                        "validate we cannot get the NetworkInterface with an address for which we have no privs",
+                        NetworkInterface
+                                .getByInetAddress((InetAddress) notOkAddresses
+                                        .get(i)));
+            }
 
 			// validate that we can get the network interface for the good
 			// addresses
-                        for (int i = 0; i < okAddresses.size(); i++) {
-                                assertNotNull(
-                                                "validate we cannot get the NetworkInterface with an address fro which we have no privs",
-                                                NetworkInterface
-                                                                .getByInetAddress((InetAddress) okAddresses
-                                                                                .get(i)));
-                        }
+			for (int i = 0; i < okAddresses.size(); i++) {
+                assertNotNull(
+                        "validate we cannot get the NetworkInterface with an address fro which we have no privs",
+                        NetworkInterface
+                                .getByInetAddress((InetAddress) okAddresses
+                                        .get(i)));
+            }
 
 			System.setSecurityManager(null);
 		}
@@ -274,10 +255,10 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		if (atLeastOneInterface) {
 			String theName = networkInterface1.getName();
 			if (theName != null) {
-                                assertTrue("validate that Interface can be obtained with its name",
-                                                NetworkInterface.getByName(theName).equals(
-                                                                networkInterface1));
-			}
+                assertEquals(
+                        "validate that Interface can be obtained with its name",
+                        networkInterface1, NetworkInterface.getByName(theName));
+            }
 		}
 
 		// validate that we get the right interface with the second interface as
@@ -285,10 +266,10 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		if (atLeastTwoInterfaces) {
 			String theName = networkInterface2.getName();
 			if (theName != null) {
-				assertTrue("validate that Interface can be obtained with its name",
-                                                NetworkInterface.getByName(theName).equals(
-                                                                networkInterface2));
-			}
+                assertEquals(
+                        "validate that Interface can be obtained with its name",
+                        networkInterface2, NetworkInterface.getByName(theName));
+            }
 		}
 	}
 
@@ -319,30 +300,26 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		// interface for that address
 		if (atLeastOneInterface) {
 			Enumeration addresses = networkInterface1.getInetAddresses();
-			if (addresses != null) {
-				while (addresses.hasMoreElements()) {
-					InetAddress theAddress = (InetAddress) addresses
-							.nextElement();
-                                        assertTrue("validate that Interface can be obtained with any one of its addresses",
-                                                        NetworkInterface.getByInetAddress(theAddress)
-                                                                        .equals(networkInterface1));
-				}
-			}
+			while (addresses.hasMoreElements()) {
+                InetAddress theAddress = (InetAddress) addresses.nextElement();
+                assertEquals(
+                        "validate that Interface can be obtained with any one of its addresses",
+                        networkInterface1, NetworkInterface
+                                .getByInetAddress(theAddress));
+            }
 		}
 
 		// validate that we get the right interface with the second interface as
 		// well (ie we just don't always get the first interface
 		if (atLeastTwoInterfaces) {
 			Enumeration addresses = networkInterface2.getInetAddresses();
-			if (addresses != null) {
-				while (addresses.hasMoreElements()) {
-					InetAddress theAddress = (InetAddress) addresses
-							.nextElement();
-                                        assertTrue("validate that Interface can be obtained with any one of its addresses",
-                                                        NetworkInterface.getByInetAddress(theAddress)
-                                                                        .equals(networkInterface2));
-				}
-			}
+			while (addresses.hasMoreElements()) {
+                InetAddress theAddress = (InetAddress) addresses.nextElement();
+                assertEquals(
+                        "validate that Interface can be obtained with any one of its addresses",
+                        networkInterface2, NetworkInterface
+                                .getByInetAddress(theAddress));
+            }
 		}
 	}
 
@@ -363,11 +340,10 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		// Test for method boolean
 		// java.net.SocketPermission.equals(java.lang.Object)
 		if (atLeastOneInterface) {
-			assertTrue("If objects are the same true is returned",
-					networkInterface1.equals(sameAsNetworkInterface1));
-			assertFalse("Validate Null handled ok", networkInterface1
-					.equals(null));
-		}
+            assertEquals("If objects are the same true is returned",
+                    sameAsNetworkInterface1, networkInterface1);
+            assertNotNull("Validate Null handled ok", networkInterface1);
+        }
 		if (atLeastTwoInterfaces) {
 			assertFalse("If objects are different false is returned",
 					networkInterface1.equals(networkInterface2));
@@ -431,7 +407,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 					&& (atLeastOneInterface == false)) {
 				NetworkInterface theInterface = (NetworkInterface) theInterfaces
 						.nextElement();
-				if (theInterface.getInetAddresses() != null) {
+				if (theInterface.getInetAddresses().hasMoreElements()) {
 					// Ensure that the current NetworkInterface has at least
 					// one InetAddress bound to it.  
 					Enumeration addrs = theInterface.getInetAddresses();
@@ -446,7 +422,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 					&& (atLeastTwoInterfaces == false)) {
 				NetworkInterface theInterface = (NetworkInterface) theInterfaces
 						.nextElement();
-				if (theInterface.getInetAddresses() != null) {
+				if (theInterface.getInetAddresses().hasMoreElements()) {
 					// Ensure that the current NetworkInterface has at least
 					// one InetAddress bound to it.  
 					Enumeration addrs = theInterface.getInetAddresses();
@@ -461,7 +437,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			// at least one good NetworkInterface
 			if (atLeastOneInterface) {
 				Enumeration addresses = networkInterface1.getInetAddresses();
-				if (addresses != null) {
+				if (addresses.hasMoreElements()) {
 					try {
 						if (addresses.hasMoreElements()) {
 							sameAsNetworkInterface1 = NetworkInterface

@@ -194,7 +194,7 @@ public class MulticastSocketTest extends SocketTestCase {
                         // validate that we get the expected response when we set via
                         // setInterface
                         Enumeration addresses = networkInterface1.getInetAddresses();
-                        if (addresses != null) {
+                        if (addresses.hasMoreElements()) {
                                 InetAddress firstAddress = (InetAddress) addresses
                                                 .nextElement();
                                 mss.setInterface(firstAddress);
@@ -219,19 +219,20 @@ public class MulticastSocketTest extends SocketTestCase {
 	}
 
 	/**
-	 * @throws IOException 
+	 * @throws IOException
 	 * @tests java.net.MulticastSocket#getNetworkInterface()
 	 */
 	public void test_getNetworkInterface() throws IOException {
-		int groupPort = Support_PortManager.getNextPortForUDP();
-		if (atLeastOneInterface) {
+        int groupPort = Support_PortManager.getNextPortForUDP();
+        if (atLeastOneInterface) {
             // validate that we get the expected response when one was not
             // set
             mss = new MulticastSocket(groupPort);
             NetworkInterface theInterface = mss.getNetworkInterface();
-            assertNotNull(
+            assertTrue(
                     "network interface returned wrong network interface when not set:"
-                            + theInterface, theInterface.getInetAddresses());
+                            + theInterface, theInterface.getInetAddresses()
+                            .hasMoreElements());
             InetAddress firstAddress = (InetAddress) theInterface
                     .getInetAddresses().nextElement();
             // validate we the first address in the network interface is the
@@ -282,7 +283,7 @@ public class MulticastSocketTest extends SocketTestCase {
             groupPort = Support_PortManager.getNextPortForUDP();
             mss = new MulticastSocket(groupPort);
             Enumeration addresses = networkInterface1.getInetAddresses();
-            if (addresses != null) {
+            if (addresses.hasMoreElements()) {
                 firstAddress = (InetAddress) addresses.nextElement();
                 mss.setInterface(firstAddress);
                 assertTrue(
@@ -290,7 +291,7 @@ public class MulticastSocketTest extends SocketTestCase {
                         networkInterface1.equals(mss.getNetworkInterface()));
             }
         }
-	}
+    }
 
 	/**
 	 * @tests java.net.MulticastSocket#getTimeToLive()
@@ -475,8 +476,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
                     NetworkInterface thisInterface = (NetworkInterface) theInterfaces
                             .nextElement();
-                    if ((thisInterface.getInetAddresses() != null && thisInterface
-                            .getInetAddresses().hasMoreElements())
+                    if (thisInterface.getInetAddresses().hasMoreElements()
                             && (Support_NetworkInterface
                                     .useInterface(thisInterface) == true)) {
                         // get the first address on the interface
@@ -488,7 +488,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
                         NetworkInterface sendingInterface = null;
                         boolean isLoopback = false;
-                        if (addresses != null) {
+                        if (addresses.hasMoreElements()) {
                             InetAddress firstAddress = (InetAddress) addresses
                                     .nextElement();
                             if (firstAddress.isLoopbackAddress()) {
@@ -514,8 +514,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
                         InetAddress useAddress = null;
                         addresses = sendingInterface.getInetAddresses();
-                        if ((addresses != null)
-                                && (addresses.hasMoreElements())) {
+                        if (addresses.hasMoreElements()) {
                             useAddress = (InetAddress) addresses.nextElement();
                         }
 
@@ -832,8 +831,7 @@ public class MulticastSocketTest extends SocketTestCase {
             while (theInterfaces.hasMoreElements()) {
                 NetworkInterface thisInterface = (NetworkInterface) theInterfaces
                         .nextElement();
-                if (thisInterface.getInetAddresses() != null
-                        && thisInterface.getInetAddresses().hasMoreElements()) {
+                if (thisInterface.getInetAddresses().hasMoreElements()) {
                     if ((!((InetAddress) thisInterface.getInetAddresses()
                             .nextElement()).isLoopbackAddress())
                             &&
@@ -1116,9 +1114,7 @@ public class MulticastSocketTest extends SocketTestCase {
                     && (atLeastOneInterface == false)) {
                 networkInterface1 = (NetworkInterface) theInterfaces
                         .nextElement();
-                if ((networkInterface1.getInetAddresses() != null)
-                        && networkInterface1.getInetAddresses()
-                                .hasMoreElements() &&
+                if (networkInterface1.getInetAddresses().hasMoreElements() &&
                         // we only want real interfaces
                         (Support_NetworkInterface
                                 .useInterface(networkInterface1) == true)) {
@@ -1132,9 +1128,8 @@ public class MulticastSocketTest extends SocketTestCase {
                         && (atLeastTwoInterfaces == false)) {
                     networkInterface2 = (NetworkInterface) theInterfaces
                             .nextElement();
-                    if ((networkInterface2.getInetAddresses() != null)
-                            && networkInterface2.getInetAddresses()
-                                    .hasMoreElements() &&
+                    if (networkInterface2.getInetAddresses().hasMoreElements()
+                            &&
                             // we only want real interfaces
                             (Support_NetworkInterface
                                     .useInterface(networkInterface2) == true)) {
@@ -1155,7 +1150,7 @@ public class MulticastSocketTest extends SocketTestCase {
 				NetworkInterface nextInterface = (NetworkInterface) theInterfaces
 						.nextElement();
 				addresses = nextInterface.getInetAddresses();
-				if (addresses != null) {
+				if (addresses.hasMoreElements()) {
 					while (addresses.hasMoreElements()) {
 						InetAddress nextAddress = (InetAddress) addresses
 								.nextElement();
