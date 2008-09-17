@@ -1140,18 +1140,23 @@ public class File implements Serializable, Comparable<File> {
      * @throws IOException
      *             If an error occurs when writing the file
      */
+    @SuppressWarnings("nls")
     public static File createTempFile(String prefix, String suffix,
             File directory) throws IOException {
         // Force a prefix null check first
         if (prefix.length() < 3) {
-            throw new IllegalArgumentException(Msg.getString("K006b")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Msg.getString("K006b"));
         }
-        String newSuffix = suffix == null ? ".tmp" : suffix; //$NON-NLS-1$
-        String tmpDir = "."; //$NON-NLS-1$
-        tmpDir = AccessController.doPrivileged(new PriviAction<String>(
-                "java.io.tmpdir", ".")); //$NON-NLS-1$//$NON-NLS-2$
-        File result, tmpDirFile = directory == null ? new File(tmpDir)
-                : directory;
+        String newSuffix = suffix == null ? ".tmp" : suffix;
+        File tmpDirFile;
+        if (directory == null) {
+            String tmpDir = AccessController.doPrivileged(
+                new PriviAction<String>("java.io.tmpdir", "."));
+            tmpDirFile = new File(tmpDir);
+        } else {
+            tmpDirFile = directory;
+        }
+        File result;
         do {
             result = genTempFile(prefix, newSuffix, tmpDirFile);
         } while (!result.createNewFile());
