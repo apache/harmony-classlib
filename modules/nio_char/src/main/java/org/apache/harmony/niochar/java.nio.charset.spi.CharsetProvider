@@ -1,2 +1,3 @@
 # NIO charset SPI extended charset provider
+org.apache.harmony.niochar.CharsetProviderImpl
 com.ibm.icu.charset.CharsetProviderICU

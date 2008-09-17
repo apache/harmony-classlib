@@ -43,9 +43,22 @@ import java.util.Map;
  */
 public class CharsetProviderImpl extends CharsetProvider {
 
+    /**
+     * Flags whether the default providers have got the native
+     * implementation loaded.  These are optional and used to
+     * improve performance in some circumstances.
+     */
+    private static boolean HAS_LOADED_NATIVES = false;
+
     static {
-    	System.loadLibrary("hycharset");
+        try {
+            System.loadLibrary("hycharset"); //$NON-NLS-1$
+            HAS_LOADED_NATIVES = true;
+        } catch (UnsatisfiedLinkError e) {
+            // Ignore - leave as natives unavailable.
+        }
     }
+
 
     /**
      * The named index of the 0th element of
@@ -67,6 +80,16 @@ public class CharsetProviderImpl extends CharsetProvider {
      * It means a charset aliases array.
      */
     protected static final int CHARSET_ALIASES = 2; 
+
+    /**
+     * Answers whether the provider has loaded the native
+     * implementation of the encoders/decoders.
+     * 
+     * @return true if the natives are loaded.
+     */
+    public static boolean hasLoadedNatives() {
+        return HAS_LOADED_NATIVES;
+    }
 
     /**
      * A cache of the charset instances.

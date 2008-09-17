@@ -17,14 +17,34 @@
 
 package org.apache.harmony.niochar.charset.additional;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CoderResult;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.CharBuffer;
-import java.nio.ByteBuffer;
+import java.nio.charset.CoderResult;
+
 import org.apache.harmony.nio.AddressUtil;
-import org.apache.harmony.niochar.charset.*;
+import org.apache.harmony.niochar.CharsetProviderImpl;
+import org.apache.harmony.niochar.charset.CP_1251;
+import org.apache.harmony.niochar.charset.CP_1252;
+import org.apache.harmony.niochar.charset.CP_1253;
+import org.apache.harmony.niochar.charset.CP_1254;
+import org.apache.harmony.niochar.charset.CP_1257;
+import org.apache.harmony.niochar.charset.ISO_8859_1;
+import org.apache.harmony.niochar.charset.ISO_8859_13;
+import org.apache.harmony.niochar.charset.ISO_8859_15;
+import org.apache.harmony.niochar.charset.ISO_8859_2;
+import org.apache.harmony.niochar.charset.ISO_8859_4;
+import org.apache.harmony.niochar.charset.ISO_8859_5;
+import org.apache.harmony.niochar.charset.ISO_8859_7;
+import org.apache.harmony.niochar.charset.ISO_8859_9;
+import org.apache.harmony.niochar.charset.KOI8_R;
+import org.apache.harmony.niochar.charset.US_ASCII;
+import org.apache.harmony.niochar.charset.UTF_16;
+import org.apache.harmony.niochar.charset.UTF_16BE;
+import org.apache.harmony.niochar.charset.UTF_16LE;
+import org.apache.harmony.niochar.charset.UTF_8;
 
 public class GB18030 extends Charset {
 
@@ -861,7 +881,7 @@ public class GB18030 extends Charset {
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
                     int cbRemaining = cb.remaining();
-                    if(bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
+                    if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
                         int cbPos = cb.position();
                         int bbPos = bb.position();
                         int[] res = {bb.remaining(), cbRemaining, 0, 0};
@@ -1160,7 +1180,7 @@ public class GB18030 extends Charset {
                                                                                                                           
 		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb){                                             
                   int bbRemaining = bb.remaining();                                                                     
-                  if(bb.isDirect() && cb.hasRemaining() && cb.hasArray()){                                                
+                  if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && cb.hasRemaining() && cb.hasArray()){                                                
                       int toProceed = (bbRemaining < cb.remaining()) ? bbRemaining : cb.remaining();
                       int cbPos = cb.position();
                       int bbPos = bb.position();

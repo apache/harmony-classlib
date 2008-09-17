@@ -17,14 +17,15 @@
 
 package org.apache.harmony.niochar.charset;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CoderResult;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.CharBuffer;
-import java.nio.ByteBuffer;
+import java.nio.charset.CoderResult;
 
 import org.apache.harmony.nio.AddressUtil;
+import org.apache.harmony.niochar.CharsetProviderImpl;
 
 public class ISO_8859_9 extends Charset {
 
@@ -55,7 +56,7 @@ public class ISO_8859_9 extends Charset {
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
                         int cbRemaining = cb.remaining();
-		        if(bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
+		        if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
 		            int toProceed = bb.remaining();
 		            int cbPos = cb.position();
 		            int bbPos = bb.position();
@@ -125,7 +126,7 @@ public class ISO_8859_9 extends Charset {
                                                                                                                           
 		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb){
                         int bbRemaining = bb.remaining();
-                        if(bb.isDirect() && cb.hasRemaining() && cb.hasArray()){
+                        if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && cb.hasRemaining() && cb.hasArray()){
 		            int toProceed = cb.remaining();
 		            int cbPos = cb.position();
 		            int bbPos = bb.position();

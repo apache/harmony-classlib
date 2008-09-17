@@ -25,6 +25,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
 import org.apache.harmony.nio.AddressUtil;
+import org.apache.harmony.niochar.CharsetProviderImpl;
 
 public class US_ASCII extends Charset {
 	
@@ -61,7 +62,7 @@ public class US_ASCII extends Charset {
 		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
-                    if(bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
+                    if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
                         int toProceed = bb.remaining();
                         boolean throwOverflow = false; 
                         if( cb.remaining() < toProceed ) { 
@@ -125,7 +126,7 @@ public class US_ASCII extends Charset {
 
 		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb){
                     int bbRemaining = bb.remaining();                                                                     
-                    if(bb.isDirect() && cb.hasRemaining() && cb.hasArray()){                                                
+                    if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && cb.hasRemaining() && cb.hasArray()){                                                
                         int toProceed = cb.remaining();
                         boolean throwOverflow = false; 
                         int cbPos = cb.position();
