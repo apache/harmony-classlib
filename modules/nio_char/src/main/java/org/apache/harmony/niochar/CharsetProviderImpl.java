@@ -52,7 +52,7 @@ public class CharsetProviderImpl extends CharsetProvider {
 
     static {
         try {
-            System.loadLibrary("hycharset"); //$NON-NLS-1$
+            System.loadLibrary("hyniochar"); //$NON-NLS-1$
             HAS_LOADED_NATIVES = true;
         } catch (UnsatisfiedLinkError e) {
             // Ignore - leave as natives unavailable.
