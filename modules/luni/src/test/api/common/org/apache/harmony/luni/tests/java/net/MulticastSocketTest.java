@@ -181,14 +181,14 @@ public class MulticastSocketTest extends SocketTestCase {
                                         && (preferIPv6AddressesValue != null)
                                         && (preferIPv6AddressesValue.equals("true"))) {
                                 // we expect an IPv6 ANY in this case
-                                assertTrue("inet Address returned when not set:"
-                                                + mss.getInterface().toString(), InetAddress
-                                                .getByName("::0").equals(mss.getInterface()));
+                                assertEquals("inet Address returned when not set",
+                                             InetAddress.getByName("::0"),
+                                             mss.getInterface());
                         } else {
                                 // we expect an IPv4 ANY in this case
-                                assertTrue("inet Address returned when not set:"
-                                                + mss.getInterface().toString(), InetAddress
-                                                .getByName("0.0.0.0").equals(mss.getInterface()));
+                                assertEquals("inet Address returned when not set",
+                                             InetAddress.getByName("0.0.0.0"),
+                                             mss.getInterface());
                         }
 
                         // validate that we get the expected response when we set via
@@ -198,21 +198,15 @@ public class MulticastSocketTest extends SocketTestCase {
                                 InetAddress firstAddress = (InetAddress) addresses
                                                 .nextElement();
                                 mss.setInterface(firstAddress);
-                                assertTrue(
-                                                "getNetworkInterface did not return interface set by setInterface.  Expected:"
-                                                                + firstAddress + " Got:"
-                                                                + mss.getInterface(), firstAddress
-                                                                .equals(mss.getInterface()));
+                                assertEquals("getNetworkInterface did not return interface set by setInterface",
+                                             firstAddress, mss.getInterface());
 
                                 groupPort = Support_PortManager.getNextPortForUDP();
                                 mss = new MulticastSocket(groupPort);
                                 mss.setNetworkInterface(networkInterface1);
-                                assertTrue(
-                                                "getInterface did not return interface set by setNeworkInterface Expected: "
-                                                                + firstAddress + "Got:"
-                                                                + mss.getInterface(), NetworkInterface
-                                                                .getByInetAddress(mss.getInterface())
-                                                                .equals(networkInterface1));
+                                assertEquals("getInterface did not return interface set by setNetworkInterface",
+                                             networkInterface1,
+                                             NetworkInterface.getByInetAddress(mss.getInterface()));
                         }
 
                 }
@@ -245,37 +239,34 @@ public class MulticastSocketTest extends SocketTestCase {
                     .equalsIgnoreCase("false"))
                     && (preferIPv6AddressesValue != null)
                     && (preferIPv6AddressesValue.equals("true"))) {
-                assertTrue(
-                        "network interface returned wrong network interface when not set:"
-                                + theInterface, InetAddress.getByName("::0")
-                                .equals(firstAddress));
+                assertEquals("network interface returned wrong network interface when not set:"
+                             + theInterface,
+                             firstAddress, InetAddress.getByName("::0"));
 
             } else {
-                assertTrue(
-                        "network interface returned wrong network interface when not set:"
-                                + theInterface, InetAddress
-                                .getByName("0.0.0.0").equals(firstAddress));
+                assertEquals("network interface returned wrong network interface when not set:"
+                             + theInterface,
+                             InetAddress.getByName("0.0.0.0"),
+                             firstAddress);
             }
 
             mss.setNetworkInterface(networkInterface1);
-            assertTrue(
-                    "getNetworkInterface did not return interface set by setNeworkInterface",
-                    networkInterface1.equals(mss.getNetworkInterface()));
+            assertEquals("getNetworkInterface did not return interface set by setNeworkInterface",
+                         networkInterface1, mss.getNetworkInterface());
 
             if (atLeastTwoInterfaces) {
                 mss.setNetworkInterface(networkInterface2);
-                assertTrue(
-                        "getNetworkInterface did not return network interface set by second setNetworkInterface call",
-                        networkInterface2.equals(mss.getNetworkInterface()));
+                assertEquals("getNetworkInterface did not return network interface set by second setNetworkInterface call",
+                             networkInterface2, mss.getNetworkInterface());
             }
 
             groupPort = Support_PortManager.getNextPortForUDP();
             mss = new MulticastSocket(groupPort);
             if (IPV6networkInterface1 != null) {
                 mss.setNetworkInterface(IPV6networkInterface1);
-                assertTrue(
-                        "getNetworkInterface did not return interface set by setNeworkInterface",
-                        IPV6networkInterface1.equals(mss.getNetworkInterface()));
+                assertEquals("getNetworkInterface did not return interface set by setNeworkInterface",
+                             IPV6networkInterface1,
+                             mss.getNetworkInterface());
             }
 
             // validate that we get the expected response when we set via
@@ -286,9 +277,9 @@ public class MulticastSocketTest extends SocketTestCase {
             if (addresses.hasMoreElements()) {
                 firstAddress = (InetAddress) addresses.nextElement();
                 mss.setInterface(firstAddress);
-                assertTrue(
-                        "getNetworkInterface did not return interface set by setInterface",
-                        networkInterface1.equals(mss.getNetworkInterface()));
+                assertEquals("getNetworkInterface did not return interface set by setInterface",
+                             networkInterface1,
+                             mss.getNetworkInterface());
             }
         }
     }
@@ -300,11 +291,11 @@ public class MulticastSocketTest extends SocketTestCase {
 		try {
 			mss = new MulticastSocket();
 			mss.setTimeToLive(120);
-			assertTrue("Returned incorrect 1st TTL: " + mss.getTimeToLive(),
-					mss.getTimeToLive() == 120);
+			assertEquals("Returned incorrect 1st TTL",
+                                     120, mss.getTimeToLive());
 			mss.setTimeToLive(220);
-			assertTrue("Returned incorrect 2nd TTL: " + mss.getTimeToLive(),
-					mss.getTimeToLive() == 220);
+			assertEquals("Returned incorrect 2nd TTL",
+                                     220, mss.getTimeToLive());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_MULTICAST);
 		} catch (Exception e) {
 			handleException(e, SO_MULTICAST);
@@ -320,8 +311,8 @@ public class MulticastSocketTest extends SocketTestCase {
 		try {
 			mss = new MulticastSocket();
 			mss.setTTL((byte) 120);
-			assertTrue("Returned incorrect TTL: " + mss.getTTL(),
-					mss.getTTL() == 120);
+			assertEquals("Returned incorrect TTL",
+                                     120, mss.getTTL());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_MULTICAST);
 		} catch (Exception e) {
 			handleException(e, SO_MULTICAST);
@@ -349,8 +340,9 @@ public class MulticastSocketTest extends SocketTestCase {
                 mss.send(sdp, (byte) 10);
                 Thread.sleep(1000);
 
-                assertTrue("Group member did not recv data: ", new String(server.rdp
-				.getData(), 0, server.rdp.getLength()).equals(msg));
+                assertEquals("Group member did not recv data",
+                             msg,
+                             new String(server.rdp.getData(), 0, server.rdp.getLength()));
 	}
 
 	/**
@@ -375,7 +367,7 @@ public class MulticastSocketTest extends SocketTestCase {
 		int groupPort = ports[0];
 		int serverPort = ports[1];
 
-			Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
+                Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
 
         // first validate that we handle a null group ok
         mss = new MulticastSocket(groupPort);
@@ -433,9 +425,9 @@ public class MulticastSocketTest extends SocketTestCase {
             mss.send(sdp);
             Thread.sleep(1000);
             // now vaildate that we received the data as expected
-            assertTrue("Group member did not recv data: ", new String(
-                    server.rdp.getData(), 0, server.rdp.getLength())
-                    .equals(msg));
+            assertEquals("Group member did not recv data",
+                         msg,
+                         new String(server.rdp.getData(), 0, server.rdp.getLength()));
             server.stopServer();
 
             // now validate that we handled the case were we join a
@@ -540,10 +532,9 @@ public class MulticastSocketTest extends SocketTestCase {
                         mss.send(sdp);
                         Thread.sleep(1000);
                         if (thisInterface.equals(sendingInterface)) {
-                            assertTrue(
-                                    "Group member did not recv data when bound on specific interface: ",
-                                    new String(server.rdp.getData(), 0,
-                                            server.rdp.getLength()).equals(msg));
+                            assertEquals("Group member did not recv data when bound on specific interface",
+                                         msg,
+                                         new String(server.rdp.getData(), 0, server.rdp.getLength()));
                         } else {
                             assertFalse(
                                     "Group member received data on other interface when only asked for it on one interface: ",
@@ -734,14 +725,14 @@ public class MulticastSocketTest extends SocketTestCase {
 		mss.close();
 		byte[] data = server.rdp.getData();
 		int length = server.rdp.getLength();
-		assertTrue("Failed to send data. Received " + length, new String(data,
-				0, length).equals(msg));
+		assertEquals("Failed to send data. Received " + length,
+                             msg, new String(data, 0, length));
 	}
 
 	/**
 	 * @tests java.net.MulticastSocket#setInterface(java.net.InetAddress)
 	 */
-	public void test_setInterfaceLjava_net_InetAddress() {
+	public void test_setInterfaceLjava_net_InetAddress() throws UnknownHostException {
 		// Test for method void
 		// java.net.MulticastSocket.setInterface(java.net.InetAddress)
 		// Note that the machine is not multi-homed
@@ -776,16 +767,12 @@ public class MulticastSocketTest extends SocketTestCase {
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_MULTICAST);
 		} catch (SocketException e) {
 			handleException(e, SO_MULTICAST);
-		} catch (UnknownHostException e) {
-			fail("Exception during setInterface test: " + e.toString());
 		}
 
 		// Regression test for Harmony-2410
 		try {
 			mss = new MulticastSocket();
 			mss.setInterface(InetAddress.getByName("224.0.0.5"));
-		} catch (UnknownHostException uhe) {
-			fail("Unable to get InetAddress by name from '224.0.0.5' addr: " + uhe.toString());
 		} catch (SocketException se) {
 			// expected
 		} catch (IOException ioe) {
@@ -820,9 +807,8 @@ public class MulticastSocketTest extends SocketTestCase {
             groupPort = Support_PortManager.getNextPortForUDP();
             mss = new MulticastSocket(groupPort);
             mss.setNetworkInterface(networkInterface1);
-            assertTrue(
-                    "Interface did not seem to be set by setNeworkInterface",
-                    networkInterface1.equals(mss.getNetworkInterface()));
+            assertEquals("Interface did not seem to be set by setNeworkInterface",
+                         networkInterface1, mss.getNetworkInterface());
 
             // set up the server and join the group
             group = InetAddress.getByName("224.0.0.3");
@@ -863,9 +849,8 @@ public class MulticastSocketTest extends SocketTestCase {
                         Thread.sleep(1000);
                         String receivedMessage = new String(server.rdp
                                 .getData(), 0, server.rdp.getLength());
-                        assertTrue(
-                                "Group member did not recv data when send on a specific interface: ",
-                                receivedMessage.equals(msg));
+                        assertEquals("Group member did not recv data sent on a specific interface",
+                                     msg, receivedMessage);
                         // stop the server
                         server.stopServer();
                     }
@@ -881,11 +866,11 @@ public class MulticastSocketTest extends SocketTestCase {
 		try {
 			mss = new MulticastSocket();
 			mss.setTimeToLive(120);
-			assertTrue("Returned incorrect 1st TTL: " + mss.getTimeToLive(),
-					mss.getTimeToLive() == 120);
+			assertEquals("Returned incorrect 1st TTL",
+                                     120, mss.getTimeToLive());
 			mss.setTimeToLive(220);
-			assertTrue("Returned incorrect 2nd TTL: " + mss.getTimeToLive(),
-					mss.getTimeToLive() == 220);
+			assertEquals("Returned incorrect 2nd TTL",
+                                     220, mss.getTimeToLive());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_MULTICAST);
 		} catch (Exception e) {
 			handleException(e, SO_MULTICAST);
@@ -900,8 +885,7 @@ public class MulticastSocketTest extends SocketTestCase {
 		try {
 			mss = new MulticastSocket();
 			mss.setTTL((byte) 120);
-			assertTrue("Failed to set TTL: " + mss.getTTL(),
-					mss.getTTL() == 120);
+			assertEquals("Failed to set TTL", 120, mss.getTTL());
 			ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_MULTICAST);
 		} catch (Exception e) {
 			handleException(e, SO_MULTICAST);
@@ -1069,20 +1053,16 @@ public class MulticastSocketTest extends SocketTestCase {
 			if (theSocket2 != null)
 				theSocket2.close();
 
-			// test the default case which we expect to be the same on all
-			// platforms
-			try {
-				theAddress = new InetSocketAddress(
-					InetAddress.getLocalHost(), Support_PortManager
-							.getNextPortForUDP());
-				theSocket1 = new MulticastSocket(null);
-				theSocket2 = new MulticastSocket(null);
-				theSocket1.bind(theAddress);
-				theSocket2.bind(theAddress);
-			} catch (BindException e) {
-				fail(
-						"unexpected exception when trying to connect to do duplicate socket bind with re-useaddr left as default");
-			}
+			// test the default case which we expect to be
+			// the same on all platforms
+                        theAddress =
+                            new InetSocketAddress(
+                                    InetAddress.getLocalHost(),
+                                    Support_PortManager.getNextPortForUDP());
+                        theSocket1 = new MulticastSocket(null);
+                        theSocket2 = new MulticastSocket(null);
+                        theSocket1.bind(theAddress);
+                        theSocket2.bind(theAddress);
 			if (theSocket1 != null)
 				theSocket1.close();
 			if (theSocket2 != null)
