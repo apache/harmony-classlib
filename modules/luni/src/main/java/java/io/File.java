@@ -270,7 +270,8 @@ public class File implements Serializable, Comparable<File> {
         char newPath[] = origPath.toCharArray();
         for (int i = 0; i < length; i++) {
             char pathChar = newPath[i];
-            if (pathChar == '\\' || pathChar == '/') {
+            if ((separatorChar == '\\' && pathChar == '\\')
+                || pathChar == '/') {
                 /* UNC Name requires 2 leading slashes */
                 if ((foundSlash && i == uncIndex) || !foundSlash) {
                     newPath[newLength++] = separatorChar;

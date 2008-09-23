@@ -122,8 +122,13 @@ public class FileTest extends TestCase {
         File file = new File(root, "/dir/file");
         assertEquals("Assert 1: wrong path result ", path.getPath(), file
                 .getPath());
-        assertTrue("Assert 1.1: path not absolute ", new File("\\\\\\a\b")
-                .isAbsolute());
+        if (File.separatorChar == '\\') {
+            assertTrue("Assert 1.1: path not absolute ", new File("\\\\\\a\b")
+                       .isAbsolute());
+        } else {
+            assertFalse("Assert 1.1: path absolute ", new File("\\\\\\a\b")
+                       .isAbsolute());
+        }
 
         // Test data used in a few places below
         dirName = System.getProperty("user.dir");
@@ -226,10 +231,13 @@ public class FileTest extends TestCase {
         assertEquals("wrong result 1", ref1.getPath(), file1.getPath());
         File file2 = new File("/", "//dir1/file1");
         assertEquals("wrong result 2", ref1.getPath(), file2.getPath());
-        File file3 = new File("\\", "\\dir1\\file1");
-        assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
-        File file4 = new File("\\", "\\\\dir1\\file1");
-        assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
+
+        if (File.separatorChar == '\\') {
+            File file3 = new File("\\", "\\dir1\\file1");
+            assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
+            File file4 = new File("\\", "\\\\dir1\\file1");
+            assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
+        }
 
         File ref2 = new File("/lib/content-types.properties");
         File file5 = new File("/", "lib/content-types.properties");
@@ -247,10 +255,13 @@ public class FileTest extends TestCase {
         assertEquals("wrong result 1", ref1.getPath(), file1.getPath());
         File file2 = new File(root, "//dir1/file1");
         assertEquals("wrong result 2", ref1.getPath(), file2.getPath());
-        File file3 = new File(root, "\\dir1\\file1");
-        assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
-        File file4 = new File(root, "\\\\dir1\\file1");
-        assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
+
+        if (File.separatorChar == '\\') {
+            File file3 = new File(root, "\\dir1\\file1");
+            assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
+            File file4 = new File(root, "\\\\dir1\\file1");
+            assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
+        }
 
         File ref2 = new File("/lib/content-types.properties");
         File file5 = new File(root, "lib/content-types.properties");
@@ -1096,7 +1107,9 @@ public class FileTest extends TestCase {
                     || (!f.isAbsolute() && f1.isAbsolute()));
         } else {
             File f = new File("/test");
+            File f1 = new File("\\test");
             assertTrue("Absolute returned false", f.isAbsolute());
+            assertFalse("Absolute returned true", f1.isAbsolute());
         }
         assertTrue("Non-Absolute returned true", !new File("../test")
                 .isAbsolute());
