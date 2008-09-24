@@ -61,12 +61,12 @@ import org.apache.harmony.niochar.CharsetProviderImpl;
  * as "java.nio.charset.spi.CharsetProvider" and located in the
  * "META-INF/services" sub folder of one or more classpaths. The files should be
  * encoded in "UTF-8". Each line of their content specifies the class name of a
- * charset provider which extends <code>java.nio.spi.CharsetProvider</code>.
- * A line should ends with '\r', '\n' or '\r\n'. Leading and trailing
- * whitespaces are trimmed. Blank lines, and lines (after trimmed) starting with
- * "#" which are regarded as comments, are both ignored. Duplicates of already
- * appeared names are also ignored. Both the configuration files and the
- * provider classes will be loaded using the thread context class loader.
+ * charset provider which extends <code>java.nio.spi.CharsetProvider</code>. A
+ * line should ends with '\r', '\n' or '\r\n'. Leading and trailing whitespaces
+ * are trimmed. Blank lines, and lines (after trimmed) starting with "#" which
+ * are regarded as comments, are both ignored. Duplicates of already appeared
+ * names are also ignored. Both the configuration files and the provider classes
+ * will be loaded using the thread context class loader.
  * </p>
  * <p>
  * This class is thread-safe.
@@ -122,8 +122,7 @@ public abstract class Charset implements Comparable<Charset> {
     }
 
     /**
-     * Constructs a <code>Charset</code> object. Duplicated aliases are
-     * ignored.
+     * Constructs a <code>Charset</code> object. Duplicated aliases are ignored.
      * 
      * @param canonicalName
      *            the canonical name of the charset
@@ -313,8 +312,8 @@ public abstract class Charset implements Comparable<Charset> {
      * Gets a map of all available charsets supported by the runtime.
      * <p>
      * The returned map contains mappings from canonical names to corresponding
-     * instances of <code>Charset</code>. The canonical names can be
-     * considered as case-insensitive.
+     * instances of <code>Charset</code>. The canonical names can be considered
+     * as case-insensitive.
      * </p>
      * 
      * @return an unmodifiable map of all available charsets supported by the
@@ -619,13 +618,12 @@ public abstract class Charset implements Comparable<Charset> {
      * @return the result of the encoding
      */
     public final ByteBuffer encode(CharBuffer buffer) {
-        try 
-        {
+        try {
             return this.newEncoder()
-                     .onMalformedInput(CodingErrorAction.REPLACE)
-                     .onUnmappableCharacter(CodingErrorAction.REPLACE)
-                     .encode(buffer);
-                                     
+                    .onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE).encode(
+                            buffer);
+
         } catch (CharacterCodingException ex) {
             throw new Error(ex.getMessage(), ex);
         }
@@ -660,16 +658,16 @@ public abstract class Charset implements Comparable<Charset> {
      */
     public final CharBuffer decode(ByteBuffer buffer) {
 
-		try {
-			return this.newDecoder()
-					.onMalformedInput(CodingErrorAction.REPLACE)
-					.onUnmappableCharacter(CodingErrorAction.REPLACE)
-					.decode(buffer);
+        try {
+            return this.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPLACE)
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE).decode(
+                            buffer);
 
-		} catch (CharacterCodingException ex) {
-			throw new Error(ex.getMessage(), ex);
-		}
-	}
+        } catch (CharacterCodingException ex) {
+            throw new Error(ex.getMessage(), ex);
+        }
+    }
 
     /*
      * -------------------------------------------------------------------
