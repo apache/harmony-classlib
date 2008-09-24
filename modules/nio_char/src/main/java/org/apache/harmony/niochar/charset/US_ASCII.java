@@ -59,7 +59,7 @@ public class US_ASCII extends Charset {
 			super(cs, 1, 1);
 		}
 		
-		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
+		private native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
                     if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && bb.hasRemaining() && cb.hasArray()){

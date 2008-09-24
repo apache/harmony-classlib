@@ -51,7 +51,7 @@ public class IBM01141 extends Charset {
 
 		}
 
-		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
+		private native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
