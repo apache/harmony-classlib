@@ -176,7 +176,21 @@ public class Timestamp extends Date {
      */
     @Override
     public int compareTo(Date theObject) {
-        return this.compareTo((Timestamp) theObject);
+        if(theObject instanceof Timestamp){
+            return this.compareTo((Timestamp)theObject);
+        }
+        
+        if (this.getTime() < theObject.getTime()) {
+            return -1;
+        }
+        if (this.getTime() > theObject.getTime()) {
+            return 1;
+        }
+        
+        if(this.getNanos() > 0){
+            return 1;
+        }
+        return 0;
     }
 
     /**
