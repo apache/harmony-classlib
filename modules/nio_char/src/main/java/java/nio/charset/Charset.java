@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.apache.harmony.niochar.CharsetProviderImpl;
 
@@ -456,9 +457,15 @@ public abstract class Charset implements Comparable<Charset> {
                         .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
             } else {
                 getSystemClassLoader();
-                e = systemClassLoader
-                        .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+                if (systemClassLoader == null) {
+                    // Non available during class library start-up phase
+                    e = new Vector<URL>().elements();
+                } else {
+                    e = systemClassLoader
+                            .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+                }
             }
+
             // examine each configuration file
             while (e.hasMoreElements()) {
                 cs = searchConfiguredCharsets(charsetName, contextClassLoader,
