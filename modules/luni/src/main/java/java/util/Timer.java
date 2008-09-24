@@ -344,10 +344,31 @@ public class Timer {
         impl = new TimerImpl(false);
     }
 
+    /**
+     * Create a new timer with the given name and daemon status.
+     * 
+     * The name is given the timer's background thread and if the flag is true
+     * the thread is run as a daemon.
+     * 
+     * @param name
+     *            a name to associate with the timer thread.
+     * @param isDaemon
+     *            true if the timer thread should be a daemon, or false if it is
+     *            a regular thread that prevents the application terminating.
+     */
     public Timer(String name, boolean isDaemon) {
         impl = new TimerImpl(name, isDaemon);
     }
 
+    /**
+     * Create a new timer whose thread has the given name.
+     * 
+     * The name is given the timer's background thread, that is not run as a
+     * daemon.
+     * 
+     * @param name
+     *            a name to associate with the timer thread.
+     */
     public Timer(String name) {
         impl = new TimerImpl(name, false);
     }
@@ -361,6 +382,16 @@ public class Timer {
         impl.cancel();
     }
 
+    /**
+     * Purging the timer eagerly removes cancelled tasks.
+     * 
+     * When a large number of tasks have been cancelled it may be helpful to
+     * explicitly purge them from the timer rather than let them be removed
+     * during normal expiry processing. This is a housekeeping task that does
+     * not affect the timer's schedule tasks.
+     * 
+     * @return the number of tasks that were purged.
+     */
     public int purge() {
         synchronized (impl) {
             return impl.purge();
