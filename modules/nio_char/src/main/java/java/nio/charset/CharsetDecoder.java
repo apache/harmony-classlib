@@ -90,10 +90,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * @see java.nio.charset.CharsetEncoder
  */
 public abstract class CharsetDecoder {
-    /*
-     * --------------------------------------- Consts
-     * ---------------------------------------
-     */
+
     /*
      * internal status consts
      */
@@ -105,10 +102,6 @@ public abstract class CharsetDecoder {
 
     private static final int FLUSH = 3;
 
-    /*
-     * --------------------------------------- Instance variables
-     * ---------------------------------------
-     */
     // average number of chars for one byte
     private float averChars;
 
@@ -130,10 +123,6 @@ public abstract class CharsetDecoder {
     // the current status
     private int status;
 
-    /*
-     * --------------------------------------- Constructor
-     * ---------------------------------------
-     */
     /**
      * Construct a new <code>CharsetDecoder</code> using given
      * <code>Charset</code>, average number and maximum number of characters
@@ -172,10 +161,6 @@ public abstract class CharsetDecoder {
         replace = "\ufffd"; //$NON-NLS-1$
     }
 
-    /*
-     * --------------------------------------- Methods
-     * ---------------------------------------
-     */
     /**
      * get the average number of characters created by this decoder for single
      * input byte

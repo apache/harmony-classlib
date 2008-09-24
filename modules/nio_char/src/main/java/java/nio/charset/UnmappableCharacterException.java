@@ -25,7 +25,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
 public class UnmappableCharacterException extends CharacterCodingException {
 
     /*
-     * This constant is used during deserialization to check the J2SE version
+     * This constant is used during deserialization to check the version
      * which created the serialized object.
      */
     private static final long serialVersionUID = -7026962371537706123L;
@@ -57,6 +57,7 @@ public class UnmappableCharacterException extends CharacterCodingException {
      * 
      * @return a message describing this exception
      */
+    @Override
     public String getMessage() {
         // niochar.0A=The unmappable character length is {0}.
         return Messages.getString("niochar.0A", this.inputLength); //$NON-NLS-1$
