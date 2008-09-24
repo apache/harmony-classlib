@@ -106,7 +106,7 @@ public abstract class Charset implements Comparable<Charset> {
     private final HashSet<String> aliasesSet;
 
     // cached Charset table
-    private static HashMap<String, Charset> cachedCharsetTable = new HashMap<String, Charset>();
+    private final static HashMap<String, Charset> cachedCharsetTable = new HashMap<String, Charset>();
 
     static {
         /*
@@ -423,56 +423,54 @@ public abstract class Charset implements Comparable<Charset> {
     }
 
     /*
-     * Gets a <code> Charset </code> instance for the specified charset name. If
+     * Gets a <code>Charset</code> instance for the specified charset name. If
      * the charset is not supported, returns null instead of throwing an
      * exception.
      */
-    private static Charset forNameInternal(String charsetName)
+    private synchronized static Charset forNameInternal(String charsetName)
             throws IllegalCharsetNameException {
+        Charset cs = cachedCharsetTable.get(charsetName);
+        if (null != cs) {
+            return cs;
+        }
+
         if (null == charsetName) {
             throw new IllegalArgumentException();
         }
         checkCharsetName(charsetName);
-        synchronized (Charset.class) {
-            // Try to get Charset from cachedCharsetTable
-            Charset cs = getCachedCharset(charsetName);
-            if (null != cs) {
-                return cs;
-            }
-            // Try built-in charsets
-            if (_builtInProvider == null) {
-                _builtInProvider = new CharsetProviderImpl();
-            }
-            cs = _builtInProvider.charsetForName(charsetName);
-            if (null != cs) {
-                cacheCharset(cs);
-                return cs;
-            }
+        // try built-in charsets
+        if (_builtInProvider == null) {
+            _builtInProvider = new CharsetProviderImpl();
+        }
+        cs = _builtInProvider.charsetForName(charsetName);
+        if (null != cs) {
+            cacheCharset(cs);
+            return cs;
+        }
 
-            // Collect all charsets provided by charset providers
-            ClassLoader contextClassLoader = getContextClassLoader();
-            Enumeration<URL> e = null;
-            try {
-                if (null != contextClassLoader) {
-                    e = contextClassLoader
-                            .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
-                } else {
-                    getSystemClassLoader();
-                    e = systemClassLoader
-                            .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
-                }
-                // Examine each configuration file
-                while (e.hasMoreElements()) {
-                    cs = searchConfiguredCharsets(charsetName,
-                            contextClassLoader, e.nextElement());
-                    if (null != cs) {
-                        cacheCharset(cs);
-                        return cs;
-                    }
-                }
-            } catch (IOException ex) {
-                // Unexpected ClassLoader exception, ignore
+        // collect all charsets provided by charset providers
+        ClassLoader contextClassLoader = getContextClassLoader();
+        Enumeration<URL> e = null;
+        try {
+            if (null != contextClassLoader) {
+                e = contextClassLoader
+                        .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
+            } else {
+                getSystemClassLoader();
+                e = systemClassLoader
+                        .getResources(PROVIDER_CONFIGURATION_FILE_NAME);
             }
+            // examine each configuration file
+            while (e.hasMoreElements()) {
+                cs = searchConfiguredCharsets(charsetName, contextClassLoader,
+                        e.nextElement());
+                if (null != cs) {
+                    cacheCharset(cs);
+                    return cs;
+                }
+            }
+        } catch (IOException ex) {
+            // Unexpected ClassLoader exception, ignore
         }
         return null;
     }
@@ -490,13 +488,6 @@ public abstract class Charset implements Comparable<Charset> {
                 cachedCharsetTable.put(alias, cs);
             }
         }
-    }
-
-    /*
-     * get cached charset reference by name
-     */
-    private static Charset getCachedCharset(String name) {
-        return cachedCharsetTable.get(name);
     }
 
     /**
