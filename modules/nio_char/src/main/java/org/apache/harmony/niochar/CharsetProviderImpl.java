@@ -31,22 +31,20 @@ import java.util.Map;
 
 /**
  * This class is an implementation of the java.nio.charset.spi.CharsetProvider
- * class, in spite of the fact that it is abstract. It is a base class of
- * a concrete character set provider implementation
- * Please note, a derived class should define the getPackageName() and 
- * getCharsetsInfo() methods.
- * The first of them has to return a string with a package name where 
- * the derived class is located.
- * The second one has to construct an array, the structure of which is 
- * described below.
- * See CharsetProviderImplStd or CharsetProviderImplExt for example.
+ * class, in spite of the fact that it is abstract. It is a base class of a
+ * concrete character set provider implementation Please note, a derived class
+ * should define the getPackageName() and getCharsetsInfo() methods. The first
+ * of them has to return a string with a package name where the derived class is
+ * located. The second one has to construct an array, the structure of which is
+ * described below. See CharsetProviderImplStd or CharsetProviderImplExt for
+ * example.
  */
 public class CharsetProviderImpl extends CharsetProvider {
 
     /**
-     * Flags whether the default providers have got the native
-     * implementation loaded.  These are optional and used to
-     * improve performance in some circumstances.
+     * Flags whether the default providers have got the native implementation
+     * loaded. These are optional and used to improve performance in some
+     * circumstances.
      */
     private static boolean HAS_LOADED_NATIVES = false;
 
@@ -59,31 +57,27 @@ public class CharsetProviderImpl extends CharsetProvider {
         }
     }
 
-
     /**
-     * The named index of the 0th element of
-     * the <code>charsets[]</code> array.
+     * The named index of the 0th element of the <code>charsets[]</code> array.
      * It means a charset class name.
      */
-    protected static final int CHARSET_CLASS = 0; 
+    protected static final int CHARSET_CLASS = 0;
 
     /**
-     * The named index of the 1st element of
-     * the <code>charsets[]</code> array.
+     * The named index of the 1st element of the <code>charsets[]</code> array.
      * It means a charset instance.
      */
-    protected static final int CHARSET_INSTANCE = 1; 
-    
-    /**
-     * The named index of the 2nd element of
-     * the <code>charsets[]</code> array.
-     * It means a charset aliases array.
-     */
-    protected static final int CHARSET_ALIASES = 2; 
+    protected static final int CHARSET_INSTANCE = 1;
 
     /**
-     * Answers whether the provider has loaded the native
-     * implementation of the encoders/decoders.
+     * The named index of the 2nd element of the <code>charsets[]</code> array.
+     * It means a charset aliases array.
+     */
+    protected static final int CHARSET_ALIASES = 2;
+
+    /**
+     * Answers whether the provider has loaded the native implementation of the
+     * encoders/decoders.
      * 
      * @return true if the natives are loaded.
      */
@@ -94,7 +88,7 @@ public class CharsetProviderImpl extends CharsetProvider {
     /**
      * A cache of the charset instances.
      */
-    protected Map cache;
+    protected Map<String, Object[]> cache;
 
     /**
      * An array returned by <code>getCharsetsInfo()</code>.
@@ -106,8 +100,11 @@ public class CharsetProviderImpl extends CharsetProvider {
      */
     protected String packageName;
 
+    /**
+     * Default constructor for the built-in charset provider implementation.
+     */
     public CharsetProviderImpl() {
-        cache = Collections.synchronizedMap(new HashMap());
+        cache = Collections.synchronizedMap(new HashMap<String, Object[]>());
         charsets = getCharsetsInfo();
         packageName = getPackageName();
         for (int i = 0; i < charsets.length; i++) {
@@ -118,75 +115,105 @@ public class CharsetProviderImpl extends CharsetProvider {
         }
     }
 
+    /**
+     * Answers an iterator over the list of available charsets.
+     * 
+     * @return available charsets.
+     */
+    @Override
     public Iterator<Charset> charsets() {
         ArrayList<Charset> list = new ArrayList<Charset>();
         for (int i = 0; i < charsets.length; i++) {
-            list.add(charsetForName(((String[]) charsets[i][CHARSET_ALIASES])[0]));
+            list
+                    .add(charsetForName(((String[]) charsets[i][CHARSET_ALIASES])[0]));
         }
         return list.iterator();
     }
 
+    /**
+     * Answers the charset with the given canonical or alias name.
+     * 
+     * Subsequent requests for the same charset will answer the same instance.
+     * If the charset is unavailable the method returns <code>null</code>.
+     * 
+     * @param charsetName
+     *            the name of a character set.
+     * @return the charset requested, or <code>null</code> if unavailable.
+     */
+    @Override
     public Charset charsetForName(String charsetName) {
-        Object arr[] = (Object[]) cache.get(charsetName.toUpperCase());
+        Object arr[] = cache.get(charsetName.toUpperCase());
         if (arr == null) {
-        	return null;
+            return null;
         }
         // Make an instance of the found charset.
         if (arr[CHARSET_INSTANCE] == null) {
-            final String className = packageName + "." + (String) arr[CHARSET_CLASS];
+            final String className = packageName
+                    + "." + (String) arr[CHARSET_CLASS]; //$NON-NLS-1$
             final String canonicalName = ((String[]) arr[CHARSET_ALIASES])[0];
             final String aliases[] = (String[]) arr[CHARSET_ALIASES];
-            arr[CHARSET_INSTANCE] = AccessController.doPrivileged(
-                    new PrivilegedAction() {
+            arr[CHARSET_INSTANCE] = AccessController
+                    .doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             try {
-                                Class cls = Class.forName(className);
-                                Constructor ctor = cls.getConstructor(
-                                        new Class[] { String.class, String[].class });
+                                Class<?> cls = Class.forName(className);
+                                Constructor<?> ctor = cls
+                                        .getConstructor(new Class[] {
+                                                String.class, String[].class });
                                 ctor.setAccessible(true);
-                                return ctor.newInstance(new Object[] { 
+                                return ctor.newInstance(new Object[] {
                                         canonicalName, aliases });
                             } catch (Exception e) {
                                 return null;
                             }
                         }
-                    }
-            );
+                    });
         }
         return (Charset) arr[CHARSET_INSTANCE];
     }
-    
-    public final void putCharsets(Map map) {
-        Object[][] charsets = getCharsetsInfo();
-        for (int i = 0; i < charsets.length; i++) {
-            final String canonicalName = ((String[])charsets[i][CHARSET_ALIASES])[0];
-        	Charset cs = charsetForName(canonicalName);
-        	if(cs != null) {
+
+    /**
+     * A helper method for answering all the available charsets in this
+     * provider.
+     * 
+     * The method adds to the given map by storing charset canonical names as
+     * the keys, with associated charsets as the value.
+     * 
+     * @param map
+     *            for storing the descriptions of the charsets.
+     */
+    public final void putCharsets(Map<String, Charset> map) {
+        Object[][] charsetInfo = getCharsetsInfo();
+        for (int i = 0; i < charsetInfo.length; i++) {
+            final String canonicalName = ((String[]) charsetInfo[i][CHARSET_ALIASES])[0];
+            Charset cs = charsetForName(canonicalName);
+            if (cs != null) {
                 map.put(canonicalName, cs);
-        	}
-       	}
+            }
+        }
     }
-    
 
     protected String getPackageName() {
-        return "org.apache.harmony.niochar.charset";
+        return "org.apache.harmony.niochar.charset"; //$NON-NLS-1$
     }
 
     protected Object[][] getCharsetsInfo() {
-        // The next charset aliases corresponds IANA registry 
-        // http://www.iana.org/assignments/character-sets.
-        // 
-        //
-        // Array structure:
-        //
-        // charsetsInfo[][0] - String: A charset class name.
-        //                     The named index is CHARSET_CLASS.
-        // charsetsInfo[][1] - Charset: A charset instance.
-        //                     The named index is CHARSET_INSTANCE.
-        // charsetsInfo[][2] - String[]: A charset aliases array.
-        //                     The named index is CHARSET_ALIASES.
-        //                     THE FIRST ELEMENT OF THE ALIASES ARRAY MUST BE 
-        //                     A CANONICAL CHARSET NAME.
+        /* The next charset aliases corresponds IANA registry 
+         * http://www.iana.org/assignments/character-sets.
+         * 
+         *
+         * Array structure:
+         *
+         * charsetsInfo[][0] - String: A charset class name.
+         *                     The named index is CHARSET_CLASS.
+         * charsetsInfo[][1] - Charset: A charset instance.
+         *                     The named index is CHARSET_INSTANCE.
+         * charsetsInfo[][2] - String[]: A charset aliases array.
+         *                     The named index is CHARSET_ALIASES.
+         *                     THE FIRST ELEMENT OF THE ALIASES ARRAY MUST BE 
+         *                     A CANONICAL CHARSET NAME.
+         */
+        @SuppressWarnings("nls")
         Object charsetsInfo[][] = {
             { "US_ASCII",    null,new String[] { "US-ASCII", 
                                                  "ANSI_X3.4-1968", 
@@ -293,8 +320,8 @@ public class CharsetProviderImpl extends CharsetProvider {
                                   
             { "UTF_16",      null,new String[] { "UTF-16",
                                                  "UTF16",
-            		                             "UTF_16" } },
-            		          
+                                                 "UTF_16" } },
+                              
             { "UTF_16LE",    null,new String[] { "UTF-16LE",
                                                  "X-UTF-16LE",
                                                  "UTF_16LE" } },
@@ -609,15 +636,15 @@ public class CharsetProviderImpl extends CharsetProvider {
                                                   "cp1098"} },
 
             { "additional.x_MacCyrillic",           null, new String[] { "x-mac-cyrillic",
-            		                                          "x-MacCyrillic",
+                                                              "x-MacCyrillic",
                                                               "MacCyrillic"} },
 
             { "additional.x_MacGreek",              null, new String[] { "x-mac-greek",
-            		                                          "x-MacGreek",
+                                                              "x-MacGreek",
                                                               "MacGreek"} },
 
             { "additional.x_MacTurkish",              null, new String[] { "x-mac-turkish",
-            		                                          "x-MacTurkish",
+                                                              "x-MacTurkish",
                                                               "MacTurkish"} },
 
             { "additional.windows_31j",            null, new String[] { "Shift_JIS",
