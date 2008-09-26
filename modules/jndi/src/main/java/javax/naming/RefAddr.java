@@ -114,11 +114,7 @@ public abstract class RefAddr implements Serializable {
     @SuppressWarnings("nls")
     @Override
     public String toString() {
-        return "The type of the address is: "
-                + this.addrType
-                + "\nThe content of the address is: "
-                + (null == this.getContent() ? "null" : this.getContent()
-                        .toString()) + "\n";
+        return "Type: " + addrType + "\nContent: " + getContent() + "\n";
     }
 
 }

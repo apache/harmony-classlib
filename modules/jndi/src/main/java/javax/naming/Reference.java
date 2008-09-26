@@ -337,16 +337,18 @@ public class Reference implements Cloneable, Serializable {
      * 
      * @return the string representation of this object
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
-        String s = "Reference class name: " + this.className; //$NON-NLS-1$
-        Enumeration<RefAddr> e = this.addrs.elements();
+        StringBuilder s = new StringBuilder("Reference Class Name: ");
+        s.append(className);
+        s.append("\n");
 
-        s += "\nReference addresses:"; //$NON-NLS-1$
+        Enumeration<RefAddr> e = this.addrs.elements();
         while (e.hasMoreElements()) {
-            s += "\n\t" + e.nextElement(); //$NON-NLS-1$
+            s.append(e.nextElement());
         }
-        return s + "\n"; //$NON-NLS-1$
+        return s.toString();
     }
 
 }
