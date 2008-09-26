@@ -30,6 +30,12 @@ import java.util.zip.ZipEntry;
 
 import javax.security.auth.x500.X500Principal;
 
+/**
+ * JarEntry represents an entry in a JAR file.
+ * 
+ * @see JarFile
+ * @see JarInputStream
+ */
 public class JarEntry extends ZipEntry {
     private Attributes attributes;
 
