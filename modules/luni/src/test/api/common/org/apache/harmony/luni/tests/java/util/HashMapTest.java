@@ -545,7 +545,18 @@ public class HashMapTest extends junit.framework.TestCase {
 				!myHashMap.containsValue(new Integer(0)));
 
 	}
+    
+    /**
+     * @tests java.util.AbstractMap#toString()
+     */
+    public void test_toString() {
 
+        HashMap m = new HashMap();
+        m.put(m, m);
+        String result = m.toString();
+        assertTrue("should contain self ref", result.indexOf("(this") > -1);
+    }
+    
 	static class ReusableKey {
 		private int key = 0;
 

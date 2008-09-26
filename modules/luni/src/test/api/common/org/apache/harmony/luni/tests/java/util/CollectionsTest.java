@@ -285,11 +285,12 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.binarySearch(null, new Object());
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		for (int counter = 0; counter < llSize; counter++) {
-			assertTrue("Returned incorrect binary search item position", ll
-					.get(Collections.binarySearch(ll, ll.get(counter))) == ll
-					.get(counter));
+			assertEquals("Returned incorrect binary search item position", ll
+                    .get(counter), ll.get(Collections.binarySearch(ll, ll
+                    .get(counter))));
 		}
 	}
 
@@ -310,14 +311,14 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.binarySearch(null, new Object(), comp);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		for (int counter = 0; counter < rSize; counter++) {
-			assertTrue(
-					"Returned incorrect binary search item position using custom comparator",
-					myReversedLinkedList.get(Collections.binarySearch(
-							myReversedLinkedList, myReversedLinkedList
-									.get(counter), comp)) == myReversedLinkedList
-							.get(counter));
+			assertEquals(
+                    "Returned incorrect binary search item position using custom comparator",
+                    myReversedLinkedList.get(counter), myReversedLinkedList
+                            .get(Collections.binarySearch(myReversedLinkedList,
+                                    myReversedLinkedList.get(counter), comp)));
 		}
 	}
 
@@ -332,11 +333,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.copy(null, ll);
 			fail("Expected NullPointerException for null list first parameter");
 		} catch (NullPointerException e) {
+		    //Expected
 		}
 		try {
 			Collections.copy(ll, null);
 			fail("Expected NullPointerException for null list second parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		final int llSize = ll.size();
 		ll.set(25, null);
@@ -348,8 +351,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		al.add(extraElement2);
 		Collections.copy(al, ll);
 		for (int counter = 0; counter < llSize; counter++) {
-			assertTrue("Elements do not match after copying collection", al
-					.get(counter) == ll.get(counter));
+			assertEquals("Elements do not match after copying collection", ll
+                    .get(counter), al.get(counter));
 		}
 		assertTrue("Elements after copied elements affected by copy",
 				extraElement == al.get(llSize)
@@ -371,6 +374,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.copy(a2, a1);
 			fail("Expected IndexOutOfBoundsException");
 		} catch (IndexOutOfBoundsException e) {
+            //Expected
 		}
 
 		assertEquals("aa", a2.get(0));
@@ -386,11 +390,12 @@ public class CollectionsTest extends junit.framework.TestCase {
 		ts.addAll(s);
 		Enumeration e = Collections.enumeration(ts);
 		int count = 0;
-		while (e.hasMoreElements())
-			assertTrue("Returned incorrect enumeration",
-					e.nextElement() == objArray[count++]);
-		assertTrue("Enumeration missing elements: " + count,
-				count == objArray.length);
+		while (e.hasMoreElements()) {
+			assertEquals("Returned incorrect enumeration", e.nextElement(),
+                    objArray[count++]);
+        }
+		assertEquals("Enumeration missing elements: " + count, objArray.length,
+                count);
 	}
 
 	/**
@@ -403,16 +408,17 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.fill(null, new Object());
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		final int size = ll.size();
 		Collections.fill(ll, "k");
-		assertTrue("Fill modified list size", size == ll.size());
+		assertEquals("Fill modified list size", size, ll.size());
 		Iterator i = ll.iterator();
 		while (i.hasNext())
 			assertEquals("Failed to fill elements", "k", i.next());
 
 		Collections.fill(ll, null);
-		assertTrue("Fill with nulls modified list size", size == ll.size());
+		assertEquals("Fill with nulls modified list size", size, ll.size());
 		i = ll.iterator();
 		while (i.hasNext())
 			assertNull("Failed to fill with nulls", i.next());
@@ -425,8 +431,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.Collections.max(java.util.Collection)
 		// assumes s, objArray are sorted
-		assertTrue("Returned incorrect max element",
-				Collections.max(s) == objArray[objArray.length - 1]);
+		assertEquals("Returned incorrect max element", Collections.max(s),
+                objArray[objArray.length - 1]);
 	}
 
 	/**
@@ -440,10 +446,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 
 		// With this custom (backwards) comparator the 'max' element should be
 		// the smallest in the list
-		assertTrue(
-				"Returned incorrect max element using custom comparator",
-				Collections.max(mys, new ReversedMyIntComparator()) == myobjArray[0]);
-	}
+		assertEquals("Returned incorrect max element using custom comparator",
+                Collections.max(mys, new ReversedMyIntComparator()),
+                myobjArray[0]);
+    }
 
 	/**
 	 * @tests java.util.Collections#min(java.util.Collection)
@@ -452,8 +458,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object
 		// java.util.Collections.min(java.util.Collection)
 		// assumes s, objArray are sorted
-		assertTrue("Returned incorrect min element",
-				Collections.min(s) == objArray[0]);
+		assertEquals("Returned incorrect min element", Collections.min(s),
+                objArray[0]);
 	}
 
 	/**
@@ -467,10 +473,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 
 		// With this custom (backwards) comparator the 'min' element should be
 		// the largest in the list
-		assertTrue(
-				"Returned incorrect min element using custom comparator",
-				Collections.min(mys, new ReversedMyIntComparator()) == myobjArray[objArray.length - 1]);
-	}
+		assertEquals("Returned incorrect min element using custom comparator",
+                Collections.min(mys, new ReversedMyIntComparator()),
+                myobjArray[objArray.length - 1]);
+    }
 
 	/**
 	 * @tests java.util.Collections#nCopies(int, java.lang.Object)
@@ -482,11 +488,11 @@ public class CollectionsTest extends junit.framework.TestCase {
 		List l = Collections.nCopies(100, o);
 		Iterator i = l.iterator();
 		Object first = i.next();
-		assertTrue("Returned list consists of copies not refs", first == o);
+		assertEquals("Returned list consists of copies not refs", first, o);
 		assertEquals("Returned list of incorrect size", 100, l.size());
 		assertTrue("Contains", l.contains(o));
-		assertTrue("Contains null", !l.contains(null));
-		assertTrue("null nCopies contains", !Collections.nCopies(2, null)
+		assertFalse("Contains null", l.contains(null));
+		assertFalse("null nCopies contains", Collections.nCopies(2, null)
 				.contains(o));
 		assertTrue("null nCopies contains null", Collections.nCopies(2, null)
 				.contains(null));
@@ -500,8 +506,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			l.add(o);
 			fail("Returned list is not immutable");
 		} catch (UnsupportedOperationException e) {
-			// Correct
-			return;
+			// Expected
 		}
 		try {
 			Collections.nCopies(-2, new HashSet());
@@ -520,21 +525,22 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.reverse(null);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		Collections.reverse(ll);
 		Iterator i = ll.iterator();
 		int count = objArray.length - 1;
 		while (i.hasNext()) {
-			assertTrue("Failed to reverse collection",
-					i.next() == objArray[count]);
-			--count;
+			assertEquals("Failed to reverse collection", objArray[count], i
+                    .next());
+            --count;
 		}
 		ArrayList myList = new ArrayList();
 		myList.add(null);
 		myList.add(new Integer(20));
 		Collections.reverse(myList);
-		assertTrue("Did not reverse correctly--first element is: "
-				+ myList.get(0), myList.get(0).equals(new Integer(20)));
+		assertEquals("Did not reverse correctly--first element is: "
+                + myList.get(0), new Integer(20), myList.get(0));
 		assertNull("Did not reverse correctly--second element is: "
 				+ myList.get(1), myList.get(1));
 	}
@@ -551,8 +557,8 @@ public class CollectionsTest extends junit.framework.TestCase {
 		Collections.sort(list2, comp);
 		final int llSize = ll.size();
 		for (int counter = 0; counter < llSize; counter++)
-			assertTrue("New comparator does not reverse sorting order", ll
-					.get(counter) == list2.get(llSize - counter - 1));
+			assertEquals("New comparator does not reverse sorting order", list2
+                    .get(llSize - counter - 1), ll.get(counter));
 	}
 
 	/**
@@ -568,6 +574,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.shuffle(null);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		ArrayList al = new ArrayList();
 		al.addAll(ll);
@@ -595,15 +602,15 @@ public class CollectionsTest extends junit.framework.TestCase {
 				sorted = false;
 			}
 		}
-		assertTrue("Shuffling sorted " + type
-				+ " list resulted in sorted list (should be unlikely)", !sorted);
+		assertFalse("Shuffling sorted " + type
+				+ " list resulted in sorted list (should be unlikely)", sorted);
 		for (int counter = 0; counter < 20; counter++) {
 			index = 30031 * counter % (size + 1); // 30031 is a large prime
 			if (list.get(index) != ll.get(index))
 				allMatch = false;
 		}
-		assertTrue("Too many element positions match in shuffled " + type
-				+ " list", !allMatch);
+		assertFalse("Too many element positions match in shuffled " + type
+				+ " list", allMatch);
 	}
 
 	/**
@@ -620,6 +627,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.shuffle(null, new Random(200));
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Excepted
 		}
 		ArrayList al = new ArrayList();
 		al.addAll(ll);
@@ -648,18 +656,17 @@ public class CollectionsTest extends junit.framework.TestCase {
 		Set single = Collections.singleton(o);
 		assertEquals("Wrong size", 1, single.size());
 		assertTrue("Contains", single.contains(o));
-		assertTrue("Contains null", !single.contains(null));
-		assertTrue("null nCopies contains", !Collections.singleton(null)
+		assertFalse("Contains null", single.contains(null));
+		assertFalse("null nCopies contains", Collections.singleton(null)
 				.contains(o));
 		assertTrue("null nCopies contains null", Collections.singleton(null)
 				.contains(null));
 		try {
 			single.add("l");
+            fail("Allowed modification of singleton");
 		} catch (UnsupportedOperationException e) {
-			// Correct
-			return;
+			// Excepted
 		}
-		fail("Allowed modification of singleton");
 	}
 
 	/**
@@ -674,6 +681,7 @@ public class CollectionsTest extends junit.framework.TestCase {
                         Collections.sort((List)null);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		Collections.shuffle(ll);
 		Collections.sort(ll);
@@ -702,6 +710,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.sort(null, comp);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		Collections.shuffle(myll);
 		Collections.sort(myll, comp);
@@ -731,24 +740,28 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.swap(smallList, -1, 6);
 			fail("Expected IndexOutOfBoundsException for -1");
 		} catch (IndexOutOfBoundsException e) {
+            //Expected
 		}
 
 		try {
 			Collections.swap(smallList, 6, -1);
 			fail("Expected IndexOutOfBoundsException for -1");
 		} catch (IndexOutOfBoundsException e) {
+            //Expected
 		}
 
 		try {
 			Collections.swap(smallList, 6, 11);
 			fail("Expected IndexOutOfBoundsException for 11");
 		} catch (IndexOutOfBoundsException e) {
+            //Expected
 		}
 
 		try {
 			Collections.swap(smallList, 11, 6);
 			fail("Expected IndexOutOfBoundsException for 11");
 		} catch (IndexOutOfBoundsException e) {
+            //Expected
 		}
 
 		// Ensure a NPE is thrown if the list is NULL
@@ -756,6 +769,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.swap(null, 1, 1);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		// test with valid parameters
@@ -792,6 +806,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.replaceAll(null, new Object(), new Object());
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		// test replace for an element that is not in the list
@@ -871,6 +886,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.rotate(null, 0);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		// Test rotating a Sequential Access List
@@ -985,11 +1001,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.indexOfSubList(null, list);
 			fail("Expected NullPointerException for null list first parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		try {
 			Collections.indexOfSubList(list, null);
 			fail("Expected NullPointerException for null list second parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		String string1 = "A-B-C-D-E-S-JF-SUB-G-H-I-J-SUBL-K-L-LIST-M-N--S-S-O-SUBLIS-P-Q-R-SUBLIST-S-T-U-V-W-X-Y-Z";
@@ -1107,11 +1125,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.lastIndexOfSubList(null, list);
 			fail("Expected NullPointerException for null list first parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 		try {
 			Collections.lastIndexOfSubList(list, null);
 			fail("Expected NullPointerException for null list second parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		testwithCharList(1, string1, "B", false);
@@ -1218,9 +1238,10 @@ public class CollectionsTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws InterruptedException
 	 * @tests java.util.Collections#synchronizedCollection(java.util.Collection)
 	 */
-	public void test_synchronizedCollectionLjava_util_Collection() {
+	public void test_synchronizedCollectionLjava_util_Collection() throws InterruptedException {
 		// Test for method java.util.Collection
 		// java.util.Collections.synchronizedCollection(java.util.Collection)
 
@@ -1245,10 +1266,12 @@ public class CollectionsTest extends junit.framework.TestCase {
 		offsetThread.start();
 		while ((normalSynchChecker.getNumberOfChecks() < numberOfLoops)
 				|| (offsetSynchChecker.getNumberOfChecks() < numberOfLoops)) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
+	    
+                       try {
+                               Thread.sleep(10);
+                       } catch (InterruptedException e) {
+                       }
+
 		}
 		assertTrue("Returned collection corrupted by multiple thread access",
 				normalSynchChecker.getResult()
@@ -1270,6 +1293,11 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		new Support_CollectionTest("", Collections
 				.synchronizedCollection(smallList)).runTest();
+
+        //Test self reference
+        synchCol = Collections.synchronizedCollection(smallList);
+        synchCol.add(smallList);
+        assertTrue("should contain self ref", synchCol.toString().indexOf("(this") > -1);
 	}
 
 	/**
@@ -1280,6 +1308,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			Collections.synchronizedList(null);
 			fail("Expected NullPointerException for null list parameter");
 		} catch (NullPointerException e) {
+            //Expected
 		}
 
 		// test with a Sequential Access List
@@ -1292,8 +1321,9 @@ public class CollectionsTest extends junit.framework.TestCase {
 			smallList.add(objArray[i]);
 		}
 		myList = Collections.synchronizedList(smallList);
-		new Support_ListTest("", myList).runTest();
 
+		new Support_ListTest("", myList).runTest();
+        
 		// test with a Random Access List
 		smallList = new ArrayList();
 		testSynchronizedList(smallList, "Random Access");
@@ -1304,6 +1334,11 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		myList = Collections.synchronizedList(smallList);
 		new Support_ListTest("", myList).runTest();
+        
+		//Test self reference
+        myList = Collections.synchronizedList(smallList);
+        myList.add(smallList);
+        assertTrue("should contain self ref", myList.toString().indexOf("(this") > -1);
 	}
 
 	private void testSynchronizedList(List smallList, String type) {
@@ -1337,13 +1372,14 @@ public class CollectionsTest extends junit.framework.TestCase {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+                //Expected
 			}
 		}
 		assertTrue(
-				type
-						+ " list tests: Returned list corrupted by multiple thread access",
-				normalSynchChecker.getResult()
-						&& offsetSynchChecker.getResult());
+                type
+                        + " list tests: Returned list corrupted by multiple thread access",
+                normalSynchChecker.getResult()
+                        && offsetSynchChecker.getResult());
 		try {
 			normalThread.join(5000);
 			offsetThread.join(5000);
@@ -1385,6 +1421,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+                //Expected
 			}
 		}
 		assertTrue("Returned map corrupted by multiple thread access",
@@ -1450,6 +1487,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+                //Expected
 			}
 		}
 		assertTrue("Returned set corrupted by multiple thread access",
@@ -1472,6 +1510,11 @@ public class CollectionsTest extends junit.framework.TestCase {
 		}
 		new Support_SetTest("", Collections.synchronizedSet(smallSet))
 				.runTest();
+        
+		//Test self reference
+        mySet = Collections.synchronizedSet(smallSet);
+        mySet.add(smallSet);
+        assertTrue("should contain self ref", mySet.toString().indexOf("(this") > -1);
 	}
 
 	/**
@@ -1504,6 +1547,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+                //Expected
 			}
 		}
 		assertTrue("Returned map corrupted by multiple thread access",
@@ -1561,6 +1605,7 @@ public class CollectionsTest extends junit.framework.TestCase {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
+                //Expected
 			}
 		}
 		assertTrue("Returned set corrupted by multiple thread access",
