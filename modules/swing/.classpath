@@ -5,6 +5,6 @@
 	<classpathentry kind="src" output="bin/main/linux" path="src/main/java/unix"/>
 	<classpathentry kind="src" output="bin/test/injected" path="src/test/api/java.injected"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

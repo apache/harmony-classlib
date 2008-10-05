@@ -6,6 +6,6 @@
 	<classpathentry kind="src" output="bin/test" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="src/test/resources/jars/charset_provider.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin/main"/>
 </classpath>
