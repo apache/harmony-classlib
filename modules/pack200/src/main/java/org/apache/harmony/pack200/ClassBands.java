@@ -387,8 +387,8 @@ public class ClassBands extends BandSet {
     }
 
     protected static int countArgs(String descriptor) {
-        int bra = descriptor.indexOf("(");
-        int ket = descriptor.indexOf(")");
+        int bra = descriptor.indexOf('(');
+        int ket = descriptor.indexOf(')');
         if (bra == -1 || ket == -1 || ket < bra)
             throw new IllegalArgumentException("No arguments");
 
