@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ASM
 Bundle-SymbolicName: org.objectweb.asm;singleton:=true
 Bundle-Version: 3.1
-Bundle-ClassPath: bcel-5.2.jar
+Bundle-ClassPath: asm-3.1.jar
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang
