@@ -33,7 +33,7 @@ public abstract class BandSet {
         return codec.encode(value);
     }
 
-    public byte[] encodeBandInt(int[] ints, Codec defaultCodec) throws Pack200Exception {
+    public byte[] encodeBandInt(String name, int[] ints, Codec defaultCodec) throws Pack200Exception {
         // TODO non-default codecs
         return defaultCodec.encode(ints);
     }
@@ -49,14 +49,14 @@ public abstract class BandSet {
         return className.equals(sourceFileName);
     }
 
-    protected byte[] encodeFlags(long[] flags, BHSDCodec loCodec, BHSDCodec hiCodec,
+    protected byte[] encodeFlags(String name, long[] flags, BHSDCodec loCodec, BHSDCodec hiCodec,
             boolean haveHiFlags) throws Pack200Exception {
         if(!haveHiFlags) {
             int[] loBits = new int[flags.length];
             for (int i = 0; i < flags.length; i++) {
                 loBits[i] = (int) flags[i];
             }
-            return encodeBandInt(loBits, loCodec);
+            return encodeBandInt(name, loBits, loCodec);
         } else {
 
             int[] hiBits = new int[flags.length];
@@ -66,8 +66,8 @@ public abstract class BandSet {
                 hiBits[i] = (int) (l >> 32);
                 loBits[i] = (int) l;
             }
-            byte[] hi = encodeBandInt(hiBits, hiCodec);
-            byte[] lo = encodeBandInt(loBits, loCodec);
+            byte[] hi = encodeBandInt(name, hiBits, hiCodec);
+            byte[] lo = encodeBandInt(name, loBits, loCodec);
             byte[] total = new byte[hi.length + lo.length];
             System.arraycopy(hi, 0, total, 0, hi.length);
             System.arraycopy(lo, 0, total, hi.length + 1, lo.length);
@@ -106,6 +106,27 @@ public abstract class BandSet {
             array[j] = cpEntry == null ? 0 : cpEntry.getIndex() + 1;
         }
         return array;
+    }
+
+    protected byte[] encodeFlags(String name, long[][] flags, BHSDCodec loCodec, BHSDCodec hiCodec,
+            boolean haveHiFlags) throws Pack200Exception {
+        return encodeFlags(name, flatten(flags), loCodec, hiCodec, haveHiFlags);
+   }
+
+    private long[] flatten(long[][] flags) {
+        int totalSize = 0;
+        for (int i = 0; i < flags.length; i++) {
+            totalSize += flags[i].length;
+        }
+        long[] flatArray = new long[totalSize];
+        int index = 0;
+        for (int i = 0; i < flags.length; i++) {
+            for (int j = 0; j < flags[i].length; j++) {
+                flatArray[index] = flags[i][j];
+                index++;
+            }
+        }
+        return flatArray;
     }
 
 }

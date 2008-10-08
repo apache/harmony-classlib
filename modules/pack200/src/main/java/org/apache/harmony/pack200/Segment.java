@@ -21,44 +21,14 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFieldref;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantInterfaceMethodref;
-import org.apache.bcel.classfile.ConstantLong;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantString;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.ConstantValue;
-import org.apache.bcel.classfile.Deprecated;
-import org.apache.bcel.classfile.DescendingVisitor;
-import org.apache.bcel.classfile.ExceptionTable;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.InnerClass;
-import org.apache.bcel.classfile.InnerClasses;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LineNumber;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Signature;
-import org.apache.bcel.classfile.SourceFile;
-import org.apache.bcel.classfile.StackMap;
-import org.apache.bcel.classfile.StackMapEntry;
-import org.apache.bcel.classfile.Synthetic;
-import org.apache.bcel.classfile.Unknown;
-import org.apache.bcel.classfile.Visitor;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 
-
-public class Segment implements Visitor {
+public class Segment implements ClassVisitor {
 
     private SegmentHeader segmentHeader;
     private CpBands cpBands;
@@ -72,15 +42,25 @@ public class Segment implements Visitor {
     private String currentClass;
     private String superClass;
 
+    private final SegmentFieldVisitor fieldVisitor = new SegmentFieldVisitor();
+    private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
+    private final SegmentAnnotationVisitor annotationVisitor = new SegmentAnnotationVisitor();
+    private Pack200ClassReader currentClassReader;
 
-    public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
+    public void pack(List classes, List classNames, List classModTimes,
+            List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
+        segmentHeader.setFile_count(classes.size() + files.size()); // TODO:
+                                                                    // files
         cpBands = new CpBands(segmentHeader);
-        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader, cpBands);
+        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader,
+                cpBands);
         icBands = new IcBands(segmentHeader);
-        classBands = new ClassBands(segmentHeader, cpBands, attributeDefinitionBands, classes.size());
-        bcBands = new BcBands(cpBands);
-        fileBands = new FileBands(segmentHeader, files);
+        classBands = new ClassBands(segmentHeader, cpBands,
+                attributeDefinitionBands, classes.size());
+        bcBands = new BcBands(cpBands, this);
+        fileBands = new FileBands(cpBands, segmentHeader, classNames,
+                classModTimes, files);
 
         processClasses(classes);
 
@@ -89,6 +69,7 @@ public class Segment implements Visitor {
         icBands.finaliseBands();
         classBands.finaliseBands();
         bcBands.finaliseBands();
+        fileBands.finaliseBands();
 
         segmentHeader.pack(out);
         cpBands.pack(out);
@@ -102,172 +83,224 @@ public class Segment implements Visitor {
     private void processClasses(List classes) {
         segmentHeader.setClass_count(classes.size());
         for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
-            JavaClass javaClass = (JavaClass) iterator.next();
-            new DescendingVisitor(javaClass, this).visit();
+            Pack200ClassReader classReader = (Pack200ClassReader) iterator
+                    .next();
+            currentClassReader = classReader;
+            classReader.accept(this, 0);
         }
     }
 
-    public void visitCode(Code obj) {
-        bcBands.addCode(obj, currentClass, superClass);
-        Attribute[] attributes = obj.getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i] instanceof Unknown) {
-                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
-            }
+    public void visit(int version, int access, String name, String signature,
+            String superName, String[] interfaces) {
+        System.out.println("visit " + name + " " + version + " " + access);
+        currentClass = name;
+        superClass = superName;
+        bcBands.setCurrentClass(name);
+        bcBands.setSuperClass(superName);
+        segmentHeader.addMajorVersion(version);
+        classBands.addClass(version, access, name, superName, interfaces);
+    }
+
+    public void visitSource(String source, String debug) {
+        classBands.addSourceFile(source);
+    }
+
+    public void visitOuterClass(String owner, String name, String desc) {
+        classBands.addEnclosingMethod(owner, name, desc);
+
+    }
+
+    public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
+        return annotationVisitor;
+    }
+
+    public void visitAttribute(Attribute arg0) {
+        System.out.println("visitAttribute");
+    }
+
+    public void visitInnerClass(String name, String outerName,
+            String innerName, int flags) {
+        icBands.addInnerClass(name, outerName, innerName, flags);
+    }
+
+    public FieldVisitor visitField(int flags, String name, String desc,
+            String signature, Object value) {
+        classBands.addField(flags, name, desc, signature, value);
+        return fieldVisitor;
+    }
+
+    public MethodVisitor visitMethod(int flags, String name, String desc,
+            String signature, String[] exceptions) {
+        classBands.addMethod(flags, name, desc, signature, exceptions);
+        return methodVisitor;
+    }
+
+    public void visitEnd() {
+        classBands.endOfClass();
+    }
+
+    /*
+     * This class delegates to BcBands for bytecode related visits and to
+     * ClassBands for everything else
+     */
+    public class SegmentMethodVisitor implements MethodVisitor {
+
+        public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
+            return annotationVisitor;
+        }
+
+        public AnnotationVisitor visitAnnotationDefault() {
+            return annotationVisitor;
+        }
+
+        public void visitAttribute(Attribute arg0) {
+            classBands.addUnknownMethodAttribute(arg0);
+        }
+
+        public void visitCode() {
+            classBands.addCode();
+        }
+
+        public void visitFrame(int arg0, int arg1, Object[] arg2, int arg3,
+                Object[] arg4) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void visitLabel(Label label) {
+            bcBands.visitLabel(label);
+        }
+
+        public void visitLineNumber(int line, Label start) {
+            classBands.addLineNumber(line, start);
+        }
+
+        public void visitLocalVariable(String name, String desc,
+                String signature, Label start, Label end, int index) {
+            classBands.addLocalVariable(name, desc, signature, start, end,
+                    index);
+        }
+
+        public void visitMaxs(int maxStack, int maxLocals) {
+            classBands.addMaxStack(maxStack, maxLocals);
+        }
+
+        public AnnotationVisitor visitParameterAnnotation(int arg0,
+                String arg1, boolean arg2) {
+            return annotationVisitor;
+        }
+
+        public void visitTryCatchBlock(Label start, Label end, Label handler,
+                String type) {
+            classBands.addHandler(start, end, handler, type);
+        }
+
+        public void visitEnd() {
+            bcBands.visitEnd();
+        }
+
+        public void visitFieldInsn(int opcode, String owner, String name,
+                String desc) {
+            bcBands.visitFieldInsn(opcode, owner, name, desc);
+        }
+
+        public void visitIincInsn(int var, int increment) {
+            bcBands.visitIincInsn(var, increment);
+        }
+
+        public void visitInsn(int opcode) {
+            bcBands.visitInsn(opcode);
+        }
+
+        public void visitIntInsn(int opcode, int operand) {
+            bcBands.visitIntInsn(opcode, operand);
+        }
+
+        public void visitJumpInsn(int opcode, Label label) {
+            bcBands.visitJumpInsn(opcode, label);
+        }
+
+        public void visitLdcInsn(Object cst) {
+            bcBands.visitLdcInsn(cst);
+        }
+
+        public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
+            bcBands.visitLookupSwitchInsn(dflt, keys, labels);
+        }
+
+        public void visitMethodInsn(int opcode, String owner, String name,
+                String desc) {
+            bcBands.visitMethodInsn(opcode, owner, name, desc);
+        }
+
+        public void visitMultiANewArrayInsn(String desc, int dimensions) {
+            bcBands.visitMultiANewArrayInsn(desc, dimensions);
+        }
+
+        public void visitTableSwitchInsn(int min, int max, Label dflt,
+                Label[] labels) {
+            bcBands.visitTableSwitchInsn(min, max, dflt, labels);
+        }
+
+        public void visitTypeInsn(int opcode, String type) {
+            bcBands.visitTypeInsn(opcode, type);
+        }
+
+        public void visitVarInsn(int opcode, int var) {
+            bcBands.visitVarInsn(opcode, var);
+        }
+
+    }
+
+    public ClassBands getClassBands() {
+        return classBands;
+    }
+
+    public class SegmentAnnotationVisitor implements AnnotationVisitor {
+
+        public void visit(String arg0, Object arg1) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public AnnotationVisitor visitAnnotation(String arg0, String arg1) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public AnnotationVisitor visitArray(String arg0) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void visitEnd() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void visitEnum(String arg0, String arg1, String arg2) {
+            // TODO Auto-generated method stub
+
         }
     }
 
-    public void visitCodeException(CodeException obj) {
-        // TODO Auto-generated method stub
+    public class SegmentFieldVisitor implements FieldVisitor {
 
-    }
+        public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
+            return annotationVisitor;
+        }
 
-    public void visitConstantClass(ConstantClass obj) {
-        cpBands.addConstantClass(obj);
-    }
+        public void visitAttribute(Attribute arg0) {
+            classBands.addUnknownFieldAttribute(arg0);
+        }
 
-    public void visitConstantDouble(ConstantDouble obj) {
-        cpBands.addConstantDouble(obj);
+        public void visitEnd() {
+            // TODO Auto-generated method stub
 
-    }
-
-    public void visitConstantFieldref(ConstantFieldref obj) {
-        cpBands.addConstantFieldref(obj);
-    }
-
-    public void visitConstantFloat(ConstantFloat obj) {
-        cpBands.addConstantFloat(obj);
-    }
-
-    public void visitConstantInteger(ConstantInteger obj) {
-        cpBands.addConstantInteger(obj);
-    }
-
-    public void visitConstantInterfaceMethodref(ConstantInterfaceMethodref obj) {
-        cpBands.addConstantInterfaceMethodref(obj);
-    }
-
-    public void visitConstantLong(ConstantLong obj) {
-        cpBands.addConstantLong(obj);
-    }
-
-    public void visitConstantMethodref(ConstantMethodref obj) {
-        cpBands.addConstantMethodref(obj);
-    }
-
-    public void visitConstantNameAndType(ConstantNameAndType obj) {
-        cpBands.addConstantNameAndType(obj);
-    }
-
-    public void visitConstantPool(ConstantPool obj) {
-    }
-
-    public void visitConstantString(ConstantString obj) {
-        cpBands.addConstantString(obj);
-    }
-
-    public void visitConstantUtf8(ConstantUtf8 obj) {
-        cpBands.addConstantUtf8(obj);
-    }
-
-    public void visitConstantValue(ConstantValue obj) {
-
-    }
-
-    public void visitDeprecated(Deprecated obj) {
-        // TODO Auto-generated method stub
-    }
-
-    public void visitExceptionTable(ExceptionTable obj) {
-        // TODO Auto-generated method stub
-    }
-
-    public void visitField(Field obj) {
-        cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
-        Attribute[] attributes = obj.getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i] instanceof Unknown) {
-                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
-            }
         }
     }
 
-    public void visitInnerClass(InnerClass obj) {
-
+    public boolean lastConstantHadWideIndex() {
+        return currentClassReader.lastConstantHadWideIndex();
     }
-
-    public void visitInnerClasses(InnerClasses obj) {
-        icBands.addInnerClasses(obj);
-    }
-
-    public void visitJavaClass(JavaClass obj) {
-        cpBands.setCurrentClass(obj);
-        currentClass = obj.getClassName();
-        superClass = obj.getSuperclassName();
-        classBands.addClass(obj);
-        segmentHeader.addMinorVersion(obj.getMinor());
-        segmentHeader.addMajorVersion(obj.getMajor());
-        Attribute[] attributes = obj.getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i] instanceof Unknown) {
-                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
-            }
-        }
-    }
-
-    public void visitLineNumber(LineNumber obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitLineNumberTable(LineNumberTable obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitLocalVariable(LocalVariable obj) {
-        cpBands.addCPSignature(obj.getSignature());
-    }
-
-    public void visitLocalVariableTable(LocalVariableTable obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitMethod(Method obj) {
-        cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
-        Attribute[] attributes = obj.getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i] instanceof Unknown) {
-                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
-            }
-        }
-    }
-
-    public void visitSignature(Signature obj) {
-
-    }
-
-    public void visitSourceFile(SourceFile obj) {
-        // TODO Auto-generated method stub
-    }
-
-    public void visitStackMap(StackMap obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitStackMapEntry(StackMapEntry obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitSynthetic(Synthetic obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitUnknown(Unknown obj) {
-    }
-
 }

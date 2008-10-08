@@ -24,11 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Unknown;
-
 /**
  * Attribute Definition bands define how any unknown attributes should be
  * read by the decompressor.
@@ -105,9 +100,9 @@ public class AttributeDefinitionBands extends BandSet {
             attributeDefinitionLayout[i] = cpBands.getCPUtf8(def.layout).getIndex();
         }
 
-        out.write(encodeBandInt(attributeDefinitionHeader, Codec.BYTE1));
-        out.write(encodeBandInt(attributeDefinitionName, Codec.UNSIGNED5));
-        out.write(encodeBandInt(attributeDefinitionLayout, Codec.UNSIGNED5));
+        out.write(encodeBandInt("attributeDefinitionHeader", attributeDefinitionHeader, Codec.BYTE1));
+        out.write(encodeBandInt("attributeDefinitionName", attributeDefinitionName, Codec.UNSIGNED5));
+        out.write(encodeBandInt("attributeDefinitionLayout", attributeDefinitionLayout, Codec.UNSIGNED5));
     }
 
     private int[] addHighIndices(int[] availableIndices) {
@@ -138,26 +133,6 @@ public class AttributeDefinitionBands extends BandSet {
         layouts.put(name, layout);
     }
 
-    public void addUnknownAttribute(Unknown attribute, Object parent) {
-        Map map;
-        if(parent instanceof JavaClass) {
-            map = classAttributes;
-        } else if (parent instanceof Method) {
-            map = methodAttributes;
-        } else if (parent instanceof Field) {
-            map = fieldAttributes;
-        } else {
-            map = codeAttributes;
-        }
-        String name = attribute.getName();
-        List attributes = (List) map.get(name);
-        if(attributes == null) {
-            attributes = new ArrayList();
-            map.put(name, attributes);
-        }
-        attributes.add(attribute);
-    }
-
     private static class AttributeDefinition {
 
         public int index;
@@ -174,10 +149,4 @@ public class AttributeDefinitionBands extends BandSet {
         }
 
     }
-
-    public int getIndex(Unknown attr) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
 }

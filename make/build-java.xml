@@ -203,6 +203,7 @@ ${built.files.list}
         <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.jars}">
                 <patternset includes="bcel-5.2/*.jar" />
+                <patternset includes="asm-3.1/*.jar" />
                 <patternset includes="icu4j_3.8/*.jar" />
                 <patternset includes="mx4j_3.0.2/*.jar" />
                 <patternset includes="xalan-j_2.7.0/*.jar" />

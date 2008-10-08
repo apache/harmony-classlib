@@ -20,9 +20,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.bcel.classfile.InnerClasses;
-
-
 public class IcBands extends BandSet {
 
     private final List innerClasses = new ArrayList();
@@ -41,8 +38,10 @@ public class IcBands extends BandSet {
 
     }
 
-    public void addInnerClasses(InnerClasses obj) {
-        innerClasses.add(obj);
+    public void addInnerClass(String name, String outerName, String innerName,
+            int flags) {
+        // TODO Auto-generated method stub
+
     }
 
 }

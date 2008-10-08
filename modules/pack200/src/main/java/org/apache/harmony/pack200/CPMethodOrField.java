@@ -16,10 +16,11 @@
  */
 package org.apache.harmony.pack200;
 
-public class CPMethodOrField implements Comparable {
+public class CPMethodOrField extends ConstantPoolEntry implements Comparable {
 
     private final CPClass className;
     private final CPNameAndType nameAndType;
+    private int indexInClass;
 
     public CPMethodOrField(CPClass className, CPNameAndType nameAndType) {
         this.className = className;
@@ -59,7 +60,23 @@ public class CPMethodOrField implements Comparable {
         return className.getIndex();
     }
 
+    public CPClass getClassName() {
+        return className;
+    }
+
     public int getDescIndex() {
         return nameAndType.getIndex();
+    }
+
+    public CPNameAndType getDesc() {
+        return nameAndType;
+    }
+
+    public int getIndexInClass() {
+        return indexInClass;
+    }
+
+    public void setIndexInClass(int index) {
+        indexInClass = index;
     }
 }
