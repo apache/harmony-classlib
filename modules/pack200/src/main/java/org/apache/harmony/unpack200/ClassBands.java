@@ -1003,7 +1003,7 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < RxA.length; i++) {
             mbg[i] = new MetadataBandGroup(RxA[i], cpBands);
             String rxa = RxA[i];
-            if (rxa.indexOf("P") >= 0) {
+            if (rxa.indexOf('P') >= 0) {
                 mbg[i].param_NB = decodeBandInt(contextName + "_" + rxa
                         + "_param_NB", in, Codec.BYTE1, RxACount[i]);
             }
