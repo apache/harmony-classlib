@@ -9,6 +9,6 @@
 	<classpathentry kind="src" output="bin/main/linux" path="src/main/java/unix"/>
 	<classpathentry exported="true" kind="lib" path="src/test/api/resources"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4/">
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin/main/common"/>
 </classpath>
