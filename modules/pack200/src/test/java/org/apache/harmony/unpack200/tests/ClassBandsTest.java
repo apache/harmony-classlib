@@ -17,8 +17,10 @@
 package org.apache.harmony.unpack200.tests;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.ClassBands;
@@ -90,7 +92,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(2, 0);
-        byte[] classInterfaceRef1 = classBands.encodeBandLong(
+        byte[] classInterfaceRef1 = encodeBandLong(
                 new long[] { 3, 4 }, Codec.DELTA5);
         byte[] classFieldCount = Codec.DELTA5.encode(0, 0);
         byte[] classMethodCount = Codec.DELTA5.encode(0, 0);
@@ -130,9 +132,9 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         byte[] classInterfaceCount = Codec.DELTA5.encode(0, 0);
         byte[] classFieldCount = Codec.DELTA5.encode(0, 0);
         byte[] classMethodCount = Codec.DELTA5.encode(3, 0);
-        byte[] methodDescr = classBands.encodeBandLong(new long[] { 0, 1, 2 },
+        byte[] methodDescr = encodeBandLong(new long[] { 0, 1, 2 },
                 Codec.MDELTA5);
-        byte[] methodFlagsLo = classBands.encodeBandLong(
+        byte[] methodFlagsLo = encodeBandLong(
                 new long[] { 0, 0, 0 }, Codec.UNSIGNED5);
         byte[] classFlags = Codec.UNSIGNED5.encode(0, 0);
         byte[][] allArrays = new byte[][] { classThis, classSuper,
@@ -163,5 +165,15 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         cpClasses = null;
         cpDescriptor = null;
     }
+
+    public byte[] encodeBandLong(long[] data, BHSDCodec codec)
+            throws IOException, Pack200Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (int i = 0; i < data.length; i++) {
+            baos.write(codec.encode(data[i], i == 0 ? 0 : data[i - 1]));
+        }
+        return baos.toByteArray();
+    }
+
 
 }
