@@ -20,10 +20,32 @@ package org.apache.harmony.archive.util;
 import junit.framework.TestCase;
 
 public class UtilTest extends TestCase {
-    String s1 = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
-    String s2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //$NON-NLS-1$
+    private static final String ASCII_ALPHABET_LC = "abcdefghijklmnopqrstuvwxyz";
+    private static final String ASCII_ALPHABET_UC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final byte[] ASCII_ALPHABET_LC_BYTES;
+    private static final byte[] ASCII_ALPHABET_UC_BYTES;
+
+    static {
+        ASCII_ALPHABET_LC_BYTES = new byte[ASCII_ALPHABET_LC.length()];
+        for (int i = 0; i < ASCII_ALPHABET_LC_BYTES.length; i++) {
+            final char c = ASCII_ALPHABET_LC.charAt(i);
+            final byte b = (byte) c;
+            assert ((char) b) == c;
+            ASCII_ALPHABET_LC_BYTES[i] = b;
+        }
+
+        ASCII_ALPHABET_UC_BYTES = new byte[ASCII_ALPHABET_UC.length()];
+        for (int i = 0; i < ASCII_ALPHABET_UC_BYTES.length; i++) {
+            final char c = ASCII_ALPHABET_UC.charAt(i);
+            final byte b = (byte) c;
+            assert ((char) b) == c;
+            ASCII_ALPHABET_UC_BYTES[i] = b;
+        }
+    }
 
     public void testASCIIIgnoreCaseRegionMatches() {
+        final String s1 = ASCII_ALPHABET_LC;
+        final String s2 = ASCII_ALPHABET_UC;
         for (int i = 0; i < s1.length(); i++) {
             assertTrue(Util.ASCIIIgnoreCaseRegionMatches(s1, i, s2, i, s1
                     .length()
@@ -31,44 +53,68 @@ public class UtilTest extends TestCase {
         }
     }
 
+    private void assertEqualsBytes(byte[] expected, byte[] actual) {
+        assertEquals(expected.length, actual.length);
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
+    }
+
     public void testToASCIILowerCase() {
-        assertEquals(
-                "abcdefghijklmnopqrstuvwxyz", org.apache.harmony.luni.util.Util //$NON-NLS-1$
-                        .toASCIILowerCase("ABCDEFGHIJKLMNOPQRSTUVWXYZ")); //$NON-NLS-1$
+        assertEqualsBytes(ASCII_ALPHABET_LC_BYTES, Util
+                .toASCIILowerCase(ASCII_ALPHABET_UC_BYTES));
+        assertEqualsBytes(ASCII_ALPHABET_LC_BYTES, Util
+                .toASCIILowerCase(ASCII_ALPHABET_LC_BYTES));
+    }
 
-        for (int i = 0; i < 255; i++) {
-            if (i >= 'a' && i <= 'z') {
-                continue;
-            }
-            if (i >= 'A' && i <= 'Z') {
-                continue;
-            }
-            String cString = "" + (char) i; //$NON-NLS-1$
-            assertEquals(cString, org.apache.harmony.luni.util.Util
-                    .toASCIILowerCase(cString));
+    public void testToASCIIUpperCaseByte() {
+        for (int i = 0; i < ASCII_ALPHABET_LC_BYTES.length; i++) {
+            assertEquals(ASCII_ALPHABET_UC_BYTES[i], Util
+                    .toASCIIUpperCase(ASCII_ALPHABET_LC_BYTES[i]));
+        }
+        for (int i = 0; i < ASCII_ALPHABET_UC_BYTES.length; i++) {
+            assertEquals(ASCII_ALPHABET_UC_BYTES[i], Util
+                    .toASCIIUpperCase(ASCII_ALPHABET_UC_BYTES[i]));
         }
     }
 
-    public void testToASCIIUpperCase() {
-        assertEquals(
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ", org.apache.harmony.luni.util.Util //$NON-NLS-1$
-                        .toASCIIUpperCase("abcdefghijklmnopqrstuvwxyz")); //$NON-NLS-1$
-
-        for (int i = 0; i < 255; i++) {
-            if (i >= 'a' && i <= 'z') {
-                continue;
-            }
-            if (i >= 'A' && i <= 'Z') {
-                continue;
-            }
-            String cString = "" + (char) i; //$NON-NLS-1$
-            assertEquals(cString, org.apache.harmony.luni.util.Util
-                    .toASCIIUpperCase(cString));
+    public void testToASCIILowerCaseChar() {
+        for (int i = 0; i < ASCII_ALPHABET_UC.length(); i++) {
+            assertEquals(ASCII_ALPHABET_LC.charAt(i), Util
+                    .toASCIILowerCase(ASCII_ALPHABET_UC.charAt(i)));
+        }
+        for (int i = 0; i < ASCII_ALPHABET_LC.length(); i++) {
+            assertEquals(ASCII_ALPHABET_LC.charAt(i), Util
+                    .toASCIILowerCase(ASCII_ALPHABET_LC.charAt(i)));
         }
     }
 
-    public void testEqualsIgnoreCase() {
+    public void testToASCIIUpperCaseChar() {
+        for (int i = 0; i < ASCII_ALPHABET_LC.length(); i++) {
+            assertEquals(ASCII_ALPHABET_UC.charAt(i), Util
+                    .toASCIIUpperCase(ASCII_ALPHABET_LC.charAt(i)));
+        }
+        for (int i = 0; i < ASCII_ALPHABET_UC.length(); i++) {
+            assertEquals(ASCII_ALPHABET_UC.charAt(i), Util
+                    .toASCIIUpperCase(ASCII_ALPHABET_UC.charAt(i)));
+        }
+    }
+
+    public void testEqualsIgnoreCaseStringString() {
+        final String s1 = ASCII_ALPHABET_LC;
+        final String s2 = ASCII_ALPHABET_UC;
+        assertTrue(Util.equalsIgnoreCase(s1, s1));
         assertTrue(Util.equalsIgnoreCase(s1, s2));
+        assertTrue(Util.equalsIgnoreCase(s2, s2));
+    }
+
+    public void testEqualsIgnoreCaseByteArrayByteArray() {
+        assertTrue(Util.equalsIgnoreCase(ASCII_ALPHABET_LC_BYTES,
+                ASCII_ALPHABET_LC_BYTES));
+        assertTrue(Util.equalsIgnoreCase(ASCII_ALPHABET_LC_BYTES,
+                ASCII_ALPHABET_UC_BYTES));
+        assertTrue(Util.equalsIgnoreCase(ASCII_ALPHABET_UC_BYTES,
+                ASCII_ALPHABET_UC_BYTES));
     }
 
 }
