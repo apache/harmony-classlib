@@ -53,20 +53,6 @@ public class UtilTest extends TestCase {
         }
     }
 
-    private void assertEqualsBytes(byte[] expected, byte[] actual) {
-        assertEquals(expected.length, actual.length);
-        for (int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], actual[i]);
-        }
-    }
-
-    public void testToASCIILowerCase() {
-        assertEqualsBytes(ASCII_ALPHABET_LC_BYTES, Util
-                .toASCIILowerCase(ASCII_ALPHABET_UC_BYTES));
-        assertEqualsBytes(ASCII_ALPHABET_LC_BYTES, Util
-                .toASCIILowerCase(ASCII_ALPHABET_LC_BYTES));
-    }
-
     public void testToASCIIUpperCaseByte() {
         for (int i = 0; i < ASCII_ALPHABET_LC_BYTES.length; i++) {
             assertEquals(ASCII_ALPHABET_UC_BYTES[i], Util
@@ -75,17 +61,6 @@ public class UtilTest extends TestCase {
         for (int i = 0; i < ASCII_ALPHABET_UC_BYTES.length; i++) {
             assertEquals(ASCII_ALPHABET_UC_BYTES[i], Util
                     .toASCIIUpperCase(ASCII_ALPHABET_UC_BYTES[i]));
-        }
-    }
-
-    public void testToASCIILowerCaseChar() {
-        for (int i = 0; i < ASCII_ALPHABET_UC.length(); i++) {
-            assertEquals(ASCII_ALPHABET_LC.charAt(i), Util
-                    .toASCIILowerCase(ASCII_ALPHABET_UC.charAt(i)));
-        }
-        for (int i = 0; i < ASCII_ALPHABET_LC.length(); i++) {
-            assertEquals(ASCII_ALPHABET_LC.charAt(i), Util
-                    .toASCIILowerCase(ASCII_ALPHABET_LC.charAt(i)));
         }
     }
 
@@ -98,14 +73,6 @@ public class UtilTest extends TestCase {
             assertEquals(ASCII_ALPHABET_UC.charAt(i), Util
                     .toASCIIUpperCase(ASCII_ALPHABET_UC.charAt(i)));
         }
-    }
-
-    public void testEqualsIgnoreCaseStringString() {
-        final String s1 = ASCII_ALPHABET_LC;
-        final String s2 = ASCII_ALPHABET_UC;
-        assertTrue(Util.equalsIgnoreCase(s1, s1));
-        assertTrue(Util.equalsIgnoreCase(s1, s2));
-        assertTrue(Util.equalsIgnoreCase(s2, s2));
     }
 
     public void testEqualsIgnoreCaseByteArrayByteArray() {
