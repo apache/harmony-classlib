@@ -33,9 +33,34 @@ public abstract class BandSet {
         return codec.encode(value);
     }
 
-    public byte[] encodeBandInt(String name, int[] ints, Codec defaultCodec) throws Pack200Exception {
+    public byte[] encodeBandInt(String name, int[] ints, BHSDCodec defaultCodec) throws Pack200Exception {
         // TODO non-default codecs
-        return defaultCodec.encode(ints);
+        if(ints.length > 0) {
+            System.out.println("encoding " + name + ", size = " + ints.length);
+            int first = ints[0];
+            if(defaultCodec.getB() != 1) {
+                if (defaultCodec.isSigned() && first >= -256 && first <= -1) {
+                    int specifier = -1 - CodecEncoding.getSpecifierForDefaultCodec(defaultCodec);
+                    byte[] specifierEncoded = defaultCodec.encode(new int[] {specifier});
+                    byte[] rest = defaultCodec.encode(ints);
+                    byte[] band = new byte[specifierEncoded.length + rest.length];
+                    System.arraycopy(specifierEncoded, 0, band, 0, specifierEncoded.length);
+                    System.arraycopy(rest, 0, band, specifierEncoded.length, rest.length);
+                    return band;
+                } else if (!defaultCodec.isSigned() && first >= defaultCodec.getL()
+                        && first <= defaultCodec.getL() + 255) {
+                    int specifier = CodecEncoding.getSpecifierForDefaultCodec(defaultCodec) + defaultCodec.getL();
+                    byte[] specifierEncoded = defaultCodec.encode(new int[] {specifier});
+                    byte[] rest = defaultCodec.encode(ints);
+                    byte[] band = new byte[specifierEncoded.length + rest.length];
+                    System.arraycopy(specifierEncoded, 0, band, 0, specifierEncoded.length);
+                    System.arraycopy(rest, 0, band, specifierEncoded.length, rest.length);
+                    return band;
+                }
+            }
+            return defaultCodec.encode(ints);
+        }
+        return new byte[0];
     }
 
     public boolean isPredictableSourceFileName(String className, String sourceFileName) {
@@ -95,6 +120,9 @@ public abstract class BandSet {
         int[] array = new int[list.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = ((ConstantPoolEntry)list.get(i)).getIndex();
+            if(array[i] < 0) {
+                throw new RuntimeException("Index should be > 0");
+            }
         }
         return array;
     }
@@ -104,6 +132,9 @@ public abstract class BandSet {
         for (int j = 0; j < array.length; j++) {
             ConstantPoolEntry cpEntry = (ConstantPoolEntry) theList.get(j);
             array[j] = cpEntry == null ? 0 : cpEntry.getIndex() + 1;
+            if(cpEntry != null && cpEntry.getIndex() < 0) {
+                throw new RuntimeException("Index should be > 0");
+            }
         }
         return array;
     }

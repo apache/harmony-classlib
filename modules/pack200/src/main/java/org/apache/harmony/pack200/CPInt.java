@@ -19,14 +19,20 @@ package org.apache.harmony.pack200;
 
 public class CPInt extends CPConstant {
 
-    private int theInt;
+    private final int theInt;
 
     public CPInt(int theInt) {
         this.theInt = theInt;
     }
 
     public int compareTo(Object obj) {
-        return theInt - ((CPInt)obj).theInt;
+        if(theInt > ((CPInt)obj).theInt) {
+            return 1;
+        } else if (theInt == ((CPInt)obj).theInt) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
     public int getInt() {

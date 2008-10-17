@@ -19,18 +19,28 @@ package org.apache.harmony.pack200;
 
 public class CPLong extends CPConstant {
 
-    private long theLong;
+    private final long theLong;
 
     public CPLong(long theLong) {
         this.theLong = theLong;
     }
 
     public int compareTo(Object obj) {
-        return (int) (theLong - ((CPLong)obj).theLong);
+        if(theLong > ((CPLong)obj).theLong) {
+            return 1;
+        } else if (theLong == ((CPLong)obj).theLong) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
     public long getLong() {
         return theLong;
+    }
+
+    public String toString() {
+        return "" + theLong;
     }
 
 }

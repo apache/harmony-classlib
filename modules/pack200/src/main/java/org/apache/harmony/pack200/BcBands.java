@@ -75,6 +75,7 @@ public class BcBands extends BandSet {
     private final Map labelsToOffsets = new HashMap();
     private int byteCodeOffset;
     private int renumberedOffset;
+    private final List bcLabelRelativeOffsets = new ArrayList();
 
     public void setCurrentClass(String name) {
         currentClass = name;
@@ -163,7 +164,8 @@ public class BcBands extends BandSet {
             } else if (label instanceof Label) {
                 bcLabel.remove(i);
                 Integer offset = (Integer) labelsToOffsets.get(label);
-                bcLabel.add(i, bciRenumbering.get(offset.intValue()));
+                Integer relativeOffset = (Integer) bcLabelRelativeOffsets.get(i);
+                bcLabel.add(i, new Integer(((Integer)bciRenumbering.get(offset.intValue())).intValue() - ((Integer)bciRenumbering.get(relativeOffset.intValue())).intValue()));
             }
         }
         bcCodes.add(endMarker);
@@ -186,7 +188,7 @@ public class BcBands extends BandSet {
         boolean aload_0 = false;
         if (bcCodes.size() > 0
                 && ((Integer) bcCodes.get(bcCodes.size() - 1)).equals(ALOAD_0)) {
-            bcCodes.remove(bcCodes.size());
+            bcCodes.remove(bcCodes.size() - 1);
             aload_0 = true;
         }
         CPMethodOrField cpField = cpBands.getCPField(owner, name, desc);
@@ -234,7 +236,7 @@ public class BcBands extends BandSet {
             byteCodeOffset += 3;
             bcCodes.add(IINC);
             bcLocal.add(new Integer(var));
-            bcByte.add(new Integer(increment));
+            bcByte.add(new Integer(increment & 0xFF));
         }
         updateRenumbering();
     }
@@ -260,17 +262,18 @@ public class BcBands extends BandSet {
         case 16: // bipush
         case 188: // newarray
             bcCodes.add(new Integer(opcode));
-            bcByte.add(new Integer(operand));
+            bcByte.add(new Integer(operand & 0xFF));
             byteCodeOffset += 2;
         }
         updateRenumbering();
     }
 
     public void visitJumpInsn(int opcode, Label label) {
-        byteCodeOffset += 3;
-        updateRenumbering();
         bcCodes.add(new Integer(opcode));
         bcLabel.add(label);
+        bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
+        byteCodeOffset += 3;
+        updateRenumbering();
     }
 
     public void visitLdcInsn(Object cst) {
@@ -317,16 +320,18 @@ public class BcBands extends BandSet {
     }
 
     public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
-        byteCodeOffset += padding + 8 + 8 * keys.length;
-        updateRenumbering();
         bcCodes.add(LOOKUPSWITCH);
         bcLabel.add(dflt);
+        bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         bcCaseCount.add(new Integer(keys.length));
         for (int i = 0; i < labels.length; i++) {
             bcCaseValue.add(new Integer(keys[i]));
             bcLabel.add(labels[i]);
+            bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         }
+        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
+        byteCodeOffset += padding + 8 + 8 * keys.length;
+        updateRenumbering();
     }
 
     public void visitMethodInsn(int opcode, String owner, String name,
@@ -387,22 +392,24 @@ public class BcBands extends BandSet {
         updateRenumbering();
         bcCodes.add(MULTIANEWARRAY);
         bcClassRef.add(cpBands.getCPClass(desc));
-        bcByte.add(new Integer(dimensions));
+        bcByte.add(new Integer(dimensions & 0xFF));
     }
 
     public void visitTableSwitchInsn(int min, int max, Label dflt,
             Label[] labels) {
-        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
-        byteCodeOffset+= (padding + 12 + 4 * labels.length);
-        updateRenumbering();
         bcCodes.add(TABLESWITCH);
         bcLabel.add(dflt);
+        bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         bcCaseValue.add(new Integer(min));
         int count = labels.length;
         bcCaseCount.add(new Integer(count));
         for (int i = 0; i < count; i++) {
             bcLabel.add(labels[i]);
+            bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         }
+        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
+        byteCodeOffset+= (padding + 12 + 4 * labels.length);
+        updateRenumbering();
     }
 
     public void visitTypeInsn(int opcode, String type) {

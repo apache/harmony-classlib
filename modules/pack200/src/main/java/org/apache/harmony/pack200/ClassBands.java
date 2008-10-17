@@ -291,6 +291,12 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5, header.have_class_flags_hi()));
         out.write(encodeBandInt("classSourceFile",
                 cpEntryOrNullListToArray(classSourceFile), Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_enclosing_method_RC",
+                 cpEntryListToArray(classEnclosingMethodClass),
+                 Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_EnclosingMethod_RDN",
+                cpEntryOrNullListToArray(classEnclosingMethodDesc),
+                Codec.UNSIGNED5));
         out.write(encodeBandInt("classSignature",
                 cpEntryListToArray(classSignature), Codec.UNSIGNED5));
         out.write(encodeBandInt("classFileVersionMinor",
@@ -497,13 +503,6 @@ public class ClassBands extends BandSet {
     }
 
     public void addHandler(Label start, Label end, Label handler, String type) {
-        Long latestMethodFlag = (Long) tempMethodFlags.get(tempMethodFlags
-                .size() - 1);
-        if ((latestMethodFlag.longValue() & (1 << 18)) == 0) {
-            tempMethodFlags.remove(tempMethodFlags.size() - 1);
-            tempMethodFlags.add(new Long(latestMethodFlag.intValue()
-                    | (1 << 18)));
-        }
         Integer handlers = (Integer) codeHandlerCount.remove(codeHandlerCount
                 .size() - 1);
         codeHandlerCount.add(new Integer(handlers.intValue() + 1));
@@ -571,12 +570,18 @@ public class ClassBands extends BandSet {
     public void doBciRenumbering(List bciRenumbering, Map labelsToOffsets) {
         renumberBci(codeLineNumberTableBciP, bciRenumbering, labelsToOffsets);
         renumberBci(codeLocalVariableTableBciP, bciRenumbering, labelsToOffsets);
-        renumberBci(codeLocalVariableTableSpanO, bciRenumbering,
-                labelsToOffsets);
+        renumberOffsetBci(codeLocalVariableTableBciP,
+                codeLocalVariableTableSpanO, bciRenumbering, labelsToOffsets);
         renumberBci(codeLocalVariableTypeTableBciP, bciRenumbering,
                 labelsToOffsets);
-        renumberBci(codeLocalVariableTypeTableSpanO, bciRenumbering,
+        renumberOffsetBci(codeLocalVariableTypeTableBciP,
+                codeLocalVariableTypeTableSpanO, bciRenumbering,
                 labelsToOffsets);
+        renumberBci(codeHandlerStartP, bciRenumbering, labelsToOffsets);
+        renumberOffsetBci(codeHandlerStartP, codeHandlerEndPO,
+                bciRenumbering, labelsToOffsets);
+        renumberDoubleOffsetBci(codeHandlerStartP, codeHandlerEndPO, codeHandlerCatchPO,
+                bciRenumbering, labelsToOffsets);
     }
 
     private void renumberBci(List list, List bciRenumbering, Map labelsToOffsets) {
@@ -586,8 +591,43 @@ public class ClassBands extends BandSet {
                 break;
             } else if (label instanceof Label) {
                 list.remove(i);
-                Integer offset = (Integer) labelsToOffsets.get(label);
-                list.add(i, bciRenumbering.get(offset.intValue()));
+                Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
+                list.add(i, bciRenumbering.get(bytecodeIndex.intValue()));
+            }
+        }
+    }
+
+    private void renumberOffsetBci(List relative, List list,
+            List bciRenumbering, Map labelsToOffsets) {
+        for (int i = list.size() - 1; i >= 0; i--) {
+            Object label = list.get(i);
+            if (label instanceof Integer) {
+                break;
+            } else if (label instanceof Label) {
+                list.remove(i);
+                Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
+                Integer renumberedOffset = new Integer(((Integer) bciRenumbering
+                        .get(bytecodeIndex.intValue())).intValue()
+                        - ((Integer) relative.get(i)).intValue());
+                list.add(i, renumberedOffset);
+            }
+        }
+    }
+
+    private void renumberDoubleOffsetBci(List relative, List firstOffset, List list,
+            List bciRenumbering, Map labelsToOffsets) {
+        // TODO: There's probably a nicer way of doing this...
+        for (int i = list.size() - 1; i >= 0; i--) {
+            Object label = list.get(i);
+            if (label instanceof Integer) {
+                break;
+            } else if (label instanceof Label) {
+                list.remove(i);
+                Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
+                Integer renumberedOffset = new Integer(((Integer) bciRenumbering
+                        .get(bytecodeIndex.intValue())).intValue()
+                        - ((Integer) relative.get(i)).intValue() - ((Integer) firstOffset.get(i)).intValue());
+                list.add(i, renumberedOffset);
             }
         }
     }

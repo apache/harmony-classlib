@@ -16,32 +16,91 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class IcBands extends BandSet {
 
-    private final List innerClasses = new ArrayList();
+    private final Set innerClasses = new HashSet();
     private final SegmentHeader segmentHeader;
+    private final CpBands cpBands;
+    private int bit16Count = 0;
 
-    public IcBands(SegmentHeader segmentHeader) {
+    public IcBands(SegmentHeader segmentHeader, CpBands cpBands) {
         this.segmentHeader = segmentHeader;
+        this.cpBands = cpBands;
     }
 
     public void finaliseBands() {
         segmentHeader.setIc_count(innerClasses.size());
     }
 
-    public void pack(OutputStream out) {
-        // TODO Auto-generated method stub
+    public void pack(OutputStream out) throws IOException, Pack200Exception {
+        int[] ic_this_class = new int[innerClasses.size()];
+        int[] ic_flags = new int[innerClasses.size()];
+        int[] ic_outer_class = new int[bit16Count];
+        int[] ic_name = new int[bit16Count];
 
+        int index2 = 0;
+        List innerClassesList = new ArrayList(innerClasses);
+        for (int i = 0; i < ic_this_class.length; i++) {
+            IcTuple icTuple = (IcTuple) innerClassesList.get(i);
+            ic_this_class[i] = icTuple.C.getIndex();
+            ic_flags[i] = icTuple.F;
+            if((icTuple.F & (1<<16)) != 0) {
+                ic_outer_class[index2] = icTuple.C2 == null ? 0 : icTuple.C2.getIndex() + 1;
+                ic_name[index2] = icTuple.N == null ? 0 : icTuple.N.getIndex() + 1;
+                index2++;
+            }
+        }
+        out.write(encodeBandInt("ic_this_class", ic_this_class, Codec.UDELTA5));
+        out.write(encodeBandInt("ic_flags", ic_flags, Codec.UNSIGNED5));
+        out.write(encodeBandInt("ic_outer_class", ic_outer_class, Codec.DELTA5));
+        out.write(encodeBandInt("ic_name", ic_name, Codec.DELTA5));
     }
 
     public void addInnerClass(String name, String outerName, String innerName,
             int flags) {
-        // TODO Auto-generated method stub
+        if(outerName != null || innerName != null) {
+            flags |= (1<<16);
+            boolean added = innerClasses.add(new IcTuple(cpBands.getCPClass(name), flags, cpBands.getCPClass(outerName), cpBands.getCPUtf8(innerName)));
+            if(added) {
+                bit16Count++;
+            }
+        } else {
+            innerClasses.add(new IcTuple(cpBands.getCPClass(name), flags, cpBands.getCPClass(outerName), cpBands.getCPUtf8(innerName)));
+        }
+    }
 
+    private class IcTuple {
+
+        protected CPClass C; // this class
+        protected int F; // flags
+        protected CPClass C2; // outer class
+        protected CPUTF8 N; // name
+
+        public IcTuple(CPClass C, int F, CPClass C2, CPUTF8 N) {
+            this.C = C;
+            this.F = F;
+            this.C2 = C2;
+            this.N = N;
+        }
+
+        public boolean equals(Object o) {
+            if(o instanceof IcTuple) {
+                IcTuple icT = (IcTuple)o;
+                return C.equals(icT.C) && F == icT.F && C2 != null ? C2.equals(icT.C2) : icT.C2 == null && N != null ? N.equals(icT.N) : icT.N == null;
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return (C.hashCode() * 37) + F;
+        }
     }
 
 }

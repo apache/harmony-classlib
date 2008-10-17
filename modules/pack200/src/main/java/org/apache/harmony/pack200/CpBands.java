@@ -366,8 +366,10 @@ public class CpBands extends BandSet {
     private void removeCpUtf8(String string) {
         CPUTF8 utf8 = (CPUTF8) stringsToCpUtf8.get(string);
         if (utf8 != null) {
-            stringsToCpUtf8.remove(string);
-            cp_Utf8.remove(utf8);
+            if(stringsToCpClass.get(string) == null) { // don't remove if strings are also in cpclass
+                stringsToCpUtf8.remove(string);
+                cp_Utf8.remove(utf8);
+            }
         }
     }
 
@@ -376,6 +378,9 @@ public class CpBands extends BandSet {
     }
 
     public CPUTF8 getCPUtf8(String utf8) {
+        if(utf8 == null) {
+            return null;
+        }
         CPUTF8 cpUtf8 = (CPUTF8) stringsToCpUtf8.get(utf8);
         if (cpUtf8 == null) {
             cpUtf8 = new CPUTF8(utf8);
@@ -437,6 +442,9 @@ public class CpBands extends BandSet {
     }
 
     public CPClass getCPClass(String className) {
+        if(className == null) {
+            return null;
+        }
         className = className.replace('.', '/');
         CPClass cpClass = (CPClass) stringsToCpClass.get(className);
         if (cpClass == null) {
@@ -473,6 +481,7 @@ public class CpBands extends BandSet {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpF = new CPMethodOrField(cpClass, nAndT);
             cp_Field.add(cpF);
+            stringsToCpMethodOrField.put(key, cpF);
         }
         return cpF;
     }
@@ -509,6 +518,7 @@ public class CpBands extends BandSet {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpM = new CPMethodOrField(cpClass, nAndT);
             cp_Method.add(cpM);
+            stringsToCpMethodOrField.put(key, cpM);
         }
         return cpM;
     }
@@ -522,6 +532,7 @@ public class CpBands extends BandSet {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpIM = new CPMethodOrField(cpClass, nAndT);
             cp_Imethod.add(cpIM);
+            stringsToCpMethodOrField.put(key, cpIM);
         }
         return cpIM;
     }

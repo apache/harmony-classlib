@@ -55,7 +55,7 @@ public class Segment implements ClassVisitor {
         cpBands = new CpBands(segmentHeader);
         attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader,
                 cpBands);
-        icBands = new IcBands(segmentHeader);
+        icBands = new IcBands(segmentHeader, cpBands);
         classBands = new ClassBands(segmentHeader, cpBands,
                 attributeDefinitionBands, classes.size());
         bcBands = new BcBands(cpBands, this);
@@ -92,7 +92,6 @@ public class Segment implements ClassVisitor {
 
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
-        System.out.println("visit " + name + " " + version + " " + access);
         currentClass = name;
         superClass = superName;
         bcBands.setCurrentClass(name);
@@ -115,7 +114,6 @@ public class Segment implements ClassVisitor {
     }
 
     public void visitAttribute(Attribute arg0) {
-        System.out.println("visitAttribute");
     }
 
     public void visitInnerClass(String name, String outerName,
