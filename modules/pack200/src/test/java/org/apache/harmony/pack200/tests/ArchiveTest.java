@@ -36,20 +36,20 @@ import org.apache.harmony.pack200.Archive;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 
-
 public class ArchiveTest extends TestCase {
 
+    File file;
     JarInputStream in;
     OutputStream out;
-    File file;
 
-    public void testHelloWorld() throws IOException, Pack200Exception, URISyntaxException {
+    public void testHelloWorld() throws IOException, Pack200Exception,
+            URISyntaxException {
         in = new JarInputStream(
                 Archive.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
-        file = File.createTempFile("helloworld", ".pack");
+        file = File.createTempFile("helloworld", ".pack.gz");
         out = new FileOutputStream(file);
-        new Archive(in, out).pack();
+        new Archive(in, out, true).pack();
         in.close();
         out.close();
 
