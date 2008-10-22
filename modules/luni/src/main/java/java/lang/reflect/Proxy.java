@@ -146,7 +146,7 @@ public class Proxy implements Serializable {
             WeakReference<Class<?>> ref = interfaceCache.get(interfaceKey);
             if (ref == null) {
                 String nextClassName = "$Proxy" + NextClassNameIndex++; //$NON-NLS-1$
-                if (commonPackageName != null) {
+                if (commonPackageName != null && commonPackageName.length() > 0) {
                     nextClassName = commonPackageName + "." + nextClassName; //$NON-NLS-1$
                 }
                 byte[] classFileBytes = ProxyClassFile.generateBytes(
