@@ -414,7 +414,7 @@ public class CpBands extends BandSet {
                         for (int j = i + 1; j < chars.length; j++) {
                             char c = chars[j];
                             if (Character.isLetter(c) || Character.isDigit(c)
-                                    || c == '/') {
+                                    || c == '/' || c == '$' || c == '_') {
                                 className.append(c);
                             } else {
                                 classes.add(className.toString());

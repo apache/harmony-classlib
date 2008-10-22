@@ -20,39 +20,45 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.harmony.pack200.Archive.File;
+
 public class FileBands extends BandSet {
 
-    private final List files;
     private final SegmentHeader segmentHeader;
     private final CPUTF8[] fileName;
     private int[] file_name;
     private final long[] file_modtime;
     private final long[] file_size;
     private final int[] file_options;
-    private final int[] file_bits;
+    private final byte[][] file_bits;
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
-            List classNames, List classModTimes, List files) {
+            List files) {
         this.segmentHeader = segmentHeader;
-        this.files = files;
-        int numClasses = classNames.size();
-        int size = /* files.size() + */numClasses;
+        int size =  files.size();
         fileName = new CPUTF8[size];
         file_modtime = new long[size];
         file_size = new long[size];
         file_options = new int[size];
         CPUTF8 emptyString = cpBands.getCPUtf8("");
-        for (int i = 0; i < numClasses; i++) {
-            fileName[i] = emptyString;
-            file_options[i] |= (1 << 1);
-        }
-        file_bits = new int[0];
-        // for (int i = 0; i < files.size(); i++) {
-        // fileNames[i + numClasses] = ?
-        // }
-        // for (int i = 0; i < array.length; i++) {
-        //
-        // }
+        int totalSize = 0;
+        file_bits = new byte[files.size()][];
+         for (int i = 0; i < files.size(); i++) {
+             File file = (File)files.get(i);
+             String name = file.getName();
+             fileName[i] = cpBands.getCPUtf8(name); // TODO: sometimes this can be the empty string
+             if(name.endsWith(".class")) {
+//                 fileName[i] = emptyString;
+                 file_options[i] |= (1 << 1);
+//             } else {
+//                 fileName[i] = cpBands.getCPUtf8(name);
+             }
+             byte[] bytes = file.getContents();
+             file_size[i] = bytes.length;
+             totalSize += file_size[i];
+             file_modtime[i] = file.getModtime();
+             file_bits[i] = file.getContents();
+         }
     }
 
     public void finaliseBands() {
@@ -73,8 +79,22 @@ public class FileBands extends BandSet {
             out.write(encodeBandInt("file_options", file_options,
                     Codec.UNSIGNED5));
         }
-        out.write(encodeBandInt("file_bits", file_bits, Codec.BYTE1));
+        out.write(encodeBandInt("file_bits", flatten(file_bits), Codec.BYTE1));
+    }
 
+    private int[] flatten(byte[][] bytes) {
+        int total = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            total += bytes[i].length;
+        }
+        int[] band = new int[total];
+        int index = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            for (int j = 0; j < bytes[i].length; j++) {
+                band[index++] = bytes[i][j];
+            }
+        }
+        return band;
     }
 
 }

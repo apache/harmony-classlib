@@ -36,7 +36,7 @@ public abstract class BandSet {
     public byte[] encodeBandInt(String name, int[] ints, BHSDCodec defaultCodec) throws Pack200Exception {
         // TODO non-default codecs
         if(ints.length > 0) {
-            System.out.println("encoding " + name + ", size = " + ints.length);
+//            System.out.println("encoding " + name + ", size = " + ints.length);
             int first = ints[0];
             if(defaultCodec.getB() != 1) {
                 if (defaultCodec.isSigned() && first >= -256 && first <= -1) {

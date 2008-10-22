@@ -47,11 +47,10 @@ public class Segment implements ClassVisitor {
     private final SegmentAnnotationVisitor annotationVisitor = new SegmentAnnotationVisitor();
     private Pack200ClassReader currentClassReader;
 
-    public void pack(List classes, List classNames, List classModTimes,
-            List files, OutputStream out) throws IOException, Pack200Exception {
+    public void pack(List classes, List files, OutputStream out)
+            throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
-        segmentHeader.setFile_count(classes.size() + files.size()); // TODO:
-                                                                    // files
+        segmentHeader.setFile_count(files.size());
         cpBands = new CpBands(segmentHeader);
         attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader,
                 cpBands);
@@ -59,8 +58,7 @@ public class Segment implements ClassVisitor {
         classBands = new ClassBands(segmentHeader, cpBands,
                 attributeDefinitionBands, classes.size());
         bcBands = new BcBands(cpBands, this);
-        fileBands = new FileBands(cpBands, segmentHeader, classNames,
-                classModTimes, files);
+        fileBands = new FileBands(cpBands, segmentHeader, files);
 
         processClasses(classes);
 

@@ -18,6 +18,7 @@ package org.apache.harmony.pack200;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
+import java.util.zip.GZIPOutputStream;
 
 import org.objectweb.asm.ClassReader;
 
@@ -40,8 +43,11 @@ public class Archive {
     private final OutputStream outputStream;
     private JarFile jarFile;
 
-    public Archive(JarInputStream inputStream, OutputStream outputStream) {
+    public Archive(JarInputStream inputStream, OutputStream outputStream, boolean gzip) throws IOException {
         this.inputStream = inputStream;
+        if(gzip) {
+            outputStream = new GZIPOutputStream(outputStream);
+        }
         this.outputStream = new BufferedOutputStream(outputStream);
     }
 
@@ -56,42 +62,71 @@ public class Archive {
         List files = new ArrayList();
         List classNames = new ArrayList();
         List classModtimes = new ArrayList();
+        Manifest manifest = jarFile != null ? jarFile.getManifest() : inputStream.getManifest();
+        if(manifest!= null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            manifest.write(baos);
+            files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
+        }
         if(inputStream != null) {
             while(inputStream.available() > 0) {
                 JarEntry jarEntry = inputStream.getNextJarEntry();
                 if(jarEntry != null) {
-                    addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, classNames, classModtimes, files);
+                    addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
                 }
             }
         } else {
             Enumeration jarEntries = jarFile.entries();
             while(jarEntries.hasMoreElements()) {
                 JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                addJarEntry(jarEntry, new BufferedInputStream(jarFile.getInputStream(jarEntry)), classes, classNames, classModtimes, files);
+                addJarEntry(jarEntry, new BufferedInputStream(jarFile.getInputStream(jarEntry)), classes, files);
             }
         }
-        new Segment().pack(classes, classNames, classModtimes, files, outputStream);  // TODO: Multiple segments
+        new Segment().pack(classes, files, outputStream);  // TODO: Multiple segments
         outputStream.close();
     }
 
-    private void addJarEntry(JarEntry jarEntry, InputStream stream, List javaClasses, List classNames, List classModtimes, List files) throws IOException, Pack200Exception {
+    private void addJarEntry(JarEntry jarEntry, InputStream stream, List javaClasses, List files) throws IOException, Pack200Exception {
         String name = jarEntry.getName();
+        long size = jarEntry.getSize();
+        if (size > Integer.MAX_VALUE) {
+            throw new RuntimeException("Large Class!");
+        }
+        byte[] bytes = new byte[(int)size];
+        int read = stream.read(bytes);
+        if(read != size) {
+            throw new RuntimeException("Error reading from stream");
+        }
         if(name.endsWith(".class")) {
-            long size = jarEntry.getSize();
-            if (size > Integer.MAX_VALUE) {
-                throw new RuntimeException("Large Class!");
-            }
-            byte[] bytes = new byte[(int)size];
-            int read = stream.read(bytes);
-            if(read != size) {
-                throw new RuntimeException("Error reading from stream");
-            }
             ClassReader classParser = new Pack200ClassReader(bytes);
             javaClasses.add(classParser);
-            classNames.add(name);
-            classModtimes.add(new Long(jarEntry.getTime()));
-        } else {
-            // TODO: it's a file...
+            bytes = new byte[0];
+        }
+        files.add(new File(name, bytes, jarEntry.getTime()));
+    }
+
+    static class File {
+
+        private final String name;
+        private final byte[] contents;
+        private final long modtime;
+
+        public File(String name, byte[] contents, long modtime) {
+            this.name = name;
+            this.contents = contents;
+            this.modtime = modtime;
+        }
+
+        public byte[] getContents() {
+            return contents;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getModtime() {
+            return modtime;
         }
     }
 
