@@ -394,7 +394,15 @@ public class MethodTest extends junit.framework.TestCase {
 			ret = mth.invoke(new TestMethod(), new Object[0]);
 		} catch (InvocationTargetException e) {
 			// Correct behaviour
-		} 
+		}
+		
+		mth = String.class.getMethod("valueOf", new Class[] { Integer.TYPE });
+        try {
+            mth.invoke(String.class, new Object[] { null });
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
 
 		TestMethod testMethod = new TestMethod();
 		Method methods[] = cl.getMethods();
@@ -533,6 +541,63 @@ public class MethodTest extends junit.framework.TestCase {
 			}
 		}
 	}
+	
+	public void test_invoke_InvocationTargetException() throws Exception {
+        Method method = MockObject.class.getDeclaredMethod("mockMethod", Class.class);
+        MockObject mockObject = new MockObject();
+        
+        try {
+            method.invoke(mockObject, InvocationTargetException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            method.invoke(mockObject, IllegalAccessException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            method.invoke(mockObject, IllegalArgumentException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            method.invoke(mockObject, InvocationTargetException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+        
+        try {
+            method.invoke(mockObject, Throwable.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+    }
+
+    static class MockObject {
+
+        public void mockMethod (Class<?> clazz) throws Exception {
+            if (clazz == InstantiationException.class) {
+                throw new InstantiationException();
+            } else if (clazz == IllegalAccessException.class) {
+                throw new IllegalAccessException();
+            } else if (clazz == IllegalArgumentException.class) {
+                throw new IllegalArgumentException();
+            } else if (clazz == InvocationTargetException.class) {
+                throw new InvocationTargetException(new Throwable());
+            } else {
+                throw new Exception();
+            }
+        }
+    }
 
 	/**
 	 * @tests java.lang.reflect.Method#toString()
