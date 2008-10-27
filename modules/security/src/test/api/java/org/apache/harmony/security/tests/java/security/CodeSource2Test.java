@@ -52,53 +52,51 @@ public class CodeSource2Test extends junit.framework.TestCase {
 	 * @tests java.security.CodeSource#hashCode()
 	 */
 	public void test_hashCode() throws Exception {
-       		URL url = new java.net.URL("file:///test");
-       		CodeSource cs = new CodeSource(url, (Certificate[]) null);
-       		assertTrue("Did not get expected hashCode!", cs.hashCode() == url
-       				.hashCode());
-	}
+        URL url = new java.net.URL("file:///test");
+        CodeSource cs = new CodeSource(url, (Certificate[]) null);
+        assertEquals("Did not get expected hashCode!", cs.hashCode(), url
+                .hashCode());
+    }
 
 	/**
 	 * @tests java.security.CodeSource#getCertificates()
 	 */
 	public void test_getCertificates() throws Exception {
-       		CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
-       				(Certificate[]) null);
-       		assertNull("Should have gotten null certificate list.", cs
-       				.getCertificates());
-	}
+        CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
+                (Certificate[]) null);
+        assertNull("Should have gotten null certificate list.", cs
+                .getCertificates());
+    }
 
 	/**
 	 * @tests java.security.CodeSource#getLocation()
 	 */
 	public void test_getLocation() throws Exception {
 		// Test for method java.net.URL java.security.CodeSource.getLocation()
-       		CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
-       				(Certificate[]) null);
-       		assertEquals("Did not get expected location!", "file:/test", cs.getLocation()
-       				.toString());
-	}
+        CodeSource cs = new CodeSource(new java.net.URL("file:///test"),
+                (Certificate[]) null);
+        assertEquals("Did not get expected location!", "file:/test", cs
+                .getLocation().toString());
+        assertNotNull("Host should not be null", cs.getLocation().getHost());
+    }
 
 	/**
 	 * @tests java.security.CodeSource#implies(java.security.CodeSource)
 	 */
 	public void test_impliesLjava_security_CodeSource() throws Exception {
 		// Test for method boolean
-		// java.security.CodeSource.implies(java.security.CodeSource)
-       		CodeSource cs1 = new CodeSource(new URL("file:/d:/somedir"),
-       				(Certificate[]) null);
-       		CodeSource cs2 = new CodeSource(new URL("file:/d:/somedir/"),
-       				(Certificate[]) null);
-       		assertTrue("Does not add /", cs1.implies(cs2));
+        // java.security.CodeSource.implies(java.security.CodeSource)
+        CodeSource cs1 = new CodeSource(new URL("file:/d:/somedir"),
+                (Certificate[]) null);
+        CodeSource cs2 = new CodeSource(new URL("file:/d:/somedir/"),
+                (Certificate[]) null);
+        assertTrue("Does not add /", cs1.implies(cs2));
 
-
-
-       		cs1 = new CodeSource(new URL("file", null, -1,
-       				"/d:/somedir/"), (Certificate[]) null);
-       		cs2 = new CodeSource(new URL("file:/d:/somedir/"),
-       				(Certificate[]) null);
-       		assertTrue("null host should imply host", cs1.implies(cs2));
-       		assertTrue("host should not imply null host", !cs2.implies(cs1));
+        cs1 = new CodeSource(new URL("file", null, -1, "/d:/somedir/"),
+                (Certificate[]) null);
+        cs2 = new CodeSource(new URL("file:/d:/somedir/"), (Certificate[]) null);
+        assertTrue("null host should imply host", cs1.implies(cs2));
+        assertFalse("host should not imply null host", cs2.implies(cs1));
 	}
 
 }
