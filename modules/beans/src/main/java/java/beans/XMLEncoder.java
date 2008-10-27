@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * <code>XMLEncoder</code> exnteds <code>Encoder</code> to write out the
+ * <code>XMLEncoder</code> extends <code>Encoder</code> to write out the
  * encoded statements and expressions in xml format. The xml can be read by
  * <code>XMLDecoder</code> later to restore objects and their states.
  * <p>
@@ -102,7 +102,7 @@ public class XMLEncoder extends Encoder {
 	 * Construct a <code>XMLEncoder</code>.
 	 * 
 	 * @param out
-	 *            the output stream where xml is writtern to
+	 *            the output stream where xml is written to
 	 */
 	public XMLEncoder(OutputStream out) {
 		if (null != out) {
@@ -136,7 +136,7 @@ public class XMLEncoder extends Encoder {
 	 * Writes out all objects since last flush to the output stream.
 	 * <p>
 	 * The implementation write the xml header first if it has not been
-	 * writtern. Then all pending objects since last flush are writtern.
+	 * written. Then all pending objects since last flush are written.
 	 * </p>
 	 */
 	@SuppressWarnings("nls")
@@ -817,7 +817,7 @@ public class XMLEncoder extends Encoder {
 
     /**
      * Imperfect attempt to detect a dead loop. This works with specific
-     * patterns that can be found in our AWT implementaiton.
+     * patterns that can be found in our AWT implementation.
      * See HARMONY-5707 for details.
      *
      * @param value the object to check dupes for
@@ -860,7 +860,7 @@ public class XMLEncoder extends Encoder {
 	}
 
 	/**
-	 * Records the expression so that it can be writtern out later, then calls
+	 * Records the expression so that it can be written out later, then calls
 	 * super implementation.
 	 */
 	@Override
@@ -900,7 +900,7 @@ public class XMLEncoder extends Encoder {
 	}
 
 	/**
-	 * Records the object so that it can be writtern out later, then calls super
+	 * Records the object so that it can be written out later, then calls super
 	 * implementation.
 	 */
 	@Override
@@ -935,7 +935,7 @@ public class XMLEncoder extends Encoder {
 	}
 
 	/**
-	 * Records the statement so that it can be writtern out later, then calls
+	 * Records the statement so that it can be written out later, then calls
 	 * super implementation.
 	 */
 	@Override
