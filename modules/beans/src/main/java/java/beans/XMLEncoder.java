@@ -801,6 +801,7 @@ public class XMLEncoder extends Encoder {
 	}
 
 	private void recordStatement(Statement stat) {
+        if (null == stat) return;
 		// deal with 'owner' property
 		if (stat.getTarget() == owner && owner != null) {
 			needOwner = true;
@@ -940,6 +941,11 @@ public class XMLEncoder extends Encoder {
 	 */
 	@Override
     public void writeStatement(Statement oldStat) {
+        if(null == oldStat) {
+            System.err.println("java.lang.Exception: XMLEncoder: discarding statement null");
+            System.err.println("Continuing...");
+            return;
+        }
 		// record how the object is changed
 		recordStatement(oldStat);
 
