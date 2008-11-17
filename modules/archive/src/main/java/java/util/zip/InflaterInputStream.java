@@ -258,7 +258,6 @@ public class InflaterInputStream extends FilterInputStream {
      *            of no use
      */
     @Override
-    @SuppressWarnings("unused")
     public void mark(int readlimit) {
         // do nothing
     }
