@@ -22,7 +22,7 @@ import java.awt.Graphics;
 
 import org.apache.harmony.x.swing.Utilities;
 
-public class ColorPainter extends SynthPainter {
+class ColorPainter extends SynthPainter {
 
     /**
      * Method that do paints

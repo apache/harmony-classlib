@@ -63,12 +63,12 @@ public class FormView extends ComponentView implements ActionListener {
     /**
      * @deprecated
      */
-    public static final String RESET = "Reset";
+    public static final String RESET = new String("Reset");
 
     /**
      * @deprecated
      */
-    public static final String SUBMIT = "Submit Query";
+    public static final String SUBMIT = new String("Submit Query");
 
     private int inputTypeIndex = FormAttributes.INPUT_TYPE_INDEX_UNDEFINED;
 

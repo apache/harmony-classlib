@@ -40,7 +40,11 @@ public class ColorType {
      * The maximum number of created color types. This field exist for
      * compatibility with RI only
      */
-    public static final int MAX_COUNT = 5;
+    public static final int MAX_COUNT; // Required by spec to be defined as a non-const value.
+    
+    static {
+        MAX_COUNT = 5;
+    }
 
     /**
      * The field is used for ID calculation

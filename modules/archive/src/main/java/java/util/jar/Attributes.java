@@ -110,7 +110,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
             name = buf;
         }
 
-        public byte[] getBytes() {
+        byte[] getBytes() {
             return name;
         }
 

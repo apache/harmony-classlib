@@ -15,18 +15,16 @@
  *  limitations under the License.
  */
 
-/**
- * @author Dennis Ushakov
- * @version $Revision$
- */
-
 package javax.accessibility;
 
 public interface AccessibleAction {
-    static final String TOGGLE_EXPAND = "toggle expand"; //$NON-NLS-1$
-    static final String INCREMENT = "increment"; //$NON-NLS-1$
-    static final String DECREMENT = "decrement"; //$NON-NLS-1$
+    static final String TOGGLE_EXPAND = new String("toggle expand"); //$NON-NLS-1$
+    static final String INCREMENT = new String("increment"); //$NON-NLS-1$
+    static final String DECREMENT = new String("decrement"); //$NON-NLS-1$
+
     int getAccessibleActionCount();
+
     String getAccessibleActionDescription(int i);
+
     boolean doAccessibleAction(int i);
 }

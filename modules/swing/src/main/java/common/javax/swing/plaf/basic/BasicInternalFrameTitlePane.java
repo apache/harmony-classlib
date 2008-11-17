@@ -364,12 +364,12 @@ public class BasicInternalFrameTitlePane extends JComponent {
         }
     }
 
-    protected static final String ICONIFY_CMD = "Iconify";
-    protected static final String MAXIMIZE_CMD = "Maximize";
-    protected static final String RESTORE_CMD = "Restore";
-    protected static final String CLOSE_CMD = "Close";
-    protected static final String MOVE_CMD = "Move";
-    protected static final String SIZE_CMD = "Size";
+    protected static final String ICONIFY_CMD = new String("Iconify");
+    protected static final String MAXIMIZE_CMD = new String("Maximize");
+    protected static final String RESTORE_CMD = new String("Restore");
+    protected static final String CLOSE_CMD = new String("Close");
+    protected static final String MOVE_CMD = new String("Move");
+    protected static final String SIZE_CMD = new String("Size");
 
     protected JMenuBar menuBar;
     protected JMenu windowMenu;
