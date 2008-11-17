@@ -67,6 +67,21 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         }
     };
 
+    private static final Iterator<?> EMPTY_ITERATOR = new Iterator<Object>() {
+
+        public boolean hasNext() {
+            return false;
+        }
+
+        public Object next() {
+            throw new NoSuchElementException();
+        }
+
+        public void remove() {
+            throw new IllegalStateException();
+        }
+    };
+
     private static <K, V> Entry<K, V> newEntry(K key, V value, int hash) {
         return new Entry<K, V>(key, value);
     }
@@ -115,16 +130,16 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         }
     }
 
-    private final class HashIterator<E> implements Iterator<E> {
-        private int position, expectedModCount;
+    private class HashIterator<E> implements Iterator<E> {
+        int position, expectedModCount;
 
-        private final MapEntry.Type<E, K, V> type;
+        final MapEntry.Type<E, K, V> type;
 
-        private Entry<K, V> lastEntry;
+        Entry<K, V> lastEntry;
 
-        private int lastPosition;
+        int lastPosition;
 
-        private boolean canRemove = false;
+        boolean canRemove = false;
 
         HashIterator(MapEntry.Type<E, K, V> value) {
             type = value;
@@ -209,42 +224,6 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
                 }
             }
             throw new ConcurrentModificationException();
-        }
-    }
-
-    private final class HashEnumerator<E> implements Enumeration<E> {
-        boolean key;
-
-        int start;
-
-        Entry<K, V> entry;
-
-        HashEnumerator(boolean isKey) {
-            key = isKey;
-            start = lastSlot + 1;
-        }
-
-        public boolean hasMoreElements() {
-            if (entry != null) {
-                return true;
-            }
-            while (start > firstSlot) {
-                if (elementData[--start] != null) {
-                    entry = elementData[start];
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @SuppressWarnings("unchecked")
-        public E nextElement() {
-            if (hasMoreElements()) {
-                Object result = key ? entry.key : entry.value;
-                entry = entry.next;
-                return (E) result;
-            }
-            throw new NoSuchElementException();
         }
     }
 
@@ -426,7 +405,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         if (elementCount == 0) {
             return (Enumeration<V>) EMPTY_ENUMERATION;
         }
-        return new HashEnumerator<V>(false);
+        return new HashEnumIterator<V>(new MapEntry.Type<V, K, V>() {
+            public V get(MapEntry<K, V> entry) {
+                return entry.value;
+            }
+        }, true);
     }
 
     /**
@@ -605,7 +588,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         if (elementCount == 0) {
             return (Enumeration<K>) EMPTY_ENUMERATION;
         }
-        return new HashEnumerator<K>(true);
+        return new HashEnumIterator<K>(new MapEntry.Type<K, K, V>() {
+            public K get(MapEntry<K, V> entry) {
+                return entry.key;
+            }
+        }, true);
     }
 
     /**
@@ -643,13 +630,94 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
 
             @Override
             public Iterator<K> iterator() {
-                return new HashIterator<K>(new MapEntry.Type<K, K, V>() {
+                if (this.size() == 0) {
+                    return (Iterator<K>) EMPTY_ITERATOR;
+                }
+                return new HashEnumIterator<K>(new MapEntry.Type<K, K, V>() {
                     public K get(MapEntry<K, V> entry) {
                         return entry.key;
                     }
                 });
             }
         }, this);
+    }
+
+    class HashEnumIterator<E> extends HashIterator<E> implements Enumeration<E> {
+
+        private boolean isEnumeration = false;
+
+        int start;
+
+        Entry<K, V> entry;
+
+        HashEnumIterator(MapEntry.Type<E, K, V> value) {
+            super(value);
+        }
+
+        HashEnumIterator(MapEntry.Type<E, K, V> value, boolean isEnumeration) {
+            super(value);
+            this.isEnumeration = isEnumeration;
+            start = lastSlot + 1;
+        }
+
+        public boolean hasMoreElements() {
+            if (isEnumeration) {
+                if (entry != null) {
+                    return true;
+                }
+                while (start > firstSlot) {
+                    if (elementData[--start] != null) {
+                        entry = elementData[start];
+                        return true;
+                    }
+                }
+                return false;
+            }
+            // iterator
+            return super.hasNext();
+        }
+
+        public boolean hasNext() {
+            if (isEnumeration) {
+                return hasMoreElements();
+            }
+            // iterator
+            return super.hasNext();
+        }
+
+        public E next() {
+            if (isEnumeration) {
+                if (expectedModCount == modCount) {
+                    return nextElement();
+                } else {
+                    throw new ConcurrentModificationException();
+                }
+            }
+            // iterator
+            return super.next();
+        }
+
+        @SuppressWarnings("unchecked")
+        public E nextElement() {
+            if (isEnumeration) {
+                if (hasMoreElements()) {
+                    Object result = type.get(entry);
+                    entry = entry.next;
+                    return (E) result;
+                }
+                throw new NoSuchElementException();
+            }
+            // iterator
+            return super.next();
+        }
+
+        public void remove() {
+            if (isEnumeration) {
+                throw new UnsupportedOperationException();
+            } else {
+                super.remove();
+            }
+        }
     }
 
     /**

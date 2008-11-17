@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import tests.support.resource.Support_Resources;
@@ -251,6 +253,16 @@ public class PropertiesTest extends junit.framework.TestCase {
             String p = (String) names.nextElement();
             assertTrue("Incorrect names returned", p.equals("test.prop")
                     || p.equals("bogus.prop"));
+        }
+
+        // cast Enumeration to Iterator
+        Iterator iterator = (Iterator) names;
+        assertFalse(iterator.hasNext());
+        try {
+            iterator.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Expected
         }
     }
 
