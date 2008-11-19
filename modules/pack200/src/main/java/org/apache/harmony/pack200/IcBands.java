@@ -19,16 +19,21 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class IcBands extends BandSet {
 
-    private final Set innerClasses = new HashSet();
+    private final Set innerClasses = new TreeSet();
     private final SegmentHeader segmentHeader;
     private final CpBands cpBands;
     private int bit16Count = 0;
+
+    private final Map outerToInner = new HashMap();
 
     public IcBands(SegmentHeader segmentHeader, CpBands cpBands) {
         this.segmentHeader = segmentHeader;
@@ -66,17 +71,58 @@ public class IcBands extends BandSet {
     public void addInnerClass(String name, String outerName, String innerName,
             int flags) {
         if(outerName != null || innerName != null) {
-            flags |= (1<<16);
-            boolean added = innerClasses.add(new IcTuple(cpBands.getCPClass(name), flags, cpBands.getCPClass(outerName), cpBands.getCPUtf8(innerName)));
-            if(added) {
-                bit16Count++;
+            if(namesArePredictable(name, outerName, innerName)) {
+                IcTuple innerClass = new IcTuple(cpBands.getCPClass(name), flags, null, null);
+                addToMap(outerName, innerClass);
+                innerClasses.add(innerClass);
+            } else {
+                flags |= (1<<16);
+                IcTuple icTuple = new IcTuple(cpBands.getCPClass(name), flags, cpBands.getCPClass(outerName), cpBands.getCPUtf8(innerName));
+                boolean added = innerClasses.add(icTuple);
+                if(added) {
+                    bit16Count++;
+                    addToMap(outerName, icTuple);
+                }
             }
         } else {
-            innerClasses.add(new IcTuple(cpBands.getCPClass(name), flags, cpBands.getCPClass(outerName), cpBands.getCPUtf8(innerName)));
+            IcTuple innerClass = new IcTuple(cpBands.getCPClass(name), flags, null, null);
+            addToMap(getOuter(name), innerClass);
+            innerClasses.add(innerClass);
         }
     }
 
-    private class IcTuple {
+    public List getInnerClassesForOuter(String outerClassName) {
+        return (List) outerToInner.get(outerClassName);
+    }
+
+    private String getOuter(String name) {
+        return name.substring(0, name.lastIndexOf('$'));
+    }
+
+    private void addToMap(String outerName, IcTuple icTuple) {
+        List tuples = (List) outerToInner.get(outerName);
+        if(tuples == null) {
+            tuples = new ArrayList();
+            outerToInner.put(outerName, tuples);
+            tuples.add(icTuple);
+        } else {
+            for (Iterator iterator = tuples.iterator(); iterator.hasNext();) {
+                IcTuple icT = (IcTuple) iterator.next();
+                if(icTuple.equals(icT)) {
+                    return;
+                }
+            }
+            tuples.add(icTuple);
+        }
+    }
+
+    private boolean namesArePredictable(String name, String outerName,
+            String innerName) {
+        // TODO: Could be multiple characters, not just $
+        return name.equals(outerName + '$' + innerName) && innerName.indexOf('$') == -1;
+    }
+
+    class IcTuple implements Comparable {
 
         protected CPClass C; // this class
         protected int F; // flags
@@ -93,7 +139,7 @@ public class IcBands extends BandSet {
         public boolean equals(Object o) {
             if(o instanceof IcTuple) {
                 IcTuple icT = (IcTuple)o;
-                return C.equals(icT.C) && F == icT.F && C2 != null ? C2.equals(icT.C2) : icT.C2 == null && N != null ? N.equals(icT.N) : icT.N == null;
+                return C.equals(icT.C) && F == icT.F && (C2 != null ? C2.equals(icT.C2) : icT.C2 == null) && (N != null ? N.equals(icT.N) : icT.N == null);
             }
             return false;
         }
@@ -101,6 +147,25 @@ public class IcBands extends BandSet {
         public int hashCode() {
             return (C.hashCode() * 37) + F;
         }
+
+        public String toString() {
+            return C.toString();
+        }
+
+        public int compareTo(Object arg0) {
+            return C.compareTo(((IcTuple)arg0).C);
+        }
+
+    }
+
+    public IcTuple getIcTuple(CPClass inner) {
+        for (Iterator iterator = innerClasses.iterator(); iterator.hasNext();) {
+            IcTuple icTuple = (IcTuple) iterator.next();
+            if(icTuple.C.equals(inner)) {
+                return icTuple;
+            }
+        }
+        return null;
     }
 
 }

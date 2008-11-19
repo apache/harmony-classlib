@@ -21,10 +21,19 @@ public class CPClass extends CPConstant implements Comparable {
 
     private final String className;
     private final CPUTF8 utf8;
+    private final boolean isInnerClass;
 
     public CPClass(CPUTF8 utf8) {
         this.utf8 = utf8;
         this.className = utf8.getUnderlyingString();
+        char[] chars = className.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if(chars[i] <= 0x2D) {
+                isInnerClass = true;
+                return;
+            }
+        }
+        isInnerClass = false;
     }
 
     public int compareTo(Object arg0) {
@@ -37,6 +46,10 @@ public class CPClass extends CPConstant implements Comparable {
 
     public int getIndexInCpUtf8() {
         return utf8.getIndex();
+    }
+
+    public boolean isInnerClass() {
+        return isInnerClass;
     }
 
 }

@@ -38,10 +38,6 @@ public class Segment implements ClassVisitor {
     private BcBands bcBands;
     private FileBands fileBands;
 
-    // The current class - only to be used when processing the classes
-    private String currentClass;
-    private String superClass;
-
     private final SegmentFieldVisitor fieldVisitor = new SegmentFieldVisitor();
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
     private final SegmentAnnotationVisitor annotationVisitor = new SegmentAnnotationVisitor();
@@ -51,12 +47,10 @@ public class Segment implements ClassVisitor {
             throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
-        cpBands = new CpBands(segmentHeader);
-        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader,
-                cpBands);
+        cpBands = new CpBands(this);
+        attributeDefinitionBands = new AttributeDefinitionBands(this);
         icBands = new IcBands(segmentHeader, cpBands);
-        classBands = new ClassBands(segmentHeader, cpBands,
-                attributeDefinitionBands, classes.size());
+        classBands = new ClassBands(this, classes.size());
         bcBands = new BcBands(cpBands, this);
         fileBands = new FileBands(cpBands, segmentHeader, files);
 
@@ -90,8 +84,6 @@ public class Segment implements ClassVisitor {
 
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
-        currentClass = name;
-        superClass = superName;
         bcBands.setCurrentClass(name);
         bcBands.setSuperClass(superName);
         segmentHeader.addMajorVersion(version);
@@ -298,5 +290,21 @@ public class Segment implements ClassVisitor {
 
     public boolean lastConstantHadWideIndex() {
         return currentClassReader.lastConstantHadWideIndex();
+    }
+
+    public CpBands getCpBands() {
+        return cpBands;
+    }
+
+    public SegmentHeader getSegmentHeader() {
+        return segmentHeader;
+    }
+
+    public AttributeDefinitionBands getAttrBands() {
+        return attributeDefinitionBands;
+    }
+
+    public IcBands getIcBands() {
+        return icBands;
     }
 }

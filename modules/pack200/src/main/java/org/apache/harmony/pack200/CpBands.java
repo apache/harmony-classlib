@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.objectweb.asm.Type;
+
 /**
  * Pack200 Constant Pool Bands
  */
@@ -54,12 +56,17 @@ public class CpBands extends BandSet {
     private final Map stringsToCpNameAndType = new HashMap();
     private final Map stringsToCpClass = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
-    private final Map stringsToCpMethodOrField = new HashMap();
+    private final Map stringsToCpMethod = new HashMap();
+    private final Map stringsToCpField = new HashMap();
+    private final Map stringsToCpIMethod = new HashMap();
 
     private final Map objectsToCPConstant = new HashMap();
 
-    public CpBands(SegmentHeader segmentHeader) {
-        this.segmentHeader = segmentHeader;
+    private final Segment segment;
+
+    public CpBands(Segment segment) {
+        this.segmentHeader = segment.getSegmentHeader();
+        this.segment = segment;
         defaultAttributeNames.add("AnnotationDefault");
         defaultAttributeNames.add("RuntimeVisibleAnnotations");
         defaultAttributeNames.add("RuntimeInvisibleAnnotations");
@@ -194,8 +201,8 @@ public class CpBands extends BandSet {
             loBits[i] = (int) l;
             i++;
         }
-        out.write(encodeBandInt("cp_Long_high", highBits, Codec.UDELTA5));
-        out.write(encodeBandInt("cp_Long_low", loBits, Codec.DELTA5));
+        out.write(encodeBandInt("cp_Long_hi", highBits, Codec.UDELTA5));
+        out.write(encodeBandInt("cp_Long_lo", loBits, Codec.DELTA5));
     }
 
     private void writeCpDouble(OutputStream out) throws IOException,
@@ -210,8 +217,8 @@ public class CpBands extends BandSet {
             loBits[i] = (int) l;
             i++;
         }
-        out.write(encodeBandInt("cp_Double_high", highBits, Codec.UDELTA5));
-        out.write(encodeBandInt("cp_Double_low", loBits, Codec.DELTA5));
+        out.write(encodeBandInt("cp_Double_hi", highBits, Codec.UDELTA5));
+        out.write(encodeBandInt("cp_Double_lo", loBits, Codec.DELTA5));
     }
 
     private void writeCpString(OutputStream out) throws IOException,
@@ -373,7 +380,7 @@ public class CpBands extends BandSet {
         }
     }
 
-    private void addCPUtf8(String utf8) {
+    void addCPUtf8(String utf8) {
         getCPUtf8(utf8);
     }
 
@@ -453,6 +460,9 @@ public class CpBands extends BandSet {
             cp_Class.add(cpClass);
             stringsToCpClass.put(className, cpClass);
         }
+        if(cpClass.isInnerClass()) {
+            segment.getClassBands().currentClassReferencesInnerClass(cpClass);
+        }
         return cpClass;
     }
 
@@ -475,13 +485,13 @@ public class CpBands extends BandSet {
 
     public CPMethodOrField getCPField(CPClass cpClass, String name, String desc) {
         String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpF = (CPMethodOrField) stringsToCpMethodOrField
+        CPMethodOrField cpF = (CPMethodOrField) stringsToCpField
                 .get(key);
         if (cpF == null) {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpF = new CPMethodOrField(cpClass, nAndT);
             cp_Field.add(cpF);
-            stringsToCpMethodOrField.put(key, cpF);
+            stringsToCpField.put(key, cpF);
         }
         return cpF;
     }
@@ -504,6 +514,9 @@ public class CpBands extends BandSet {
             } else if (value instanceof String) {
                 constant = new CPString(getCPUtf8((String) value));
                 cp_String.add(constant);
+            } else if (value instanceof Type) {
+                constant = new CPClass(getCPUtf8(((Type) value).getClassName()));
+                cp_Class.add(constant);
             }
             objectsToCPConstant.put(value, constant);
         }
@@ -512,13 +525,13 @@ public class CpBands extends BandSet {
 
     public CPMethodOrField getCPMethod(CPClass cpClass, String name, String desc) {
         String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpM = (CPMethodOrField) stringsToCpMethodOrField
+        CPMethodOrField cpM = (CPMethodOrField) stringsToCpMethod
                 .get(key);
         if (cpM == null) {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpM = new CPMethodOrField(cpClass, nAndT);
             cp_Method.add(cpM);
-            stringsToCpMethodOrField.put(key, cpM);
+            stringsToCpMethod.put(key, cpM);
         }
         return cpM;
     }
@@ -526,13 +539,13 @@ public class CpBands extends BandSet {
     public CPMethodOrField getCPIMethod(CPClass cpClass, String name,
             String desc) {
         String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpIM = (CPMethodOrField) stringsToCpMethodOrField
+        CPMethodOrField cpIM = (CPMethodOrField) stringsToCpIMethod
                 .get(key);
         if (cpIM == null) {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpIM = new CPMethodOrField(cpClass, nAndT);
             cp_Imethod.add(cpIM);
-            stringsToCpMethodOrField.put(key, cpIM);
+            stringsToCpIMethod.put(key, cpIM);
         }
         return cpIM;
     }
@@ -551,12 +564,12 @@ public class CpBands extends BandSet {
 
     public CPMethodOrField addCPMethod(CPClass cpClass, String name, String desc) {
         String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpM = (CPMethodOrField) stringsToCpMethodOrField
+        CPMethodOrField cpM = (CPMethodOrField) stringsToCpMethod
                 .get(key);
         if (cpM == null) {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpM = new CPMethodOrField(cpClass, nAndT);
-            stringsToCpMethodOrField.put(key, cpM);
+            stringsToCpMethod.put(key, cpM);
             cp_Method.add(cpM);
         }
         return cpM;
@@ -564,12 +577,12 @@ public class CpBands extends BandSet {
 
     public CPMethodOrField addCPField(CPClass cpClass, String name, String desc) {
         String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpF = (CPMethodOrField) stringsToCpMethodOrField
+        CPMethodOrField cpF = (CPMethodOrField) stringsToCpField
                 .get(key);
         if (cpF == null) {
             CPNameAndType nAndT = getCPNameAndType(name, desc);
             cpF = new CPMethodOrField(cpClass, nAndT);
-            stringsToCpMethodOrField.put(key, cpF);
+            stringsToCpField.put(key, cpF);
             cp_Field.add(cpF);
         }
         return cpF;

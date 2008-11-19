@@ -48,15 +48,14 @@ public class CPSignature extends ConstantPoolEntry implements Comparable {
             return classes.size() - ((CPSignature) arg0).classes.size();
         }
         if (classes.size() > 0) {
-            int classComp = 0;
             for (int i = classes.size() - 1; i >=0; i--) {
                 CPClass cpClass = (CPClass) classes.get(i);
                 CPClass compareClass = (CPClass) ((CPSignature) arg0).classes
                         .get(i);
-                classComp = classComp * 10 + cpClass.compareTo(compareClass);
-            }
-            if(classComp != 0) {
-                return classComp;
+                int classComp = cpClass.compareTo(compareClass);
+                if(classComp != 0) {
+                    return classComp;
+                }
             }
         }
         return signature.compareTo(((CPSignature) arg0).signature);

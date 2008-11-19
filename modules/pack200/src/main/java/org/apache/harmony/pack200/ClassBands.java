@@ -19,9 +19,14 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.harmony.pack200.IcBands.IcTuple;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
 
@@ -91,11 +96,18 @@ public class ClassBands extends BandSet {
     private final List tempMethodFlags = new ArrayList();
     private final List tempMethodDesc = new ArrayList();
 
-    public ClassBands(SegmentHeader header, CpBands cpBands,
-            AttributeDefinitionBands attrBands, int numClasses) {
-        this.header = header;
-        this.cpBands = cpBands;
-        this.attrBands = attrBands;
+    private boolean anySyntheticClasses = false;
+    private boolean anySyntheticFields = false;
+    private boolean anySyntheticMethods = false;
+    private final Segment segment;
+
+    private final Map classReferencesInnerClass = new HashMap();
+
+    public ClassBands(Segment segment, int numClasses) {
+        this.segment = segment;
+        this.header = segment.getSegmentHeader();
+        this.cpBands = segment.getCpBands();
+        this.attrBands = segment.getAttrBands();
         class_this = new CPClass[numClasses];
         class_super = new CPClass[numClasses];
         class_interface_count = new int[numClasses];
@@ -114,6 +126,11 @@ public class ClassBands extends BandSet {
     private int index = 0;
 
     private int numMethodArgs = 0;
+    private int[] class_InnerClasses_N;
+    private CPClass[] class_InnerClasses_RC;
+    private int[] class_InnerClasses_F;
+    private List classInnerClassesOuterRCN;
+    private List classInnerClassesNameRUN;
 
     public void addClass(int major, int flags, String className,
             String superName, String[] interfaces) {
@@ -126,6 +143,24 @@ public class ClassBands extends BandSet {
         }
         major_versions[index] = major;
         class_flags[index] = flags;
+        if(!anySyntheticClasses && ((flags & (1 << 12)) != 0)) {
+            cpBands.addCPUtf8("Synthetic");
+            anySyntheticClasses = true;
+        }
+    }
+
+    public void currentClassReferencesInnerClass(CPClass inner) {
+        if(!(index >= class_this.length)) {
+            CPClass currentClass = class_this[index];
+            if(currentClass != null && !currentClass.equals(inner)) {
+                Set referencedInnerClasses = (Set)classReferencesInnerClass.get(currentClass);
+                if(referencedInnerClasses == null) {
+                    referencedInnerClasses = new HashSet();
+                    classReferencesInnerClass.put(currentClass, referencedInnerClasses);
+                }
+                referencedInnerClasses.add(inner);
+            }
+        }
     }
 
     public void addField(int flags, String name, String desc, String signature,
@@ -140,6 +175,10 @@ public class ClassBands extends BandSet {
         if (value != null) {
             fieldConstantValueKQ.add(cpBands.getConstant(value));
             flags |= (1 << 17);
+        }
+        if(!anySyntheticFields && ((flags & (1 << 12)) != 0)) {
+            cpBands.addCPUtf8("Synthetic");
+            anySyntheticFields = true;
         }
         tempFieldFlags.add(new Long(flags));
     }
@@ -188,20 +227,64 @@ public class ClassBands extends BandSet {
                 removed++;
             }
         }
+
+        // Compute any required IcLocals
+        List innerClassesN = new ArrayList();
+        List icLocal = new ArrayList();
+        Set keySet = classReferencesInnerClass.keySet();
+        for (int i = 0; i < class_this.length; i++) {
+            CPClass cpClass = class_this[i];
+            Set referencedInnerClasses = (Set) classReferencesInnerClass.get(cpClass);
+            if(referencedInnerClasses != null) {
+                int innerN = 0;
+                List innerClasses = segment.getIcBands().getInnerClassesForOuter(cpClass.toString());
+                if(innerClasses != null) {
+                    for (Iterator iterator2 = innerClasses.iterator(); iterator2
+                            .hasNext();) {
+                        referencedInnerClasses.remove(((IcTuple)iterator2.next()).C);
+                    }
+                }
+                for (Iterator iterator2 = referencedInnerClasses.iterator(); iterator2
+                        .hasNext();) {
+                    CPClass inner = (CPClass) iterator2.next();
+                    IcTuple icTuple = segment.getIcBands().getIcTuple(inner);
+                    if(icTuple != null) {
+                        // should transmit an icLocal entry
+                        icLocal.add(icTuple);
+                        innerN++;
+                    }
+                }
+                if(innerN != 0) {
+                    innerClassesN.add(new Integer(innerN));
+                    class_flags[i] |= (1 << 23);
+                }
+            }
+        }
+        class_InnerClasses_N = listToArray(innerClassesN);
+        class_InnerClasses_RC = new CPClass[icLocal.size()];
+        class_InnerClasses_F = new int[icLocal.size()];
+        classInnerClassesOuterRCN = new ArrayList();
+        classInnerClassesNameRUN = new ArrayList();
+        for (int i = 0; i < class_InnerClasses_RC.length; i++) {
+            IcTuple icTuple = (IcTuple) icLocal.get(i);
+            class_InnerClasses_RC[i] = (icTuple.C);
+            if(icTuple.C2 == null && icTuple.N == null) {
+                class_InnerClasses_F[i] = 0;
+            } else {
+                if (icTuple.F == 0) {
+                    class_InnerClasses_F[i] = 0x00010000;
+                } else {
+                    class_InnerClasses_F[i] = icTuple.F;
+                }
+                classInnerClassesOuterRCN.add(icTuple.C2);
+                classInnerClassesNameRUN.add(icTuple.N);
+            }
+        }
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
-        int[] classThis = new int[class_this.length];
-        for (int i = 0; i < classThis.length; i++) {
-            classThis[i] = class_this[i].getIndex();
-        }
-        out.write(encodeBandInt("class_this", classThis, Codec.DELTA5));
-
-        int[] classSuper = new int[class_super.length];
-        for (int i = 0; i < classSuper.length; i++) {
-            classSuper[i] = class_super[i].getIndex();
-        }
-        out.write(encodeBandInt("class_super", classSuper, Codec.DELTA5));
+        out.write(encodeBandInt("class_this", getInts(class_this), Codec.DELTA5));
+        out.write(encodeBandInt("class_super", getInts(class_super), Codec.DELTA5));
         out.write(encodeBandInt("class_interface_count", class_interface_count,
                 Codec.DELTA5));
 
@@ -217,9 +300,8 @@ public class ClassBands extends BandSet {
                 }
             }
         }
-        out
-                .write(encodeBandInt("class_interface", classInterface,
-                        Codec.DELTA5));
+        out.write(encodeBandInt("class_interface", classInterface,
+                Codec.DELTA5));
         out.write(encodeBandInt("class_field_count", class_field_count,
                 Codec.DELTA5));
         out.write(encodeBandInt("class_method_count", class_method_count,
@@ -297,12 +379,25 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("class_EnclosingMethod_RDN",
                 cpEntryOrNullListToArray(classEnclosingMethodDesc),
                 Codec.UNSIGNED5));
-        out.write(encodeBandInt("classSignature",
+        out.write(encodeBandInt("class_Signature_RS",
                 cpEntryListToArray(classSignature), Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_InnerClasses_N", class_InnerClasses_N, Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_InnerClasses_RC", getInts(class_InnerClasses_RC), Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_InnerClasses_F", class_InnerClasses_F, Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_InnerClasses_outer_RCN", cpEntryOrNullListToArray(classInnerClassesOuterRCN), Codec.UNSIGNED5));
+        out.write(encodeBandInt("class_InnerClasses_name_RUN", cpEntryOrNullListToArray(classInnerClassesNameRUN), Codec.UNSIGNED5));
         out.write(encodeBandInt("classFileVersionMinor",
                 listToArray(classFileVersionMinor), Codec.UNSIGNED5));
         out.write(encodeBandInt("classFileVersionMajor",
                 listToArray(classFileVersionMajor), Codec.UNSIGNED5));
+    }
+
+    private int[] getInts(CPClass[] cpClasses) {
+        int[] ints = new int[cpClasses.length];
+        for (int i = 0; i < ints.length; i++) {
+            ints[i] = cpClasses[i].getIndex();
+        }
+        return ints;
     }
 
     private void writeCodeBands(OutputStream out) throws IOException,
@@ -388,8 +483,11 @@ public class ClassBands extends BandSet {
             flags |= (1 << 18);
         }
         tempMethodFlags.add(new Long(flags));
-        codeHandlerCount.add(ZERO);
         numMethodArgs = countArgs(desc);
+        if(!anySyntheticMethods && ((flags & (1 << 12)) != 0)) {
+            cpBands.addCPUtf8("Synthetic");
+            anySyntheticMethods = true;
+        }
     }
 
     protected static int countArgs(String descriptor) {
@@ -457,6 +555,9 @@ public class ClassBands extends BandSet {
 
     public void addSourceFile(String source) {
         String implicitSourceFileName = class_this[index].toString();
+        if(implicitSourceFileName.indexOf('$') != -1) {
+            implicitSourceFileName = implicitSourceFileName.substring(0, implicitSourceFileName.indexOf('$'));
+        }
         implicitSourceFileName = implicitSourceFileName
                 .substring(implicitSourceFileName.lastIndexOf('/') + 1)
                 + ".java";
@@ -499,6 +600,7 @@ public class ClassBands extends BandSet {
     }
 
     public void addCode() {
+        codeHandlerCount.add(ZERO);
         codeFlags.add(new Long(0));
     }
 
@@ -630,5 +732,17 @@ public class ClassBands extends BandSet {
                 list.add(i, renumberedOffset);
             }
         }
+    }
+
+    public boolean isAnySyntheticClasses() {
+        return anySyntheticClasses;
+    }
+
+    public boolean isAnySyntheticFields() {
+        return anySyntheticFields;
+    }
+
+    public boolean isAnySyntheticMethods() {
+        return anySyntheticMethods;
     }
 }
