@@ -736,57 +736,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_listenStreamSocketImpl
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    availableStreamImpl
- * Signature: (Ljava/io/FileDescriptor;)I
- */
-JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStreamImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor)
-{
-#define MSGLEN 2048             /* This could be replaced by the default stack buffer size */
-  PORT_ACCESS_FROM_ENV(env);
-  hysocket_t hysocketP;
-  char message[MSGLEN];
-
-  I_32 result, flags = 0;
-
-  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
-  if (!hysock_socketIsValid(hysocketP)) {
-    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
-    return (jint) 0;
-  }
-
-  do {
-    result = hysock_select_read(hysocketP, 0, 1, FALSE);
-
-    if (HYPORT_ERROR_SOCKET_TIMEOUT == result) {
-      return (jint) 0;          /* The read operation timed out, so answer 0 bytes available */
-    } else if (HYPORT_ERROR_SOCKET_INTERRUPTED == result) {
-      continue;
-    } else if (0 > result) {
-      throwJavaNetSocketException(env, result);
-      return (jint) 0;
-    }
-  } while (HYPORT_ERROR_SOCKET_INTERRUPTED == result);
-
-  result = hysock_setflag(HYSOCK_MSG_PEEK, &flags);     /* Create a 'peek' flag argument for the read operation */
-  if (0 > result) {
-    throwJavaNetSocketException(env, result);
-    return (jint) 0;
-  }
-
-  result = hysock_read(hysocketP, (U_8 *) message, MSGLEN, flags);
-
-  if (0 > result) {
-    throwJavaNetSocketException(env, result);
-    return (jint) 0;
-  } else {
-    return (jint) result;
-  }
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    acceptSocketImpl
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/SocketImpl;Ljava/io/FileDescriptor;I)V
  */

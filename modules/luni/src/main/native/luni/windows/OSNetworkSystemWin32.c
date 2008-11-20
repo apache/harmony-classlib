@@ -334,3 +334,42 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
   //inheritedChannel is not supported on windows platform. 
   return NULL;
 }
+
+/*
+ * Utilizes the Winsock2 call to get the available bytes pending on a socket
+ * which is similar to, but different to the call on other platforms.
+ *
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    availableStreamImpl
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStreamImpl
+  (JNIEnv * env, jclass thisClz, jobject fileDescriptor)
+{
+  PORT_ACCESS_FROM_ENV(env);
+  hysocket_t hysocketP;
+  OSSOCKET socket;
+  U_32 nbytes = 0;
+  I_32 result;
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  if (!hysock_socketIsValid(hysocketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
+
+  if ((hysocketP->flags & SOCKET_USE_IPV4_MASK) == SOCKET_USE_IPV4_MASK) {
+      socket = hysocketP->ipv4;
+  } else {
+      socket = hysocketP->ipv6;
+  }
+
+  result = ioctlsocket(socket, FIONREAD, &nbytes);
+  if (result != 0) {
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;
+  }
+
+  return (jint) nbytes;
+}
