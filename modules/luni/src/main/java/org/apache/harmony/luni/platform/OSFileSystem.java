@@ -25,12 +25,15 @@ import java.io.IOException;
  * This is the portable implementation of the file system interface.
  * 
  */
-class OSFileSystem extends OSComponent implements IFileSystem {
+class OSFileSystem implements IFileSystem {
 
-	/**
-	 * 
-	 */
-	public OSFileSystem() {
+    private static final OSFileSystem singleton = new OSFileSystem();
+
+    public static OSFileSystem getOSFileSystem() {
+        return singleton;
+    }
+
+    private OSFileSystem() {
 		super();
 	}
 
