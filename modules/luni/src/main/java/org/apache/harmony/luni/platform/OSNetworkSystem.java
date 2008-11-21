@@ -53,57 +53,36 @@ final class OSNetworkSystem implements INetworkSystem {
         return ref;
     }
 
-    public void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
-            throws IOException {
-        createSocketImpl(fd, preferIPv4Stack);
-    }
+    public native void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
+            throws IOException;
 
-    public void createDatagramSocket(FileDescriptor fd, boolean preferIPv4Stack)
-            throws SocketException {
-        createDatagramSocketImpl(fd, preferIPv4Stack);
-    }
+    public native void createDatagramSocket(FileDescriptor fd, boolean preferIPv4Stack)
+            throws SocketException;
 
-    public int read(FileDescriptor aFD, byte[] data, int offset, int count,
-            int timeout) throws IOException {
-        return readSocketImpl(aFD, data, offset, count, timeout);
-    }
+    public native int read(FileDescriptor fd, byte[] data, int offset, int count,
+            int timeout) throws IOException;
 
-    public int readDirect(FileDescriptor aFD, long address, int count,
-            int timeout) throws IOException {
-        return readSocketDirectImpl(aFD, address, count, timeout);
-    }
+    public native int readDirect(FileDescriptor fd, long address, int count,
+            int timeout) throws IOException;
 
-    public int write(FileDescriptor aFD, byte[] data, int offset, int count)
-            throws IOException {
-        return writeSocketImpl(aFD, data, offset, count);
-    }
+    public native int write(FileDescriptor fd, byte[] data, int offset, int count)
+            throws IOException;
 
-    public int writeDirect(FileDescriptor aFD, long address, int count)
-            throws IOException {
-        return writeSocketDirectImpl(aFD, address, count);
-    }
+    public native int writeDirect(FileDescriptor fd, long address, int count)
+            throws IOException;
 
-    public void setNonBlocking(FileDescriptor aFD, boolean block)
-            throws IOException {
-        setNonBlockingImpl(aFD, block);
-    }
+    public native void setNonBlocking(FileDescriptor fd, boolean block)
+            throws IOException;
 
-    public void connectDatagram(FileDescriptor aFD, int port, int trafficClass,
-            InetAddress inetAddress) throws SocketException {
-        connectDatagramImpl2(aFD, port, trafficClass, inetAddress);
-    }
+    public native void connectDatagram(FileDescriptor fd, int port, int trafficClass,
+            InetAddress inetAddress) throws SocketException;
 
-    public int connect(FileDescriptor aFD, int trafficClass,
-            InetAddress inetAddress, int port) throws IOException {
-        return connectSocketImpl(aFD, trafficClass, inetAddress, port);
-    }
+    public native int connect(FileDescriptor fd, int trafficClass,
+            InetAddress inetAddress, int port) throws IOException;
 
-    public int connectWithTimeout(FileDescriptor aFD, int timeout,
+    public native int connectWithTimeout(FileDescriptor fd, int timeout,
             int trafficClass, InetAddress inetAddress, int port, int step,
-            Long context) throws IOException {
-        return connectWithTimeoutSocketImpl(aFD, timeout, trafficClass,
-                inetAddress, port, step, context);
-    }
+            Long context) throws IOException;
 
     public void connectStreamWithTimeoutSocket(FileDescriptor aFD, int aport,
             int timeout, int trafficClass, InetAddress inetAddress)
@@ -112,10 +91,8 @@ final class OSNetworkSystem implements INetworkSystem {
                 inetAddress);
     }
 
-    public void bind(FileDescriptor aFD, int port, InetAddress inetAddress)
-            throws SocketException {
-        socketBindImpl(aFD, port, inetAddress);
-    }
+    public native void bind(FileDescriptor aFD, int port, InetAddress inetAddress)
+            throws SocketException;
 
     public boolean bind2(FileDescriptor aFD, int port, boolean bindToDevice,
             InetAddress inetAddress) throws SocketException {
@@ -230,9 +207,7 @@ final class OSNetworkSystem implements INetworkSystem {
         sendUrgentDataImpl(fd, value);
     }
 
-    public int availableStream(FileDescriptor aFD) throws SocketException {
-        return availableStreamImpl(aFD);
-    }
+    public native int available(FileDescriptor fd) throws SocketException;
 
     public void acceptStreamSocket(FileDescriptor fdServer,
             SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
@@ -399,55 +374,11 @@ final class OSNetworkSystem implements INetworkSystem {
         setInetAddressImpl(sender, address);
     }
 
-    static native void createSocketImpl(FileDescriptor fd,
-            boolean preferIPv4Stack);
-
-    /**
-     * Allocate a datagram socket in the IP stack. The socket is associated with
-     * the <code>aFD</code>.
-     * 
-     * @param aFD
-     *            the FileDescriptor to associate with the socket @param
-     *            preferIPv4Stack IP stack preference if underlying platform is
-     *            V4/V6
-     * @exception SocketException
-     *                upon an allocation error
-     */
-    static native void createDatagramSocketImpl(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException;
-
-    static native int readSocketImpl(FileDescriptor aFD, byte[] data,
-            int offset, int count, int timeout) throws IOException;
-
-    static native int readSocketDirectImpl(FileDescriptor aFD, long address,
-            int count, int timeout) throws IOException;
-
-    static native int writeSocketImpl(FileDescriptor fd, byte[] data,
-            int offset, int count) throws IOException;
-
-    static native int writeSocketDirectImpl(FileDescriptor fd, long address,
-            int count) throws IOException;
-
-    static native void setNonBlockingImpl(FileDescriptor aFD, boolean block);
-
-    static native int connectSocketImpl(FileDescriptor aFD, int trafficClass,
-            InetAddress inetAddress, int port);
-
-    static native int connectWithTimeoutSocketImpl(FileDescriptor aFD,
-            int timeout, int trafficClass, InetAddress hostname, int port,
-            int step, Long context);
-
     static native void connectStreamWithTimeoutSocketImpl(FileDescriptor aFD,
             int aport, int timeout, int trafficClass, InetAddress inetAddress)
             throws IOException;
 
-    static native void socketBindImpl(FileDescriptor aFD, int port,
-            InetAddress inetAddress) throws SocketException;
-
     static native void listenStreamSocketImpl(FileDescriptor aFD, int backlog)
-            throws SocketException;
-
-    static native int availableStreamImpl(FileDescriptor aFD)
             throws SocketException;
 
     static native void acceptSocketImpl(FileDescriptor fdServer,
@@ -463,8 +394,10 @@ final class OSNetworkSystem implements INetworkSystem {
      * 
      * @param aFD
      *            the FileDescriptor to associate with the socket @param port
-     *            the port to connect to @param trafficClass the traffic Class
-     *            to be used then the connection is made @param inetAddress
+     *            the port to connect to
+     * @param trafficClass the traffic Class
+     *            to be used then the connection is made
+     * @param inetAddress
      *            address to connect to.
      * 
      * @exception SocketException

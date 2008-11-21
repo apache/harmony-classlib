@@ -483,12 +483,12 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
  * which is similar to, but different to the call on other platforms.
  *
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    availableStreamImpl
+ * Method:    available
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStreamImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor)
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_available
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t hysocketP;
