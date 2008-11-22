@@ -927,7 +927,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_disconnectDatagram
  * Signature: (Ljava/io/FileDescriptor;IZLjava/net/InetAddress;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketBindImpl2
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind2
   (JNIEnv * env, jobject thiz, jobject fileDescriptor, jint localPort,
    jboolean doDevice, jobject inetAddress)
 {
