@@ -2031,11 +2031,11 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketOption
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    setSocketOptionImpl
+ * Method:    setSocketOption
  * Signature: (Ljava/io/FileDescriptor;ILjava/lang/Object;)V
  */
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_setSocketOptionImpl
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_setSocketOption
   (JNIEnv * env, jclass thisClz, jobject aFileDescriptor, jint anOption,
    jobject aValue)
 {
