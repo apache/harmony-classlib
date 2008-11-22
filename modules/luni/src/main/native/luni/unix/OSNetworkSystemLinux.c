@@ -58,7 +58,9 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
 
 // Alternative Select function
 int
-selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
+selectRead
+(JNIEnv * env, hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept)
+{
   I_32 result = 0;
   I_32 timeout;
   struct pollfd my_pollfd;
@@ -72,8 +74,10 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   return result;
 }
 
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
-  (JNIEnv * env, jobject clz, jobject address, jobject localaddr,  jint ttl, jint timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv * env, jobject thiz, jobject address, jobject localaddr, jint ttl, jint timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
 #if !defined(ZOS)
@@ -244,9 +248,11 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  * Assumption: outFlags is zeroed
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
-  (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
-   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
+  (JNIEnv * env, jobject thiz, jobjectArray readFDArray, jobjectArray writeFDArray,
+   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   I_32 result =	0;		
   hysocket_t hysocketP;		
@@ -313,7 +319,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   return result;
 };
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
   (JNIEnv * env , jobject thiz)
 {
     PORT_ACCESS_FROM_ENV (env);

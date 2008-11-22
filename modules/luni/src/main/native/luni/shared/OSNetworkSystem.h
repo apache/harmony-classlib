@@ -379,7 +379,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
-  (JNIEnv *, jclass, jobjectArray, jobjectArray, jint, jint, jintArray, jlong);
+  (JNIEnv *, jobject, jobjectArray, jobjectArray, jint, jint, jintArray, jlong);
 
   /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem

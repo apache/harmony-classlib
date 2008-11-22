@@ -35,9 +35,11 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
  * Method:    selectImpl
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
-  (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
-   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
+  (JNIEnv * env, jobject thiz, jobjectArray readFDArray, jobjectArray writeFDArray,
+   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   hytimeval_struct timeP;	
   I_32 result =	0;		
@@ -158,7 +160,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   return result;
 }
 
-/*Alternative Select function*/
+/* Alternative Select function */
 int 
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   PORT_ACCESS_FROM_ENV (env);
@@ -192,8 +194,10 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
  * Method:    isReachableByICMPImpl
  * Signature: ([BII)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
-  (JNIEnv * env, jobject clz, jobject address,jobject localaddr, jint ttl, jint timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv * env, jobject clz, jobject address,jobject localaddr, jint ttl, jint timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
   struct ICMPHeader* send_buf = 0;
@@ -328,7 +332,8 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
     icmp_hdr->checksum = ip_checksum((unsigned short *)icmp_hdr, packet_size);
 }
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
   (JNIEnv * env , jobject thiz)
 {
   // inheritedChannel is not supported on windows platform. 
