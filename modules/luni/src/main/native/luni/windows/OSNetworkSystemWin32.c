@@ -328,10 +328,10 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
     icmp_hdr->checksum = ip_checksum((unsigned short *)icmp_hdr, packet_size);
 }
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
-  (JNIEnv * env , jobject clz)
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+  (JNIEnv * env , jobject thiz)
 {
-  //inheritedChannel is not supported on windows platform. 
+  // inheritedChannel is not supported on windows platform. 
   return NULL;
 }
 
@@ -340,11 +340,11 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
  * which is similar to, but different to the call on other platforms.
  *
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    available
+ * Method:    availableStream
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_available
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
   (JNIEnv * env, jobject thiz, jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV(env);

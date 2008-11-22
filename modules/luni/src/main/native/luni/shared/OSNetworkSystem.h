@@ -175,27 +175,27 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_lis
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    available
+ * Method:    availableStream
  * Signature: (Ljava/io/FileDescriptor;)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_available
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
   (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    acceptSocketImpl
+ * Method:    accept
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/SocketImpl;Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptSocketImpl
-  (JNIEnv *, jclass, jobject, jobject, jobject, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_accept
+  (JNIEnv *, jobject, jobject, jobject, jobject, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    supportsUrgentDataImpl
+ * Method:    supportsUrgentData
  * Signature: (Ljava/io/FileDescriptor;)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_supportsUrgentDataImpl
-  (JNIEnv *, jclass, jobject);
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_supportsUrgentData
+  (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -215,11 +215,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    disconnectDatagramImpl
+ * Method:    disconnectDatagram
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_disconnectDatagramImpl
-  (JNIEnv *, jclass, jobject);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_disconnectDatagram
+  (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -231,27 +231,27 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    peekDatagramImpl
+ * Method:    peekDatagram
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/InetAddress;I)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_peekDatagramImpl
-  (JNIEnv *, jclass, jobject, jobject, jint);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_peekDatagram
+  (JNIEnv *, jobject, jobject, jobject, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    receiveDatagramImpl
+ * Method:    receiveDatagram
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;[BIIIZ)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramImpl
-  (JNIEnv *, jclass, jobject, jobject, jbyteArray, jint, jint, jint, jboolean);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagram
+  (JNIEnv *, jobject, jobject, jobject, jbyteArray, jint, jint, jint, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    receiveDatagramDirectImpl
+ * Method:    receiveDatagramDirect
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;JIIIZ)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl
-  (JNIEnv *, jclass, jobject, jobject, jlong, jint, jint, jint, jboolean);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirect
+  (JNIEnv *, jobject, jobject, jobject, jlong, jint, jint, jint, jboolean);
   
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -272,19 +272,19 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendDatagramImpl
+ * Method:    sendDatagram
  * Signature: (Ljava/io/FileDescriptor;[BIIIZILjava/net/InetAddress;)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramImpl
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jint, jboolean, jint, jobject);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagram
+  (JNIEnv *, jobject, jobject, jbyteArray, jint, jint, jint, jboolean, jint, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendDatagramDirectImpl
+ * Method:    sendDatagramDirect
  * Signature: (Ljava/io/FileDescriptor;JIIIZILjava/net/InetAddress;)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirectImpl
-  (JNIEnv *, jclass, jobject, jlong, jint, jint, jint, jboolean, jint, jobject);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirect
+  (JNIEnv *, jobject, jobject, jlong, jint, jint, jint, jboolean, jint, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -368,11 +368,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendDatagramImpl2
+ * Method:    sendDatagram2
  * Signature: (Ljava/io/FileDescriptor;[BIIILjava/net/InetAddress;)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramImpl2
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jint, jobject);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagram2
+  (JNIEnv *, jobject, jobject, jbyteArray, jint, jint, jint, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -419,27 +419,27 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_set
  * Method:    getSocketFlags
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketFlagsImpl
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketFlags
   (JNIEnv *, jclass);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    socketCloseImpl
+ * Method:    socketClose
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketCloseImpl
-  (JNIEnv *, jclass, jobject);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketClose
+  (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    getHostByAddrImpl
+ * Method:    getHostByAddr
  * Signature: ([B)Ljava/net/InetAddress;
  */
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByAddrImpl
-  (JNIEnv *, jclass, jbyteArray);
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByAddr
+  (JNIEnv *, jobject, jbyteArray);
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByNameImpl
-  (JNIEnv *, jclass,jstring,jboolean);
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getHostByName
+  (JNIEnv *, jobject, jstring,jboolean);
   
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -451,12 +451,20 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    inheritedChannelImpl
+ * Method:    inheritedChannel
  * Signature: ([BII)I
  */
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
   (JNIEnv *, jobject);
 
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    setInetAddress
+ * Signature: (Ljava/net/InetAddress;[B)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_setInetAddress
+(JNIEnv *, jobject, jobject, jbyteArray);
 
 #ifdef __cplusplus
 }

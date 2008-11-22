@@ -313,8 +313,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   return result;
 };
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
-  (JNIEnv * env , jobject clz){
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+  (JNIEnv * env , jobject thiz)
+{
     PORT_ACCESS_FROM_ENV (env);
     int socket = 0;
     int opt;
@@ -483,11 +484,11 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
  * which is similar to, but different to the call on other platforms.
  *
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    available
+ * Method:    availableStream
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_available
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
   (JNIEnv * env, jobject thiz, jobject fileDescriptor)
 {
   PORT_ACCESS_FROM_ENV(env);

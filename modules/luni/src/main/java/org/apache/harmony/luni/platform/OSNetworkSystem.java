@@ -56,17 +56,17 @@ final class OSNetworkSystem implements INetworkSystem {
     public native void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
             throws IOException;
 
-    public native void createDatagramSocket(FileDescriptor fd, boolean preferIPv4Stack)
-            throws SocketException;
+    public native void createDatagramSocket(FileDescriptor fd,
+            boolean preferIPv4Stack) throws SocketException;
 
-    public native int read(FileDescriptor fd, byte[] data, int offset, int count,
-            int timeout) throws IOException;
+    public native int read(FileDescriptor fd, byte[] data, int offset,
+            int count, int timeout) throws IOException;
 
     public native int readDirect(FileDescriptor fd, long address, int count,
             int timeout) throws IOException;
 
-    public native int write(FileDescriptor fd, byte[] data, int offset, int count)
-            throws IOException;
+    public native int write(FileDescriptor fd, byte[] data, int offset,
+            int count) throws IOException;
 
     public native int writeDirect(FileDescriptor fd, long address, int count)
             throws IOException;
@@ -74,8 +74,8 @@ final class OSNetworkSystem implements INetworkSystem {
     public native void setNonBlocking(FileDescriptor fd, boolean block)
             throws IOException;
 
-    public native void connectDatagram(FileDescriptor fd, int port, int trafficClass,
-            InetAddress inetAddress) throws SocketException;
+    public native void connectDatagram(FileDescriptor fd, int port,
+            int trafficClass, InetAddress inetAddress) throws SocketException;
 
     public native int connect(FileDescriptor fd, int trafficClass,
             InetAddress inetAddress, int port) throws IOException;
@@ -91,51 +91,84 @@ final class OSNetworkSystem implements INetworkSystem {
                 inetAddress);
     }
 
-    public native void bind(FileDescriptor aFD, int port, InetAddress inetAddress)
-            throws SocketException;
+    public native void bind(FileDescriptor aFD, int port,
+            InetAddress inetAddress) throws SocketException;
 
     public boolean bind2(FileDescriptor aFD, int port, boolean bindToDevice,
             InetAddress inetAddress) throws SocketException {
         return socketBindImpl2(aFD, port, bindToDevice, inetAddress);
     }
 
-    public void accept(FileDescriptor fdServer, SocketImpl newSocket,
-            FileDescriptor fdnewSocket, int timeout) throws IOException {
-        acceptSocketImpl(fdServer, newSocket, fdnewSocket, timeout);
-    }
+    public native void accept(FileDescriptor fdServer, SocketImpl newSocket,
+            FileDescriptor fdnewSocket, int timeout) throws IOException;
 
-    public int sendDatagram(FileDescriptor fd, byte[] data, int offset,
+    /**
+     * Send the <code>data</code> to the nominated target <code>address</code>
+     * and <code>port</code>. These values are derived from the DatagramPacket
+     * to reduce the field calls within JNI.
+     * 
+     * @param fd
+     *            the socket FileDescriptor
+     * @param data
+     *            the data buffer of the packet
+     * @param offset
+     *            the offset in the data buffer
+     * @param length
+     *            the length of the data buffer in the packet
+     * @param port
+     *            the target host port
+     * @param bindToDevice
+     *            if bind to device
+     * @param trafficClass
+     *            the traffic class to be used when the datagram is sent
+     * @param inetAddress
+     *            address to connect to.
+     * @return number of data send
+     * 
+     * @exception IOException
+     *                upon an read error or timeout
+     */
+    public native int sendDatagram(FileDescriptor fd, byte[] data, int offset,
             int length, int port, boolean bindToDevice, int trafficClass,
-            InetAddress inetAddress) throws IOException {
-        return sendDatagramImpl(fd, data, offset, length, port, bindToDevice,
-                trafficClass, inetAddress);
-    }
+            InetAddress inetAddress) throws IOException;
 
-    public int sendDatagramDirect(FileDescriptor fd, long address, int offset,
-            int length, int port, boolean bindToDevice, int trafficClass,
-            InetAddress inetAddress) throws IOException {
-        return sendDatagramDirectImpl(fd, address, offset, length, port,
-                bindToDevice, trafficClass, inetAddress);
-    }
+    public native int sendDatagramDirect(FileDescriptor fd, long address,
+            int offset, int length, int port, boolean bindToDevice,
+            int trafficClass, InetAddress inetAddress) throws IOException;
 
-    public int sendDatagram2(FileDescriptor fd, byte[] data, int offset,
-            int length, int port, InetAddress inetAddress) throws IOException {
-        return sendDatagramImpl2(fd, data, offset, length, port, inetAddress);
-    }
+    public native int sendDatagram2(FileDescriptor fd, byte[] data, int offset,
+            int length, int port, InetAddress inetAddress) throws IOException;
 
-    public int receiveDatagram(FileDescriptor aFD, DatagramPacket packet,
+    /**
+     * Receive data on the socket into the specified buffer. The packet fields
+     * <code>data</code> & <code>length</code> are passed in addition to
+     * <code>packet</code> to eliminate the JNI field access calls.
+     * 
+     * @param fd
+     *            the socket FileDescriptor
+     * @param packet
+     *            the DatagramPacket to receive into
+     * @param data
+     *            the data buffer of the packet
+     * @param offset
+     *            the offset in the data buffer
+     * @param length
+     *            the length of the data buffer in the packet
+     * @param receiveTimeout
+     *            the maximum length of time the socket should block, reading
+     * @param peek
+     *            indicates to peek at the data
+     * @return number of data received
+     * @exception IOException
+     *                upon an read error or timeout
+     */
+    public native int receiveDatagram(FileDescriptor fd, DatagramPacket packet,
             byte[] data, int offset, int length, int receiveTimeout,
-            boolean peek) throws IOException {
-        return receiveDatagramImpl(aFD, packet, data, offset, length,
-                receiveTimeout, peek);
-    }
+            boolean peek) throws IOException;
 
-    public int receiveDatagramDirect(FileDescriptor aFD, DatagramPacket packet,
+    public native int receiveDatagramDirect(FileDescriptor fd, DatagramPacket packet,
             long address, int offset, int length, int receiveTimeout,
-            boolean peek) throws IOException {
-        return receiveDatagramDirectImpl(aFD, packet, address, offset, length,
-                receiveTimeout, peek);
-    }
+            boolean peek) throws IOException;
 
     public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
             byte[] data, int offset, int length, int receiveTimeout,
@@ -151,10 +184,23 @@ final class OSNetworkSystem implements INetworkSystem {
                 length, receiveTimeout, peek);
     }
 
-    public int peekDatagram(FileDescriptor aFD, InetAddress sender,
-            int receiveTimeout) throws IOException {
-        return peekDatagramImpl(aFD, sender, receiveTimeout);
-    }
+    /**
+     * Peek on the socket, update <code>sender</code> address and answer the
+     * sender port.
+     * 
+     * @param fd
+     *            the socket FileDescriptor
+     * @param sender
+     *            an InetAddress, to be updated with the sender's address
+     * @param receiveTimeout
+     *            the maximum length of time the socket should block, reading
+     * @return the sender port
+     * 
+     * @exception IOException
+     *                upon an read error or timeout
+     */
+    public native int peekDatagram(FileDescriptor fd, InetAddress sender,
+            int receiveTimeout) throws IOException;
 
     public int sendConnectedDatagram(FileDescriptor fd, byte[] data,
             int offset, int length, boolean bindToDevice) throws IOException {
@@ -167,9 +213,16 @@ final class OSNetworkSystem implements INetworkSystem {
                 bindToDevice);
     }
 
-    public void disconnectDatagram(FileDescriptor aFD) throws SocketException {
-        disconnectDatagramImpl(aFD);
-    }
+    /**
+     * Disconnect the socket to a port and address
+     * 
+     * @param fd
+     *            the FileDescriptor associated with the socket
+     * 
+     * @exception SocketException
+     *                if the disconnect fails
+     */
+    public native void disconnectDatagram(FileDescriptor fd) throws SocketException;
 
     public void createMulticastSocket(FileDescriptor aFD,
             boolean preferIPv4Stack) throws SocketException {
@@ -199,15 +252,13 @@ final class OSNetworkSystem implements INetworkSystem {
         shutdownOutputImpl(descriptor);
     }
 
-    public boolean supportsUrgentData(FileDescriptor fd) {
-        return supportsUrgentDataImpl(fd);
-    }
+    public native boolean supportsUrgentData(FileDescriptor fd);
 
     public void sendUrgentData(FileDescriptor fd, byte value) {
         sendUrgentDataImpl(fd, value);
     }
 
-    public native int available(FileDescriptor fd) throws SocketException;
+    public native int availableStream(FileDescriptor fd) throws SocketException;
 
     public void acceptStreamSocket(FileDescriptor fdServer,
             SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
@@ -244,14 +295,14 @@ final class OSNetworkSystem implements INetworkSystem {
      * <code>readFDs.length</code> + <code>writeFDs.length</code> laid out as
      * the result of the select operation on the corresponding file descriptors.
      * 
-     * @param readChannels
-     *            all channels interested in read and accept
-     * @param writeChannels
-     *            all channels interested in write and connect
+     * @param readFDs
+     *            all sockets interested in read and accept
+     * @param writeFDs
+     *            all sockets interested in write and connect
      * @param timeout
-     *            timeout in millis
-     * @returns int array, each element describes the corresponding state of the
-     *          descriptor in the read and write arrays.
+     *            timeout in milliseconds
+     * @returns each element describes the corresponding state of the descriptor
+     *          in the read and write arrays.
      * @throws SocketException
      */
     public int[] select(FileDescriptor[] readFDs, FileDescriptor[] writeFDs,
@@ -347,9 +398,7 @@ final class OSNetworkSystem implements INetworkSystem {
         setSocketOptionImpl(aFD, opt, optVal);
     }
 
-    public int getSocketFlags() {
-        return getSocketFlagsImpl();
-    }
+    public native int getSocketFlags();
 
     /**
      * Close the socket in the IP stack.
@@ -357,22 +406,14 @@ final class OSNetworkSystem implements INetworkSystem {
      * @param aFD
      *            the socket descriptor
      */
-    public void socketClose(FileDescriptor aFD) throws IOException {
-        socketCloseImpl(aFD);
-    }
+    public native void socketClose(FileDescriptor aFD) throws IOException;
 
-    public InetAddress getHostByAddr(byte[] addr) throws UnknownHostException {
-        return getHostByAddrImpl(addr);
-    }
+    public native InetAddress getHostByAddr(byte[] addr) throws UnknownHostException;
 
-    public InetAddress getHostByName(String addr, boolean preferIPv6Addresses)
-            throws UnknownHostException {
-        return getHostByNameImpl(addr, preferIPv6Addresses);
-    }
+    public native InetAddress getHostByName(String addr, boolean preferIPv6Addresses)
+            throws UnknownHostException;
 
-    public void setInetAddress(InetAddress sender, byte[] address) {
-        setInetAddressImpl(sender, address);
-    }
+    public native void setInetAddress(InetAddress sender, byte[] address);
 
     static native void connectStreamWithTimeoutSocketImpl(FileDescriptor aFD,
             int aport, int timeout, int trafficClass, InetAddress inetAddress)
@@ -380,12 +421,6 @@ final class OSNetworkSystem implements INetworkSystem {
 
     static native void listenStreamSocketImpl(FileDescriptor aFD, int backlog)
             throws SocketException;
-
-    static native void acceptSocketImpl(FileDescriptor fdServer,
-            SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
-            throws IOException;
-
-    static native boolean supportsUrgentDataImpl(FileDescriptor fd);
 
     static native void sendUrgentDataImpl(FileDescriptor fd, byte value);
 
@@ -395,8 +430,8 @@ final class OSNetworkSystem implements INetworkSystem {
      * @param aFD
      *            the FileDescriptor to associate with the socket @param port
      *            the port to connect to
-     * @param trafficClass the traffic Class
-     *            to be used then the connection is made
+     * @param trafficClass
+     *            the traffic Class to be used then the connection is made
      * @param inetAddress
      *            address to connect to.
      * 
@@ -405,18 +440,6 @@ final class OSNetworkSystem implements INetworkSystem {
      */
     static native void connectDatagramImpl2(FileDescriptor aFD, int port,
             int trafficClass, InetAddress inetAddress) throws SocketException;
-
-    /**
-     * Disconnect the socket to a port and address
-     * 
-     * @param aFD
-     *            the FileDescriptor to associate with the socket
-     * 
-     * @exception SocketException
-     *                if the disconnect fails
-     */
-    static native void disconnectDatagramImpl(FileDescriptor aFD)
-            throws SocketException;
 
     /**
      * Allocate a datagram socket in the IP stack. The socket is associated with
@@ -444,44 +467,6 @@ final class OSNetworkSystem implements INetworkSystem {
             throws SocketException;
 
     /**
-     * Peek on the socket, update <code>sender</code> address and answer the
-     * sender port.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor @param sender an InetAddress, to be
-     *            updated with the sender's address @param receiveTimeout the
-     *            maximum length of time the socket should block, reading @return
-     *            int the sender port
-     * 
-     * @exception IOException
-     *                upon an read error or timeout
-     */
-    static native int peekDatagramImpl(FileDescriptor aFD, InetAddress sender,
-            int receiveTimeout) throws IOException;
-
-    /**
-     * Recieve data on the socket into the specified buffer. The packet fields
-     * <code>data</code> & <code>length</code> are passed in addition to
-     * <code>packet</code> to eliminate the JNI field access calls.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor @param packet the DatagramPacket to
-     *            receive into @param data the data buffer of the packet @param
-     *            offset the offset in the data buffer @param length the length
-     *            of the data buffer in the packet @param receiveTimeout the
-     *            maximum length of time the socket should block, reading @param
-     *            peek indicates to peek at the data @return number of data
-     *            received @exception IOException upon an read error or timeout
-     */
-    static native int receiveDatagramImpl(FileDescriptor aFD,
-            DatagramPacket packet, byte[] data, int offset, int length,
-            int receiveTimeout, boolean peek) throws IOException;
-
-    static native int receiveDatagramDirectImpl(FileDescriptor aFD,
-            DatagramPacket packet, long address, int offset, int length,
-            int receiveTimeout, boolean peek) throws IOException;
-
-    /**
      * Recieve data on the connected socket into the specified buffer. The
      * packet fields <code>data</code> & <code>length</code> are passed in
      * addition to <code>packet</code> to eliminate the JNI field access calls.
@@ -502,32 +487,6 @@ final class OSNetworkSystem implements INetworkSystem {
     static native int recvConnectedDatagramDirectImpl(FileDescriptor aFD,
             DatagramPacket packet, long address, int offset, int length,
             int receiveTimeout, boolean peek) throws IOException;
-
-    /**
-     * Send the <code>data</code> to the nominated target <code>address</code>
-     * and <code>port</code>. These values are derived from the DatagramPacket
-     * to reduce the field calls within JNI.
-     * 
-     * @param fd
-     *            the socket FileDescriptor @param data the data buffer of the
-     *            packet @param offset the offset in the data buffer @param
-     *            length the length of the data buffer in the packet @param port
-     *            the target host port
-     * @param bindToDevice
-     *            if bind to device @param trafficClass the traffic class to be
-     *            used when the datagram is sent @param inetAddress address to
-     *            connect to. @return number of data send
-     * 
-     * @exception IOException
-     *                upon an read error or timeout
-     */
-    static native int sendDatagramImpl(FileDescriptor fd, byte[] data,
-            int offset, int length, int port, boolean bindToDevice,
-            int trafficClass, InetAddress inetAddress) throws IOException;
-
-    static native int sendDatagramDirectImpl(FileDescriptor fd, long address,
-            int offset, int length, int port, boolean bindToDevice,
-            int trafficClass, InetAddress inetAddress) throws IOException;
 
     /**
      * Send the <code>data</code> to the address and port to which the was
@@ -621,10 +580,6 @@ final class OSNetworkSystem implements INetworkSystem {
     static native void createStreamSocketImpl(FileDescriptor aFD,
             boolean preferIPv4Stack) throws SocketException;
 
-    static native int sendDatagramImpl2(FileDescriptor fd, byte[] data,
-            int offset, int length, int port, InetAddress inetAddress)
-            throws IOException;
-
     static native int selectImpl(FileDescriptor[] readfd,
             FileDescriptor[] writefd, int cread, int cwirte, int[] flags,
             long timeout);
@@ -669,32 +624,10 @@ final class OSNetworkSystem implements INetworkSystem {
     static native void setSocketOptionImpl(FileDescriptor aFD, int opt,
             Object optVal) throws SocketException;
 
-    static native int getSocketFlagsImpl();
-
-    /**
-     * Close the socket in the IP stack.
-     * 
-     * @param aFD
-     *            the socket descriptor
-     */
-    static native void socketCloseImpl(FileDescriptor aFD);
-
-    static native InetAddress getHostByAddrImpl(byte[] addr)
-            throws UnknownHostException;
-
-    static native InetAddress getHostByNameImpl(String addr,
-            boolean preferIPv6Addresses) throws UnknownHostException;
-
-    native void setInetAddressImpl(InetAddress sender, byte[] address);
-
     native int isReachableByICMPImpl(InetAddress addr, InetAddress local,
             int ttl, int timeout);
 
-    native Channel inheritedChannelImpl();
-
-    public Channel inheritedChannel() {
-        return inheritedChannelImpl();
-    }
+    public native Channel inheritedChannel();
 
     public void oneTimeInitialization(boolean jcl_supports_ipv6) {
         if (!isNetworkInited) {
