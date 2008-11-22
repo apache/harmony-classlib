@@ -84,20 +84,30 @@ final class OSNetworkSystem implements INetworkSystem {
             int trafficClass, InetAddress inetAddress, int port, int step,
             Long context) throws IOException;
 
-    public void connectStreamWithTimeoutSocket(FileDescriptor aFD, int aport,
+    public native void connectStreamWithTimeoutSocket(FileDescriptor aFD, int aport,
             int timeout, int trafficClass, InetAddress inetAddress)
-            throws IOException {
-        connectStreamWithTimeoutSocketImpl(aFD, aport, timeout, trafficClass,
-                inetAddress);
-    }
+            throws IOException;
 
     public native void bind(FileDescriptor aFD, int port,
             InetAddress inetAddress) throws SocketException;
 
-    public boolean bind2(FileDescriptor aFD, int port, boolean bindToDevice,
-            InetAddress inetAddress) throws SocketException {
-        return socketBindImpl2(aFD, port, bindToDevice, inetAddress);
-    }
+    /**
+     * Bind the socket to the port/localhost in the IP stack.
+     * 
+     * @param fd
+     *            the socket descriptor
+     * @param port
+     *            the option selector
+     * @param bindToDevice
+     *            bind the socket to the specified interface
+     * @param inetAddress
+     *            address to connect to.
+     * @return if bind successful
+     * @exception SocketException
+     *                thrown if bind operation fails
+     */
+    public native boolean bind2(FileDescriptor fd, int port, boolean bindToDevice,
+            InetAddress inetAddress) throws SocketException;
 
     public native void accept(FileDescriptor fdServer, SocketImpl newSocket,
             FileDescriptor fdnewSocket, int timeout) throws IOException;
@@ -224,20 +234,54 @@ final class OSNetworkSystem implements INetworkSystem {
      */
     public native void disconnectDatagram(FileDescriptor fd) throws SocketException;
 
-    public void createMulticastSocket(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException {
-        createMulticastSocketImpl(aFD, preferIPv4Stack);
-    }
+    /**
+     * Answer the result of attempting to create a multicast socket in the IP
+     * stack. Any special options required for server sockets will be set by
+     * this method.
+     * 
+     * @param aFD
+     *            the socket FileDescriptor
+     *            @param preferIPv4Stack if use IPV4
+     * @exception SocketException
+     *                if an error occurs while creating the socket
+     */
+    public native void createMulticastSocket(FileDescriptor aFD,
+            boolean preferIPv4Stack) throws SocketException;
 
-    public void createServerStreamSocket(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException {
-        createServerStreamSocketImpl(aFD, preferIPv4Stack);
-    }
+    /**
+     * Answer the result of attempting to create a server stream socket in the
+     * IP stack. Any special options required for server sockets will be set by
+     * this method.
+     * 
+     * @param aFD
+     *            the socket FileDescriptor @param preferIPv4Stack if use IPV4
+     * @exception SocketException
+     *                if an error occurs while creating the socket
+     */
+    public native void createServerStreamSocket(FileDescriptor aFD,
+            boolean preferIPv4Stack) throws SocketException;
 
-    public int receiveStream(FileDescriptor aFD, byte[] data, int offset,
-            int count, int timeout) throws IOException {
-        return receiveStreamImpl(aFD, data, offset, count, timeout);
-    }
+    /**
+     * Receive at most <code>count</code> bytes into the buffer
+     * <code>data</code> at the <code>offset</code> on the socket.
+     * 
+     * @param aFD
+     *            the socket FileDescriptor
+     * @param data
+     *            the receive buffer
+     * @param offset
+     *            the offset into the buffer
+     * @param count
+     *            the max number of bytes to receive
+     * @param timeout
+     *            the max time the read operation should block waiting for data
+     * @return int the actual number of bytes read
+     * @throws IOException
+     * @throws SocketException
+     *             if an error occurs while reading
+     */
+    public native int receiveStream(FileDescriptor aFD, byte[] data, int offset,
+            int count, int timeout) throws IOException;
 
     public int sendStream(FileDescriptor fd, byte[] data, int offset, int count)
             throws IOException {
@@ -266,15 +310,11 @@ final class OSNetworkSystem implements INetworkSystem {
         acceptStreamSocketImpl(fdServer, newSocket, fdnewSocket, timeout);
     }
 
-    public void createStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
-            throws SocketException {
-        createStreamSocketImpl(aFD, preferIPv4Stack);
-    }
+    public native void createStreamSocket(FileDescriptor fd, boolean preferIPv4Stack)
+            throws SocketException;
 
-    public void listenStreamSocket(FileDescriptor aFD, int backlog)
-            throws SocketException {
-        listenStreamSocketImpl(aFD, backlog);
-    }
+    public native void listenStreamSocket(FileDescriptor aFD, int backlog)
+            throws SocketException;
 
     public boolean isReachableByICMP(final InetAddress dest,
             InetAddress source, final int ttl, final int timeout) {
@@ -315,7 +355,7 @@ final class OSNetworkSystem implements INetworkSystem {
         }
         int[] flags = new int[countRead + countWrite];
 
-        assert validateFDs(readFDs, writeFDs) : "Invalid file descriptor arrays";
+        assert validateFDs(readFDs, writeFDs) : "Invalid file descriptor arrays"; //$NON-NLS-1$
 
         // handle timeout in native
         result = selectImpl(readFDs, writeFDs, countRead, countWrite, flags,
@@ -350,38 +390,34 @@ final class OSNetworkSystem implements INetworkSystem {
         return true;
     }
 
-    public InetAddress getSocketLocalAddress(FileDescriptor aFD,
-            boolean preferIPv6Addresses) {
-        return getSocketLocalAddressImpl(aFD, preferIPv6Addresses);
-    }
+    public native InetAddress getSocketLocalAddress(FileDescriptor fd,
+            boolean preferIPv6Addresses);
 
     /**
      * Query the IP stack for the local port to which this socket is bound.
      * 
      * @param aFD
-     *            the socket descriptor @param preferIPv6Addresses address
-     *            preference for nodes that support both IPv4 and IPv6 @return
-     *            int the local port to which the socket is bound
+     *            the socket descriptor
+     * @param preferIPv6Addresses
+     *            address preference for nodes that support both IPv4 and IPv6
+     * @return the local port to which the socket is bound
      */
-    public int getSocketLocalPort(FileDescriptor aFD,
-            boolean preferIPv6Addresses) {
-        return getSocketLocalPortImpl(aFD, preferIPv6Addresses);
-    }
+    public native int getSocketLocalPort(FileDescriptor aFD,
+            boolean preferIPv6Addresses);
 
     /**
      * Query the IP stack for the nominated socket option.
      * 
-     * @param aFD
-     *            the socket descriptor @param opt the socket option type
+     * @param fd
+     *            the socket descriptor
+     * @param opt
+     *            the socket option type
      * @return the nominated socket option value
-     * 
      * @throws SocketException
      *             if the option is invalid
      */
-    public Object getSocketOption(FileDescriptor aFD, int opt)
-            throws SocketException {
-        return getSocketOptionImpl(aFD, opt);
-    }
+    public native Object getSocketOption(FileDescriptor fd, int opt)
+            throws SocketException;
 
     /**
      * Set the nominated socket option in the IP stack.
@@ -393,10 +429,8 @@ final class OSNetworkSystem implements INetworkSystem {
      * @throws SocketException
      *             if the option is invalid or cannot be set
      */
-    public void setSocketOption(FileDescriptor aFD, int opt, Object optVal)
-            throws SocketException {
-        setSocketOptionImpl(aFD, opt, optVal);
-    }
+    public native void setSocketOption(FileDescriptor aFD, int opt, Object optVal)
+            throws SocketException;
 
     public native int getSocketFlags();
 
@@ -414,13 +448,6 @@ final class OSNetworkSystem implements INetworkSystem {
             throws UnknownHostException;
 
     public native void setInetAddress(InetAddress sender, byte[] address);
-
-    static native void connectStreamWithTimeoutSocketImpl(FileDescriptor aFD,
-            int aport, int timeout, int trafficClass, InetAddress inetAddress)
-            throws IOException;
-
-    static native void listenStreamSocketImpl(FileDescriptor aFD, int backlog)
-            throws SocketException;
 
     static native void sendUrgentDataImpl(FileDescriptor fd, byte value);
 
@@ -452,19 +479,6 @@ final class OSNetworkSystem implements INetworkSystem {
      * @exception SocketException
      *                upon an allocation error
      */
-
-    /**
-     * Bind the socket to the port/localhost in the IP stack.
-     * 
-     * @param aFD
-     *            the socket descriptor @param port the option selector @param
-     *            bindToDevice bind the socket to the specified interface @param
-     *            inetAddress address to connect to. @return if bind successful @exception
-     *            SocketException thrown if bind operation fails
-     */
-    static native boolean socketBindImpl2(FileDescriptor aFD, int port,
-            boolean bindToDevice, InetAddress inetAddress)
-            throws SocketException;
 
     /**
      * Recieve data on the connected socket into the specified buffer. The
@@ -508,50 +522,6 @@ final class OSNetworkSystem implements INetworkSystem {
             throws IOException;
 
     /**
-     * Answer the result of attempting to create a server stream socket in the
-     * IP stack. Any special options required for server sockets will be set by
-     * this method.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor @param preferIPv4Stack if use IPV4
-     * @exception SocketException
-     *                if an error occurs while creating the socket
-     */
-    static native void createServerStreamSocketImpl(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException;
-
-    /**
-     * Answer the result of attempting to create a multicast socket in the IP
-     * stack. Any special options required for server sockets will be set by
-     * this method.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor @param preferIPv4Stack if use IPV4
-     * @exception SocketException
-     *                if an error occurs while creating the socket
-     */
-    static native void createMulticastSocketImpl(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException;
-
-    /**
-     * Recieve at most <code>count</code> bytes into the buffer
-     * <code>data</code> at the <code>offset</code> on the socket.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor @param data the receive buffer
-     * @param offset
-     *            the offset into the buffer @param count the max number of
-     *            bytes to receive @param timeout the max time the read
-     *            operation should block waiting for data @return int the actual
-     *            number of bytes read
-     * @throws IOException
-     * @exception SocketException
-     *                if an error occurs while reading
-     */
-    static native int receiveStreamImpl(FileDescriptor aFD, byte[] data,
-            int offset, int count, int timeout) throws IOException;
-
-    /**
      * Send <code>count</code> bytes from the buffer <code>data</code> at the
      * <code>offset</code>, on the socket.
      * 
@@ -577,52 +547,9 @@ final class OSNetworkSystem implements INetworkSystem {
             SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
             throws IOException;
 
-    static native void createStreamSocketImpl(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException;
-
     static native int selectImpl(FileDescriptor[] readfd,
             FileDescriptor[] writefd, int cread, int cwirte, int[] flags,
             long timeout);
-
-    static native InetAddress getSocketLocalAddressImpl(FileDescriptor aFD,
-            boolean preferIPv6Addresses);
-
-    /**
-     * Query the IP stack for the local port to which this socket is bound.
-     * 
-     * @param aFD
-     *            the socket descriptor @param preferIPv6Addresses address
-     *            preference for nodes that support both IPv4 and IPv6 @return
-     *            int the local port to which the socket is bound
-     */
-    static native int getSocketLocalPortImpl(FileDescriptor aFD,
-            boolean preferIPv6Addresses);
-
-    /**
-     * Query the IP stack for the nominated socket option.
-     * 
-     * @param aFD
-     *            the socket descriptor @param opt the socket option type
-     * @return the nominated socket option value
-     * 
-     * @throws SocketException
-     *             if the option is invalid
-     */
-    static native Object getSocketOptionImpl(FileDescriptor aFD, int opt)
-            throws SocketException;
-
-    /**
-     * Set the nominated socket option in the IP stack.
-     * 
-     * @param aFD
-     *            the socket descriptor @param opt the option selector @param
-     *            optVal the nominated option value
-     * 
-     * @throws SocketException
-     *             if the option is invalid or cannot be set
-     */
-    static native void setSocketOptionImpl(FileDescriptor aFD, int opt,
-            Object optVal) throws SocketException;
 
     native int isReachableByICMPImpl(InetAddress addr, InetAddress local,
             int ttl, int timeout);

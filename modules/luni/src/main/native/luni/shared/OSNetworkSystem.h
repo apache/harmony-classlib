@@ -151,11 +151,11 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_con
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    connectStreamWithTimeoutSocketImpl
+ * Method:    connectStreamWithTimeoutSocket
  * Signature: (Ljava/io/FileDescriptor;IIILjava/net/InetAddress;)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectStreamWithTimeoutSocketImpl
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jobject);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectStreamWithTimeoutSocket
+  (JNIEnv *, jobject, jobject, jint, jint, jint, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -167,11 +167,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_bin
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    listenStreamSocketImpl
+ * Method:    listenStreamSocket
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_listenStreamSocketImpl
-  (JNIEnv *, jclass, jobject, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_listenStreamSocket
+  (JNIEnv *, jobject, jobject, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -223,11 +223,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_dis
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    socketBindImpl2
+ * Method:    bind2
  * Signature: (Ljava/io/FileDescriptor;IZLjava/net/InetAddress;)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_socketBindImpl2
-  (JNIEnv *, jclass, jobject, jint, jboolean, jobject);
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind2
+  (JNIEnv *, jobject, jobject, jint, jboolean, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -304,27 +304,27 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createServerStreamSocketImpl
+ * Method:    createServerStreamSocket
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocketImpl
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocket
+  (JNIEnv *, jobject, jobject, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createMulticastSocketImpl
+ * Method:    createMulticastSocket
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocketImpl
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocket
+  (JNIEnv *, jobject, jobject, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    receiveStreamImpl
+ * Method:    receiveStream
  * Signature: (Ljava/io/FileDescriptor;[BIII)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStreamImpl
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jint);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStream
+  (JNIEnv *, jobject, jobject, jbyteArray, jint, jint, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -360,11 +360,11 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_acc
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createStreamSocketImpl
+ * Method:    createStreamSocket
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocketImpl
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocket
+  (JNIEnv *, jobject, jobject, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -384,35 +384,35 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 
   /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    getSocketLocalAddressImpl
+ * Method:    getSocketLocalAddress
  * Signature: (Ljava/io/FileDescriptor;Z)Ljava/net/InetAddress;
  */
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalAddressImpl
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalAddress
+  (JNIEnv *, jobject, jobject, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    getSocketLocalPortImpl
+ * Method:    getSocketLocalPort
  * Signature: (Ljava/io/FileDescriptor;Z)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalPortImpl
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketLocalPort
+  (JNIEnv *, jobject, jobject, jboolean);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    getSocketOptionImpl
+ * Method:    getSocketOption
  * Signature: (Ljava/io/FileDescriptor;I)Ljava/lang/Object;
  */
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketOptionImpl
-  (JNIEnv *, jclass, jobject, jint);
+JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_getSocketOption
+  (JNIEnv *, jobject, jobject, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    setSocketOptionImpl
+ * Method:    setSocketOption
  * Signature: (Ljava/io/FileDescriptor;ILjava/lang/Object;)V
  */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setSocketOptionImpl
-  (JNIEnv *, jclass, jobject, jint, jobject);
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_setSocketOption
+  (JNIEnv *, jobject, jobject, jint, jobject);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
