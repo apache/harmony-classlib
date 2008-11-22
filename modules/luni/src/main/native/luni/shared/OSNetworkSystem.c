@@ -803,12 +803,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_supportsUrgentData
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendUrgentDataImpl
+ * Method:    sendUrgentData
  * Signature: (Ljava/io/FileDescriptor;B)Z
  */
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendUrgentDataImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jbyte data)
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendUrgentData
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyte data)
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t socketP;
@@ -1124,12 +1124,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirect
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    recvConnectedDatagramImpl
+ * Method:    recvConnectedDatagram
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;[BIIIZ)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor,
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagram
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor,
    jobject datagramPacket, jbyteArray data, jint offset, jint msgLength,
    jint timeout, jboolean peek)
 {
@@ -1147,8 +1147,8 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramImpl
   }
 
   result =
-    Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl
-    (env, thisClz, fileDescriptor, datagramPacket, (jlong)(IDATA)message, offset,
+    Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirect
+    (env, thiz, fileDescriptor, datagramPacket, (jlong)(IDATA)message, offset,
      localCount, timeout, peek);
 
   if (result > 0) {
@@ -1162,12 +1162,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramImpl
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    recvConnectedDatagramDirectImpl
+ * Method:    recvConnectedDatagramDirect
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;JIIIZ)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor,
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirect
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor,
    jobject datagramPacket, jlong address, jint offset, jint msgLength,
    jint timeout, jboolean peek)
 {
@@ -1210,21 +1210,22 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirec
         || (HYPORT_ERROR_SOCKET_CONNECTION_REFUSED == result)) {
       throwJavaNetPortUnreachableException(env, result);
       return (jint) 0;
-    } else {
-      throwJavaNetSocketException(env, result);
-      return (jint) 0;
     }
-  } else {
-    /* update  the packet with the length of data received.
-       Since we are connected  we did not get back an address.  This
-       address is cached within the PlainDatagramSocket  java  object and is filled in at
-       the java level  */
-    if (datagramPacket != NULL) {
-      setDatagramPacketLength(env, datagramPacket, result);
-    }
-    return (jint) result;
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;
   }
+
+  /* Update the packet with the length of data received.  Since we are connected
+   * we did not get back an address.  This address is cached within the 
+   * PlainDatagramSocket java object and is filled in at the java level.
+   */
+  if (datagramPacket != NULL) {
+    setDatagramPacketLength(env, datagramPacket, result);
+  }
+
+  return (jint) result;
 }
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -1324,18 +1325,18 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirect
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendConnectedDatagramImpl
+ * Method:    sendConnectedDatagram
  * Signature: (Ljava/io/FileDescriptor;[BIIZ)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jbyteArray data,
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagram
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyteArray data,
    jint offset, jint msgLength, jboolean bindToDevice)
 {
   PORT_ACCESS_FROM_ENV(env);
   jbyte *message;
   jint result;
-  /* allocate a local buffer into which   we will copy the data to be sent and which we will use  
+  /* allocate a local buffer into which we will copy the data to be sent and which we will use  
      for the write call   */
   message = hymem_allocate_memory(msgLength);
   if (message == NULL) {
@@ -1344,22 +1345,22 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramImpl
   }
   (*env)->GetByteArrayRegion(env, data, offset, msgLength, message);
   result =
-    Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) (IDATA)message, offset, msgLength,
+    Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirect
+    (env, thiz, fileDescriptor, (jlong) (IDATA)message, offset, msgLength,
      bindToDevice);
-  /* ok       free the buffer and return the length sent  */
+  /* ok free the buffer and return the length sent */
   hymem_free_memory(message);
   return result;
 }
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendConnectedDatagramDirectImpl
+ * Method:    sendConnectedDatagramDirect
  * Signature: (Ljava/io/FileDescriptor;JIIZ)I
  */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirectImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jlong address,
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirect
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jlong address,
    jint offset, jint msgLength, jboolean bindToDevice)
 {
   PORT_ACCESS_FROM_ENV(env);
@@ -1732,9 +1733,15 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStream
   }
 }
 
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    sendStream
+ * Signature: (Ljava/io/FileDescriptor;[BII)I
+ */
 JNIEXPORT jint JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStreamImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jbyteArray data,
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStream
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyteArray data,
    jint offset, jint count)
 {
   PORT_ACCESS_FROM_ENV(env);
@@ -1793,27 +1800,25 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStreamImpl
   if (result < 0) {
     throwJavaNetSocketException(env, result);
     return (jint) 0;
-  } else {
-    return (jint) sent;
   }
+
+  return (jint) sent;
 }
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    shutdownInputImpl
+ * Method:    shutdownInput
  * Signature: (Ljava/io/FileDescriptor;)V
  */
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownInputImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor)
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownInput
+  (JNIEnv * env, jobject thiz, jobject fd)
 {
   PORT_ACCESS_FROM_ENV(env);
   I_32 result;
   hysocket_t socketP;
 
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env,
-                                                           fileDescriptor);
+  socketP = (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, fd);
   if (!hysock_socketIsValid(socketP)) {
     throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
     return;
@@ -1825,21 +1830,21 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownInputImpl
   }
 }
 
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    shutdownOutputImpl
+ * Method:    shutdownOutput
  * Signature: (Ljava/io/FileDescriptor;)V
  */
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownOutputImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptor)
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownOutput
+  (JNIEnv * env, jobject thiz, jobject fd)
 {
   PORT_ACCESS_FROM_ENV(env);
   I_32 result;
   hysocket_t socketP;
 
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  socketP = (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, fd);
   if (!hysock_socketIsValid(socketP)) {
     throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
     return;
@@ -1851,15 +1856,16 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_shutdownOutputImpl
   }
 }
 
+
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    acceptStreamSocketImpl
+ * Method:    acceptStreamSocket
  * Signature: (Ljava/io/FileDescriptor;Ljava/net/SocketImpl;Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocketImpl
-  (JNIEnv * env, jclass thisClz, jobject fileDescriptorServer,
-   jobject socketImpl, jobject fileDescriptorSocketImpl, jint timeout)
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocket
+  (JNIEnv * env, jobject thiz, jobject fdServer, jobject socketImpl,
+   jobject fdSocketImpl, jint timeout)
 {
   PORT_ACCESS_FROM_ENV(env);
   I_32 result;
@@ -1867,12 +1873,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocketImpl
   hysockaddr_struct sockaddrP;
   jbyte nlocalAddrBytes[HYSOCK_INADDR6_LEN];
 
-  result = pollSelectRead(env, fileDescriptorServer, timeout, TRUE);
-  if (0 > result)
+  result = pollSelectRead(env, fdServer, timeout, TRUE);
+  if (0 > result) {
     return;
+  }
 
-  socketS =
-    getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptorServer);
+  socketS = getJavaIoFileDescriptorContentsAsAPointer(env, fdServer);
   if (!hysock_socketIsValid(socketS)) {
     throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
     return;
@@ -1885,10 +1891,10 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocketImpl
   result = hysock_accept(socketS, &sockaddrP, &socketNew);
   if (0 != result) {
     throwJavaNetBindException(env, result);
-  } else {
-    updateSocket(env, &sockaddrP, socketNew, socketImpl,
-                 fileDescriptorSocketImpl);
+    return;
   }
+
+  updateSocket(env, &sockaddrP, socketNew, socketImpl, fdSocketImpl);
 }
 
 /*
