@@ -402,41 +402,27 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_write
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyteArray data,
+  (JNIEnv * env, jobject thiz, jobject fd, jbyteArray data,
    jint offset, jint count)
 {
-  PORT_ACCESS_FROM_ENV(env);
   jbyte *message;
-  jint result = 0;
+  jboolean isCopy = JNI_FALSE;
+  jint result;
 
-/* TODO: ARRAY PINNING */
-#define INTERNAL_SEND_BUFFER_MAX 512
-  U_8 internalBuffer[INTERNAL_SEND_BUFFER_MAX];
+  /* Get a pointer to the start of the bytearray */
+  message = (*env)->GetByteArrayElements (env, data, &isCopy);
 
-  if (count > INTERNAL_SEND_BUFFER_MAX) {
-    message = hymem_allocate_memory(count);
-    if (message == NULL) {
-      throwNewOutOfMemoryError(env, "");
-      return 0;
-    }
-  } else {
-    message = (jbyte *) internalBuffer;
-  }
-
-  (*env)->GetByteArrayRegion(env, data, offset, count, message);
-  if ((*env)->ExceptionCheck(env)) {
-    goto out;
-  }
-
+  /* Write directly from the byte array */
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeDirect
-    (env, thiz, fileDescriptor, (jlong)(IDATA) message, count);
+    (env, thiz, fd, (jlong)((IDATA) message + offset), count);
 
-out:
-  if ((U_8 *) message != internalBuffer) {
-    hymem_free_memory(message);
+
+  /* If the pointer was to a copy it needs to be released */
+  if (isCopy == JNI_TRUE) {
+    (*env)->ReleaseByteArrayElements (env, data, message, JNI_ABORT);
   }
-#undef INTERNAL_SEND_BUFFER_MAX
+
   return result;
 }
 
@@ -447,46 +433,23 @@ out:
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeDirect
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jlong address,
-   jint count)
+  (JNIEnv * env, jobject thiz, jobject fd, jlong address, jint count)
 {
   PORT_ACCESS_FROM_ENV(env);
   jbyte *message = (jbyte *) (IDATA)address;
-  I_32 result = 0, sent = 0;
+  I_32 result;
 
-  if (sent < count) {
-    hysocket_t socketP =
-        getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
-    if (!hysock_socketIsValid(socketP)) {
-      throwJavaNetSocketException(env,
-                                  sent ==0 ?
-                                    HYPORT_ERROR_SOCKET_BADSOCKET :
-                                    HYPORT_ERROR_SOCKET_INTERRUPTED);
-      return (jint) 0;
-    }
+  hysocket_t socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
 
-    while (sent < count) {
-      result =
-        hysock_write(socketP, (U_8 *) message + sent, (I_32) count - sent,
-                     HYSOCK_NOFLAGS);
-      if (result < 0) {
-        break;
-      }
-      sent += result;
-    }
-  }
-
-  /**
-   * We should always throw an exception if all the data cannot be sent because Java methods
-   * assume all the data will be sent or an error occurs.
-   */
-  if (result < 0) {
+  result = hysock_write(socketP, (U_8 *) message, (I_32) count, HYSOCK_NOFLAGS);
+  if (0 > result) {
     throwJavaNetSocketException(env, result);
-    return (jint) 0;
-  } else {
-    return (jint) sent;
+    return (jint) 0;  // Ignored, exception takes precedence
   }
+
+  return (jint) result;
 }
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem

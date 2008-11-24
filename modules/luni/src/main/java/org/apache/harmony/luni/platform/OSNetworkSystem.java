@@ -540,9 +540,41 @@ final class OSNetworkSystem implements INetworkSystem {
         return true;
     }
 
+    /**
+     * Write bytes from a byte array to a socket.
+     * 
+     * @param fd
+     *            the socket on which to write the bytes
+     * @param data
+     *            the array containing the bytes to be written
+     * @param offset
+     *            the offset in the byte array from which to take the bytes
+     * @param count
+     *            the maximum number of bytes to be written. Callers are trusted
+     *            not to send values of length+count that are larger than
+     *            data.length
+     * @return the actual number of bytes written, which will be between zero
+     *         and count
+     * @throws IOException
+     *             if there is an underlying socket problem
+     */
     public native int write(FileDescriptor fd, byte[] data, int offset,
             int count) throws IOException;
 
+    /**
+     * Write bytes from the given address to a socket.
+     * 
+     * @param fd
+     *            the socket on which to write the bytes
+     * @param address
+     *            the start address of the bytes to be written
+     * @param count
+     *            the maximum number of bytes to be written
+     * @return the actual number of bytes written, which will be between zero
+     *         and count
+     * @throws IOException
+     *             if there is an underlying socket problem
+     */
     public native int writeDirect(FileDescriptor fd, long address, int count)
             throws IOException;
 }
