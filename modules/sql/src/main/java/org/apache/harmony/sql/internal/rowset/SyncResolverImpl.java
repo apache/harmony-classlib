@@ -137,7 +137,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
         return currentIndex >= 0 && currentIndex < conflictRows.size();
     }
 
-    public void setResolvedValue(int index, Object obj) throws SQLException {
+    public void setResolvedValue(int index, Object obj) throws SQLException,NotImplementedException {
         // TODO not yet implemented
         throw new NotImplementedException();
 

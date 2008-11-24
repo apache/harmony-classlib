@@ -34,7 +34,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 /**

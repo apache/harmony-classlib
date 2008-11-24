@@ -33,7 +33,6 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleIcon;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleStateSet;
-import org.apache.harmony.luni.util.NotImplementedException;
 
 /**
  * <p>
