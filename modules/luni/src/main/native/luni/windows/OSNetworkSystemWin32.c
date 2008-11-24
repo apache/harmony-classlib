@@ -162,29 +162,29 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
 
 /* Alternative Select function */
 int 
-selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
+selectRead (JNIEnv * env, hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   PORT_ACCESS_FROM_ENV (env);
   hytimeval_struct timeP;
   hyfdset_t fdset_read;
   I_32 result = 0;
 
-  if (0 <= uSecTime)
-    hysock_timeval_init (0, uSecTime, &timeP);
-
   fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
   FD_ZERO (&fdset_read->handle);
-  if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      FD_SET (hysocketP->ipv4, &fdset_read->handle);
-    }
-  if (hysocketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      FD_SET (hysocketP->ipv6, &fdset_read->handle);
-    }
-  if (0 <= uSecTime)
-    result = hysock_select (0, fdset_read, NULL, NULL,&timeP);  
-  else
-    result = hysock_select (0, fdset_read, NULL, NULL,NULL);  
+
+  if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    FD_SET (hysocketP->ipv4, &fdset_read->handle);
+  }
+  if (hysocketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    FD_SET (hysocketP->ipv6, &fdset_read->handle);
+  }
+
+  if (0 <= uSecTime) {
+    hysock_timeval_init (0, uSecTime, &timeP);
+    result = hysock_select(0, fdset_read, NULL, NULL, &timeP);
+  } else {
+    result = hysock_select(0, fdset_read, NULL, NULL, NULL);
+  }
+
   hymem_free_memory(fdset_read);
   return result;
 }
