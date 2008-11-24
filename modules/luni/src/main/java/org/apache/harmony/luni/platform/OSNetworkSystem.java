@@ -225,9 +225,47 @@ final class OSNetworkSystem implements INetworkSystem {
     public native int peekDatagram(FileDescriptor fd, InetAddress sender,
             int receiveTimeout) throws IOException;
 
+    /**
+     * Read available bytes from the given file descriptor into a byte array.
+     * 
+     * @param fd
+     *            the socket file descriptor to read
+     * @param data
+     *            the byte array in which to store the results
+     * @param offset
+     *            the offset into the byte array in which to start reading the
+     *            results
+     * @param count
+     *            the maximum number of bytes to read
+     * @param timeout
+     *            the length of time to wait for the bytes, in milliseconds
+     * @return number of bytes read, or zero if there were no bytes available
+     *         before the timeout occurred, or -1 to indicate the socket is
+     *         closed
+     * @throws IOException
+     *             if an underlying socket exception occurred
+     */
     public native int read(FileDescriptor fd, byte[] data, int offset,
             int count, int timeout) throws IOException;
 
+    /**
+     * Read available bytes from the given file descriptor into OS memory at a
+     * given address.
+     * 
+     * @param fd
+     *            the socket file descriptor to read
+     * @param address
+     *            the address of the memory in which to store the results
+     * @param count
+     *            the maximum number of bytes to read
+     * @param timeout
+     *            the length of time to wait for the bytes, in milliseconds
+     * @return number of bytes read, or zero if there were no bytes available
+     *         before the timeout occurred, or -1 to indicate the socket is
+     *         closed
+     * @throws IOException
+     *             if an underlying socket exception occurred
+     */
     public native int readDirect(FileDescriptor fd, long address, int count,
             int timeout) throws IOException;
 
