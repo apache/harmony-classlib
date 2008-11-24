@@ -326,42 +326,31 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_createDatagramSocket
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_read
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyteArray data, jint offset,
+  (JNIEnv * env, jobject thiz, jobject fd, jbyteArray data, jint offset,
    jint count, jint timeout)
 {
-  PORT_ACCESS_FROM_ENV(env);
   jbyte *message;
-  I_32 localCount;
+  jboolean isCopy = JNI_FALSE;
   jint result;
 
-/* TODO: ARRAY PINNING */
-#define INTERNAL_RECEIVE_BUFFER_MAX 2048
-  U_8 internalBuffer[INTERNAL_RECEIVE_BUFFER_MAX];
+  /* Get a pointer to the start of the bytearray */
+  message = (*env)->GetByteArrayElements (env, data, &isCopy);
 
-  localCount = (count < 65536) ? count : 65536;
-
-  if (localCount > INTERNAL_RECEIVE_BUFFER_MAX) {
-    message = hymem_allocate_memory(localCount);
-    if (message == NULL) {
-      throwNewOutOfMemoryError(env, "");
-      return 0;
-    }
-  } else {
-    message = (jbyte *) internalBuffer;
-  }
-
+  /* Read directly into the byte array */
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
-    (env, thiz, fileDescriptor, (jlong) (IDATA)message, count, timeout);
+    (env, thiz, fd, (jlong) (IDATA)message + offset, count, timeout);
 
-  if (result > 0) {
-    (*env)->SetByteArrayRegion(env, data, offset, result, (jbyte *) message);
+  /* If the pointer was to a copy it needs to be released */
+  if (isCopy == JNI_TRUE) {
+      /* Only copy back if we modified the bytearray data */
+      if (0 < result) {
+        (*env)->ReleaseByteArrayElements (env, data, message, 0);
+      } else {
+        (*env)->ReleaseByteArrayElements (env, data, message, JNI_ABORT);
+      }
   }
 
-  if (((U_8 *) message) != internalBuffer) {
-    hymem_free_memory((U_8 *) message);
-  }
-#undef INTERNAL_MAX
   return result;
 }
 
@@ -382,33 +371,28 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
 
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
 
-  /*----------------the older form,nearly the same with below------------
-  //result = pollSelectRead (env, fileDescriptor, timeout, TRUE);
-  */
+  /* Check and potentially wait to see if any bytes available */
   result = selectRead(env, hysocketP, timeout * 1000, FALSE);
-  if (0 >= result)
-    return (jint) 0;
-
-
-  if (!hysock_socketIsValid(hysocketP)) {
-    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
-    return (jint) 0;
+  if (0 > result) {
+    if (result == HYPORT_ERROR_SOCKET_TIMEOUT) {
+      return (jint) 0;  // return zero bytes to indicate timeout
+    }
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;  // Unused, exception takes precedence
   }
 
+  /* Limit size of read to 64k bytes */
   localCount = (count < 65536) ? count : 65536;
 
   result =
     hysock_read(hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
-
-  /* If no bytes are read, return -1 to signal 'endOfFile' to the Java input stream */
-  if (0 < result) {
-    return (jint) result;
-  } else if (0 == result) {
-    return (jint) - 1;
-  } else {
+  if (0 > result) {
     throwJavaNetSocketException(env, result);
     return (jint) 0;
   }
+
+  /* If no bytes are read, return -1 to signal 'endOfFile' to the Java input stream */
+  return (0 == result) ? (jint) - 1 : (jint) result;
 }
 
 /*
