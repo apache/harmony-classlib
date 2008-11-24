@@ -2457,41 +2457,35 @@ hysock_read (struct HyPortLibrary * portLibrary, hysocket_t sock, U_8 * buf,
   I_32 bytesRec = 0;
   int socketTypeLen = sizeof (DWORD);
 
-  if (sock->flags & SOCKET_USE_IPV4_MASK
-      || !(sock->flags & SOCKET_IPV6_OPEN_MASK))
-    {
-      bytesRec = recv (sock->ipv4, (char *) buf, nbyte, flags);
-    }
-  else
-    {				/* If IPv6 is open */
-      bytesRec = recv (sock->ipv6, (char *) buf, nbyte, flags);
-    }
+  if (sock->flags & SOCKET_USE_IPV4_MASK ||
+     !(sock->flags & SOCKET_IPV6_OPEN_MASK)) {
 
-  if (SOCKET_ERROR == bytesRec)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<recv failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_NOTBOUND);
-	case WSAEMSGSIZE:
-	  rc =
-	    portLibrary->error_set_last_error (portLibrary, rc, WSAEMSGSIZE);
-	  if (flags == MSG_PEEK)
-	    {
-	      return nbyte;
-	    }
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
-    }
-  else
-    {
-      rc = bytesRec;
-    }
+      bytesRec = recv (sock->ipv4, (char *) buf, nbyte, flags);
+  } else {
+      /* If IPv6 is open */
+      bytesRec = recv (sock->ipv6, (char *) buf, nbyte, flags);
+  }
+
+  if (SOCKET_ERROR == bytesRec) {
+    rc = WSAGetLastError();
+    HYSOCKDEBUG ("<recv failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+        return portLibrary->error_set_last_error (
+            portLibrary, rc, HYPORT_ERROR_SOCKET_NOTBOUND);
+      case WSAEMSGSIZE :
+        rc = portLibrary->error_set_last_error (portLibrary, rc, WSAEMSGSIZE);
+        if (flags == MSG_PEEK) {
+            return nbyte;
+        }
+      default :
+        return portLibrary->error_set_last_error (
+            portLibrary, rc, findError (rc));
+      }
+  } else {
+    rc = bytesRec;
+  }
+
   return rc;
 }
 
@@ -2613,43 +2607,30 @@ hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
   I_32 rc = 0;
   I_32 result = 0;
 
-  if (NULL == timeout)
-    {
-      result =
-	select (nfds, &readfds->handle, &writefds->handle, &exceptfds->handle,
-		NULL);
-    }
-  else
-    {
-      result =
-	select (nfds, &readfds->handle, &writefds->handle, &exceptfds->handle,
-		&timeout->time);
-    }
-  if (SOCKET_ERROR == result)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<select failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_INVALIDTIMEOUT);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
+  if (NULL == timeout) {
+    result =
+	  select(nfds, &readfds->handle, &writefds->handle, &exceptfds->handle, NULL);
+  } else {
+    result =
+	  select(nfds, &readfds->handle, &writefds->handle, &exceptfds->handle, &timeout->time);
+  }
+  if (SOCKET_ERROR == result) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<select failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+        return portLibrary->error_set_last_error(
+          portLibrary, rc, HYPORT_ERROR_SOCKET_INVALIDTIMEOUT);
+      default :
+        return portLibrary->error_set_last_error (portLibrary, rc, findError (rc));
 	}
+  } else {
+    if (0 == result) {
+      rc = HYPORT_ERROR_SOCKET_TIMEOUT;
+    } else {
+      rc = result;
     }
-  else
-    {
-      if (0 == result)
-	{
-	  rc = HYPORT_ERROR_SOCKET_TIMEOUT;
-	}
-      else
-	{
-	  rc = result;
-	}
-    }
+  }
   return rc;
 }
 
