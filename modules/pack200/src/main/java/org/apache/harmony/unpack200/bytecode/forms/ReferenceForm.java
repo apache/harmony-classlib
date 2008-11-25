@@ -43,6 +43,9 @@ public abstract class ReferenceForm extends ByteCodeForm {
         ClassFileEntry[] nested = null;
         nested = new ClassFileEntry[] { globalPool.getConstantPoolEntry(
                 getPoolID(), offset) };
+        if(nested[0] == null) {
+            throw new NullPointerException("Null nested entries are not allowed");
+        }
         byteCode.setNested(nested);
         byteCode.setNestedPositions(new int[][] { { 0, 2 } });
     }
