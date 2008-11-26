@@ -2762,38 +2762,35 @@ hysock_set_nonblocking (struct HyPortLibrary * portLibrary,
   I_32 rc = 0;
   U_32 param = nonblocking;
 
-  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,
-     then we set it just on that one.  */
+  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.
+   * If only one is open, then we set it just on that one.
+   */
+  if (socketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    rc = ioctlsocket (socketP->ipv4, FIONBIO, &param);
+  }
 
-  if (socketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      rc = ioctlsocket (socketP->ipv4, FIONBIO, &param);
-    }
+  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    rc = ioctlsocket (socketP->ipv6, FIONBIO, &param);
+  }
 
-  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      rc = ioctlsocket (socketP->ipv6, FIONBIO, &param);
+  if (rc != 0) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<set_nonblocking (for bool) failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
+          HYPORT_ERROR_SOCKET_OPTARGSINVALID);
+        default :
+	        return portLibrary->error_set_last_error (portLibrary, rc,
+            findError (rc));
     }
-
-  if (rc != 0)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<set_nonblocking (for bool) failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_OPTARGSINVALID);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
-    }
+  }
 
   return rc;
 }
 
 #undef CDEV_CURRENT_FUNCTION
+
 
 #define CDEV_CURRENT_FUNCTION hysock_setflag
 /**
