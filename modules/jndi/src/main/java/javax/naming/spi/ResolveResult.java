@@ -34,7 +34,7 @@ import javax.naming.CompositeName;
  */
 public class ResolveResult implements java.io.Serializable {
 
-    static final long serialVersionUID = -4552108072002407559L;
+    private static final long serialVersionUID = -4552108072002407559L;
 
     /**
      * This field holds the object associated with the resolved name. It may be

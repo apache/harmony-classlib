@@ -280,6 +280,7 @@ public class GZIPInputStreamTest extends junit.framework.TestCase {
         gis.read(buffer);
         result = gis.read();
         gis.close();
+        f.delete();
 
         assertEquals("Incorrect value returned at the end of the file", -1, result);
     }

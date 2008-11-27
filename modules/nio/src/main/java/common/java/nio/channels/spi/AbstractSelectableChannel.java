@@ -132,10 +132,6 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
                 // throw NPE exactly to keep consistency
                 throw new NullPointerException();
             }
-            if (0 == interestSet) {
-                // throw ISE exactly to keep consistency
-                throw new IllegalSelectorException();
-            }
             SelectionKey key = keyFor(selector);
             if (null == key) {
                 key = ((AbstractSelector) selector).register(this, interestSet,

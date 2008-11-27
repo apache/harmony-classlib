@@ -519,7 +519,7 @@ augmentToolsArgs (HyPortLibrary * portLibrary, int *pargc, char ***pargv)
   /* If there is already a classpath argument, we add our tools to it */
   for (i = 1; i < argc; i++) {
     if ((0 == strncmp (argv[i], "-J-cp", 5)) ||
-		(0 == strncmp (argv[i], "-J-classpath", 11))) {
+		(0 == strncmp (argv[i], "-J-classpath", 12))) {
       classpath = argv[++i];
 	  if (NULL == classpath) {
 		  return 1;

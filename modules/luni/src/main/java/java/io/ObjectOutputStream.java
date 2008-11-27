@@ -428,13 +428,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
 
     /**
-     * Return the next <code>int</code> handle to be used to indicate cyclic
+     * Return the next <code>Integer</code> handle to be used to indicate cyclic
      * references being saved to the stream.
      * 
-     * @return int, the next handle to represent the next cyclic reference
+     * @return the next handle to represent the next cyclic reference
      */
-    private int nextHandle() {
-        return this.currentHandle++;
+    private Integer nextHandle() {
+        return Integer.valueOf(this.currentHandle++);
     }
 
     /**
@@ -473,8 +473,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      * 
      * @see #nextHandle
      */
-    private int registerObjectWritten(Object obj) {
-        int handle = nextHandle();
+    private Integer registerObjectWritten(Object obj) {
+        Integer handle = nextHandle();
         objectsWritten.put(obj, handle);
         return handle;
     }
@@ -1168,7 +1168,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         output.writeByte(TC_ARRAY);
         writeClassDesc(arrayClDesc, false);
 
-        int handle = nextHandle();
+        Integer handle = nextHandle();
 
         if (!unshared) {
             objectsWritten.put(array, handle);
@@ -1279,7 +1279,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             writeClassDesc(clDesc, unshared);
         }
      
-        int handle = nextHandle();
+        Integer handle = nextHandle();
 
         if (!unshared) {
             objectsWritten.put(object, handle);
@@ -1415,7 +1415,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         if (unshared) {
             previousHandle = objectsWritten.get(object);
         }
-        int handle = nextHandle();
+        Integer handle = nextHandle();
         objectsWritten.put(object, handle);
 
         // This is how we know what to do in defaultWriteObject. And it is also
@@ -1487,7 +1487,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         }
         output.writeUTFBytes(object, count);
      
-        int handle = nextHandle();
+        Integer handle = nextHandle();
 
         if (!unshared) {
             objectsWritten.put(object, handle);
@@ -1791,7 +1791,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         if (unshared) {
             previousHandle = objectsWritten.get(object);
         }
-        int handle = nextHandle();
+        Integer handle = nextHandle();
         objectsWritten.put(object, handle);
 
         ObjectStreamField[] fields = classDesc.getSuperclass().fields();

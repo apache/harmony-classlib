@@ -21,6 +21,18 @@ import java.io.InputStream;
 
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.unpack200.bytecode.AnnotationDefaultAttribute;
+import org.apache.harmony.unpack200.bytecode.CodeAttribute;
+import org.apache.harmony.unpack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.unpack200.bytecode.DeprecatedAttribute;
+import org.apache.harmony.unpack200.bytecode.EnclosingMethodAttribute;
+import org.apache.harmony.unpack200.bytecode.ExceptionsAttribute;
+import org.apache.harmony.unpack200.bytecode.InnerClassesAttribute;
+import org.apache.harmony.unpack200.bytecode.LineNumberTableAttribute;
+import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
+import org.apache.harmony.unpack200.bytecode.LocalVariableTypeTableAttribute;
+import org.apache.harmony.unpack200.bytecode.SignatureAttribute;
+import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
 
 /**
  * Attribute definition bands are the set of bands used to define extra
@@ -76,10 +88,30 @@ public class AttrDefinitionBands extends BandSet {
             attributeDefinitionMap.add(layout, newBands);
         }
         attributeDefinitionMap.checkMap();
+        setupDefaultAttributeNames();
     }
 
     public void unpack() throws Pack200Exception, IOException {
 
+    }
+
+    private void setupDefaultAttributeNames() {
+        AnnotationDefaultAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("AnnotationDefault")); //$NON-NLS-1$
+        CodeAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("Code")); //$NON-NLS-1$
+        ConstantValueAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("ConstantValue")); //$NON-NLS-1$
+        DeprecatedAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("Deprecated")); //$NON-NLS-1$
+        EnclosingMethodAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("EnclosingMethod")); //$NON-NLS-1$
+        ExceptionsAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("Exceptions")); //$NON-NLS-1$
+        InnerClassesAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("InnerClasses")); //$NON-NLS-1$
+        LineNumberTableAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("LineNumberTable")); //$NON-NLS-1$
+        LocalVariableTableAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("LocalVariableTable")); //$NON-NLS-1$
+        LocalVariableTypeTableAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("LocalVariableTypeTable")); //$NON-NLS-1$
+        SignatureAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("Signature")); //$NON-NLS-1$
+        SourceFileAttribute.setAttributeName(segment.getCpBands().cpUTF8Value("SourceFile")); //$NON-NLS-1$
+        MetadataBandGroup.setRvaAttributeName(segment.getCpBands().cpUTF8Value("RuntimeVisibleAnnotations"));
+        MetadataBandGroup.setRiaAttributeName(segment.getCpBands().cpUTF8Value("RuntimeInvisibleAnnotations"));
+        MetadataBandGroup.setRvpaAttributeName(segment.getCpBands().cpUTF8Value("RuntimeVisibleParameterAnnotations"));
+        MetadataBandGroup.setRipaAttributeName(segment.getCpBands().cpUTF8Value("RuntimeInvisibleParameterAnnotations"));
     }
 
     public AttributeLayoutMap getAttributeDefinitionMap() {

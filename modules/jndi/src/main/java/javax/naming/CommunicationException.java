@@ -31,7 +31,7 @@ public class CommunicationException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 3618507780299986611L;
+    private static final long serialVersionUID = 3618507780299986611L;
 
     /**
      * Constructs a <code>CommunicationException</code> instance with all data

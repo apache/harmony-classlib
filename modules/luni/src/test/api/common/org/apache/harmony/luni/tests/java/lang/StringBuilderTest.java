@@ -1553,27 +1553,118 @@ public class StringBuilderTest extends TestCase {
 		assertEquals("12XXX7",buffer.toString());
 	}
 
+    private void reverseTest(String org, String rev, String back) {
+        // create non-shared StringBuilder
+        StringBuilder sb = new StringBuilder(org);
+        sb.reverse();
+        String reversed = sb.toString();
+        assertEquals(rev, reversed);
+        // create non-shared StringBuilder
+        sb = new StringBuilder(reversed);
+        sb.reverse();
+        reversed = sb.toString();
+        assertEquals(back, reversed);
+
+        // test algorithm when StringBuilder is shared
+        sb = new StringBuilder(org);
+        String copy = sb.toString();
+        assertEquals(org, copy);
+        sb.reverse();
+        reversed = sb.toString();
+        assertEquals(rev, reversed);
+        sb = new StringBuilder(reversed);
+        copy = sb.toString();
+        assertEquals(rev, copy);
+        sb.reverse();
+        reversed = sb.toString();
+        assertEquals(back, reversed);
+    }
+
 	/**
 	 * @tests java.lang.StringBuilder.reverse()
 	 */
 	public void test_reverse() {
-		final String fixture = "0123456789";
-		StringBuilder sb = new StringBuilder(fixture);
-		assertSame(sb, sb.reverse());
-		assertEquals("9876543210", sb.toString());
+        final String fixture = "0123456789";
+        StringBuilder sb = new StringBuilder(fixture);
+        assertSame(sb, sb.reverse());
+        assertEquals("9876543210", sb.toString());
 
-		sb = new StringBuilder("012345678");
-		assertSame(sb, sb.reverse());
-		assertEquals("876543210", sb.toString());
+        sb = new StringBuilder("012345678");
+        assertSame(sb, sb.reverse());
+        assertEquals("876543210", sb.toString());
 
-		sb.setLength(1);
-		assertSame(sb, sb.reverse());
-		assertEquals("8", sb.toString());
+        sb.setLength(1);
+        assertSame(sb, sb.reverse());
+        assertEquals("8", sb.toString());
 
-		sb.setLength(0);
-		assertSame(sb, sb.reverse());
-		assertEquals("", sb.toString());
-	}
+        sb.setLength(0);
+        assertSame(sb, sb.reverse());
+        assertEquals("", sb.toString());
+
+        String str;
+        str = "a";
+        reverseTest(str, str, str);
+
+        str = "ab";
+        reverseTest(str, "ba", str);
+
+        str = "abcdef";
+        reverseTest(str, "fedcba", str);
+
+        str = "abcdefg";
+        reverseTest(str, "gfedcba", str);
+
+        str = "\ud800\udc00";
+        reverseTest(str, str, str);
+
+        str = "\udc00\ud800";
+        reverseTest(str, "\ud800\udc00", "\ud800\udc00");
+
+        str = "a\ud800\udc00";
+        reverseTest(str, "\ud800\udc00a", str);
+
+        str = "ab\ud800\udc00";
+        reverseTest(str, "\ud800\udc00ba", str);
+
+        str = "abc\ud800\udc00";
+        reverseTest(str, "\ud800\udc00cba", str);
+
+        str = "\ud800\udc00\udc01\ud801\ud802\udc02";
+        reverseTest(str, "\ud802\udc02\ud801\udc01\ud800\udc00",
+                "\ud800\udc00\ud801\udc01\ud802\udc02");
+
+        str = "\ud800\udc00\ud801\udc01\ud802\udc02";
+        reverseTest(str, "\ud802\udc02\ud801\udc01\ud800\udc00", str);
+
+        str = "\ud800\udc00\udc01\ud801a";
+        reverseTest(str, "a\ud801\udc01\ud800\udc00",
+                "\ud800\udc00\ud801\udc01a");
+
+        str = "a\ud800\udc00\ud801\udc01";
+        reverseTest(str, "\ud801\udc01\ud800\udc00a", str);
+
+        str = "\ud800\udc00\udc01\ud801ab";
+        reverseTest(str, "ba\ud801\udc01\ud800\udc00",
+                "\ud800\udc00\ud801\udc01ab");
+
+        str = "ab\ud800\udc00\ud801\udc01";
+        reverseTest(str, "\ud801\udc01\ud800\udc00ba", str);
+
+        str = "\ud800\udc00\ud801\udc01";
+        reverseTest(str, "\ud801\udc01\ud800\udc00", str);
+
+        str = "a\ud800\udc00z\ud801\udc01";
+        reverseTest(str, "\ud801\udc01z\ud800\udc00a", str);
+
+        str = "a\ud800\udc00bz\ud801\udc01";
+        reverseTest(str, "\ud801\udc01zb\ud800\udc00a", str);
+
+        str = "abc\ud802\udc02\ud801\udc01\ud800\udc00";
+        reverseTest(str, "\ud800\udc00\ud801\udc01\ud802\udc02cba", str);
+
+        str = "abcd\ud802\udc02\ud801\udc01\ud800\udc00";
+        reverseTest(str, "\ud800\udc00\ud801\udc01\ud802\udc02dcba", str);
+    }
 
 	/**
 	 * @tests java.lang.StringBuilder.setCharAt(int, char)

@@ -101,6 +101,9 @@
 
             <compilerarg line="${build.compilerarg}" />
 
+            <!-- Exclude unwanted data files -->
+            <excludesfile name="${basedir}/make/excludesfile" />
+
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -138,7 +141,9 @@
             <metainf prefix="META-INF/services"
                 dir="${hy.nio_char.src.main.java}/org/apache/harmony/niochar"
                 includes="java.nio.charset.spi.CharsetProvider"/>
-            <fileset dir="${hy.nio_char.src.main.java}" />
+            <fileset dir="${hy.nio_char.src.main.java}">
+                <excludesfile name="${basedir}/make/excludesfile"/>
+            </fileset>
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

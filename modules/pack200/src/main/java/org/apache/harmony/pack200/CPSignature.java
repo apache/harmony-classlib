@@ -23,15 +23,43 @@ public class CPSignature extends ConstantPoolEntry implements Comparable {
     private final CPUTF8 signatureForm;
     private final List classes;
     private final String signature;
+    private final boolean formStartsWithBracket;
 
     public CPSignature(String signature, CPUTF8 signatureForm, List classes) {
         this.signature = signature;
         this.signatureForm = signatureForm;
         this.classes = classes;
+        formStartsWithBracket = signatureForm.toString().startsWith("(");
     }
 
     public int compareTo(Object arg0) {
-        return signature.compareTo(((CPSignature)arg0).signature);
+        if(signature.equals(((CPSignature) arg0).signature)) {
+            return 0;
+        }
+        if (formStartsWithBracket
+                && !((CPSignature) arg0).formStartsWithBracket) {
+            return 1;
+        }
+        if (((CPSignature) arg0).formStartsWithBracket
+                && !formStartsWithBracket) {
+            return -1;
+        }
+        if (classes.size() - ((CPSignature) arg0).classes.size() != 0) {
+            return classes.size() - ((CPSignature) arg0).classes.size();
+        }
+        if (classes.size() > 0) {
+            int classComp = 0;
+            for (int i = classes.size() - 1; i >=0; i--) {
+                CPClass cpClass = (CPClass) classes.get(i);
+                CPClass compareClass = (CPClass) ((CPSignature) arg0).classes
+                        .get(i);
+                classComp = classComp * 10 + cpClass.compareTo(compareClass);
+            }
+            if(classComp != 0) {
+                return classComp;
+            }
+        }
+        return signature.compareTo(((CPSignature) arg0).signature);
     }
 
     public int getIndexInCpUtf8() {

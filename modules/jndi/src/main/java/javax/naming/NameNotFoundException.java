@@ -31,7 +31,7 @@ public class NameNotFoundException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -8007156725367842053L;
+    private static final long serialVersionUID = -8007156725367842053L;
 
     /**
      * Constructs a <code>NameNotFoundException</code> instance with all data

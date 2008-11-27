@@ -500,7 +500,9 @@ public class ReferenceTest extends TestCase {
 		 * "\n", reference.toString());
 		 */
 		assertNotNull(reference.toString());
-	}
+        assertEquals("Reference Class Name: " + reference.getClassName() + "\n"
+                + addr0.toString() + addr1.toString(), reference.toString());
+    }
 
 	public void testToString_AddressNull() {
 		String className = "java.lang.String";
@@ -510,7 +512,10 @@ public class ReferenceTest extends TestCase {
 		 * addresses:\n", reference.toString());
 		 */
 		assertNotNull(reference.toString());
-	}
+        assertEquals(
+                "Reference Class Name: " + reference.getClassName() + "\n",
+                reference.toString());
+    }
 
 	public void testClone_Simple() {
 		String className = "java.lang.String";

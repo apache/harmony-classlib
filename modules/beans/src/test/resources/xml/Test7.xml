@@ -20,7 +20,7 @@
 Author:  Maxim V. Berkultsev
 Version: $Revision: 1.1.6.3 $
 -->
-<java version="1.4.2_04" class="java.beans.XMLDecoder">
+<java version="${version}" class="java.beans.XMLDecoder">
 
  <array class="java.lang.String" length="2">
   <void index="0">

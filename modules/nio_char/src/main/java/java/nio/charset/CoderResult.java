@@ -254,17 +254,12 @@ public class CoderResult {
         }
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods overriding parent class Object
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Returns a text description of this result.
      * 
      * @return a text description of this result
      */
+    @Override
     public String toString() {
         String dsc = null;
         switch (this.type) {

@@ -58,6 +58,7 @@ public class CodingErrorAction {
      * 
      * @return a text description of this action indication.
      */
+    @Override
     public String toString() {
         return "Action: " + this.action; //$NON-NLS-1$
     }

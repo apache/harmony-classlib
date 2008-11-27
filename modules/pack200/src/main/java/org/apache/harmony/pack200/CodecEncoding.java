@@ -19,6 +19,8 @@ package org.apache.harmony.pack200;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -90,6 +92,9 @@ public class CodecEncoding {
             new BHSDCodec(4, 224, 1, 1), new BHSDCodec(4, 240, 0, 1),
             new BHSDCodec(4, 240, 1, 1), new BHSDCodec(4, 248, 0, 1),
             new BHSDCodec(4, 248, 1, 1) };
+
+    private static Map canonicalCodecsToSpecifiers;
+
 
     /**
      * Returns the codec specified by the given value byte and optional byte
@@ -207,5 +212,15 @@ public class CodecEncoding {
             throw new Pack200Exception("Invalid codec encoding byte (" + value
                     + ") found");
         }
+    }
+
+    public static int getSpecifierForDefaultCodec(BHSDCodec defaultCodec) {
+        if(canonicalCodecsToSpecifiers == null) {
+            canonicalCodecsToSpecifiers = new HashMap();
+            for (int i = 0; i < canonicalCodec.length; i++) {
+                canonicalCodecsToSpecifiers.put(canonicalCodec[i], new Integer(i));
+            }
+        }
+        return ((Integer)canonicalCodecsToSpecifiers.get(defaultCodec)).intValue();
     }
 }

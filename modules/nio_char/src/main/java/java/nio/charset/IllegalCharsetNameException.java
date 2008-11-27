@@ -25,7 +25,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
 public class IllegalCharsetNameException extends IllegalArgumentException {
 
     /*
-     * This constant is used during deserialization to check the J2SE version
+     * This constant is used during deserialization to check the version
      * which created the serialized object.
      */
     private static final long serialVersionUID = 1457525358470002989L;

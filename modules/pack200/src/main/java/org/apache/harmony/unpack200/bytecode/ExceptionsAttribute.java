@@ -25,8 +25,7 @@ import java.util.Arrays;
  */
 public class ExceptionsAttribute extends Attribute {
 
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "Exceptions"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
 
     private static int hashCode(Object[] array) {
         final int prime = 31;
@@ -100,6 +99,10 @@ public class ExceptionsAttribute extends Attribute {
         for (int i = 0; i < exceptionIndexes.length; i++) {
             dos.writeShort(exceptionIndexes[i]);
         }
+    }
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
     }
 
 }

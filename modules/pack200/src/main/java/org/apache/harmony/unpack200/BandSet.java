@@ -268,15 +268,6 @@ public abstract class BandSet {
         return band;
     }
 
-    public byte[] encodeBandLong(long[] data, BHSDCodec codec)
-            throws IOException, Pack200Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (int i = 0; i < data.length; i++) {
-            baos.write(codec.encode(data[i], i == 0 ? 0 : data[i - 1]));
-        }
-        return baos.toByteArray();
-    }
-
     public long[] parseFlags(String name, InputStream in, int count,
             BHSDCodec codec, boolean hasHi) throws IOException,
             Pack200Exception {

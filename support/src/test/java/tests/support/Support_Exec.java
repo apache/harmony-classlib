@@ -193,7 +193,21 @@ public class Support_Exec extends TestCase {
         synchronized (proc) {
 			errThread.start();
 			// wait for errThread to start
-			proc.wait();
+			int count = 0;
+			boolean isFinished = false;
+			while(!isFinished) {
+			    try {
+			        proc.wait();
+			        isFinished = true;
+			    } catch (InterruptedException e) {
+			        if(++count == 2) {
+			            throw e;
+			        }
+			    }
+			}
+			if(count > 0) {
+			    Thread.currentThread().interrupt();
+			}
 		}
 
         return new Object[] { proc, errBuf };

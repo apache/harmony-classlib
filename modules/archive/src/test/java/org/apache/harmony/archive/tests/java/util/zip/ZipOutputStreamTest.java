@@ -232,6 +232,9 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
         } catch (IndexOutOfBoundsException e) {
             // expected
         }
+
+        // Close stream because ZIP is invalid
+        stream.close();
     }
 
     /**
@@ -262,6 +265,8 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
         } catch (IOException e2) {
             // expected
         }
+        
+        zip1.close();
     }
 
     @Override

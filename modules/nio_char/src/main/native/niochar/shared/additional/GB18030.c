@@ -17,11 +17,12 @@
 
 #include "GB18030.h"
 #include "hycomp.h"
+#include "vmi.h"
 
 #define linear(b1, b2, b3, b4) ((((b1)*10+(b2))*126L+(b3))*10L+(b4))
-static jbyte * unLinear(jint lin) {
-                jbyte arr[] = {0, 0, 0, 0};
-	        jbyte *result = arr;
+static jbyte* unLinear(JNIEnv *env, jint lin) {
+            PORT_ACCESS_FROM_ENV(env);
+	        jbyte *result = hymem_allocate_memory(sizeof(jbyte)*4);
 	        lin-=linear((jbyte)0x81, (jbyte)0x30, (jbyte)0x81, (jbyte)0x30); 
 	        result[3]=(jbyte)(0x30+lin%10);  lin/=10;
 	        result[2]=(jbyte)(0x81+lin%126); lin/=126;
@@ -1158,14 +1159,14 @@ static jint getUnicodeFromBytes(jbyte b1, jbyte b2, jbyte b3, jbyte b4) {
 	        return -1;
 }
 
-static jbyte * getBytesFromUnicode(jint charValue) {
+static jbyte* getBytesFromUnicode(JNIEnv *env, jint charValue) {
 	        int rangeCounter = 0;
 	        while(rangeCounter < sizeof(ranges)){
 	        	int startBytes = ranges[rangeCounter++];
 	        	int length = ranges[rangeCounter++];
 	        	int startChar = charValues[rangeCounter/2-1];
 	            if(startChar<=charValue && charValue<=startChar+length) {
-	                return unLinear(startBytes+(charValue-startChar));
+	                return unLinear(env, startBytes+(charValue-startChar));
 	            }
 	        }
 	        return NULL;
@@ -1182,9 +1183,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_GB1803
    jchar *out = (*env)->GetCharArrayElements(env, outArr, NULL);
 
    jint *res = (*env)->GetIntArrayElements(env, result, NULL);
-   jint position = absolutePos;	
+   jint resultChar, position = absolutePos;	
    int i, variable; 
-   jchar input,  resultChar; 
+   jchar input; 
    jbyte b1, b2, b3, b4;
    for(i=0; i < bbremaining; i++) {
         if(res[1]==0) {
@@ -1245,7 +1246,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_GB1803
                break;
             }
             if (resultChar != 0) {
-                out[arrPosition++] = resultChar; res[1] -= 1;
+                out[arrPosition++] = (jchar)resultChar; res[1] -= 1;
             } else {
                	if(!( (126 >= b2 && b2 >= 64) || (-2 >= b2 && b2 >= -128) || (57 >= b2 && b2 >= 48)) ) {
                	       res[0] = res[0]+2; 
@@ -1280,7 +1281,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_GB1803
                         resultChar = getUnicodeFromBytes(b1, b2, b3, b4);
                 	if(resultChar != -1) {
                 	        res[0] -=4;
-                                out[arrPosition++] = resultChar; res[1] -= 1;
+                                out[arrPosition++] = (jchar)resultChar; res[1] -= 1;
                 	} else {
                         	res[2] = 4; res[3] = -1;
                                 (*env)->ReleaseCharArrayElements(env, outArr, out, 0); 
@@ -1324,7 +1325,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_GB1803
              index = (int)input >> 8;
              index = encodeIndex[index];
              while(index < 0) {
-               jbyte *arr = getBytesFromUnicode(in[arrayOffset+i]);
+               jbyte *arr = getBytesFromUnicode(env, in[arrayOffset+i]);
                if(arr!= NULL) {
                	if(res[0]>=4) {
                     *(jlong2addr(jbyte, outAddr) + position++) = (jbyte)arr[0];
@@ -1391,7 +1392,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_niochar_charset_additional_GB1803
                  }
                  *(jlong2addr(jbyte, outAddr) + position++) = (jbyte)(resultChar & 0xFF);  res[0] -= 1;
              } else {
-               jbyte *arr = getBytesFromUnicode(in[arrayOffset+i]);
+               jbyte *arr = getBytesFromUnicode(env, in[arrayOffset+i]);
                if(arr!= NULL) {
                	if(res[0]>=4) {
                     *(jlong2addr(jbyte, outAddr) + position++) = arr[0];

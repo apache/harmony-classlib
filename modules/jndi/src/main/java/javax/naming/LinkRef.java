@@ -32,7 +32,7 @@ public class LinkRef extends Reference {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -5386290613498931298L;
+    private static final long serialVersionUID = -5386290613498931298L;
 
     /*
      * The type name of the address this LinkRef points to.

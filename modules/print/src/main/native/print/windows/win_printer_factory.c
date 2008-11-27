@@ -28,7 +28,7 @@
 static char * getFileName(const char * path) {
 	char * p = (char *) (path + strlen(path));
 
-	for (; p > path; *p--) {
+	for (; p > path; p--) {
 		if ((*p == '/') || (*p == '\\')) {
 			p++;
 			return p;
@@ -180,7 +180,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_x_print_WinPrinterFactory_release
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_x_print_WinPrinterFactory_getPrinterProps(JNIEnv * env, jclass c, jstring jprinterName, jlong handle) {
 	DEVMODEW * dm;
 	const unsigned short * printerName = (*env)->GetStringChars(env, jprinterName, NULL);
-	unsigned long dmSize = DocumentPropertiesW(NULL, JCAST(handle, HANDLE),
+	LONG dmSize = DocumentPropertiesW(NULL, JCAST(handle, HANDLE),
 			(unsigned short *) printerName, NULL, NULL, 0);
 
 	if (dmSize < 0) {
@@ -358,11 +358,13 @@ JNIEXPORT jintArray JNICALL Java_org_apache_harmony_x_print_WinPrinterFactory_ge
 	if ((result == NULL) || (points == NULL)) {
 		SetLastError(ERROR_NOT_ENOUGH_MEMORY);
 		handleLastError(__FUNCTION__,__FILE__ , __LINE__, env);
+        free(points);
 		return NULL;
 	}
 
 	if (getPrinterCapabilities(env, handle, DC_PAPERSIZE, points) == -1) {
 		handleLastError(__FUNCTION__, __FILE__, __LINE__, env);
+        free(points);
 		return NULL;
 	}
 
@@ -396,11 +398,15 @@ JNIEXPORT jintArray JNICALL Java_org_apache_harmony_x_print_WinPrinterFactory_ge
 	if ((result == NULL) || (buff == NULL) || (resolutions == NULL)) {
 		SetLastError(ERROR_NOT_ENOUGH_MEMORY);
 		handleLastError(__FUNCTION__,__FILE__ , __LINE__, env);
+        free(buff);
+        free(resolutions);
 		return NULL;
 	}
 
 	if (getPrinterCapabilities(env, handle, DC_ENUMRESOLUTIONS, buff) == -1) {
 		handleLastError(__FUNCTION__, __FILE__, __LINE__, env);
+        free(buff);
+        free(resolutions);
 		return NULL;
 	}
 

@@ -63,7 +63,7 @@ public class BasicAttribute implements Attribute {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 0x5d95d32a668565beL;
+    private static final long serialVersionUID = 0x5d95d32a668565beL;
 
     /**
      * The attribute identifier. It is initialized by the public constructors

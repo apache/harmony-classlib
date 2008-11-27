@@ -134,7 +134,7 @@ public class IcBands extends BandSet {
     		//  this relation is 1:M
 
             // If it's not anon and the outer is not anon, it could be relevant
-    		if (!tuple.isAnonymous() && !tuple.outerIsAnonymous()) {
+    		if ( (!tuple.isAnonymous() && !tuple.outerIsAnonymous()) || (tuple.nestedExplicitFlagSet()) ) {
 
     			// add tuple to corresponding bucket
     			String key = tuple.outerClassString();

@@ -52,7 +52,7 @@ public class Pack200PackerAdapter extends Pack200Adapter implements Packer {
                     "Must specify both input and output streams");
         completed(0);
         try {
-            new org.apache.harmony.pack200.Archive(in, out).pack();
+            new org.apache.harmony.pack200.Archive(in, out, true).pack();
         } catch (Pack200Exception e) {
             throw new IOException("Failed to pack Jar:" + String.valueOf(e));
         }

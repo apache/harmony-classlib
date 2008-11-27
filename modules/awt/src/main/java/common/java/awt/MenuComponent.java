@@ -806,11 +806,11 @@ public abstract class MenuComponent implements Serializable {
 
     String autoName() {
         String name = getClass().getName();
-        if (name.indexOf("$") != -1) { //$NON-NLS-1$
+        if (name.indexOf('$') != -1) {
             return null;
         }
         int number = toolkit.autoNumber.nextMenuComponent++;
-        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number); //$NON-NLS-1$
+        name = name.substring(name.lastIndexOf('.') + 1) + Integer.toString(number);
         return name;
     }
 

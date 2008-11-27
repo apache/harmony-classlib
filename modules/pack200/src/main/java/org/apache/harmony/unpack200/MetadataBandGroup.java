@@ -42,12 +42,26 @@ public class MetadataBandGroup {
     private final String type;
     private final CpBands cpBands;
 
-    private final CPUTF8 rvaUTF8 = new CPUTF8("RuntimeVisibleAnnotations");
-    private final CPUTF8 riaUTF8 = new CPUTF8("RuntimeInvisibleAnnotations");
-    private final CPUTF8 rvpaUTF8 = new CPUTF8(
-            "RuntimeVisibleParameterAnnotations");
-    private final CPUTF8 ripaUTF8 = new CPUTF8(
-            "RuntimeInvisibleParameterAnnotations");
+    private static CPUTF8 rvaUTF8;
+    private static CPUTF8 riaUTF8;
+    private static CPUTF8 rvpaUTF8;
+    private static CPUTF8 ripaUTF8;
+
+    public static void setRvaAttributeName(CPUTF8 cpUTF8Value) {
+        rvaUTF8 = cpUTF8Value;
+    }
+
+    public static void setRiaAttributeName(CPUTF8 cpUTF8Value) {
+        riaUTF8 = cpUTF8Value;
+    }
+
+    public static void setRvpaAttributeName(CPUTF8 cpUTF8Value) {
+        rvpaUTF8 = cpUTF8Value;
+    }
+
+    public static void setRipaAttributeName(CPUTF8 cpUTF8Value) {
+        ripaUTF8 = cpUTF8Value;
+    }
 
     public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;
@@ -227,7 +241,7 @@ public class MetadataBandGroup {
             }
             return nestedArray;
         case '@':
-            CPUTF8 type = (CPUTF8) nesttype_RS[nesttype_RS_Index++];
+            CPUTF8 type = nesttype_RS[nesttype_RS_Index++];
             int numPairs = nestpair_N[nestpair_N_Index++];
 
             return getAnnotation(type, numPairs, nestname_RU_Iterator);

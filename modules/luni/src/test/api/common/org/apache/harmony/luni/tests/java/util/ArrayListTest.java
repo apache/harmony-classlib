@@ -518,6 +518,16 @@ public class ArrayListTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.util.AbstractCollection#toString()
+     */
+    public void test_toString() {
+        ArrayList l = new ArrayList(1);
+        l.add(l);
+        String result = l.toString();
+        assertTrue("should contain self ref", result.indexOf("(this") > -1);
+    }
+
+    /**
      * @tests java.util.ArrayList#toArray()
      */
     public void test_toArray() {

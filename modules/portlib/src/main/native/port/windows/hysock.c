@@ -2597,7 +2597,7 @@ hysock_readfrom (struct HyPortLibrary * portLibrary, hysocket_t sock,
  * \arg null, block indefinitely for a ready descriptor
  *
  * @param[in] portLibrary The port library.
- * @param[in] nfds Maximum number of file descriptors to be tested.
+ * @param[in] nfds Maximum number of file descriptors to be tested.  Ignored by Windows Socket API.
  * @param[in] readfds Tthe set of descriptors to be checked if ready for read operations.
  * @param[in] writefds The set of descriptors to be checked if ready for write operations.
  * @param[in] exceptfds The set of descriptors to be checked for exceptional conditions.
@@ -2778,7 +2778,7 @@ I_32 VMCALL
 hysock_set_nonblocking (struct HyPortLibrary * portLibrary,
 			hysocket_t socketP, BOOLEAN nonblocking)
 {
-  I_32 rc;
+  I_32 rc = 0;
   U_32 param = nonblocking;
 
   /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,

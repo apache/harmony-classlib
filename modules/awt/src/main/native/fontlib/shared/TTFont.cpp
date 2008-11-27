@@ -18,6 +18,8 @@
  * @author Dmitriy S. Matveev
  * @version $Revision$
  */
+
+#include <stdio.h>
 #include "TTFont.h"
 #include "Tables.h"
 

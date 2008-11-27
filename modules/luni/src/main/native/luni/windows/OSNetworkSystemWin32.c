@@ -41,7 +41,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   PORT_ACCESS_FROM_ENV (env);
   hytimeval_struct timeP;	
   I_32 result =	0;		
-  I_32 size = 0;		
   jobject gotFD;		
   hyfdset_t fdset_read,fdset_write;
   hysocket_t hysocketP;		
@@ -63,18 +62,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 
 	  if (!hysock_socketIsValid (hysocketP)){
       		continue;
-    	  }
+      }
 	 if (hysocketP->flags &	SOCKET_IPV4_OPEN_MASK)
 	 {
 		FD_SET (hysocketP->ipv4, &fdset_read->handle);
-		if (0 >	(size -	hysocketP->ipv4))
-			size = hysocketP->ipv4;	
 	 }
 	 if (hysocketP->flags &	SOCKET_IPV6_OPEN_MASK)
 	 {
 		FD_SET (hysocketP->ipv6, &fdset_read->handle);
-		if (0 >	(size -	hysocketP->ipv6))
-			size = hysocketP->ipv6;	
 	 }
 	}
   for (val = 0; val<countWriteC; val++){
@@ -88,34 +83,21 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	 if (hysocketP->flags &	SOCKET_IPV4_OPEN_MASK)
 	 {
 		FD_SET (hysocketP->ipv4, &fdset_write->handle);	
-		if (0 >	(size -	hysocketP->ipv4))
-			size = hysocketP->ipv4;	
 	 }
 	 if (hysocketP->flags &	SOCKET_IPV6_OPEN_MASK)
 	 {
 		FD_SET (hysocketP->ipv6, &fdset_write->handle);	
-		if (0 >	(size -	hysocketP->ipv6))
-			size = hysocketP->ipv6;	
 	 }
 	}
-  /* the size is the max_fd + 1	*/
-  size =size + 1;
 
-  if (0	> size)	
-    {
-      result = HYPORT_ERROR_SOCKET_FDSET_SIZEBAD;
-    }
-  else
-    {
-      /* only set when timeout >= 0 (non-block)*/
-      if (0 <= timeout){      	
-		hysock_timeval_init ( time_sec, time_msec, &timeP);
-		result = hysock_select (size, fdset_read, fdset_write, NULL,&timeP);
-      }	
-      else{        
-		result = hysock_select (size, fdset_read, fdset_write, NULL,NULL);
-      }	
-    }
+  /* only set when timeout >= 0 (non-block)*/
+  if (0 <= timeout){      	
+     hysock_timeval_init ( time_sec, time_msec, &timeP);
+     result = hysock_select (0, fdset_read, fdset_write, NULL, &timeP);
+  }	
+  else{        
+     result = hysock_select (0, fdset_read, fdset_write, NULL,NULL);
+  }	
     
   if (0	< result){
 	  /*output the reslut to a int array*/
@@ -183,7 +165,7 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   hytimeval_struct timeP;
   hyfdset_t fdset_read;
   I_32 result = 0;
-  I_32 size = 0;
+
   if (0 <= uSecTime)
     hysock_timeval_init (0, uSecTime, &timeP);
 
@@ -192,17 +174,15 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK)
     {
       FD_SET (hysocketP->ipv4, &fdset_read->handle);
-      size =hysocketP->ipv4 + 1;
     }
   if (hysocketP->flags & SOCKET_IPV6_OPEN_MASK)
     {
       FD_SET (hysocketP->ipv6, &fdset_read->handle);
-      size =hysocketP->ipv6 + 1;
     }
   if (0 <= uSecTime)
-    result = hysock_select (size, fdset_read, NULL, NULL,&timeP);  
+    result = hysock_select (0, fdset_read, NULL, NULL,&timeP);  
   else
-    result = hysock_select (size, fdset_read, NULL, NULL,NULL);  
+    result = hysock_select (0, fdset_read, NULL, NULL,NULL);  
   hymem_free_memory(fdset_read);
   return result;
 }

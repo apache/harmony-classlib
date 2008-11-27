@@ -199,6 +199,16 @@ public class HashSetTest extends junit.framework.TestCase {
 		assertEquals("Cleared set returned non-zero size", 0, hs.size());
 	}
 	
+    /**
+     * @tests java.util.AbstractCollection#toString()
+     */
+    public void test_toString() {
+        HashSet s = new HashSet();
+        s.add(s);
+        String result = s.toString();
+        assertTrue("should contain self ref", result.indexOf("(this") > -1);
+    }
+   
 	/**
 	 * @tests java.util.HashSet#SerializationTest
 	 */

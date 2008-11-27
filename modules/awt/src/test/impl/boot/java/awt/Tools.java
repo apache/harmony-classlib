@@ -459,14 +459,14 @@ public abstract class Tools {
     public static class File {
 
         public static String changeExt(String file, String newExt) {
-            int k = file.lastIndexOf(".");
+            int k = file.lastIndexOf('.');
             return file.substring(0, k) + newExt;
         }
 
         public static String extractFileName(String file) {
             int k;
-            if ((k = file.lastIndexOf("/")) == -1) {
-                if ((k = file.lastIndexOf("\\")) == -1) {
+            if ((k = file.lastIndexOf('/')) == -1) {
+                if ((k = file.lastIndexOf('\\')) == -1) {
                     k = 1;
                 }
             }
@@ -474,7 +474,7 @@ public abstract class Tools {
         }
 
         public static String extractFileExt(String file) {
-            int k = file.lastIndexOf(".");
+            int k = file.lastIndexOf('.');
             return file.substring(k + 1);
         }
 

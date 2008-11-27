@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -111,12 +112,15 @@ public class Segment {
 
     private ClassFile buildClassFile(int classNum) throws Pack200Exception {
         ClassFile classFile = new ClassFile();
-        classFile.major = header.getDefaultClassMajorVersion(); // TODO If
-        // classVersionMajor[] use
-        // that instead
-        classFile.minor = header.getDefaultClassMinorVersion(); // TODO if
-        // classVersionMinor[] use
-        // that instead
+        int[] major = classBands.getClassVersionMajor();
+        int[] minor = classBands.getClassVersionMinor();
+        if(major != null) {
+            classFile.major = major[classNum];
+            classFile.minor = minor[classNum];
+        } else {
+            classFile.major = header.getDefaultClassMajorVersion();
+            classFile.minor = header.getDefaultClassMinorVersion();
+        }
         // build constant pool
         ClassConstantPool cp = classFile.pool;
         int fullNameIndexInCpClass = classBands.getClassThisInts()[classNum];
@@ -532,13 +536,20 @@ public class Segment {
 
         for (int i = 0; i < numberOfFiles; i++) {
             String name = fileName[i];
-            long modtime = archiveModtime + fileModtime[i];
+            // For Pack200 archives, modtime is in seconds
+            // from the epoch. JarEntries need it to be in
+            // milliseconds from the epoch.
+            // Even though we're adding two longs and multiplying
+            // by 1000, we won't overflow because both longs are
+            // always under 2^32.
+            long modtime = 1000 * (archiveModtime + fileModtime[i]);
             boolean deflate = fileDeflate[i];
 
             JarEntry entry = new JarEntry(name);
             if (deflate)
                 entry.setMethod(ZipEntry.DEFLATED);
-            entry.setTime(modtime);
+            // On Windows at least, need to correct for timezone
+            entry.setTime(modtime - TimeZone.getDefault().getRawOffset());
             out.putNextEntry(entry);
 
             if (fileIsClass[i]) {

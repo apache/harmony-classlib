@@ -23,7 +23,7 @@ package java.nio.charset;
 public class CoderMalfunctionError extends Error {
 
     /*
-     * This constant is used during deserialization to check the J2SE version
+     * This constant is used during deserialization to check the version
      * which created the serialized object.
      */
     private static final long serialVersionUID = -1151412348057794301L;

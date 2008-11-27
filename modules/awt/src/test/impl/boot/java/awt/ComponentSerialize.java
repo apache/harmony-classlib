@@ -91,6 +91,7 @@ public class ComponentSerialize extends TestCase {
     private Component writeAndRead(Component original)
                 throws IOException, ClassNotFoundException {
         File tempFile = File.createTempFile("save", ".object");
+        tempFile.deleteOnExit();
 
         FileOutputStream fos = new FileOutputStream(tempFile);
 
@@ -103,7 +104,8 @@ public class ComponentSerialize extends TestCase {
         ObjectInputStream ois = new ObjectInputStream(fis);
 
         Component restored = (Component)ois.readObject();
-        tempFile.delete();
+        ois.close();
+
         return restored;
     }
 }

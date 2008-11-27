@@ -47,8 +47,8 @@ public class BitSetTest extends junit.framework.TestCase {
         // Default size for a BitSet should be 64 elements;
 
         assertEquals("Created BitSet of incorrect size", 128, bs.size());
-        assertTrue("New BitSet had invalid string representation: "
-                + bs.toString(), bs.toString().equals("{}"));
+        assertEquals("New BitSet had invalid string representation: "
+                + bs.toString(), "{}", bs.toString());
 
         // All BitSets are created with elements of multiples of 64
 
@@ -77,7 +77,7 @@ public class BitSetTest extends junit.framework.TestCase {
         // Test for method java.lang.Object java.util.BitSet.clone()
         BitSet bs;
         bs = (BitSet) eightbs.clone();
-        assertTrue("Clone failed to return equal BitSet", eightbs.equals(bs));
+        assertEquals("clone failed to return equal BitSet", bs, eightbs);
 
     }
 
@@ -89,15 +89,15 @@ public class BitSetTest extends junit.framework.TestCase {
         BitSet bs;
 
         bs = (BitSet) eightbs.clone();
-        assertTrue("Same BitSet returned false", eightbs.equals(eightbs));
-        assertTrue("Identical BitSets returned false", eightbs.equals(bs));
+        assertEquals("Same BitSet returned false", eightbs, eightbs);
+        assertEquals("Identical BitSet returned false", bs, eightbs);
         bs.clear(6);
-        assertTrue("Different BitSets returned true", !eightbs.equals(bs));
+        assertFalse("Different BitSets returned true", eightbs.equals(bs));
         // Grow the BitSet
         bs = (BitSet) eightbs.clone();
         bs.set(128);
-        assertTrue("Different sized BitSet with higher bit set returned true",
-                !eightbs.equals(bs));
+        assertFalse("Different sized BitSet with higher bit set returned true",
+                eightbs.equals(bs));
         bs.clear(128);
         assertTrue(
                 "Different sized BitSet with higher bits not set returned false",
@@ -112,12 +112,10 @@ public class BitSetTest extends junit.framework.TestCase {
         BitSet bs = (BitSet) eightbs.clone();
         bs.clear(2);
         bs.clear(6);
-        assertTrue("BitSet returns wrong hash value: " + bs.hashCode(), bs
-                .hashCode() == 1129);
+        assertEquals("BitSet returns wrong hash value", 1129, bs.hashCode());
         bs.set(10);
         bs.clear(3);
-        assertTrue("BitSet returns wrong hash value: " + bs.hashCode(), bs
-                .hashCode() == 97);
+        assertEquals("BitSet returns wrong hash value", 97, bs.hashCode());
     }
 
     /**
@@ -147,7 +145,7 @@ public class BitSetTest extends junit.framework.TestCase {
         // Test for method void java.util.BitSet.clear(int)
 
         eightbs.clear(7);
-        assertTrue("Failed to clear bit", !eightbs.get(7));
+        assertFalse("Failed to clear bit", eightbs.get(7));
 
         // Check to see all other bits are still set
         for (int i = 0; i < 7; i++) {
@@ -155,7 +153,7 @@ public class BitSetTest extends junit.framework.TestCase {
         }
 
         eightbs.clear(165);
-        assertTrue("Failed to clear bit", !eightbs.get(165));
+        assertFalse("Failed to clear bit", eightbs.get(165));
         // Try out of range
         try {
             eightbs.clear(-1);
@@ -165,9 +163,31 @@ public class BitSetTest extends junit.framework.TestCase {
         }
 
         BitSet bs = new BitSet(0);
-        assertTrue("Test1: Wrong length, " + bs.size(), bs.length() == 0);
+        assertEquals("Test1: Wrong length,", 0, bs.length());
+        assertEquals("Test1: Wrong size,", 0, bs.size());
         bs.clear(0);
-        assertTrue("Test2: Wrong length" + bs.size(), bs.length() == 0);
+        assertEquals("Test2: Wrong length,", 0, bs.length());
+        assertEquals("Test2: Wrong size,", 0, bs.size());
+
+        bs.clear(60);
+        assertEquals("Test3: Wrong length,", 0, bs.length());
+        assertEquals("Test3: Wrong size,", 0, bs.size());
+
+        bs.clear(120);
+        assertEquals("Test4: Wrong size,", 0, bs.size());
+        assertEquals("Test4: Wrong length,", 0, bs.length());
+
+        bs.set(25);
+        assertEquals("Test5: Wrong size,", 64, bs.size());
+        assertEquals("Test5: Wrong length,", 26, bs.length());
+
+        bs.clear(80);
+        assertEquals("Test6: Wrong size,", 64, bs.size());
+        assertEquals("Test6: Wrong length,", 26, bs.length());
+
+        bs.clear(25);
+        assertEquals("Test7: Wrong size,", 64, bs.size());
+        assertEquals("Test7: Wrong length,", 0, bs.length());
 
         bs = new BitSet();
         try {
@@ -181,7 +201,14 @@ public class BitSetTest extends junit.framework.TestCase {
     /**
      * @tests java.util.BitSet#clear(int, int)
      */
-    public void test_clearII() {
+    public void test_clearII() throws IndexOutOfBoundsException {
+        // Regression for HARMONY-98
+        BitSet bitset = new BitSet();
+        for (int i = 0; i < 20; i++) {
+            bitset.set(i);
+        }
+        bitset.clear(10, 10);
+
         // Test for method void java.util.BitSet.clear(int, int)
         // pos1 and pos2 are in the same bitset element
         BitSet bs = new BitSet(16);
@@ -192,25 +219,25 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.clear(7, 11);
         for (int i = 0; i < 7; i++) {
             if (i == 5) {
-                assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
                 assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
             }
         }
         for (int i = 7; i < 11; i++) {
-            assertTrue("Failed to clear bit " + i, !bs.get(i));
+            assertFalse("Failed to clear bit " + i, bs.get(i));
         }
 
         for (int i = 11; i < initialSize; i++) {
             if (i == 15) {
-                assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
                 assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
             }
         }
 
         for (int i = initialSize; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
         }
 
         // pos1 and pos2 is in the same bitset element, boundary testing
@@ -223,7 +250,7 @@ public class BitSetTest extends junit.framework.TestCase {
             assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
         }
         for (int i = 7; i < 64; i++) {
-            assertTrue("Failed to clear bit " + i, !bs.get(i));
+            assertFalse("Failed to clear bit " + i, bs.get(i));
         }
         for (int i = 64; i < bs.size(); i++) {
             assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
@@ -234,10 +261,10 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(0, initialSize);
         bs.clear(0, 64);
         for (int i = 0; i < 64; i++) {
-            assertTrue("Failed to clear bit " + i, !bs.get(i));
+            assertFalse("Failed to clear bit " + i, bs.get(i));
         }
         for (int i = 64; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
         }
 
         bs = new BitSet(32);
@@ -245,7 +272,7 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(0, initialSize);
         bs.clear(0, 65);
         for (int i = 0; i < 65; i++) {
-            assertTrue("Failed to clear bit " + i, !bs.get(i));
+            assertFalse("Failed to clear bit " + i, bs.get(i));
         }
         for (int i = 65; i < bs.size(); i++) {
             assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
@@ -260,23 +287,23 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.clear(9, 74);
         for (int i = 0; i < 9; i++) {
             if (i == 7) {
-                assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
                 assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
             }
         }
         for (int i = 9; i < 74; i++) {
-            assertTrue("Failed to clear bit " + i, !bs.get(i));
+            assertFalse("Failed to clear bit " + i, bs.get(i));
         }
         for (int i = 74; i < initialSize; i++) {
             if (i == 110) {
-                assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
                 assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
             }
         }
         for (int i = initialSize; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
         }
 
         // pos1 and pos2 are in two non-sequential bitset elements
@@ -287,14 +314,14 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.clear(9, 219);
         for (int i = 0; i < 9; i++) {
             if (i == 7) {
-                assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
                 assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
             }
         }
 
         for (int i = 9; i < 219; i++) {
-            assertTrue("failed to clear bit " + i, !bs.get(i));
+            assertFalse("failed to clear bit " + i, bs.get(i));
         }
 
         for (int i = 219; i < 255; i++) {
@@ -311,19 +338,61 @@ public class BitSetTest extends junit.framework.TestCase {
             bs.clear(-1, 3);
             fail("Test1: Attempt to flip with  negative index failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // excepted
         }
 
         try {
             bs.clear(2, -1);
             fail("Test2: Attempt to flip with negative index failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // excepted
         }
 
+        bs.set(2, 4);
+        bs.clear(2, 2);
+        assertTrue("Bit got cleared incorrectly ", bs.get(2));
         try {
             bs.clear(4, 2);
             fail("Test4: Attempt to flip with illegal args failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // excepted
         }
+
+        bs = new BitSet(0);
+        assertEquals("Test1: Wrong length,", 0, bs.length());
+        assertEquals("Test1: Wrong size,", 0, bs.size());
+
+        bs.clear(0, 2);
+        assertEquals("Test2: Wrong length,", 0, bs.length());
+        assertEquals("Test2: Wrong size,", 0, bs.size());
+
+        bs.clear(60, 64);
+        assertEquals("Test3: Wrong length,", 0, bs.length());
+        assertEquals("Test3: Wrong size,", 0, bs.size());
+
+        bs.clear(64, 120);
+        assertEquals("Test4: Wrong length,", 0, bs.length());
+        assertEquals("Test4: Wrong size,", 0, bs.size());
+
+        bs.set(25);
+        assertEquals("Test5: Wrong length,", 26, bs.length());
+        assertEquals("Test5: Wrong size,", 64, bs.size());
+
+        bs.clear(60, 64);
+        assertEquals("Test6: Wrong length,", 26, bs.length());
+        assertEquals("Test6: Wrong size,", 64, bs.size());
+
+        bs.clear(64, 120);
+        assertEquals("Test7: Wrong size,", 64, bs.size());
+        assertEquals("Test7: Wrong length,", 26, bs.length());
+
+        bs.clear(80);
+        assertEquals("Test8: Wrong size,", 64, bs.size());
+        assertEquals("Test8: Wrong length,", 26, bs.length());
+
+        bs.clear(25);
+        assertEquals("Test9: Wrong size,", 64, bs.size());
+        assertEquals("Test9: Wrong length,", 0, bs.length());
     }
 
     /**
@@ -334,9 +403,9 @@ public class BitSetTest extends junit.framework.TestCase {
 
         BitSet bs = new BitSet();
         bs.set(8);
-        assertTrue("Get returned true for index out of range", !eightbs.get(99));
+        assertFalse("Get returned true for index out of range", eightbs.get(99));
         assertTrue("Get returned false for set value", eightbs.get(3));
-        assertTrue("Get returned true for a non set value", !bs.get(0));
+        assertFalse("Get returned true for a non set value", bs.get(0));
 
         try {
             bs.get(-1);
@@ -353,6 +422,18 @@ public class BitSetTest extends junit.framework.TestCase {
         assertTrue("Test highest bit", bs.get(63));
 
         bs = new BitSet();
+        assertEquals("Test1: Wrong length,", 0, bs.length());
+        assertEquals("Test1: Wrong size,", 0, bs.size());
+
+        bs.get(2);
+        assertEquals("Test2: Wrong length,", 0, bs.length());
+        assertEquals("Test2: Wrong size,", 0, bs.size());
+
+        bs.get(70);
+        assertEquals("Test3: Wrong length,", 0, bs.length());
+        assertEquals("Test3: Wrong size,", 0, bs.size());
+
+        bs = new BitSet();
         try {
             bs.get(Integer.MIN_VALUE);
             fail("Should throw IndexOutOfBoundsException");
@@ -365,6 +446,8 @@ public class BitSetTest extends junit.framework.TestCase {
      * @tests java.util.BitSet#get(int, int)
      */
     public void test_getII() {
+        BitSet bitset = new BitSet(30);
+        bitset.get(3, 3);
         // Test for method boolean java.util.BitSet.get(int, int)
         BitSet bs, resultbs, correctbs;
         bs = new BitSet(512);
@@ -378,15 +461,13 @@ public class BitSetTest extends junit.framework.TestCase {
         resultbs = bs.get(3, 6);
         correctbs = new BitSet(3);
         correctbs.set(0, 3);
-        assertTrue("Test1: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test1: Returned incorrect BitSet", correctbs, resultbs);
 
         // pos1 and pos2 are in the same bitset element, at index 1
         resultbs = bs.get(100, 125);
         correctbs = new BitSet(25);
         correctbs.set(21);
-        assertTrue("Test2: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test2: Returned incorrect BitSet", correctbs, resultbs);
 
         // pos1 in bitset element at index 0, and pos2 in bitset element at
         // index 1
@@ -395,8 +476,7 @@ public class BitSetTest extends junit.framework.TestCase {
         correctbs.set(0, 5);
         correctbs.set(45, 60);
         correctbs.set(121 - 15);
-        assertTrue("Test3: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test3: Returned incorrect BitSet", correctbs, resultbs);
 
         // pos1 in bitset element at index 1, and pos2 in bitset element at
         // index 2
@@ -405,8 +485,7 @@ public class BitSetTest extends junit.framework.TestCase {
         correctbs.set(0, 5);
         correctbs.set(51);
         correctbs.set(60, 70);
-        assertTrue("Test4: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test4: Returned incorrect BitSet", correctbs, resultbs);
 
         // pos1 in bitset element at index 0, and pos2 in bitset element at
         // index 2
@@ -417,8 +496,7 @@ public class BitSetTest extends junit.framework.TestCase {
         correctbs.set(55, 70);
         correctbs.set(116);
         correctbs.set(125, 135);
-        assertTrue("Test5: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test5: Returned incorrect BitSet", correctbs, resultbs);
 
         // pos1 in bitset element at index 0, and pos2 in bitset element at
         // index 3
@@ -429,10 +507,9 @@ public class BitSetTest extends junit.framework.TestCase {
         correctbs.set(55, 70);
         correctbs.set(116);
         correctbs.set(125, 135);
-        assertTrue("Test6: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test6: Returned incorrect BitSet", correctbs, resultbs);
 
-        assertTrue("equality principle", bs.equals(bs.get(0, bs.size())));
+        assertEquals("equality principle 1 ", bs.get(0, bs.size()), bs);
 
         // more tests
         BitSet bs2 = new BitSet(129);
@@ -444,8 +521,7 @@ public class BitSetTest extends junit.framework.TestCase {
         correctbs.set(0, 19);
         correctbs.set(61, 64);
         correctbs.set(120, 122);
-        assertTrue("Test6: Returned incorrect BitSet", resultbs
-                .equals(correctbs));
+        assertEquals("Test7: Returned incorrect BitSet", correctbs, resultbs);
 
         // equality principle with some boundary conditions
         bs2 = new BitSet(128);
@@ -463,7 +539,266 @@ public class BitSetTest extends junit.framework.TestCase {
         bs2.set(127);
         bs2.flip(0, 128);
         resultbs = bs2.get(0, bs.size());
-        assertTrue("equality principle", bs2.equals(resultbs));
+        assertEquals("equality principle 3 ", resultbs, bs2);
+
+        bs = new BitSet(0);
+        assertEquals("Test1: Wrong length,", 0, bs.length());
+        assertEquals("Test1: Wrong size,", 0, bs.size());
+
+        bs.get(0, 2);
+        assertEquals("Test2: Wrong length,", 0, bs.length());
+        assertEquals("Test2: Wrong size,", 0, bs.size());
+
+        bs.get(60, 64);
+        assertEquals("Test3: Wrong length,", 0, bs.length());
+        assertEquals("Test3: Wrong size,", 0, bs.size());
+
+        bs.get(64, 120);
+        assertEquals("Test4: Wrong length,", 0, bs.length());
+        assertEquals("Test4: Wrong size,", 0, bs.size());
+
+        bs.set(25);
+        assertEquals("Test5: Wrong length,", 26, bs.length());
+        assertEquals("Test5: Wrong size,", 64, bs.size());
+
+        bs.get(60, 64);
+        assertEquals("Test6: Wrong length,", 26, bs.length());
+        assertEquals("Test6: Wrong size,", 64, bs.size());
+
+        bs.get(64, 120);
+        assertEquals("Test7: Wrong size,", 64, bs.size());
+        assertEquals("Test7: Wrong length,", 26, bs.length());
+
+        bs.get(80);
+        assertEquals("Test8: Wrong size,", 64, bs.size());
+        assertEquals("Test8: Wrong length,", 26, bs.length());
+
+        bs.get(25);
+        assertEquals("Test9: Wrong size,", 64, bs.size());
+        assertEquals("Test9: Wrong length,", 26, bs.length());
+
+    }
+
+    /**
+     * @tests java.util.BitSet#flip(int)
+     */
+    public void test_flipI() {
+        // Test for method void java.util.BitSet.flip(int)
+        BitSet bs = new BitSet();
+        bs.clear(8);
+        bs.clear(9);
+        bs.set(10);
+        bs.flip(9);
+        assertFalse("Failed to flip bit", bs.get(8));
+        assertTrue("Failed to flip bit", bs.get(9));
+        assertTrue("Failed to flip bit", bs.get(10));
+
+        bs.set(8);
+        bs.set(9);
+        bs.clear(10);
+        bs.flip(9);
+        assertTrue("Failed to flip bit", bs.get(8));
+        assertFalse("Failed to flip bit", bs.get(9));
+        assertFalse("Failed to flip bit", bs.get(10));
+
+        try {
+            bs.flip(-1);
+            fail("Attempt to flip at negative index failed to generate exception");
+        } catch (IndexOutOfBoundsException e) {
+            // Correct behaviour
+        }
+
+        // Try setting a bit on a 64 boundary
+        bs.flip(128);
+        assertEquals("Failed to grow BitSet", 192, bs.size());
+        assertTrue("Failed to flip bit", bs.get(128));
+
+        bs = new BitSet(64);
+        for (int i = bs.size(); --i >= 0;) {
+            bs.flip(i);
+            assertTrue("Test1: Incorrectly flipped bit" + i, bs.get(i));
+            assertEquals("Incorrect length", i+1, bs.length());
+            for (int j = bs.size(); --j > i;) {
+                assertTrue("Test2: Incorrectly flipped bit" + j, !bs.get(j));
+            }
+            for (int j = i; --j >= 0;) {
+                assertTrue("Test3: Incorrectly flipped bit" + j, !bs.get(j));
+            }
+            bs.flip(i);
+        }
+
+        BitSet bs0 = new BitSet(0);
+        assertEquals("Test1: Wrong size", 0, bs0.size());
+        assertEquals("Test1: Wrong length", 0, bs0.length());
+
+        bs0.flip(0);
+        assertEquals("Test2: Wrong size", 64, bs0.size());
+        assertEquals("Test2: Wrong length", 1, bs0.length());
+
+        bs0.flip(63);
+        assertEquals("Test3: Wrong size", 64, bs0.size());
+        assertEquals("Test3: Wrong length", 64, bs0.length());
+
+        eightbs.flip(7);
+        assertTrue("Failed to flip bit 7", !eightbs.get(7));
+
+        // Check to see all other bits are still set
+        for (int i = 0; i < 7; i++)
+            assertTrue("Flip flipped incorrect bits", eightbs.get(i));
+
+        eightbs.flip(127);
+        assertTrue("Failed to flip bit 127", eightbs.get(127));
+
+        eightbs.flip(127);
+        assertTrue("Failed to flip bit 127", !eightbs.get(127));
+    }
+
+    /**
+     * @tests java.util.BitSet#clear(int, int)
+     */
+    public void test_flipII() {
+        BitSet bitset = new BitSet();
+        for (int i = 0; i < 20; i++) {
+            bitset.set(i);
+        }
+        bitset.flip(10, 10);
+               
+        // Test for method void java.util.BitSet.flip(int, int)
+        // pos1 and pos2 are in the same bitset element
+        BitSet bs = new BitSet(16);
+        bs.set(7);
+        bs.set(10);
+        bs.flip(7, 11);
+        for (int i = 0; i < 7; i++) {
+            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+        }
+        assertFalse("Failed to flip bit 7", bs.get(7));
+        assertTrue("Failed to flip bit 8", bs.get(8));
+        assertTrue("Failed to flip bit 9", bs.get(9));
+        assertFalse("Failed to flip bit 10", bs.get(10));
+        for (int i = 11; i < bs.size(); i++) {
+            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+        }
+
+        // pos1 and pos2 is in the same bitset element, boundry testing
+        bs = new BitSet(16);
+        bs.set(7);
+        bs.set(10);
+        bs.flip(7, 64);
+        assertEquals("Failed to grow BitSet", 64, bs.size());
+        for (int i = 0; i < 7; i++) {
+            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+        }
+        assertFalse("Failed to flip bit 7", bs.get(7));
+        assertTrue("Failed to flip bit 8", bs.get(8));
+        assertTrue("Failed to flip bit 9", bs.get(9));
+        assertFalse("Failed to flip bit 10", bs.get(10));
+        for (int i = 11; i < 64; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Shouldn't have flipped bit 64", bs.get(64));
+
+        // more boundary testing
+        bs = new BitSet(32);
+        bs.flip(0, 64);
+        for (int i = 0; i < 64; i++) {
+            assertTrue("Failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Shouldn't have flipped bit 64", bs.get(64));
+
+        bs = new BitSet(32);
+        bs.flip(0, 65);
+        for (int i = 0; i < 65; i++) {
+            assertTrue("Failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Shouldn't have flipped bit 65", bs.get(65));
+
+        // pos1 and pos2 are in two sequential bitset elements
+        bs = new BitSet(128);
+        bs.set(7);
+        bs.set(10);
+        bs.set(72);
+        bs.set(110);
+        bs.flip(9, 74);
+        for (int i = 0; i < 7; i++) {
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
+        }
+        assertTrue("Shouldn't have flipped bit 7", bs.get(7));
+        assertFalse("Shouldn't have flipped bit 8", bs.get(8));
+        assertTrue("Failed to flip bit 9", bs.get(9));
+        assertFalse("Failed to flip bit 10", bs.get(10));
+        for (int i = 11; i < 72; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Failed to flip bit 72", bs.get(72));
+        assertTrue("Failed to flip bit 73", bs.get(73));
+        for (int i = 74; i < 110; i++) {
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
+        }
+        assertTrue("Shouldn't have flipped bit 110", bs.get(110));
+        for (int i = 111; i < bs.size(); i++) {
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
+        }
+
+        // pos1 and pos2 are in two non-sequential bitset elements
+        bs = new BitSet(256);
+        bs.set(7);
+        bs.set(10);
+        bs.set(72);
+        bs.set(110);
+        bs.set(181);
+        bs.set(220);
+        bs.flip(9, 219);
+        for (int i = 0; i < 7; i++) {
+            assertFalse("Shouldn't have flipped bit " + i, bs.get(i));
+        }
+        assertTrue("Shouldn't have flipped bit 7", bs.get(7));
+        assertFalse("Shouldn't have flipped bit 8", bs.get(8));
+        assertTrue("Failed to flip bit 9", bs.get(9));
+        assertFalse("Failed to flip bit 10", bs.get(10));
+        for (int i = 11; i < 72; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Failed to flip bit 72", bs.get(72));
+        for (int i = 73; i < 110; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Failed to flip bit 110", bs.get(110));
+        for (int i = 111; i < 181; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Failed to flip bit 181", bs.get(181));
+        for (int i = 182; i < 219; i++) {
+            assertTrue("failed to flip bit " + i, bs.get(i));
+        }
+        assertFalse("Shouldn't have flipped bit 219", bs.get(219));
+        assertTrue("Shouldn't have flipped bit 220", bs.get(220));
+        for (int i = 221; i < bs.size(); i++) {
+            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
+        }
+
+        // test illegal args
+        bs = new BitSet(10);
+        try {
+            bs.flip(-1, 3);
+            fail("Test1: Attempt to flip with  negative index failed to generate exception");
+        } catch (IndexOutOfBoundsException e) {
+            // correct behavior
+        }
+
+        try {
+            bs.flip(2, -1);
+            fail("Test2: Attempt to flip with negative index failed to generate exception");
+        } catch (IndexOutOfBoundsException e) {
+            // correct behavior
+        }
+
+        try {
+            bs.flip(4, 2);
+            fail("Test4: Attempt to flip with illegal args failed to generate exception");
+        } catch (IndexOutOfBoundsException e) {
+            // correct behavior
+        }
     }
 
     /**
@@ -492,20 +827,18 @@ public class BitSetTest extends junit.framework.TestCase {
         for (int i = bs.size(); --i >= 0;) {
             bs.set(i);
             assertTrue("Incorrectly set", bs.get(i));
-            assertTrue("Incorrect length", bs.length() == (i + 1));
-            for (int j = bs.size(); --j > i;) {
-                assertTrue("Incorrectly set bit " + j, !bs.get(j));
-            }
-            for (int j = i; --j >= 0;) {
-                assertTrue("Incorrectly set bit " + j, !bs.get(j));
-            }
+            assertEquals("Incorrect length", i+1, bs.length());
+            for (int j = bs.size(); --j > i;)
+                assertFalse("Incorrectly set bit " + j, bs.get(j));
+            for (int j = i; --j >= 0;)
+                assertFalse("Incorrectly set bit " + j, bs.get(j));
             bs.clear(i);
         }
 
         bs = new BitSet(0);
-        assertTrue("Test1: Wrong length, " + bs.size(), bs.length() == 0);
+        assertEquals("Test1: Wrong length", 0, bs.length());
         bs.set(0);
-        assertTrue("Test2: Wrong length" + bs.size(), bs.length() == 1);
+        assertEquals("Test2: Wrong length", 1, bs.length());
     }
 
     /**
@@ -514,7 +847,7 @@ public class BitSetTest extends junit.framework.TestCase {
     public void test_setIZ() {
         // Test for method void java.util.BitSet.set(int, boolean)
         eightbs.set(5, false);
-        assertTrue("Should have set bit 5 to true", !eightbs.get(5));
+        assertFalse("Should have set bit 5 to true", eightbs.get(5));
 
         eightbs.set(5, true);
         assertTrue("Should have set bit 5 to false", eightbs.get(5));
@@ -531,7 +864,10 @@ public class BitSetTest extends junit.framework.TestCase {
     /**
      * @tests java.util.BitSet#set(int, int)
      */
-    public void test_setII() {
+    public void test_setII() throws IndexOutOfBoundsException {
+        BitSet bitset = new BitSet(30);
+        bitset.set(29, 29);
+        
         // Test for method void java.util.BitSet.set(int, int)
         // pos1 and pos2 are in the same bitset element
         BitSet bs = new BitSet(16);
@@ -539,11 +875,10 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(15);
         bs.set(7, 11);
         for (int i = 0; i < 7; i++) {
-            if (i == 5) {
+            if (i == 5)
                 assertTrue("Shouldn't have flipped bit " + i, bs.get(i));
-            } else {
-                assertTrue("Shouldn't have set bit " + i, !bs.get(i));
-            }
+            else
+                assertFalse("Shouldn't have set bit " + i, bs.get(i));
         }
         for (int i = 7; i < 11; i++) {
             assertTrue("Failed to set bit " + i, bs.get(i));
@@ -561,12 +896,12 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(7, 64);
         assertEquals("Failed to grow BitSet", 64, bs.size());
         for (int i = 0; i < 7; i++) {
-            assertTrue("Shouldn't have set bit " + i, !bs.get(i));
+            assertFalse("Shouldn't have set bit " + i, bs.get(i));
         }
         for (int i = 7; i < 64; i++) {
             assertTrue("Failed to set bit " + i, bs.get(i));
         }
-        assertTrue("Shouldn't have set bit 64", !bs.get(64));
+        assertFalse("Shouldn't have set bit 64", bs.get(64));
 
         // more boundary testing
         bs = new BitSet(32);
@@ -592,7 +927,7 @@ public class BitSetTest extends junit.framework.TestCase {
             if (i == 7) {
                 assertTrue("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
-                assertTrue("Shouldn't have set bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have set bit " + i, bs.get(i));
             }
         }
         for (int i = 9; i < 74; i++) {
@@ -602,7 +937,7 @@ public class BitSetTest extends junit.framework.TestCase {
             if (i == 110) {
                 assertTrue("Shouldn't have flipped bit " + i, bs.get(i));
             } else {
-                assertTrue("Shouldn't have set bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have set bit " + i, bs.get(i));
             }
         }
 
@@ -615,7 +950,7 @@ public class BitSetTest extends junit.framework.TestCase {
             if (i == 7) {
                 assertTrue("Shouldn't have set flipped " + i, bs.get(i));
             } else {
-                assertTrue("Shouldn't have set bit " + i, !bs.get(i));
+                assertFalse("Shouldn't have set bit " + i, bs.get(i));
             }
         }
 
@@ -635,18 +970,24 @@ public class BitSetTest extends junit.framework.TestCase {
             bs.set(-1, 3);
             fail("Test1: Attempt to flip with  negative index failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // Correct behavior
         }
 
         try {
             bs.set(2, -1);
             fail("Test2: Attempt to flip with negative index failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // Correct behavior
         }
+
+        bs.set(2, 2);
+        assertFalse("Bit got set incorrectly ", bs.get(2));
 
         try {
             bs.set(4, 2);
             fail("Test4: Attempt to flip with illegal args failed to generate exception");
         } catch (IndexOutOfBoundsException e) {
+            // Correct behavior
         }
     }
 
@@ -663,220 +1004,6 @@ public class BitSetTest extends junit.framework.TestCase {
         assertTrue("Should have set bits 3, 4, and 5 to true", eightbs.get(3)
                 && eightbs.get(4) && eightbs.get(5));
 
-    }
-
-    /**
-     * @tests java.util.BitSet#flip(int)
-     */
-    public void test_flipI() {
-        // Test for method void java.util.BitSet.flip(int)
-        BitSet bs = new BitSet();
-        bs.clear(8);
-        bs.clear(9);
-        bs.set(10);
-        bs.flip(9);
-        assertTrue("Failed to flip bit", !bs.get(8));
-        assertTrue("Failed to flip bit", bs.get(9));
-        assertTrue("Failed to flip bit", bs.get(10));
-
-        bs.set(8);
-        bs.set(9);
-        bs.clear(10);
-        bs.flip(9);
-        assertTrue("Failed to flip bit", bs.get(8));
-        assertTrue("Failed to flip bit", !bs.get(9));
-        assertTrue("Failed to flip bit", !bs.get(10));
-
-        try {
-            bs.flip(-1);
-            fail("Attempt to flip at negative index failed to generate exception");
-        } catch (IndexOutOfBoundsException e) {
-            // Correct behaviour
-        }
-
-        // Try setting a bit on a 64 boundary
-        bs.flip(128);
-        assertEquals("Failed to grow BitSet", 192, bs.size());
-        assertTrue("Failed to flip bit", bs.get(128));
-
-        bs = new BitSet(64);
-        for (int i = bs.size(); --i >= 0;) {
-            bs.flip(i);
-            assertTrue("Test1: Incorrectly flipped bit" + i, bs.get(i));
-            assertTrue("Incorrect length", bs.length() == (i + 1));
-            for (int j = bs.size(); --j > i;) {
-                assertTrue("Test2: Incorrectly flipped bit" + j, !bs.get(j));
-            }
-            for (int j = i; --j >= 0;) {
-                assertTrue("Test3: Incorrectly flipped bit" + j, !bs.get(j));
-            }
-            bs.flip(i);
-        }
-
-        BitSet bs0 = new BitSet(0);
-        assertEquals("Test1: Wrong size", 0, bs0.size());
-        assertEquals("Test1: Wrong length", 0, bs0.length());
-
-        bs0.flip(0);
-        assertEquals("Test2: Wrong size", 64, bs0.size());
-        assertEquals("Test2: Wrong length", 1, bs0.length());
-
-        bs0.flip(63);
-        assertEquals("Test3: Wrong size", 64, bs0.size());
-        assertEquals("Test3: Wrong length", 64, bs0.length());
-
-        eightbs.flip(7);
-        assertTrue("Failed to flip bit 7", !eightbs.get(7));
-
-        // Check to see all other bits are still set
-        for (int i = 0; i < 7; i++) {
-            assertTrue("Flip flipped incorrect bits", eightbs.get(i));
-        }
-
-        eightbs.flip(127);
-        assertTrue("Failed to flip bit 127", eightbs.get(127));
-
-        eightbs.flip(127);
-        assertTrue("Failed to flip bit 127", !eightbs.get(127));
-    }
-
-    /**
-     * @tests java.util.BitSet#flip(int, int)
-     */
-    public void test_flipII() {
-        // Test for method void java.util.BitSet.flip(int, int)
-        // pos1 and pos2 are in the same bitset element
-        BitSet bs = new BitSet(16);
-        bs.set(7);
-        bs.set(10);
-        bs.flip(7, 11);
-        for (int i = 0; i < 7; i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-        assertTrue("Failed to flip bit 7", !bs.get(7));
-        assertTrue("Failed to flip bit 8", bs.get(8));
-        assertTrue("Failed to flip bit 9", bs.get(9));
-        assertTrue("Failed to flip bit 10", !bs.get(10));
-        for (int i = 11; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-
-        // pos1 and pos2 is in the same bitset element, boundary testing
-        bs = new BitSet(16);
-        bs.set(7);
-        bs.set(10);
-        bs.flip(7, 64);
-        assertEquals("Failed to grow BitSet", 64, bs.size());
-        for (int i = 0; i < 7; i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-        assertTrue("Failed to flip bit 7", !bs.get(7));
-        assertTrue("Failed to flip bit 8", bs.get(8));
-        assertTrue("Failed to flip bit 9", bs.get(9));
-        assertTrue("Failed to flip bit 10", !bs.get(10));
-        for (int i = 11; i < 64; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 64", !bs.get(64));
-
-        // more boundary testing
-        bs = new BitSet(32);
-        bs.flip(0, 64);
-        for (int i = 0; i < 64; i++) {
-            assertTrue("Failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 64", !bs.get(64));
-
-        bs = new BitSet(32);
-        bs.flip(0, 65);
-        for (int i = 0; i < 65; i++) {
-            assertTrue("Failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 65", !bs.get(65));
-
-        // pos1 and pos2 are in two sequential bitset elements
-        bs = new BitSet(128);
-        bs.set(7);
-        bs.set(10);
-        bs.set(72);
-        bs.set(110);
-        bs.flip(9, 74);
-        for (int i = 0; i < 7; i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 7", bs.get(7));
-        assertTrue("Shouldn't have flipped bit 8", !bs.get(8));
-        assertTrue("Failed to flip bit 9", bs.get(9));
-        assertTrue("Failed to flip bit 10", !bs.get(10));
-        for (int i = 11; i < 72; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Failed to flip bit 72", !bs.get(72));
-        assertTrue("Failed to flip bit 73", bs.get(73));
-        for (int i = 74; i < 110; i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 110", bs.get(110));
-        for (int i = 111; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-
-        // pos1 and pos2 are in two non-sequential bitset elements
-        bs = new BitSet(256);
-        bs.set(7);
-        bs.set(10);
-        bs.set(72);
-        bs.set(110);
-        bs.set(181);
-        bs.set(220);
-        bs.flip(9, 219);
-        for (int i = 0; i < 7; i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 7", bs.get(7));
-        assertTrue("Shouldn't have flipped bit 8", !bs.get(8));
-        assertTrue("Failed to flip bit 9", bs.get(9));
-        assertTrue("Failed to flip bit 10", !bs.get(10));
-        for (int i = 11; i < 72; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Failed to flip bit 72", !bs.get(72));
-        for (int i = 73; i < 110; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Failed to flip bit 110", !bs.get(110));
-        for (int i = 111; i < 181; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Failed to flip bit 181", !bs.get(181));
-        for (int i = 182; i < 219; i++) {
-            assertTrue("failed to flip bit " + i, bs.get(i));
-        }
-        assertTrue("Shouldn't have flipped bit 219", !bs.get(219));
-        assertTrue("Shouldn't have flipped bit 220", bs.get(220));
-        for (int i = 221; i < bs.size(); i++) {
-            assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
-        }
-
-        // test illegal args
-        bs = new BitSet(10);
-        try {
-            bs.flip(-1, 3);
-            fail("Test1: Attempt to flip with  negative index failed to generate exception");
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            bs.flip(2, -1);
-            fail("Test2: Attempt to flip with negative index failed to generate exception");
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        try {
-            bs.flip(4, 2);
-            fail("Test4: Attempt to flip with illegal args failed to generate exception");
-        } catch (IndexOutOfBoundsException e) {
-        }
     }
 
     /**
@@ -997,14 +1124,14 @@ public class BitSetTest extends junit.framework.TestCase {
             bs.set(i);
         }
         eightbs.and(bs);
-        assertTrue("AND failed to clear bits", !eightbs.equals(bs));
+        assertFalse("AND failed to clear bits", eightbs.equals(bs));
         eightbs.set(3);
         bs.set(3);
         eightbs.and(bs);
         assertTrue("AND failed to maintain set bits", bs.get(3));
         bs.and(eightbs);
         for (int i = 64; i < 128; i++) {
-            assertTrue("Failed to clear extra bits in the receiver BitSet", !bs
+            assertFalse("Failed to clear extra bits in the receiver BitSet", bs
                     .get(i));
         }
 
@@ -1027,8 +1154,8 @@ public class BitSetTest extends junit.framework.TestCase {
         bs2.set(2);
         bs2.set(3);
         bs.andNot(bs2);
-        assertEquals("Incorrect bitset after andNot", "{0, 1, 4, 6, 7}", bs
-                .toString());
+        assertEquals("Incorrect bitset after andNot",
+                     "{0, 1, 4, 6, 7}", bs.toString());
 
         bs = new BitSet(0);
         bs.andNot(bs2);
@@ -1083,7 +1210,7 @@ public class BitSetTest extends junit.framework.TestCase {
         BitSet bs = (BitSet) eightbs.clone();
         bs.xor(eightbs);
         for (int i = 0; i < 8; i++) {
-            assertTrue("XOR failed to clear bits", !bs.get(i));
+            assertFalse("XOR failed to clear bits", bs.get(i));
         }
 
         bs.xor(eightbs);
@@ -1130,20 +1257,15 @@ public class BitSetTest extends junit.framework.TestCase {
      */
     public void test_length() {
         BitSet bs = new BitSet();
-        assertTrue("BitSet returned wrong length--wanted 0, got: "
-                + bs.length(), bs.length() == 0);
+        assertEquals("BitSet returned wrong length", 0, bs.length());
         bs.set(5);
-        assertTrue("BitSet returned wrong length--wanted 6, got: "
-                + bs.length(), bs.length() == 6);
+        assertEquals("BitSet returned wrong length", 6, bs.length());
         bs.set(10);
-        assertTrue("BitSet returned wrong length--wanted 11, got: "
-                + bs.length(), bs.length() == 11);
+        assertEquals("BitSet returned wrong length", 11, bs.length());
         bs.set(432);
-        assertTrue("BitSet returned wrong length--wanted 433, got: "
-                + bs.length(), bs.length() == 433);
+        assertEquals("BitSet returned wrong length", 433, bs.length());
         bs.set(300);
-        assertTrue("BitSet returned wrong length--wanted 433 (again), got: "
-                + bs.length(), bs.length() == 433);
+        assertEquals("BitSet returned wrong length", 433, bs.length());
     }
 
     /**
@@ -1164,6 +1286,7 @@ public class BitSetTest extends junit.framework.TestCase {
             bs.nextSetBit(-1);
             fail("Expected IndexOutOfBoundsException for negative index");
         } catch (IndexOutOfBoundsException e) {
+            // correct behavior
         }
         assertEquals("nextSetBit() returned the wrong value", 5, bs
                 .nextSetBit(0));
@@ -1248,6 +1371,7 @@ public class BitSetTest extends junit.framework.TestCase {
             bs.nextClearBit(-1);
             fail("Expected IndexOutOfBoundsException for negative index");
         } catch (IndexOutOfBoundsException e) {
+            // correct behavior
         }
         assertEquals("nextClearBit() returned the wrong value", 5, bs
                 .nextClearBit(0));

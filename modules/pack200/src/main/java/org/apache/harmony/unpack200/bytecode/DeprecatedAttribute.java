@@ -24,7 +24,11 @@ import java.io.IOException;
  */
 public class DeprecatedAttribute extends Attribute {
 
-    private static final CPUTF8 attributeName = new CPUTF8("Deprecated");
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public DeprecatedAttribute() {
         super(attributeName);

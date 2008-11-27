@@ -529,7 +529,7 @@ public abstract class Provider extends Properties {
         if (k.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName> //$NON-NLS-1$
             String aliasName;
             String service_alias = k.substring(10);
-            i = service_alias.indexOf("."); //$NON-NLS-1$
+            i = service_alias.indexOf('.');
             serviceName = service_alias.substring(0, i);
             aliasName = service_alias.substring(i + 1);
             if (propertyAliasTable != null) {
@@ -547,12 +547,12 @@ public abstract class Provider extends Properties {
             }
             return;
         }
-        int j = k.indexOf("."); //$NON-NLS-1$
+        int j = k.indexOf('.');
         if (j == -1) { // unknown format
             return;
         }
 
-        i = k.indexOf(" "); //$NON-NLS-1$
+        i = k.indexOf(' ');
         if (i == -1) { // <crypto_service>.<algorithm_or_type>=<className>
             serviceName = k.substring(0, j);
             algorithm = k.substring(j + 1);
@@ -610,7 +610,7 @@ public abstract class Provider extends Properties {
             if (key.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName> //$NON-NLS-1$
                 String aliasName;
                 String service_alias = key.substring(10);
-                i = service_alias.indexOf("."); //$NON-NLS-1$
+                i = service_alias.indexOf('.');
                 serviceName = service_alias.substring(0, i);
                 aliasName = service_alias.substring(i + 1);
                 algorithm = value;
@@ -647,11 +647,11 @@ public abstract class Provider extends Properties {
                 }
                 continue;
             }
-            int j = key.indexOf("."); //$NON-NLS-1$
+            int j = key.indexOf('.');
             if (j == -1) { // unknown format
                 continue;
             }
-            i = key.indexOf(" "); //$NON-NLS-1$
+            i = key.indexOf(' ');
             if (i == -1) { // <crypto_service>.<algorithm_or_type>=<className>
                 serviceName = key.substring(0, j);
                 algorithm = key.substring(j + 1);

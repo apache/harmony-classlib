@@ -42,40 +42,6 @@ public class Util {
         throw new NullPointerException();
     }
 
-    public static byte[] toASCIILowerCase(byte[] buf) {
-        int len = buf.length;
-        byte[] buffer = new byte[len];
-        for (int i = 0; i < len; i++) {
-            byte b = buf[i];
-            if ('A' <= b && b <= 'Z') {
-                buffer[i] = (byte) (b + ('a' - 'A'));
-            } else {
-                buffer[i] = b;
-            }
-        }
-        return buffer;
-    }
-
-    public static final boolean equalsIgnoreCase(String s1, String s2) {
-        if (s1 == s2) {
-            return true;
-        }
-
-        if (s1 == null || s2 == null || s1.length() != s2.length()) {
-            return false;
-        }
-
-        char c1, c2;
-
-        for (int i = 0; i < s1.length(); i++) {
-            if ((c1 = s1.charAt(i)) != (c2 = s2.charAt(i))
-                    && toASCIIUpperCase(c1) != toASCIIUpperCase(c2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static final boolean equalsIgnoreCase(byte[] buf1, byte[] buf2) {
         if (buf1 == buf2) {
             return true;
@@ -96,21 +62,14 @@ public class Util {
         return true;
     }
 
-    public static final char toASCIILowerCase(char c) {
-        if ('A' <= c && c <= 'Z') {
-            return (char) (c + ('a' - 'A'));
-        }
-        return c;
-    }
-
-    public static final char toASCIIUpperCase(char c) {
+    static final char toASCIIUpperCase(char c) {
         if ('a' <= c && c <= 'z') {
             return (char) (c - ('a' - 'A'));
         }
         return c;
     }
 
-    public static final byte toASCIIUpperCase(byte b) {
+    static final byte toASCIIUpperCase(byte b) {
         if ('a' <= b && b <= 'z') {
             return (byte) (b - ('a' - 'A'));
         }

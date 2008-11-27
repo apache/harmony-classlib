@@ -658,11 +658,11 @@ fint parseHmtxTable(FILE* tt_file, ufshort numOfHMetrics, HMetrics** hm)
             return -1;
         }
 		/* read 'hmtx' table */
-		*hm = new HMetrics[numOfHMetrics];
+        *hm = new HMetrics[numOfHMetrics];
 
         size = (fint)fread(*hm, sizeof(HMetrics), numOfHMetrics, tt_file);
         if (size != numOfHMetrics){
-			delete[] hm;
+			delete[] *hm;
 //            printf("Error reading Table 'hmtx' from file.");
             return -1;
         }
@@ -690,12 +690,12 @@ fint parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, ufshort numGlyphs)
 	ufshort *gShortOffsets = NULL;
     fint size, i;
 
-	gLongOffsets = new uflong[numGlyphs+1];
-	if (!(*gOffsets).format)
-		gShortOffsets = new ufshort[numGlyphs+1];
-
     if (searchTable(hTable, &offset, tt_file) && searchTable(gTable,&localGlyfOffset,tt_file))
 	{
+        gLongOffsets = new uflong[numGlyphs+1];
+        if (!gOffsets->format)
+            gShortOffsets = new ufshort[numGlyphs+1];
+
         /* move position to the 'loca' table */
         size = fseek(tt_file, offset, SEEK_SET);
         if (size != 0)
@@ -705,7 +705,7 @@ fint parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, ufshort numGlyphs)
 			delete[] gLongOffsets;
 			gLongOffsets = NULL;
 
-			if (gOffsets->format)
+			if (!gOffsets->format)
 			{
 				delete[] gShortOffsets;
 			}
@@ -740,7 +740,7 @@ fint parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, ufshort numGlyphs)
 			for (i=0;i<=numGlyphs;i++)
 				gLongOffsets[i] = wReverse(gShortOffsets[i])*2+localGlyfOffset;
 		}
-		(*gOffsets).offsets = gLongOffsets;
+		gOffsets->offsets = gLongOffsets;
 		delete[] gShortOffsets;
 	}
 
@@ -918,7 +918,7 @@ fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufs
 		if (size != numOfContours)
 		{
 //			printf("Error reading endPtsOfContours for someone glyph.");
-			delete endPtsOfContours;
+			delete[] endPtsOfContours;
 			return -1;
 		}
 
@@ -1019,6 +1019,8 @@ fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufs
 			delete[] flags;
 			delete[] instructions;
 			delete[] endPtsOfContours;
+            delete[] xCoord;
+            delete[] yCoord;
 			return -1;
 		}
 
@@ -1029,6 +1031,8 @@ fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufs
 			delete[] flags;
 			delete[] instructions;
 			delete[] endPtsOfContours;
+            delete[] xCoord;
+            delete[] yCoord;
 			return -1;
 		}
 		
@@ -1036,7 +1040,7 @@ fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufs
 		rep=0;
 		fint x=0, y=0;
 		ffloat xFirstInContour,yFirstInContour;
-		bool contBegin; //начало контура
+		bool contBegin;
 
 		for (j=0; j<numOfContours;j++)
 		{

@@ -580,7 +580,7 @@ jobject WinDataObject::getDIB(JNIEnv * env, BITMAPINFO * info, jintArray header)
     jint rMask = 0, gMask = 0, bMask = 0;
     jint bitCount = hdr.biBitCount;
     jint stride = hdr.biWidth;
-    jsize height = abs(hdr.biHeight);
+    jsize height = labs(hdr.biHeight);
     jobject result = NULL;
     
     switch(hdr.biCompression) {

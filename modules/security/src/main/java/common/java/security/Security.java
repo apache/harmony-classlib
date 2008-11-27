@@ -259,7 +259,7 @@ public final class Security {
                     Messages.getString("security.2B")); //$NON-NLS-1$
         }
         HashMap<String, String> hm = new HashMap<String, String>();
-        int i = filter.indexOf(":"); //$NON-NLS-1$
+        int i = filter.indexOf(':');
         if ((i == filter.length() - 1) || (i == 0)) {
             throw new InvalidParameterException(
                     Messages.getString("security.2B")); //$NON-NLS-1$
@@ -291,8 +291,8 @@ public final class Security {
             String key = (String) entry.getKey();
             String val = (String) entry.getValue();
             String attribute = null;
-            int i = key.indexOf(" "); //$NON-NLS-1$
-            int j = key.indexOf("."); //$NON-NLS-1$
+            int i = key.indexOf(' ');
+            int j = key.indexOf('.');
             if (j == -1) {
                 throw new InvalidParameterException(
                         Messages.getString("security.2B")); //$NON-NLS-1$

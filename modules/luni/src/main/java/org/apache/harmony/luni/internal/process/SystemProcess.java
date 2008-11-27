@@ -73,7 +73,7 @@ public class SystemProcess extends Process {
 
         final SystemProcess p = new SystemProcess();
 
-        p.lock = new Lock();
+        p.lock = new Object();
 
         Runnable waitingThread = new Runnable() {
             public void run() {
@@ -104,9 +104,7 @@ public class SystemProcess extends Process {
                 synchronized (p.lock) {
                     p.closeImpl();
                     p.handle = -1;
-                }
-                p.exitCodeAvailable = true;
-                synchronized (p.lock) {
+                    p.exitCodeAvailable = true;
                     try {
                         p.in.close();
                     } catch (IOException e) {
@@ -119,25 +117,29 @@ public class SystemProcess extends Process {
         wait.setDaemon(true);
         wait.start();
 
-        try {
-            synchronized (p.lock) {
-                while (!p.waiterStarted) {
+        synchronized (p.lock) {
+            boolean interrupted = false;
+            while (!p.waiterStarted) {
+                try {
                     p.lock.wait();
-                }
-                if (p.exception != null) {
-                    /* Re-throw exception that originated in the helper thread */
-                    p.exception.fillInStackTrace();
-                    if (p.exception instanceof IOException) {
-                        throw (IOException) p.exception;
-                    } else if (p.exception instanceof Error) {
-                        throw (Error) p.exception;
-                    } else {
-                        throw (RuntimeException) p.exception;
-                    }
+                } catch (InterruptedException e) {
+                    interrupted = true;
                 }
             }
-        } catch (InterruptedException e) {
-            throw new InternalError();
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
+            if (p.exception != null) {
+                /* Re-throw exception that originated in the helper thread */
+                p.exception.fillInStackTrace();
+                if (p.exception instanceof IOException) {
+                    throw (IOException) p.exception;
+                } else if (p.exception instanceof Error) {
+                    throw (Error) p.exception;
+                } else {
+                    throw (RuntimeException) p.exception;
+                }
+            }
         }
 
         return p;

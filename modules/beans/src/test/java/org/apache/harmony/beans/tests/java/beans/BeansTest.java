@@ -523,7 +523,7 @@ public class BeansTest extends TestCase {
 
     private class ObjectBean implements Externalizable {
 
-        static final long serialVersionUID = 637071583755213744L;
+        private static final long serialVersionUID = 637071583755213744L;
 
         public void writeExternal(ObjectOutput out) {
         };

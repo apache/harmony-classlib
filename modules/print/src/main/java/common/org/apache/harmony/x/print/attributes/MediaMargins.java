@@ -67,7 +67,7 @@ public final class MediaMargins
                    PrintRequestAttribute
 {
 
-    static final long serialVersionUID = -7745492737636484477L;
+    private static final long serialVersionUID = -7745492737636484477L;
         
     public static final int INCH = Size2DSyntax.INCH;   // 25 400
     public static final int MM = Size2DSyntax.MM;       //  1 000

@@ -123,8 +123,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_windows_WinGraphicsConf
 
     bits = bmpInfo.bmiHeader.biBitCount;
 
+    mask = (DWORD *)bmpInfo.bmiColors;
     if(bmpInfo.bmiHeader.biCompression == BI_BITFIELDS){
-        mask = (DWORD *)bmpInfo.bmiColors;
 
         if(mask[0] == 0x7c00 && mask[1] == 0x03e0 && mask[2] == 0x1f){
 

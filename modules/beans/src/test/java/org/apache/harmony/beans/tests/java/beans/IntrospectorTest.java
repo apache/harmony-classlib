@@ -471,6 +471,138 @@ public class IntrospectorTest extends TestCase {
         assertTrue(contains("getStaticName", methodDescriptors));
         assertTrue(contains("setStaticName", methodDescriptors));
     }
+    
+    public void testMockIncompatibleGetterAndIndexedGetterBean() throws Exception {
+        Class beanClass = MockIncompatibleGetterAndIndexedGetterBean.class;
+        BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor pd = null;
+        PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+        for (int i = 0; i < pds.length; i++) {
+            pd = pds[i];
+            if (pd.getName().equals("data")) {
+                break;
+            }
+        }
+        assertNotNull(pd);
+        assertTrue(pd instanceof IndexedPropertyDescriptor);
+        IndexedPropertyDescriptor ipd = (IndexedPropertyDescriptor) pd;
+        assertNull(ipd.getReadMethod());
+        assertNull(ipd.getWriteMethod());
+        Method indexedReadMethod = beanClass.getMethod("getData",
+                new Class[] { int.class });
+        Method indexedWriteMethod = beanClass.getMethod("setData", new Class[] {
+                int.class, int.class });
+        assertEquals(indexedReadMethod, ipd.getIndexedReadMethod());
+        assertEquals(indexedWriteMethod, ipd.getIndexedWriteMethod());
+    }
+    
+    public void testMockIncompatibleSetterAndIndexedSetterBean() throws Exception {
+        Class beanClass = MockIncompatibleSetterAndIndexedSetterBean.class;
+        BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor pd = null;
+        PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+        for (int i = 0; i < pds.length; i++) {
+            pd = pds[i];
+            if (pd.getName().equals("data")) {
+                break;
+            }
+        }
+        assertNotNull(pd);
+        assertTrue(pd instanceof IndexedPropertyDescriptor);
+        IndexedPropertyDescriptor ipd = (IndexedPropertyDescriptor) pd;
+        assertNull(ipd.getReadMethod());
+        assertNull(ipd.getWriteMethod());
+        Method indexedReadMethod = beanClass.getMethod("getData",
+                new Class[] { int.class });
+        Method indexedWriteMethod = beanClass.getMethod("setData", new Class[] {
+                int.class, int.class });
+        assertEquals(indexedReadMethod, ipd.getIndexedReadMethod());
+        assertEquals(indexedWriteMethod, ipd.getIndexedWriteMethod());
+    }
+    
+    public void testMockIncompatibleAllSetterAndGetterBean() throws Exception {
+        Class beanClass = MockIncompatibleAllSetterAndGetterBean.class;
+        BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+        PropertyDescriptor pd = null;
+        PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+        for (int i = 0; i < pds.length; i++) {
+            pd = pds[i];
+            if (pd.getName().equals("data")) {
+                break;
+            }
+        }
+        assertNotNull(pd);
+        assertTrue(pd instanceof IndexedPropertyDescriptor);
+        IndexedPropertyDescriptor ipd = (IndexedPropertyDescriptor) pd;
+        assertNull(ipd.getReadMethod());
+        assertNull(ipd.getWriteMethod());
+        Method indexedReadMethod = beanClass.getMethod("getData",
+                new Class[] { int.class });
+        Method indexedWriteMethod = beanClass.getMethod("setData", new Class[] {
+                int.class, int.class });
+        assertEquals(indexedReadMethod, ipd.getIndexedReadMethod());
+        assertEquals(indexedWriteMethod, ipd.getIndexedWriteMethod());
+    }
+    
+    public class MockIncompatibleGetterAndIndexedGetterBean {
+        private int[] datas;
+
+        public int getData() {
+            return datas[0];
+        }
+
+        public int getData(int index) {
+            return datas[index];
+        }
+
+        public void setData(int index, int data) {
+            this.datas[index] = data;
+        }
+    }
+    
+    public class MockIncompatibleSetterAndIndexedSetterBean {
+        
+        private int[] datas;
+        
+        public int getData(int index){
+            return datas[index];
+        }
+        
+        public void setData(int index, int data) {
+            this.datas[index] = data;
+        }
+        
+        public void setData(int data){
+            this.datas[0] = data;
+        }
+        
+    }
+    
+    public class MockIncompatibleAllSetterAndGetterBean {
+        
+        private int[] datas;
+        
+        public int getData(){
+            return datas[0];
+        }
+        
+        public int getData(int index){
+            return datas[index];
+        }
+        
+        public void setData(int index, int data) {
+            this.datas[index] = data;
+        }
+        
+        public void setData(int data){
+            this.datas[0] = data;
+        }
+        
+        public void setData(){
+            this.datas[0] = 0;
+        }
+        
+    }
 
     public static class StaticClazz {
 
