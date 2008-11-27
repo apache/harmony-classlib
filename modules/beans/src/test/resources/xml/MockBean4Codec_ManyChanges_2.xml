@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="1.4.2 subset" class="java.beans.XMLDecoder">
+<java version="${version}" class="java.beans.XMLDecoder">
  <object class="org.apache.harmony.beans.tests.java.beans.mock.MockBean4Codec">
   <void property="bornFriend">
    <void property="clazz">

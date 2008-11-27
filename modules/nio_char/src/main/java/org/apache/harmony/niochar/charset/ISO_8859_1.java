@@ -25,6 +25,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
 import org.apache.harmony.nio.AddressUtil;
+import org.apache.harmony.niochar.CharsetProviderImpl;
 
 
 public class ISO_8859_1 extends Charset {
@@ -51,7 +52,7 @@ public class ISO_8859_1 extends Charset {
 
 		}
 
-		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
+		private native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb) {
@@ -79,7 +80,7 @@ public class ISO_8859_1 extends Charset {
 						return CoderResult.OVERFLOW;
 					}
 					return CoderResult.UNDERFLOW;
-				} else if (bb.isDirect()) {
+				} else if (CharsetProviderImpl.hasLoadedNatives() && bb.isDirect()) {
 					int toProceed = bbRemaining;
 					boolean throwOverflow = false;
 					int cbPos = cb.position();
@@ -170,7 +171,7 @@ public class ISO_8859_1 extends Charset {
 						return CoderResult.malformedForLength(1);
 					}
 					return CoderResult.unmappableForLength(1);
-				} else if (bb.isDirect()) {
+				} else if (CharsetProviderImpl.hasLoadedNatives() && bb.isDirect()) {
 					int toProceed = cbRemaining;
 					boolean throwOverflow = false;
 					int cbPos = cb.position();

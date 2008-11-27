@@ -89,10 +89,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * @see java.nio.charset.CharsetDecoder
  */
 public abstract class CharsetEncoder {
-    /*
-     * --------------------------------------- Consts
-     * ---------------------------------------
-     */
+
     /*
      * internal status consts
      */
@@ -104,10 +101,6 @@ public abstract class CharsetEncoder {
 
     private static final int FLUSH = 3;
 
-    /*
-     * --------------------------------------- Instance variables
-     * ---------------------------------------
-     */
     // the Charset which creates this encoder
     private Charset cs;
 
@@ -132,11 +125,6 @@ public abstract class CharsetEncoder {
     // decoder instance for this encoder's charset, used for replacement value
     // checking
     private CharsetDecoder decoder;
-
-    /*
-     * --------------------------------------- Constructors
-     * ---------------------------------------
-     */
 
     /**
      * Construct a new <code>CharsetEncoder</code> using given
@@ -203,10 +191,6 @@ public abstract class CharsetEncoder {
         replaceWith(replacement);
     }
 
-    /*
-     * --------------------------------------- Methods
-     * ---------------------------------------
-     */
     /**
      * get the average number of bytes created by this encoder for single input
      * character

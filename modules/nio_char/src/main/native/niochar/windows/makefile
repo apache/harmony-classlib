@@ -19,7 +19,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-LIBBASE=hycharset
+LIBBASE=hyniochar
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm
@@ -121,6 +121,6 @@ VIRTFILES = hynio_char.res
 
   
 DLLBASE=0x13200000
-COMMENT=/comment:"nio_char component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"nio_char component native code. (c) Copyright 1991, 2008 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

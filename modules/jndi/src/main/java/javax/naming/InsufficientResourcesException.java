@@ -31,7 +31,7 @@ public class InsufficientResourcesException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 6227672693037844532L;
+    private static final long serialVersionUID = 6227672693037844532L;
 
     /**
      * Constructs an <code>InsufficientResourcesException</code> instance with

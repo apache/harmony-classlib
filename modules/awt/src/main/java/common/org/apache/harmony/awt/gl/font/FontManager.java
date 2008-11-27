@@ -341,7 +341,7 @@ public abstract class FontManager {
      * @param faceName logical font face name
      */
     public String getFamilyFromLogicalFace(String faceName){
-        int pos = faceName.indexOf("."); //$NON-NLS-1$
+        int pos = faceName.indexOf('.');
         if (pos == -1){
             return faceName;
         }
@@ -462,7 +462,7 @@ public abstract class FontManager {
     public String getLogicalFaceFromFont(int fontStyle, int logicalIndex){
         int style = 0;
         String name = LOGICAL_FONT_FACES[logicalIndex];
-        int pos = name.indexOf("."); //$NON-NLS-1$
+        int pos = name.indexOf('.');
         
         if (pos == -1){
             return createLogicalFace(name, fontStyle);
@@ -485,7 +485,7 @@ public abstract class FontManager {
      */
     public int getStyleFromLogicalFace(String name){
         int style;
-        int pos = name.indexOf("."); //$NON-NLS-1$
+        int pos = name.indexOf('.');
         
         if (pos == -1){
             return Font.PLAIN;

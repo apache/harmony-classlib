@@ -874,14 +874,14 @@ public class NewAttributeBands extends BandSet {
      * @param layoutElement
      */
     public BHSDCodec getCodec(String layoutElement) {
-        if (layoutElement.indexOf("O") >= 0) { //$NON-NLS-1$
+        if (layoutElement.indexOf('O') >= 0) {
             return Codec.BRANCH5;
-        } else if (layoutElement.indexOf("P") >= 0) { //$NON-NLS-1$
+        } else if (layoutElement.indexOf('P') >= 0) {
             return Codec.BCI5;
-        } else if (layoutElement.indexOf("S") >= 0 && layoutElement.indexOf("KS") < 0 //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (layoutElement.indexOf('S') >= 0 && layoutElement.indexOf("KS") < 0 //$NON-NLS-1$
                 && layoutElement.indexOf("RS") < 0) { //$NON-NLS-1$
             return Codec.SIGNED5;
-        } else if (layoutElement.indexOf("B") >= 0) { //$NON-NLS-1$
+        } else if (layoutElement.indexOf('B') >= 0) {
             return Codec.BYTE1;
         } else {
             return Codec.UNSIGNED5;

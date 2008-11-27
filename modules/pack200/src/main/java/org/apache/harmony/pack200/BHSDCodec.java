@@ -115,7 +115,7 @@ public final class BHSDCodec extends Codec {
     /**
      * radix^i powers
      */
-    private long[] powers;
+    private final long[] powers;
 
     /**
      * Constructs an unsigned, non-delta Codec with the given B and H values.
@@ -276,10 +276,11 @@ public final class BHSDCodec extends Codec {
         if (isDelta()) {
             value -= last;
         }
-        if (!encodes(value)) {
-            throw new Pack200Exception("The codec " + toString()
-                    + " does not encode the value " + value);
-        }
+        // TODO: Do we need this?  this implementation isn't right because of integer overflow...
+//        if (!encodes(value)) {
+//            throw new Pack200Exception("The codec " + toString()
+//                   + " does not encode the value " + value);
+//        }
         long z = value;
         if (isSigned()) {
             if (z < 0) {
@@ -439,5 +440,17 @@ public final class BHSDCodec extends Codec {
      */
     public int getL() {
         return l;
+    }
+
+    public boolean equals(Object o) {
+        if(!(o instanceof BHSDCodec)) {
+            return false;
+        }
+        BHSDCodec codec = (BHSDCodec) o;
+        return codec.b == b && codec.h == h && codec.s == s && codec.d == d;
+    }
+
+    public int hashCode() {
+        return ((b* 37 + h) * 37 + s) * 37 + d;
     }
 }

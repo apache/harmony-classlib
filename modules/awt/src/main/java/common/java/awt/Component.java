@@ -1047,11 +1047,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
     String autoName() {
         String name = getClass().getName();
-        if (name.indexOf("$") != -1) { //$NON-NLS-1$
+        if (name.indexOf('$') != -1) {
             return null;
         }
         int number = toolkit.autoNumber.nextComponent++;
-        name = name.substring(name.lastIndexOf(".") + 1) + Integer.toString(number); //$NON-NLS-1$
+        name = name.substring(name.lastIndexOf('.') + 1) + Integer.toString(number);
         return name;
     }
 

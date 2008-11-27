@@ -24,7 +24,7 @@ import java.io.Serializable;
  * test java.beans.Beans
  */
 public class MockAppletBean2 extends Applet implements Serializable {
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String propertyOne;
 

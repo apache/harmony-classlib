@@ -66,7 +66,7 @@ public class Security2Test extends junit.framework.TestCase {
 				if (isAlias(key)) {
 					String aliasVal = key.substring("ALG.ALIAS.".length());
 					String aliasKey = aliasVal.substring(0, aliasVal
-							.indexOf(".") + 1)
+							.indexOf('.') + 1)
 							+ entry.getValue();
 					// Skip over nonsense alias declarations where alias and
 					// aliased are identical. Such entries can occur.
@@ -165,7 +165,7 @@ public class Security2Test extends junit.framework.TestCase {
 				}
 
 				if (filterString != null) {
-					if (filterString.indexOf(" ") == -1) {
+					if (filterString.indexOf(' ') == -1) {
 						// Is this filter string in the keys of the
 						// current provider ?
 						if (!allProviderKeys.contains(filterString)) {

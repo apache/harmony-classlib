@@ -157,7 +157,7 @@ public abstract class SerializationTest extends TestCase {
      */
     protected File getDataFile(int index) {
         String name = this.getClass().getName();
-        int dot = name.lastIndexOf(".");
+        int dot = name.lastIndexOf('.');
         String path = name.substring(0, dot).replace('.', File.separatorChar);
         if (outputPath != null && outputPath.length() != 0) {
             path = outputPath + File.separator + path;

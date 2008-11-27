@@ -31,7 +31,7 @@ public class ServiceUnavailableException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -4996964726566773444L;
+    private static final long serialVersionUID = -4996964726566773444L;
 
     /**
      * Constructs a <code>ServiceUnavailableException</code> instance with all

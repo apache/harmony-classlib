@@ -18,7 +18,9 @@
 package org.apache.harmony.luni.tests.java.lang.reflect;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Vector;
 
 public class ConstructorTest extends junit.framework.TestCase {
 
@@ -174,6 +176,78 @@ public class ConstructorTest extends junit.framework.TestCase {
         test = (ConstructorTestHelper) ctor.newInstance((Object[]) null);
 
         assertEquals("improper instance created", 99, test.check());
+    }
+    
+    /**
+     * @tests java.lang.reflect.Constructor#newInstance(java.lang.Object[])
+     */
+    public void test_newInstance_IAE() throws Exception {
+        Constructor constructor = Vector.class
+                .getConstructor(new Class[] { Integer.TYPE });
+
+        try {
+            constructor.newInstance(new Object[] { null });
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+    
+    public void test_newInstance_InvocationTargetException() throws Exception {
+        Constructor constructor = MockObject.class.getConstructor(Class.class);
+
+        try {
+            constructor.newInstance(InvocationTargetException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            constructor.newInstance(IllegalAccessException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            constructor.newInstance(IllegalArgumentException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+
+        try {
+            constructor.newInstance(InvocationTargetException.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+        
+        try {
+            constructor.newInstance(Throwable.class);
+            fail("should throw InvocationTargetException");
+        } catch (InvocationTargetException e) {
+            // Expected
+        }
+    }
+
+    static class MockObject {
+
+        public MockObject(Class<?> clazz) throws Exception {
+            if (clazz == InstantiationException.class) {
+                throw new InstantiationException();
+            } else if (clazz == IllegalAccessException.class) {
+                throw new IllegalAccessException();
+            } else if (clazz == IllegalArgumentException.class) {
+                throw new IllegalArgumentException();
+            } else if (clazz == InvocationTargetException.class) {
+                throw new InvocationTargetException(new Throwable());
+            } else {
+                throw new Exception();
+            }
+        }
+
     }
 
     /**

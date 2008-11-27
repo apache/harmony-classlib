@@ -27,7 +27,7 @@ public class StringRefAddr extends RefAddr {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -8913762495138505527L;
+    private static final long serialVersionUID = -8913762495138505527L;
 
     /**
      * The address itself. For StringRefAddr the address is a string such as a

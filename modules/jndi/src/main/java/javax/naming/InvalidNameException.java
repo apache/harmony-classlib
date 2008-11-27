@@ -31,7 +31,7 @@ public class InvalidNameException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -8370672380823801105L;
+    private static final long serialVersionUID = -8370672380823801105L;
 
     /**
      * Constructs an <code>InvalidNameException</code> instance with all data

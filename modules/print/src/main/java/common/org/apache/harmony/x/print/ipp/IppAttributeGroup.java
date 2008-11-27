@@ -26,7 +26,7 @@ import java.util.Vector;
  */
 public class IppAttributeGroup extends Vector {
     
-    static final long serialVersionUID = -2197671478629444252L;
+    private static final long serialVersionUID = -2197671478629444252L;
     
     /* According to RFC2910 (http://ietf.org/rfc/rfc2910.txt?number=2910):
      *

@@ -27,8 +27,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public abstract class AccessibleBundle {
+    private static final String ACCESSIBLE_RESOURSE_BUNDLE = "javax.accessibility.AccessibleResourceBundle"; //$NON-NLS-1$
+    
     protected String key;
-    private final String ACCESSIBLE_RESOURSE_BUNDLE = "javax.accessibility.AccessibleResourceBundle"; //$NON-NLS-1$
 
     public String toDisplayString() {
         return displayString(ACCESSIBLE_RESOURSE_BUNDLE, null);

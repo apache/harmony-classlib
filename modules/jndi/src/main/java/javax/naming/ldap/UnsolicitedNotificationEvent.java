@@ -29,7 +29,7 @@ public class UnsolicitedNotificationEvent extends EventObject {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -2382603380799883705L;
+    private static final long serialVersionUID = -2382603380799883705L;
 
     /**
      * The specific notification.

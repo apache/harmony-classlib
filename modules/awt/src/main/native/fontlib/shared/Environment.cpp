@@ -18,6 +18,7 @@
  * @author Dmitriy S. Matveev, Viskov Nikolay 
  * @version $Revision$
  */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -202,9 +203,9 @@ fint static inline getT1Name(fchar *pathToFile,fwchar_t** fontFamilyName, StyleN
 				return 0;
 			}
 		}
-	} 
 
-	fclose(font);
+        fclose(font);
+	} 
 
     return -1;
 }
@@ -232,7 +233,7 @@ FontHeader* addFontFile(fchar** file, FontType ft)
 
 		if (fStyle == NULL || result == -1)
 		{
-			delete[] fStyle;
+			delete fStyle;
 			delete fh;
 			return NULL;
 		}else {

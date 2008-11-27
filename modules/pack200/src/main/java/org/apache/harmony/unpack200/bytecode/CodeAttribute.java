@@ -33,7 +33,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public List exceptionTable; // of ExceptionTableEntry
     public int maxLocals;
     public int maxStack;
-    private static final CPUTF8 attributeName = new CPUTF8("Code");
+    private static CPUTF8 attributeName;
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
             Segment segment, OperandManager operandManager, List exceptionTable) {
@@ -191,5 +191,9 @@ public class CodeAttribute extends BCIRenumberedAttribute {
             ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTable.get(iter);
             entry.renumber(byteCodeOffsets);
         }
+    }
+
+    public static void setAttributeName(CPUTF8 attributeName) {
+        CodeAttribute.attributeName = attributeName;
     }
 }

@@ -125,6 +125,8 @@ public class AccessibleStateSetTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+        
+        assertNull(new AccessibleStateSet(new AccessibleState[0]).toString());
     }
 
     public void testToArray() throws Exception {

@@ -31,7 +31,7 @@ public class TimeLimitExceededException extends LimitExceededException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -3597009011385034696L;
+    private static final long serialVersionUID = -3597009011385034696L;
 
     /**
      * Constructs a <code>TimeLimitExceededException</code> instance with all

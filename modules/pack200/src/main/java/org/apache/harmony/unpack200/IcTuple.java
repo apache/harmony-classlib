@@ -90,6 +90,16 @@ public class IcTuple {
         return predictOuter || predictSimple;
     }
 
+
+    /**
+     * Answer true if the receiver's bit 16 is set (indicating
+     * that explicit outer class and name fields are set).
+     * @return boolean
+     */
+    public boolean nestedExplicitFlagSet() {
+        return (F & NESTED_CLASS_FLAG) == NESTED_CLASS_FLAG;
+    }
+
     /**
      * Break the receiver into components at $ boundaries.
      */
@@ -237,7 +247,7 @@ public class IcTuple {
         if (isAllDigits(cachedSimpleClassName)) {
             anonymous = true;
             member = false;
-            if ((F & 65536) == 65536) {
+            if (nestedExplicitFlagSet()) {
                 // Predicted class - marking as member
                 member = true;
             }

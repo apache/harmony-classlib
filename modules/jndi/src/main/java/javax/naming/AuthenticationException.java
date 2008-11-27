@@ -27,7 +27,7 @@ package javax.naming;
  */
 public class AuthenticationException extends NamingSecurityException {
 
-    static final long serialVersionUID = 3678497619904568096L;
+    private static final long serialVersionUID = 3678497619904568096L;
 
     /**
      * Constructs an <code>AuthenticationException</code> instance with all

@@ -342,7 +342,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             throws IntrospectionException {
         String expectedListenerTypeName = listenerType.getName();
         expectedListenerTypeName = expectedListenerTypeName
-                .substring(expectedListenerTypeName.lastIndexOf(".") + 1); //$NON-NLS-1$
+                .substring(expectedListenerTypeName.lastIndexOf('.') + 1);
         Method method = null;
         Method[] methods = sourceClass.getMethods();
         for (Method m : methods) {

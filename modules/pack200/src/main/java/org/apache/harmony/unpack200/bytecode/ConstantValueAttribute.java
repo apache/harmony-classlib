@@ -28,8 +28,11 @@ public class ConstantValueAttribute extends Attribute {
 
     private final ClassFileEntry entry;
 
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "ConstantValue"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public ConstantValueAttribute(ClassFileEntry entry) {
         super(attributeName);

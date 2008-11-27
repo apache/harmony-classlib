@@ -31,7 +31,7 @@ public class ConfigurationException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -2535156726228855704L;
+    private static final long serialVersionUID = -2535156726228855704L;
 
     /**
      * Constructs a <code>ConfigurationException</code> instance with all data

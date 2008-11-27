@@ -207,7 +207,7 @@ public final class ContentModel implements Serializable {
     /**
      * The serialization UID value.
      */
-    static final long serialVersionUID = -1130825523866321257L;
+    private static final long serialVersionUID = -1130825523866321257L;
     
     /**
      * The type of the content model. It should be '*', '+', '?', '|', '&', ','

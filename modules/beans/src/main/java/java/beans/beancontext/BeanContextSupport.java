@@ -59,7 +59,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      */
     protected class BCSChild implements Serializable {
 
-        static final long serialVersionUID = -5815286101609939109L;
+        private static final long serialVersionUID = -5815286101609939109L;
 
         Object child;
 
@@ -97,7 +97,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         }
     }
 
-    static final long serialVersionUID = -4879613978649577204L; //J2SE 1.4.2
+    private static final long serialVersionUID = -4879613978649577204L; //J2SE 1.4.2
 
     /**
      * A list of registered membership listeners.

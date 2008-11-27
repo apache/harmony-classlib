@@ -29,7 +29,7 @@ package javax.naming;
 public class AuthenticationNotSupportedException extends
         NamingSecurityException {
 
-    static final long serialVersionUID = -7149033933259492300L;
+    private static final long serialVersionUID = -7149033933259492300L;
 
     /**
      * Constructs an <code>AuthenticationNotSupportedException</code> instance

@@ -28,7 +28,7 @@ import java.util.Vector;
  */
 public class IppAttributeGroupSet extends Hashtable {
     
-    static final long serialVersionUID = -1273600082773438491L;
+    private static final long serialVersionUID = -1273600082773438491L;
 
     static protected void sortAttributes(Vector va) {
         Object v1, v2;

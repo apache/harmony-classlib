@@ -431,7 +431,7 @@ public class DNSName implements Name, Cloneable {
      * @return <code>true</code> or <code>false</code>
      */
     static boolean componentIsOk(String comp) {
-        if (comp.indexOf(".") != -1 || comp.length() > //$NON-NLS-1$
+        if (comp.indexOf('.') != -1 || comp.length() >
                 ProviderConstants.LABEL_MAX_CHARS) {
             return false;
         }

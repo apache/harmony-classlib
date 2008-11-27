@@ -37,8 +37,11 @@ public class LocalVariableTypeTableAttribute extends BCIRenumberedAttribute {
     private final CPUTF8[] names;
     private final CPUTF8[] signatures;
     private int codeLength;
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "LocalVariableTypeTable"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public LocalVariableTypeTableAttribute(
             int local_variable_type_table_length, int[] start_pcs,

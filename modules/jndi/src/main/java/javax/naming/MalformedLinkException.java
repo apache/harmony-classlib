@@ -31,7 +31,7 @@ public class MalformedLinkException extends LinkException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -3066740437737830242L;
+    private static final long serialVersionUID = -3066740437737830242L;
 
     /**
      * Constructs a <code>MalformedLinkException</code> instance with all data

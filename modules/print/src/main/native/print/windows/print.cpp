@@ -51,7 +51,7 @@ char * GetDefaultPrintService() {
         return buffer;
     } else {
         if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-            free(buffer);
+            delete[] buffer;
             buffer = new char[buffer_size];
             if (GetDefaultPrinter(buffer, &buffer_size)) {
                 return buffer;
@@ -108,7 +108,7 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_x_print_Win32PrintServiceProvi
     jstring service = NULL;
     if (serviceUTF != NULL) {
         service = env->NewStringUTF(serviceUTF);
-        free(serviceUTF);
+        delete[] serviceUTF;
     }
     return service;
 }
@@ -162,7 +162,7 @@ PRINTER_INFO_2 *GetPrinterInfo(const char *name) {
             }
         }
     }
-    free(editableName);
+    delete[] editableName;
     return result;
 }
 
@@ -372,7 +372,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_x_print_GDIClient_getMedi
                     env->DeleteLocalRef(jname);
                 }
             }
-            free(buffer);
+            delete[] buffer;
         }
         free(info);
     }
@@ -397,9 +397,9 @@ JNIEXPORT jintArray JNICALL Java_org_apache_harmony_x_print_GDIClient_getMediaID
                     intIDs[i] = (int)ids[i];
                 }
                 env->SetIntArrayRegion(result, 0, numPapers, (jint *)intIDs);
-                free(intIDs);
+                delete[] intIDs;
             }
-            free(ids);
+            delete[] ids;
         }
         free(info);
     }
@@ -432,16 +432,16 @@ JNIEXPORT jintArray JNICALL Java_org_apache_harmony_x_print_GDIClient_getResolut
         int count = DeviceCapabilities(name, info->pPortName, DC_ENUMRESOLUTIONS, NULL, NULL);
         if (count > 0) {
             LONG *nativeArray = new LONG[count * 2];
-            jint *intArray = new jint[count * 2];
             resolutions = env->NewIntArray(count * 2);
             if (DeviceCapabilities(name, info->pPortName, DC_ENUMRESOLUTIONS, (LPSTR)nativeArray, NULL) > 0) {
+                jint *intArray = new jint[count * 2];
                 for (int i = 0; i < count * 2; i++) {
                     intArray[i] = (jint)((int)nativeArray[i]);
                 }
-                env->SetIntArrayRegion(resolutions, 0, count * 2, intArray);
-                free(nativeArray);
-                free(intArray);
+                env->SetIntArrayRegion(resolutions, 0, count * 2, intArray);     
+                delete[] intArray;
             }
+            delete[] nativeArray;
         }
         free(info);
     }

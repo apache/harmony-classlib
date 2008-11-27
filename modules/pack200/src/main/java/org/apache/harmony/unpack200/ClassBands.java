@@ -406,9 +406,6 @@ public class ClassBands extends BandSet {
                             exceptionClasses));
                     methodExceptionsIndex++;
                 }
-                if (deprecatedLayout.matches(flag)) {
-                    methodAttributes[i][j].add(new DeprecatedAttribute());
-                }
                 if (methodSignatureLayout.matches(flag)) {
                     // We've got a signature attribute
                     long result = methodSignatureRS[methodSignatureIndex];
@@ -424,6 +421,9 @@ public class ClassBands extends BandSet {
                     methodAttributes[i][j]
                             .add(new SignatureAttribute(value));
                     methodSignatureIndex++;
+                }
+                if (deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
                 }
                 // Non-predefined attributes
                 for (int k = 0; k < otherLayouts.length; k++) {
@@ -1003,7 +1003,7 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < RxA.length; i++) {
             mbg[i] = new MetadataBandGroup(RxA[i], cpBands);
             String rxa = RxA[i];
-            if (rxa.indexOf("P") >= 0) {
+            if (rxa.indexOf('P') >= 0) {
                 mbg[i].param_NB = decodeBandInt(contextName + "_" + rxa
                         + "_param_NB", in, Codec.BYTE1, RxACount[i]);
             }

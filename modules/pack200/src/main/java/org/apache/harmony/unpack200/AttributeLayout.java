@@ -171,14 +171,14 @@ public class AttributeLayout implements IMatcher {
     }
 
     public Codec getCodec() {
-        if (layout.indexOf("O") >= 0) { //$NON-NLS-1$
+        if (layout.indexOf('O') >= 0) {
             return Codec.BRANCH5;
-        } else if (layout.indexOf("P") >= 0) { //$NON-NLS-1$
+        } else if (layout.indexOf('P') >= 0) {
             return Codec.BCI5;
-        } else if (layout.indexOf("S") >= 0 && layout.indexOf("KS") < 0 //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (layout.indexOf('S') >= 0 && layout.indexOf("KS") < 0 //$NON-NLS-1$
                 && layout.indexOf("RS") < 0) { //$NON-NLS-1$
             return Codec.SIGNED5;
-        } else if (layout.indexOf("B") >= 0) { //$NON-NLS-1$
+        } else if (layout.indexOf('B') >= 0) {
             return Codec.BYTE1;
         } else {
             return Codec.UNSIGNED5;

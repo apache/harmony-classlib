@@ -13,11 +13,9 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io;resolution:=optional,
  java.lang;resolution:=optional,
- java.nio,
  java.util;resolution:=optional,
  java.util.jar;resolution:=optional,
- org.apache.bcel,
- org.apache.bcel.classfile
+ org.objectweb.asm
 Export-Package: org.apache.harmony.pack200,
  org.apache.harmony.unpack200,
  org.apache.harmony.unpack200.bytecode,

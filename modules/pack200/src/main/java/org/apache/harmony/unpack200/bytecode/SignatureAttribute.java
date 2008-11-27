@@ -27,7 +27,11 @@ public class SignatureAttribute extends Attribute {
     private int signature_index;
     private final CPUTF8 signature;
 
-    private static final CPUTF8 attributeName = new CPUTF8("Signature");
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     public SignatureAttribute(CPUTF8 value) {
         super(attributeName);

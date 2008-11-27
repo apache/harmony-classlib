@@ -56,12 +56,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      *            the initial capacity of this ArrayList
      */
     public ArrayList(int capacity) {
-        firstIndex = lastIndex = 0;
-        try {
-            array = newElementArray(capacity);
-        } catch (NegativeArraySizeException e) {
+        if (capacity < 0) {
             throw new IllegalArgumentException();
         }
+        firstIndex = lastIndex = 0;
+        array = newElementArray(capacity);
     }
 
     /**

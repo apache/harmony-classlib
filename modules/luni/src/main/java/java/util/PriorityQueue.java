@@ -91,7 +91,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      *        queue to be constructed.
      * @throws ClassCastException if any of the elements in the collection is
      *         not comparable.
-     * @throws NullPointerExcepiton if any of the elements in the collection is
+     * @throws NullPointerException if any of the elements in the collection is
      *         null.
      */
     public PriorityQueue(Collection<? extends E> c) {
@@ -169,7 +169,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * @throws ClassCastException if the element cannot be compared with the
      *         elements in the priority queue using the ordering of the priority
      *         queue.
-     * @throws NullPointerExcepiton if the element is null.
+     * @throws NullPointerException if the element is null.
      */
     public boolean offer(E o) {
         if (null == o) {
@@ -251,7 +251,7 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
      * @throws ClassCastException if the element cannot be compared with the
      *         elements in the priority queue using the ordering of the priority
      *         queue.
-     * @throws NullPointerExcepiton if the element is null.
+     * @throws NullPointerException if the element is null.
      */
     @Override
     public boolean add(E o) {

@@ -33,7 +33,7 @@ public abstract class LdapReferralException extends ReferralException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -1668992791764950804L;
+    private static final long serialVersionUID = -1668992791764950804L;
 
     /**
      * Default constructor.

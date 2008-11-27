@@ -26,8 +26,11 @@ public class AnnotationDefaultAttribute extends AnnotationsAttribute {
 
     private final ElementValue element_value;
 
-    private static final CPUTF8 attributeName = new CPUTF8("AnnotationDefault");
+    private static CPUTF8 attributeName;
 
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
     public AnnotationDefaultAttribute(ElementValue element_value) {
         super(attributeName);
         this.element_value = element_value;

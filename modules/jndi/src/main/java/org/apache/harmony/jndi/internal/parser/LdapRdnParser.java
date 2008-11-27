@@ -30,7 +30,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  */
 public class LdapRdnParser implements LdapParser {
 
-    private static String name = null;
+    private String name = null;
 
     LdapTypeAndValueList list = new LdapTypeAndValueList();
 
@@ -45,9 +45,9 @@ public class LdapRdnParser implements LdapParser {
      */
     public LdapRdnParser(String name) {
         if (name.endsWith("+")) {
-            LdapRdnParser.name = name.substring(0, name.lastIndexOf('+'));
+            this.name = name.substring(0, name.lastIndexOf('+'));
         } else {
-            LdapRdnParser.name = name;
+            this.name = name;
         }
     }
 

@@ -250,6 +250,7 @@ void * JNICALL HyVMLSSet(JNIEnv * env, void ** pKey, void * value)
 			cursor->vmLocalStorage[((UDATA) *pKey) - 1] = value;
 			return value;
 		}
+        cursor = cursor->linkNext;
 	}
 
 	return value;
@@ -300,10 +301,10 @@ void initializeVMLocalStorage(JavaVM * vm)
 
 		/* Allocate a new container */
 		container = hymem_allocate_memory(sizeof(VMLSContainer));
-		if (container) {
-			memset(container,0,sizeof(VMLSContainer));
-			container->javaVM = vm;
-		}
+		if (!container) return;
+
+        memset(container,0,sizeof(VMLSContainer));
+		container->javaVM = vm;
 
 		/* Insert it into the list */
 		container->linkNext = vmls->containerHead;

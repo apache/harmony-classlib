@@ -27,7 +27,7 @@ package javax.naming;
  */
 public class SizeLimitExceededException extends LimitExceededException {
 
-    static final long serialVersionUID = 7129289564879168579L;
+    private static final long serialVersionUID = 7129289564879168579L;
 
     /**
      * Constructs a <code>SizeLimitExceededException</code> instance with all

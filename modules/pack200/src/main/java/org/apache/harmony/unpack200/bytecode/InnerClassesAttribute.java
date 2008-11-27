@@ -26,8 +26,11 @@ import java.util.List;
  */
 public class InnerClassesAttribute extends Attribute {
 
-    private static final CPUTF8 attributeName = new CPUTF8(
-            "InnerClasses"); //$NON-NLS-1$
+    private static CPUTF8 attributeName;
+
+    public static void setAttributeName(CPUTF8 cpUTF8Value) {
+        attributeName = cpUTF8Value;
+    }
 
     private static class InnerClassesEntry {
 

@@ -31,7 +31,7 @@ public class LinkLoopException extends LinkException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -3119189944325198009L;
+    private static final long serialVersionUID = -3119189944325198009L;
 
     /**
      * Constructs a <code>LinkLoopException</code> instance with all data

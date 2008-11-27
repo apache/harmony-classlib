@@ -28,7 +28,7 @@ package javax.naming;
  */
 public class NoPermissionException extends NamingSecurityException {
 
-    static final long serialVersionUID = 8395332708699751775L;
+    private static final long serialVersionUID = 8395332708699751775L;
 
     /**
      * Constructs a <code>NoPermissionException</code> instance with all data

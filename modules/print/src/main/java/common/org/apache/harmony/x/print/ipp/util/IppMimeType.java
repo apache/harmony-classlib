@@ -20,7 +20,7 @@ import org.apache.harmony.x.print.MimeType;
 
 public class IppMimeType extends MimeType {
 
-    static final long serialVersionUID = 1492779006204043813L;
+    private static final long serialVersionUID = 1492779006204043813L;
     
     /*
      * @param mimeType

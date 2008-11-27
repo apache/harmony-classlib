@@ -104,7 +104,7 @@ public class BeanDescriptor extends FeatureDescriptor {
 
         if (leguminaClass != null) {
             String beanClassName = leguminaClass.getName();
-            int idx = beanClassName.lastIndexOf("."); //$NON-NLS-1$
+            int idx = beanClassName.lastIndexOf('.');
 
             result = (idx == -1) ? beanClassName : beanClassName
                     .substring(idx + 1);

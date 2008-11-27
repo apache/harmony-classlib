@@ -71,6 +71,18 @@ public class FileChannelLockingTest extends TestCase {
         readWriteChannel = randomAccessFile.getChannel();
     }
 
+    protected void tearDown() throws IOException {
+        if (readOnlyChannel != null) {
+            readOnlyChannel.close();
+        }
+        if (writeOnlyChannel != null) {
+            writeOnlyChannel.close();
+        }
+        if (readWriteChannel != null) {
+            readWriteChannel.close();
+        }
+    }
+
     public void test_illegalLocks() throws IOException {
         // Cannot acquire an exclusive lock on a read-only file channel
         try {

@@ -111,7 +111,7 @@ public class ObjectInputStreamTest extends TestCase implements
 
     public static class A1 implements Serializable {
 
-        static final long serialVersionUID = 5942584913446079661L;
+        private static final long serialVersionUID = 5942584913446079661L;
 
         B1 b1 = new B1();
 

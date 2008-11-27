@@ -29,15 +29,15 @@ import org.apache.harmony.luni.util.Msg;
  * excessive amount of time to run it may impact the time at which subsequent
  * tasks may run.
  * <p>
- * 
+ *
  * The Timer task does not offer any guarantees about the real-time nature of
  * scheduling tasks as it's underlying implementation relies on the
  * <code>Object.wait(long)</code> method.
  * <p>
- * 
+ *
  * Multiple threads can share a single Timer without the need for their own
  * synchronization.
- * 
+ *
  * @see TimerTask
  * @see java.lang.Object#wait(long)
  */
@@ -67,7 +67,7 @@ public class Timer {
                     TimerTask[] appendedTimers = new TimerTask[size * 2];
                     System.arraycopy(timers, 0, appendedTimers, 0, size);
                     timers = appendedTimers;
-                }                    
+                }
                 timers[size++] = task;
                 upHeap();
             }
@@ -109,8 +109,9 @@ public class Timer {
                     }
 
                     // compare selected child with parent
-                    if (timers[current].when < timers[child].when)
+                    if (timers[current].when < timers[child].when) {
                         break;
+                    }
 
                     // swap the two
                     TimerTask tmp = timers[current];
@@ -142,10 +143,10 @@ public class Timer {
                     }
                 }
             }
-            
+
             private int getTask(TimerTask task) {
                 for (int i = 0; i < timers.length; i++) {
-                    if (timers[i] == task){
+                    if (timers[i] == task) {
                         return i;
                     }
                 }
@@ -153,7 +154,6 @@ public class Timer {
             }
 
         }
-
 
         /**
          * True if the method cancel() of the Timer was called or the !!!stop()
@@ -174,7 +174,7 @@ public class Timer {
 
         /**
          * Starts a new timer.
-         * 
+         *
          * @param isDaemon
          */
         TimerImpl(boolean isDaemon) {
@@ -242,7 +242,7 @@ public class Timer {
 
                     synchronized (task.lock) {
                         int pos = 0;
-                        if(tasks.minimum().when != task.when){
+                        if (tasks.minimum().when != task.when) {
                             pos = tasks.getTask(task);
                         }
                         if (task.cancelled) {
@@ -329,7 +329,7 @@ public class Timer {
 
     /**
      * Creates a new Timer which may be specified to be run as a Daemon Thread.
-     * 
+     *
      * @param isDaemon
      *            true if Timers thread should be a daemon thread.
      */
@@ -344,10 +344,31 @@ public class Timer {
         impl = new TimerImpl(false);
     }
 
+    /**
+     * Create a new timer with the given name and daemon status.
+     *
+     * The name is given the timer's background thread and if the flag is true
+     * the thread is run as a daemon.
+     *
+     * @param name
+     *            a name to associate with the timer thread.
+     * @param isDaemon
+     *            true if the timer thread should be a daemon, or false if it is
+     *            a regular thread that prevents the application terminating.
+     */
     public Timer(String name, boolean isDaemon) {
         impl = new TimerImpl(name, isDaemon);
     }
 
+    /**
+     * Create a new timer whose thread has the given name.
+     *
+     * The name is given the timer's background thread, that is not run as a
+     * daemon.
+     *
+     * @param name
+     *            a name to associate with the timer thread.
+     */
     public Timer(String name) {
         impl = new TimerImpl(name, false);
     }
@@ -361,6 +382,16 @@ public class Timer {
         impl.cancel();
     }
 
+    /**
+     * Purging the timer eagerly removes cancelled tasks.
+     *
+     * When a large number of tasks have been cancelled it may be helpful to
+     * explicitly purge them from the timer rather than let them be removed
+     * during normal expiry processing. This is a housekeeping task that does
+     * not affect the timer's schedule tasks.
+     *
+     * @return the number of tasks that were purged.
+     */
     public int purge() {
         synchronized (impl) {
             return impl.purge();
@@ -370,12 +401,12 @@ public class Timer {
     /**
      * Schedule a task for single execution. If when is less than the current
      * time, it will be scheduled to executed as soon as possible.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param when
      *            Time of execution
-     * 
+     *
      * @exception IllegalArgumentException
      *                if when.getTime() < 0
      * @exception IllegalStateException
@@ -392,12 +423,12 @@ public class Timer {
 
     /**
      * Schedule a task for single execution after a specific delay.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param delay
      *            Amount of time before execution
-     * 
+     *
      * @exception IllegalArgumentException
      *                if delay < 0
      * @exception IllegalStateException
@@ -413,14 +444,14 @@ public class Timer {
 
     /**
      * Schedule a task for repeated fix-delay execution after a specific delay.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param delay
      *            Amount of time before first execution
      * @param period
      *            Amount of time between subsequent executions
-     * 
+     *
      * @exception IllegalArgumentException
      *                if delay < 0 or period < 0
      * @exception IllegalStateException
@@ -437,14 +468,14 @@ public class Timer {
     /**
      * Schedule a task for repeated fix-delay execution after a specific time
      * has been reached.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param when
      *            Time of first execution
      * @param period
      *            Amount of time between subsequent executions
-     * 
+     *
      * @exception IllegalArgumentException
      *                if when.getTime() < 0 or period < 0
      * @exception IllegalStateException
@@ -464,14 +495,14 @@ public class Timer {
      * has been happened. The difference of fixed-rate is that it may bunch up
      * subsequent task runs to try to get the task repeating at it's desired
      * time.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param delay
      *            Amount of time before first execution
      * @param period
      *            Amount of time between subsequent executions
-     * 
+     *
      * @exception IllegalArgumentException
      *                if delay < 0 or period < 0
      * @exception IllegalStateException
@@ -490,14 +521,14 @@ public class Timer {
      * has been reached. The difference of fixed-rate is that it may bunch up
      * subsequent task runs to try to get the task repeating at it's desired
      * time.
-     * 
+     *
      * @param task
      *            The task to schedule
      * @param when
      *            Time of first execution
      * @param period
      *            Amount of time between subsequent executions
-     * 
+     *
      * @exception IllegalArgumentException
      *                if when.getTime() < 0 or period < 0
      * @exception IllegalStateException
@@ -512,13 +543,8 @@ public class Timer {
         scheduleImpl(task, delay < 0 ? 0 : delay, period, true);
     }
 
-    /**
+    /*
      * Schedule a task.
-     * 
-     * @param task
-     * @param delay
-     * @param period
-     * @param fixed
      */
     private void scheduleImpl(TimerTask task, long delay, long period,
             boolean fixed) {

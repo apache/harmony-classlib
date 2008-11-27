@@ -40,7 +40,7 @@ import javax.print.attribute.standard.MediaSizeName;
  */
 public class PPDMediaSizeName extends MediaSizeName {
     
-    static final long serialVersionUID = -2117680157822011363L;
+    private static final long serialVersionUID = -2117680157822011363L;
     
     public static final PPDMediaSizeName s10x11 = new PPDMediaSizeName(0, 720, 792);
     public static final PPDMediaSizeName s10x13 = new PPDMediaSizeName(1, 720, 936);

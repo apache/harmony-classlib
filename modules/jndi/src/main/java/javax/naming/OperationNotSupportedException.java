@@ -31,7 +31,7 @@ public class OperationNotSupportedException extends NamingException {
      * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = 5493232822427682064L;
+    private static final long serialVersionUID = 5493232822427682064L;
 
     /**
      * Constructs a <code>OperationNotSupportedException</code> instance with

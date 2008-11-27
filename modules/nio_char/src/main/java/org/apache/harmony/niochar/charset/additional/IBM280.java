@@ -17,14 +17,15 @@
 
 package org.apache.harmony.niochar.charset.additional;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CoderResult;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.CharBuffer;
-import java.nio.ByteBuffer;
+import java.nio.charset.CoderResult;
 
 import org.apache.harmony.nio.AddressUtil;
+import org.apache.harmony.niochar.CharsetProviderImpl;
 
 public class IBM280 extends Charset {
 
@@ -50,12 +51,12 @@ public class IBM280 extends Charset {
 
 		}
 
-		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
+		private native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 
 		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
                         int cbRemaining = cb.remaining();
-		        if(bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
+		        if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
 		            int toProceed = bb.remaining();
 		            int cbPos = cb.position();
 		            int bbPos = bb.position();
@@ -151,7 +152,7 @@ public class IBM280 extends Charset {
                                                                                                                           
 		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb){
                         int bbRemaining = bb.remaining();
-                        if(bb.isDirect() && cb.hasRemaining() && cb.hasArray()){
+                        if(CharsetProviderImpl.hasLoadedNatives() && bb.isDirect() && cb.hasRemaining() && cb.hasArray()){
 		            int toProceed = cb.remaining();
 		            int cbPos = cb.position();
 		            int bbPos = bb.position();

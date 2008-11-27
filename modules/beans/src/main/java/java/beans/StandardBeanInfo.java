@@ -968,16 +968,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // Both normal getter and setter of the same type were defined;
             // no indexed getter/setter *PAIR* of the other type defined
             if (normalGetter != null && normalSetter != null &&
-                    (indexedGetter == null || indexedSetter == null) &&
-                    normalPropType != indexedPropType) {
-//                String tag = normalPropType.isArray() ?
-//                        STR_INDEXED : STR_NORMAL;
-                String tag = STR_NORMAL;
-
-                table.put(tag, STR_VALID);
-                table.put(tag + PREFIX_GET, normalGetter);
-                table.put(tag + PREFIX_SET, normalSetter);
-                table.put(tag + STR_PROPERTY_TYPE, normalPropType);
+                    (indexedGetter == null || indexedSetter == null)) {
+                table.put(STR_NORMAL, STR_VALID);
+                table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                table.put(STR_NORMAL + STR_PROPERTY_TYPE, normalPropType);
                 continue;
             }
 
@@ -986,14 +981,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // getters & setters defined
             if ((normalGetter != null || normalSetter != null) &&
                     indexedGetter == null && indexedSetter == null) {
-//                String tag = normalPropType.isArray() ?
-//                        STR_INDEXED : STR_NORMAL;
-                String tag = STR_NORMAL;
-
-                table.put(tag, STR_VALID);
-                table.put(tag + PREFIX_GET, normalGetter);
-                table.put(tag + PREFIX_SET, normalSetter);
-                table.put(tag + STR_PROPERTY_TYPE, normalPropType);
+                table.put(STR_NORMAL, STR_VALID);
+                table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                table.put(STR_NORMAL + STR_PROPERTY_TYPE, normalPropType);
                 continue;
             }
 
@@ -1028,6 +1019,18 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
                 table.put(STR_INDEXED + STR_PROPERTY_TYPE,
                         indexedPropType);
+                continue;
+            }
+            
+            // RULE5
+            // Both indexed getter and setter methods are defined
+            // no normal getter/setter *PAIR* of the other type defined
+            if ((normalSetter != null || normalGetter != null)
+                    && indexedGetter != null && indexedSetter != null) {
+                table.put(STR_INDEXED, STR_VALID);
+                table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
                 continue;
             }
 

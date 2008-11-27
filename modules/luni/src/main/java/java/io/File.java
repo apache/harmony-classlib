@@ -270,7 +270,8 @@ public class File implements Serializable, Comparable<File> {
         char newPath[] = origPath.toCharArray();
         for (int i = 0; i < length; i++) {
             char pathChar = newPath[i];
-            if (pathChar == '\\' || pathChar == '/') {
+            if ((separatorChar == '\\' && pathChar == '\\')
+                || pathChar == '/') {
                 /* UNC Name requires 2 leading slashes */
                 if ((foundSlash && i == uncIndex) || !foundSlash) {
                     newPath[newLength++] = separatorChar;
@@ -682,7 +683,7 @@ public class File implements Serializable, Comparable<File> {
      * Answers if this File is an absolute pathname. Whether a pathname is
      * absolute is platform specific. On UNIX it is if the path starts with the
      * character '/', on Windows it is absolute if either it starts with '\',
-     * '/', '\\' (to represent a file server), or a letter followed by a colon.
+     * '/', '\\' (to represent a file server), or a letter followed by ':\'.
      * 
      * @return <code>true</code> if this File is absolute, <code>false</code>
      *         otherwise.
@@ -1140,18 +1141,23 @@ public class File implements Serializable, Comparable<File> {
      * @throws IOException
      *             If an error occurs when writing the file
      */
+    @SuppressWarnings("nls")
     public static File createTempFile(String prefix, String suffix,
             File directory) throws IOException {
         // Force a prefix null check first
         if (prefix.length() < 3) {
-            throw new IllegalArgumentException(Msg.getString("K006b")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Msg.getString("K006b"));
         }
-        String newSuffix = suffix == null ? ".tmp" : suffix; //$NON-NLS-1$
-        String tmpDir = "."; //$NON-NLS-1$
-        tmpDir = AccessController.doPrivileged(new PriviAction<String>(
-                "java.io.tmpdir", ".")); //$NON-NLS-1$//$NON-NLS-2$
-        File result, tmpDirFile = directory == null ? new File(tmpDir)
-                : directory;
+        String newSuffix = suffix == null ? ".tmp" : suffix;
+        File tmpDirFile;
+        if (directory == null) {
+            String tmpDir = AccessController.doPrivileged(
+                new PriviAction<String>("java.io.tmpdir", "."));
+            tmpDirFile = new File(tmpDir);
+        } else {
+            tmpDirFile = directory;
+        }
+        File result;
         do {
             result = genTempFile(prefix, newSuffix, tmpDirFile);
         } while (!result.createNewFile());
