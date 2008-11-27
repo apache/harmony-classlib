@@ -434,7 +434,19 @@ public class CpBands extends BandSet {
                 removeCpUtf8(signature);
                 for (Iterator iterator2 = classes.iterator(); iterator2
                         .hasNext();) {
-                    cpClasses.add(getCPClass((String) iterator2.next()));
+                    String className = (String) iterator2.next();
+                    CPClass cpClass = null;
+                    if(className!= null) {
+                        className = className.replace('.', '/');
+                        cpClass = (CPClass) stringsToCpClass.get(className);
+                        if (cpClass == null) {
+                            CPUTF8 cpUtf8 = getCPUtf8(className);
+                            cpClass = new CPClass(cpUtf8);
+                            cp_Class.add(cpClass);
+                            stringsToCpClass.put(className, cpClass);
+                        }
+                    }
+                    cpClasses.add(cpClass);
                 }
 
                 signatureUTF8 = getCPUtf8(signatureString.toString());
@@ -515,8 +527,15 @@ public class CpBands extends BandSet {
                 constant = new CPString(getCPUtf8((String) value));
                 cp_String.add(constant);
             } else if (value instanceof Type) {
-                constant = new CPClass(getCPUtf8(((Type) value).getClassName()));
-                cp_Class.add(constant);
+                String className = ((Type) value).getClassName();
+                if(className.endsWith("[]")) {
+                    className = "[L" + className.substring(0, className.length() - 2);
+                    while(className.endsWith("[]")) {
+                        className = "[" + className.substring(0, className.length() - 2);
+                    }
+                    className += ";";
+                }
+                constant = getCPClass(className);
             }
             objectsToCPConstant.put(value, constant);
         }

@@ -45,6 +45,7 @@ public class Segment implements ClassVisitor {
 
     public void pack(List classes, List files, OutputStream out)
             throws IOException, Pack200Exception {
+        Pack200ClassReader.resetSyntheticCounter();
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
         cpBands = new CpBands(this);
@@ -87,7 +88,7 @@ public class Segment implements ClassVisitor {
         bcBands.setCurrentClass(name);
         bcBands.setSuperClass(superName);
         segmentHeader.addMajorVersion(version);
-        classBands.addClass(version, access, name, superName, interfaces);
+        classBands.addClass(version, access, name, signature, superName, interfaces);
     }
 
     public void visitSource(String source, String debug) {
@@ -306,5 +307,9 @@ public class Segment implements ClassVisitor {
 
     public IcBands getIcBands() {
         return icBands;
+    }
+
+    public Pack200ClassReader getCurrentClassReader() {
+        return currentClassReader;
     }
 }

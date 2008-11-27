@@ -133,7 +133,7 @@ public class ClassBands extends BandSet {
     private List classInnerClassesNameRUN;
 
     public void addClass(int major, int flags, String className,
-            String superName, String[] interfaces) {
+            String signature, String superName, String[] interfaces) {
         class_this[index] = cpBands.getCPClass(className);
         class_super[index] = cpBands.getCPClass(superName);
         class_interface_count[index] = interfaces.length;
@@ -143,9 +143,13 @@ public class ClassBands extends BandSet {
         }
         major_versions[index] = major;
         class_flags[index] = flags;
-        if(!anySyntheticClasses && ((flags & (1 << 12)) != 0)) {
+        if(!anySyntheticClasses && ((flags & (1 << 12)) != 0) && segment.getCurrentClassReader().hasSyntheticAttributes()) {
             cpBands.addCPUtf8("Synthetic");
             anySyntheticClasses = true;
+        }
+        if(signature != null) {
+            class_flags[index] |= (1 << 19);
+            classSignature.add(cpBands.getCPSignature(signature));
         }
     }
 
@@ -176,7 +180,7 @@ public class ClassBands extends BandSet {
             fieldConstantValueKQ.add(cpBands.getConstant(value));
             flags |= (1 << 17);
         }
-        if(!anySyntheticFields && ((flags & (1 << 12)) != 0)) {
+        if(!anySyntheticFields && ((flags & (1 << 12)) != 0) && segment.getCurrentClassReader().hasSyntheticAttributes()) {
             cpBands.addCPUtf8("Synthetic");
             anySyntheticFields = true;
         }
@@ -484,7 +488,7 @@ public class ClassBands extends BandSet {
         }
         tempMethodFlags.add(new Long(flags));
         numMethodArgs = countArgs(desc);
-        if(!anySyntheticMethods && ((flags & (1 << 12)) != 0)) {
+        if(!anySyntheticMethods && ((flags & (1 << 12)) != 0) && segment.getCurrentClassReader().hasSyntheticAttributes()) {
             cpBands.addCPUtf8("Synthetic");
             anySyntheticMethods = true;
         }
@@ -601,7 +605,8 @@ public class ClassBands extends BandSet {
 
     public void addCode() {
         codeHandlerCount.add(ZERO);
-        codeFlags.add(new Long(0));
+        codeFlags.add(new Long((1 << 2))); // TODO: What if there's no debug information?
+        codeLocalVariableTableN.add(new Integer(0));
     }
 
     public void addHandler(Label start, Label end, Label handler, String type) {
@@ -652,16 +657,9 @@ public class ClassBands extends BandSet {
             codeLocalVariableTypeTableSlot.add(new Integer(indx));
         }
         // LocalVariableTable attribute
-        Long latestCodeFlag = (Long) codeFlags.get(codeFlags.size() - 1);
-        if ((latestCodeFlag.intValue() & (1 << 2)) == 0) {
-            codeFlags.remove(codeFlags.size() - 1);
-            codeFlags.add(new Long(latestCodeFlag.intValue() | (1 << 2)));
-            codeLocalVariableTableN.add(new Integer(1));
-        } else {
-            Integer numLocals = (Integer) codeLocalVariableTableN
-                    .remove(codeLocalVariableTableN.size() - 1);
-            codeLocalVariableTableN.add(new Integer(numLocals.intValue() + 1));
-        }
+        Integer numLocals = (Integer) codeLocalVariableTableN
+                .remove(codeLocalVariableTableN.size() - 1);
+        codeLocalVariableTableN.add(new Integer(numLocals.intValue() + 1));
         codeLocalVariableTableBciP.add(start);
         codeLocalVariableTableSpanO.add(end);
         codeLocalVariableTableNameRU.add(cpBands.getCPUtf8(name));

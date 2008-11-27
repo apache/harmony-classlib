@@ -28,6 +28,8 @@ import org.objectweb.asm.ClassReader;
 public class Pack200ClassReader extends ClassReader {
 
     private boolean lastConstantHadWideIndex;
+    private int lastUnsignedShort;
+    private static boolean anySyntheticAttributes;
 
     /**
      * @param b
@@ -52,9 +54,29 @@ public class Pack200ClassReader extends ClassReader {
         super(name);
     }
 
+    public int readUnsignedShort(int index) {
+        // Doing this to check whether last load-constant instruction was ldc (18) or ldc_w (19)
+        // TODO:  Assess whether this impacts on performance
+        int unsignedShort = super.readUnsignedShort(index);
+        if(b[index - 1] == 19) {
+            lastUnsignedShort = unsignedShort;
+        } else {
+            lastUnsignedShort = Short.MIN_VALUE;
+        }
+        return unsignedShort;
+    }
+
     public Object readConst(int item, char[] buf) {
-        lastConstantHadWideIndex = item > Byte.MAX_VALUE;
+        lastConstantHadWideIndex = item == lastUnsignedShort;
         return super.readConst(item, buf);
+    }
+
+    public String readUTF8(int arg0, char[] arg1) {
+        String utf8 = super.readUTF8(arg0, arg1);
+        if(!anySyntheticAttributes && utf8.equals("Synthetic")) {
+            anySyntheticAttributes = true;
+        }
+        return utf8;
     }
 
     /**
@@ -68,6 +90,14 @@ public class Pack200ClassReader extends ClassReader {
 
     public boolean lastConstantHadWideIndex() {
         return lastConstantHadWideIndex;
+    }
+
+    public static boolean hasSyntheticAttributes() {
+        return anySyntheticAttributes;
+    }
+
+    public static void resetSyntheticCounter() {
+        anySyntheticAttributes = false;
     }
 
 }
