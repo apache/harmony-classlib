@@ -122,9 +122,6 @@ public interface INetworkSystem {
 	public void createMulticastSocket(FileDescriptor aFD,
 			boolean preferIPv4Stack) throws SocketException;
 
-	public void createServerStreamSocket(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
 	/**
 	 * @deprecated Use {@link #read(FileDescriptor, byte[], int, int, int)}
 	 */

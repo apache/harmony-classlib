@@ -302,22 +302,66 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationImpl
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_createSocket
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jboolean preferIPv4Stack)
+  (JNIEnv * env, jobject thiz, jobject fd, jboolean preferIPv4Stack)
 {
-  createSocket(env, fileDescriptor, HYSOCK_STREAM, preferIPv4Stack);
+  createSocket(env, fd, HYSOCK_STREAM, preferIPv4Stack);
 }
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createDatagram
+ * Method:    createStreamSocket
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocket
+  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
+{
+  hysocket_t socketP;
+
+  createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
+  socketP =
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
+ 
+  /* Sets HY_SO_REUSEADDR = TRUE on Linux only */
+  setPlatformBindOptions(env, socketP);
+}
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    createDatagramSocket
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_createDatagramSocket
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jboolean preferIPv4Stack)
+  (JNIEnv * env, jobject thiz, jobject fd, jboolean preferIPv4Stack)
 {
-  createSocket(env, fileDescriptor, HYSOCK_DGRAM, preferIPv4Stack);
+  createSocket(env, fd, HYSOCK_DGRAM, preferIPv4Stack);
 }
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    createMulticastSocket
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocket
+  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
+{
+  PORT_ACCESS_FROM_ENV(env);
+  BOOLEAN value = TRUE;
+  hysocket_t socketP;
+
+  createSocket(env, thisObjFD, HYSOCK_DGRAM, preferIPv4Stack);
+  socketP =
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
+
+  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, &value);
+  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);
+}
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -1375,44 +1419,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirec
   }
 }
 
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createServerStreamSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocket
-  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
-{
-  hysocket_t socketP;
-
-  createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
-
-  setDefaultServerSocketOptions(env, socketP);
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createMulticastSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocket
-  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
-{
-  PORT_ACCESS_FROM_ENV(env);
-  BOOLEAN value = TRUE;
-  hysocket_t socketP;
-
-  createSocket(env, thisObjFD, HYSOCK_DGRAM, preferIPv4Stack);
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
-
-  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, &value);
-  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);
-}
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -1781,24 +1787,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_acceptStreamSocket
   }
 
   updateSocket(env, &sockaddrP, socketNew, socketImpl, fdSocketImpl);
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createStreamSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocket
-  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
-{
-  hysocket_t socketP;
-
-  createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
- 
-  setPlatformBindOptions(env, socketP);
 }
 
 
