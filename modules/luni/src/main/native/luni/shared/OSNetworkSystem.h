@@ -408,15 +408,6 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sen
 
 /*
  * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
- * Method:    sendStream
- * Signature: (Ljava/io/FileDescriptor;[BII)I
- * Throws:    java.io.IOException
- */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStream
-  (JNIEnv *, jobject, jobject, jbyteArray, jint, jint);
-
-/*
- * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
  * Method:    sendUrgentData
  * Signature: (Ljava/io/FileDescriptor;B)V
  */

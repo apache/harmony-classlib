@@ -125,11 +125,12 @@ public interface INetworkSystem {
 	public void createServerStreamSocket(FileDescriptor aFD,
 			boolean preferIPv4Stack) throws SocketException;
 
+	/**
+	 * @deprecated Use {@link #read(FileDescriptor, byte[], int, int, int)}
+	 */
+	@Deprecated
 	public int receiveStream(FileDescriptor aFD, byte[] data, int offset,
 			int count, int timeout) throws IOException;
-
-	public int sendStream(FileDescriptor fd, byte[] data, int offset, int count)
-			throws IOException;
 
 	public void shutdownInput(FileDescriptor descriptor) throws IOException;
 

@@ -477,26 +477,6 @@ final class OSNetworkSystem implements INetworkSystem {
             int offset, int length, int port, boolean bindToDevice,
             int trafficClass, InetAddress inetAddress) throws IOException;
 
-    /**
-     * Send <code>count</code> bytes from the buffer <code>data</code> at the
-     * <code>offset</code>, on the socket.
-     * 
-     * @param fd
-     * 
-     * @param data
-     *            the send buffer @param offset the offset into the buffer
-     * @param count
-     *            the number of bytes to receive
-     * @return the actual number of bytes sent
-     * @throws IOException
-     * @throws SocketException
-     *             if an error occurs while writing
-     * @deprecated use {@link #write(FileDescriptor, byte[], int, int)}
-     */
-    @Deprecated
-    public native int sendStream(FileDescriptor fd, byte[] data, int offset,
-            int count) throws IOException;
-
     public native void sendUrgentData(FileDescriptor fd, byte value);
 
     public native void setInetAddress(InetAddress sender, byte[] address);
