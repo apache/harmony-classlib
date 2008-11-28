@@ -339,7 +339,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_read
   /* Read directly into the byte array */
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
-    (env, thiz, fd, (jlong) (IDATA)message + offset, count, timeout);
+    (env, thiz, fd, (jlong) (IDATA)(message + offset), count, timeout);
 
   /* If the pointer was to a copy it needs to be released */
   if (isCopy == JNI_TRUE) {
@@ -361,32 +361,38 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_read
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jlong address,
+  (JNIEnv * env, jobject thiz, jobject fd, jlong address,
    jint count, jint timeout)
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t hysocketP;
-  jbyte *message = (jbyte *) (IDATA)address;
+  U_8 *message = (U_8 *)(IDATA)address;
   I_32 result, localCount;
 
-  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
 
-  /* Check and potentially wait to see if any bytes available */
-  result = selectRead(env, hysocketP, timeout * 1000, FALSE);
-  if (0 > result) {
-    if (result == HYPORT_ERROR_SOCKET_TIMEOUT) {
-      return (jint) 0;  // return zero bytes to indicate timeout
+  /* A non-zero timeout will first check, and potentially wait, to see if any
+   * bytes are available
+   */
+  if (timeout != 0) {
+    result = selectRead(env, hysocketP, timeout * 1000, FALSE);
+    if (0 > result) {
+      if (result == HYPORT_ERROR_SOCKET_TIMEOUT) {
+        return (jint) 0;  // return zero bytes to indicate timeout
+      }
+      throwJavaNetSocketException(env, result);
+      return (jint) 0;  // Unused, exception takes precedence
     }
-    throwJavaNetSocketException(env, result);
-    return (jint) 0;  // Unused, exception takes precedence
   }
 
   /* Limit size of read to 64k bytes */
   localCount = (count < 65536) ? count : 65536;
-
-  result =
-    hysock_read(hysocketP, (U_8 *) message, localCount, HYSOCK_NOFLAGS);
+  result = hysock_read(hysocketP, message, localCount, HYSOCK_NOFLAGS);
   if (0 > result) {
+    if (HYPORT_ERROR_SOCKET_WOULDBLOCK == result) {
+      /* We were asked to read on a nonblocking socket and there is no data available */
+      return (jint) 0;
+    }
     throwJavaNetSocketException(env, result);
     return (jint) 0;
   }
@@ -394,6 +400,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
   /* If no bytes are read, return -1 to signal 'endOfFile' to the Java input stream */
   return (0 == result) ? (jint) - 1 : (jint) result;
 }
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -415,7 +422,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_write
   /* Write directly from the byte array */
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeDirect
-    (env, thiz, fd, (jlong)((IDATA) message + offset), count);
+    (env, thiz, fd, (jlong) (IDATA)(message + offset), count);
 
 
   /* If the pointer was to a copy it needs to be released */
@@ -1622,6 +1629,9 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagram2
   }
 }
 
+/*
+ * Deprecated.  Use Java_org_apache_harmony_luni_platform_OSNetworkSystem_read
+ */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStream
   (JNIEnv * env, jobject thiz, jobject fileDescriptor, jbyteArray data,
@@ -1682,9 +1692,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveStream
 
 
 /*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    sendStream
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Deprecated : use Java_org_apache_harmony_luni_platform_OSNetworkSystem_write
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendStream

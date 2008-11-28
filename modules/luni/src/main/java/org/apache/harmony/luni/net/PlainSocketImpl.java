@@ -534,16 +534,16 @@ class PlainSocketImpl extends SocketImpl {
         if (shutdownInput) {
             return -1;
         }
-        try {
-            int read = netImpl.receiveStream(fd, buffer, offset, count,
-                    receiveTimeout);
-            if (read == -1) {
-                shutdownInput = true;
-            }
-            return read;
-        } catch (InterruptedIOException e) {
-            throw new SocketTimeoutException(e.getMessage());
+        int read = netImpl.read(fd, buffer, offset, count, receiveTimeout);
+        // Return of zero bytes for a blocking socket means a timeout occurred
+        if (read == 0) {
+            throw new SocketTimeoutException();
         }
+        // Return of -1 indicates the peer was closed
+        if (read == -1) {
+            shutdownInput = true;
+        }
+        return read;
     }
 
     int write(byte[] buffer, int offset, int count) throws IOException {
@@ -551,6 +551,6 @@ class PlainSocketImpl extends SocketImpl {
             return netImpl.sendDatagram2(fd, buffer, offset, count, port,
                     address);
         }
-        return netImpl.sendStream(fd, buffer, offset, count);
+        return netImpl.write(fd, buffer, offset, count);
     }
 }

@@ -228,6 +228,11 @@ final class OSNetworkSystem implements INetworkSystem {
     /**
      * Read available bytes from the given file descriptor into a byte array.
      * 
+     * The read has an optional timeout parameter, which if non-zero is the
+     * length of time that the read will wait on a select call to see if any
+     * bytes are available for reading. If the timeout expires the method
+     * returns zero to indicate no bytes were read.
+     * 
      * @param fd
      *            the socket file descriptor to read
      * @param data
@@ -238,7 +243,9 @@ final class OSNetworkSystem implements INetworkSystem {
      * @param count
      *            the maximum number of bytes to read
      * @param timeout
-     *            the length of time to wait for the bytes, in milliseconds
+     *            the length of time to wait for the bytes, in milliseconds; or
+     *            zero to indicate no timeout applied. When there is no timeout
+     *            applied the read may block based upon socket options.
      * @return number of bytes read, or zero if there were no bytes available
      *         before the timeout occurred, or -1 to indicate the socket is
      *         closed
@@ -314,11 +321,13 @@ final class OSNetworkSystem implements INetworkSystem {
      *            the max number of bytes to receive
      * @param timeout
      *            the max time the read operation should block waiting for data
-     * @return int the actual number of bytes read
+     * @return the actual number of bytes read
      * @throws IOException
      * @throws SocketException
      *             if an error occurs while reading
+     * @deprecated use {@link #read(FileDescriptor, byte[], int, int, int)}
      */
+    @Deprecated
     public native int receiveStream(FileDescriptor aFD, byte[] data,
             int offset, int count, int timeout) throws IOException;
 
@@ -482,7 +491,9 @@ final class OSNetworkSystem implements INetworkSystem {
      * @throws IOException
      * @throws SocketException
      *             if an error occurs while writing
+     * @deprecated use {@link #write(FileDescriptor, byte[], int, int)}
      */
+    @Deprecated
     public native int sendStream(FileDescriptor fd, byte[] data, int offset,
             int count) throws IOException;
 
