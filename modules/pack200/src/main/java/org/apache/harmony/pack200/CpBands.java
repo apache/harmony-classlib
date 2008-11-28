@@ -139,24 +139,27 @@ public class CpBands extends BandSet {
         }
         int[] cpUtf8Chars = new int[chars.size()];
         int[] cpUtf8BigSuffix = new int[bigSuffix.size()];
-        int[] cpUtf8BigChars = new int[bigChars.size()];
+        int[][] cpUtf8BigChars = new int[bigSuffix.size()][];
         for (int i = 0; i < cpUtf8Chars.length; i++) {
             cpUtf8Chars[i] = ((Character) chars.get(i)).charValue();
         }
         for (int i = 0; i < cpUtf8BigSuffix.length; i++) {
-            cpUtf8BigSuffix[i] = ((Integer) bigSuffix.get(i)).intValue();
-        }
-        for (int i = 0; i < cpUtf8BigChars.length; i++) {
-            cpUtf8BigChars[i] = ((Character) bigChars.get(i)).charValue();
+            int numBigChars = ((Integer) bigSuffix.get(i)).intValue();
+            cpUtf8BigSuffix[i] = numBigChars;
+            cpUtf8BigChars[i] = new int[numBigChars];
+            for (int j = 0; j < numBigChars; j++) {
+                cpUtf8BigChars[i][j] = ((Character) bigChars.remove(0)).charValue();
+            }
         }
         out.write(encodeBandInt("cpUtf8Prefix", cpUtf8Prefix, Codec.DELTA5));
         out.write(encodeBandInt("cpUtf8Suffix", cpUtf8Suffix, Codec.UNSIGNED5));
         out.write(encodeBandInt("cpUtf8Chars", cpUtf8Chars, Codec.CHAR3));
         out.write(encodeBandInt("cpUtf8BigSuffix", cpUtf8BigSuffix,
                 Codec.DELTA5));
-        out
-                .write(encodeBandInt("cpUtf8BigChars", cpUtf8BigChars,
+        for (int i = 0; i < cpUtf8BigChars.length; i++) {
+            out.write(encodeBandInt("cpUtf8BigChars " + i, cpUtf8BigChars[i],
                         Codec.DELTA5));
+        }
     }
 
     private void addCharacters(List chars, char[] charArray) {
