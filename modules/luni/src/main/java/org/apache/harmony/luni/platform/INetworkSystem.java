@@ -119,9 +119,6 @@ public interface INetworkSystem {
 	public void connectDatagram(FileDescriptor aFD, int port, int trafficClass,
 			InetAddress inetAddress) throws SocketException;
 
-	public void createMulticastSocket(FileDescriptor aFD,
-			boolean preferIPv4Stack) throws SocketException;
-
 	/**
 	 * @deprecated Use {@link #read(FileDescriptor, byte[], int, int, int)}
 	 */

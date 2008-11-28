@@ -102,30 +102,11 @@ final class OSNetworkSystem implements INetworkSystem {
             boolean preferIPv4Stack) throws SocketException;
 
     /**
-     * Answer the result of attempting to create a multicast socket in the IP
-     * stack. Any special options required for server sockets will be set by
-     * this method.
-     * 
-     * @param aFD
-     *            the socket FileDescriptor
-     * @param preferIPv4Stack
-     *            if use IPV4
-     * @throws SocketException
-     *             if an error occurs while creating the socket
-     *             
-     * @deprecated use {@link #createDatagramSocket(FileDescriptor, boolean)}
+     * @deprecated use {@link #createStreamSocket(FileDescriptor, boolean)}
      */
-    @Deprecated
-    public native void createMulticastSocket(FileDescriptor aFD,
-            boolean preferIPv4Stack) throws SocketException;
-
     public native void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
             throws IOException;
 
-    /**
-     * @deprecated use {@link #createSocket(FileDescriptor, boolean)}
-     */
-    @Deprecated
     public native void createStreamSocket(FileDescriptor fd,
             boolean preferIPv4Stack) throws SocketException;
 

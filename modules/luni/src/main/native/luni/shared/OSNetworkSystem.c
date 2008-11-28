@@ -343,28 +343,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_createDatagramSocket
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createMulticastSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocket
-  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
-{
-  PORT_ACCESS_FROM_ENV(env);
-  BOOLEAN value = TRUE;
-  hysocket_t socketP;
-
-  createSocket(env, thisObjFD, HYSOCK_DGRAM, preferIPv4Stack);
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
-
-  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEPORT, &value);
-  hysock_setopt_bool(socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);
-}
-
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    read
  * Signature: (Ljava/io/FileDescriptor;[BIII)I
  */

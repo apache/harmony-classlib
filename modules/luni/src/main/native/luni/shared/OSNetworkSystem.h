@@ -154,15 +154,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_cre
 
 /*
  * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
- * Method:    createMulticastSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- * Throws:    java.net.SocketException
- */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_createMulticastSocket
-  (JNIEnv *, jobject, jobject, jboolean);
-
-/*
- * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
  * Method:    createSocket
  * Signature: (Ljava/io/FileDescriptor;Z)V
  * Throws:    java.io.IOException

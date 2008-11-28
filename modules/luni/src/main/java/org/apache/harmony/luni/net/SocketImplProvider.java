@@ -51,10 +51,6 @@ public class SocketImplProvider {
         return new PlainDatagramSocketImpl();
     }
 
-    public static DatagramSocketImpl getMulticastSocketImpl() {
-        return new PlainMulticastSocketImpl();
-    }
-
     public static DatagramSocketImpl getDatagramSocketImpl(FileDescriptor fd, int localPort) {
         return new PlainDatagramSocketImpl(fd, localPort);
     }

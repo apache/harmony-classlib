@@ -551,11 +551,10 @@ public class MulticastSocket extends DatagramSocket {
     synchronized void createSocket(int aPort, InetAddress addr)
             throws SocketException {
         impl = factory != null ? factory.createDatagramSocketImpl()
-                : SocketImplProvider.getMulticastSocketImpl();
+                : SocketImplProvider.getDatagramSocketImpl();
         impl.create();
         try {
-            // the required default options are now set in the VM where they
-            // should be
+            impl.setOption(SocketOptions.SO_REUSEADDR, Boolean.TRUE);
             impl.bind(aPort, addr);
             isBound = true;
         } catch (SocketException e) {
