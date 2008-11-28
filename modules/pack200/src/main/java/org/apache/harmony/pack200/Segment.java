@@ -45,7 +45,6 @@ public class Segment implements ClassVisitor {
 
     public void pack(List classes, List files, OutputStream out)
             throws IOException, Pack200Exception {
-        Pack200ClassReader.resetSyntheticCounter();
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
         cpBands = new CpBands(this);

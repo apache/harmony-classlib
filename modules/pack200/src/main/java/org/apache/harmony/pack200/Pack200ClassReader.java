@@ -29,7 +29,7 @@ public class Pack200ClassReader extends ClassReader {
 
     private boolean lastConstantHadWideIndex;
     private int lastUnsignedShort;
-    private static boolean anySyntheticAttributes;
+    private boolean anySyntheticAttributes;
 
     /**
      * @param b
@@ -92,12 +92,8 @@ public class Pack200ClassReader extends ClassReader {
         return lastConstantHadWideIndex;
     }
 
-    public static boolean hasSyntheticAttributes() {
+    public boolean hasSyntheticAttributes() {
         return anySyntheticAttributes;
-    }
-
-    public static void resetSyntheticCounter() {
-        anySyntheticAttributes = false;
     }
 
 }
