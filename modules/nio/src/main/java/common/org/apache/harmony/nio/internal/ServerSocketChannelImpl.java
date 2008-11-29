@@ -87,7 +87,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         super(sp);
         status = SERVER_STATUS_OPEN;
         fd = new FileDescriptor();
-        Platform.getNetworkSystem().createServerStreamSocket(fd,
+        Platform.getNetworkSystem().createStreamSocket(fd,
                 NetUtil.preferIPv4Stack());
         impl = SocketImplProvider.getServerSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
