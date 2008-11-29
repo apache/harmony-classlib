@@ -2849,51 +2849,42 @@ hysock_setopt_bool (struct HyPortLibrary * portLibrary, hysocket_t socketP,
   BOOL option = (BOOL) * optval;
   I_32 optlen = sizeof (option);
 
-  if (0 > platformLevel)
-    {
-      return platformLevel;
-    }
-  if (0 > platformOption)
-    {
-      return platformOption;
-    }
+  if (0 > platformLevel) {
+    return platformLevel;
+  }
+  if (0 > platformOption) {
+    return platformOption;
+  }
 
-  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,
-     then we set it just on that one.  */
-
-  if (socketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      rc =
-	setsockopt (socketP->ipv4, platformLevel, platformOption,
-		    (char *) &option, optlen);
-    }
-  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      if ((platformOption == IP_MULTICAST_LOOP)
-	  && (platformLevel == OS_IPPROTO_IP))
-	{
-	  platformLevel = IPPROTO_IPV6;
-	  platformOption = IPV6_MULTICAST_LOOP;
-	}
-      rc =
-	setsockopt (socketP->ipv6, platformLevel, platformOption,
+  /* If both the IPv4 and IPv6 socket are open then we want to set the
+   * option on both.  If only one is open, then we set it just on that one.
+   */
+  if (socketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    rc = setsockopt(socketP->ipv4, platformLevel, platformOption,
+		  (char *) &option, optlen);
+  }
+  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    if ((platformOption == IP_MULTICAST_LOOP) &&
+        (platformLevel == OS_IPPROTO_IP)) {
+      platformLevel = IPPROTO_IPV6;
+	    platformOption = IPV6_MULTICAST_LOOP;
+	  }
+    rc = setsockopt(socketP->ipv6, platformLevel, platformOption,
 		    (char *) &option, optlen);
     }
 
-  if (rc != 0)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<setsockopt (for bool) failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
+  if (rc != 0) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<setsockopt (for bool) failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
 						    HYPORT_ERROR_SOCKET_OPTARGSINVALID);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
+	    default :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
 						    findError (rc));
-	}
-    }
+	  }
+  }
 
   return rc;
 }
