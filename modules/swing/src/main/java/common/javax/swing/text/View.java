@@ -388,8 +388,6 @@ public abstract class View implements SwingConstants {
         } else if (type == DocumentEvent.EventType.CHANGE) {
             view.changedUpdate(event, shape, factory);
         }
-        assert false : "Unknown document event type. "
-                       + "Valid values are EventType.INSERT, REMOVE, CHANGE";
     }
 
     protected boolean updateChildren(final DocumentEvent.ElementChange change,
