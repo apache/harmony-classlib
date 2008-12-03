@@ -515,7 +515,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_connect
 {
   PORT_ACCESS_FROM_ENV(env);
   U_8 nAddrBytes[HYSOCK_INADDR6_LEN];
-  I_32 length = 0;
+  U_32 length = 0;
   U_16 nPort;
   I_32 result;
   hysocket_t socketP;
