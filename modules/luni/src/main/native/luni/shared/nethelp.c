@@ -665,17 +665,14 @@ netLookupErrorString (JNIEnv * env, I_32 anErrorNum)
  * @param[in]  anInetAddress  the object to access the 'value' field of
  * @param[out] buffer         bytes from the address jbyte array
  * @param[out] length         length of the address in stored in buffer
- *
  */
-
 void
-netGetJavaNetInetAddressValue (JNIEnv * env, jobject anInetAddress,
-             U_8 * buffer, U_32 * length)
+netGetJavaNetInetAddressValue
+  (JNIEnv * env, jobject anInetAddress, U_8 * buffer, U_32 * length)
 {
   jbyteArray byte_array =
     (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
-            HARMONY_CACHE_GET (env,
-               FID_java_net_InetAddress_address)));
+            HARMONY_CACHE_GET (env, FID_java_net_InetAddress_address)));
   *length = (*env)->GetArrayLength (env, byte_array);
   (*env)->GetByteArrayRegion (env, byte_array, 0, *length, (jbyte *)buffer);
 }

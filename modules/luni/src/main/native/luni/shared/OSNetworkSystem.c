@@ -163,9 +163,8 @@ setConnectContext(JNIEnv * env, jobject longclass, U_8 * context)
   jfieldID descriptorFID;
   descriptorCLS = (*env)->FindClass(env, "java/lang/Long");
   descriptorFID = (*env)->GetFieldID(env, descriptorCLS, "value", "J");
-  (*env)->SetLongField(env, longclass, descriptorFID,
-                       (jlong) ((IDATA) context));
-};
+  (*env)->SetLongField(env, longclass, descriptorFID, (jlong) (IDATA) context);
+}
 
 /**
  * A helper method, to get the connect context.
@@ -180,9 +179,8 @@ getConnectContext(JNIEnv * env, jobject longclass)
   jfieldID descriptorFID;
   descriptorCLS = (*env)->FindClass(env, "java/lang/Long");
   descriptorFID = (*env)->GetFieldID(env, descriptorCLS, "value", "J");
-  return (void
-          *) ((IDATA) ((*env)->GetLongField(env, longclass, descriptorFID)));
-};
+  return (void *) (IDATA) ((*env)->GetLongField(env, longclass, descriptorFID));
+}
 
 /**
  * A helper method, to set the remote address into the socketImpl.
@@ -420,7 +418,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
   }
 
   /* If no bytes are read, return -1 to signal 'endOfFile' to the Java input stream */
-  return (0 == result) ? (jint) - 1 : (jint) result;
+  return (0 == result) ? (jint) -1 : (jint) result;
 }
 
 
@@ -512,46 +510,48 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_setNonBlocking
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_connect
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jint trafficClass,
+  (JNIEnv * env, jobject thiz, jobject fd, jint trafficClass,
    jobject inetAddress, jint remotePort)
 {
   PORT_ACCESS_FROM_ENV(env);
-  jbyte nAddrBytes[HYSOCK_INADDR6_LEN];
-  int length;
+  U_8 nAddrBytes[HYSOCK_INADDR6_LEN];
+  I_32 length = 0;
   U_16 nPort;
   I_32 result;
   hysocket_t socketP;
   hysockaddr_struct sockaddrP;
   U_32 scope_id = 0;
 
-  socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
   if (!hysock_socketIsValid(socketP)) {
     throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
     return -1;
-  } else {
-    netGetJavaNetInetAddressValue(env, inetAddress, (U_8 *) nAddrBytes,
-                                  (U_32 *) & length);
-
-    nPort = hysock_htons((U_16) remotePort);
-    if (length == HYSOCK_INADDR_LEN) {
-      hysock_sockaddr_init6(&sockaddrP, (U_8 *) nAddrBytes, length,
-                            HYADDR_FAMILY_AFINET4, nPort, 0, scope_id,
-                            socketP);
-    } else {
-      netGetJavaNetInetAddressScopeId(env, inetAddress, &scope_id);
-      hysock_sockaddr_init6(&sockaddrP, (U_8 *) nAddrBytes, length,
-                            HYADDR_FAMILY_AFINET6, nPort,
-                            (trafficClass & 0xFF) << 20, scope_id, socketP);
-    }
-
-    result = hysock_connect(socketP, &sockaddrP);
-    if (0 != result) {
-      throwJavaNetConnectException(env, result);
-      return result;
-    }
   }
+
+  netGetJavaNetInetAddressValue(env, inetAddress, nAddrBytes, &length);
+  nPort = hysock_htons((U_16) remotePort);
+
+  if (length == HYSOCK_INADDR_LEN) {
+    // IPv4
+    hysock_sockaddr_init6(&sockaddrP, nAddrBytes, length,
+                          HYADDR_FAMILY_AFINET4, nPort, 0, 0, socketP);
+  } else {
+    // IPv6
+    netGetJavaNetInetAddressScopeId(env, inetAddress, &scope_id);
+    hysock_sockaddr_init6(&sockaddrP, nAddrBytes, length,
+                          HYADDR_FAMILY_AFINET6, nPort,
+                          (trafficClass & 0xFF) << 20, scope_id, socketP);
+  }
+
+  result = hysock_connect(socketP, &sockaddrP);
+  if (0 != result) {
+    throwJavaNetConnectException(env, result);
+    return result;
+  }
+
   return result;
 }
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -806,6 +806,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendUrgentData
    */
   if (result < 0) {
     throwJavaNetSocketException(env, result);
+    return;
   }
 }
 
@@ -997,11 +998,11 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_peekDatagram
   if (result < 0 && result != HYPORT_ERROR_SOCKET_MSGSIZE) {
     throwJavaNetSocketException(env, result);
     return (jint) 0;
-  } else {
-    updateAddress(env, &sockaddrP, senderAddress);
-    hport = (jint) hysock_ntohs(hysock_sockaddr_port(&sockaddrP));
-    return hport;
   }
+
+  updateAddress(env, &sockaddrP, senderAddress);
+  hport = (jint) hysock_ntohs(hysock_sockaddr_port(&sockaddrP));
+  return hport;
 }
 
 /*
@@ -1090,12 +1091,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirect
   if (result < 0) {
     throwJavaNetSocketException(env, result);
     return (jint) 0;
-  } else {
-    if (datagramPacket != NULL) {
-      updatePacket(env, &sockaddrP, datagramPacket, result);
-    }
-    return (jint) result;
   }
+
+  if (datagramPacket != NULL) {
+    updatePacket(env, &sockaddrP, datagramPacket, result);
+  }
+  return (jint) result;
 }
 
 /*
