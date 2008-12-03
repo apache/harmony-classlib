@@ -20,7 +20,7 @@ package java.net;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
 import org.apache.harmony.luni.util.Msg;
 
 /**
@@ -551,7 +551,7 @@ public class MulticastSocket extends DatagramSocket {
     synchronized void createSocket(int aPort, InetAddress addr)
             throws SocketException {
         impl = factory != null ? factory.createDatagramSocketImpl()
-                : SocketImplProvider.getDatagramSocketImpl();
+                : new PlainDatagramSocketImpl();
         impl.create();
         try {
             impl.setOption(SocketOptions.SO_REUSEADDR, Boolean.TRUE);

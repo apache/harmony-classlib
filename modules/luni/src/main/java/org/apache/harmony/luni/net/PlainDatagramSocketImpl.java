@@ -42,7 +42,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * support security checks. Alternative types of DatagramSocketImpl's may be
  * used by setting the <code>impl.prefix</code> system property.
  */
-class PlainDatagramSocketImpl extends DatagramSocketImpl {
+public class PlainDatagramSocketImpl extends DatagramSocketImpl {
 
     static final int MULTICAST_IF = 1;
 

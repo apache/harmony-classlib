@@ -42,7 +42,7 @@ import java.nio.channels.UnresolvedAddressException;
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.SelectorProvider;
 
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainSocketImpl;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
@@ -147,7 +147,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         fd = new FileDescriptor();
         status = SOCKET_STATUS_UNCONNECTED;
         if (connect) {
-            networkSystem.createSocket(fd, true);
+            networkSystem.createStreamSocket(fd, true);
         }
     }
 
@@ -196,8 +196,8 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                     addr = connectAddress.getAddress();
                     port = connectAddress.getPort();
                 }
-                socket = new SocketAdapter(SocketImplProvider.getSocketImpl(fd,
-                        localPort, addr, port), this);
+                socket = new SocketAdapter(
+                        new PlainSocketImpl(fd, localPort, addr, port), this);
             } catch (SocketException e) {
                 return null;
             }
@@ -242,9 +242,15 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
 
         // check the address
         InetSocketAddress inetSocketAddress = validateAddress(socketAddress);
+        InetAddress normalAddr = inetSocketAddress.getAddress();
+
+        // When connecting, map ANY address to Localhost
+        if (normalAddr.isAnyLocalAddress()) {
+            normalAddr = InetAddress.getLocalHost();
+        }
 
         int port = inetSocketAddress.getPort();
-        String hostName = inetSocketAddress.getAddress().getHostName();
+        String hostName = normalAddr.getHostName();
         // security check
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -256,23 +262,12 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         boolean finished = false;
 
         try {
-            if (!isBound) {
-                // bind
-                networkSystem.bind2(fd, 0, true, InetAddress
-                        .getByAddress(new byte[] { 0, 0, 0, 0 }));
-                isBound = true;
-            }
-
             if (isBlocking()) {
                 begin();
-                result = networkSystem.connect(fd, trafficClass,
-                        inetSocketAddress.getAddress(), inetSocketAddress
-                                .getPort());
-
+                result = networkSystem.connect(fd, trafficClass, normalAddr, port);
             } else {
                 result = networkSystem.connectWithTimeout(fd, 0, trafficClass,
-                        inetSocketAddress.getAddress(), inetSocketAddress
-                                .getPort(), HY_SOCK_STEP_START, connectContext);
+                        normalAddr, port, HY_SOCK_STEP_START, connectContext);
                 // set back to nonblocking to work around with a bug in portlib
                 if (!this.isBlocking()) {
                     networkSystem.setNonBlocking(fd, true);
@@ -357,6 +352,8 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         synchronized (this) {
             status = (finished ? SOCKET_STATUS_CONNECTED : status);
             isBound = finished;
+            // TPE: Workaround for bug that turns socket back to blocking
+            if (!isBlocking()) implConfigureBlocking(false);
         }
         return finished;
     }

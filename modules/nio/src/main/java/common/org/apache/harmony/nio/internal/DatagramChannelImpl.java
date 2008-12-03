@@ -37,7 +37,7 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.spi.SelectorProvider;
 
 import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
@@ -117,8 +117,8 @@ class DatagramChannelImpl extends DatagramChannel implements
     @Override
     synchronized public DatagramSocket socket() {
         if (null == socket) {
-            socket = new DatagramSocketAdapter(SocketImplProvider
-                    .getDatagramSocketImpl(fd, localPort), this);
+            socket = new DatagramSocketAdapter(
+                    new PlainDatagramSocketImpl(fd, localPort), this);
         }
         return socket;
     }

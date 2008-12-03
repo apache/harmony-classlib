@@ -101,12 +101,6 @@ final class OSNetworkSystem implements INetworkSystem {
     public native void createDatagramSocket(FileDescriptor fd,
             boolean preferIPv4Stack) throws SocketException;
 
-    /**
-     * @deprecated use {@link #createStreamSocket(FileDescriptor, boolean)}
-     */
-    public native void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
-            throws IOException;
-
     public native void createStreamSocket(FileDescriptor fd,
             boolean preferIPv4Stack) throws SocketException;
 

@@ -53,9 +53,6 @@ public interface INetworkSystem {
 	public boolean bind2(FileDescriptor aFD, int port, boolean bindToDevice,
 			InetAddress inetAddress) throws SocketException;
 
-	public void createSocket(FileDescriptor fd, boolean preferIPv4Stack)
-			throws IOException;
-
 	public int read(FileDescriptor aFD, byte[] data, int offset, int count,
 			int timeout) throws IOException;
     

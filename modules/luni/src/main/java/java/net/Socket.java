@@ -24,7 +24,7 @@ import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 
 import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
@@ -78,7 +78,7 @@ public class Socket {
      */
     public Socket() {
         impl = factory != null ? factory.createSocketImpl()
-                : SocketImplProvider.getSocketImpl();
+                : new PlainSocketImpl();
     }
 
     /**
@@ -114,7 +114,7 @@ public class Socket {
             checkConnectPermission(host, port);
         }
         impl = factory != null ? factory.createSocketImpl()
-                : SocketImplProvider.getSocketImpl(proxy);
+                : new PlainSocketImpl(proxy);
         this.proxy = proxy;
     }
 

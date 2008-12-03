@@ -43,7 +43,7 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * A concrete connected-socket implementation.
  */
-class PlainSocketImpl extends SocketImpl {
+public class PlainSocketImpl extends SocketImpl {
 
     // Const copy from socket
 
@@ -89,6 +89,27 @@ class PlainSocketImpl extends SocketImpl {
         fd = new FileDescriptor();
     }
 
+    public PlainSocketImpl(FileDescriptor fd) {
+        super();
+        this.fd = fd;
+    }
+    
+    /**
+     * creates an instance with specified proxy.
+     */
+    public PlainSocketImpl(Proxy proxy) {
+        this();
+        this.proxy = proxy;
+    }
+    
+    public PlainSocketImpl(FileDescriptor fd, int localport, InetAddress addr, int port) {
+        super();
+        this.fd = fd;
+        this.localport = localport;
+        this.address = addr;
+        this.port = port;
+    }
+    
     @Override
     protected void accept(SocketImpl newImpl) throws IOException {
         if (NetUtil.usingSocks(proxy)) {
@@ -207,9 +228,8 @@ class PlainSocketImpl extends SocketImpl {
      */
     private void connect(InetAddress anAddr, int aPort, int timeout)
             throws IOException {
-        InetAddress normalAddr = anAddr.isAnyLocalAddress() ? InetAddress
-                .getLocalHost() : anAddr;
-
+        
+        InetAddress normalAddr = anAddr.isAnyLocalAddress() ? InetAddress.getLocalHost() : anAddr;
         try {
             if (streaming) {
                 if (NetUtil.usingSocks(proxy)) {
