@@ -293,18 +293,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationImpl
   HARMONY_CACHE_SET(env, FID_java_net_DatagramPacket_port, fid);
 }
 
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    createSocket
- * Signature: (Ljava/io/FileDescriptor;Z)V
- */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_createSocket
-  (JNIEnv * env, jobject thiz, jobject fd, jboolean preferIPv4Stack)
-{
-  createSocket(env, fd, HYSOCK_STREAM, preferIPv4Stack);
-}
-
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -315,14 +303,7 @@ JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_createStreamSocket
   (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
 {
-  hysocket_t socketP;
-
   createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
-  socketP =
-    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
- 
-  /* Sets HY_SO_REUSEADDR = TRUE on Linux only */
-  setPlatformBindOptions(env, socketP);
 }
 
 
