@@ -165,7 +165,7 @@ Font* createFont(fwchar_t* family, StyleName sn)
 	if (!isFound)
 	{
 //		printf("Font not found");
-		return 0; // здесь поставить значения по умолчанию
+		return 0; //Font not found
 	}    
 	return retFont;
 }
