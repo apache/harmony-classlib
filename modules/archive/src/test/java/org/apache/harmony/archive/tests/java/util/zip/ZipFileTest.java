@@ -226,6 +226,87 @@ public class ZipFileTest extends junit.framework.TestCase {
     public void test_size() {
         assertEquals(6, zfile.size());
     }
+    
+    /**
+     * @tests java.io.InputStream#reset()
+     */
+    public void test_reset() throws IOException {
+        // read an uncompressed entry
+        ZipEntry zentry = zfile.getEntry("File1.txt");
+        InputStream is = zfile.getInputStream(zentry);
+        byte[] rbuf1 = new byte[6];
+        byte[] rbuf2 = new byte[6];
+        int r1, r2;
+        r1 = is.read(rbuf1);
+        assertEquals(rbuf1.length, r1);
+        r2 = is.read(rbuf2);
+        assertEquals(rbuf2.length, r2);
+        
+        is.reset();
+        r2 = is.read(rbuf2);
+        assertEquals(rbuf2.length, r2);
+        is.close();
+
+        // read a compressed entry
+        byte[] rbuf3 = new byte[4185];
+        ZipEntry zentry2 = zfile.getEntry("File3.txt");
+        is = zfile.getInputStream(zentry2);
+        r1 = is.read(rbuf3);
+        assertEquals(4183, r1);
+        is.reset();
+        
+        r1 = is.read(rbuf3);
+        assertEquals(4183, r1);
+        is.close();
+
+        is = zfile.getInputStream(zentry2);
+        r1 = is.read(rbuf3, 0, 3000);
+        assertEquals(3000, r1);
+        is.reset();
+        r1 = is.read(rbuf3, 0, 3000);
+        assertEquals(3000, r1);
+        is.close();
+    }
+    
+    /**
+     * @tests java.io.InputStream#reset()
+     */
+    public void test_reset_subtest0() throws IOException {
+        // read an uncompressed entry
+        ZipEntry zentry = zfile.getEntry("File1.txt");
+        InputStream is = zfile.getInputStream(zentry);
+        byte[] rbuf1 = new byte[12];
+        byte[] rbuf2 = new byte[12];
+        int r = is.read(rbuf1, 0, 4);
+        assertEquals(4, r);
+        is.mark(0);
+        r = is.read(rbuf1);
+        assertEquals(8, r);
+        assertEquals(-1, is.read());
+        
+        is.reset();
+        r = is.read(rbuf2);
+        assertEquals(8, r);
+        assertEquals(-1, is.read());
+        is.close();
+
+        // read a compressed entry
+        byte[] rbuf3 = new byte[4185];
+        ZipEntry zentry2 = zfile.getEntry("File3.txt");
+        is = zfile.getInputStream(zentry2);
+        r = is.read(rbuf3, 0, 3000);
+        assertEquals(3000, r);
+        is.mark(0);
+        r = is.read(rbuf3);
+        assertEquals(1183, r);
+        assertEquals(-1, is.read());
+        
+        is.reset();
+        r = is.read(rbuf3);
+        assertEquals(1183, r);
+        assertEquals(-1, is.read());
+        is.close();
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

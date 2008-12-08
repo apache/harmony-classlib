@@ -140,7 +140,7 @@ public class JarFileTest extends TestCase {
         try {
             InputStream is = new URL(jarDirUrl + "/jarlist.txt").openStream();
             while (is.available() > 0) {
-                StringBuffer linebuff = new StringBuffer(80); // Typical line
+                StringBuilder linebuff = new StringBuilder(80); // Typical line
                 // length
                 done: while (true) {
                     int nextByte = is.read();
@@ -515,5 +515,40 @@ public class JarFileTest extends TestCase {
                 // desired
             }
         }
+    }
+    
+    /*
+     * @test JarFile.getInputStream()
+     */
+    public void testGetInputStreamLjava_util_jar_JarEntry() throws IOException {
+        Support_Resources.copyFile(resources, null, JAR1);
+        JarFile jf = new JarFile(new File(resources, JAR1));
+        InputStream is = jf.getInputStream(jf.getEntry(JAR1_ENTRY1));
+        assertTrue(is.available() > 0);
+
+        byte[] buffer = new byte[1024];
+        int r = is.read(buffer, 0, 1024);
+        jf.close();
+        is.close();
+
+        StringBuilder sb = new StringBuilder(r);
+        for (int i = 0; i < r; i++) {
+            sb.append((char) (buffer[i] & 0xff));
+        }
+        String contents = sb.toString();
+        assertTrue(contents.indexOf("foo") > 0);
+        assertTrue(contents.indexOf("bar") > 0);
+
+        try {
+            jf.getInputStream(jf.getEntry(JAR1_ENTRY1));
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+
+        jf = new JarFile(new File(resources, JAR1));
+        is = jf.getInputStream(new JarEntry("invalid"));
+        assertNull(is);
+        jf.close(); 
     }
 }

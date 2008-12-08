@@ -17,7 +17,6 @@
 
 package java.util.jar;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -255,8 +254,7 @@ public class JarFile extends ZipFile {
             return manifest;
         }
         try {
-            ByteArrayInputStream is = (ByteArrayInputStream) super
-                    .getInputStream(manifestEntry);
+            InputStream is = super.getInputStream(manifestEntry);
             if (verifier != null) {
                 byte[] buf = new byte[is.available()];
                 is.mark(buf.length);
