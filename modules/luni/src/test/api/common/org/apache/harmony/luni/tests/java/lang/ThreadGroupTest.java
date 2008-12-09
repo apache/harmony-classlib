@@ -619,6 +619,26 @@ public class ThreadGroupTest extends junit.framework.TestCase {
 
 	}
 
+    /*
+     * @tests java.lang.ThreadGroupt#setDaemon(boolean)
+     */
+    public void test_setDaemon_Parent_Child() {
+        ThreadGroup ptg = new ThreadGroup("Parent");
+        ThreadGroup ctg = new ThreadGroup(ptg, "Child");
+
+        ctg.setDaemon(true);
+        assertTrue(ctg.isDaemon());
+
+        ctg.setDaemon(false);
+        assertFalse(ctg.isDaemon());
+
+        ptg.setDaemon(true);
+        assertFalse(ctg.isDaemon());
+
+        ptg.setDaemon(false);
+        assertFalse(ctg.isDaemon());
+    }
+
 	/**
 	 * @tests java.lang.ThreadGroup#setMaxPriority(int)
 	 */

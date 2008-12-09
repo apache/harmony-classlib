@@ -485,6 +485,25 @@ public class String2Test extends junit.framework.TestCase {
         assertEquals(expected[0], bytes[0]);
         assertEquals(expected[1], bytes[1]);
     }
+    
+    /*
+     * @tests java.lang.String#getBytes()
+     */
+    public void test_getBytes_NPE() throws Exception {
+        try {
+            "abc".getBytes((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        try {
+            "Hello World".getBytes(1, 2, null, 1);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 
     /**
      * @tests java.lang.String#getChars(int, int, char[], int)

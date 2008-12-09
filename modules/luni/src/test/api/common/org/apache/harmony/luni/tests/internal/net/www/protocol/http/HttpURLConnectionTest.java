@@ -317,6 +317,23 @@ public class HttpURLConnectionTest extends TestCase {
     }
 
     /**
+     * Test whether getOutputStream can work after connection
+     */
+    public void test_getOutputStream_AfterConnect() throws Exception {
+        URL url = new URL("http://www.apache.org");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.connect();
+        String str_get = connection.getRequestMethod();
+        assertTrue(str_get.equalsIgnoreCase("GET"));
+
+        // call to getOutputStream should implicitly set req. method to POST
+        connection.getOutputStream();
+        String str_post = connection.getRequestMethod();
+        assertTrue(str_post.equalsIgnoreCase("POST"));
+    }
+
+    /**
      * Test checks if the proxy specified in openConnection method will be used
      * for connection to the server
      */
