@@ -291,8 +291,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Sub is PropertyDescriptor
                 if (subIndexedType == null) {
                     // Same property type
-                    if (subType != null &&
-                            subType.getName().equals(superType.getName())) {
+                    if (subType != null && superType != null
+                            && subType.getName().equals(superType.getName())) {
                         if ((subGet == null) && (superGet != null)) {
                             subDesc.setReadMethod(superGet);
                         }
@@ -306,7 +306,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                         }
                     }
                 } else { // Sub is IndexedPropertyDescriptor
-                    if ((superType.isArray())
+                    if (superType != null
+                            && (superType.isArray())
                             && (superType.getComponentType().getName()
                                     .equals(subIndexedType.getName()))) {
                         // same type
@@ -321,7 +322,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 subMap.put(propertyName, subDesc);
             } else { // Super is IndexedPropertyDescriptor
                 if (subIndexedType == null) { // Sub is PropertyDescriptor
-                    if (subType.isArray()
+                    if (subType != null
+                            && subType.isArray()
                             && (subType.getComponentType().getName()
                                     .equals(superIndexedType.getName()))) {
                         // Same type
@@ -336,8 +338,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
                         subMap.put(propertyName, (PropertyDescriptor) value);
                     }
 
-                } else if (subIndexedType.getName().equals(
-                        superIndexedType.getName())) {
+                } else if (superIndexedType != null
+                        && subIndexedType.getName().equals(
+                                superIndexedType.getName())) {
                     // Sub is IndexedPropertyDescriptor and Same type
                     IndexedPropertyDescriptor subDesc = (IndexedPropertyDescriptor) value;
                     if ((subGet == null) && (superGet != null)) {
