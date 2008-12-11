@@ -156,7 +156,7 @@ public class KeyStore3Test extends TestCase {
             NoSuchAlgorithmException, CertificateException,
             FileNotFoundException, IOException {
 
-        String alias = "JKS";
+        String alias = "BKS";
         char[] pwd = new char[] { '1', '2', '3', '4', '5', '6' };
         InputStream fis = KeyStore2Test.class
                 .getResourceAsStream("builderimpl.ks");
