@@ -71,6 +71,12 @@ selectRead
   my_pollfd.revents = 0;
   result = poll (&my_pollfd, 1, timeout);
   
+  if (result == 0)
+    return HYPORT_ERROR_SOCKET_TIMEOUT;
+
+  if (result == -1)
+    return HYPORT_ERROR_SOCKET_OPFAILED;
+
   return result;
 }
 
