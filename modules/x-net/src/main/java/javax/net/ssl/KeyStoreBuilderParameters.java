@@ -23,31 +23,52 @@ import java.util.List;
 import java.security.KeyStore;
 
 /**
- * @com.intel.drl.spec_ref
- *  
+ * A parameters object for {@link X509KeyManager}
+ * 
+ * @since 1.5
+ * @see X509KeyManager
+ * @see KeyStore.Builder
  */
 public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
 
-    private List ksbuilders;
+    private final List<KeyStore.Builder> ksbuilders;
 
+    /**
+     * Constructs an instance for the builder passed.
+     * 
+     * @param builder a builder
+     */
     public KeyStoreBuilderParameters(KeyStore.Builder builder) {
-        ksbuilders = new ArrayList();
-        if (builder != null) {
-            ksbuilders.add(builder);
-        }
+        super();
+        ksbuilders = Collections.singletonList(builder);
     }
 
+    /**
+     * Constructs an instance for the builder list passed.
+     * 
+     * @param parameters the builder list
+     * @throws NullPointerException if {@code parameters} is {@code null}
+     * @throws IllegalArgumentException if {@code parameters} is empty
+     */
+    @SuppressWarnings("unchecked")
     public KeyStoreBuilderParameters(List parameters) {
+        super();
         if (parameters == null) {
             throw new NullPointerException("Builders list is null");
         }
         if (parameters.isEmpty()) {
             throw new IllegalArgumentException("Builders list is empty");
         }
-        ksbuilders = new ArrayList(parameters);
+        ksbuilders = Collections.unmodifiableList(new ArrayList<KeyStore.Builder>(parameters));
     }
 
+    /**
+     * The list of builder parameters.
+     * 
+     * @return an unmodifiable list of parameters
+     */
+    @SuppressWarnings("unchecked")
     public List getParameters() {
-        return Collections.unmodifiableList(ksbuilders);
+        return ksbuilders;
     }
 }

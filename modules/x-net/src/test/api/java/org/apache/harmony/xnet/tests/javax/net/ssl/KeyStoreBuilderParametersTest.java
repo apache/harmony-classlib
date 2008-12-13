@@ -19,6 +19,7 @@ package org.apache.harmony.xnet.tests.javax.net.ssl;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.KeyStore.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +32,28 @@ import junit.framework.TestCase;
  * methods.
  */
 public class KeyStoreBuilderParametersTest extends TestCase {
+    
+    class EmptyBuilder extends KeyStore.Builder {
+        public KeyStore getKeyStore() throws KeyStoreException {
+            return null;
+        }
+
+        public KeyStore.ProtectionParameter getProtectionParameter(String alias)
+                throws KeyStoreException {
+            return null;
+        }
+    }
 
     /*
      * Class under test for void KeyStoreBuilderParameters(KeyStore.Builder)
      */
     public final void testKeyStoreBuilderParametersBuilder() {
-        // should not throw NullPointerException
-        new KeyStoreBuilderParameters((KeyStore.Builder) null);
+        try {
+            new KeyStoreBuilderParameters((KeyStore.Builder) null);
+        } catch (NullPointerException e) {
+            // javadoc says this should throw NPE, but it doesn't
+            fail("no NPE expected");
+        }
     }
 
     /*
@@ -45,36 +61,37 @@ public class KeyStoreBuilderParametersTest extends TestCase {
      */
     public final void testKeyStoreBuilderParametersList() {
         try {
-            new KeyStoreBuilderParameters((List) null);
-            fail("No expected NullPointerException");
+            new KeyStoreBuilderParameters((List<?>) null);
+            fail("expected a NPE");
         } catch (NullPointerException e) {
         }
 
         try {
-            new KeyStoreBuilderParameters(new ArrayList());
-            fail("No expected IllegalArgumentException");
+            new KeyStoreBuilderParameters(new ArrayList<Builder>());
+            fail("expected a IAE");
         } catch (IllegalArgumentException e) {
         }
 
     }
 
+    @SuppressWarnings("unchecked")
     public final void testGetParameters() {
-        List ksbuilders;
-        KeyStore.Builder builder = new myBuilder();
-        List result;
+        List<Builder> ksbuilders;
+        KeyStore.Builder builder = new EmptyBuilder();
+        List<Object> result;
         KeyStoreBuilderParameters param = new KeyStoreBuilderParameters(builder);
         result = param.getParameters();
         try {
-            result.add(new myBuilder());
+            result.add(new EmptyBuilder());
             fail("The list is modifiable");
         } catch (UnsupportedOperationException e) {
         }
         assertEquals("incorrect size", 1, result.size());
         assertTrue("incorrect list", result.contains(builder));
         
-        ksbuilders = new ArrayList();
+        ksbuilders = new ArrayList<Builder>();
         ksbuilders.add(builder);
-        ksbuilders.add(new myBuilder());  
+        ksbuilders.add(new EmptyBuilder());  
         param = new KeyStoreBuilderParameters(ksbuilders);
         result = param.getParameters();
         try {
@@ -84,16 +101,5 @@ public class KeyStoreBuilderParametersTest extends TestCase {
         }
         assertEquals("incorrect size", 2, result.size());
         assertTrue("incorrect list", result.containsAll(ksbuilders));
-    }
-}
-
-class myBuilder extends KeyStore.Builder {
-    public KeyStore getKeyStore() throws KeyStoreException {
-        return null;
-    }
-
-    public KeyStore.ProtectionParameter getProtectionParameter(String alias)
-            throws KeyStoreException {
-        return null;
     }
 }
