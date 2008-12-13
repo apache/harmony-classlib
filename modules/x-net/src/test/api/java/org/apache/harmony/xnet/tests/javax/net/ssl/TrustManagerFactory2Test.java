@@ -28,7 +28,7 @@ import java.security.Security;
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MyTrustManagerFactorySpi;
 import junit.framework.TestCase;
 

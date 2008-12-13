@@ -29,7 +29,7 @@ import java.security.UnrecoverableKeyException;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.ManagerFactoryParameters;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MyKeyManagerFactorySpi;
 import junit.framework.TestCase;
 
