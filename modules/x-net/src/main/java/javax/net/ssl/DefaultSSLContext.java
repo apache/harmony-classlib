@@ -76,9 +76,11 @@ final class DefaultSSLContext {
                     }
                     if (keystore != null) {
                         FileInputStream fis = new FileInputStream(keystore);
-                        ks.load(fis, pwd);
-                        fis.close();
-
+                        try {
+                            ks.load(fis, pwd);
+                        } finally {
+                            fis.close();
+                        }
                         KeyManagerFactory kmf;
                         String kmfAlg = Security.getProperty("ssl.KeyManagerFactory.algorithm");
                         if (kmfAlg == null) {
@@ -100,8 +102,11 @@ final class DefaultSSLContext {
                     // TODO Defaults: jssecacerts; cacerts
                     if (keystore != null) {
                         FileInputStream fis = new FileInputStream(keystore);
-                        ks.load(fis, pwd);
-                        fis.close();
+                        try {
+                            ks.load(fis, pwd);
+                        } finally {
+                            fis.close();
+                        }
                         TrustManagerFactory tmf;
                         String tmfAlg = Security.getProperty("ssl.TrustManagerFactory.algorithm");
                         if (tmfAlg == null) {
