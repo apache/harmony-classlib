@@ -23,198 +23,92 @@
 package javax.net.ssl;
 
 import java.nio.ByteBuffer;
-import java.nio.ReadOnlyBufferException;
 
 /**
+ * An engine for securing communication via SSL, TLS and other protocols.
  * 
- * @com.intel.drl.spec_ref
- * 
- *  
+ * @since 1.5
  */
 public abstract class SSLEngine {
-    // Store host value
-    private final String host;
-
-    // Store port value
-    private final int port;
+    private final String peerHost;
+    private final int peerPort;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Constructs an instance without any peer host information.
      */
     protected SSLEngine() {
-        host = null;
-        port = -1;
+        super();
+        peerHost = null;
+        peerPort = -1;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Constructs an instance with the given peer host and port.
+     * 
+     * @param host name of the peer host
+     * @param port value of the port of the peer host 
      */
     protected SSLEngine(String host, int port) {
-        this.host = host;
-        this.port = port;
+        super();
+        this.peerHost = host;
+        this.peerPort = port;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    public String getPeerHost() {
+        return peerHost;
+    }
+
+    public int getPeerPort() {
+        return peerPort;
+    }
+    
     public abstract void beginHandshake() throws SSLException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void closeInbound() throws SSLException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void closeOutbound();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Runnable getDelegatedTask();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getEnabledCipherSuites();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getEnabledProtocols();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getEnableSessionCreation();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLEngineResult.HandshakeStatus getHandshakeStatus();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getNeedClientAuth();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String getPeerHost() {
-        return host;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public int getPeerPort() {
-        return port;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLSession getSession();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getSupportedCipherSuites();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getSupportedProtocols();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getUseClientMode();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getWantClientAuth();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean isInboundDone();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean isOutboundDone();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnabledCipherSuites(String[] suites);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnabledProtocols(String[] protocols);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnableSessionCreation(boolean flag);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setNeedClientAuth(boolean need);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setUseClientMode(boolean mode);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setWantClientAuth(boolean want);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts,
             int offset, int length) throws SSLException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLEngineResult wrap(ByteBuffer[] srcs, int offset,
             int length, ByteBuffer dst) throws SSLException;
 
