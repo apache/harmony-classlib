@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris V. Kuznetsov
- * @version $Revision$
- */
-
 package javax.net.ssl;
 
 import java.io.FileInputStream;
@@ -56,7 +51,7 @@ final class DefaultSSLContext {
             final Provider.Service service = Engine.door.getService(provider, "SSLContext");
             if (service != null) {
                 try {
-                    SSLContext con = new ContextImpl((SSLContextSpi) service.newInstance(null),
+                    SSLContext con = new SSLContext((SSLContextSpi) service.newInstance(null),
                             service.getProvider(), service.getAlgorithm());
 
                     /* 
