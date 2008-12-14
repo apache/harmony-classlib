@@ -23,45 +23,36 @@
 package javax.net.ssl;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.Security;
 
 import javax.net.ServerSocketFactory;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public abstract class SSLServerSocketFactory extends ServerSocketFactory {
-// TODO EXPORT CONTROL
-    
+    // TODO EXPORT CONTROL
+
     // The default SSL socket factory
     private static ServerSocketFactory defaultServerSocketFactory;
 
     private static String defaultName;
-    
-    protected SSLServerSocketFactory() {
-        super();
-    }
 
-    public static ServerSocketFactory getDefault() {
+    public static synchronized ServerSocketFactory getDefault() {
         if (defaultServerSocketFactory != null) {
             return defaultServerSocketFactory;
         }
         if (defaultName == null) {
-            AccessController.doPrivileged(new java.security.PrivilegedAction(){
-                public Object run() {
-                	defaultName = Security.getProperty("ssl.ServerSocketFactory.provider");
-                    if (defaultName != null) {    
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                public Void run() {
+                    defaultName = Security.getProperty("ssl.ServerSocketFactory.provider");
+                    if (defaultName != null) {
                         ClassLoader cl = Thread.currentThread().getContextClassLoader();
                         if (cl == null) {
                             cl = ClassLoader.getSystemClassLoader();
                         }
                         try {
-                            defaultServerSocketFactory = (ServerSocketFactory) Class
-                                    .forName(defaultName, true, cl)
-                                    .newInstance();
+                            final Class<?> ssfc = Class.forName(defaultName, true, cl);
+                            defaultServerSocketFactory = (ServerSocketFactory) ssfc.newInstance();
                         } catch (Exception e) {
-                            return e;
                         }
                     }
                     return null;
@@ -72,17 +63,22 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory {
             // Try to find in providers
             SSLContext context = DefaultSSLContext.getContext();
             if (context != null) {
-                defaultServerSocketFactory = context.getServerSocketFactory();    
+                defaultServerSocketFactory = context.getServerSocketFactory();
             }
         }
         if (defaultServerSocketFactory == null) {
             // Use internal dummy implementation
-            defaultServerSocketFactory = new DefaultSSLServerSocketFactory("No ServerSocketFactory installed");
-        }    
+            defaultServerSocketFactory = new DefaultSSLServerSocketFactory(
+                    "No ServerSocketFactory installed");
+        }
         return defaultServerSocketFactory;
     }
-    
-    public abstract String[] getDefaultCipherSuites();
-    public abstract String[] getSupportedCipherSuites();
 
+    protected SSLServerSocketFactory() {
+        super();
+    }
+
+    public abstract String[] getDefaultCipherSuites();
+
+    public abstract String[] getSupportedCipherSuites();
 }
