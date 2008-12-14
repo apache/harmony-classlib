@@ -28,17 +28,11 @@ import java.security.cert.Certificate;
 import javax.security.cert.X509Certificate;
 import java.util.EventObject;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-public class HandshakeCompletedEvent extends EventObject implements
-        Serializable {
+public class HandshakeCompletedEvent extends EventObject implements Serializable {
 
     /**
-     * @serial
-     * The 5.0 spec. doesn't declare this serialVersionUID field
-     * In order to be compatible it is explicitly declared here
+     * The 5.0 spec. doesn't declare this serialVersionUID field In order to be compatible it is
+     * explicitly declared here
      */
     private static final long serialVersionUID = 7914963744257769778L;
 
@@ -61,26 +55,24 @@ public class HandshakeCompletedEvent extends EventObject implements
         return session.getLocalCertificates();
     }
 
-    public Certificate[] getPeerCertificates()
-            throws SSLPeerUnverifiedException {
+    public Certificate[] getPeerCertificates() throws SSLPeerUnverifiedException {
         return session.getPeerCertificates();
     }
 
-    public X509Certificate[] getPeerCertificateChain()
-            throws SSLPeerUnverifiedException {
+    public X509Certificate[] getPeerCertificateChain() throws SSLPeerUnverifiedException {
         return session.getPeerCertificateChain();
     }
 
     public Principal getPeerPrincipal() throws SSLPeerUnverifiedException {
         return session.getPeerPrincipal();
     }
-    
+
     public Principal getLocalPrincipal() {
         return session.getLocalPrincipal();
     }
-    
+
     public SSLSocket getSocket() {
-        return (SSLSocket)this.source;
+        return (SSLSocket) this.source;
     }
 
 }
