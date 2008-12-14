@@ -15,16 +15,7 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public interface KeyManager {
 }
