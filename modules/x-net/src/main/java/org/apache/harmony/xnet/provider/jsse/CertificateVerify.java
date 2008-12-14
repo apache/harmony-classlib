@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris Kuznetsov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.Message;
@@ -30,7 +25,6 @@ import org.apache.harmony.xnet.provider.jsse.AlertProtocol;
 import java.io.IOException;
 
 /**
- * 
  * Represents certificate verify message
  * @see TLS 1.0 spec., 7.4.8. Certificate verify
  * (http://www.ietf.org/rfc/rfc2246.txt)

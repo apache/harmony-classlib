@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import java.io.IOException;
@@ -27,7 +22,6 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
- * 
  * Represents Client Hello message
  * @see TLS 1.0 spec., 7.4.1.2. Client hello
  * (http://www.ietf.org/rfc/rfc2246.txt)

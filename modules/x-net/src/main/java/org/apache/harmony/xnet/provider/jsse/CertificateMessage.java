@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris Kuznetsov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.Message;
@@ -36,7 +31,6 @@ import java.security.cert.X509Certificate;
 import java.util.Vector;
 
 /**
- * 
  * Represents server/client certificate message
  * @see TLS 1.0 spec., 7.4.2. Server certificate; 7.4.6. Client certificate
  * (http://www.ietf.org/rfc/rfc2246.txt)
