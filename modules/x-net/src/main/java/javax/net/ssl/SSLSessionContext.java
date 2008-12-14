@@ -24,45 +24,17 @@ package javax.net.ssl;
 
 import java.util.Enumeration;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public interface SSLSessionContext {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    @SuppressWarnings("unchecked")
     public Enumeration getIds();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLSession getSession(byte[] sessionId);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public int getSessionCacheSize();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public int getSessionTimeout();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void setSessionCacheSize(int size) throws IllegalArgumentException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void setSessionTimeout(int seconds) throws IllegalArgumentException;
-
 }
