@@ -28,10 +28,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * Default implementation of javax.net.SocketFactory
- * 
+ * Default implementation of {@link javax.net.SocketFactory}
  */
-class DefaultSocketFactory extends SocketFactory {
+final class DefaultSocketFactory extends SocketFactory {
+
+    DefaultSocketFactory() {
+        super();
+    }
 
     @Override
     public Socket createSocket() throws IOException {

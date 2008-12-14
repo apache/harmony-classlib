@@ -27,10 +27,13 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 
 /**
- * Default implementation of javax.net.ServerSocketFactory
- * 
+ * Default implementation of {@link javax.net.ServerSocketFactory}
  */
-class DefaultServerSocketFactory extends ServerSocketFactory {
+final class DefaultServerSocketFactory extends ServerSocketFactory {
+
+    DefaultServerSocketFactory() {
+        super();
+    }
 
     @Override
     public ServerSocket createServerSocket(int port) throws IOException {

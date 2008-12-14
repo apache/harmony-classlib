@@ -28,16 +28,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public abstract class SocketFactory {
 
-    static SocketFactory defaultFactory;
-    
-    protected SocketFactory() {
-    }
+    private static SocketFactory defaultFactory;
 
     public static synchronized SocketFactory getDefault() {
         if (defaultFactory == null) {
@@ -46,21 +39,23 @@ public abstract class SocketFactory {
         return defaultFactory;
     }
 
+    protected SocketFactory() {
+        super();
+    }
+
     public Socket createSocket() throws IOException {
-        // follow RI's behavior 
+        // follow RI's behavior
         throw new SocketException("Unconnected sockets not implemented");
     }
 
-    public abstract Socket createSocket(String host, int port)
-            throws IOException, UnknownHostException;
-
-    public abstract Socket createSocket(String host, int port,
-            InetAddress localHost, int localPort) throws IOException,
+    public abstract Socket createSocket(String host, int port) throws IOException,
             UnknownHostException;
 
-    public abstract Socket createSocket(InetAddress host, int port)
-            throws IOException;
+    public abstract Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+            throws IOException, UnknownHostException;
 
-    public abstract Socket createSocket(InetAddress address, int port,
-            InetAddress localAddress, int localPort) throws IOException;
+    public abstract Socket createSocket(InetAddress host, int port) throws IOException;
+
+    public abstract Socket createSocket(InetAddress address, int port, InetAddress localAddress,
+            int localPort) throws IOException;
 }
