@@ -37,6 +37,7 @@ public class SSLStreamedInput extends SSLInputStream {
         this.in = in;
     }
 
+    @Override
     public int available() throws IOException {
         return in.available();
     }
@@ -49,6 +50,7 @@ public class SSLStreamedInput extends SSLInputStream {
      * @throws org.apache.harmony.xnet.provider.jsse.EndOfSourceException if the end of the underlying
      * stream has been reached.
      */
+    @Override
     public int read() throws IOException {
         int res = in.read();
         if (res < 0) {

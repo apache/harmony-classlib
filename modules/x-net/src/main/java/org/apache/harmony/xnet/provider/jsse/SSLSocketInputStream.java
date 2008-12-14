@@ -85,6 +85,7 @@ public final class SSLSocketInputStream
      * @return the number of available bytes.
      * @throws  IOException
      */
+    @Override
     public int available() throws IOException {
         return end - pos;
     }
@@ -93,6 +94,7 @@ public final class SSLSocketInputStream
      * Closes the stream
      * @throws  IOException
      */
+    @Override
     public void close() throws IOException {
         buffer = null;
     }
@@ -104,6 +106,7 @@ public final class SSLSocketInputStream
      * @return read value.
      * @throws  IOException
      */
+    @Override
     public int read() throws IOException {
         if (buffer == null) {
             throw new IOException("Stream was closed.");
@@ -124,6 +127,7 @@ public final class SSLSocketInputStream
      * Method acts as described in spec for superclass.
      * @see java.io.InputStream#read(byte[])
      */
+    @Override
     public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
@@ -132,6 +136,7 @@ public final class SSLSocketInputStream
      * Method acts as described in spec for superclass.
      * @see java.io.InputStream#read(byte[],int,int)
      */
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         int read_b;
         int i = 0;
@@ -149,6 +154,7 @@ public final class SSLSocketInputStream
      * Method acts as described in spec for superclass.
      * @see java.io.InputStream#skip(long)
      */
+    @Override
     public long skip(long n) throws IOException {
         long i = 0;
         int av = available();

@@ -176,6 +176,7 @@ public class ClientHello extends Message {
      * Sends message
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
         out.write(client_version);
         out.write(random);
@@ -204,6 +205,7 @@ public class ClientHello extends Message {
      * Returns message type 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.CLIENT_HELLO;
     }

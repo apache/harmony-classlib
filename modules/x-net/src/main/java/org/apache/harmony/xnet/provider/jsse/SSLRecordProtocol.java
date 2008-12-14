@@ -33,7 +33,7 @@ import javax.net.ssl.SSLProtocolException;
  * This class performs functionality dedicated to SSL record layer.
  * It unpacks and routes income data to the appropriate
  * client protocol (handshake, alert, application data protocols)
- * and paketizes outcome data into SSL/TLS records.
+ * and packages outcome data into SSL/TLS records.
  * Initially created object has null connection state and does not
  * perform any cryptography computations over the income/outcome data.
  * After handshake protocol agreed upon security parameters they are placed
@@ -179,9 +179,8 @@ public class SSLRecordProtocol {
         }
         if (activeReadState == null) {
             return record_size;
-        } else {
-            return activeReadState.getContentSize(record_size);
         }
+        return activeReadState.getContentSize(record_size);
     }
 
     /**
@@ -374,7 +373,7 @@ public class SSLRecordProtocol {
                             type));
             }
         } else {
-            in.skip((long) 2); // just skip the version number
+            in.skip(2); // just skip the version number
         }
         int length = in.readUint16();
         if (logger != null) {

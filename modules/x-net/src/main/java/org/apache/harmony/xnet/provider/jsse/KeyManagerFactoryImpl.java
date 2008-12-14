@@ -53,13 +53,14 @@ public class KeyManagerFactoryImpl extends KeyManagerFactorySpi {
      * @see javax.net.ssl.KeyManagerFactorySpi.engineInit(KeyStore ks, char[]
      *      password)
      */
+    @Override
     public void engineInit(KeyStore ks, char[] password)
             throws KeyStoreException, NoSuchAlgorithmException,
             UnrecoverableKeyException {
         if (ks != null) {
             keyStore = ks;
             if (password != null) {
-                pwd = (char[]) password.clone();
+                pwd = password.clone();
             } else {
                 pwd = new char[0];
             }
@@ -115,6 +116,7 @@ public class KeyManagerFactoryImpl extends KeyManagerFactorySpi {
      * @see javax.net.ssl.KeyManagerFactorySpi.engineInit(ManagerFactoryParameters
      *      spec)
      */
+    @Override
     public void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException {
         throw new InvalidAlgorithmParameterException(
@@ -125,6 +127,7 @@ public class KeyManagerFactoryImpl extends KeyManagerFactorySpi {
     /**
      * @see javax.net.ssl.KeyManagerFactorySpi.engineGetKeyManagers()
      */
+    @Override
     public KeyManager[] engineGetKeyManagers() {
         if (keyStore == null) {
             throw new IllegalStateException("KeyManagerFactory is not initialized");

@@ -23,6 +23,7 @@
 package org.apache.harmony.xnet.provider.jsse;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.Provider;
 
 /**
@@ -104,20 +105,18 @@ import java.security.Provider;
  */
 public final class JSSEProvider extends Provider {
 
+    private static final long serialVersionUID = 3075686092260669675L;
+
     public JSSEProvider() {
         super("HarmonyJSSE", 1.0, "Harmony JSSE Provider");
-        AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
             public Void run() {
-                put("SSLContext.TLS",
-                        "org.apache.harmony.xnet.provider.jsse.SSLContextImpl");
+                put("SSLContext.TLS", SSLContextImpl.class.getName());
                 put("Alg.Alias.SSLContext.TLSv1", "TLS");
-                put("KeyManagerFactory.X509",
-                        "org.apache.harmony.xnet.provider.jsse.KeyManagerFactoryImpl");
-                put("TrustManagerFactory.X509",
-                        "org.apache.harmony.xnet.provider.jsse.TrustManagerFactoryImpl");
+                put("KeyManagerFactory.X509", KeyManagerFactoryImpl.class.getName());
+                put("TrustManagerFactory.X509", TrustManagerFactoryImpl.class.getName());
                 return null;
             }
         });
     }
 }
-

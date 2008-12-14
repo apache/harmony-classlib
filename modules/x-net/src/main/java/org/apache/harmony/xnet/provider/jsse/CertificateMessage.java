@@ -28,6 +28,7 @@ import org.apache.harmony.xnet.provider.jsse.HandshakeIODataStream;
 import org.apache.harmony.xnet.provider.jsse.AlertProtocol;
 
 import java.io.IOException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -80,7 +81,7 @@ public class CertificateMessage extends Message {
             fatalAlert(AlertProtocol.INTERNAL_ERROR, "INTERNAL ERROR", e);
             return;
         }
-        Vector certs_vector = new Vector();
+        Vector<Certificate> certs_vector = new Vector<Certificate>();
         int size = 0;
         int enc_size = 0;
         while (l > 0) {
@@ -141,6 +142,7 @@ public class CertificateMessage extends Message {
      * 
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
 
         int total_length = 0;
@@ -172,6 +174,7 @@ public class CertificateMessage extends Message {
      * 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.CERTIFICATE;
     }

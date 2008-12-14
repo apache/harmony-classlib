@@ -22,12 +22,16 @@
 
 package javax.net.ssl;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SSLEngineResult {
-    
+
+    public enum HandshakeStatus {
+        NOT_HANDSHAKING, FINISHED, NEED_TASK, NEED_WRAP, NEED_UNWRAP
+    }
+
+    public static enum Status {
+        BUFFER_OVERFLOW, BUFFER_UNDERFLOW, CLOSED, OK
+    }
+
     // Store Status object
     private final SSLEngineResult.Status status;
 
@@ -40,12 +44,8 @@ public class SSLEngineResult {
     // Store bytesProduced
     private final int bytesProduced;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public SSLEngineResult(SSLEngineResult.Status status,
-            SSLEngineResult.HandshakeStatus handshakeStatus, int bytesConsumed,
-            int bytesProduced) {
+            SSLEngineResult.HandshakeStatus handshakeStatus, int bytesConsumed, int bytesProduced) {
         if (status == null) {
             throw new IllegalArgumentException("status is null");
         }
@@ -64,67 +64,26 @@ public class SSLEngineResult {
         this.bytesProduced = bytesProduced;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public final Status getStatus() {
         return status;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public final HandshakeStatus getHandshakeStatus() {
         return handshakeStatus;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public final int bytesConsumed() {
         return bytesConsumed;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     public final int bytesProduced() {
         return bytesProduced;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("SSLEngineReport: Status = ");
-        sb.append(status.toString());
-        sb.append("  HandshakeStatus = ");
-        sb.append(handshakeStatus.toString());
-        sb.append("\n                 bytesConsumed = ");
-        sb.append(Integer.toString(bytesConsumed));
-        sb.append(" bytesProduced = ");
-        sb.append(Integer.toString(bytesProduced));
-        return sb.toString();
-    }
-
-    /**
-     * @com.intel.drl.spec_ref 
-     */
-    public enum HandshakeStatus {
-        NOT_HANDSHAKING,
-        FINISHED,
-        NEED_TASK,
-        NEED_WRAP,
-        NEED_UNWRAP
-    }
-
-    /**
-     * @com.intel.drl.spec_ref 
-     */
-    public static enum Status {
-        BUFFER_OVERFLOW,
-        BUFFER_UNDERFLOW,
-        CLOSED,
-        OK
+        return "SSLEngineReport: Status = " + status + "  HandshakeStatus = " + handshakeStatus
+                + "\n                 bytesConsumed = " + bytesConsumed + " bytesProduced = "
+                + bytesProduced;
     }
 }

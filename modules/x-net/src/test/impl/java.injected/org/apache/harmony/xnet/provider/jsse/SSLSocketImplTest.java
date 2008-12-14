@@ -42,6 +42,7 @@ public class SSLSocketImplTest extends TestCase {
     /**
      * Sets up the test case.
      */
+    @Override
     public void setUp() throws Exception {
         if (doLog) {
             System.out.println("");
@@ -77,6 +78,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -134,6 +136,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -194,6 +197,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -253,6 +257,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -313,6 +318,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -588,6 +594,7 @@ public class SSLSocketImplTest extends TestCase {
             return server.getLocalPort();
         }
 
+        @Override
         public void run() {
             while (!closed) {
                 try {
@@ -644,6 +651,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -753,6 +761,7 @@ public class SSLSocketImplTest extends TestCase {
             final SSLSocket s = socket;
             final SSLSession[] session = new SSLSession[1];
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         session[0] = s.getSession();
@@ -857,6 +866,7 @@ public class SSLSocketImplTest extends TestCase {
             final SSLSocket s = socket;
             final Exception[] exception = new Exception[1];
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.startHandshake();
@@ -914,6 +924,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.getInputStream().read(); // should start handshake
@@ -969,6 +980,7 @@ public class SSLSocketImplTest extends TestCase {
             server.start();
             final SSLSocket s = socket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.getOutputStream().write(0); // should start handshake

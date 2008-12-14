@@ -33,58 +33,49 @@ import java.net.UnknownHostException;
  * 
  */
 class DefaultSSLSocketFactory extends SSLSocketFactory {
-	
-	private String errMessage;
-    
+
+    private final String errMessage;
+
+    DefaultSSLSocketFactory(String mes) {
+        errMessage = mes;
+    }
+
+    @Override
     public String[] getDefaultCipherSuites() {
         return new String[0];
     }
 
+    @Override
     public String[] getSupportedCipherSuites() {
         return new String[0];
     }
 
-    /**
-     * @see javax.net.ssl.SSLSocketFactory#createSocket(java.net.Socket, java.lang.String, int, boolean)
-     */
-    public Socket createSocket(Socket s, String host, int port,
-            boolean autoClose) throws IOException {
-    	throw new SocketException(errMessage);
+    @Override
+    public Socket createSocket(Socket s, String host, int port, boolean autoClose)
+            throws IOException {
+        throw new SocketException(errMessage);
     }
 
-    /**
-     * @see javax.net.SocketFactory#createSocket(java.lang.String, int)
-     */
-    public Socket createSocket(String host, int port) throws IOException,
-            UnknownHostException {
-    	throw new SocketException(errMessage);
+    @Override
+    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+        throw new SocketException(errMessage);
     }
 
-    /**
-     * @see javax.net.SocketFactory#createSocket(java.lang.String, int, java.net.InetAddress, int)
-     */
-    public Socket createSocket(String host, int port, InetAddress localHost,
-            int localPort) throws IOException, UnknownHostException {
-    	throw new SocketException(errMessage);
+    @Override
+    public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+            throws IOException, UnknownHostException {
+        throw new SocketException(errMessage);
     }
 
-    /**
-     * @see javax.net.SocketFactory#createSocket(java.net.InetAddress, int)
-     */
+    @Override
     public Socket createSocket(InetAddress host, int port) throws IOException {
-    	throw new SocketException(errMessage);
+        throw new SocketException(errMessage);
     }
 
-    /**
-     * @see javax.net.SocketFactory#createSocket(java.net.InetAddress, int, java.net.InetAddress, int)
-     */
-    public Socket createSocket(InetAddress address, int port,
-            InetAddress localAddress, int localPort) throws IOException {
-    	throw new SocketException(errMessage);
-    }
-    
-    DefaultSSLSocketFactory(String mes) {
-        errMessage = mes;
+    @Override
+    public Socket createSocket(InetAddress address, int port, InetAddress localAddress,
+            int localPort) throws IOException {
+        throw new SocketException(errMessage);
     }
 
 }

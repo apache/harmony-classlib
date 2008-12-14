@@ -241,7 +241,7 @@ public class SSLParameters {
                 enabledCipherSuiteNames[i] = enabledCipherSuites[i].getName();
             }
         }
-        return (String[]) enabledCipherSuiteNames.clone();
+        return enabledCipherSuiteNames.clone();
     }
 
     /**
@@ -269,7 +269,7 @@ public class SSLParameters {
      * @return the set of enabled protocols
      */
     protected String[] getEnabledProtocols() {
-        return (String[]) enabledProtocols.clone();
+        return enabledProtocols.clone();
     }
 
     /**
@@ -360,6 +360,7 @@ public class SSLParameters {
      * Returns the clone of this object.
      * @return the clone.
      */
+    @Override
     protected Object clone() {
         SSLParameters parameters = new SSLParameters();
 

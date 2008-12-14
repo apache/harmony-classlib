@@ -101,14 +101,17 @@ public class HandshakeIODataStream
     // position of the last byte to read + 1
     private int read_pos_end;
 
+    @Override
     public int available() {
         return read_pos_end - read_pos;
     }
 
+    @Override
     public boolean markSupported() {
         return true;
     }
 
+    @Override
     public void mark(int limit) {
         marked_pos = read_pos;
     }
@@ -117,6 +120,7 @@ public class HandshakeIODataStream
         marked_pos = read_pos;
     }
 
+    @Override
     public void reset() {
         read_pos = marked_pos;
     }
@@ -138,6 +142,7 @@ public class HandshakeIODataStream
      * @param   byte:   byte
      * @return
      */
+    @Override
     public int read() throws IOException {
         if (read_pos == read_pos_end) {
             //return -1;
@@ -151,6 +156,7 @@ public class HandshakeIODataStream
      * @param   new:    long
      * @return
      */
+    @Override
     public byte[] read(int length) throws IOException {
         if (length > available()) {
             throw new EndOfBufferException();
@@ -161,6 +167,7 @@ public class HandshakeIODataStream
         return res;
     }
 
+    @Override
     public int read(byte[] dest, int offset, int length) throws IOException {
         if (length > available()) {
             throw new EndOfBufferException();

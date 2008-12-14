@@ -31,19 +31,13 @@ public class SSLPermissionTest extends TestCase {
      * Class under test for void SSLPermission(String)
      */
     public void testSSLPermissionString() {
-        SSLPermission p = new SSLPermission("name");
-        if (p == null) {
-            fail("null permission");
-        }
+       new SSLPermission("name");
     }
 
     /*
      * Class under test for void SSLPermission(String, String)
      */
     public void testSSLPermissionStringString() {
-        SSLPermission p = new SSLPermission("name", "action");
-        if (p == null) {
-            fail("null permission");
-        }
+        new SSLPermission("name", "action");
     }
 }

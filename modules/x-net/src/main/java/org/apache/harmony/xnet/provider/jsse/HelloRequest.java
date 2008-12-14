@@ -60,9 +60,11 @@ public class HelloRequest extends Message {
      * Sends message
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
     }
 
+    @Override
     public int length() {
         return 0;
     } 
@@ -71,6 +73,7 @@ public class HelloRequest extends Message {
      * Returns message type 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.HELLO_REQUEST;
     }

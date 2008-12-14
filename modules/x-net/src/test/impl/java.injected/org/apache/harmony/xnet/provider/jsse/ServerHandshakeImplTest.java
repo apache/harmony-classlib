@@ -39,7 +39,8 @@ public class ServerHandshakeImplTest extends TestCase {
   private SSLParameters sslParameters;
   private ServerHandshakeImpl server;
 
-  public void setUp() throws Exception {
+  @Override
+public void setUp() throws Exception {
         char[] pwd = JSSETestData.KS_PASSWORD;
         KeyStore ks = JSSETestData.getKeyStore();
 

@@ -89,7 +89,7 @@ public abstract class HandshakeProtocol {
     /**
      * Delegated tasks for this handshake implementation
      */
-    protected Vector delegatedTasks = new Vector();
+    protected Vector<DelegatedTask> delegatedTasks = new Vector<DelegatedTask>();
     
     /**
      * Indicates non-blocking handshake
@@ -167,11 +167,11 @@ public abstract class HandshakeProtocol {
         if (owner instanceof SSLEngineImpl) {
             engineOwner = (SSLEngineImpl) owner;
             nonBlocking = true;
-            this.parameters = (SSLParameters) engineOwner.sslParameters;
+            this.parameters = engineOwner.sslParameters;
         } else if (owner instanceof SSLSocketImpl) {
             socketOwner = (SSLSocketImpl) owner;
             nonBlocking = false;
-            this.parameters = (SSLParameters) socketOwner.sslParameters;
+            this.parameters = socketOwner.sslParameters;
         }
     }
 
@@ -477,11 +477,8 @@ public abstract class HandshakeProtocol {
     public Runnable getTask() {
         if (delegatedTasks.isEmpty()) {
             return null;
-        } else {
-            Runnable task = (Runnable)delegatedTasks.firstElement();
-            delegatedTasks.remove(0);
-            return task;
         }
+        return delegatedTasks.remove(0);
     }
     
     /**
@@ -518,7 +515,7 @@ public abstract class HandshakeProtocol {
             mod = ((RSAKey) pk).getModulus();
         } else {
             KeyFactory kf = KeyFactory.getInstance("RSA");
-            mod = ((RSAPublicKeySpec) kf.getKeySpec(pk, RSAPublicKeySpec.class))
+            mod = kf.getKeySpec(pk, RSAPublicKeySpec.class)
                     .getModulus();
         }
         return mod.bitLength();

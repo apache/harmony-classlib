@@ -212,9 +212,8 @@ public class SSLSessionImpl implements SSLSession {
     public Principal getLocalPrincipal() {
         if (localCertificates != null && localCertificates.length > 0) {
             return localCertificates[0].getSubjectX500Principal();
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -376,6 +375,7 @@ public class SSLSessionImpl implements SSLSession {
 
     }
 
+    @Override
     public Object clone() {
         SSLSessionImpl ses = new SSLSessionImpl();
         ses.id = this.id;

@@ -50,6 +50,7 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
     /**
      * @see javax.net.ssl.TrustManagerFactorySpi#engineInit(KeyStore)
      */
+    @Override
     public void engineInit(KeyStore ks) throws KeyStoreException {
         if (ks != null) {
             keyStore = ks;
@@ -107,6 +108,7 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
     /**
      * @see javax.net.ssl.engineInit(ManagerFactoryParameters)
      */
+    @Override
     public void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException {
         throw new InvalidAlgorithmParameterException(
@@ -116,6 +118,7 @@ public class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
     /**
      * @see javax.net.ssl.engineGetTrustManagers()
      */
+    @Override
     public TrustManager[] engineGetTrustManagers() {
         if (keyStore == null) {
             throw new IllegalStateException(

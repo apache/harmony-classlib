@@ -83,6 +83,7 @@ public class CertificateVerify extends Message {
      * 
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
         if (signedHash.length != 0) {
             out.writeUint16(signedHash.length);
@@ -95,6 +96,7 @@ public class CertificateVerify extends Message {
      * 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.CERTIFICATE_VERIFY;
     }

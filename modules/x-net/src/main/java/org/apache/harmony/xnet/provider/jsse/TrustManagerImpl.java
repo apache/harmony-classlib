@@ -66,13 +66,11 @@ public class TrustManagerImpl implements X509TrustManager {
         try {
             validator = CertPathValidator.getInstance("PKIX");
             factory = CertificateFactory.getInstance("X509");
-            String alias;
-            X509Certificate cert;
             byte[] nameConstrains = null;
-            Set trusted = new HashSet();
-            for (Enumeration en = ks.aliases(); en.hasMoreElements();) {
-                alias = (String) en.nextElement();
-                cert = (X509Certificate) ks.getCertificate(alias);
+            Set<TrustAnchor> trusted = new HashSet<TrustAnchor>();
+            for (Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
+                final String alias = en.nextElement();
+                final X509Certificate cert = (X509Certificate) ks.getCertificate(alias);
                 if (cert != null) {
                     trusted.add(new TrustAnchor(cert, nameConstrains));
                 }
@@ -137,11 +135,11 @@ public class TrustManagerImpl implements X509TrustManager {
         if (params == null) {
             return new X509Certificate[0];
         }
-        Set anchors = params.getTrustAnchors();
+        Set<TrustAnchor> anchors = params.getTrustAnchors();
         X509Certificate[] certs = new X509Certificate[anchors.size()];
         int i = 0;
-        for (Iterator it = anchors.iterator(); it.hasNext();) {
-            certs[i++] = ((TrustAnchor) it.next()).getTrustedCert();
+        for (Iterator<TrustAnchor> it = anchors.iterator(); it.hasNext();) {
+            certs[i++] = it.next().getTrustedCert();
         }
         return certs;
     }

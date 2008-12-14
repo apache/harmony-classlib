@@ -86,23 +86,28 @@ public class DigitalSignatureTest extends TestCase {
         @SuppressWarnings("serial")
         Certificate cert = new Certificate("myType") {
 
+            @Override
             public PublicKey getPublicKey() {
                 return publicKey;
             }
 
+            @Override
             public byte[] getEncoded() {
                 return null;
             }
 
+            @Override
             public String toString() {
                 return null;
             }
 
+            @Override
             public void verify(PublicKey key) throws CertificateException,
                     NoSuchAlgorithmException, InvalidKeyException,
                     NoSuchProviderException, SignatureException {
             }
 
+            @Override
             public void verify(PublicKey key, String sigProvider)
                     throws CertificateException, NoSuchAlgorithmException,
                     InvalidKeyException, NoSuchProviderException,

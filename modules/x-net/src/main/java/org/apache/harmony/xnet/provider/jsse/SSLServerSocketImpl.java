@@ -106,6 +106,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getSupportedCipherSuites()
      * method documentation for more information
      */
+    @Override
     public String[] getSupportedCipherSuites() {
         return CipherSuite.getSupportedCipherSuiteNames();
     }
@@ -115,6 +116,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getEnabledCipherSuites()
      * method documentation for more information
      */
+    @Override
     public String[] getEnabledCipherSuites() {
         return sslParameters.getEnabledCipherSuites();
     }
@@ -124,6 +126,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setEnabledCipherSuites(String[])
      * method documentation for more information
      */
+    @Override
     public void setEnabledCipherSuites(String[] suites) {
         sslParameters.setEnabledCipherSuites(suites);
     }
@@ -133,8 +136,9 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getSupportedProtocols()
      * method documentation for more information
      */
+    @Override
     public String[] getSupportedProtocols() {
-        return (String[]) ProtocolVersion.supportedProtocols.clone();
+        return ProtocolVersion.supportedProtocols.clone();
     }
 
     /**
@@ -142,6 +146,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getEnabledProtocols()
      * method documentation for more information
      */
+    @Override
     public String[] getEnabledProtocols() {
         return sslParameters.getEnabledProtocols();
     }
@@ -151,6 +156,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setEnabledProtocols(String[])
      * method documentation for more information
      */
+    @Override
     public void setEnabledProtocols(String[] protocols) {
         sslParameters.setEnabledProtocols(protocols);
     }
@@ -160,6 +166,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setUseClientMode(boolean)
      * method documentation for more information
      */
+    @Override
     public void setUseClientMode(boolean mode) {
         sslParameters.setUseClientMode(mode);
     }
@@ -169,6 +176,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getUseClientMode()
      * method documentation for more information
      */
+    @Override
     public boolean getUseClientMode() {
         return sslParameters.getUseClientMode();
     }
@@ -178,6 +186,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setNeedClientAuth(boolean)
      * method documentation for more information
      */
+    @Override
     public void setNeedClientAuth(boolean need) {
         sslParameters.setNeedClientAuth(need);
     }
@@ -187,6 +196,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getNeedClientAuth()
      * method documentation for more information
      */
+    @Override
     public boolean getNeedClientAuth() {
         return sslParameters.getNeedClientAuth();
     }
@@ -196,6 +206,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setWantClientAuth(boolean)
      * method documentation for more information
      */
+    @Override
     public void setWantClientAuth(boolean want) {
         sslParameters.setWantClientAuth(want);
     }
@@ -205,6 +216,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getWantClientAuth()
      * method documentation for more information
      */
+    @Override
     public boolean getWantClientAuth() {
         return sslParameters.getWantClientAuth();
     }
@@ -214,6 +226,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#setEnableSessionCreation(boolean)
      * method documentation for more information
      */
+    @Override
     public void setEnableSessionCreation(boolean flag) {
         sslParameters.setEnableSessionCreation(flag);
     }
@@ -223,6 +236,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see javax.net.ssl.SSLServerSocket#getEnableSessionCreation()
      * method documentation for more information
      */
+    @Override
     public boolean getEnableSessionCreation() {
         return sslParameters.getEnableSessionCreation();
     }
@@ -235,6 +249,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
      * @see java.net.ServerSocket#accept()
      * method documentation for more information
      */
+    @Override
     public Socket accept() throws IOException {
         if (logger != null) {
             logger.println("SSLServerSocketImpl.accept ..");
@@ -263,6 +278,7 @@ public class SSLServerSocketImpl extends SSLServerSocket {
     /**
      * Returns the string representation of the object.
      */
+    @Override
     public String toString() {
         return "[SSLServerSocketImpl]";
     }

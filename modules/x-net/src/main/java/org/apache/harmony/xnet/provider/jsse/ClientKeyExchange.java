@@ -129,6 +129,7 @@ public class ClientKeyExchange extends Message {
      * Sends message
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
         if (exchange_keys.length != 0) {    
             if (!isRSA || isTLS) {// DH or TLSv1 RSA
@@ -142,6 +143,7 @@ public class ClientKeyExchange extends Message {
      * Returns message type 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.CLIENT_KEY_EXCHANGE;
     }

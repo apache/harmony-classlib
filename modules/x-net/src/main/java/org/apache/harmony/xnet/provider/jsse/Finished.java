@@ -63,6 +63,7 @@ public class Finished extends Message {
         }
     }
 
+    @Override
     public void send(HandshakeIODataStream out) {
         out.write(data);
     }
@@ -71,6 +72,7 @@ public class Finished extends Message {
      * Returns message type 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.FINISHED;
     }

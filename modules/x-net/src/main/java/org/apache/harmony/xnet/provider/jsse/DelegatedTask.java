@@ -35,7 +35,7 @@ import java.security.PrivilegedExceptionAction;
 public class DelegatedTask implements Runnable {
 
     private final HandshakeProtocol handshaker;
-    private final PrivilegedExceptionAction action;
+    private final PrivilegedExceptionAction<Void> action;
     private final AccessControlContext  context;
     
     /**
@@ -44,7 +44,7 @@ public class DelegatedTask implements Runnable {
      * @param handshaker
      * @param context
      */
-    public DelegatedTask(PrivilegedExceptionAction action, HandshakeProtocol handshaker, AccessControlContext  context) {
+    public DelegatedTask(PrivilegedExceptionAction<Void> action, HandshakeProtocol handshaker, AccessControlContext  context) {
         this.action = action;
         this.handshaker = handshaker;
         this.context = context;

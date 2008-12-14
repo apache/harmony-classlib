@@ -41,6 +41,7 @@ public class Logger {
             prefix = name + "["+Thread.currentThread().getName()+"] ";
         }
 
+        @Override
         public void print(String msg) {
             for (int i=0; i<indent; i++) {
                 super.print("  ");
@@ -56,6 +57,7 @@ public class Logger {
             indent --;
         }
 
+        @Override
         public void println(String msg) {
             print(prefix);
             super.println(msg);

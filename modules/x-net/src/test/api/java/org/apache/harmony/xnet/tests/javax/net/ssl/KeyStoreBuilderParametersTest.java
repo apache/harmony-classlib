@@ -34,10 +34,12 @@ import junit.framework.TestCase;
 public class KeyStoreBuilderParametersTest extends TestCase {
     
     class EmptyBuilder extends KeyStore.Builder {
+        @Override
         public KeyStore getKeyStore() throws KeyStoreException {
             return null;
         }
 
+        @Override
         public KeyStore.ProtectionParameter getProtectionParameter(String alias)
                 throws KeyStoreException {
             return null;

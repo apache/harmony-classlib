@@ -37,6 +37,7 @@ public abstract class SSLInputStream extends InputStream {
     /**
      * @see java.io.InputStream#available()
      */
+    @Override
     public abstract int available() throws IOException;
 
     /**
@@ -49,11 +50,13 @@ public abstract class SSLInputStream extends InputStream {
      * @see org.apache.harmony.xnet.provider.jsse.SSLBufferedInput#read()
      * @see org.apache.harmony.xnet.provider.jsse.HandshakeIODataStream#read()
      */
+    @Override
     public abstract int read() throws IOException;
 
     /**
      * @see java.io.InputStream#skip()
      */
+    @Override
     public long skip(long n) throws IOException {
         long skept = n;
         while (n > 0) {
@@ -119,6 +122,7 @@ public abstract class SSLInputStream extends InputStream {
     /**
      * @see java.io.InputStream#read(byte[],int,int)
      */
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         int read_b;
         int i = 0;

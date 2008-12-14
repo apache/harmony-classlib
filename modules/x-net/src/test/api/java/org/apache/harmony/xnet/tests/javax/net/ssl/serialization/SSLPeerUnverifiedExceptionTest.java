@@ -38,6 +38,7 @@ public class SSLPeerUnverifiedExceptionTest extends SerializationTest {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
+    @Override
     protected Object[] getData() {
         return new Object[] { new SSLPeerUnverifiedException(null),
                 new SSLPeerUnverifiedException(msgs[0]), new SSLPeerUnverifiedException(msgs[1]) };

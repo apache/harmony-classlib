@@ -82,19 +82,23 @@ public class SocketFactoryTest extends TestCase {
     }
 }
 class MySocketFactory extends SocketFactory {
+    @Override
     public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
         throw new IOException();
     }
     
+    @Override
     public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
             throws IOException, UnknownHostException {
         throw new IOException();
     }
     
+    @Override
     public Socket createSocket(InetAddress host, int port) throws IOException {
         throw new IOException();
      }
     
+    @Override
     public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
             throws IOException {
         throw new IOException();
