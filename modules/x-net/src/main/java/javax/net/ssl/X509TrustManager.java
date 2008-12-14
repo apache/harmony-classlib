@@ -15,39 +15,18 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public interface X509TrustManager extends TrustManager {
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void checkClientTrusted(X509Certificate[] chain, String authType)
             throws CertificateException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public void checkServerTrusted(X509Certificate[] chain, String authType)
             throws CertificateException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public X509Certificate[] getAcceptedIssuers();
 }

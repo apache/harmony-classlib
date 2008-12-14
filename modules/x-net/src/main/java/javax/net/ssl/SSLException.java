@@ -15,47 +15,22 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.io.IOException;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SSLException extends IOException {
-    /**
-     * @com.intel.drl.spec_ref
-     * @serial
-     */
     private static final long serialVersionUID = 4511006460650708967L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLException(String reason) {
         super(reason);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLException(String message, Throwable cause) {
         super(message);
         super.initCause(cause);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLException(Throwable cause) {
         super(cause == null ? null : cause.toString());
         super.initCause(cause);
