@@ -246,7 +246,8 @@ public abstract class URLConnection {
                     .doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             try {
-                                String className = "org.apache.harmony.luni.internal.net.www.content." //$NON-NLS-1$
+                                // Try looking up AWT image content handlers
+                                String className = "org.apache.harmony.awt.www.content." //$NON-NLS-1$
                                         + typeString;
                                 return Class.forName(className).newInstance();
                             } catch (ClassNotFoundException e) {

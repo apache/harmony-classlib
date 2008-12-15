@@ -15,17 +15,18 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.internal.net.www.content.image;
+package org.apache.harmony.awt.www.content.image;
 
 import java.io.IOException;
 import java.net.ContentHandler;
 import java.net.URLConnection;
+
 import org.apache.harmony.awt.gl.image.URLDecodingImageSource;
 
 /**
- * image/gif content handler.
+ * image/jpeg content handler.
  */
-public class gif extends ContentHandler {
+public class jpeg extends ContentHandler {
     public Object getContent(URLConnection conn) throws IOException {
         return new URLDecodingImageSource(conn.getURL());
     }
