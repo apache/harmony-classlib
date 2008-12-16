@@ -47,11 +47,8 @@ public interface INetworkSystem {
 	public void accept(FileDescriptor fdServer, SocketImpl newSocket,
 			FileDescriptor fdnewSocket, int timeout) throws IOException;
 
-	public void bind(FileDescriptor aFD, int port, InetAddress inetAddress)
+	public void bind(FileDescriptor aFD, InetAddress inetAddress, int port)
 			throws SocketException;
-
-	public boolean bind2(FileDescriptor aFD, int port, boolean bindToDevice,
-			InetAddress inetAddress) throws SocketException;
 
 	public int read(FileDescriptor aFD, byte[] data, int offset, int count,
 			int timeout) throws IOException;

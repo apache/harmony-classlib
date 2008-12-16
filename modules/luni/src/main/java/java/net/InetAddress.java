@@ -916,7 +916,7 @@ public class InetAddress extends Object implements Serializable {
         NETIMPL.createStreamSocket(fd, NetUtil.preferIPv4Stack());
         try {
             if (null != source) {
-                NETIMPL.bind(fd, 0, source);
+                NETIMPL.bind(fd, source, 0);
             }
             NETIMPL.connectStreamWithTimeoutSocket(fd, 7, timeout, traffic,
                     dest);

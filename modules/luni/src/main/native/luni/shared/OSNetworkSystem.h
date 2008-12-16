@@ -92,20 +92,11 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_ava
 /*
  * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
  * Method:    bind
- * Signature: (Ljava/io/FileDescriptor;ILjava/net/InetAddress;)V
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/InetAddress;I)V
  * Throws:    java.net.SocketException
  */
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind
-  (JNIEnv *, jobject, jobject, jint, jobject);
-
-/*
- * Class:     org.apache.harmony.luni.platform.OSNetworkSystem
- * Method:    bind2
- * Signature: (Ljava/io/FileDescriptor;IZLjava/net/InetAddress;)Z
- * Throws:    java.net.SocketException
- */
-JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind2
-  (JNIEnv *, jobject, jobject, jint, jboolean, jobject);
+  (JNIEnv *, jobject, jobject, jobject, jint);
 
 /*
  * Class:     org.apache.harmony.luni.platform.OSNetworkSystem

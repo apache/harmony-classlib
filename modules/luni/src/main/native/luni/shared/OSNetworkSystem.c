@@ -623,12 +623,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectWithTimeout
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    bind
- * Signature: (Ljava/io/FileDescriptor;ILjava/net/InetAddress;)V
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/InetAddress;I)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind
   (JNIEnv * env, jobject thiz, jobject fileDescriptor,
-   jint localPort, jobject inetAddress)
+   jobject inetAddress, jint localPort)
 {
   PORT_ACCESS_FROM_ENV(env);
   jbyte nlocalAddrBytes[HYSOCK_INADDR6_LEN];
@@ -876,58 +876,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_disconnectDatagram
     throwJavaNetSocketException(env, result);
     return;
   }
-}
-
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    bind2
- * Signature: (Ljava/io/FileDescriptor;IZLjava/net/InetAddress;)Z
- */
-JNIEXPORT jboolean JNICALL
-Java_org_apache_harmony_luni_platform_OSNetworkSystem_bind2
-  (JNIEnv * env, jobject thiz, jobject fileDescriptor, jint localPort,
-   jboolean doDevice, jobject inetAddress)
-{
-  PORT_ACCESS_FROM_ENV(env);
-  jbyte nlocalAddrBytes[HYSOCK_INADDR6_LEN];
-  int length;
-  U_16 nPort;
-  I_32 result;
-  hysocket_t socketP;
-  hysockaddr_struct sockaddrP;
-  U_32 scope_id = 0;
-
-  /* This method still needs work for IPv6 support */
-
-  socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
-  if (!hysock_socketIsValid(socketP)) {
-    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
-    return 0;
-  }
-
-  netGetJavaNetInetAddressValue(env, inetAddress, (U_8 *) nlocalAddrBytes,
-                                (U_32 *) & length);
-
-  nPort = hysock_htons((U_16) localPort);
-  if (length == HYSOCK_INADDR6_LEN) {
-    netGetJavaNetInetAddressScopeId(env, inetAddress, &scope_id);
-    hysock_sockaddr_init6(&sockaddrP, (U_8 *) nlocalAddrBytes, length,
-                          HYADDR_FAMILY_AFINET6, nPort, 0, scope_id, socketP);
-  } else {
-    hysock_sockaddr_init6(&sockaddrP, (U_8 *) nlocalAddrBytes, length,
-                          HYADDR_FAMILY_AFINET4, nPort, 0, scope_id, socketP);
-  }
-  result = hysock_bind(socketP, &sockaddrP);
-  if (0 != result) {
-    throwJavaNetBindException(env, result);
-    return 0;
-  }
-
-  /* TOFIX: This matches the windows behaviour but it doesn't look right
-     result must be zero so the return code is zero from all paths.
-   */
-  return result;
 }
 
 

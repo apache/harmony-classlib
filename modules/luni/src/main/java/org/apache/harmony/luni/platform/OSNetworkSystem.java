@@ -62,27 +62,19 @@ final class OSNetworkSystem implements INetworkSystem {
 
     public native int availableStream(FileDescriptor fd) throws SocketException;
 
-    public native void bind(FileDescriptor aFD, int port,
-            InetAddress inetAddress) throws SocketException;
-
     /**
-     * Bind the socket to the port/localhost in the IP stack.
+     * Associates a local address with a socket.
      * 
      * @param fd
      *            the socket descriptor
      * @param port
-     *            the option selector
-     * @param bindToDevice
-     *            bind the socket to the specified interface
+     *            the port number
      * @param inetAddress
-     *            address to connect to.
-     * @return if bind successful
+     *            address to bind
      * @throws SocketException
      *             thrown if bind operation fails
      */
-    public native boolean bind2(FileDescriptor fd, int port,
-            boolean bindToDevice, InetAddress inetAddress)
-            throws SocketException;
+    public native void bind(FileDescriptor fd, InetAddress inetAddress, int port) throws SocketException;
 
     public native int connect(FileDescriptor fd, int trafficClass,
             InetAddress inetAddress, int port) throws IOException;
