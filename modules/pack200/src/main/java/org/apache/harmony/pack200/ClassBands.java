@@ -45,6 +45,7 @@ public class ClassBands extends BandSet {
     private final int[] major_versions;
 
     private final long[] class_flags;
+    private int[] class_attr_calls;
     private final List classSourceFile = new ArrayList();
     private final List classEnclosingMethodClass = new ArrayList();
     private final List classEnclosingMethodDesc = new ArrayList();
@@ -56,12 +57,14 @@ public class ClassBands extends BandSet {
     private final int[] class_field_count;
     private final CPNameAndType[][] field_descr;
     private final long[][] field_flags;
+    private int[] field_attr_calls;
     private final List fieldConstantValueKQ = new ArrayList();
     private final List fieldSignature = new ArrayList();
 
     private final int[] class_method_count;
     private final CPNameAndType[][] method_descr;
     private final long[][] method_flags;
+    private int[] method_attr_calls;
     private final List methodSignature = new ArrayList();
     private final List methodExceptionNumber = new ArrayList();
     private final List methodExceptionClasses = new ArrayList();
@@ -90,6 +93,16 @@ public class ClassBands extends BandSet {
     private final List codeLocalVariableTypeTableNameRU = new ArrayList();
     private final List codeLocalVariableTypeTableTypeRS = new ArrayList();
     private final List codeLocalVariableTypeTableSlot = new ArrayList();
+
+    private final MetadataBandGroup class_RVA_bands;
+    private final MetadataBandGroup class_RIA_bands;
+    private final MetadataBandGroup field_RVA_bands;
+    private final MetadataBandGroup field_RIA_bands;
+    private final MetadataBandGroup method_RVA_bands;
+    private final MetadataBandGroup method_RIA_bands;
+    private final MetadataBandGroup method_RVPA_bands;
+    private final MetadataBandGroup method_RIPA_bands;
+    private final MetadataBandGroup method_AD_bands;
 
     private final List tempFieldFlags = new ArrayList();
     private final List tempFieldDesc = new ArrayList();
@@ -121,6 +134,16 @@ public class ClassBands extends BandSet {
         // minor_versions = new int[numClasses];
         major_versions = new int[numClasses];
         class_flags = new long[numClasses];
+
+        class_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_CLASS, cpBands);
+        class_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_CLASS, cpBands);
+        field_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_FIELD, cpBands);
+        field_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_FIELD, cpBands);
+        method_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
+        method_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
+        method_RVPA_bands = new MetadataBandGroup("RVPA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
+        method_RIPA_bands = new MetadataBandGroup("RIPA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
+        method_AD_bands = new MetadataBandGroup("AD", MetadataBandGroup.CONTEXT_METHOD, cpBands);
     }
 
     private int index = 0;
@@ -156,7 +179,7 @@ public class ClassBands extends BandSet {
     public void currentClassReferencesInnerClass(CPClass inner) {
         if(!(index >= class_this.length)) {
             CPClass currentClass = class_this[index];
-            if(currentClass != null && !currentClass.equals(inner)) {
+            if(currentClass != null && !currentClass.equals(inner) && !isInnerClassOf(currentClass, inner)) {
                 Set referencedInnerClasses = (Set)classReferencesInnerClass.get(currentClass);
                 if(referencedInnerClasses == null) {
                     referencedInnerClasses = new HashSet();
@@ -167,8 +190,18 @@ public class ClassBands extends BandSet {
         }
     }
 
+    private boolean isInnerClassOf(CPClass possibleInner, CPClass possibleOuter) {
+        String currentClassName = possibleInner.toString();
+        if(possibleInner.isInnerClass()) {
+            String superClassName = currentClassName.substring(0, currentClassName.lastIndexOf('$'));
+            return superClassName.equals(possibleOuter.toString());
+        }
+        return false;
+    }
+
     public void addField(int flags, String name, String desc, String signature,
             Object value) {
+        flags = flags & 0xFFFF;
         CPMethodOrField field = cpBands.addCPField(class_this[index], name,
                 desc);
         tempFieldDesc.add(field.getDesc());
@@ -284,6 +317,40 @@ public class ClassBands extends BandSet {
                 classInnerClassesNameRUN.add(icTuple.N);
             }
         }
+        // Calculate any backwards calls from metadata bands
+        List classAttrCalls = new ArrayList();
+        List fieldAttrCalls = new ArrayList();
+        List methodAttrCalls = new ArrayList();
+        if(class_RVA_bands.hasContent()) {
+            classAttrCalls.add(new Integer(class_RVA_bands.numBackwardsCalls()));
+        }
+        if(class_RIA_bands.hasContent()) {
+            classAttrCalls.add(new Integer(class_RIA_bands.numBackwardsCalls()));
+        }
+        if(field_RVA_bands.hasContent()) {
+            fieldAttrCalls.add(new Integer(field_RVA_bands.numBackwardsCalls()));
+        }
+        if(field_RIA_bands.hasContent()) {
+            fieldAttrCalls.add(new Integer(field_RIA_bands.numBackwardsCalls()));
+        }
+        if(method_RVA_bands.hasContent()) {
+            methodAttrCalls.add(new Integer(method_RVA_bands.numBackwardsCalls()));
+        }
+        if(method_RIA_bands.hasContent()) {
+            methodAttrCalls.add(new Integer(method_RIA_bands.numBackwardsCalls()));
+        }
+        if(method_RVPA_bands.hasContent()) {
+            methodAttrCalls.add(new Integer(method_RVPA_bands.numBackwardsCalls()));
+        }
+        if(method_RIPA_bands.hasContent()) {
+            methodAttrCalls.add(new Integer(method_RIPA_bands.numBackwardsCalls()));
+        }
+        if(method_AD_bands.hasContent()) {
+            methodAttrCalls.add(new Integer(method_AD_bands.numBackwardsCalls()));
+        }
+        class_attr_calls = listToArray(classAttrCalls);
+        field_attr_calls = listToArray(fieldAttrCalls);
+        method_attr_calls = listToArray(methodAttrCalls);
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
@@ -353,28 +420,44 @@ public class ClassBands extends BandSet {
             Pack200Exception {
         out.write(encodeFlags("field_flags", field_flags, Codec.UNSIGNED5,
                 Codec.UNSIGNED5, header.have_field_flags_hi()));
+//        *field_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
+//        *field_attr_indexes :UNSIGNED5 [SUM(*field_attr_count)]
+        out.write(encodeBandInt("field_attr_calls", field_attr_calls, Codec.UNSIGNED5));
         out.write(encodeBandInt("fieldConstantValueKQ",
                 cpEntryListToArray(fieldConstantValueKQ), Codec.UNSIGNED5));
         out.write(encodeBandInt("fieldSignature",
                 cpEntryListToArray(fieldSignature), Codec.UNSIGNED5));
+        field_RVA_bands.pack(out);
+        field_RIA_bands.pack(out);
     }
 
     private void writeMethodAttributeBands(OutputStream out)
             throws IOException, Pack200Exception {
         out.write(encodeFlags("method_flags", method_flags, Codec.UNSIGNED5,
                 Codec.UNSIGNED5, header.have_method_flags_hi()));
+//        *method_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
+//        *method_attr_indexes :UNSIGNED5 [SUM(*method_attr_count)]
+        out.write(encodeBandInt("method_attr_calls", method_attr_calls, Codec.UNSIGNED5));
         out.write(encodeBandInt("methodExceptionNumber",
                 listToArray(methodExceptionNumber), Codec.UNSIGNED5));
         out.write(encodeBandInt("methodExceptionClasses",
                 cpEntryListToArray(methodExceptionClasses), Codec.UNSIGNED5));
         out.write(encodeBandInt("methodSignature",
                 cpEntryListToArray(methodSignature), Codec.UNSIGNED5));
+        method_RVA_bands.pack(out);
+        method_RIA_bands.pack(out);
+        method_RVPA_bands.pack(out);
+        method_RIPA_bands.pack(out);
+        method_AD_bands.pack(out);
     }
 
     private void writeClassAttributeBands(OutputStream out) throws IOException,
             Pack200Exception {
         out.write(encodeFlags("class_flags", class_flags, Codec.UNSIGNED5,
                 Codec.UNSIGNED5, header.have_class_flags_hi()));
+//        *class_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
+//        *class_attr_indexes :UNSIGNED5 [SUM(*class_attr_count)]
+        out.write(encodeBandInt("class_attr_calls", class_attr_calls, Codec.UNSIGNED5));
         out.write(encodeBandInt("classSourceFile",
                 cpEntryOrNullListToArray(classSourceFile), Codec.UNSIGNED5));
         out.write(encodeBandInt("class_enclosing_method_RC",
@@ -385,6 +468,8 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("class_Signature_RS",
                 cpEntryListToArray(classSignature), Codec.UNSIGNED5));
+        class_RVA_bands.pack(out);
+        class_RIA_bands.pack(out);
         out.write(encodeBandInt("class_InnerClasses_N", class_InnerClasses_N, Codec.UNSIGNED5));
         out.write(encodeBandInt("class_InnerClasses_RC", getInts(class_InnerClasses_RC), Codec.UNSIGNED5));
         out.write(encodeBandInt("class_InnerClasses_F", class_InnerClasses_F, Codec.UNSIGNED5));
@@ -443,8 +528,7 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("code_LocalVariableTable_bci_P",
                 listToArray(codeLocalVariableTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LocalVariableTable_span_O",
-                listToArray(codeLocalVariableTableSpanO), Codec.BRANCH5)); // TODO:
-                                                                            // Difference
+                listToArray(codeLocalVariableTableSpanO), Codec.BRANCH5));
         out.write(encodeBandInt("code_LocalVariableTable_name_RU",
                 cpEntryListToArray(codeLocalVariableTableNameRU),
                 Codec.UNSIGNED5));
@@ -742,5 +826,100 @@ public class ClassBands extends BandSet {
 
     public boolean isAnySyntheticMethods() {
         return anySyntheticMethods;
+    }
+
+    public void addParameterAnnotation(int parameter, String desc,
+            boolean visible, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
+        if(visible) {
+            method_RVPA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+            Integer flag = (Integer) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+            if((flag.intValue() & (1<<23)) != 0) {
+                method_RVPA_bands.incrementAnnoN();
+            } else {
+                method_RVPA_bands.newEntryInAnnoN();
+            }
+            tempMethodFlags.add(new Integer(flag.intValue() | (1<<23)));
+        } else {
+            method_RIPA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+            Integer flag = (Integer) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+            if((flag.intValue() & (1<<24)) != 0) {
+                method_RIPA_bands.incrementAnnoN();
+            } else {
+                method_RIPA_bands.newEntryInAnnoN();
+            }
+            tempMethodFlags.add(new Integer(flag.intValue() | (1<<24)));
+        }
+    }
+
+    public void addAnnotation(int context, String desc, boolean visible, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
+        switch (context) {
+        case MetadataBandGroup.CONTEXT_CLASS:
+            if(visible) {
+                class_RVA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                if((class_flags[index] & (1<<21)) != 0) {
+                    class_RVA_bands.incrementAnnoN();
+                } else {
+                    class_RVA_bands.newEntryInAnnoN();
+                    class_flags[index] = class_flags[index] | (1<<21);
+                }
+            } else {
+                class_RIA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                if((class_flags[index] & (1<<22)) != 0) {
+                    class_RIA_bands.incrementAnnoN();
+                } else {
+                    class_RIA_bands.newEntryInAnnoN();
+                    class_flags[index] = class_flags[index] | (1<<22);
+                }
+            }
+            break;
+        case MetadataBandGroup.CONTEXT_FIELD:
+            if(visible) {
+                field_RVA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Long flag = (Long) tempFieldFlags.remove(tempFieldFlags.size() - 1);
+                if((flag.intValue() & (1<<21)) != 0) {
+                    field_RVA_bands.incrementAnnoN();
+                } else {
+                    field_RVA_bands.newEntryInAnnoN();
+                }
+                tempFieldFlags.add(new Long(flag.intValue() | (1<<21)));
+            } else {
+                field_RIA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Long flag = (Long) tempFieldFlags.remove(tempFieldFlags.size() - 1);
+                if((flag.intValue() & (1<<22)) != 0) {
+                    field_RIA_bands.incrementAnnoN();
+                } else {
+                    field_RIA_bands.newEntryInAnnoN();
+                }
+                tempFieldFlags.add(new Long(flag.intValue() | (1<<22)));
+            }
+            break;
+        case MetadataBandGroup.CONTEXT_METHOD:
+            if(visible) {
+                method_RVA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+                if((flag.intValue() & (1<<21)) != 0) {
+                    method_RVA_bands.incrementAnnoN();
+                } else {
+                    method_RVA_bands.newEntryInAnnoN();
+                }
+                tempMethodFlags.add(new Long(flag.intValue() | (1<<21)));
+            } else {
+                method_RIA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+                if((flag.intValue() & (1<<22)) != 0) {
+                    method_RIA_bands.incrementAnnoN();
+                } else {
+                    method_RIA_bands.newEntryInAnnoN();
+                }
+                tempMethodFlags.add(new Long(flag.intValue() | (1<<22)));
+            }
+            break;
+        }
+    }
+
+    public void addAnnotationDefault(List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
+        method_AD_bands.addAnnotation(null, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+        Integer flag = (Integer) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+        tempMethodFlags.add(new Integer(flag.intValue() | (1<<25)));
     }
 }
