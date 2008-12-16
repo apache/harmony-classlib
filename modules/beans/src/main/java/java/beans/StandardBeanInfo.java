@@ -87,7 +87,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private static PropertyComparator comparator = new PropertyComparator();
 
-    private Image[] icon = new Image[4];
+    private Object[] icon = new Object[4];
 
     private boolean canAddPropertyChangeListener;
 
@@ -196,7 +196,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     @Override
     public Image getIcon(int iconKind) {
-        return icon[iconKind - 1];
+        return (Image)icon[iconKind - 1];
     }
 
     void mergeBeanInfo(BeanInfo beanInfo, boolean force)
