@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.harmony.pack200.IcBands.IcTuple;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 
 public class ClassBands extends BandSet {
 
@@ -170,6 +171,10 @@ public class ClassBands extends BandSet {
             cpBands.addCPUtf8("Synthetic");
             anySyntheticClasses = true;
         }
+        if((flags & Opcodes.ACC_DEPRECATED) != 0) { // ASM uses (1<<17) flag for deprecated
+            flags = flags & ~Opcodes.ACC_DEPRECATED;
+            flags = flags | (1<<20);
+        }
         if(signature != null) {
             class_flags[index] |= (1 << 19);
             classSignature.add(cpBands.getCPSignature(signature));
@@ -208,6 +213,10 @@ public class ClassBands extends BandSet {
         if (signature != null) {
             fieldSignature.add(cpBands.getCPSignature(signature));
             flags |= (1 << 19);
+        }
+        if((flags & Opcodes.ACC_DEPRECATED) != 0) { // ASM uses (1<<17) flag for deprecated
+            flags = flags & ~Opcodes.ACC_DEPRECATED;
+            flags = flags | (1<<20);
         }
         if (value != null) {
             fieldConstantValueKQ.add(cpBands.getConstant(value));
@@ -268,7 +277,6 @@ public class ClassBands extends BandSet {
         // Compute any required IcLocals
         List innerClassesN = new ArrayList();
         List icLocal = new ArrayList();
-        Set keySet = classReferencesInnerClass.keySet();
         for (int i = 0; i < class_this.length; i++) {
             CPClass cpClass = class_this[i];
             Set referencedInnerClasses = (Set) classReferencesInnerClass.get(cpClass);
@@ -569,6 +577,10 @@ public class ClassBands extends BandSet {
                 methodExceptionClasses.add(cpBands.getCPClass(exceptions[i]));
             }
             flags |= (1 << 18);
+        }
+        if((flags & Opcodes.ACC_DEPRECATED) != 0) { // ASM uses (1<<17) flag for deprecated
+            flags = flags & ~Opcodes.ACC_DEPRECATED;
+            flags = flags | (1<<20);
         }
         tempMethodFlags.add(new Long(flags));
         numMethodArgs = countArgs(desc);
