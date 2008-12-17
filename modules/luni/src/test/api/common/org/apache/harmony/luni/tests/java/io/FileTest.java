@@ -1851,6 +1851,23 @@ public class FileTest extends TestCase {
     }
 
     /**
+     * @tests java.io.File#mkdir()
+     *
+     * HARMONY-6041
+     */
+    public void test_mkdir_special_unicode() throws IOException {
+        tempDirectory = new File("\u5C73");
+        int i = 0;
+        while (tempDirectory.exists()) {
+            tempDirectory = new File("\u5C73" + i);
+            ++i;
+        }
+        assertFalse(tempDirectory.exists());
+        assertTrue(tempDirectory.mkdir());
+        assertTrue(tempDirectory.exists());
+    }
+
+    /**
      * @tests java.io.File#mkdirs()
      */
     public void test_mkdirs() {
