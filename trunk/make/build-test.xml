@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     Licensed to the Apache Software Foundation (ASF) under one or more
+     contributor license agreements.  See the NOTICE file distributed with
+     this work for additional information regarding copyright ownership.
+     The ASF licenses this file to You under the Apache License, Version 2.0
+     (the "License"); you may not use this file except in compliance with
+     the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<project name="classlib-test" default="test-all" basedir="..">
+
+    <description> Tests for classlib package</description>
+
+    <!-- import common properties -->
+    <import file="${basedir}/make/properties.xml" />
+
+    <!-- set global properties for this build. -->
+
+    <property name="tests.output" location="build/test_report" />
+    <property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+
+    <property name="tests.build.output" location="build/tests" />
+    <property name="tests.support.output" location="build/test_support" />
+    <property name="support.dir" location="support"/>
+    <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
+    <property file="make/depends.properties" />
+
+    <!-- this list of components to test will grow to eventually be all modules -->
+    <target name="test-all"
+        depends="clean-test-output, test-modules, process-empty, gen-report, check-test-result">
+    </target>
+
+    <target name="clean">
+        <delete dir="${tests.output}" />
+        <delete dir="${tests.build.output}" />
+        <delete dir="${tests.support.output}" />
+        <delete file="${hy.hdk}/build/test/support.jar" />
+    </target>
+
+    <target name="clean-test-output">
+        <delete dir="${tests.output}" />
+    </target>
+
+    <target name="test-modules" depends="support-jar, test-jre-vm-info">
+        <call-modules target="-test-module" />
+    </target>
+
+    <target name="gen-report" depends="full-report,short-report" />
+
+    <property name="report.dir" value="${tests.output}/html"/>
+
+    <target name="full-report" unless="short.report" >
+        <delete dir="${report.dir}" />
+        <junitreport todir="${tests.output}">
+            <fileset dir="${tests.output}">
+                <include name="TEST*-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${report.dir}"/>
+        </junitreport>
+
+        <!-- use this property just to get the slashes to display right in the echo -->
+        <property name="display-location" location="${report.dir}/index.html"/>
+        <echo message="The test report is in ${display-location}"/>
+    </target>
+
+    <target name="short-report" if="short.report" >
+        <delete dir="${report.dir}" />
+        <junitreport todir="${tests.output}">
+            <fileset dir="${tests.output}" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames" todir="${report.dir}"/>
+        </junitreport>
+
+        <!-- use this property just to get the slashes to display right in the echo -->
+        <property name="display-location" location="${report.dir}/index.html"/>
+        <echo message="The short test report is in ${display-location}"/>
+    </target>
+
+    <target name="support-jar" depends="compile-support">
+        <mkdir dir="${hy.hdk}/build/test" />
+        <jar destfile="${hy.hdk}/build/test/support.jar"
+             manifest="support/META-INF/MANIFEST.MF">
+            <fileset dir="${tests.support.output}" />
+        </jar>
+        <copy todir="${hy.hdk}/build/test"> 
+        <fileset dir="${jetty.dir}">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${derby.dir}">
+            <include name="*.jar" />
+        </fileset>
+        </copy>
+    </target>
+
+    <target name="compile-support" depends="copy-test-resources, check-support-jars"
+            description="Compile the unit test source">
+        <ensure-javac/>
+        <mkdir dir="${tests.support.output}" />
+        <hy.javac 
+               destdir="${tests.support.output}">
+
+            <src path="${support.dir}/src/test/java" />
+            <classpath location="${junit.jar}" />
+            <classpath location="${tests.support.output}" />
+            <classpath>
+                <fileset dir="${jetty.dir}">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+            <bootclasspath>
+                <fileset dir="${tests.depends.jars}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </hy.javac>
+        
+    </target>
+    
+    <target name="check-test-result">
+        <fail if="test.crashes"
+              message="There were test crashes: ${crashed.tests}"/>
+        <available property="test.errors"
+                   file="${tests.output}/test.errors" />
+        <available property="test.failures"
+                   file="${tests.output}/test.failures" />
+        <fail if="test.errors" message="There were test errors." />
+        <fail if="test.failures" message="There were test failures." />
+    </target>
+
+    <!-- ================================= 
+          target: copy-test-resources              
+         ================================= -->
+    <target name="copy-test-resources"
+            description="Copy non-Java files from test support tree to the support output tree">
+
+        <mkdir dir="${tests.support.output}" />
+        <copy todir="${tests.support.output}" includeemptydirs="false">
+            <fileset dir="${support.dir}/src/test/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset file="${support.dir}/src/test/resources/hyts_Foo.c"/>
+        </copy>
+    </target>
+
+    <target name="check-support-jars"
+            description="Check for jars required to compile and run unit tests">
+
+      <ant antfile="make/depends.xml" inheritall="false" target="check"/>
+
+    </target>
+
+    <target name="run-tests" description="Run JUnit tests">
+        <!-- The location of the Harmony launcher can be overridden by 
+             the "harmony.vm.exe" property. Default value of property
+             is set assuming it is under the deploy tree -->
+        <property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
+        
+        <!-- Delete "junitCompleted" - an empty file that can be used to
+             check that the junit test VM does not exit prematurely -->
+        <delete file="${user.home}/junitCompleted" failonerror="false" />
+
+        <path id="classpath.id" location="${tests.build.output}" />
+        
+        <java classname="tests.main.AllTests"
+              fork="true"
+              jvm="${harmony.vm.exe}">
+            
+
+            <!-- Required by various tests that set security manager etc -->
+            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+
+            <!-- Required for running the java.net unit tests -->
+            <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
+
+            <!-- Required if using the test excluder decorator -->
+            <jvmarg value="-Dexcludes.file.uri=file:///${support.dir}/src/test/resources/config/jcltest-excludes.xml" />
+            
+            <classpath>
+                <path refid="classpath.id" />
+                <pathelement location="${junit.jar}" />
+            </classpath>
+        </java>
+    </target>
+
+    
+    <!-- ================================= 
+          target: run-tests-with-junit-task
+         ================================= -->
+    <target name="run-tests-with-junit-task" description="Run JUnit tests">
+        <!-- The location of the Harmony launcher can be overridden by 
+             the "harmony.vm.exe" property. Default value of property
+             is set assuming it is under the deploy tree -->
+        <property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
+
+        <!-- Delete "junitCompleted" - an empty file that can be used to
+             check that the junit test VM does not exit prematurely -->
+        <delete file="${user.home}/junitCompleted" failonerror="false" />
+
+        <path id="classpath.id" location="${tests.build.output}" />
+        
+        <junit fork="true"
+               forkmode="once"
+               jvm="${harmony.vm.exe}"
+               errorproperty="tests.failed"
+               failureproperty="tests.failed">
+
+            <env key="LD_LIBRARY_PATH" value="" />
+            <!-- required to be unset on Linux -->
+
+            <!-- Required by various tests that set security manager etc -->
+            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+
+            <!-- Required for running the java.net unit tests -->
+            <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
+
+            <!-- Required if using the test excluder decorator -->
+            <jvmarg value="-Dexcludes.file.uri=file:///${support.dir}/src/test/resources/config/jcltest-excludes.xml" />
+            
+            <classpath>
+                <path refid="classpath.id" />
+                <pathelement location="${junit.jar}" />
+            </classpath>
+            
+            <formatter type="plain" usefile="false" />
+            <formatter type="xml" />
+            
+            <test todir="${tests.results.dir}" name="tests.main.AllTests" />
+        </junit>
+
+        <fail if="tests.failed" message="Some Tests Failed !" />
+
+        <!-- if the junit test process completed as expected, this file
+             should now exist -->
+        <fail message="JUnit task ended prematurely - Hint: This may have been caused by the test VM terminating unexpectedly during the test run">
+            <condition>
+                <not>
+                    <available file="${user.home}/junitCompleted" />
+                </not>
+            </condition>
+        </fail>
+        <!-- Clean up after ourselves -->
+        <delete file="${user.home}/junitCompleted" />
+    </target>
+
+    <target name="process-empty" depends="-check-for-empty, -process-empty"/>
+    <target name="-check-for-empty">
+        <fileset id="empty.test.reports" dir="${tests.output}">
+            <patternset>
+                <include name="TEST-*.xml"/>
+            </patternset>
+            <size value="0" when="equal"/>
+        </fileset>
+
+        <pathconvert refid="empty.test.reports" pathsep="${path.separator}"
+                     property="crashed.tests"/>
+        <condition property="test.crashes">
+            <not>
+                <equals arg1="" arg2="${crashed.tests}" />
+            </not>
+        </condition>
+    </target>
+    <target name="-process-empty" if="test.crashes">
+       <property name="per.crashed.tests.file" 
+                 value="${tests.output}${file.separator}TEST-crashed.xml"/>
+
+       <property name="per.header"
+                 value="&lt;?xml version='1.0' encoding='UTF-8' ?&gt;&lt;testsuite errors='1' name='vmcrash.CrashedTests' time='0'&gt;"/>
+       <property name="per.prefix"
+                 value="&lt;testcase classname='"/>
+       <property name="per.middle" value="' name='"/>
+       <property name="per.suffix" 
+                 value="' time='0.0'&gt;&lt;error message='VM crash?'/&gt;&lt;/testcase&gt;"/>
+       <property name="per.footer" value="&lt;/testsuite&gt;"/>
+
+       <echo message="${crashed.tests}" file="${per.crashed.tests.file}"/>
+
+       <replaceregexp file="${per.crashed.tests.file}" flags="g">
+            <regexp pattern="[^${path.separator}]*TEST-([^${path.separator}]*)\.xml${path.separator}?"/>
+            <substitution expression="${per.prefix}\1${per.middle}\1${per.suffix}"/>
+       </replaceregexp>
+       <replaceregexp file="${per.crashed.tests.file}" match="\A"
+                      replace="${per.header}"/>
+       <echo file="${per.crashed.tests.file}" append="yes"
+             message="${per.footer}"/>
+
+       <!-- now let's delete empty reports -->
+       <delete><fileset refid="empty.test.reports"/></delete>
+    </target>
+
+</project>

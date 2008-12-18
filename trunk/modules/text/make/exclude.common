@@ -1,0 +1,8 @@
+org/apache/harmony/text/tests/java/text/DecimalFormatTest.java
+org/apache/harmony/text/tests/java/text/MessageFormatTest.java
+org/apache/harmony/text/tests/java/text/DecimalFormatSymbolsTest.java
+org/apache/harmony/text/tests/java/text/NumberFormatTest.java
+org/apache/harmony/text/tests/java/text/SimpleDateFormatTest.java
+org/apache/harmony/text/tests/java/text/RuleBasedCollatorTest.java
+org/apache/harmony/text/tests/java/text/CollationElementIteratorTest.java
+
