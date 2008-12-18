@@ -18,6 +18,8 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Paramenter annotations class file attribute, either a
@@ -98,10 +100,31 @@ public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends
             return length;
         }
 
+        public List getClassFileEntries() {
+            List nested = new ArrayList();
+            for (int i = 0; i < annotations.length; i++) {
+                nested.addAll(annotations[i].getClassFileEntries());
+            }
+            return nested;
+        }
+
     }
 
     public boolean equals(Object obj) {
         return this == obj;
+    }
+
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        List nested = new ArrayList();
+        nested.add(attributeName);
+        for (int i = 0; i < parameter_annotations.length; i++) {
+            nested.addAll(parameter_annotations[i].getClassFileEntries());
+        }
+        ClassFileEntry[] nestedEntries = new ClassFileEntry[nested.size()];
+        for (int i = 0; i < nestedEntries.length; i++) {
+            nestedEntries[i] = (ClassFileEntry) nested.get(i);
+        }
+        return nestedEntries;
     }
 
 }

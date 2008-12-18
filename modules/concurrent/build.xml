@@ -28,14 +28,8 @@
 
     <fileset id="classes" dir="${hy.build}">
         <or>
-            <present targetdir="src/main/java" />
-            <present targetdir="src/main/java">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-            <present targetdir="standard/src/main/java" />
-            <present targetdir="standard/src/main/java">
+            <present targetdir="${hy.concurrent.src.main.java}" />
+            <present targetdir="${hy.concurrent.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -64,8 +58,8 @@
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/concurrent.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/concurrent-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -77,8 +71,9 @@
 
         <mkdir dir="${hy.build}" />
 
-        <javac destdir="${hy.build}"
-               sourcepath=""
+        <javac sourcepath=""
+               srcdir="${hy.concurrent.src.main.java}"
+               destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -87,8 +82,6 @@
 
             <compilerarg line="${build.compilerarg}" />
 
-            <src path="src/main/java" />
-            <src path="standard/src/main/java" />
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -98,7 +91,7 @@
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}.jar"
+        <jar destfile="${hy.jdk}/jre/lib/boot/concurrent.jar"
              manifest="${hy.concurrent}/META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
@@ -109,9 +102,8 @@
             <metainf refid="hy.required.metainf-files"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}-src.jar">
-            <fileset dir="src/main/java" />
-            <fileset dir="standard/src/main/java" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/concurrent-src.jar">
+            <fileset dir="${hy.concurrent.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -125,25 +117,21 @@
 
         <mkdir dir="${hy.concurrent.bin.test}" />
 
-        <javac destdir="${hy.concurrent.bin.test}"
-               sourcepath=""
+        <javac sourcepath=""
+               srcdir="${hy.concurrent.src.test.java}"
+               destdir="${hy.concurrent.bin.test}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
-
             <compilerarg line="${build.compilerarg}" />
-
-            <src path="src/test/java" />
-            <src path="standard/src/test/java" />
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -183,13 +171,6 @@
 
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                 <fileset dir="${hy.concurrent.src.test.java}">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${concurrent.exclude.file}" unless="test.case" />
-                </fileset>
-                <fileset dir="${hy.concurrent.src.test.standard}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->

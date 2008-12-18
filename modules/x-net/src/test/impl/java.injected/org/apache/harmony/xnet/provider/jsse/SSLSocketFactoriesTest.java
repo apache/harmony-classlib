@@ -44,6 +44,7 @@ public class SSLSocketFactoriesTest extends TestCase {
     /**
      * Sets up the test case.
      */
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         if (doLog) {
@@ -53,6 +54,7 @@ public class SSLSocketFactoriesTest extends TestCase {
         }
     }
 
+    @Override
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -293,6 +295,7 @@ public class SSLSocketFactoriesTest extends TestCase {
             final SSLServerSocket ss = ssocket;
             final SSLSocket s = csocket;
             server = new Thread() {
+                @Override
                 public void run() {
                     InputStream is = null;
                     OutputStream os = null;
@@ -362,6 +365,7 @@ public class SSLSocketFactoriesTest extends TestCase {
             };
 
             client = new Thread() {
+                @Override
                 public void run() {
                     InputStream is = null;
                     OutputStream os = null;

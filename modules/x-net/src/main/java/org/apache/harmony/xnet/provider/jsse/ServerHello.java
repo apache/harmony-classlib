@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.Message;
@@ -111,6 +106,7 @@ public class ServerHello extends Message {
      * Sends message
      * @param out
      */
+    @Override
     public void send(HandshakeIODataStream out) {
         out.write(server_version);
         out.write(random);
@@ -133,6 +129,7 @@ public class ServerHello extends Message {
      * Returns message type 
      * @return
      */
+    @Override
     public int getType() {
         return Handshake.SERVER_HELLO;
     }

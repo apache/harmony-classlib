@@ -33,6 +33,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
 public class HandshakeCompletedEventTest extends SerializationTest implements
         SerializationTest.SerializableAssert {
 
+    @Override
     protected Object[] getData() {
         try {
             SSLContext cont = SSLContext.getInstance("TLS");

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.SSLv3Constants;
@@ -56,7 +51,7 @@ import javax.net.ssl.X509TrustManager;
  * Handshake protocol operates on top of the Record Protocol.
  * It responsible for negotiating a session.
  * 
- * The implementation proceses inbound client handshake messages,
+ * The implementation processes inbound client handshake messages,
  * creates and sends respond messages. Outbound messages are supplied 
  * to Record Protocol. Detected errors are reported to the Alert protocol.
  * 
@@ -83,6 +78,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
      * Start session negotiation
      * @param session
      */
+    @Override
     public void start() {
         if (session == null) { // initial handshake
             status = NEED_UNWRAP;
@@ -102,6 +98,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
      * Proceses inbound handshake messages
      * @param bytes
      */
+    @Override
     public void unwrap(byte[] bytes) {
 
         io_stream.append(bytes);
@@ -129,15 +126,12 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
                     needSendHelloRequest = false;
                     clientHello = new ClientHello(io_stream, length);
                     if (nonBlocking) {
-                        delegatedTasks.add(new DelegatedTask(
-                                new PrivilegedExceptionAction(){
-                            public Object run() throws Exception {
+                        delegatedTasks.add(new DelegatedTask(new PrivilegedExceptionAction<Void>() {
+                            public Void run() throws Exception {
                                 processClientHello();
                                 return null;
-                                }
-                            },
-                            this,
-                            AccessController.getContext()));
+                            }
+                        }, this, AccessController.getContext()));
                         return;
                     }
                     processClientHello();
@@ -322,6 +316,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
      * @ see TLS 1.0 spec., E.1. Version 2 client hello
      * @param bytes
      */
+    @Override
     public void unwrapSSLv2(byte[] bytes) {
         io_stream.append(bytes);
         io_stream.mark();
@@ -333,8 +328,8 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
         }
         if (nonBlocking) {
             delegatedTasks.add(new DelegatedTask(
-                    new PrivilegedExceptionAction() {
-                        public Object run() throws Exception {
+                    new PrivilegedExceptionAction<Void>() {
+                        public Void run() throws Exception {
                             processClientHello();
                             return null;
                         }
@@ -399,10 +394,9 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
                         status = NOT_HANDSHAKING;
                         clearMessages();
                         return;
-                    } else {
-                        fatalAlert(AlertProtocol.HANDSHAKE_FAILURE,
-                                "SSL Session may not be created");
                     }
+                    // throw AlertException
+                    fatalAlert(AlertProtocol.HANDSHAKE_FAILURE, "SSL Session may not be created");
                 }
                 session = null;
             } else {
@@ -553,7 +547,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
                     } catch (NoSuchAlgorithmException e) {
                             kf = KeyFactory.getInstance("DiffieHellman");
                     }
-                    dhkeySpec = (DHPublicKeySpec) kf.getKeySpec(dhkey,
+                    dhkeySpec = kf.getKeySpec(dhkey,
                             DHPublicKeySpec.class);
                 }
                 if (!cipher_suite.isAnonymous()) { // calculate signed_params
@@ -638,6 +632,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
     /**
      * Creates and sends finished message
      */
+    @Override
     protected void makeFinished() {
         byte[] verify_data;
         boolean isTLS = (serverHello.server_version[1] == 1); // TLS 1.0 protocol
@@ -684,8 +679,9 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
     }
 
     /**
-     * Proceses inbound ChangeCipherSpec message
+     * Processes inbound ChangeCipherSpec message
      */
+    @Override
     public void receiveChangeCipherSpec() {    
         if (isResuming) {
             if (serverFinished == null) {

@@ -14,11 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Boris Kuznetsov
- * @version $Revision$
- */
 package org.apache.harmony.xnet.provider.jsse;
 
 import java.util.Arrays;
@@ -39,20 +34,17 @@ public class SSLSessionContextImpl implements SSLSessionContext {
 
     private long timeout = 0;
 
-    private final Hashtable sessions = new Hashtable();
+    private final Hashtable<IdKey, SSLSessionImpl> sessions = new Hashtable<IdKey, SSLSessionImpl>();
 
-    /**
-     * 
-     * @see javax.net.ssl.SSLSessionContext.getIds()
-     */
+    @SuppressWarnings("unchecked")
     public Enumeration getIds() {
         return new Enumeration() {
-            Enumeration keys = sessions.keys();
+            Enumeration<IdKey> keys = sessions.keys();
             public boolean hasMoreElements() {
                 return keys.hasMoreElements();
             }
             public Object nextElement() {
-                return ((IdKey)keys.nextElement()).id;
+                return keys.nextElement().id;
             }
         };
     }
@@ -62,7 +54,7 @@ public class SSLSessionContextImpl implements SSLSessionContext {
      * @see javax.net.ssl.SSLSessionContext.getSession(byte[] sessionId)
      */
     public SSLSession getSession(byte[] sessionId) {      
-        return (SSLSession) sessions.get(new IdKey(sessionId));
+        return sessions.get(new IdKey(sessionId));
     }
 
     /**
@@ -94,19 +86,16 @@ public class SSLSessionContextImpl implements SSLSessionContext {
 
     }
 
-    /**
-     * @see javax.net.ssl.SSLSessionContext.setSessionTimeout(int seconds)
-     */
     public void setSessionTimeout(int seconds) throws IllegalArgumentException {
         if (seconds < 0) {
             throw new IllegalArgumentException("seconds < 0");
         }
         timeout = seconds * 1000;
 
-        // Check timeouts and remome expired sessions
+        // Check timeouts and remove expired sessions
         SSLSessionImpl ses;
-        for (Enumeration en = sessions.keys(); en.hasMoreElements();) {
-            ses = (SSLSessionImpl)(sessions.get(en.nextElement()));
+        for (Enumeration<IdKey> en = sessions.keys(); en.hasMoreElements();) {
+            ses = (sessions.get(en.nextElement()));
             if (!ses.isValid()) {
                 sessions.remove(ses.getId());
             }
@@ -114,7 +103,7 @@ public class SSLSessionContextImpl implements SSLSessionContext {
     }
 
     /**
-     * Adds session to the session cach
+     * Adds session to the session cache
      * @param ses
      */
     void putSession(SSLSessionImpl ses) {
@@ -139,6 +128,7 @@ public class SSLSessionContextImpl implements SSLSessionContext {
             this.id = id;
         }
         
+        @Override
         public boolean equals(Object o) {
             if (!(o instanceof IdKey)) {
                 return false;
@@ -146,14 +136,9 @@ public class SSLSessionContextImpl implements SSLSessionContext {
             return Arrays.equals(id, ((IdKey)o).id);
         }
         
+        @Override
         public int hashCode() {
-            // TODO uncomment for 1.5
-            // return Arrays.hashCode(id);
-            int hash = 0;
-            for (int i = 0; i < id.length; i++) {
-                hash += id[i];
-            }
-            return hash;
+            return Arrays.hashCode(id);
         }
     }
 

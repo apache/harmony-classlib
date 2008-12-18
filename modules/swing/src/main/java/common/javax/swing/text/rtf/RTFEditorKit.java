@@ -17,6 +17,7 @@
 
 package javax.swing.text.rtf;
 
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.text.rtf.RTFParser;
 import org.apache.harmony.x.swing.text.rtf.ParseException;
 import org.apache.harmony.x.swing.text.rtf.RTFHandler;
@@ -68,12 +69,12 @@ public class RTFEditorKit extends StyledEditorKit {
     }
   }
 
-  public void write(OutputStream out, Document doc, int pos, int len) {
-
+  public void write(OutputStream out, Document doc, int pos, int len) throws IOException, BadLocationException, NotImplementedException {
+      throw new NotImplementedException();
   }
 
-  public void write(Writer out, Document doc, int pos, int len) {
-
+  public void write(Writer out, Document doc, int pos, int len) throws IOException, BadLocationException {
+      throw new IOException("Cannot write RTF");
   }
 
 }

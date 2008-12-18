@@ -60,6 +60,7 @@ public class TrustManagerImplTest extends TestCase {
 
     private X509Certificate[] untrustedChain;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         CertificateFactory certFactory = CertificateFactory.getInstance("X509");

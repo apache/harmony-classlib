@@ -22,7 +22,11 @@
 
 package java.security;
 
+import java.security.cert.Certificate;
+
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.cert.MyCertificate;
 
 /**
  * Tests for <code>UnresolvedPermission</code> class fields and methods
@@ -46,14 +50,6 @@ public class UnresolvedPermission_ImplTest extends TestCase {
         assertEquals(name, up.getUnresolvedName()); 
         assertEquals(action, up.getUnresolvedActions()); 
         assertNull(up.getUnresolvedCerts());
-        
-        up = new UnresolvedPermission(type, name, action, new java.security.cert.Certificate[0]);
-        assertNull("Empty array should be the same as null", up.getUnresolvedCerts());
-        // case of trivial collection: {null}
-        up = new UnresolvedPermission(type, name, action, new java.security.cert.Certificate[3]);
-        assertNull(up.getUnresolvedCerts());
-        //assertNotSame(up.getUnresolvedCerts(), up.getUnresolvedCerts());
-        //assertEquals(1, up.getUnresolvedCerts().length);
     }
     
     public void testEquals()
@@ -70,13 +66,10 @@ public class UnresolvedPermission_ImplTest extends TestCase {
         assertTrue(up.equals(up2));
         assertTrue(up.hashCode() == up2.hashCode());
         up2 = new UnresolvedPermission(type, name, action, new java.security.cert.Certificate[0]);
-        assertTrue("null and empty certificates should be considered equal", up.equals(up2));
         assertTrue(up.hashCode() == up2.hashCode());
         up2 = new UnresolvedPermission(type, name, action, new java.security.cert.Certificate[2]);
-        assertTrue(up.equals(up2));
         //case of trivial collections {null} 
         up = new UnresolvedPermission(type, name, action, new java.security.cert.Certificate[10]);
-        assertTrue(up.equals(up2));
         assertTrue(up.hashCode() == up2.hashCode());
     }
 
@@ -101,5 +94,134 @@ public class UnresolvedPermission_ImplTest extends TestCase {
         //another valid case
         up = new UnresolvedPermission("java.security.AllPermission", null, null, new java.security.cert.Certificate[0]);
         assertEquals(new AllPermission(name, ""), up.resolve(AllPermission.class));
+    }
+    
+    public static final String type = "java.util.PropertyPermission";
+
+    public static final String name = "os.name";
+
+    public static final String action = "write,read";
+
+    public static final byte[] testEncoding1 = new byte[] { (byte) 1 };
+
+    public static final byte[] testEncoding2 = new byte[] { (byte) 2 };
+
+    public static final byte[] testEncoding3 = new byte[] { (byte) 1, (byte) 2,
+            (byte) 3 };
+
+    public static final Certificate cert1 = new MyCertificate("TEST_TYPE1",
+            testEncoding1);
+
+    public static final Certificate cert2 = new MyCertificate("TEST_TYPE2",
+            testEncoding2);
+
+    public static final Certificate cert3 = new MyCertificate("TEST_TYPE3",
+            testEncoding3);
+
+    public void test_Constructor() {
+        UnresolvedPermission up = new UnresolvedPermission(type, name, action,
+                null);
+        assertNull(up.getUnresolvedCerts());
+
+        up = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[0]);
+        assertEquals(0, up.getUnresolvedCerts().length);
+
+        up = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        assertEquals(2, up.getUnresolvedCerts().length);
+    }
+
+    public void test_Equals_Scenario0() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                null);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                null);
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario1() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                null);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[0]);
+        assertFalse(up1.equals(up2));
+    }
+
+    public void test_Equals_Scenario2() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                null);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        assertFalse(up1.equals(up2));
+    }
+
+    public void test_Equals_Scenario3() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[0]);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[0]);
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario4() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[0]);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        assertFalse(up1.equals(up2));
+    }
+
+    public void test_Equals_Scenario5() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[5]);
+        assertFalse(up1.equals(up2));
+    }
+
+    public void test_Equals_Scenario6() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1 });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1 });
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario7() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, cert2 });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, cert2 });
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario8() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, cert2 });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert2, cert1 });
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario9() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, cert2, cert3 });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert2, cert1, cert3 });
+        assertEquals(up1, up2);
+    }
+    
+    public void test_Equals_Scenario10() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[2]);
+        try {
+            up1.equals(up2);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 }

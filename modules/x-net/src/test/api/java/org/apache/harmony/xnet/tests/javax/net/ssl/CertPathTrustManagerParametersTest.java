@@ -40,6 +40,7 @@ public class CertPathTrustManagerParametersTest extends TestCase {
 }
 
 class MyCertPathParameters implements CertPathParameters {
+    @Override
     public Object clone() {
         return new MyCertPathParameters();
     }

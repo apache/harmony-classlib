@@ -18,6 +18,8 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract superclass for Annotations attributes
@@ -29,10 +31,10 @@ public abstract class AnnotationsAttribute extends Attribute {
      */
     public static class Annotation {
 
-        private int num_pairs;
-        private CPUTF8[] element_names;
-        private ElementValue[] element_values;
-        private CPUTF8 type;
+        private final int num_pairs;
+        private final CPUTF8[] element_names;
+        private final ElementValue[] element_values;
+        private final CPUTF8 type;
 
         // Resolved values
         private int type_index;
@@ -75,12 +77,21 @@ public abstract class AnnotationsAttribute extends Attribute {
             }
         }
 
+        public List getClassFileEntries() {
+            List entries = new ArrayList();
+            for (int i = 0; i < element_names.length; i++) {
+                entries.add(element_names[i]);
+                entries.addAll(element_values[i].getClassFileEntries());
+            }
+            entries.add(type);
+            return entries;
+        }
     }
 
     public static class ElementValue {
 
-        private Object value;
-        private int tag;
+        private final Object value;
+        private final int tag;
 
         // resolved value index if it's a constant
         private int constant_value_index = -1;
@@ -88,6 +99,25 @@ public abstract class AnnotationsAttribute extends Attribute {
         public ElementValue(int tag, Object value) {
             this.tag = tag;
             this.value = value;
+        }
+
+        public List getClassFileEntries() {
+            List entries = new ArrayList(1);
+            if(value instanceof CPNameAndType) {
+                // used to represent enum, so don't include the actual CPNameAndType
+                entries.add(((CPNameAndType)value).name);
+                entries.add(((CPNameAndType)value).descriptor);
+            } else if(value instanceof ClassFileEntry) {
+                entries.add(value);
+            } else if (value instanceof ElementValue[]) {
+                ElementValue[] values = (ElementValue[]) value;
+                for (int i = 0; i < values.length; i++) {
+                    entries.addAll(values[i].getClassFileEntries());
+                }
+            } else if (value instanceof Annotation) {
+                entries.addAll(((Annotation)value).getClassFileEntries());
+            }
+            return entries;
         }
 
         public void resolve(ClassConstantPool pool) {

@@ -28,7 +28,6 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.PortUnreachableException;
 import java.net.SocketAddress;
@@ -36,7 +35,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_PortManager;
@@ -964,7 +963,7 @@ public class DatagramSocketTest extends SocketTestCase {
             DatagramSocketImplFactory {
 
         public DatagramSocketImpl createDatagramSocketImpl() {
-            return SocketImplProvider.getDatagramSocketImpl();
+            return new PlainDatagramSocketImpl();
         }
     }
 

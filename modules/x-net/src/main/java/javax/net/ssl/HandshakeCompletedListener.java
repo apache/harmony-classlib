@@ -15,22 +15,10 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.util.EventListener;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public interface HandshakeCompletedListener extends EventListener {
-    /**
-     * @com.intel.drl.spec_ref
-     */
-    public void handshakeCompleted(HandshakeCompletedEvent event);
+    void handshakeCompleted(HandshakeCompletedEvent event);
 }

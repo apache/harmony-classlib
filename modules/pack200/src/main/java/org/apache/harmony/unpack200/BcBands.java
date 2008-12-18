@@ -355,8 +355,6 @@ public class BcBands extends BandSet {
                 bcEscRefCount);
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
-
-
     }
 
     public void unpack() throws Pack200Exception {

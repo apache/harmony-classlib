@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.SSLSocketFactoryImpl;
@@ -58,12 +53,14 @@ public class SSLContextImpl extends SSLContextSpi {
         super();
     }
 
+    @Override
     public void engineInit(KeyManager[] kms, TrustManager[] tms,
             SecureRandom sr) throws KeyManagementException {
         sslParameters = new SSLParameters(kms, tms, sr, clientSessionContext,
                 serverSessionContext);
     }
 
+    @Override
     public SSLSocketFactory engineGetSocketFactory() {
         if (sslParameters == null) {
             throw new IllegalStateException("SSLContext is not initiallized.");
@@ -71,6 +68,7 @@ public class SSLContextImpl extends SSLContextSpi {
         return new SSLSocketFactoryImpl(sslParameters);
     }
 
+    @Override
     public SSLServerSocketFactory engineGetServerSocketFactory() {
         if (sslParameters == null) {
             throw new IllegalStateException("SSLContext is not initiallized.");
@@ -78,6 +76,7 @@ public class SSLContextImpl extends SSLContextSpi {
         return new SSLServerSocketFactoryImpl(sslParameters);
     }
 
+    @Override
     public SSLEngine engineCreateSSLEngine(String host, int port) {
         if (sslParameters == null) {
             throw new IllegalStateException("SSLContext is not initiallized.");
@@ -86,6 +85,7 @@ public class SSLContextImpl extends SSLContextSpi {
                 (SSLParameters) sslParameters.clone());
     }
 
+    @Override
     public SSLEngine engineCreateSSLEngine() {
         if (sslParameters == null) {
             throw new IllegalStateException("SSLContext is not initiallized.");
@@ -93,43 +93,14 @@ public class SSLContextImpl extends SSLContextSpi {
         return new SSLEngineImpl((SSLParameters) sslParameters.clone());
     }
 
+    @Override
     public SSLSessionContext engineGetServerSessionContext() {
         return serverSessionContext;
     }
 
+    @Override
     public SSLSessionContext engineGetClientSessionContext() {
         return clientSessionContext;
     }
-
-    @Override
-    protected javax.net.ssl.SSLParameters engineGetDefaultSSLParameters() {
-        SSLParameters providerSSLParameters = null;
-        try {
-            providerSSLParameters = SSLParameters.getDefault();
-        } catch (KeyManagementException e) {
-            
-        }
-        if (providerSSLParameters == null)
-            return null;
-
-        javax.net.ssl.SSLParameters sslParameters = new javax.net.ssl.SSLParameters();
-        sslParameters.setCipherSuites(providerSSLParameters
-                .getEnabledCipherSuites());
-        sslParameters.setProtocols(providerSSLParameters.getEnabledProtocols());
-        sslParameters.setNeedClientAuth(sslParameters.getNeedClientAuth());
-        sslParameters.setWantClientAuth(providerSSLParameters
-                .getWantClientAuth());
-        return sslParameters;
-    }
-
-    @Override
-    protected javax.net.ssl.SSLParameters engineGetSupportedSSLParameters() {
-        javax.net.ssl.SSLParameters sslParameters = new javax.net.ssl.SSLParameters();
-        sslParameters.setCipherSuites(CipherSuite
-                .getSupportedCipherSuiteNames());
-        sslParameters
-                .setProtocols((String[]) ProtocolVersion.supportedProtocols
-                        .clone());
-        return sslParameters;
-    }
 }
+

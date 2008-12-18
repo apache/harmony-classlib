@@ -104,7 +104,7 @@
           
           This is work in progress, and currently requires you to manually download and
           extract the source code for MX4J, Yoko, and XML commons into a 'temp' directory.
-          Plans are to automate that one the doc generation is up and running ok.
+          Plans are to automate that once the doc generation is up and running ok.
           
           The task description for jdocs is similar to the javadoc task - so to test it
           you can always temporarily change it to javadoc and view the output. 
@@ -113,7 +113,9 @@
         <property name="modules.dir" location="${basedir}/../modules"/>
         <taskdef name="jdocs" classname="com.dzone.jdocs.ant.jdk15.task.Jdocs"/>
         <jdocs destdir="${basedir}/javadoc"
-            access="protected" >
+            overview="overview.html"
+            additionalparam=""
+            access="protected">
 
             <!-- Source files maintained by Harmony -->
             <packageset dir="${modules.dir}/accessibility/src/main/java/">

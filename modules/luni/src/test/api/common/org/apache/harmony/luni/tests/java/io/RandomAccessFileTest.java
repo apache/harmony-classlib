@@ -57,6 +57,18 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         assertEquals("Incorrect int read/written", 20, raf.read());
         raf.close();
         
+        raf = new java.io.RandomAccessFile(f, "rwd");
+        raf.write(20);
+        raf.seek(0);
+        assertEquals("Incorrect int read/written", 20, raf.read());
+        raf.close();
+
+        raf = new java.io.RandomAccessFile(f, "rws");
+        raf.write(20);
+        raf.seek(0);
+        assertEquals("Incorrect int read/written", 20, raf.read());
+        raf.close();
+        
         // Regression for HARMONY-50
         File f = File.createTempFile("xxx", "yyy");
         f.deleteOnExit();
@@ -78,6 +90,14 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         // Test for method java.io.RandomAccessFile(java.lang.String,
         // java.lang.String)
         RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
+        raf.write("Test".getBytes(), 0, 4);
+        raf.close();
+        
+        raf = new java.io.RandomAccessFile(fileName, "rwd");
+        raf.write("Test".getBytes(), 0, 4);
+        raf.close();
+
+        raf = new java.io.RandomAccessFile(fileName, "rws");
         raf.write("Test".getBytes(), 0, 4);
         raf.close();
     }

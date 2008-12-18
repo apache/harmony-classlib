@@ -28,7 +28,7 @@ import java.security.Security;
 import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MyTrustManagerFactorySpi;
 import junit.framework.TestCase;
 
@@ -56,6 +56,7 @@ public class TrustManagerFactory2Test extends TestCase {
 
     Provider mProv;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MyTMFProvider",
@@ -67,6 +68,7 @@ public class TrustManagerFactory2Test extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         Security.removeProvider(mProv.getName());

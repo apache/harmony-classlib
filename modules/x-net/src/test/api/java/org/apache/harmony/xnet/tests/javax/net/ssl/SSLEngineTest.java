@@ -373,6 +373,7 @@ class mySSLEngine extends SSLEngine {
         super(host, port);
     }
 
+    @Override
     public void beginHandshake() throws SSLException {
         String host = super.getPeerHost();
         if ((host == null) || (host.length() == 0)) {
@@ -380,94 +381,117 @@ class mySSLEngine extends SSLEngine {
         }
     }
 
+    @Override
     public void closeInbound() throws SSLException {
     }
 
+    @Override
     public void closeOutbound() {
     }
 
+    @Override
     public Runnable getDelegatedTask() {
         return null;
     }
 
+    @Override
     public String[] getEnabledCipherSuites() {
         return enabledCipherSuites;
     }
 
+    @Override
     public String[] getEnabledProtocols() {
         return enabledProtocols;
     }
 
+    @Override
     public boolean getEnableSessionCreation() {
         return enableSessionCreation;
     }
 
+    @Override
     public SSLEngineResult.HandshakeStatus getHandshakeStatus() {
         return SSLEngineResult.HandshakeStatus.FINISHED;
     }
 
+    @Override
     public boolean getNeedClientAuth() {
         return needClientAuth;
     }
 
+    @Override
     public SSLSession getSession() {
         return null;
     }
 
+    @Override
     public String[] getSupportedCipherSuites() {
         return new String[0];
     }
 
+    @Override
     public String[] getSupportedProtocols() {
         return new String[0];
     }
 
+    @Override
     public boolean getUseClientMode() {
         return useClientMode;
     }
 
+    @Override
     public boolean getWantClientAuth() {
         return wantClientAuth;
     }
 
+    @Override
     public boolean isInboundDone() {
         return false;
     }
 
+    @Override
     public boolean isOutboundDone() {
         return false;
     }
 
+    @Override
     public void setEnabledCipherSuites(String[] suites) {
         enabledCipherSuites = suites;
     }
 
+    @Override
     public void setEnabledProtocols(String[] protocols) {
         enabledProtocols = protocols;
     }
 
+    @Override
     public void setEnableSessionCreation(boolean flag) {
         enableSessionCreation = flag;
     }
 
+    @Override
     public void setNeedClientAuth(boolean need) {
         needClientAuth = need;
     }
 
+    @Override
     public void setUseClientMode(boolean mode) {
         useClientMode = mode;
     }
 
+    @Override
     public void setWantClientAuth(boolean want) {
         wantClientAuth = want;
     }
 
+    @Override
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts,
             int offset, int length) throws SSLException {
         return new SSLEngineResult(SSLEngineResult.Status.OK,
                 SSLEngineResult.HandshakeStatus.FINISHED, 1, 2);
     }
 
+    @Override
     public SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length,
             ByteBuffer dst) throws SSLException {
         return new SSLEngineResult(SSLEngineResult.Status.OK,
@@ -496,6 +520,7 @@ class mySSLEngine1 extends mySSLEngine {
         super(host, port);
     }
 
+    @Override
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer dst)
             throws SSLException {
         if (src.limit() > dst.limit()) {
@@ -504,6 +529,7 @@ class mySSLEngine1 extends mySSLEngine {
         return super.unwrap(src, dst);
     }
 
+    @Override
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts)
             throws SSLException {
         if (src.limit() > dsts[0].limit()) {
@@ -512,6 +538,7 @@ class mySSLEngine1 extends mySSLEngine {
         return super.unwrap(src, dsts);
     }
 
+    @Override
     public SSLEngineResult wrap(ByteBuffer[] srcs, ByteBuffer dst)
             throws SSLException {
         if (srcs[0].limit() > dst.limit()) {
@@ -520,6 +547,7 @@ class mySSLEngine1 extends mySSLEngine {
         return super.wrap(srcs, dst);
     }
 
+    @Override
     public SSLEngineResult wrap(ByteBuffer src, ByteBuffer dst)
             throws SSLException {
         if (src.limit() > dst.limit()) {

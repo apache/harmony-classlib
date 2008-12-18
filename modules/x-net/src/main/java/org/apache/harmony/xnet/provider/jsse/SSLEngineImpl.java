@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.AlertException;
@@ -97,14 +92,6 @@ public class SSLEngineImpl extends SSLEngine {
         this.sslParameters = sslParameters;
     }
 
-    @Override
-    public void setSSLParameters(javax.net.ssl.SSLParameters inputSSLParameters) {
-        setEnabledCipherSuites(inputSSLParameters.getCipherSuites());
-        setEnabledProtocols(inputSSLParameters.getProtocols());
-        setNeedClientAuth(inputSSLParameters.getNeedClientAuth());
-        setWantClientAuth(inputSSLParameters.getWantClientAuth());
-    }
-
     /**
      * Ctor
      * @param   host:   String
@@ -122,6 +109,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#beginHandshake() method documentation
      * for more information
      */
+    @Override
     public void beginHandshake() throws SSLException {
         if (engine_was_closed) {
             throw new SSLException("Engine has already been closed.");
@@ -151,6 +139,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#closeInbound() method documentation
      * for more information
      */
+    @Override
     public void closeInbound() throws SSLException {
         if (logger != null) {
             logger.println("closeInbound() "+isInboundDone);
@@ -181,6 +170,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#closeOutbound() method documentation
      * for more information
      */
+    @Override
     public void closeOutbound() {
         if (logger != null) {
             logger.println("closeOutbound() "+isOutboundDone);
@@ -207,6 +197,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getDelegatedTask() method documentation
      * for more information
      */
+    @Override
     public Runnable getDelegatedTask() {
         return handshakeProtocol.getTask();
     }
@@ -217,6 +208,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getSupportedCipherSuites() method
      * documentation for more information
      */
+    @Override
     public String[] getSupportedCipherSuites() {
         return CipherSuite.getSupportedCipherSuiteNames();
     }
@@ -228,6 +220,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getEnabledCipherSuites() method
      * documentation for more information
      */
+    @Override
     public String[] getEnabledCipherSuites() {
         return sslParameters.getEnabledCipherSuites();
     }
@@ -237,6 +230,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setEnabledCipherSuites(String) method
      * documentation for more information
      */
+    @Override
     public void setEnabledCipherSuites(String[] suites) {
         sslParameters.setEnabledCipherSuites(suites);
     }
@@ -246,8 +240,9 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getSupportedProtocols() method
      * documentation for more information
      */
+    @Override
     public String[] getSupportedProtocols() {
-        return (String[]) ProtocolVersion.supportedProtocols.clone();
+        return ProtocolVersion.supportedProtocols.clone();
     }
 
     /**
@@ -255,6 +250,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getEnabledProtocols() method
      * documentation for more information
      */
+    @Override
     public String[] getEnabledProtocols() {
         return sslParameters.getEnabledProtocols();
     }
@@ -264,6 +260,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setEnabledProtocols(String) method
      * documentation for more information
      */
+    @Override
     public void setEnabledProtocols(String[] protocols) {
         sslParameters.setEnabledProtocols(protocols);
     }
@@ -273,6 +270,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setUseClientMode(boolean) method
      * documentation for more information
      */
+    @Override
     public void setUseClientMode(boolean mode) {
         if (handshake_started) {
             throw new IllegalArgumentException(
@@ -287,6 +285,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getUseClientMode() method
      * documentation for more information
      */
+    @Override
     public boolean getUseClientMode() {
         return sslParameters.getUseClientMode();
     }
@@ -296,6 +295,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setNeedClientAuth(boolean) method
      * documentation for more information
      */
+    @Override
     public void setNeedClientAuth(boolean need) {
         sslParameters.setNeedClientAuth(need);
     }
@@ -305,6 +305,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getNeedClientAuth() method
      * documentation for more information
      */
+    @Override
     public boolean getNeedClientAuth() {
         return sslParameters.getNeedClientAuth();
     }
@@ -314,6 +315,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setWantClientAuth(boolean) method
      * documentation for more information
      */
+    @Override
     public void setWantClientAuth(boolean want) {
         sslParameters.setWantClientAuth(want);
     }
@@ -323,6 +325,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getWantClientAuth() method
      * documentation for more information
      */
+    @Override
     public boolean getWantClientAuth() {
         return sslParameters.getWantClientAuth();
     }
@@ -332,6 +335,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#setEnableSessionCreation(boolean) method
      * documentation for more information
      */
+    @Override
     public void setEnableSessionCreation(boolean flag) {
         sslParameters.setEnableSessionCreation(flag);
     }
@@ -341,6 +345,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getEnableSessionCreation() method
      * documentation for more information
      */
+    @Override
     public boolean getEnableSessionCreation() {
         return sslParameters.getEnableSessionCreation();
     }
@@ -352,6 +357,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getHandshakeStatus() method
      * documentation for more information
      */
+    @Override
     public SSLEngineResult.HandshakeStatus getHandshakeStatus() {
         if (!handshake_started || engine_was_shutteddown) {
             // initial handshake has not been started yet
@@ -373,12 +379,12 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#getSession() method
      * documentation for more information
      */
+    @Override
     public SSLSession getSession() {
         if (session != null) {
             return session;
-        } else {
-            return SSLSessionImpl.NULL_SESSION;
         }
+        return SSLSessionImpl.NULL_SESSION;
     }
 
     /**
@@ -386,6 +392,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#isInboundDone() method
      * documentation for more information
      */
+    @Override
     public boolean isInboundDone() {
         return isInboundDone || engine_was_closed;
     }
@@ -395,6 +402,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#isOutboundDone() method
      * documentation for more information
      */
+    @Override
     public boolean isOutboundDone() {
         return isOutboundDone;
     }
@@ -410,6 +418,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#unwrap(ByteBuffer,ByteBuffer[],int,int)
      * method documentation for more information
      */
+    @Override
     public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts,
                                 int offset, int length) throws SSLException {
         if (engine_was_shutteddown) {
@@ -574,6 +583,7 @@ public class SSLEngineImpl extends SSLEngine {
      * @see javax.net.ssl.SSLEngine#wrap(ByteBuffer[],int,int,ByteBuffer) method
      * documentation for more information
      */
+    @Override
     public SSLEngineResult wrap(ByteBuffer[] srcs, int offset,
                             int len, ByteBuffer dst) throws SSLException {
         if (engine_was_shutteddown) {
@@ -755,15 +765,5 @@ public class SSLEngineImpl extends SSLEngine {
             ? SSLEngineResult.Status.CLOSED
             : SSLEngineResult.Status.OK;
     }
-
-
-    @Override
-    public javax.net.ssl.SSLParameters getSSLParameters() {
-        javax.net.ssl.SSLParameters outputSSLParameters = new javax.net.ssl.SSLParameters();
-        outputSSLParameters.setCipherSuites(sslParameters.getEnabledCipherSuites());
-        outputSSLParameters.setProtocols(sslParameters.getEnabledProtocols());
-        outputSSLParameters.setNeedClientAuth(sslParameters.getNeedClientAuth());
-        outputSSLParameters.setWantClientAuth(sslParameters.getWantClientAuth());
-        return outputSSLParameters;
-    }
 }
+

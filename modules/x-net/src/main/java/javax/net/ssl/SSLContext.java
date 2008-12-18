@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.AccessController;
@@ -33,12 +28,6 @@ import java.security.Security;
 
 import org.apache.harmony.security.fortress.Engine;
 
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public class SSLContext {
     // StoreSSLContext service name
     private static final String SERVICE = "SSLContext";
@@ -46,50 +35,25 @@ public class SSLContext {
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
-    // Storeused provider
-    private final Provider provider;
-
-    private static SSLContext defaultSSLContext;
-    // Storeused SSLContextSpi implementation
-    private final SSLContextSpi spiImpl;
-
-    // Storeused protocol
-    private final String protocol;
-
-    /*
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected SSLContext(SSLContextSpi contextSpi, Provider provider,
-            String protocol) {
-        this.provider = provider;
-        this.protocol = protocol;
-        this.spiImpl = contextSpi;
-    }
-
     /**
-     * @com.intel.drl.spec_ref
      * 
-     * throws NullPointerException if protocol is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
-    public static SSLContext getInstance(String protocol)
-            throws NoSuchAlgorithmException {
+    public static SSLContext getInstance(String protocol) throws NoSuchAlgorithmException {
         if (protocol == null) {
             throw new NullPointerException("protocol is null");
         }
         synchronized (engine) {
             engine.getInstance(protocol, null);
-            return new SSLContext((SSLContextSpi) engine.spi, engine.provider,
-                    protocol);
+            return new SSLContext((SSLContextSpi) engine.spi, engine.provider, protocol);
         }
     }
 
     /**
-     * @com.intel.drl.spec_ref
      * 
-     * throws NullPointerException if protocol is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
     public static SSLContext getInstance(String protocol, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -107,10 +71,8 @@ public class SSLContext {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if protocol is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
     public static SSLContext getInstance(String protocol, Provider provider)
             throws NoSuchAlgorithmException {
@@ -126,101 +88,52 @@ public class SSLContext {
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    private final Provider provider;
+
+    private final SSLContextSpi spiImpl;
+
+    private final String protocol;
+
+    protected SSLContext(SSLContextSpi contextSpi, Provider provider, String protocol) {
+        this.provider = provider;
+        this.protocol = protocol;
+        this.spiImpl = contextSpi;
+    }
+
     public final String getProtocol() {
         return protocol;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final Provider getProvider() {
         return provider;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * FIXME: check what exception will be thrown when parameters are null
-     */
     public final void init(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
             throws KeyManagementException {
         spiImpl.engineInit(km, tm, sr);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLSocketFactory getSocketFactory() {
         return spiImpl.engineGetSocketFactory();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLServerSocketFactory getServerSocketFactory() {
         return spiImpl.engineGetServerSocketFactory();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLEngine createSSLEngine() {
         return spiImpl.engineCreateSSLEngine();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLEngine createSSLEngine(String peerHost, int peerPort) {
         return spiImpl.engineCreateSSLEngine(peerHost, peerPort);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLSessionContext getServerSessionContext() {
         return spiImpl.engineGetServerSessionContext();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final SSLSessionContext getClientSessionContext() {
         return spiImpl.engineGetClientSessionContext();
-    }
-
-    public final SSLParameters getDefaultSSLParameters() {
-        return spiImpl.engineGetDefaultSSLParameters();
-    }
-
-    public final SSLParameters getSupportedSSLParameters() {
-        return spiImpl.engineGetSupportedSSLParameters();
-    }
-
-    public static SSLContext getDefault() throws NoSuchAlgorithmException {
-        if (defaultSSLContext == null)
-            defaultSSLContext = SSLContext.getInstance("Default");
-        return defaultSSLContext;
-    }
-
-    public static void setDefault(SSLContext sslContext) {
-        if (sslContext == null)
-            throw new NullPointerException();
-        SecurityManager securityManager = System.getSecurityManager();
-        if (securityManager != null)
-            securityManager.checkPermission(new SSLPermission(
-                    "setDefaultSSLContext"));
-        defaultSSLContext = sslContext;
     }
 }

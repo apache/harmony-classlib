@@ -24,18 +24,14 @@ package java.security;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.internal.nls.Messages;
@@ -56,7 +52,6 @@ public final class UnresolvedPermission extends Permission
      * @com.intel.drl.spec_ref 
      */
     private static final long serialVersionUID = -4821973115467008846L;
-
 
     private String type;    
     
@@ -88,19 +83,7 @@ public final class UnresolvedPermission extends Permission
         this.type = type;
         this.name = name;
         this.actions = actions;
-        if (certs != null && certs.length != 0) {
-            //TODO filter non-signer certificates ???
-            List tmp = new ArrayList();
-            for (int i = 0; i < certs.length; i++) {
-                if (certs[i] != null) {
-                    tmp.add(certs[i]);
-                }
-            }
-            if (tmp.size() != 0) {
-                targetCerts = (Certificate[])tmp.toArray(
-                                new Certificate[tmp.size()]);
-            }
-        }
+        this.targetCerts = certs;
         hash = 0;
     }
 
@@ -137,21 +120,67 @@ public final class UnresolvedPermission extends Permission
             return true;
         }
         if (obj instanceof UnresolvedPermission) {
-            UnresolvedPermission that = (UnresolvedPermission)obj;
+            UnresolvedPermission that = (UnresolvedPermission) obj;
             if (getName().equals(that.getName())
-                && (name == null ? that.name == null 
-                    : name.equals(that.name))
-                && (actions == null ? that.actions == null
-                    : actions.equals(that.actions))
-                && (PolicyUtils.matchSubset(targetCerts, that.targetCerts) 
-                    && PolicyUtils.matchSubset(that.targetCerts, targetCerts))) {
+                    && (name == null ? that.name == null : name
+                            .equals(that.name))
+                    && (actions == null ? that.actions == null : actions
+                            .equals(that.actions))
+                    && equalsCertificates(this.targetCerts, that.targetCerts)) {
                 return true;
             }
         }
         return false;
     }
 
-	/**
+    /*
+     * check whether given array of certificates are equivalent
+     */
+    private boolean equalsCertificates(Certificate[] certs1,
+            Certificate[] certs2) {
+        if (certs1 == null || certs2 == null) {
+            return certs1 == certs2;
+        }
+
+        int length = certs1.length;
+        if (length != certs2.length) {
+            return false;
+        }
+
+        if (length > 0) {
+            boolean found;
+            for (int i = 0; i < length; i++) {
+                found = false;
+                for (int j = 0; j < length; j++) {
+                    if (certs1[i].equals(certs2[j])) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    return false;
+                }
+            }
+
+            for (int i = 0; i < length; i++) {
+                found = false;
+                for (int j = 0; j < length; j++) {
+                    if (certs2[i].equals(certs1[j])) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
 	 * Answers an integer hash code for the receiver. Any two objects which
 	 * answer <code>true</code> when passed to <code>equals</code> must
 	 * answer the same value for this method.

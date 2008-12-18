@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Boris Kuznetsov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import java.io.IOException;
@@ -52,7 +47,7 @@ import javax.net.ssl.X509ExtendedKeyManager;
  * Handshake protocol operates on top of the Record Protocol.
  * It is responsible for session negotiating.
  * 
- * The implementation proceses inbound server handshake messages,
+ * The implementation processes inbound server handshake messages,
  * creates and sends respond messages. Outbound messages are supplied 
  * to Record Protocol. Detected errors are reported to the Alert protocol.
  * 
@@ -75,6 +70,7 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
      * Starts handshake
      *
      */  
+    @Override
     public void start() {
         if (session == null) { // initial handshake
             session = findSessionToResume();
@@ -137,9 +133,10 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
     }
 
     /**
-     * Proceses inbound handshake messages
+     * Processes inbound handshake messages
      * @param bytes
      */
+    @Override
     public void unwrap(byte[] bytes) {
         if (this.delegatedTaskErr != null) {
             Exception e = this.delegatedTaskErr;
@@ -244,7 +241,7 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
                     session.protocol = servProt;
                     recordProtocol.setVersion(session.protocol.version);
                     session.cipherSuite = serverHello.cipher_suite;
-                    session.id = (byte[]) serverHello.session_id.clone();
+                    session.id = serverHello.session_id.clone();
                     session.serverRandom = serverHello.random;
                     break;
                 case 11: // CERTIFICATE
@@ -281,15 +278,12 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
                     }
                     serverHelloDone = new ServerHelloDone(io_stream, length);
                     if (this.nonBlocking) {
-                        delegatedTasks.add(new DelegatedTask(
-                                new PrivilegedExceptionAction(){ 
-                            public Object run() throws Exception {
+                        delegatedTasks.add(new DelegatedTask(new PrivilegedExceptionAction<Void>() {
+                            public Void run() throws Exception {
                                 processServerHelloDone();
                                 return null;
-                                } 
-                            },
-                            this,
-                            AccessController.getContext()));
+                            }
+                        }, this, AccessController.getContext()));
                         return;
                     }
                     processServerHelloDone();
@@ -331,6 +325,7 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
      * @ see TLS 1.0 spec., E.1. Version 2 client hello
      * @param bytes
      */
+    @Override
     public void unwrapSSLv2(byte[] bytes) {
         unexpectedMessage();
     }
@@ -338,6 +333,7 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
     /**
      * Creates and sends Finished message
      */
+    @Override
     protected void makeFinished() {
         byte[] verify_data;
         if (serverHello.server_version[1] == 1) {
@@ -584,8 +580,9 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
     }
 
     /**
-     * Proceses ChangeCipherSpec message
+     * Processes ChangeCipherSpec message
      */
+    @Override
     public void receiveChangeCipherSpec() {
         if (isResuming) {
             if (serverHello == null) {
@@ -615,7 +612,7 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
         byte[] id;
         SSLSession ses;
         SSLSessionContext context = parameters.getClientSessionContext();
-        for (Enumeration en = context.getIds(); en.hasMoreElements();) {
+        for (Enumeration<?> en = context.getIds(); en.hasMoreElements();) {
             id = (byte[])en.nextElement();
             ses = context.getSession(id);
             if (host.equals(ses.getPeerHost()) && port == ses.getPeerPort()) {
@@ -626,3 +623,4 @@ public class ClientHandshakeImpl extends HandshakeProtocol {
     }
 
 }
+

@@ -33,6 +33,7 @@ public class DigitalSignatureTest extends TestCase {
     private PrivateKey key;
     private Certificate cert;
     
+    @Override
     public void setUp() throws Exception {
 
         char[] pwd = JSSETestData.KS_PASSWORD;

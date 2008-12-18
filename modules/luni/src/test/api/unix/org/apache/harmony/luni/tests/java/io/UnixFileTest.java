@@ -368,4 +368,44 @@ public class UnixFileTest extends TestCase {
 		super.tearDown();
 	}
 
+    public void test_getCanonicalPath() throws IOException {
+        File tmpFolder1 = new File("folder1");
+        tmpFolder1.mkdirs();
+        tmpFolder1.deleteOnExit();
+
+        File tmpFolder2 = new File(tmpFolder1.toString() + "/folder2");
+        tmpFolder2.mkdirs();
+        tmpFolder2.deleteOnExit();
+
+        File tmpFolder3 = new File(tmpFolder2.toString() + "/folder3");
+        tmpFolder3.mkdirs();
+        tmpFolder3.deleteOnExit();
+
+        File tmpFolder4 = new File(tmpFolder3.toString() + "/folder4");
+        tmpFolder4.mkdirs();
+        tmpFolder4.deleteOnExit();
+
+        // make a link to folder1/folder2
+        Runtime.getRuntime().exec("ln -s folder1/folder2 folder2");
+        File linkFile = new File("folder2");
+        linkFile.deleteOnExit();
+
+        File file = new File("folder2");
+        assertEquals(tmpFolder2.getCanonicalPath(), file.getCanonicalPath());
+
+        file = new File("folder1/folder2");
+        assertEquals(tmpFolder2.getCanonicalPath(), file.getCanonicalPath());
+
+        file = new File("folder2/folder3");
+        assertEquals(tmpFolder3.getCanonicalPath(), file.getCanonicalPath());
+
+        file = new File("folder2/folder3/folder4");
+        assertEquals(tmpFolder4.getCanonicalPath(), file.getCanonicalPath());
+
+        file = new File("folder1/folder2/folder3");
+        assertEquals(tmpFolder3.getCanonicalPath(), file.getCanonicalPath());
+
+        file = new File("folder1/folder2/folder3/folder4");
+        assertEquals(tmpFolder4.getCanonicalPath(), file.getCanonicalPath());
+    }
 }

@@ -35,9 +35,11 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
  * Method:    selectImpl
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
-  (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
-   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
+  (JNIEnv * env, jobject thiz, jobjectArray readFDArray, jobjectArray writeFDArray,
+   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   hytimeval_struct timeP;	
   I_32 result =	0;		
@@ -158,31 +160,31 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   return result;
 }
 
-/*Alternative Select function*/
+/* Alternative Select function */
 int 
-selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
+selectRead (JNIEnv * env, hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   PORT_ACCESS_FROM_ENV (env);
   hytimeval_struct timeP;
   hyfdset_t fdset_read;
   I_32 result = 0;
 
-  if (0 <= uSecTime)
-    hysock_timeval_init (0, uSecTime, &timeP);
-
   fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
   FD_ZERO (&fdset_read->handle);
-  if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      FD_SET (hysocketP->ipv4, &fdset_read->handle);
-    }
-  if (hysocketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      FD_SET (hysocketP->ipv6, &fdset_read->handle);
-    }
-  if (0 <= uSecTime)
-    result = hysock_select (0, fdset_read, NULL, NULL,&timeP);  
-  else
-    result = hysock_select (0, fdset_read, NULL, NULL,NULL);  
+
+  if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    FD_SET (hysocketP->ipv4, &fdset_read->handle);
+  }
+  if (hysocketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    FD_SET (hysocketP->ipv6, &fdset_read->handle);
+  }
+
+  if (0 <= uSecTime) {
+    hysock_timeval_init (0, uSecTime, &timeP);
+    result = hysock_select(0, fdset_read, NULL, NULL, &timeP);
+  } else {
+    result = hysock_select(0, fdset_read, NULL, NULL, NULL);
+  }
+
   hymem_free_memory(fdset_read);
   return result;
 }
@@ -192,8 +194,10 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
  * Method:    isReachableByICMPImpl
  * Signature: ([BII)I
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
-  (JNIEnv * env, jobject clz, jobject address,jobject localaddr, jint ttl, jint timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv * env, jobject clz, jobject address,jobject localaddr, jint ttl, jint timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
   struct ICMPHeader* send_buf = 0;
@@ -328,9 +332,49 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
     icmp_hdr->checksum = ip_checksum((unsigned short *)icmp_hdr, packet_size);
 }
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
-  (JNIEnv * env , jobject clz)
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+  (JNIEnv * env , jobject thiz)
 {
-  //inheritedChannel is not supported on windows platform. 
+  // inheritedChannel is not supported on windows platform. 
   return NULL;
+}
+
+/*
+ * Utilizes the Winsock2 call to get the available bytes pending on a socket
+ * which is similar to, but different to the call on other platforms.
+ *
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    availableStream
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor)
+{
+  PORT_ACCESS_FROM_ENV(env);
+  hysocket_t hysocketP;
+  OSSOCKET socket;
+  U_32 nbytes = 0;
+  I_32 result;
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  if (!hysock_socketIsValid(hysocketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
+
+  if ((hysocketP->flags & SOCKET_USE_IPV4_MASK) == SOCKET_USE_IPV4_MASK) {
+      socket = hysocketP->ipv4;
+  } else {
+      socket = hysocketP->ipv6;
+  }
+
+  result = ioctlsocket(socket, FIONREAD, &nbytes);
+  if (result != 0) {
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;
+  }
+
+  return (jint) nbytes;
 }

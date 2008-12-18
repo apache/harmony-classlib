@@ -35,7 +35,7 @@ BUILDFILES = \
 	$(SHAREDSUB)osc.o $(SHAREDSUB)socket.o $(SHAREDSUB)inetadds.o \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
-	OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
+	$(SHAREDSUB)OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
 	OSNetworkSystemLinux.o $(HY_OS)/OSResourcesMonitor.o hyenv.o consoleimpl.o
 
 ifneq ($(HY_ZIP_API),true)

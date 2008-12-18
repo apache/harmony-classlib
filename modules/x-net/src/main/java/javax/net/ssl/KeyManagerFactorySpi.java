@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.InvalidAlgorithmParameterException;
@@ -28,37 +23,17 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class KeyManagerFactorySpi {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    
     public KeyManagerFactorySpi() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected abstract void engineInit(KeyStore ks, char[] password)
-            throws KeyStoreException, NoSuchAlgorithmException,
-            UnrecoverableKeyException;
+    protected abstract void engineInit(KeyStore ks, char[] password) throws KeyStoreException,
+            NoSuchAlgorithmException, UnrecoverableKeyException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract KeyManager[] engineGetKeyManagers();
 }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.AccessController;
@@ -28,17 +23,12 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 
 import org.apache.harmony.security.fortress.Engine;
-
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 
 public class KeyManagerFactory {
     // Store KeyManagerFactory service name
@@ -50,39 +40,18 @@ public class KeyManagerFactory {
     // Store default property name
     private static final String PROPERTY_NAME = "ssl.KeyManagerFactory.algorithm";
 
-    // Store used provider
-    private final Provider provider;
-
-    // Store used KeyManagerFactorySpi implementation
-    private final KeyManagerFactorySpi spiImpl;
-
-    // Store used algorithm
-    private final String algorithm;
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected KeyManagerFactory(KeyManagerFactorySpi factorySpi,
-            Provider provider, String algorithm) {
-        this.provider = provider;
-        this.algorithm = algorithm;
-        this.spiImpl = factorySpi;
+    public static final String getDefaultAlgorithm() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return Security.getProperty(PROPERTY_NAME);
+            }
+        });
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public final String getAlgorithm() {
-        return algorithm;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
      * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
     public static final KeyManagerFactory getInstance(String algorithm)
             throws NoSuchAlgorithmException {
@@ -91,20 +60,17 @@ public class KeyManagerFactory {
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
-            return new KeyManagerFactory((KeyManagerFactorySpi) engine.spi,
-                    engine.provider, algorithm);
+            return new KeyManagerFactory((KeyManagerFactorySpi) engine.spi, engine.provider,
+                    algorithm);
         }
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
-    public static final KeyManagerFactory getInstance(String algorithm,
-            String provider) throws NoSuchAlgorithmException,
-            NoSuchProviderException {
+    public static final KeyManagerFactory getInstance(String algorithm, String provider)
+            throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException("Provider is null or empty");
         }
@@ -116,13 +82,11 @@ public class KeyManagerFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
-    public static final KeyManagerFactory getInstance(String algorithm,
-            Provider provider) throws NoSuchAlgorithmException {
+    public static final KeyManagerFactory getInstance(String algorithm, Provider provider)
+            throws NoSuchAlgorithmException {
         if (provider == null) {
             throw new IllegalArgumentException("Provider is null");
         }
@@ -131,56 +95,44 @@ public class KeyManagerFactory {
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);
-            return new KeyManagerFactory((KeyManagerFactorySpi) engine.spi,
-                    provider, algorithm);
+            return new KeyManagerFactory((KeyManagerFactorySpi) engine.spi, provider, algorithm);
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    // Store used provider
+    private final Provider provider;
+
+    // Store used KeyManagerFactorySpi implementation
+    private final KeyManagerFactorySpi spiImpl;
+
+    // Store used algorithm
+    private final String algorithm;
+
+    protected KeyManagerFactory(KeyManagerFactorySpi factorySpi, Provider provider, String algorithm) {
+        super();
+        this.provider = provider;
+        this.algorithm = algorithm;
+        this.spiImpl = factorySpi;
+    }
+
+    public final String getAlgorithm() {
+        return algorithm;
+    }
+
     public final Provider getProvider() {
         return provider;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public final void init(KeyStore ks, char[] password)
-            throws KeyStoreException, NoSuchAlgorithmException,
-            UnrecoverableKeyException {
+    public final void init(KeyStore ks, char[] password) throws KeyStoreException,
+            NoSuchAlgorithmException, UnrecoverableKeyException {
         spiImpl.engineInit(ks, password);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public final void init(ManagerFactoryParameters spec)
-            throws InvalidAlgorithmParameterException {
+    public final void init(ManagerFactoryParameters spec) throws InvalidAlgorithmParameterException {
         spiImpl.engineInit(spec);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final KeyManager[] getKeyManagers() {
         return spiImpl.engineGetKeyManagers();
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public static final String getDefaultAlgorithm() {
-        return AccessController
-                .doPrivileged(new java.security.PrivilegedAction<String>() {
-                    public String run() {
-                        return Security.getProperty(PROPERTY_NAME);
-                    }
-                });
     }
 }

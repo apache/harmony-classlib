@@ -40,6 +40,7 @@ public class SSLServerSocketFactoryTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         String defaultName = Security.getProperty("ssl.ServerSocketFactory.provider");
@@ -62,6 +63,7 @@ public class SSLServerSocketFactoryTest extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
     }

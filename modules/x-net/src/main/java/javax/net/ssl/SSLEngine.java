@@ -15,302 +15,140 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.nio.ByteBuffer;
-import java.nio.ReadOnlyBufferException;
 
 /**
+ * An engine for securing communication via SSL, TLS and other protocols.
  * 
- * @com.intel.drl.spec_ref
- * 
- *  
+ * @since 1.5
  */
 public abstract class SSLEngine {
-    // Store host value
-    private final String host;
-
-    // Store port value
-    private final int port;
+    private final String peerHost;
+    private final int peerPort;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Constructs an instance without any peer host information.
      */
     protected SSLEngine() {
-        host = null;
-        port = -1;
+        super();
+        peerHost = null;
+        peerPort = -1;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Constructs an instance with the given peer host and port.
+     * 
+     * @param host name of the peer host
+     * @param port value of the port of the peer host
      */
     protected SSLEngine(String host, int port) {
-        this.host = host;
-        this.port = port;
+        super();
+        this.peerHost = host;
+        this.peerPort = port;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    public String getPeerHost() {
+        return peerHost;
+    }
+
+    public int getPeerPort() {
+        return peerPort;
+    }
+
     public abstract void beginHandshake() throws SSLException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void closeInbound() throws SSLException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void closeOutbound();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract Runnable getDelegatedTask();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getEnabledCipherSuites();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getEnabledProtocols();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getEnableSessionCreation();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLEngineResult.HandshakeStatus getHandshakeStatus();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getNeedClientAuth();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String getPeerHost() {
-        return host;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public int getPeerPort() {
-        return port;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract SSLSession getSession();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getSupportedCipherSuites();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract String[] getSupportedProtocols();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getUseClientMode();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean getWantClientAuth();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean isInboundDone();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract boolean isOutboundDone();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnabledCipherSuites(String[] suites);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnabledProtocols(String[] protocols);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setEnableSessionCreation(boolean flag);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setNeedClientAuth(boolean need);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setUseClientMode(boolean mode);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public abstract void setWantClientAuth(boolean want);
 
-    public abstract void setSSLParameters(SSLParameters sslP);
+    public abstract SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length)
+            throws SSLException;
 
-    public abstract SSLParameters getSSLParameters();
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public abstract SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts,
-            int offset, int length) throws SSLException;
+    public abstract SSLEngineResult wrap(ByteBuffer[] srcs, int offset, int length, ByteBuffer dst)
+            throws SSLException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * implementation behavior follows RI: jdk 1.5 does not throw IllegalArgumentException when
+     * parameters are null and does not throw ReadOnlyBufferException if dst is read only byte
+     * buffer
+     * 
      */
-    public abstract SSLEngineResult wrap(ByteBuffer[] srcs, int offset,
-            int length, ByteBuffer dst) throws SSLException;
-
-    /**
-     * implementation behavior follows RI:
-     * jdk 1.5 does not throw IllegalArgumentException when parameters are null
-     * and does not throw ReadOnlyBufferException if dst is read only byte buffer
-     *  
-     */
-    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer dst)
-            throws SSLException {
-//        if (src == null) {
-//            throw new IllegalArgumentException("Byte buffer src is null");
-//        }
-//        if (dst == null) {
-//            throw new IllegalArgumentException("Byte buffer dst is null");
-//        }
-//        if (dst.isReadOnly()) {
-//            throw new ReadOnlyBufferException();
-//        }
+    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer dst) throws SSLException {
         return unwrap(src, new ByteBuffer[] { dst }, 0, 1);
     }
 
     /**
-     * implementation behavior follows RI:
-     * jdk 1.5 does not throw IllegalArgumentException when src is null or if
-     * dsts contains null elements
-     * It does not throw ReadOnlyBufferException when dsts contains read only elements
+     * implementation behavior follows RI: jdk 1.5 does not throw IllegalArgumentException when src
+     * is null or if dsts contains null elements It does not throw ReadOnlyBufferException when dsts
+     * contains read only elements
      */
-    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts)
-            throws SSLException {
-//        if (src == null) {
-//            throw new IllegalArgumentException("Byte buffer src is null");
-//        }
+    public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts) throws SSLException {
         if (dsts == null) {
             throw new IllegalArgumentException("Byte buffer array dsts is null");
         }
-//        for (int i = 0; i < dsts.length; i++) {
-//            if (dsts[i] == null) {
-//                throw new IllegalArgumentException("Byte buffer dsts[" + i
-//                        + "]  is null");
-//            }
-//            if (dsts[i].isReadOnly()) {
-//                throw new ReadOnlyBufferException();
-//            }
-//        }
         return unwrap(src, dsts, 0, dsts.length);
     }
 
     /**
-     * implementation behavior follows RI: jdk 1.5 does not throw
-     * IllegalArgumentException when dst is null or if srcs contains null
-     * elements It does not throw ReadOnlyBufferException for read only dst
-     *  
+     * implementation behavior follows RI: jdk 1.5 does not throw IllegalArgumentException when dst
+     * is null or if srcs contains null elements It does not throw ReadOnlyBufferException for read
+     * only dst
+     * 
      */
-    public SSLEngineResult wrap(ByteBuffer[] srcs, ByteBuffer dst)
-            throws SSLException {
+    public SSLEngineResult wrap(ByteBuffer[] srcs, ByteBuffer dst) throws SSLException {
         if (srcs == null) {
             throw new IllegalArgumentException("Byte buffer array srcs is null");
         }
-//        for (int i = 0; i < srcs.length; i++) {
-//            if (srcs[i] == null) {
-//                throw new IllegalArgumentException("Byte buffer srcs[" + i
-//                        + "]  is null");
-//            }
-//        }
-//        if (dst == null) {
-//            throw new IllegalArgumentException("Byte buffer array dst is null");
-//        }
-//        if (dst.isReadOnly()) {
-//            throw new ReadOnlyBufferException();
-//        }
         return wrap(srcs, 0, srcs.length, dst);
     }
 
     /**
-     * implementation behavior follows RI:
-     * jdk 1.5 does not throw IllegalArgumentException when parameters are null
-     * and does not throw ReadOnlyBufferException if dst is read only byte buffer
-     *  
+     * implementation behavior follows RI: jdk 1.5 does not throw IllegalArgumentException when
+     * parameters are null and does not throw ReadOnlyBufferException if dst is read only byte
+     * buffer
+     * 
      */
-    public SSLEngineResult wrap(ByteBuffer src, ByteBuffer dst)
-            throws SSLException {
-//        if (src == null) {
-//            throw new IllegalArgumentException("Byte buffer src is null");
-//        }
-//        if (dst == null) {
-//            throw new IllegalArgumentException("Byte buffer dst is null");
-//        }
-//        if (dst.isReadOnly()) {
-//            throw new ReadOnlyBufferException();
-//        }
+    public SSLEngineResult wrap(ByteBuffer src, ByteBuffer dst) throws SSLException {
         return wrap(new ByteBuffer[] { src }, 0, 1, dst);
     }
 }

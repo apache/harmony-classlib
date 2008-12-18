@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
@@ -38,12 +39,11 @@ import org.apache.harmony.unpack200.Segment;
 
 public class ArchiveTest extends TestCase {
 
-    File file;
     JarInputStream in;
     OutputStream out;
+    File file;
 
-    public void testHelloWorld() throws IOException, Pack200Exception,
-            URISyntaxException {
+    public void testHelloWorld() throws IOException, Pack200Exception, URISyntaxException {
         in = new JarInputStream(
                 Archive.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
@@ -92,7 +92,87 @@ public class ArchiveTest extends TestCase {
         }
         reader1.close();
         reader2.close();
+    }
 
+    public void testSQL() throws IOException, Pack200Exception, URISyntaxException {
+        in = new JarInputStream(Archive.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sqlUnpacked.jar"));
+        file = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file);
+        new Archive(in, out, false).pack();
+        in.close();
+        out.close();
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file2 = File.createTempFile("sqlout", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
+        org.apache.harmony.unpack200.Archive archive = new org.apache.harmony.unpack200.Archive(in2, out2);
+        archive.unpack();
+        JarFile jarFile = new JarFile(file2);
+        file2.deleteOnExit();
+
+        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+
+        compareFiles(jarFile, jarFile2);
+    }
+
+    public void testJNDI() throws IOException, Pack200Exception, URISyntaxException {
+        in = new JarInputStream(Archive.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi.jar"));
+        file = File.createTempFile("jndi", ".pack");
+        out = new FileOutputStream(file);
+        new Archive(in, out, false).pack();
+        in.close();
+        out.close();
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file2 = File.createTempFile("jndiout", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
+        org.apache.harmony.unpack200.Archive archive = new org.apache.harmony.unpack200.Archive(in2, out2);
+        archive.unpack();
+        JarFile jarFile = new JarFile(file2);
+        file2.deleteOnExit();
+        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/jndiUnpacked.jar").toURI()));
+
+        compareFiles(jarFile, jarFile2);
+    }
+
+    private void compareFiles(JarFile jarFile, JarFile jarFile2)
+            throws IOException {
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+
+            JarEntry entry = (JarEntry) entries.nextElement();
+            assertNotNull(entry);
+
+            String name = entry.getName();
+            JarEntry entry2 = jarFile2.getJarEntry(name);
+            assertNotNull(entry2);
+            if(!name.equals("META-INF/MANIFEST.MF")) { // Manifests aren't necessarily byte-for-byte identical
+
+                InputStream ours = jarFile.getInputStream(entry);
+                InputStream expected = jarFile2.getInputStream(entry2);
+
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(ours));
+                BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+                        expected));
+                String line1 = reader1.readLine();
+                String line2 = reader2.readLine();
+                int i = 1;
+                while (line1 != null || line2 != null) {
+                    assertEquals("Unpacked files differ for " + name, line2, line1);
+                    line1 = reader1.readLine();
+                    line2 = reader2.readLine();
+                    i++;
+                }
+                reader1.close();
+                reader2.close();
+            }
+        }
     }
 
 }

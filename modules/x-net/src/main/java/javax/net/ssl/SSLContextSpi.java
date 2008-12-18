@@ -15,131 +15,29 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 
-import javax.net.SocketFactory;
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class SSLContextSpi {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLContextSpi() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected abstract void engineInit(KeyManager[] km, TrustManager[] tm,
-            SecureRandom sr) throws KeyManagementException;
+    protected abstract void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
+            throws KeyManagementException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSocketFactory engineGetSocketFactory();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLServerSocketFactory engineGetServerSocketFactory();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLEngine engineCreateSSLEngine(String host, int port);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLEngine engineCreateSSLEngine();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSessionContext engineGetServerSessionContext();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSessionContext engineGetClientSessionContext();
 
-    protected SSLParameters engineGetDefaultSSLParameters() {
-        // Initially, a default set of cipher suites will be enabled on a new
-        // socket that represents the minimum suggested configuration
-        SSLParameters defaultSSLParameters = new SSLParameters();
-        SocketFactory sslSocketFactory = SSLSocketFactory.getDefault();
-        SSLSocket sslSocket = null;
-        try {
-            sslSocket = (SSLSocket) sslSocketFactory.createSocket();
-            if (sslSocket == null)
-                return null;
-            defaultSSLParameters.setCipherSuites(sslSocket
-                    .getEnabledCipherSuites());
-            defaultSSLParameters.setProtocols(sslSocket.getEnabledProtocols());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            throw new UnsupportedOperationException(
-                    "the default SSL parameters could not be obtained");
-        } finally {
-            try {
-                if (sslSocket != null) {
-                    sslSocket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return defaultSSLParameters;
-    };
-
-    protected SSLParameters engineGetSupportedSSLParameters() {
-        SSLParameters supportSSLParameters = new SSLParameters();
-        SocketFactory sslSocketFactory = SSLSocketFactory.getDefault();
-        if (sslSocketFactory == null)
-            return null;
-        SSLSocket sslSocket = null;
-        try {
-            sslSocket = (SSLSocket) sslSocketFactory.createSocket();
-            if (sslSocket == null)
-                return null;
-            supportSSLParameters.setCipherSuites(sslSocket
-                    .getSupportedCipherSuites());
-            supportSSLParameters
-                    .setProtocols(sslSocket.getSupportedProtocols());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            throw new UnsupportedOperationException(
-                    "the supported SSL parameters could not be obtained");
-        } finally {
-            try {
-                if (sslSocket != null) {
-                    sslSocket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return supportSSLParameters;
-    };
 }

@@ -869,6 +869,39 @@ public class IntrospectorTest extends TestCase {
         }
     }
     
+    /*
+     * @test Introspector.getBeanInfo
+     * @test StandardBeanInfo.mergeProps
+     */
+    public void testGetBeanInfo_StandardBeanInfo_mergeProps() throws Exception {
+        class MockParent {
+            public void setValue(int v) {
+                // do nothing
+            }
+
+            public void setValue(int v, String s) {
+                // do nothing
+            }
+        }
+
+        class MockChild extends MockParent {
+            public void setValue(int v) {
+                // do nothing
+            }
+        }
+
+        BeanInfo beanInfo = Introspector.getBeanInfo(MockChild.class);
+        PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+        PropertyDescriptor pd = null;
+        for(int i = 0; i < pds.length; i++){
+            if("value".equals(pds[i].getName())){
+                pd = pds[i];
+            }
+        }
+        assertNotNull(pd);
+        assertEquals(Integer.TYPE, pd.getPropertyType());
+    }
+    
     public void testSetBeanInfoSearchPath_null() throws IntrospectionException{
         String[] oldPath = Introspector.getBeanInfoSearchPath();
         try{

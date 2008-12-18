@@ -15,46 +15,22 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class TrustManagerFactorySpi {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+
     public TrustManagerFactorySpi() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract void engineInit(KeyStore ks) throws KeyStoreException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract TrustManager[] engineGetTrustManagers();
 }

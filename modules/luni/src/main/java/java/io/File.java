@@ -489,33 +489,12 @@ public class File implements Serializable, Comparable<File> {
      */
     public String getCanonicalPath() throws IOException {
         byte[] result = properPath(false);
-
-        boolean exists = false;
-        byte[] pathBytes = result;
-        do {
-            byte[] linkBytes = getLinkImpl(pathBytes);
-            if (linkBytes == pathBytes) {
-                break;
-            }
-            if (linkBytes[0] == separatorChar) {
-                pathBytes = linkBytes;
-            } else {
-                int index = pathBytes.length - 1;
-                while (pathBytes[index] != separatorChar) {
-                    index--;
-                }
-                byte[] temp = new byte[index + 1 + linkBytes.length];
-                System.arraycopy(pathBytes, 0, temp, 0, index + 1);
-                System.arraycopy(linkBytes, 0, temp, index + 1,
-                        linkBytes.length);
-                pathBytes = temp;
-            }
-            exists = existsImpl(pathBytes);
-        } while (exists);
-        if (exists) {
-            result = pathBytes;
+        if(separatorChar == '/') {
+            // resolve the full path first
+            result = resolveLink(result, result.length, false);
+            // resolve the parent directories
+            result = resolve(result);
         }
-
         int numSeparators = 1;
         for (int i = 0; i < result.length; i++) {
             if (result[i] == separatorChar) {
@@ -582,6 +561,93 @@ public class File implements Serializable, Comparable<File> {
         newResult = getCanonImpl(newResult);
         newLength = newResult.length;
         return Util.toUTF8String(newResult, 0, newLength);
+    }
+    
+    /*
+     * Resolve symbolic links in the parent directories.
+     */
+    private byte[] resolve(byte[] newResult) throws IOException {
+        int last = 1, nextSize, linkSize;
+        byte[] linkPath = newResult, bytes;
+        boolean done, inPlace;
+        for (int i = 1; i <= newResult.length; i++) {
+            if (i == newResult.length || newResult[i] == separatorChar) {
+                done = i >= newResult.length - 1;
+                // if there is only one segment, do nothing
+                if (done && linkPath.length == 1) {
+                    return newResult;
+                }
+                inPlace = false;
+                if (linkPath == newResult) {
+                    bytes = newResult;
+                    // if there are no symbolic links, terminate the C string
+                    // instead of copying
+                    if (!done) {
+                        inPlace = true;
+                        newResult[i] = '\0';
+                    }
+                } else {
+                    nextSize = i - last + 1;
+                    linkSize = linkPath.length;
+                    if (linkPath[linkSize - 1] == separatorChar) {
+                        linkSize--;
+                    }
+                    bytes = new byte[linkSize + nextSize];
+                    System.arraycopy(linkPath, 0, bytes, 0, linkSize);
+                    System.arraycopy(newResult, last - 1, bytes, linkSize,
+                            nextSize);
+                    // the full path has already been resolved
+                }
+                if (done) {
+                    return bytes;
+                }
+                linkPath = resolveLink(bytes, inPlace ? i : bytes.length, true);
+                if (inPlace) {
+                    newResult[i] = '/';
+                }
+                last = i + 1;
+            }
+        }
+        throw new InternalError();
+    }
+
+    /*
+     * Resolve a symbolic link. While the path resolves to an existing path,
+     * keep resolving. If an absolute link is found, resolve the parent
+     * directories if resolveAbsolute is true.
+     */
+    private byte[] resolveLink(byte[] pathBytes, int length,
+            boolean resolveAbsolute) throws IOException {
+        boolean restart = false;
+        byte[] linkBytes, temp;
+        do {
+            linkBytes = getLinkImpl(pathBytes);
+            if (linkBytes == pathBytes) {
+                break;
+            }
+            if (linkBytes[0] == separatorChar) {
+                // link to an absolute path, if resolving absolute paths,
+                // resolve the parent dirs again
+                restart = resolveAbsolute;
+                pathBytes = linkBytes;
+            } else {
+                int last = length - 1;
+                while (pathBytes[last] != separatorChar) {
+                    last--;
+                }
+                last++;
+                temp = new byte[last + linkBytes.length];
+                System.arraycopy(pathBytes, 0, temp, 0, last);
+                System.arraycopy(linkBytes, 0, temp, last, linkBytes.length);
+                pathBytes = temp;
+            }
+            length = pathBytes.length;
+        } while (existsImpl(pathBytes));
+        // resolve the parent directories
+        if (restart) {
+            return resolve(pathBytes);
+        }
+        return pathBytes;
     }
 
     /**

@@ -38,6 +38,7 @@ import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.BerOutputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.utils.ObjectIdentifier;
+import org.apache.harmony.security.Util;
 
 
 /**
@@ -284,7 +285,7 @@ public class AttributeTypeAndValue {
             this.oid = thisOid;
 
         } else {
-            this.oid = (ObjectIdentifier) KNOWN_NAMES.get(sOid.toUpperCase());
+            this.oid = (ObjectIdentifier) KNOWN_NAMES.get(Util.toUpperCase(sOid));
             if (this.oid == null) {
                 throw new IOException(Messages.getString("security.178", sOid)); //$NON-NLS-1$
             }
@@ -311,7 +312,7 @@ public class AttributeTypeAndValue {
             buf.append('=');
             if (value.escapedString == value.getHexString()) {
                 //FIXME all chars in upper case
-                buf.append(value.getHexString().toUpperCase());
+                buf.append(Util.toUpperCase(value.getHexString()));
             } else if (value.escapedString.length() != value.rawString.length()) {
                 // was escaped
                 value.appendQEString(buf);

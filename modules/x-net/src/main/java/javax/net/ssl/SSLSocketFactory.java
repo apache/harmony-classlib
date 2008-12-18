@@ -15,24 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.Security;
 
 import javax.net.SocketFactory;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public abstract class SSLSocketFactory extends SocketFactory {
     // FIXME EXPORT CONTROL
 
@@ -41,28 +33,23 @@ public abstract class SSLSocketFactory extends SocketFactory {
 
     private static String defaultName;
 
-    public SSLSocketFactory() {
-        super();
-    }
-
-    public static SocketFactory getDefault() {
+    public static synchronized SocketFactory getDefault() {
         if (defaultSocketFactory != null) {
             return defaultSocketFactory;
         }
         if (defaultName == null) {
-            AccessController.doPrivileged(new java.security.PrivilegedAction(){
-                public Object run() {
-                	defaultName = Security.getProperty("ssl.SocketFactory.provider");
-                    if (defaultName != null) {    
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                public Void run() {
+                    defaultName = Security.getProperty("ssl.SocketFactory.provider");
+                    if (defaultName != null) {
                         ClassLoader cl = Thread.currentThread().getContextClassLoader();
                         if (cl == null) {
                             cl = ClassLoader.getSystemClassLoader();
                         }
                         try {
-                        	defaultSocketFactory = (SocketFactory) Class.forName(
-                                    defaultName, true, cl).newInstance();
-                         } catch (Exception e) {
-                            return e;
+                            final Class<?> sfc = Class.forName(defaultName, true, cl);
+                            defaultSocketFactory = (SocketFactory) sfc.newInstance();
+                        } catch (Exception e) {
                         }
                     }
                     return null;
@@ -84,11 +71,14 @@ public abstract class SSLSocketFactory extends SocketFactory {
         return defaultSocketFactory;
     }
 
+    public SSLSocketFactory() {
+        super();
+    }
+
     public abstract String[] getDefaultCipherSuites();
 
     public abstract String[] getSupportedCipherSuites();
 
-    public abstract Socket createSocket(Socket s, String host, int port,
-            boolean autoClose) throws IOException;
-
+    public abstract Socket createSocket(Socket s, String host, int port, boolean autoClose)
+            throws IOException;
 }

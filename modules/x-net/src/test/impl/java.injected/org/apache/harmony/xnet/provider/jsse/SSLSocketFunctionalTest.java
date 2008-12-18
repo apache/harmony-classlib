@@ -51,6 +51,7 @@ public class SSLSocketFunctionalTest extends TestCase {
     /**
      * Sets up the test case.
      */
+    @Override
     public void setUp() throws Exception {
         if (doLog) {
             System.out.println("========================");
@@ -187,6 +188,7 @@ public class SSLSocketFunctionalTest extends TestCase {
             final SSLServerSocket ss = ssocket;
             final SSLSocket s = csocket;
             server = new Thread() {
+                @Override
                 public void run() {
                     InputStream is = null;
                     OutputStream os = null;
@@ -256,6 +258,7 @@ public class SSLSocketFunctionalTest extends TestCase {
             };
 
             client = new Thread() {
+                @Override
                 public void run() {
                     InputStream is = null;
                     OutputStream os = null;

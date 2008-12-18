@@ -913,10 +913,10 @@ public class InetAddress extends Object implements Serializable {
         // define traffic only for parameter
         int traffic = 0;
         boolean reached = false;
-        NETIMPL.createSocket(fd, NetUtil.preferIPv4Stack());
+        NETIMPL.createStreamSocket(fd, NetUtil.preferIPv4Stack());
         try {
             if (null != source) {
-                NETIMPL.bind(fd, 0, source);
+                NETIMPL.bind(fd, source, 0);
             }
             NETIMPL.connectStreamWithTimeoutSocket(fd, 7, timeout, traffic,
                     dest);

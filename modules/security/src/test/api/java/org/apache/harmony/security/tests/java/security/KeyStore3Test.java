@@ -18,6 +18,7 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +31,9 @@ import java.security.KeyStoreSpi;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.UnrecoverableKeyException;
+import java.security.KeyStore.Builder;
+import java.security.KeyStore.PasswordProtection;
+import java.security.KeyStore.ProtectionParameter;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -146,6 +150,31 @@ public class KeyStore3Test extends TestCase {
     public void test_store_null() throws Exception {
         mockKeyStore.load(null, null);
         mockKeyStore.store(null, null);
+    }
+    
+    public void test_getKeyStore() throws KeyStoreException,
+            NoSuchAlgorithmException, CertificateException,
+            FileNotFoundException, IOException {
+
+        String alias = "BKS";
+        char[] pwd = new char[] { '1', '2', '3', '4', '5', '6' };
+        InputStream fis = KeyStore2Test.class
+                .getResourceAsStream("builderimpl.ks");
+        KeyStore ks = KeyStore.getInstance(alias);
+        ks.load(fis, pwd);
+        Builder b = Builder.newInstance(ks, new PasswordProtection(pwd));
+        KeyStore firstKeyStore = b.getKeyStore();
+        ProtectionParameter firstProtParameter = b
+                .getProtectionParameter(alias);
+        assertSame(firstKeyStore, b.getKeyStore());
+        assertSame(firstProtParameter, b.getProtectionParameter(alias));
+
+        b = Builder.newInstance(alias, ks.getProvider(),
+                new KeyStore.PasswordProtection(pwd));
+        firstKeyStore = b.getKeyStore();
+        firstProtParameter = b.getProtectionParameter(alias);
+        assertNotSame(firstKeyStore, b.getKeyStore());
+        assertSame(firstProtParameter, b.getProtectionParameter(alias));
     }
     
     protected void setUp() throws Exception {

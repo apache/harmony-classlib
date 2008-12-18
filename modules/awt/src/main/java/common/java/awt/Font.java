@@ -44,7 +44,6 @@ import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
 import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 import org.apache.harmony.awt.internal.nls.Messages;
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.misc.HashCode;
 
 

@@ -15,31 +15,21 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.Principal;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public abstract class X509ExtendedKeyManager implements X509KeyManager {
+
     protected X509ExtendedKeyManager() {
         super();
     }
 
-    public String chooseEngineClientAlias(String[] keyType,
-            Principal[] issuers, SSLEngine engine) {
+    public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine) {
         return null;
     }
 
-    public String chooseEngineServerAlias(String keyType, Principal[] issuers,
-            SSLEngine engine) {
+    public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine) {
         return null;
     }
 

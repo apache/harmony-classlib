@@ -832,10 +832,7 @@ public abstract class Toolkit {
         } finally {
             unlockAWT();
         }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return null;
+        throw new org.apache.harmony.luni.util.NotImplementedException();
     }
 
     public Insets getScreenInsets(GraphicsConfiguration gc) throws HeadlessException {

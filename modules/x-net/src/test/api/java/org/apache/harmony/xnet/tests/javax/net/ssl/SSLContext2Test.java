@@ -29,7 +29,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MySSLContextSpi;
 import junit.framework.TestCase;
 
@@ -59,6 +59,7 @@ public class SSLContext2Test extends TestCase {
 
     Provider mProv;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         mProv = (new SpiEngUtils()).new MyProvider("MySSLContextProvider", "Provider for testing",
@@ -70,6 +71,7 @@ public class SSLContext2Test extends TestCase {
     /*
      * @see TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         Security.removeProvider(mProv.getName());

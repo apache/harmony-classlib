@@ -274,7 +274,7 @@ public abstract class SocketImpl implements SocketOptions {
             return this.netImpl.sendDatagram2(fd, buffer, offset, count, port,
                     address);
         }
-        return this.netImpl.sendStream(fd, buffer, offset, count);
+        return this.netImpl.write(fd, buffer, offset, count);
     }
 
     /**

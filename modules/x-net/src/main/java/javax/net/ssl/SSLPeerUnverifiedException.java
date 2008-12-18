@@ -15,25 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SSLPeerUnverifiedException extends SSLException {
-    
+
     private static final long serialVersionUID = -8919512675000600547L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLPeerUnverifiedException(String reason) {
         super(reason);
     }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.net.Socket;
@@ -27,47 +22,17 @@ import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public interface X509KeyManager extends KeyManager {
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String chooseClientAlias(String[] keyType, Principal[] issuers,
-            Socket socket);
+    public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public String chooseServerAlias(String keyType, Principal[] issuers,
-            Socket socket);
+    public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public X509Certificate[] getCertificateChain(String alias);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public String[] getClientAliases(String keyType, Principal[] issuers);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public String[] getServerAliases(String keyType, Principal[] issuers);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public PrivateKey getPrivateKey(String alias);
 }

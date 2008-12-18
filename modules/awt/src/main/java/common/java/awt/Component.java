@@ -86,6 +86,7 @@ import org.apache.harmony.awt.state.State;
 import org.apache.harmony.awt.text.TextFieldKit;
 import org.apache.harmony.awt.text.TextKit;
 import org.apache.harmony.awt.wtk.NativeWindow;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public abstract class Component implements ImageObserver, MenuContainer, Serializable {
     private static final long serialVersionUID = -7644114512714619750L;
@@ -568,32 +569,22 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
         protected boolean validatedContents;
 
-        protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) throws org.apache.harmony.luni.util.NotImplementedException {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected BltBufferStrategy(int numBuffers, BufferCapabilities caps) throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
-        public boolean contentsLost() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return false;
+        public boolean contentsLost() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
-        public boolean contentsRestored() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return false;
+        public boolean contentsRestored() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        protected void createBackBuffers(int numBuffers) {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected void createBackBuffers(int numBuffers) throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
@@ -602,24 +593,17 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         }
 
         @Override
-        public Graphics getDrawGraphics() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return null;
+        public Graphics getDrawGraphics() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        protected void revalidate() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected void revalidate() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
-        public void show() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        public void show() throws NotImplementedException {
+            throw new NotImplementedException();
         }
     }
 
@@ -646,23 +630,17 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         }
 
         @Override
-        public boolean contentsLost() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return false;
+        public boolean contentsLost() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
-        public boolean contentsRestored() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return false;
+        public boolean contentsRestored() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         protected void createBuffers(int numBuffers, BufferCapabilities caps)
-                throws AWTException {
+                throws AWTException,NotImplementedException {
             if (numBuffers < 2) {
                 // awt.14C=Number of buffers must be greater than one
                 throw new IllegalArgumentException(Messages.getString("awt.14C")); //$NON-NLS-1$
@@ -676,28 +654,19 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 throw new IllegalStateException(Messages.getString("awt.14E")); //$NON-NLS-1$
             }
             // TODO: throw new AWTException("Capabilities are not supported");
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+            throw new NotImplementedException();
         }
 
-        protected void destroyBuffers() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected void destroyBuffers() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        protected void flip(BufferCapabilities.FlipContents flipAction) {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected void flip(BufferCapabilities.FlipContents flipAction) throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        protected Image getBackBuffer() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return null;
+        protected Image getBackBuffer() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
@@ -706,24 +675,17 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         }
 
         @Override
-        public Graphics getDrawGraphics() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
-            return null;
+        public Graphics getDrawGraphics() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
-        protected void revalidate() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        protected void revalidate() throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
-        public void show() {
-            if (true) {
-                throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-            }
+        public void show() throws NotImplementedException {
+            throw new NotImplementedException();
         }
     }
 
