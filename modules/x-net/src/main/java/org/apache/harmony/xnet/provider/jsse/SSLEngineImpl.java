@@ -92,6 +92,14 @@ public class SSLEngineImpl extends SSLEngine {
         this.sslParameters = sslParameters;
     }
 
+    @Override
+    public void setSSLParameters(javax.net.ssl.SSLParameters inputSSLParameters) {
+        setEnabledCipherSuites(inputSSLParameters.getCipherSuites());
+        setEnabledProtocols(inputSSLParameters.getProtocols());
+        setNeedClientAuth(inputSSLParameters.getNeedClientAuth());
+        setWantClientAuth(inputSSLParameters.getWantClientAuth());
+    }
+
     /**
      * Ctor
      * @param   host:   String
@@ -764,6 +772,17 @@ public class SSLEngineImpl extends SSLEngine {
         return (engine_was_closed)
             ? SSLEngineResult.Status.CLOSED
             : SSLEngineResult.Status.OK;
+    }
+
+
+    @Override
+    public javax.net.ssl.SSLParameters getSSLParameters() {
+        javax.net.ssl.SSLParameters outputSSLParameters = new javax.net.ssl.SSLParameters();
+        outputSSLParameters.setCipherSuites(sslParameters.getEnabledCipherSuites());
+        outputSSLParameters.setProtocols(sslParameters.getEnabledProtocols());
+        outputSSLParameters.setNeedClientAuth(sslParameters.getNeedClientAuth());
+        outputSSLParameters.setWantClientAuth(sslParameters.getWantClientAuth());
+        return outputSSLParameters;
     }
 }
 

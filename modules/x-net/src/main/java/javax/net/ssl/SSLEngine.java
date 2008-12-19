@@ -100,7 +100,11 @@ public abstract class SSLEngine {
     public abstract void setUseClientMode(boolean mode);
 
     public abstract void setWantClientAuth(boolean want);
+    
+    public abstract void setSSLParameters(SSLParameters sslP);
 
+    public abstract SSLParameters getSSLParameters();
+    
     public abstract SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts, int offset, int length)
             throws SSLException;
 

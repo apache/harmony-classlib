@@ -35,6 +35,27 @@ public class SSLContext {
     // Used to access common engine functionality
     private static Engine engine = new Engine(SERVICE);
 
+    // Storeused provider
+    private final Provider provider;
+
+    private static SSLContext defaultSSLContext;
+    // Storeused SSLContextSpi implementation
+    private final SSLContextSpi spiImpl;
+
+    // Storeused protocol
+    private final String protocol;
+
+    /*
+     * @com.intel.drl.spec_ref
+     *  
+     */
+    protected SSLContext(SSLContextSpi contextSpi, Provider provider,
+            String protocol) {
+        this.provider = provider;
+        this.protocol = protocol;
+        this.spiImpl = contextSpi;
+    }
+
     /**
      * 
      * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
@@ -88,18 +109,6 @@ public class SSLContext {
         }
     }
 
-    private final Provider provider;
-
-    private final SSLContextSpi spiImpl;
-
-    private final String protocol;
-
-    protected SSLContext(SSLContextSpi contextSpi, Provider provider, String protocol) {
-        this.provider = provider;
-        this.protocol = protocol;
-        this.spiImpl = contextSpi;
-    }
-
     public final String getProtocol() {
         return protocol;
     }
@@ -135,5 +144,29 @@ public class SSLContext {
 
     public final SSLSessionContext getClientSessionContext() {
         return spiImpl.engineGetClientSessionContext();
+    }
+
+    public final SSLParameters getDefaultSSLParameters() {
+        return spiImpl.engineGetDefaultSSLParameters();
+    }
+
+    public final SSLParameters getSupportedSSLParameters() {
+        return spiImpl.engineGetSupportedSSLParameters();
+    }
+
+    public static SSLContext getDefault() throws NoSuchAlgorithmException {
+        if (defaultSSLContext == null)
+            defaultSSLContext = SSLContext.getInstance("Default");
+        return defaultSSLContext;
+    }
+
+    public static void setDefault(SSLContext sslContext) {
+        if (sslContext == null)
+            throw new NullPointerException();
+        SecurityManager securityManager = System.getSecurityManager();
+        if (securityManager != null)
+            securityManager.checkPermission(new SSLPermission(
+                    "setDefaultSSLContext"));
+        defaultSSLContext = sslContext;
     }
 }
