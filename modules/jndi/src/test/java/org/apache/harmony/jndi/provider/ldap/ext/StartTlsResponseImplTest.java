@@ -288,16 +288,5 @@ public class StartTlsResponseImplTest extends TestCase {
         public void setWantClientAuth(boolean want) {
             throw new Error("should not be here");
         }
-
-        @Override
-        public SSLParameters getSSLParameters() {
-            throw new Error("should not be here");
-        }
-
-        @Override
-        public void setSSLParameters(SSLParameters params) {
-            throw new Error("should not be here");
-        }
     }
-
 }
