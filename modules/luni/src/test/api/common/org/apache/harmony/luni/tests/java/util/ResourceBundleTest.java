@@ -375,9 +375,11 @@ public class ResourceBundleTest extends junit.framework.TestCase {
         }
     }
 
-	protected void setUp() {
-	}
-
+	/**
+     * The control with given formats.
+     */
+    static class GivenFormatsControl extends Control {
+        List<String> formats;
         GivenFormatsControl(List<String> theFormats) {
             super();
             formats = theFormats;
