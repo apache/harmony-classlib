@@ -17,7 +17,6 @@
 
 package org.apache.harmony.luni.tests.java.net;
 
-import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -745,26 +744,6 @@ public class URLTest extends TestCase {
         } finally {
             // Support_Resources.deleteTempFolder(resources);
         }
-    }
-
-    // Regression test for HARMONY-1718
-    public void test_getContent1718() throws IOException {
-        URL url;
-
-        url = Support_Resources.class
-                .getResource(Support_Resources.RESOURCE_PACKAGE + "Harmony.GIF");
-        assertTrue("Returned object doesn't implement ImageProducer interface",
-                url.getContent() instanceof ImageProducer);
-
-        url = Support_Resources.class
-                .getResource(Support_Resources.RESOURCE_PACKAGE + "Harmony.jpg");
-        assertTrue("Returned object doesn't implement ImageProducer interface",
-                url.getContent() instanceof ImageProducer);
-
-        url = Support_Resources.class
-                .getResource(Support_Resources.RESOURCE_PACKAGE + "Harmony.png");
-        assertTrue("Returned object doesn't implement ImageProducer interface",
-                url.getContent() instanceof ImageProducer);
     }
 
     /**
