@@ -300,7 +300,14 @@ public class Introspector extends java.lang.Object {
             beanInfoClassName = searchPath[i] + "." + beanInfoName; //$NON-NLS-1$
             try{
                 theBeanInfo = loadBeanInfo(beanInfoClassName, beanClass);
-                break;
+                
+                // find the beanInfo of the given beanClass, check whether the
+                // beanInfo is consistent with the given beanClass
+                Class<?> beanClassOfBeanInfo = theBeanInfo.getBeanDescriptor()
+                        .getBeanClass();
+                if (beanClassOfBeanInfo.equals(beanClass)) {
+                    break;
+                } 
             }catch(Exception e){
                 //ignore, try next one
             }
