@@ -217,11 +217,23 @@ public class UnresolvedPermission_ImplTest extends TestCase {
                 new java.security.cert.Certificate[2]);
         UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
                 new java.security.cert.Certificate[2]);
-        try {
-            up1.equals(up2);
-            fail("should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // Expected
-        }
+        // Non-bug difference, RI throw NPE here.
+        assertEquals(up1, up2);
+    }
+
+    public void test_Equals_Scenario11() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, cert2 });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, null, cert2 });
+        assertFalse(up1.equals(up2));
+    }
+    
+    public void test_Equals_Scenario12() {
+        UnresolvedPermission up1 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, null, null });
+        UnresolvedPermission up2 = new UnresolvedPermission(type, name, action,
+                new java.security.cert.Certificate[] { cert1, null, cert1 });
+        assertEquals(up1, up2);
     }
 }
