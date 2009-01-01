@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Locale;
 
 import org.apache.harmony.prefs.internal.nls.Messages;
 
@@ -115,31 +116,55 @@ public abstract class Preferences {
 	
     //factory used to get user/system prefs root
 	private static final PreferencesFactory factory;
-	
+
+    // default provider factory name for Windows
+    private static final String DEFAULT_FACTORY_NAME_WIN = "java.util.prefs.RegistryPreferencesFactoryImpl"; //$NON-NLS-1$
+
+    // default provider factory name for Unix
+    private static final String DEFAULT_FACTORY_NAME_UNIX = "java.util.prefs.FilePreferencesFactoryImpl"; //$NON-NLS-1$
+
     /**
      * ---------------------------------------------------------
      * Class initializer
      * ---------------------------------------------------------
      */		
-	static{
-	    String factoryClassName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+    static {
+        String factoryClassName = AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty("java.util.prefs.PreferencesFactory"); //$NON-NLS-1$
             }
         });
-	    try {
-	        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-	        if(loader == null){
-	            loader = ClassLoader.getSystemClassLoader();
-	        }
-	        Class<?> factoryClass = loader.loadClass(factoryClassName);
-	        factory = (PreferencesFactory) factoryClass.newInstance();
+
+        // set default provider
+        if (factoryClassName == null) {
+            String osName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                public String run() {
+                    return System.getProperty("os.name"); //$NON-NLS-1$
+                }
+            });
+
+            // only comparing ASCII, so assume english locale
+            osName = (osName == null ? null : osName.toLowerCase(Locale.ENGLISH));
+
+            if (osName != null && osName.startsWith("windows")) {
+                factoryClassName = DEFAULT_FACTORY_NAME_WIN;
+            } else {
+                factoryClassName = DEFAULT_FACTORY_NAME_UNIX;
+            }
+        }
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if(loader == null){
+                loader = ClassLoader.getSystemClassLoader();
+            }
+            Class<?> factoryClass = loader.loadClass(factoryClassName);
+            factory = (PreferencesFactory) factoryClass.newInstance();
         } catch (Exception e) {
             // prefs.10=Cannot initiate PreferencesFactory: {0}. Caused by {1}
             throw new InternalError(Messages.getString("prefs.10", factoryClassName, e));   //$NON-NLS-1$
         }
-	}
-	
+    }
+
     /*
      * ---------------------------------------------------------
      * Constructors
