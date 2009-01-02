@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.util.EventListener;
@@ -30,20 +29,17 @@ import java.util.prefs.NodeChangeEvent;
  * @since 1.4
  */
 public interface NodeChangeListener extends EventListener {
-	/**
-	 * This method gets called whenever a child is added to a node.
-	 * 
-	 * @param e Node change event.
-	 */
-	public void childAdded (NodeChangeEvent e);
-	
-	/**
-	 * This method gets called whenever a child is removed from a node.
-	 * 
-	 * @param e Node change event.
-	 */
-	public void childRemoved (NodeChangeEvent e);
+    /**
+     * This method gets called whenever a child is added to a node.
+     * 
+     * @param e Node change event.
+     */
+    public void childAdded (NodeChangeEvent e);
+
+    /**
+     * This method gets called whenever a child is removed from a node.
+     * 
+     * @param e Node change event.
+     */
+    public void childRemoved (NodeChangeEvent e);
 }
-
-
- 

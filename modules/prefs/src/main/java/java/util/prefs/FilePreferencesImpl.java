@@ -97,7 +97,7 @@ class FilePreferencesImpl extends AbstractPreferences {
      * Constructors
      * --------------------------------------------------------------
      */
-    
+
     /**
      * Construct root <code>FilePreferencesImpl</code> instance, construct 
      * user root if userNode is true, system root otherwise
@@ -108,7 +108,7 @@ class FilePreferencesImpl extends AbstractPreferences {
         path = userNode ? USER_HOME : SYSTEM_HOME;
         initPrefs();
     }
-    
+
     /**
      * Construct a prefs using given parent and given name 
      */
@@ -132,16 +132,16 @@ class FilePreferencesImpl extends AbstractPreferences {
     @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
         String[] names = AccessController
-                .doPrivileged(new PrivilegedAction<String[]>() {
-                    public String[] run() {
-                        return dir.list(new FilenameFilter() {
-                            public boolean accept(File parent, String name) {
-                                return new File(path + File.separator + name).isDirectory(); 
-                            }
-                        });
-
+        .doPrivileged(new PrivilegedAction<String[]>() {
+            public String[] run() {
+                return dir.list(new FilenameFilter() {
+                    public boolean accept(File parent, String name) {
+                        return new File(path + File.separator + name).isDirectory(); 
                     }
                 });
+
+            }
+        });
         if (null == names) {// file is not a directory, exception case
             // prefs.3=Cannot get children names for {0}!
             throw new BackingStoreException(

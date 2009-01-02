@@ -14,35 +14,29 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
- * Default implementation of <code>AbstractPreferences</code> for windows platform,
- * using windows registry as back end. 
+ * Default implementation of <code>AbstractPreferences</code> for windows platform, using windows
+ * registry as back end.
  * 
  * @since 1.4
  */
 class RegistryPreferencesImpl extends AbstractPreferences {
-    
-    static {
-		System.loadLibrary("hyprefs"); //$NON-NLS-1$
-	}
 
-    /*
-	 * -------------------------------------------------------------- 
-     * Class fields
-	 * --------------------------------------------------------------
-	 */
-    //registry path for root preferences 
+    static {
+        System.loadLibrary("hyprefs"); //$NON-NLS-1$
+    }
+
+    // registry path for root preferences
     private static final String ROOT_PATH = "SOFTWARE\\JavaSoft\\Prefs"; //$NON-NLS-1$
 
-    //index for returned error code
+    // index for returned error code
     private static final int ERROR_CODE = 0;
 
-    //error code for registry access    
+    // error code for registry access
     private static final int RETURN_SUCCESS = 0;
 
     @SuppressWarnings("unused")
@@ -53,22 +47,11 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     @SuppressWarnings("unused")
     private static final int RETURN_UNKNOWN_ERROR = 3;
 
-    /*
-     * --------------------------------------------------------------
-     * Instance fields
-     * --------------------------------------------------------------
-     */
-    //registry path for this preferences, default value is the root path
+    // registry path for this preferences, default value is the root path
     private byte[] path = ROOT_PATH.getBytes();
 
-    /*
-     * --------------------------------------------------------------
-     * Constructors
-     * --------------------------------------------------------------
-     */
     /**
-     * Construct <code>RegistryPreferencesImpl</code> instance using given parent 
-     * and given name 
+     * Construct <code>RegistryPreferencesImpl</code> instance using given parent and given name
      */
     public RegistryPreferencesImpl(AbstractPreferences parent, String name) {
         super(parent, name);
@@ -77,8 +60,8 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     }
 
     /**
-     * Construct root <code>RegistryPreferencesImpl</code> instance, construct 
-     * user root if userNode is true, system root otherwise
+     * Construct root <code>RegistryPreferencesImpl</code> instance, construct user root if userNode
+     * is true, system root otherwise
      */
     public RegistryPreferencesImpl(boolean userNode) {
         super(null, ""); //$NON-NLS-1$
@@ -91,7 +74,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         byte[][] names = getChildNames(path, userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
             // prefs.B=Enumerate child nodes error\!
-            throw new BackingStoreException(Messages.getString("prefs.B"));  //$NON-NLS-1$
+            throw new BackingStoreException(Messages.getString("prefs.B")); //$NON-NLS-1$
         }
         String[] result = new String[names.length];
         for (int i = 0; i < result.length; i++) {
@@ -104,7 +87,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     protected AbstractPreferences childSpi(String name) {
         int[] error = new int[1];
         RegistryPreferencesImpl result = new RegistryPreferencesImpl(this, name);
-        //FIXME: is it right thing to set newNode here?
+        // FIXME: is it right thing to set newNode here?
         result.newNode = getNode(path, encodeWindowsStr(name).getBytes(), result.userNode, error);
         if (error[ERROR_CODE] == RETURN_ACCESS_DENIED) {
             throw new SecurityException();
@@ -118,7 +101,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         flushPrefs(path, userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
             // prefs.C=Flush error\!
-            throw new BackingStoreException(Messages.getString("prefs.C"));  //$NON-NLS-1$
+            throw new BackingStoreException(Messages.getString("prefs.C")); //$NON-NLS-1$
         }
     }
 
@@ -138,7 +121,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         byte[][] keys = keys(path, userNode, errorCode);
         if (errorCode[ERROR_CODE] != RETURN_SUCCESS) {
             // prefs.D=Enumerate keys error\!
-            throw new BackingStoreException(Messages.getString("prefs.D"));  //$NON-NLS-1$
+            throw new BackingStoreException(Messages.getString("prefs.D")); //$NON-NLS-1$
         }
         String[] result = new String[keys.length];
         for (int i = 0; i < result.length; i++) {
@@ -153,18 +136,18 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         putValue(path, encodeWindowsStr(name).getBytes(), value.getBytes(), userNode, errorCode);
         if (errorCode[ERROR_CODE] == RETURN_ACCESS_DENIED) {
             // prefs.E=Access denied\!
-            throw new SecurityException(Messages.getString("prefs.E"));  //$NON-NLS-1$
+            throw new SecurityException(Messages.getString("prefs.E")); //$NON-NLS-1$
         }
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         int[] error = new int[1];
-        removeNode(((RegistryPreferencesImpl) parent()).path,
-                encodeWindowsStr(name()).getBytes(), userNode, error);
+        removeNode(((RegistryPreferencesImpl) parent()).path, encodeWindowsStr(name()).getBytes(),
+                userNode, error);
         if (error[ERROR_CODE] != RETURN_SUCCESS) {
             // prefs.F=Remove node error\!
-            throw new BackingStoreException(Messages.getString("prefs.F"));  //$NON-NLS-1$
+            throw new BackingStoreException(Messages.getString("prefs.F")); //$NON-NLS-1$
         }
     }
 
@@ -174,7 +157,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         removeKey(path, encodeWindowsStr(key).getBytes(), userNode, errorCode);
         if (errorCode[ERROR_CODE] == RETURN_ACCESS_DENIED) {
             // prefs.E=Access denied\!
-            throw new SecurityException(Messages.getString("prefs.E"));  //$NON-NLS-1$
+            throw new SecurityException(Messages.getString("prefs.E")); //$NON-NLS-1$
         }
     }
 
@@ -183,71 +166,70 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         flushSpi();
     }
 
-    //handle the lower/upper case pitfall
-    private static String encodeWindowsStr(String str){
+    // handle the lower/upper case pitfall
+    private static String encodeWindowsStr(String str) {
         char[] chars = str.toCharArray();
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            if(c == '/'){
+            if (c == '/') {
                 buffer.append("\\"); //$NON-NLS-1$
-            }else if(c == '\\'){
+            } else if (c == '\\') {
                 buffer.append("//"); //$NON-NLS-1$
-            }else if((c >= 'A') && (c <= 'Z')){
+            } else if ((c >= 'A') && (c <= 'Z')) {
                 buffer.append('/').append(c);
-            }else{
+            } else {
                 buffer.append(c);
             }
         }
         return buffer.toString();
     }
-    
-    private static String decodeWindowsStr(String str){
+
+    private static String decodeWindowsStr(String str) {
         StringBuffer buffer = new StringBuffer();
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            char c= chars[i];
-            if(c == '\\'){
+            char c = chars[i];
+            if (c == '\\') {
                 buffer.append('/');
-            }else if(c == '/'){
-                if((c = chars[++i]) == '/'){
+            } else if (c == '/') {
+                if ((c = chars[++i]) == '/') {
                     buffer.append('\\');
-                }else{
+                } else {
                     buffer.append(c);
                 }
-            }else{
+            } else {
                 buffer.append(c);
             }
         }
         return buffer.toString();
     }
-    
+
     /*
-     * --------------------------------------------------------------
-     * Native methods declaration
+     * -------------------------------------------------------------- 
+     * Native method declarations
      * --------------------------------------------------------------
      */
-    private native byte[] getValue(byte[] registryPath, byte[] key,
-            boolean isUserNode, int[] errorCode);
 
-    private native void putValue(byte[] registryPath, byte[] key, byte[] value,
-            boolean isUserNode, int[] errorCode);
-
-    private native void removeKey(byte[] registryPath, byte[] key,
-            boolean isUserNode, int[] errorCode);
-
-    private native byte[][] keys(byte[] registryPath, boolean isUserNode,
+    private native byte[] getValue(byte[] registryPath, byte[] key, boolean isUserNode,
             int[] errorCode);
 
-    private native void removeNode(byte[] registryPath, byte[] name,
-            boolean isUserNode, int[] errorCode);
+    private native void putValue(byte[] registryPath, byte[] key, byte[] value, boolean isUserNode,
+            int[] errorCode);
 
-    private native boolean getNode(byte[] registryPath, byte[] name,
-            boolean isUserNode, int[] errorCode);
+    private native void removeKey(byte[] registryPath, byte[] key, boolean isUserNode,
+            int[] errorCode);
 
-    private native byte[][] getChildNames(byte[] registryPath,
-            boolean isUserNode, int[] errorCode);
+    private native byte[][] keys(byte[] registryPath, boolean isUserNode, int[] errorCode);
 
-    private native void flushPrefs(byte[] registryPath, boolean isUserNode,
-            int[] errorCode) throws SecurityException;
+    private native void removeNode(byte[] registryPath, byte[] name, boolean isUserNode,
+            int[] errorCode);
+
+    private native boolean getNode(byte[] registryPath, byte[] name, boolean isUserNode,
+            int[] errorCode);
+
+    private native byte[][] getChildNames(byte[] registryPath, boolean isUserNode, int[] errorCode);
+
+    private native void flushPrefs(byte[] registryPath, boolean isUserNode, int[] errorCode)
+            throws SecurityException;
 }
