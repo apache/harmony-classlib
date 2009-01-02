@@ -199,7 +199,8 @@ class FilePreferencesImpl extends AbstractPreferences {
 
     @Override
     protected String[] keysSpi() throws BackingStoreException {
-        return prefs.keySet().toArray(new String[0]);
+        final Set<Object> ks = prefs.keySet();
+        return ks.toArray(new String[ks.size()]);
     }
 
     @Override

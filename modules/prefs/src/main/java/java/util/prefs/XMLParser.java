@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.security.AccessController;
@@ -433,14 +434,6 @@ class XMLParser {
                 return loadFilePrefsImpl(file);
             }
         });
-
-        // try {
-        // //FIXME: lines below can be deleted, because it is not required to
-        // persistent at the very beginning
-        // flushFilePrefs(file, result);
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
     }
 
     static Properties loadFilePrefsImpl(final File file) {
@@ -451,7 +444,6 @@ class XMLParser {
             InputStream in = null;
             FileLock lock = null;
             try {
-
                 FileInputStream istream = new FileInputStream(file);
                 in = new BufferedInputStream(istream);
                 FileChannel channel = istream.getChannel();
@@ -467,17 +459,14 @@ class XMLParser {
                     result.setProperty(key, value);
                 }
                 return result;
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+            } catch (SAXException e) {
+            } catch (TransformerException e) {
+                // transform shouldn't fail for xpath call
+                throw new AssertionError(e);
             } finally {
-                try {
-                    lock.release();
-                } catch (Exception e) {//ignore
-                }
-                try {
-                    in.close();
-                } catch (Exception e) {//ignore
-                }
+                releaseQuietly(lock);
+                closeQuietly(in);
             }
         } else {
             file.delete();
@@ -525,16 +514,35 @@ class XMLParser {
             }
             out.flush();
         } finally {
-            try {
-                lock.release();
-            } catch (Exception e) {//ignore
-            }
-            try {
-                if (null != out) {
-                    out.close();
-                }
-            } catch (Exception e) {//ignore
-            }
+            releaseQuietly(lock);
+            closeQuietly(out);
         }
+    }
+    
+    private static void releaseQuietly(FileLock lock) {
+        if (lock == null) {
+            return;
+        }
+        try {
+            lock.release();
+        } catch (IOException e) {}
+    }
+    
+    private static void closeQuietly(Writer out) {
+        if (out == null) {
+            return;
+        }
+        try {
+            out.close();
+        } catch (IOException e) {}
+    }
+    
+    private static void closeQuietly(InputStream in) {
+        if (in == null) {
+            return;
+        }
+        try {
+            in.close();
+        } catch (IOException e) {}
     }
 }
