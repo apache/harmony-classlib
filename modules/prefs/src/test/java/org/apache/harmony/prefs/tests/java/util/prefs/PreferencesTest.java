@@ -44,7 +44,8 @@ public class PreferencesTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		in = new ByteArrayInputStream("<!DOCTYPE preferences SYSTEM \"http://java.sun.com/dtd/preferences.dtd\"><preferences><root type=\"user\"><map></map></root></preferences>".getBytes("UTF-8"));
 		stream = new MockInputStream(in);
@@ -53,7 +54,8 @@ public class PreferencesTest extends TestCase {
 	/*
 	 * @see TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 		stream.close();
 	}
@@ -377,7 +379,8 @@ public class PreferencesTest extends TestCase {
 			wrapper = in;
 		}
 
-		public int read() throws IOException {
+		@Override
+        public int read() throws IOException {
 			checkException();
 			return wrapper.read();
 		}
@@ -389,137 +392,171 @@ public class PreferencesTest extends TestCase {
 			super();
 		}
 
-		public String absolutePath() {
+		@Override
+        public String absolutePath() {
 			return null;
 		}
 
-		public String[] childrenNames() throws BackingStoreException {
+		@Override
+        public String[] childrenNames() throws BackingStoreException {
 			return null;
 		}
 
-		public void clear() throws BackingStoreException {
+		@Override
+        public void clear() throws BackingStoreException {
 		}
 
-		public void exportNode(OutputStream ostream) throws IOException,
+		@Override
+        public void exportNode(OutputStream ostream) throws IOException,
 				BackingStoreException {
 		}
 
-		public void exportSubtree(OutputStream ostream) throws IOException,
+		@Override
+        public void exportSubtree(OutputStream ostream) throws IOException,
 				BackingStoreException {
 		}
 
-		public void flush() throws BackingStoreException {
+		@Override
+        public void flush() throws BackingStoreException {
 		}
 
-		public String get(String key, String deflt) {
+		@Override
+        public String get(String key, String deflt) {
 			return null;
 		}
 
-		public boolean getBoolean(String key, boolean deflt) {
+		@Override
+        public boolean getBoolean(String key, boolean deflt) {
 			return false;
 		}
 
-		public byte[] getByteArray(String key, byte[] deflt) {
+		@Override
+        public byte[] getByteArray(String key, byte[] deflt) {
 			return null;
 		}
 
-		public double getDouble(String key, double deflt) {
+		@Override
+        public double getDouble(String key, double deflt) {
 			return 0;
 		}
 
-		public float getFloat(String key, float deflt) {
+		@Override
+        public float getFloat(String key, float deflt) {
 			return 0;
 		}
 
-		public int getInt(String key, int deflt) {
+		@Override
+        public int getInt(String key, int deflt) {
 			return 0;
 		}
 
-		public long getLong(String key, long deflt) {
+		@Override
+        public long getLong(String key, long deflt) {
 			return 0;
 		}
 
-		public boolean isUserNode() {
+		@Override
+        public boolean isUserNode() {
 			return false;
 		}
 
-		public String[] keys() throws BackingStoreException {
+		@Override
+        public String[] keys() throws BackingStoreException {
 			return null;
 		}
 
-		public String name() {
+		@Override
+        public String name() {
 			return null;
 		}
 
-		public Preferences node(String name) {
+		@Override
+        public Preferences node(String name) {
 			return null;
 		}
 
-		public boolean nodeExists(String name) throws BackingStoreException {
+		@Override
+        public boolean nodeExists(String name) throws BackingStoreException {
 			return false;
 		}
 
-		public Preferences parent() {
+		@Override
+        public Preferences parent() {
 			return null;
 		}
 
-		public void put(String key, String value) {
+		@Override
+        public void put(String key, String value) {
 
 		}
 
-		public void putBoolean(String key, boolean value) {
+		@Override
+        public void putBoolean(String key, boolean value) {
 
 		}
 
-		public void putByteArray(String key, byte[] value) {
+		@Override
+        public void putByteArray(String key, byte[] value) {
 
 		}
 
-		public void putDouble(String key, double value) {
+		@Override
+        public void putDouble(String key, double value) {
 
 		}
 
-		public void putFloat(String key, float value) {
+		@Override
+        public void putFloat(String key, float value) {
 
 		}
 
-		public void putInt(String key, int value) {
+		@Override
+        public void putInt(String key, int value) {
 
 		}
 
-		public void putLong(String key, long value) {
+		@Override
+        public void putLong(String key, long value) {
 
 		}
 
-		public void remove(String key) {
+		@Override
+        public void remove(String key) {
 
 		}
 
-		public void removeNode() throws BackingStoreException {
+		@Override
+        public void removeNode() throws BackingStoreException {
 
 		}
 
-		public void addNodeChangeListener(NodeChangeListener ncl) {
+		@Override
+        public void addNodeChangeListener(NodeChangeListener ncl) {
 
 		}
 
-		public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+		@Override
+        public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
 
 		}
 
-		public void removeNodeChangeListener(NodeChangeListener ncl) {
+		@Override
+        public void removeNodeChangeListener(NodeChangeListener ncl) {
 
 		}
 
-		public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
+		@Override
+        public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
 
 		}
 
-		public void sync() throws BackingStoreException {
+		@Override
+        public void sync() throws BackingStoreException {
 
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			return null;
 		}
 

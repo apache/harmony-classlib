@@ -32,7 +32,8 @@ public class NodeChangeListenerTest extends TestCase {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		l = new NodeChangeListenerImpl();
 	}
@@ -40,7 +41,8 @@ public class NodeChangeListenerTest extends TestCase {
 	/*
 	 * @see TestCase#tearDown()
 	 */
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 

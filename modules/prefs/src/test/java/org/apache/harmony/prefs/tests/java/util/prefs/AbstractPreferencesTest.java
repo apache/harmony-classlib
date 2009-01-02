@@ -42,8 +42,6 @@ import junit.framework.TestCase;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -87,7 +85,8 @@ public class AbstractPreferencesTest extends TestCase {
 		longName = name.toString();
 	}
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		super.setUp();
 		root = (AbstractPreferences) Preferences.userRoot();
 		parent = (AbstractPreferences) Preferences
@@ -99,7 +98,8 @@ public class AbstractPreferencesTest extends TestCase {
 		pref = (AbstractPreferences) parent.node("mock");
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		try {
 			if (pref instanceof MockAbstractPreferences) {
 				((MockAbstractPreferences) pref)
@@ -1159,7 +1159,7 @@ public class AbstractPreferencesTest extends TestCase {
 	}
 
 	public Object invokeNonPublicMethod(AbstractPreferences obj, String name,
-			Class[] params, Object[] paramValues) throws SecurityException,
+			Class<?>[] params, Object[] paramValues) throws SecurityException,
 			NoSuchMethodException, IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		Method method = obj.getClass().getMethod(name, params);

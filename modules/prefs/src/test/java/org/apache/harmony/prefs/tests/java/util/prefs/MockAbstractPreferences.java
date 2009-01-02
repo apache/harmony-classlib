@@ -84,7 +84,8 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		return lock;
 	}
 
-	protected String[] childrenNamesSpi() throws BackingStoreException {
+	@Override
+    protected String[] childrenNamesSpi() throws BackingStoreException {
 		checkException();
 		if (result == returnNull)
 			return null;
@@ -108,7 +109,8 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		return childSpi(name);
 	}
 
-	protected AbstractPreferences childSpi(String name) {
+	@Override
+    protected AbstractPreferences childSpi(String name) {
 		try {
 			checkException();
 		} catch (BackingStoreException e) {
@@ -123,12 +125,14 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		return r;
 	}
 
-	protected void flushSpi() throws BackingStoreException {
+	@Override
+    protected void flushSpi() throws BackingStoreException {
 		checkException();
 		flushedTimes++;
 	}
 
-	protected String getSpi(String key) {
+	@Override
+    protected String getSpi(String key) {
 		try {
 			checkException();
 		} catch (BackingStoreException e) {
@@ -139,7 +143,8 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		return result == returnNull ? null : attr.getProperty(key);
 	}
 
-	protected String[] keysSpi() throws BackingStoreException {
+	@Override
+    protected String[] keysSpi() throws BackingStoreException {
 		checkException();
 		Set<Object> keys = attr.keySet();
 		String[] results = new String[keys.size()];
@@ -147,7 +152,8 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		return result == returnNull ? null : results;
 	}
 
-	protected void putSpi(String name, String value) {
+	@Override
+    protected void putSpi(String name, String value) {
 		try {
 			checkException();
 		} catch (BackingStoreException e) {
@@ -158,12 +164,14 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		attr.put(name, value);
 	}
 
-	protected void removeNodeSpi() throws BackingStoreException {
+	@Override
+    protected void removeNodeSpi() throws BackingStoreException {
 		checkException();
 		((MockAbstractPreferences) parent()).childs.remove(name());
 	}
 
-	protected void removeSpi(String key) {
+	@Override
+    protected void removeSpi(String key) {
 		try {
 			checkException();
 		} catch (BackingStoreException e) {
@@ -174,7 +182,8 @@ public class MockAbstractPreferences extends AbstractPreferences {
 		attr.remove(key);
 	}
 
-	protected void syncSpi() throws BackingStoreException {
+	@Override
+    protected void syncSpi() throws BackingStoreException {
 		checkException();
 		syncTimes++;
 	}

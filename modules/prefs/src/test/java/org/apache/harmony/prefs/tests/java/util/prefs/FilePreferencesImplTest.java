@@ -34,6 +34,7 @@ public class FilePreferencesImplTest extends TestCase {
         super();
     }
     
+    @Override
     protected void setUp() throws Exception {
         prevFactory = System.getProperty("java.util.prefs.PreferencesFactory");
         System.setProperty("java.util.prefs.PreferencesFactory", "java.util.prefs.FilePreferencesFactoryImpl");
@@ -42,6 +43,7 @@ public class FilePreferencesImplTest extends TestCase {
         sroot = Preferences.systemRoot();
     }
     
+    @Override
     protected void tearDown() throws Exception {
         if (prevFactory != null)
             System.setProperty("java.util.prefs.PreferencesFactory", prevFactory);
@@ -205,7 +207,8 @@ public class FilePreferencesImplTest extends TestCase {
 			System.setSecurityManager(dflt);
 		}
 
-		public void checkPermission(Permission perm) {
+		@Override
+        public void checkPermission(Permission perm) {
 			if (perm instanceof FilePermission) {
 				throw new SecurityException();
 			} else if (dflt != null) {
@@ -213,7 +216,8 @@ public class FilePreferencesImplTest extends TestCase {
 			}
 		}
 
-		public void checkPermission(Permission perm, Object ctx) {
+		@Override
+        public void checkPermission(Permission perm, Object ctx) {
 			if (perm instanceof FilePermission) {
 				System.out.println(perm.getActions());
 				throw new SecurityException();
