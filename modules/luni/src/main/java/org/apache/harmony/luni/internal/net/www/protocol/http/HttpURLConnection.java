@@ -1136,6 +1136,45 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         } else {
             output.append("1\r\n"); //$NON-NLS-1$
         }
+        // add user-specified request headers if any
+        boolean hasContentLength = false;
+        for (int i = 0; i < reqHeader.length(); i++) {
+            String key = reqHeader.getKey(i);
+            if (key != null) {
+                String lKey = key.toLowerCase();
+                if ((os != null && !os.isChunked())
+                        || (!lKey.equals("transfer-encoding") && !lKey //$NON-NLS-1$
+                                .equals("content-length"))) { //$NON-NLS-1$
+                    output.append(key);
+                    String value = reqHeader.get(i);
+                    /*
+                     * duplicates are allowed under certain conditions see
+                     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
+                     */
+                    if (lKey.equals("content-length")) { //$NON-NLS-1$
+                        hasContentLength = true;
+                        /*
+                         * if both setFixedLengthStreamingMode and
+                         * content-length are set, use fixedContentLength first
+                         */
+                        if(fixedContentLength >= 0){
+                            value = String.valueOf(fixedContentLength);
+                        }
+                    }
+                    if (value != null) {
+                        output.append(": "); //$NON-NLS-1$
+                        output.append(value);
+                    }
+                    output.append("\r\n"); //$NON-NLS-1$
+                }
+            }
+        }
+        if (fixedContentLength >= 0 && !hasContentLength) {
+            output.append("content-length: "); //$NON-NLS-1$
+            output.append(String.valueOf(fixedContentLength));
+            output.append("\r\n"); //$NON-NLS-1$
+        }
+        
         if (reqHeader.get("User-Agent") == null) { //$NON-NLS-1$
             output.append("User-Agent: "); //$NON-NLS-1$
             String agent = getSystemProperty("http.agent"); //$NON-NLS-1$
@@ -1157,6 +1196,9 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             }
             output.append("\r\n"); //$NON-NLS-1$
         }
+        if (reqHeader.get("Accept") == null) { //$NON-NLS-1$
+            output.append("Accept: *; */*\r\n"); //$NON-NLS-1$
+        }
         if (httpVersion > 0 && reqHeader.get("Connection") == null) { //$NON-NLS-1$
             output.append("Connection: Keep-Alive\r\n"); //$NON-NLS-1$
         }
@@ -1175,43 +1217,6 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
             } else if (os.isChunked()) {
                 output.append("Transfer-Encoding: chunked\r\n"); //$NON-NLS-1$
             }
-        }
-
-        boolean hasContentLength = false;
-        // then the user-specified request headers, if any
-        for (int i = 0; i < reqHeader.length(); i++) {
-            String key = reqHeader.getKey(i);
-            if (key != null) {
-                String lKey = key.toLowerCase();
-                if ((os != null && !os.isChunked())
-                        || (!lKey.equals("transfer-encoding") && !lKey //$NON-NLS-1$
-                                .equals("content-length"))) { //$NON-NLS-1$
-                    output.append(key);
-                    output.append(": "); //$NON-NLS-1$
-                    /*
-                     * duplicates are allowed under certain conditions see
-                     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
-                     */
-                    if (lKey.equals("content-length")) { //$NON-NLS-1$
-                        hasContentLength = true;
-                        /*
-                         * if both setFixedLengthStreamingMode and
-                         * content-length are set, use fixedContentLength first
-                         */
-                        output.append((fixedContentLength >= 0) ? String
-                                        .valueOf(fixedContentLength)
-                                        : reqHeader.get(i));
-                    } else {
-                        output.append(reqHeader.get(i));
-                    }
-                    output.append("\r\n"); //$NON-NLS-1$
-                }
-            }
-        }
-        if (fixedContentLength >= 0 && !hasContentLength) {
-            output.append("content-length: "); //$NON-NLS-1$
-            output.append(String.valueOf(fixedContentLength));
-            output.append("\r\n"); //$NON-NLS-1$
         }
         // end the headers
         output.append("\r\n"); //$NON-NLS-1$
