@@ -171,7 +171,7 @@ public class MetadataBandGroup extends BandSet {
     }
 
     public boolean hasContent() {
-        return T.size() > 0;
+        return type_RS.size() > 0;
     }
 
     public int numBackwardsCalls() {
