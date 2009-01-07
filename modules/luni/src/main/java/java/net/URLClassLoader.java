@@ -915,9 +915,10 @@ public class URLClassLoader extends SecureClassLoader {
             return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                     -1, url.toString() + "!/"); //$NON-NLS-1$
         }
+        // use jar protocol as the stream handler protocol
         return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                 -1, url.toString() + "!/", //$NON-NLS-1$
-                factory.createURLStreamHandler(protocol));
+                factory.createURLStreamHandler("jar"));//$NON-NLS-1$
     }
 
     /**
@@ -1039,6 +1040,7 @@ public class URLClassLoader extends SecureClassLoader {
                     jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
             JarFile jf = juc.getJarFile();
             URLJarHandler jarH = new URLJarHandler(url, jarURL, jf, prefixName);
+
             if (jarH.getIndex() == null) {
                 try {
                     Manifest manifest = jf.getManifest();
