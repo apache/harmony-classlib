@@ -21,7 +21,9 @@ include $(HY_HDK)/build/make/defines.mk
 
 # CFLAGS += -fpic -Wall -Werror 
 ifneq ($(HY_OS),zos)
+ifneq ($(HY_OS),aix)
 CFLAGS += -Wall
+endif
 endif
 
 BUILDFILES = \
