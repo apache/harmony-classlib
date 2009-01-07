@@ -204,4 +204,33 @@ public class SocketPermissionTest extends junit.framework.TestCase {
 
         SerializationTest.verifySelf(permission);
     }
+    
+    public void test_ConstructorLjava_lang_StringLjava_lang_String_subtestIPv6() {
+        String[] goodTestStrings = { 
+                "12334.0.0.01", "[fe80::1]",
+                "[FE80:0000:0000:0000:0000:0000:0000:0001]:80",
+                "[::ffff]:80-82", "[ffff::]:80-82", "[fe80::1]:80",
+                "FE80:0000:0000:0000:0000:0000:0000:0001",
+                "FE80:0000:0000:0000:0000:0000:0000:0001:80"
+        };
+        String[] badTestStrings = {"someName:withColonInit:80", "fg80::1", "[ffff:::80-82]",
+                ":[:fff]:80", "FE80:0000:0000:0000:0000:0000:0000:0001:80:82", "FE80::1"
+        };
+        
+        for (int i=0; i < goodTestStrings.length; i++) {
+            try {
+                SocketPermission sp = new SocketPermission(goodTestStrings[i], "connect");
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                fail("SocketPermission named: " + goodTestStrings[i] + " failed construction: " + e.getMessage());
+            }
+        }
+        
+        for (int i=0; i < badTestStrings.length; i++) {
+            try {
+                SocketPermission sp = new SocketPermission(badTestStrings[i], "connect");
+                fail("SocketPermission named: " + badTestStrings[i] + " should have thrown an IllegalArgumentException on construction");
+            } catch (IllegalArgumentException e) {}
+        }
+    }
 }

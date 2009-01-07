@@ -293,6 +293,18 @@ public class Inet6Util {
 				+ ((value >> 8) & 0xff) + "." + (value & 0xff);
 	}
 
+    public static boolean isIP6AddressInFullForm(String ipAddress) {
+        if (isValidIP6Address(ipAddress)) {
+            int doubleColonIndex = ipAddress.indexOf("::");
+            if (doubleColonIndex >= 0) {
+                // Simplified form which contains ::
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    
 	public static boolean isValidIP6Address(String ipAddress) {
 		int length = ipAddress.length();
 		boolean doubleColon = false;
