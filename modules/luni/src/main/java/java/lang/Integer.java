@@ -64,7 +64,15 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since 1.5
      */
     public static final int SIZE = 32;
-
+    
+    /*
+     * Progressively smaller decimal order of magnitude that can be represented
+     * by an instance of Integer. Used to help compute the String
+     * representation.
+     */
+    private static final int[] decimalScale = new int[] { 1000000000, 100000000,
+            10000000, 1000000, 100000, 10000, 1000, 100, 10, 1 };
+    
     /**
      * The java.lang.Class that represents this class.
      */
@@ -510,12 +518,98 @@ public final class Integer extends Number implements Comparable<Integer> {
      * Answers a string containing characters in the range 0..9 which describe
      * the decimal representation of the argument.
      * 
-     * @param i
+     * @param value
      *            an int to get the representation of
      * @return String the representation of the argument
      */
-    public static String toString(int i) {
-        return toString(i, 10);
+    public static String toString(int value) {
+        if (value == 0) {
+            return "0"; //$NON-NLS-1$
+        }
+
+        // Faster algorithm for smaller Integers
+        if (value < 1000 && value > -1000) {
+            char[] buffer = new char[4];
+            int positive_value = value < 0 ? -value : value;
+            int first_digit = 0;
+            if (value < 0) {
+                buffer[0] = '-';
+                first_digit++;
+            }
+            int last_digit = first_digit;
+            int quot = positive_value;
+            do {
+                int res = quot / 10;
+                int digit_value = quot - (res * 10);
+                digit_value += '0';
+                buffer[last_digit++] = (char) digit_value;
+                quot = res;
+            } while (quot != 0);
+
+            int count = last_digit--;
+            do {
+                char tmp = buffer[last_digit];
+                buffer[last_digit--] = buffer[first_digit];
+                buffer[first_digit++] = tmp;
+            } while (first_digit < last_digit);
+            return new String(0, count, buffer);
+        }
+        if (value == MIN_VALUE) {
+            return "-2147483648";//$NON-NLS-1$
+        }
+
+        char[] buffer = new char[11];
+        int positive_value = value < 0 ? -value : value;
+        byte first_digit = 0;
+        if (value < 0) {
+            buffer[0] = '-';
+            first_digit++;
+        }
+        byte last_digit = first_digit;
+        byte count;
+        int number;
+        boolean start = false;
+        for (int i = 0; i < 9; i++) {
+            count = 0;
+            if (positive_value < (number = decimalScale[i])) {
+                if (start) {
+                    buffer[last_digit++] = '0';
+                }
+                continue;
+            }
+
+            if (i > 0) {
+                number = (decimalScale[i] << 3);
+                if (positive_value >= number) {
+                    positive_value -= number;
+                    count += 8;
+                }
+                number = (decimalScale[i] << 2);
+                if (positive_value >= number) {
+                    positive_value -= number;
+                    count += 4;
+                }
+            }
+            number = (decimalScale[i] << 1);
+            if (positive_value >= number) {
+                positive_value -= number;
+                count += 2;
+            }
+            if (positive_value >= decimalScale[i]) {
+                positive_value -= decimalScale[i];
+                count++;
+            }
+            if (count > 0 && !start) {
+                start = true;
+            }
+            if (start) {
+                buffer[last_digit++] = (char) (count + '0');
+            }
+        }
+
+        buffer[last_digit++] = (char) (positive_value + '0');
+        count = last_digit--;
+        return new String(0, count, buffer);
     }
 
     /**
