@@ -418,18 +418,16 @@ public class URLClassLoader extends SecureClassLoader {
                                 null, null, null, null, null);
                     }
                 } else {
-                    boolean exception = false;
+                    boolean exception = packageObj.isSealed();
                     if (manifest != null) {
                         if (isSealed(manifest, packageName + "/")) {
                             exception = !packageObj
                                     .isSealed(codeSourceUrl);
                         }
-                    } else {
-                        exception = packageObj.isSealed();
                     }
                     if (exception) {
                         throw new SecurityException(Msg
-                                .getString("K004c")); //$NON-NLS-1$
+                                .getString("K0352", packageName)); //$NON-NLS-1$
                     }
                 }
             }
