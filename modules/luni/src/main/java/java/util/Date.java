@@ -138,7 +138,7 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
      *            the number of milliseconds since Jan. 1, 1970 GMT
      */
     public Date(long milliseconds) {
-        this.setTime(milliseconds);
+        this.milliseconds = milliseconds;
     }
 
     /**

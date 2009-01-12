@@ -23,7 +23,23 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class DateTest extends junit.framework.TestCase {
+    
+    static class MockDate extends Date{
+        private String holiday;
 
+        public MockDate(long theTime) {
+            super(theTime);
+            holiday = "Christmas";
+        }
+        
+        // Constructor should not call this public API,
+        // since it may be overrided to use variables uninitialized.
+        public void setTime(long theTime){
+            super.setTime(theTime);
+            holiday.hashCode();
+        }
+    }
+    
 	/**
 	 * @tests java.util.Date#Date()
 	 */
@@ -91,7 +107,8 @@ public class DateTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorJ() {
 		// Test for method java.util.Date(long)
-		assertTrue("Used to test", true);
+        Date date = new MockDate(1000L);
+        assertNotNull(date);
 	}
 
 	/**
