@@ -89,6 +89,20 @@ public class VectorTest extends junit.framework.TestCase {
 		grow.addElement("four");
 		assertEquals("Wrong size", 4, grow.size());
 		assertEquals("Wrong capacity", 6, grow.capacity());
+        
+        Vector emptyVector = new Vector(0, 0);
+        emptyVector.addElement("one");
+        assertEquals("Wrong size", 1, emptyVector.size());
+        emptyVector.addElement("two");
+        emptyVector.addElement("three");
+        assertEquals("Wrong size", 3, emptyVector.size());
+
+        try {
+            Vector negativeVector = new Vector(-1, 0);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -178,6 +192,20 @@ public class VectorTest extends junit.framework.TestCase {
 				.get(51));
 		assertNull("Wrong element at position 52--wanted null",
 				tVector.get(52));
+        
+        try {
+            v.addAll(0, null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Excepted
+        }
+
+        try {
+            v.addAll(-1, null);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -209,6 +237,13 @@ public class VectorTest extends junit.framework.TestCase {
 				.get(vSize + 1));
 		assertNull("Wrong element at last position--wanted null", tVector
 				.get(vSize + 2));
+        
+        try {
+            v.addAll(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -419,6 +454,33 @@ public class VectorTest extends junit.framework.TestCase {
 				.capacity());
 		v = new Vector(100);
 		assertEquals("ensureCapacity reduced capacity", 100, v.capacity());
+        
+        v.ensureCapacity(150);
+        assertEquals(
+                "ensuieCapacity failed to set to be twice the old capacity",
+                200, v.capacity());
+
+        v = new Vector(9, -1);
+        v.ensureCapacity(20);
+        assertEquals("ensureCapacity failed to set to be minCapacity", 20, v
+                .capacity());
+        v.ensureCapacity(15);
+        assertEquals("ensureCapacity reduced capacity", 20, v.capacity());
+        v.ensureCapacity(35);
+        assertEquals(
+                "ensuieCapacity failed to set to be twice the old capacity",
+                40, v.capacity());
+
+        v = new Vector(9, 4);
+        v.ensureCapacity(11);
+        assertEquals("ensureCapacity failed to set correct capacity", 13, v
+                .capacity());
+        v.ensureCapacity(5);
+        assertEquals("ensureCapacity reduced capacity", 13, v.capacity());
+        v.ensureCapacity(20);
+        assertEquals(
+                "ensuieCapacity failed to set to be twice the old capacity",
+                20, v.capacity());
 	}
 
 	/**
@@ -436,6 +498,10 @@ public class VectorTest extends junit.framework.TestCase {
 		assertTrue("c) Equal vectors returned false", tVector.equals(v));
 		tVector.removeElementAt(22);
 		assertTrue("d) UnEqual vectors returned true", !tVector.equals(v));
+        assertTrue("e) Equal vectors returned false", tVector.equals(tVector));
+        assertFalse("f) UnEqual vectors returned true", tVector
+                .equals(new Object()));
+        assertFalse("g) Unequal vectors returned true", tVector.equals(null));
 	}
 
 	/**
@@ -448,6 +514,14 @@ public class VectorTest extends junit.framework.TestCase {
 		tVector.insertElementAt(null, 0);
 		assertNull("Returned incorrect firstElement--wanted null", tVector
 				.firstElement());
+        
+        Vector v = new Vector();
+        try {
+            v.firstElement();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -540,6 +614,34 @@ public class VectorTest extends junit.framework.TestCase {
 				.equals(prevElement));
 		v.insertElementAt(null, 20);
 		assertNull("null not inserted", v.elementAt(20));
+        
+        try {
+            tVector.insertElementAt("Inserted Element", -1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.insertElementAt(null, -1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.insertElementAt("Inserted Element", tVector.size() + 1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.insertElementAt(null, tVector.size() + 1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -594,6 +696,14 @@ public class VectorTest extends junit.framework.TestCase {
 		tVector.addElement(null);
 		assertNull("Incorrect last element returned--wanted null", tVector
 				.lastElement());
+        
+        Vector vector = new Vector();
+        try {
+            vector.lastElement();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -661,18 +771,41 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_removeI() {
 		// Test for method java.lang.Object java.util.Vector.remove(int)
-		tVector.remove(36);
-		assertTrue("Contained element after remove", !tVector
+		Object removeElement = tVector.get(36);
+        Object result = tVector.remove(36);
+		assertFalse("Contained element after remove", tVector
 				.contains("Test 36"));
+        assertEquals("Should return the element that was removed",
+                removeElement, result);
 		assertEquals("Failed to decrement size after remove",
 				99, tVector.size());
 		tVector.add(20, null);
-		tVector.remove(19);
+        removeElement = tVector.get(19);
+        result = tVector.remove(19);
 		assertNull("Didn't move null element over", tVector.get(19));
-		tVector.remove(19);
+        assertEquals("Should return the element that was removed",
+                removeElement, result);
+        removeElement = tVector.get(19);
+        result = tVector.remove(19);
 		assertNotNull("Didn't remove null element", tVector.get(19));
+        assertEquals("Should return the element that was removed",
+                removeElement, result);
 		assertEquals("Failed to decrement size after removing null", 98, tVector
 				.size());
+        
+        try {
+            tVector.remove(-1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.remove(tVector.size());
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -758,13 +891,86 @@ public class VectorTest extends junit.framework.TestCase {
 	public void test_removeElementAtI() {
 		// Test for method void java.util.Vector.removeElementAt(int)
 		Vector v = vectorClone(tVector);
+        int size = v.size();
 		v.removeElementAt(50);
 		assertEquals("Failed to remove element", -1, v.indexOf("Test 50", 0));
+        assertEquals("Test 51", v.get(50));
+        assertEquals(size - 1, v.size());
+        
 		tVector.insertElementAt(null, 60);
+        assertNull(tVector.get(60));
+        size = tVector.size();
 		tVector.removeElementAt(60);
 		assertNotNull("Element at 60 should not be null after removal", tVector
 				.elementAt(60));
+        assertEquals(size - 1, tVector.size());
+
+        try {
+            tVector.removeElementAt(-1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.removeElementAt(tVector.size());
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
+    
+    /**
+     * @tests {@link java.util.Vector#removeRange(int, int)}
+     */
+    public void test_removeRange() {
+        MockVector myVector = new MockVector();
+        myVector.removeRange(0, 0);
+
+        try {
+            myVector.removeRange(0, 1);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        int[] data = { 1, 2, 3, 4 };
+        for (int i = 0; i < data.length; i++) {
+            myVector.add(i, data[i]);
+        }
+
+        myVector.removeRange(0, 2);
+        assertEquals(data[2], myVector.get(0));
+        assertEquals(data[3], myVector.get(1));
+
+        try {
+            myVector.removeRange(-1, 1);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            myVector.removeRange(0, -1);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            myVector.removeRange(1, 0);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            myVector.removeRange(2, 1);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+    }
 
 	/**
 	 * @tests java.util.Vector#retainAll(java.util.Collection)
@@ -789,8 +995,47 @@ public class VectorTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object java.util.Vector.set(int,
 		// java.lang.Object)
 		Object o = new Object();
-		tVector.set(23, o);
+        Object previous = tVector.get(23);
+        Object result = tVector.set(23, o);
+        assertEquals(
+                "Should return the element previously at the specified position",
+                previous, result);
 		assertTrue("Failed to set Object", tVector.get(23) == o);
+        
+        previous = tVector.get(0);
+        result = tVector.set(0, null);
+        assertEquals(
+                "Should return the element previously at the specified position",
+                previous, result);
+        assertNull("Failed to set Object", tVector.get(0));
+
+        try {
+            tVector.set(-1, o);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.set(-1, null);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.set(tVector.size(), o);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            tVector.set(tVector.size(), null);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -803,6 +1048,37 @@ public class VectorTest extends junit.framework.TestCase {
 		v.setElementAt("Inserted Element", 99);
 		assertEquals("Element not set", "Inserted Element", ((String) v.elementAt(99))
 				);
+        
+        v.setElementAt(null, 0);
+        assertNull("Null element not set", v.elementAt(0));
+
+        try {
+            v.setElementAt("Inserted Element", -1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            v.setElementAt(null, -1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            v.setElementAt("Inserted Element", v.size());
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            v.setElementAt(null, v.size());
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -811,8 +1087,32 @@ public class VectorTest extends junit.framework.TestCase {
 	public void test_setSizeI() {
 		// Test for method void java.util.Vector.setSize(int)
 		Vector v = vectorClone(tVector);
+        int oldSize = v.size();
+        Object preElement = v.get(10);
 		v.setSize(10);
 		assertEquals("Failed to set size", 10, v.size());
+        assertEquals(
+                "All components at index newSize and greater should be discarded",
+                -1, v.indexOf(preElement));
+        try {
+            v.get(oldSize - 1);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted;
+        }
+
+        oldSize = v.size();
+        v.setSize(20);
+        assertEquals("Failed to set size", 20, v.size());
+        for (int i = oldSize; i < v.size(); i++) {
+            assertNull(v.get(i));
+        }
+
+        try {
+            v.setSize(-1);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -982,6 +1282,10 @@ public class VectorTest extends junit.framework.TestCase {
         @Override
         public synchronized int size() {
             return 0;
+        }
+        
+        public void removeRange(int start, int end) {
+            super.removeRange(start, end);
         }
     }
 
