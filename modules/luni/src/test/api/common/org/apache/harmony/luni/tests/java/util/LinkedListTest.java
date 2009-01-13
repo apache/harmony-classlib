@@ -315,7 +315,7 @@ public class LinkedListTest extends junit.framework.TestCase {
         LinkedList list = new LinkedList();
         try {
             list.getFirst();
-            fail("Shoule throw NoSuchElementException");
+            fail("Should throw NoSuchElementException");
         } catch (NoSuchElementException e) {
             // Excepted
         }
@@ -332,7 +332,7 @@ public class LinkedListTest extends junit.framework.TestCase {
         LinkedList list = new LinkedList();
         try {
             list.getLast();
-            fail("Shoule throw NoSuchElementException");
+            fail("Should throw NoSuchElementException");
         } catch (NoSuchElementException e) {
             // Excepted
         }
@@ -463,7 +463,7 @@ public class LinkedListTest extends junit.framework.TestCase {
         LinkedList list = new LinkedList();
         try {
             list.removeFirst();
-            fail("Shoule throw NoSuchElementException");
+            fail("Should throw NoSuchElementException");
         } catch (NoSuchElementException e) {
             // Excepted
         }
@@ -481,7 +481,7 @@ public class LinkedListTest extends junit.framework.TestCase {
         LinkedList list = new LinkedList();
         try {
             list.removeLast();
-            fail("Shoule throw NoSuchElementException");
+            fail("Should throw NoSuchElementException");
         } catch (NoSuchElementException e) {
             // Excepted
         }
