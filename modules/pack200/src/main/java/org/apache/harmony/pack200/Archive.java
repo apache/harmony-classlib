@@ -33,7 +33,6 @@ import java.util.zip.GZIPOutputStream;
 
 import org.objectweb.asm.ClassReader;
 
-
 /**
  *
  */
@@ -42,10 +41,13 @@ public class Archive {
     private final JarInputStream inputStream;
     private final OutputStream outputStream;
     private JarFile jarFile;
+    private final long segmentLimit = 1000000;
+    private long currentSegmentSize;
 
-    public Archive(JarInputStream inputStream, OutputStream outputStream, boolean gzip) throws IOException {
+    public Archive(JarInputStream inputStream, OutputStream outputStream,
+            boolean gzip) throws IOException {
         this.inputStream = inputStream;
-        if(gzip) {
+        if (gzip) {
             outputStream = new GZIPOutputStream(outputStream);
         }
         this.outputStream = new BufferedOutputStream(outputStream);
@@ -60,49 +62,89 @@ public class Archive {
     public void pack() throws Pack200Exception, IOException {
         List classes = new ArrayList();
         List files = new ArrayList();
-        List classNames = new ArrayList();
-        List classModtimes = new ArrayList();
-        Manifest manifest = jarFile != null ? jarFile.getManifest() : inputStream.getManifest();
-        if(manifest!= null) {
+        Manifest manifest = jarFile != null ? jarFile.getManifest()
+                : inputStream.getManifest();
+        if (manifest != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             manifest.write(baos);
             files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
         }
-        if(inputStream != null) {
-            while(inputStream.available() > 0) {
+        if (inputStream != null) {
+            while (inputStream.available() > 0) {
                 JarEntry jarEntry = inputStream.getNextJarEntry();
-                if(jarEntry != null) {
-                    addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
+                if (jarEntry != null) {
+                    boolean added = addJarEntry(jarEntry,
+                            new BufferedInputStream(inputStream), classes,
+                            files);
+                    if (!added) { // not added because segment has reached
+                        // maximum size
+                        new Segment().pack(classes, files, outputStream);
+                        classes = new ArrayList();
+                        files = new ArrayList();
+                        currentSegmentSize = 0;
+                        if (!addJarEntry(jarEntry, new BufferedInputStream(
+                                inputStream), classes, files)) {
+                            throw new Pack200Exception(
+                                    "Segment limit is too small");
+                        }
+                    }
                 }
             }
         } else {
             Enumeration jarEntries = jarFile.entries();
-            while(jarEntries.hasMoreElements()) {
+            while (jarEntries.hasMoreElements()) {
                 JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                addJarEntry(jarEntry, new BufferedInputStream(jarFile.getInputStream(jarEntry)), classes, files);
+                boolean added = addJarEntry(jarEntry, new BufferedInputStream(
+                        jarFile.getInputStream(jarEntry)), classes, files);
+                if (!added) { // not added because segment has reached maximum
+                    // size
+                    new Segment().pack(classes, files, outputStream);
+                    classes = new ArrayList();
+                    files = new ArrayList();
+                    currentSegmentSize = 0;
+                    if (!addJarEntry(jarEntry, new BufferedInputStream(jarFile
+                            .getInputStream(jarEntry)), classes, files)) {
+                        throw new Pack200Exception("Segment limit is too small");
+                    }
+                }
             }
         }
-        new Segment().pack(classes, files, outputStream);  // TODO: Multiple segments
+        if(classes.size() > 0 || files.size() > 0) {
+            new Segment().pack(classes, files, outputStream);
+        }
         outputStream.close();
     }
 
-    private void addJarEntry(JarEntry jarEntry, InputStream stream, List javaClasses, List files) throws IOException, Pack200Exception {
+    private boolean addJarEntry(JarEntry jarEntry, InputStream stream,
+            List javaClasses, List files) throws IOException, Pack200Exception {
         String name = jarEntry.getName();
         long size = jarEntry.getSize();
         if (size > Integer.MAX_VALUE) {
             throw new RuntimeException("Large Class!");
         }
-        byte[] bytes = new byte[(int)size];
+        int packedSize = name.endsWith(".class") ? estimatePackedSize(size)
+                : (int) size;
+        if (packedSize + currentSegmentSize > segmentLimit) {
+            return false;
+        } else {
+            currentSegmentSize += packedSize;
+        }
+        byte[] bytes = new byte[(int) size];
         int read = stream.read(bytes);
-        if(read != size) {
+        if (read != size) {
             throw new RuntimeException("Error reading from stream");
         }
-        if(name.endsWith(".class")) {
+        if (name.endsWith(".class")) {
             ClassReader classParser = new Pack200ClassReader(bytes);
             javaClasses.add(classParser);
             bytes = new byte[0];
         }
         files.add(new File(name, bytes, jarEntry.getTime()));
+        return true;
+    }
+
+    private int estimatePackedSize(long size) {
+        return (int) size; // TODO: try to match the RI as closely as possible
     }
 
     static class File {
