@@ -41,7 +41,7 @@ public class Archive {
     private final JarInputStream inputStream;
     private final OutputStream outputStream;
     private JarFile jarFile;
-    private final long segmentLimit = 1000000;
+    private long segmentLimit = 1000000;
     private long currentSegmentSize;
 
     public Archive(JarInputStream inputStream, OutputStream outputStream,
@@ -57,6 +57,10 @@ public class Archive {
         this.outputStream = new BufferedOutputStream(outputStream);
         this.jarFile = jarFile;
         inputStream = null;
+    }
+
+    public void setSegmentLimit(int limit) {
+        segmentLimit = limit;
     }
 
     public void pack() throws Pack200Exception, IOException {
@@ -85,8 +89,13 @@ public class Archive {
                         if (!addJarEntry(jarEntry, new BufferedInputStream(
                                 inputStream), classes, files)) {
                             throw new Pack200Exception(
-                                    "Segment limit is too small");
+                                    "Segment limit is too small for the files you are trying to pack");
                         }
+                    } else if (segmentLimit == 0) {
+                        // create a new segment for each class
+                        new Segment().pack(classes, files, outputStream);
+                        classes = new ArrayList();
+                        files = new ArrayList();
                     }
                 }
             }
@@ -106,6 +115,11 @@ public class Archive {
                             .getInputStream(jarEntry)), classes, files)) {
                         throw new Pack200Exception("Segment limit is too small");
                     }
+                } else if (segmentLimit == 0) {
+                    // create a new segment for each class
+                    new Segment().pack(classes, files, outputStream);
+                    classes = new ArrayList();
+                    files = new ArrayList();
                 }
             }
         }
@@ -122,12 +136,16 @@ public class Archive {
         if (size > Integer.MAX_VALUE) {
             throw new RuntimeException("Large Class!");
         }
-        int packedSize = name.endsWith(".class") ? estimatePackedSize(size)
-                : (int) size;
-        if (packedSize + currentSegmentSize > segmentLimit) {
-            return false;
-        } else {
-            currentSegmentSize += packedSize;
+        if(segmentLimit != -1 && segmentLimit != 0) {
+            // -1 is a special case where only one segment is created and
+            // 0 is a special case where one segment is created for each file
+            int packedSize = name.endsWith(".class") ? estimatePackedSize(size)
+                    : (int) size;
+            if (packedSize + currentSegmentSize > segmentLimit) {
+                return false;
+            } else {
+                currentSegmentSize += packedSize;
+            }
         }
         byte[] bytes = new byte[(int) size];
         int read = stream.read(bytes);
