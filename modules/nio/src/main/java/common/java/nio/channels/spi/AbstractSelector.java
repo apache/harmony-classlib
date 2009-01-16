@@ -22,6 +22,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Abstract class for selectors.
@@ -33,7 +34,7 @@ import java.util.Set;
  * 
  */
 public abstract class AbstractSelector extends Selector {
-    private volatile boolean isOpen = true;
+    private final AtomicBoolean isOpen = new AtomicBoolean(true);
 
     private SelectorProvider provider = null;
 
@@ -58,9 +59,8 @@ public abstract class AbstractSelector extends Selector {
      * @see java.nio.channels.Selector#close()
      */
     @Override
-    public synchronized final void close() throws IOException {
-        if (isOpen) {
-            isOpen = false;
+    public final void close() throws IOException {
+        if (isOpen.getAndSet(false)) {
             implCloseSelector();
         }
     }
@@ -78,7 +78,7 @@ public abstract class AbstractSelector extends Selector {
      */
     @Override
     public final boolean isOpen() {
-        return isOpen;
+        return isOpen.get();
     }
 
     /**

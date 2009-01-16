@@ -138,6 +138,7 @@ final class SelectorImpl extends AbstractSelector {
      */
     @Override
     protected void implCloseSelector() throws IOException {
+        wakeup();
         synchronized (this) {
             synchronized (keysSet) {
                 synchronized (selectedKeys) {
@@ -147,7 +148,6 @@ final class SelectorImpl extends AbstractSelector {
                             deregister((AbstractSelectionKey) sk);
                         }
                     }
-                    wakeup();
                 }
             }
         }
