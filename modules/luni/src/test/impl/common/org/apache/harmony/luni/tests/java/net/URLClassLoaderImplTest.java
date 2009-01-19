@@ -17,60 +17,49 @@
 
 package org.apache.harmony.luni.tests.java.net;
 
-import java.io.File;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
-import org.apache.harmony.luni.internal.net.www.protocol.jar.Handler;
-
 import junit.framework.TestCase;
 
-import tests.support.Support_Configuration;
-import tests.support.resource.Support_Resources;
+import org.apache.harmony.luni.internal.net.www.protocol.jar.Handler;
 
 /**
- *  Depends on:
- *    file://<basedir>/src/test/resources/org/apache/harmony/luni/tests/java/net/lf.jar
+ * Depends on: file://<basedir>/src/test/resources/org/apache/harmony/luni/tests/java/net/lf.jar
  */
 public class URLClassLoaderImplTest extends TestCase {
-    
-    private static final char SEP = File.separatorChar;
-    private static final URL BASE = URLClassLoaderImplTest.class.getClassLoader().getResource(".."+SEP+URLClassLoaderImplTest.class.getPackage().getName().replace('.', SEP));
 
     /**
-     * @tests java.net.URLClassLoader#URLClassLoader(java.net.URL[],
-     *        java.lang.ClassLoader, java.net.URLStreamHandlerFactory)
+     * @tests java.net.URLClassLoader#URLClassLoader(java.net.URL[], java.lang.ClassLoader,
+     *        java.net.URLStreamHandlerFactory)
      */
-    public void test_Constructor$Ljava_net_URLLjava_lang_ClassLoaderLjava_net_URLStreamHandlerFactory() {
+    public void test_Constructor$Ljava_net_URLLjava_lang_ClassLoaderLjava_net_URLStreamHandlerFactory()
+            throws Exception {
         class TestFactory implements URLStreamHandlerFactory {
             public URLStreamHandler createURLStreamHandler(String protocol) {
                 if ("jar".equals(protocol)) {
                     return new Handler();
-                } else {
-                    fail("Should be jar Handler. But " + protocol);
-                    return null;
                 }
+
+                fail("Should be jar Handler. But " + protocol);
+                return null;
             }
-
         }
 
-        URLClassLoader ucl = null;
+        final URL base = getClass().getResource("lf.jar");
 
-        URL[] u = new URL[1];
-        try {
-            u[0] = new URL(BASE.toString() + SEP + "lf.jar");
-            ucl = new URLClassLoader(u, null, new TestFactory());
-            URL res = null;
-            res = ucl.findResource("swt.dll");
+        final URL[] urls = { base };
+        final URLClassLoader ucl = new URLClassLoader(urls, null, new TestFactory());
 
-            assertNotNull(res);
-            assertEquals("Failed", BASE.toString()+SEP+"lf.jar!"+SEP+"swt.dll", res.getFile());
-        } catch (MalformedURLException e) {
-            fail("should not be here. " + e);
-        }
+        final URL res = ucl.findResource("swt.dll");
+        assertNotNull(res);
+
+        final URI e = new URI("jar:" + base.toExternalForm() + "!/swt.dll");
+        final URI a = res.toURI();
+        assertEquals(e, a);
     }
 
 }
