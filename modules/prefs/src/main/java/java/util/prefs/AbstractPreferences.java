@@ -20,6 +20,7 @@ package java.util.prefs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -347,7 +348,7 @@ public abstract class AbstractPreferences extends Preferences {
             for (int i = 0; i < names.length; i++) {
                 result.add(names[i]);
             }
-            return result.toArray(new String[0]);
+            return result.toArray(new String[result.size()]);
         }
     }
 
@@ -733,10 +734,11 @@ public abstract class AbstractPreferences extends Preferences {
                     cachedNode.put(childrenNames[i], child);
                 }
             }
-            AbstractPreferences[] children = cachedNode
-                    .values().toArray(new AbstractPreferences[0]);
-            for (int i = 0; i < children.length; i++) {
-                children[i].removeNodeImpl();
+            
+            final Collection<AbstractPreferences> values = cachedNode.values();
+            final AbstractPreferences[] children = values.toArray(new AbstractPreferences[values.size()]);
+            for (AbstractPreferences child : children) {
+                child.removeNodeImpl();
             }
             removeNodeSpi();
             isRemoved = true;

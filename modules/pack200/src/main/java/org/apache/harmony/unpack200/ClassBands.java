@@ -679,6 +679,7 @@ public class ClassBands extends BandSet {
                         IcTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
                             if (icAll[k].getC().equals(icTupleC)) {
+                                icTupleF = icAll[k].getF();
                                 icTupleC2 = icAll[k].getC2();
                                 icTupleN = icAll[k].getN();
                                 break;

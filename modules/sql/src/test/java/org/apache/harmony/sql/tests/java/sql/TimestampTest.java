@@ -30,6 +30,22 @@ import junit.framework.TestCase;
  */
 
 public class TimestampTest extends TestCase {
+    
+    static class MockTimestamp extends Timestamp{
+        private String holiday;
+
+        public MockTimestamp(long theTime) {
+            super(theTime);
+            holiday = "Christmas";
+        }
+        
+        // Constructor should not call this public API,
+        // since it may be overrided to use variables uninitialized.
+        public void setTime(long theTime){
+            super.setTime(theTime);
+            holiday.hashCode();
+        }
+    }
 
     static long TIME_TEST1 = 38720231; // 10:45:20.231 GMT
 
@@ -121,8 +137,10 @@ public class TimestampTest extends TestCase {
      */
     public void testTimestamplong() {
         Timestamp theTimestamp = new Timestamp(TIME_TEST1);
-
         // The Timestamp should have been created
+        assertNotNull(theTimestamp);
+        
+        Timestamp mockTimestamp = new MockTimestamp(TIME_TEST1);
         assertNotNull(theTimestamp);
     } // end method testTimestamplong
 

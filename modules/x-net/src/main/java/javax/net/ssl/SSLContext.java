@@ -45,10 +45,6 @@ public class SSLContext {
     // Storeused protocol
     private final String protocol;
 
-    /*
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected SSLContext(SSLContextSpi contextSpi, Provider provider,
             String protocol) {
         this.provider = provider;
@@ -108,8 +104,8 @@ public class SSLContext {
             return new SSLContext((SSLContextSpi) engine.spi, provider, protocol);
         }
     }
-
-    public final String getProtocol() {
+    
+	public final String getProtocol() {
         return protocol;
     }
 

@@ -1649,6 +1649,46 @@ public class IntrospectorTest extends TestCase {
         }
     }
 
+    /*
+     * @test setBeanInfoSearchPath
+     * 
+     * Change the sequence of the paths in Introspector.searchpaths, check
+     * whether the BeanInfo is consistent with the bean class
+     */
+    public void testSetBeanInfoSearchPath_SameClassesInDifferentPackage()
+            throws IntrospectionException {
+        // set the search path in the correct sequence
+        Introspector
+                .setBeanInfoSearchPath(new String[] {
+                        "org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.info",
+                        "org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject2.info", });
+
+        BeanInfo beanInfo = Introspector
+                .getBeanInfo(org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.MockHomonymySubject.class);
+        BeanDescriptor beanDesc = beanInfo.getBeanDescriptor();
+
+        assertEquals(beanDesc.getName(), "mocksubject1");
+        assertEquals(
+                beanDesc.getBeanClass(),
+                org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.MockHomonymySubject.class);
+
+        // set the search path in the reverse sequence
+        Introspector
+                .setBeanInfoSearchPath(new String[] {
+                        "org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject2.info",
+                        "org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.info", });
+
+        beanInfo = Introspector
+                .getBeanInfo(org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.MockHomonymySubject.class);
+        beanDesc = beanInfo.getBeanDescriptor();
+
+        assertEquals(beanDesc.getName(), "mocksubject1");
+        assertEquals(
+                beanDesc.getBeanClass(),
+                org.apache.harmony.beans.tests.support.mock.homonymy.mocksubject1.MockHomonymySubject.class);
+
+    }
+
     static class MockSecurity2 extends SecurityManager {
 
         @Override

@@ -12,8 +12,8 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
-Import-Package: java.awt,
- java.awt.event,
+Import-Package: java.awt;resolution:=optional,
+ java.awt.event;resolution:=optional,
  java.beans,
  java.io,
  java.lang,

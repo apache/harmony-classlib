@@ -27,40 +27,37 @@ package java.util.prefs;
  * @since 1.4
  */
 public class InvalidPreferencesFormatException extends Exception {
-    
+
     private static final long serialVersionUID = -791715184232119669L;
-    
-	/**
-	 * Constructs a new <code>InvalidPreferencesFormatException</code> instance using an 
-	 * exception message.
-	 * 
-	 * @param s 	the exception message.
-	 */
-	public InvalidPreferencesFormatException (String s) {
-		super(s);
-	}
 
-	/**
-	 * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a 
-	 * exception message and a nested <code>Throwable</code> instance.
-	 * 
-	 * @param s 	the exception message.
-	 * @param t		the nested <code>Throwable</code> instance.
-	 */
-	public InvalidPreferencesFormatException (String s, Throwable t) {
-		super(s,t);
-	}
+    /**
+     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using an 
+     * exception message.
+     * 
+     * @param s the exception message.
+     */
+    public InvalidPreferencesFormatException (String s) {
+        super(s);
+    }
 
-	/**
-	 * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a
-	 * nested <code>Throwable</code> instance.
-	 *	
-	 * @param t		the nested <code>Throwable</code> instance.
-	 */
-	public InvalidPreferencesFormatException (Throwable t) {
-		super(t);
-	}
+    /**
+     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a 
+     * exception message and a nested <code>Throwable</code> instance.
+     * 
+     * @param s the exception message.
+     * @param t the nested <code>Throwable</code> instance.
+     */
+    public InvalidPreferencesFormatException (String s, Throwable t) {
+        super(s,t);
+    }
+
+    /**
+     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a
+     * nested <code>Throwable</code> instance.
+     *	
+     * @param t the nested <code>Throwable</code> instance.
+     */
+    public InvalidPreferencesFormatException (Throwable t) {
+        super(t);
+    }
 }
-
-
-

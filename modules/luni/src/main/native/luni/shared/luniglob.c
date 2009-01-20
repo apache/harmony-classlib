@@ -162,21 +162,6 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
            }
        }
 
-       /* Set default PreferencesFactory implementation */
-       (*vmInterface)->GetSystemProperty (vmInterface, "java.util.prefs.PreferencesFactory", &propVal);
-       if (propVal == NULL) {
-           propRes = (*vmInterface)->SetSystemProperty (vmInterface, 
-               "java.util.prefs.PreferencesFactory",
-#ifdef _WIN32
-               "java.util.prefs.RegistryPreferencesFactoryImpl");
-#else
-               "java.util.prefs.FilePreferencesFactoryImpl");
-#endif
-           if (VMI_ERROR_NONE != propRes) {
-               /* goto fail2; */
-           }
-       }
-
        /* Prefer Xalan compiler for better performance, see HARMONY-3209. */
        (*vmInterface)->GetSystemProperty (vmInterface, "javax.xml.transform.TransformerFactory", &propVal);
        if (propVal == NULL) {

@@ -95,7 +95,7 @@ public class Timestamp extends Date {
          * Now set the time for this Timestamp object - which deals with the
          * nanosecond value as well as the base time
          */
-        this.setTime(theTime);
+        setTimeImpl(theTime);
     }
 
     /**
@@ -292,6 +292,10 @@ public class Timestamp extends Date {
      */
     @Override
     public void setTime(long theTime) {
+        setTimeImpl(theTime);
+    }
+    
+    private void setTimeImpl(long theTime) {
         /*
          * Deal with the nanoseconds value. The supplied time is in milliseconds -
          * so we must extract the milliseconds value and multiply by 1000000 to

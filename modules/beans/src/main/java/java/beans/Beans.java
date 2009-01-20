@@ -55,6 +55,71 @@ public class Beans {
         // expected
     }
 
+    @SuppressWarnings("unchecked")
+    private static Object internalInstantiate(ClassLoader cls, String beanName,
+            BeanContext context, Object initializer)
+            throws IOException, ClassNotFoundException {
+        Object result = null;
+
+        boolean deserialized = true;
+
+        ClassLoader loader = null;
+
+        // First try to load it from a serialization file.
+        String beanResourceName = getBeanResourceName(beanName);
+
+        InputStream is = (cls == null) ? ClassLoader
+                .getSystemResourceAsStream(beanResourceName) : cls
+                .getResourceAsStream(beanResourceName);
+
+        IOException serializationException = null;
+        if (is != null) {
+            try{
+                ObjectInputStream ois = (cls == null) ? new ObjectInputStream(is)
+                        : new CustomizedObjectInputStream(is, cls);
+                result = ois.readObject();
+            }catch(IOException exception){
+                //Not loadable - remember this as we may throw it later.
+                serializationException = exception;
+            }
+        }
+
+        //If that did not work, try to instantiate it from the given classloader.
+        if (result == null) {
+            deserialized = false;
+            try {
+                loader = cls == null ? ClassLoader.getSystemClassLoader() : cls;
+                Class<?> c = Class.forName(beanName, true, loader);
+                result = c.newInstance();
+            } catch (Exception e) {
+                if (serializationException != null) {
+                    throw serializationException;
+                }
+                throw new ClassNotFoundException(e.getClass() + ": " //$NON-NLS-1$
+                        + e.getMessage());
+            }
+        }
+
+        if (result != null) {
+            // Applet specific initialization
+            boolean isApplet = false;
+            try {
+                isApplet = result instanceof Applet;
+            } catch (Throwable t) {
+                // Ignored - leave isApplet as false.
+            }
+            
+            if (isApplet) {
+                appletLoaded((Applet) result, loader, beanName, context,
+                        (AppletInitializer)initializer, deserialized);
+            }
+            if (null != context) {
+                context.add(result);
+            }
+        }
+        return result;
+    }
+
     /**
      * Obtains an instance of a JavaBean specified the bean name using the
      * specified class loader.
@@ -72,7 +137,7 @@ public class Beans {
      */
     public static Object instantiate(ClassLoader loader, String name)
             throws IOException, ClassNotFoundException {
-        return instantiate(loader, name, null, null);
+        return internalInstantiate(loader, name, null, null);
     }
 
     /**
@@ -96,7 +161,7 @@ public class Beans {
      */
     public static Object instantiate(ClassLoader cls, String beanName,
 			BeanContext beanContext) throws IOException, ClassNotFoundException {
-		return instantiate(cls, beanName, beanContext, null);
+		return internalInstantiate(cls, beanName, beanContext, null);
 
 	}
 
@@ -155,58 +220,7 @@ public class Beans {
 	public static Object instantiate(ClassLoader cls, String beanName,
 			BeanContext context, AppletInitializer initializer)
 			throws IOException, ClassNotFoundException {
-		Object result = null;
-
-		boolean deserialized = true;
-
-		ClassLoader loader = null;
-
-		// First try to load it from a serialization file.
-        String beanResourceName = getBeanResourceName(beanName);
-
-		InputStream is = (cls == null) ? ClassLoader
-				.getSystemResourceAsStream(beanResourceName) : cls
-				.getResourceAsStream(beanResourceName);
-
-		IOException serializationException = null;
-        if (is != null) {
-            try{
-                ObjectInputStream ois = (cls == null) ? new ObjectInputStream(is)
-					    : new CustomizedObjectInputStream(is, cls);
-                result = ois.readObject();
-            }catch(IOException exception){
-                //Not loadable - remember this as we may throw it later.
-                serializationException = exception;
-            }
-		}
-
-		//If that did not work, try to instantiate it from the given classloader.
-        if (result == null) {
-			deserialized = false;
-			try {
-				loader = cls == null ? ClassLoader.getSystemClassLoader() : cls;
-				Class<?> c = Class.forName(beanName, true, loader);
-				result = c.newInstance();
-			} catch (Exception e) {
-                if (serializationException != null) {
-                    throw serializationException;
-                }
-				throw new ClassNotFoundException(e.getClass() + ": " //$NON-NLS-1$
-						+ e.getMessage());
-			}
-		}
-
-		if (result != null) {
-			// Applet specific initialization
-			if (result instanceof Applet) {
-				appletLoaded((Applet) result, loader, beanName, context,
-						initializer, deserialized);
-			}
-			if (null != context) {
-				context.add(result);
-			}
-		}
-		return result;
+		return internalInstantiate(cls, beanName, context, initializer);
 	}
 
     /**

@@ -91,6 +91,34 @@ public class LinkedListTest extends junit.framework.TestCase {
 				ll.get(51) == objArray[50] && (ll.get(52) == objArray[51]));
 		ll.add(50, null);
 		assertNull("Did not add null correctly", ll.get(50));
+        
+        try {
+            ll.add(-1, "Test");
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            ll.add(-1, null);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            ll.add(ll.size() + 1, "Test");
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
+
+        try {
+            ll.add(ll.size() + 1, null);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -136,6 +164,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertEquals("d) List w/nulls not added correctly", 
 				"Booga", ll.get(53));
 		assertNull("e) List w/nulls not added correctly", ll.get(54));
+        
+        try {
+            ll.addAll(50, null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Excepted
+        }
 	}
 
     /**
@@ -185,6 +220,13 @@ public class LinkedListTest extends junit.framework.TestCase {
 		assertEquals("d) List w/nulls not added correctly", 
 				"Booga", ll.get(203));
 		assertNull("e) List w/nulls not added correctly", ll.get(204));
+        
+        try {
+            ll.addAll(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -265,6 +307,18 @@ public class LinkedListTest extends junit.framework.TestCase {
 		} catch (IndexOutOfBoundsException e) {
 		}
 	}
+    
+    /**
+     * @tests {@link java.util.LinkedList#peek()}
+     */
+    public void test_peek() {
+        LinkedList list = new LinkedList();
+
+        assertNull("Should return null if this list is empty", list.peek());
+
+        assertEquals("Returned incorrect first element", ll.peek(),objArray[0]);
+        assertEquals("Peek remove the head (first element) of this list", ll.getFirst(), objArray[0]);
+    }
 
 	/**
 	 * @tests java.util.LinkedList#getFirst()
@@ -273,6 +327,14 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object java.util.LinkedList.getFirst()
 		assertTrue("Returned incorrect first element", ll.getFirst().equals(
 				objArray[0]));
+        
+        LinkedList list = new LinkedList();
+        try {
+            list.getFirst();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -282,6 +344,14 @@ public class LinkedListTest extends junit.framework.TestCase {
 		// Test for method java.lang.Object java.util.LinkedList.getLast()
 		assertTrue("Returned incorrect first element", ll.getLast().equals(
 				objArray[objArray.length - 1]));
+        
+        LinkedList list = new LinkedList();
+        try {
+            list.getLast();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -405,6 +475,14 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.removeFirst();
 		assertTrue("Failed to remove first element",
 				ll.getFirst() != objArray[0]);
+        
+        LinkedList list = new LinkedList();
+        try {
+            list.removeFirst();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**
@@ -415,6 +493,14 @@ public class LinkedListTest extends junit.framework.TestCase {
 		ll.removeLast();
 		assertTrue("Failed to remove last element",
 				ll.getLast() != objArray[objArray.length - 1]);
+        
+        LinkedList list = new LinkedList();
+        try {
+            list.removeLast();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // Excepted
+        }
 	}
 
 	/**

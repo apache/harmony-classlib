@@ -360,7 +360,7 @@ public class ResourceBundleTest extends junit.framework.TestCase {
             ResourceBundle
                     .getBundle("org.apache.harmony.luni.tests.java.util.ResourceBundleTest$GetBundleTest");
         }
-    };
+    }
 
     /**
      * @tests java.util.ResourceBundle#getBundle(java.lang.String)

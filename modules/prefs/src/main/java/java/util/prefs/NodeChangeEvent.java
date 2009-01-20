@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.io.Serializable;
@@ -37,61 +36,56 @@ import java.io.IOException;
  * @since 1.4
  */
 public class NodeChangeEvent extends EventObject implements Serializable {
-	
+
     private static final long serialVersionUID = 8068949086596572957L;
-    
+
     private final Preferences parent;
     private final Preferences child;
-    
+
     /**
      * Construct a new <code>NodeChangeEvent</code> instance.
      * 
-     * @param p		the <code>Preferences</code> instance that this event happened, 
-     * 				this object is considered as event's source.
-     * @param c		the child <code>Preferences</code> instance that was added 
-     * 				or deleted.
+     * @param p the <code>Preferences</code> instance that this event happened, this object is
+     *            considered as event's source.
+     * @param c the child <code>Preferences</code> instance that was added or deleted.
      */
-	public NodeChangeEvent (Preferences p, Preferences c) {
-		super(p);
-		parent = p;
-		child = c;
-	}
-	
-	/**
-	 * Get the <code>Preferences</code> instance that this event happened.
-	 * 
-	 * @return		the <code>Preferences</code> instance that this event happened.
-	 */
-	public Preferences getParent() {
-		return parent;
-	}
-	
-	/**
-	 * Get the child <code>Preferences</code> node that was added or removed.
-	 * 
-	 * @return		the child <code>Preferences</code> node that was added or removed.
-	 */
-	public Preferences getChild() {
-		return child;
-	}
-	
-    /*
+    public NodeChangeEvent (Preferences p, Preferences c) {
+        super(p);
+        parent = p;
+        child = c;
+    }
+
+    /**
+     * Get the <code>Preferences</code> instance that this event happened.
+     * 
+     * @return the <code>Preferences</code> instance that this event happened.
+     */
+    public Preferences getParent() {
+        return parent;
+    }
+
+    /**
+     * Get the child <code>Preferences</code> node that was added or removed.
+     * 
+     * @return the child <code>Preferences</code> node that was added or removed.
+     */
+    public Preferences getChild() {
+        return child;
+    }
+
+    /**
      * This method always throws a <code>NotSerializableException</code>, because 
      * this object cannot be serialized,  
      */
-	private void writeObject (ObjectOutputStream out) throws IOException {
-		throw new NotSerializableException();
-	}
-	
-    /*
+    private void writeObject (ObjectOutputStream out) throws IOException {
+        throw new NotSerializableException();
+    }
+
+    /**
      * This method always throws a <code>NotSerializableException</code>, because 
      * this object cannot be serialized,  
      */
-	private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
-		throw new NotSerializableException();
-	}
+    private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
+        throw new NotSerializableException();
+    }
 }
-
-
-
- 

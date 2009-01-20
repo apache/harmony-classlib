@@ -576,13 +576,6 @@ public class XMLDecoder {
         this.listener = (listener == null) ? new DefaultExceptionListener()
                 : listener;
         defaultClassLoader = cl;
-        
-        try {
-            SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
-                    new SAXHandler());
-        } catch (Exception e) {
-            this.listener.exceptionThrown(e);
-        }
     }
 
     /**
@@ -623,6 +616,13 @@ public class XMLDecoder {
      */
     @SuppressWarnings("nls")
     public Object readObject() {
+        try {
+            SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
+                    new SAXHandler());
+        } catch (Exception e) {
+            this.listener.exceptionThrown(e);
+        }
+        
         if (readObjIndex >= readObjs.size()) {
             throw new ArrayIndexOutOfBoundsException("no more objects to read");
         }

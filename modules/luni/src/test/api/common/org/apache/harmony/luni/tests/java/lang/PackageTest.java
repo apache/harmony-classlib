@@ -17,7 +17,7 @@
 package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -289,5 +289,102 @@ public class PackageTest extends junit.framework.TestCase {
         Package p = getTestPackage("hyts_c.jar", "p.C");
         assertTrue("Package toString returns wrong string", p.toString()
                 .length() > 0);
+    }
+    
+    public void test_SealedPackage_forName() throws Exception {
+        Support_Resources.copyFile(resources, "Package", "hyts_c.jar");
+        Support_Resources.copyFile(resources, "Package", "hyts_d.jar");
+        Support_Resources.copyFile(resources, "Package", "hyts_d1.jar");
+        Support_Resources.copyFile(resources, "Package", "hyts_d2.jar");
+
+        URL resourceURL1 = new URL("file:/" + resPath + "/Package/hyts_c.jar");
+        URL resourceURL2 = new URL("file:/" + resPath + "/Package/hyts_d.jar");
+        URL resourceURL3 = new URL("file:/" + resPath + "/Package/hyts_d1.jar");
+        URL resourceURL4 = new URL("file:/" + resPath + "/Package/hyts_d2.jar");
+        URL resourceURL5 = new URL("file:/" + resPath + "/");
+
+        URLClassLoader uclClassLoader;
+        // load from the sealed jar, then an unsealed jar with no manifest
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL2 }, null);
+        Class.forName("p.C", true, uclClassLoader);
+        try {
+            Class.forName("p.D", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // setup for next test
+        Support_Resources.copyFile(resources, "p", "");
+        InputStream in = uclClassLoader.getResourceAsStream("p/D.class");
+        Support_Resources.copyLocalFileto(new File(resources.toString(),
+                "p/D.class"), in);
+
+        // load from a sealed jar, then the directory
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL5 }, null);
+        Class.forName("p.C", true, uclClassLoader);
+        try {
+            Class.forName("p.D", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // load from a directory, then the sealed jar
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL5 }, null);
+        Class.forName("p.D", true, uclClassLoader);
+        try {
+            Class.forName("p.C", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // load from an unsealed jar with no manifest, then the sealed jar
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL2 }, null);
+        Class.forName("p.D", true, uclClassLoader);
+        try {
+            Class.forName("p.C", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // load from an unsealed jar with a manifest, then the sealed jar
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL3 }, null);
+        Class.forName("p.C", true, uclClassLoader);
+        try {
+            Class.forName("p.D", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // load from an sealed jar, then the unsealed jar with a manifest
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL3 }, null);
+        Class.forName("p.D", true, uclClassLoader);
+        try {
+            Class.forName("p.C", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
+
+        // load from the sealed jar, then another sealed jar
+        uclClassLoader = new java.net.URLClassLoader(new URL[] { resourceURL1,
+                resourceURL4 }, null);
+        Class.forName("p.C", true, uclClassLoader);
+        try {
+            Class.forName("p.D", true, uclClassLoader);
+            fail("should throw SecurityException");
+        } catch (SecurityException e) {
+            // Expected
+        }
     }
 }

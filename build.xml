@@ -20,12 +20,12 @@
      ====================================================================== -->
 <project name="build-contribution" default="build" basedir=".">
     <description>
-    	Build contributed source and lay out results in the required format 
+        Build contributed source and lay out results in the required format 
     </description>
 
     <target name="help">
         <echo>
-Apache Harmony Ant Build
+Apache Harmony Classlibrary Build
 
 Usage:
 
@@ -56,12 +56,17 @@ Usage:
     Display the common properties that are use in the ant build files.
 
 
-The 'build' and 'test' targets can be restricted to processing only
-a single module by defining the 'build.module' variable on the ant
-command line.  For example, to run only the luni tests:
+The 'build' and 'test' targets can be configured to only build/test a single
+module by setting the 'build.module' property. For example, to run the tests for
+the "luni" module:
 
-  ant -Dbuild.module=luni test
+  ant test -Dbuild.module=luni
 
+The 'test' target can further be configured to run a single test by setting
+the 'test.case' property. For example, to run a specific test in the "luni"
+module:
+
+  ant test -Dbuild.module=luni -Dtest.case=org.apache.harmony.luni.tests.java.lang.MathTest
         </echo>
     </target>
 

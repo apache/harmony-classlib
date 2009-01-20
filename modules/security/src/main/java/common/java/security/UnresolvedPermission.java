@@ -83,7 +83,10 @@ public final class UnresolvedPermission extends Permission
         this.type = type;
         this.name = name;
         this.actions = actions;
-        this.targetCerts = certs;
+        if (certs != null) {
+            this.targetCerts = new Certificate[certs.length];
+            System.arraycopy(certs, 0, targetCerts, 0, certs.length);
+        }
         hash = 0;
     }
 
@@ -133,7 +136,7 @@ public final class UnresolvedPermission extends Permission
         return false;
     }
 
-    /*
+    /**
      * check whether given array of certificates are equivalent
      */
     private boolean equalsCertificates(Certificate[] certs1,
@@ -150,6 +153,10 @@ public final class UnresolvedPermission extends Permission
         if (length > 0) {
             boolean found;
             for (int i = 0; i < length; i++) {
+            	// Skip the checking for null
+            	if(certs1[i] == null){
+            		continue;
+            	}
                 found = false;
                 for (int j = 0; j < length; j++) {
                     if (certs1[i].equals(certs2[j])) {
@@ -164,6 +171,9 @@ public final class UnresolvedPermission extends Permission
             }
 
             for (int i = 0; i < length; i++) {
+            	if(certs2[i] == null){
+            		continue;
+            	}
                 found = false;
                 for (int j = 0; j < length; j++) {
                     if (certs2[i].equals(certs1[j])) {

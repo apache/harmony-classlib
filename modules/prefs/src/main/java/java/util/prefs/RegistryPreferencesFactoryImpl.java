@@ -20,20 +20,20 @@ import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
 /**
- * Default implementation of <code>PreferencesFactory</code> for windows 
- * platform, using windows Registry as back end.
+ * Default implementation of <code>PreferencesFactory</code> for windows platform, using windows
+ * Registry as back end.
  * 
  * @since 1.4
  */
 class RegistryPreferencesFactoryImpl implements PreferencesFactory {
-    //user root preferences
+    // user root preferences
     private static final Preferences USER_ROOT = new RegistryPreferencesImpl(true);
 
-    //system root preferences
+    // system root preferences
     private static final Preferences SYSTEM_ROOT = new RegistryPreferencesImpl(false);
-    
+
     public RegistryPreferencesFactoryImpl() {
-    	super();
+        super();
     }
 
     public Preferences userRoot() {
@@ -44,7 +44,3 @@ class RegistryPreferencesFactoryImpl implements PreferencesFactory {
         return SYSTEM_ROOT;
     }
 }
-
-
-
- 

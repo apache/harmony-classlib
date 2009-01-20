@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.io.IOException;
@@ -40,7 +39,7 @@ import java.util.EventObject;
 public class PreferenceChangeEvent extends EventObject implements Serializable {
 
     private static final long serialVersionUID = 793724513368024975L;
-    
+
     private final Preferences node;
 
     private final String key;
@@ -50,11 +49,11 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
     /**
      * Construct a new <code>PreferenceChangeEvent</code> instance.
      * 
-     * @param p		the <code>Preferences</code> instance that this event happened, 
-     * 				this object is considered as event's source.
-     * @param k		the changed preference's key
-     * @param v		the new value of the changed preference, this value can be null, 
-     * 				which means the preference is removed.
+     * @param p the <code>Preferences</code> instance that this event happened, this object is
+     *            considered as event's source.
+     * @param k the changed preference's key
+     * @param v the new value of the changed preference, this value can be null, which means the
+     *            preference is removed.
      */
     public PreferenceChangeEvent(Preferences p, String k, String v) {
         super(p);
@@ -92,7 +91,7 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
         return node;
     }
 
-    /*
+    /**
      * This method always throws a <code>NotSerializableException</code>, because 
      * this object cannot be serialized,  
      */
@@ -100,7 +99,7 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
         throw new NotSerializableException();
     }
 
-    /*
+    /**
      * This method always throws a <code>NotSerializableException</code>, because 
      * this object cannot be serialized,  
      */
@@ -108,5 +107,3 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
         throw new NotSerializableException();
     }
 }
-
-

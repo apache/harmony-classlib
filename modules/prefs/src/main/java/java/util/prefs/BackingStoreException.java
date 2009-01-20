@@ -17,7 +17,6 @@
 
 package java.util.prefs;
 
-
 /**
  * An exception to indicate that some error was encountered while accessing
  * the backing store.
@@ -25,29 +24,26 @@ package java.util.prefs;
  * @since 1.4
  */
 public class BackingStoreException extends Exception {
-    
+
     private static final long serialVersionUID = 859796500401108469L;
-    
-	/**
-	 * Constructs a new <code>BackingStoreException</code> instance using an 
-	 * exception message.
-	 * 
-	 * @param s 	the exception message.
-	 */
-	public BackingStoreException (String s) {
-		super(s);
-	}
 
-	/**
-	 * Constructs a new <code>BackingStoreException</code> instance using a
-	 * nested <code>Throwable</code> instance.
-	 *	
-	 * @param t		the nested <code>Throwable</code> instance.
-	 */
-	public BackingStoreException (Throwable t) {
-		super(t);
-	}
+    /**
+     * Constructs a new <code>BackingStoreException</code> instance using an 
+     * exception message.
+     * 
+     * @param s the exception message.
+     */
+    public BackingStoreException (String s) {
+        super(s);
+    }
+
+    /**
+     * Constructs a new <code>BackingStoreException</code> instance using a
+     * nested <code>Throwable</code> instance.
+     *	
+     * @param t the nested <code>Throwable</code> instance.
+     */
+    public BackingStoreException (Throwable t) {
+        super(t);
+    }
 }
-
-
-
