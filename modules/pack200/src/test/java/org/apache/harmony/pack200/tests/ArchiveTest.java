@@ -141,6 +141,57 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    public void testSegmentLimits() throws IOException, Pack200Exception {
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        Archive archive = new Archive(in, out, true);
+        archive.setSegmentLimit(1);
+        try {
+            archive.pack();
+            fail("Should throw an execption with a 1-byte segment limit");
+        } catch (Pack200Exception pe) {
+            assertEquals("Expected limit too small message", "Segment limit is too small for the files you are trying to pack", pe.getMessage());
+        }
+        in.close();
+        out.close();
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        archive = new Archive(in, out, true);
+        archive.setSegmentLimit(0);
+        archive.pack();
+        in.close();
+        out.close();
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        archive = new Archive(in, out, true);
+        archive.setSegmentLimit(-1);
+        archive.pack();
+        in.close();
+        out.close();
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        archive = new Archive(in, out, true);
+        archive.setSegmentLimit(5000);
+        archive.pack();
+        in.close();
+        out.close();
+    }
+
     private void compareFiles(JarFile jarFile, JarFile jarFile2)
             throws IOException {
         Enumeration entries = jarFile.entries();

@@ -82,10 +82,12 @@ public class Archive {
                             files);
                     if (!added) { // not added because segment has reached
                         // maximum size
-                        new Segment().pack(classes, files, outputStream);
-                        classes = new ArrayList();
-                        files = new ArrayList();
-                        currentSegmentSize = 0;
+                        if(classes.size() > 0 || files.size() > 0) {
+                            new Segment().pack(classes, files, outputStream);
+                            classes = new ArrayList();
+                            files = new ArrayList();
+                            currentSegmentSize = 0;
+                        }
                         if (!addJarEntry(jarEntry, new BufferedInputStream(
                                 inputStream), classes, files)) {
                             throw new Pack200Exception(
@@ -135,6 +137,8 @@ public class Archive {
         long size = jarEntry.getSize();
         if (size > Integer.MAX_VALUE) {
             throw new RuntimeException("Large Class!");
+        } else if (size < 0) {
+            throw new RuntimeException("Error: size for " + name + " is " + size);
         }
         if(segmentLimit != -1 && segmentLimit != 0) {
             // -1 is a special case where only one segment is created and
