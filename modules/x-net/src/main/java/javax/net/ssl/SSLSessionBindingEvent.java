@@ -15,42 +15,35 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.io.Serializable;
 import java.util.EventObject;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SSLSessionBindingEvent extends EventObject implements Serializable {
 
     /**
-     * @serial
-     * The 5.0 spec. doesn't declare this serialVersionUID field
-     * In order to be compatible it is explicitly declared here
+     * The 5.0 spec. doesn't declare this serialVersionUID field In order to be compatible it is
+     * explicitly declared here
      */
     private static final long serialVersionUID = 3989172637106345L;
 
-    private String name;
+    /**
+     * @serial include
+     */
+    private final String name;
 
     public SSLSessionBindingEvent(SSLSession session, String name) {
         super(session);
         this.name = name;
     }
+
     public String getName() {
         return name;
     }
-    public SSLSession getSession() {
-        return (SSLSession)this.source;
-    }
-    
 
+    public SSLSession getSession() {
+        return (SSLSession) this.source;
+    }
 
 }

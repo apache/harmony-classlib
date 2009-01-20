@@ -36,6 +36,7 @@ public class SSLServerSocketImplTest extends TestCase {
     /**
      * Sets up the test case.
      */
+    @Override
     public void setUp() {
         if (doLog) {
             System.out.println("");
@@ -61,6 +62,7 @@ public class SSLServerSocketImplTest extends TestCase {
 
             final SSLServerSocket s = ssocket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.accept().close();
@@ -118,6 +120,7 @@ public class SSLServerSocketImplTest extends TestCase {
 
             final SSLServerSocket s = ssocket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.accept().close();
@@ -175,6 +178,7 @@ public class SSLServerSocketImplTest extends TestCase {
 
             final SSLServerSocket s = ssocket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.accept().close();
@@ -232,6 +236,7 @@ public class SSLServerSocketImplTest extends TestCase {
 
             final SSLServerSocket s = ssocket;
             Thread thread = new Thread() {
+                @Override
                 public void run() {
                     try {
                         s.accept().close();
@@ -598,6 +603,7 @@ public class SSLServerSocketImplTest extends TestCase {
             return client.getLocalPort();
         }
 
+        @Override
         public void run() {
             while (!closed) {
                 try {

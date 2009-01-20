@@ -169,6 +169,7 @@ public final class Class<T> implements Serializable, AnnotatedElement,
      * @throws SecurityException
      *             If member access is not allowed
      */
+    @SuppressWarnings("unchecked") // According to spec
     public Class[] getClasses() {
         return null;
     }

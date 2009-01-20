@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package java.util.prefs;
 
 import java.util.EventListener;
@@ -30,16 +29,12 @@ import java.util.EventListener;
  * @since 1.4
  */
 public interface PreferenceChangeListener extends EventListener {
-    
+
     /**
-     * This method gets invoked whenever some preference is added, deleted or 
-     * updated.
+     * This method gets invoked whenever some preference is added, deleted or updated.
      * 
-     * @param pce 	the event instance which describes the changed Preferences 
-     * 				instance and preferences value.
+     * @param pce the event instance which describes the changed Preferences instance and
+     *            preferences value.
      */
-	void preferenceChange (PreferenceChangeEvent pce);
+    void preferenceChange (PreferenceChangeEvent pce);
 }
-
-
- 

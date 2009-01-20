@@ -15,25 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 public class SSLProtocolException extends SSLException {
-    
+
     private static final long serialVersionUID = 5445067063799134928L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLProtocolException(String reason) {
         super(reason);
     }

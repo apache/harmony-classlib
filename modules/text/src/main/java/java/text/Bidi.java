@@ -39,24 +39,38 @@ public final class Bidi {
      * Constant that indicates the default base level. If there is no strong
      * character, then set the paragraph level to left-to-right.
      */
-    public static final int DIRECTION_DEFAULT_LEFT_TO_RIGHT = com.ibm.icu.text.Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
+    public static final int DIRECTION_DEFAULT_LEFT_TO_RIGHT = -2;
 
     /**
      * Constant that indicates the default base level. If there is no strong
      * character, then set the paragraph level to right-to-left.
      */
-    public static final int DIRECTION_DEFAULT_RIGHT_TO_LEFT = com.ibm.icu.text.Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT;
+    public static final int DIRECTION_DEFAULT_RIGHT_TO_LEFT = -1;
 
     /**
      * Constant that specifies the default base level as 
      * left-to-right. 
      */
-    public static final int DIRECTION_LEFT_TO_RIGHT = com.ibm.icu.text.Bidi.DIRECTION_LEFT_TO_RIGHT;
+    public static final int DIRECTION_LEFT_TO_RIGHT = 0;
 
     /**
      * Constant that specifies the default base level right-to-left.
      */  
-    public static final int DIRECTION_RIGHT_TO_LEFT = com.ibm.icu.text.Bidi.DIRECTION_RIGHT_TO_LEFT;
+    public static final int DIRECTION_RIGHT_TO_LEFT = 1;
+
+    /*
+     * Converts the constant from the value specified in the Java spec, to the
+     * value required by the ICU implementation.
+     */
+    private final static int convertDirectionConstant(int javaConst) {
+        switch (javaConst) {
+        case DIRECTION_DEFAULT_LEFT_TO_RIGHT : return com.ibm.icu.text.Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
+        case DIRECTION_DEFAULT_RIGHT_TO_LEFT : return com.ibm.icu.text.Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT;
+        case DIRECTION_LEFT_TO_RIGHT         : return com.ibm.icu.text.Bidi.DIRECTION_LEFT_TO_RIGHT;
+        case DIRECTION_RIGHT_TO_LEFT         : return com.ibm.icu.text.Bidi.DIRECTION_RIGHT_TO_LEFT;
+        default                              : return com.ibm.icu.text.Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT;
+        }
+    }
 
     /* 
      * Use an embedded ICU4J Bidi object to do all the work
@@ -159,7 +173,8 @@ public final class Bidi {
                     "text.11", paragraphLength)); //$NON-NLS-1$
         }
 
-        icuBidi = new com.ibm.icu.text.Bidi(text, textStart, embeddings, embStart, paragraphLength, flags);
+        icuBidi = new com.ibm.icu.text.Bidi(text, textStart, embeddings,
+                embStart, paragraphLength, convertDirectionConstant(flags));
     }
 
     /**

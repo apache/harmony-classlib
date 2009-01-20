@@ -32,12 +32,14 @@ import javax.net.ssl.TrustManagerFactorySpi;
  */
 
 public class MyTrustManagerFactorySpi extends TrustManagerFactorySpi {
+    @Override
     protected void engineInit(KeyStore ks) throws KeyStoreException {
         if (ks == null) {
             throw new KeyStoreException("Not supported operation for null KeyStore");
         }
     }
 
+    @Override
     protected void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException {
         if (spec == null) {
@@ -54,6 +56,7 @@ public class MyTrustManagerFactorySpi extends TrustManagerFactorySpi {
         }
     }
 
+    @Override
     protected TrustManager[] engineGetTrustManagers() {
         return null;
     }

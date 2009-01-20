@@ -36,7 +36,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.Permission;
 
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainSocketImpl;
 
 import tests.support.Support_Configuration;
 
@@ -2093,7 +2093,7 @@ public class SocketTest extends SocketTestCase {
     private class MockSocketImplFactory implements SocketImplFactory {
 
         public SocketImpl createSocketImpl() {
-            return SocketImplProvider.getServerSocketImpl();
+            return new PlainSocketImpl();
         }
     }
 }

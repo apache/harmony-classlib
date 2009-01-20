@@ -11,7 +11,7 @@ Bundle-SymbolicName: org.apache.harmony.jndi
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.applet,
+Import-Package: java.applet;resolution:=optional,
  java.awt;resolution:=optional,
  java.beans;resolution:=optional,
  java.io,

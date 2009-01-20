@@ -283,6 +283,11 @@ public final class BHSDCodec extends Codec {
 //        }
         long z = value;
         if (isSigned()) {
+            if(z < Integer.MIN_VALUE) {
+                z += 4294967296L;
+            } else if (z > Integer.MAX_VALUE) {
+                z -= 4294967296L;
+            }
             if (z < 0) {
                 z = (-z << s) - 1;
             } else {

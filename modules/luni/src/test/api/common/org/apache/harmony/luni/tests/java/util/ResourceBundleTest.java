@@ -230,6 +230,34 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 
     }
 
+    /*
+     * the class and constructor must be public so ResourceBundle has the
+     * possibility to instantiate
+     */
+    public static class GetBundleTest {
+        public GetBundleTest() {
+            // Try to load a resource with the same name as the class.
+            // getBundle() should not try to instantiate the class since
+            // its not a ResourceBundle. If a .properties file exists it
+            // would be loaded.
+            ResourceBundle
+                    .getBundle("org.apache.harmony.luni.tests.java.util.ResourceBundleTest$GetBundleTest");
+        }
+    };
+
+    /**
+     * @tests java.util.ResourceBundle#getBundle(java.lang.String)
+     */
+    public void test_getBundleLjava_lang_String() {
+        /* ResourceBundle.getBundle recursion loading class name */
+        try {
+            new GetBundleTest();
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            // expected
+        }
+    }
+
 	protected void setUp() {
 	}
 

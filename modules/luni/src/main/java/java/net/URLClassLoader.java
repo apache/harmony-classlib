@@ -418,18 +418,16 @@ public class URLClassLoader extends SecureClassLoader {
                                 null, null, null, null, null);
                     }
                 } else {
-                    boolean exception = false;
+                    boolean exception = packageObj.isSealed();
                     if (manifest != null) {
                         if (isSealed(manifest, packageName + "/")) {
                             exception = !packageObj
                                     .isSealed(codeSourceUrl);
                         }
-                    } else {
-                        exception = packageObj.isSealed();
                     }
                     if (exception) {
                         throw new SecurityException(Msg
-                                .getString("K004c")); //$NON-NLS-1$
+                                .getString("K0352", packageName)); //$NON-NLS-1$
                     }
                 }
             }
@@ -915,9 +913,10 @@ public class URLClassLoader extends SecureClassLoader {
             return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                     -1, url.toString() + "!/"); //$NON-NLS-1$
         }
+        // use jar protocol as the stream handler protocol
         return new URL("jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                 -1, url.toString() + "!/", //$NON-NLS-1$
-                factory.createURLStreamHandler(protocol));
+                factory.createURLStreamHandler("jar"));//$NON-NLS-1$
     }
 
     /**
@@ -1039,6 +1038,7 @@ public class URLClassLoader extends SecureClassLoader {
                     jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
             JarFile jf = juc.getJarFile();
             URLJarHandler jarH = new URLJarHandler(url, jarURL, jf, prefixName);
+
             if (jarH.getIndex() == null) {
                 try {
                     Manifest manifest = jf.getManifest();

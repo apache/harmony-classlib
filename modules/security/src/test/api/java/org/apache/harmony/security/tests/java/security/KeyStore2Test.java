@@ -19,19 +19,28 @@ package org.apache.harmony.security.tests.java.security;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.KeyStoreSpi;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -588,6 +597,122 @@ public class KeyStore2Test extends junit.framework.TestCase {
 
 		assertEquals("the size of the keyStore is not 3", 3, keyTest.size());
 	}
+    
+    
+    public void test_Constructor() throws Exception {
+        KeyStore ks = new MockKeyStore(new MockKeyStoreSpi(), null,
+                "MockKeyStore");
+        ks.load(null, null);
+        ks.store(null, null);
+
+        ks = new MockKeyStore(new MockKeyStoreSpi(), null, "MockKeyStore");
+        ks.load(null);
+        try {
+            ks.store(null);
+            fail("should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected.
+        }
+    }
+    
+    public class MockKeyStore extends KeyStore{
+
+        public MockKeyStore(KeyStoreSpi keyStoreSpi, Provider provider, String type) {
+            super(keyStoreSpi, provider, type);            
+        }
+    }
+    
+    public class MockKeyStoreSpi extends KeyStoreSpi {
+
+        @Override
+        public Enumeration<String> engineAliases() {
+            return null;
+        }
+
+        @Override
+        public boolean engineContainsAlias(String alias) {
+            return false;
+        }
+
+        @Override
+        public void engineDeleteEntry(String alias) throws KeyStoreException {
+            return;
+        }
+
+        @Override
+        public Certificate engineGetCertificate(String alias) {
+            return null;
+        }
+
+        @Override
+        public String engineGetCertificateAlias(Certificate cert) {
+            return null;
+        }
+
+        @Override
+        public Certificate[] engineGetCertificateChain(String alias) {
+            return null;
+        }
+
+        @Override
+        public Date engineGetCreationDate(String alias) {
+            return null;
+        }
+
+        @Override
+        public Key engineGetKey(String alias, char[] password)
+                throws NoSuchAlgorithmException, UnrecoverableKeyException {
+            return null;
+        }
+
+        @Override
+        public boolean engineIsCertificateEntry(String alias) {
+            return false;
+        }
+
+        @Override
+        public boolean engineIsKeyEntry(String alias) {
+            return false;
+        }
+
+        @Override
+        public void engineLoad(InputStream stream, char[] password)
+                throws IOException, NoSuchAlgorithmException,
+                CertificateException {
+            return;
+        }
+
+        @Override
+        public void engineSetCertificateEntry(String alias, Certificate cert)
+                throws KeyStoreException {
+            return;
+        }
+
+        @Override
+        public void engineSetKeyEntry(String alias, Key key, char[] password,
+                Certificate[] chain) throws KeyStoreException {
+            return;
+        }
+
+        @Override
+        public void engineSetKeyEntry(String alias, byte[] key,
+                Certificate[] chain) throws KeyStoreException {
+            return;
+        }
+
+        @Override
+        public int engineSize() {
+            return 0;
+        }
+
+        @Override
+        public void engineStore(OutputStream stream, char[] password)
+                throws IOException, NoSuchAlgorithmException,
+                CertificateException {
+            return;
+        }
+        
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

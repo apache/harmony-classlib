@@ -20,9 +20,8 @@ package java.net;
 import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
-
 import org.apache.harmony.luni.util.Msg;
 
 /**
@@ -188,7 +187,7 @@ public class DatagramSocket {
     synchronized void createSocket(int aPort, InetAddress addr)
             throws SocketException {
         impl = factory != null ? factory.createDatagramSocketImpl()
-                : SocketImplProvider.getDatagramSocketImpl();
+                : new PlainDatagramSocketImpl();
         impl.create();
         try {
             impl.bind(aPort, addr);
@@ -561,7 +560,7 @@ public class DatagramSocket {
             checkListen(((InetSocketAddress) localAddr).getPort());
         }
         impl = factory != null ? factory.createDatagramSocketImpl()
-                : SocketImplProvider.getDatagramSocketImpl();
+                : new PlainDatagramSocketImpl();
         impl.create();
         if (localAddr != null) {
             try {

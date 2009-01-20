@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,10 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
 
 import org.apache.harmony.beans.tests.support.NonSerializablePropertyChangeListener;
 import org.apache.harmony.beans.tests.support.SerializablePropertyChangeListener;
@@ -46,6 +44,18 @@ import tests.util.SerializationTester;
  */
 public class PropertyChangeSupportTest extends TestCase {
 
+    private File tempFile;
+    
+    @Override
+    protected void setUp() throws Exception {
+        tempFile = File.createTempFile("beans", ".ser");
+    }
+    
+    @Override
+    protected void tearDown() throws Exception {
+        tempFile.delete();
+        tempFile = null;
+    }
     /*
      * Test the constructor with a normal parameter.
      */
@@ -1451,24 +1461,10 @@ public class PropertyChangeSupportTest extends TestCase {
         readPropertyChangeListeners();
     }
 
-    /**
-     * 
-     */
-    public static Test suite() {
-        return new TestSuite(PropertyChangeSupportTest.class);
-    }
-
-    /**
-     * 
-     */
-    public static void main(String[] args) {
-        TestRunner.run(suite());
-    }
-
     private void writePropertyChangeListeners(PropertyChangeListener[] array) {
         ObjectOutputStream oos = null;
         try {
-            oos = new ObjectOutputStream(new FileOutputStream("x.ser"));
+            oos = new ObjectOutputStream(new FileOutputStream(tempFile));
             PropertyChangeSupport pcs = new PropertyChangeSupport("bean");
             if (array != null && array.length > 0) {
                 for (PropertyChangeListener element : array) {
@@ -1496,7 +1492,7 @@ public class PropertyChangeSupportTest extends TestCase {
         ObjectInputStream ois = null;
         PropertyChangeSupport pcs = null;
         try {
-            ois = new ObjectInputStream(new FileInputStream("x.ser"));
+            ois = new ObjectInputStream(new FileInputStream(tempFile));
             pcs = (PropertyChangeSupport) ois.readObject();
         } finally {
             if (ois != null) {

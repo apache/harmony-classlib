@@ -21,7 +21,9 @@ include $(HY_HDK)/build/make/defines.mk
 
 # CFLAGS += -fpic -Wall -Werror 
 ifneq ($(HY_OS),zos)
+ifneq ($(HY_OS),aix)
 CFLAGS += -Wall
+endif
 endif
 
 BUILDFILES = \
@@ -35,7 +37,7 @@ BUILDFILES = \
 	$(SHAREDSUB)osc.o $(SHAREDSUB)socket.o $(SHAREDSUB)inetadds.o \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
-	OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
+	$(SHAREDSUB)OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
 	OSNetworkSystemLinux.o $(HY_OS)/OSResourcesMonitor.o hyenv.o 
 
 ifneq ($(HY_ZIP_API),true)

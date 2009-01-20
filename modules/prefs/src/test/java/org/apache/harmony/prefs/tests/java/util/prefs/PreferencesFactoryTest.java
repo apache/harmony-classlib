@@ -26,34 +26,35 @@ import junit.framework.TestCase;
  */
 public class PreferencesFactoryTest extends TestCase {
 
-	PreferencesFactory f;
+    PreferencesFactory f;
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		f = new PreferencesFactoryImpl();
-	}
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        f = new PreferencesFactoryImpl();
+    }
 
-	public void testUserRoot() {
-		f.userRoot();
-	}
+    public void testUserRoot() {
+        f.userRoot();
+    }
 
-	public void testSystemRoot() {
-		f.systemRoot();
-	}
+    public void testSystemRoot() {
+        f.systemRoot();
+    }
 
-	public static class PreferencesFactoryImpl implements PreferencesFactory {
+    public static class PreferencesFactoryImpl implements PreferencesFactory {
 
-		public Preferences userRoot() {
-			return null;
-		}
+        public Preferences userRoot() {
+            return null;
+        }
 
-		public Preferences systemRoot() {
-			return null;
-		}
+        public Preferences systemRoot() {
+            return null;
+        }
 
-	}
+    }
 
 }

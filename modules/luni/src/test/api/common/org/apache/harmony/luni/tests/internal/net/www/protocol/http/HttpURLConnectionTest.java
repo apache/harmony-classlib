@@ -19,6 +19,7 @@ package org.apache.harmony.luni.tests.internal.net.www.protocol.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -33,6 +34,8 @@ import java.net.URI;
 import java.net.URL;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -294,6 +297,44 @@ public class HttpURLConnectionTest extends TestCase {
     }
 
     /**
+     * @tests HttpURLConnection.getHeaderFields
+     */
+    public void test_getHeaderFields() throws Exception {
+        URL url = new URL("http://www.apache.org");
+        HttpURLConnection httpURLConnect = (HttpURLConnection) url
+                .openConnection();
+        assertEquals(200, httpURLConnect.getResponseCode());
+        assertEquals("OK", httpURLConnect.getResponseMessage());
+        Map headers = httpURLConnect.getHeaderFields();
+        // there should be at least 2 headers
+        assertTrue(headers.size() > 1);
+        List list = (List) headers.get("Content-Length");
+        if (list == null) {
+            list = (List) headers.get("content-length");
+        }
+        assertNotNull(list);
+        try {
+            headers.put("key", "value");
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+        try {
+            list.set(0, "value");
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+        
+        try {
+            httpURLConnect.setRequestProperty("key", "value");
+            fail("should throw IlegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
+    }
+
+    /**
      * @tests org.apache.harmony.luni.internal.net.www.http.getOutputStream()
      */
     public void testGetOutputStream() throws Exception {
@@ -314,6 +355,23 @@ public class HttpURLConnectionTest extends TestCase {
         c.setRequestMethod(new String("POST"));
         c.getOutputStream();
         httpServer.join();
+    }
+
+    /**
+     * Test whether getOutputStream can work after connection
+     */
+    public void test_getOutputStream_AfterConnect() throws Exception {
+        URL url = new URL("http://www.apache.org");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.connect();
+        String str_get = connection.getRequestMethod();
+        assertTrue(str_get.equalsIgnoreCase("GET"));
+
+        // call to getOutputStream should implicitly set req. method to POST
+        connection.getOutputStream();
+        String str_post = connection.getRequestMethod();
+        assertTrue(str_post.equalsIgnoreCase("POST"));
     }
 
     /**
@@ -356,6 +414,38 @@ public class HttpURLConnectionTest extends TestCase {
         HttpURLConnection huc = (HttpURLConnection) url
                 .openConnection(Proxy.NO_PROXY);
         assertFalse(huc.usingProxy());
+    }
+
+    /**
+     * @tests HttpURLConnection.usingProxy
+     */
+    public void testUsingProxy2() throws Exception {
+        try {
+            System.setProperty("http.proxyHost", "www.apache.org");
+            URL url = new URL("http://www.apache.org");
+            HttpURLConnection urlConnect = (HttpURLConnection) url
+                    .openConnection();
+            urlConnect.getInputStream();
+            assertTrue(urlConnect.usingProxy());
+            
+            System.setProperty("http.proxyPort", "81");
+            url = new URL("http://www.apache.org");
+            urlConnect = (HttpURLConnection) url.openConnection();
+            urlConnect.getInputStream();
+            assertFalse(urlConnect.usingProxy());
+            
+            url = new URL("http://localhost");
+            urlConnect = (HttpURLConnection) url.openConnection();
+            try {
+                urlConnect.getInputStream();
+                fail("should throw ConnectException");
+            } catch (ConnectException e) {
+                // Expected
+            }
+            assertFalse(urlConnect.usingProxy());
+        } finally {
+            System.setProperties(null);
+        }
     }
 
     /**
@@ -824,6 +914,38 @@ public class HttpURLConnectionTest extends TestCase {
         } finally {
             System.setSecurityManager(null);
         }
+    }
+    
+    /*
+     * @test HttpURLConnection.setRequestProperty
+     */
+    public void testSetRequestProperty() throws Exception {
+        MockHTTPServer httpServer = new MockHTTPServer(
+                "HTTP Server for User-Specified Request Property", 2);
+        httpServer.start();
+        synchronized (bound) {
+            if (!httpServer.started) {
+                bound.wait(5000);
+            }
+        }
+
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+                "http://localhost:" + httpServer.port()).openConnection();
+        assertEquals(0, urlConnection.getRequestProperties().size());
+
+        final String PROPERTY1 = "Accept";
+        final String PROPERTY2 = "Connection";
+        urlConnection.setRequestProperty(PROPERTY1, null);
+        urlConnection.setRequestProperty(PROPERTY1, null);
+        urlConnection.setRequestProperty(PROPERTY2, "keep-alive");
+        assertEquals(2, urlConnection.getRequestProperties().size());
+        assertNull(urlConnection.getRequestProperty(PROPERTY1));
+        assertEquals("keep-alive", urlConnection.getRequestProperty(PROPERTY2));
+
+        urlConnection.setRequestProperty(PROPERTY1, "/");
+        urlConnection.setRequestProperty(PROPERTY2, null);
+        assertEquals("/", urlConnection.getRequestProperty(PROPERTY1));
+        assertNull(urlConnection.getRequestProperty(PROPERTY2));
     }
 
     private static class MySecurityManager extends SecurityManager {

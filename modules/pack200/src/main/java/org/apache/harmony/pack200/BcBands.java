@@ -154,27 +154,29 @@ public class BcBands extends BandSet {
                 bciRenumbering.add(i, new Integer(++renumberedOffset));
             }
         }
-        if (renumberedOffset + 1 != bciRenumbering.size()) {
-            throw new RuntimeException("Mistake made with renumbering");
-        }
-        for (int i = bcLabel.size() - 1; i >= 0; i--) {
-            Object label = bcLabel.get(i);
-            if (label instanceof Integer) {
-                break;
-            } else if (label instanceof Label) {
-                bcLabel.remove(i);
-                Integer offset = (Integer) labelsToOffsets.get(label);
-                Integer relativeOffset = (Integer) bcLabelRelativeOffsets.get(i);
-                bcLabel.add(i, new Integer(((Integer)bciRenumbering.get(offset.intValue())).intValue() - ((Integer)bciRenumbering.get(relativeOffset.intValue())).intValue()));
+        if (renumberedOffset != 0) {
+            if(renumberedOffset + 1 != bciRenumbering.size()) {
+                throw new RuntimeException("Mistake made with renumbering");
             }
+            for (int i = bcLabel.size() - 1; i >= 0; i--) {
+                Object label = bcLabel.get(i);
+                if (label instanceof Integer) {
+                    break;
+                } else if (label instanceof Label) {
+                    bcLabel.remove(i);
+                    Integer offset = (Integer) labelsToOffsets.get(label);
+                    Integer relativeOffset = (Integer) bcLabelRelativeOffsets.get(i);
+                    bcLabel.add(i, new Integer(((Integer)bciRenumbering.get(offset.intValue())).intValue() - ((Integer)bciRenumbering.get(relativeOffset.intValue())).intValue()));
+                }
+            }
+            bcCodes.add(endMarker);
+            segment.getClassBands().doBciRenumbering(bciRenumbering,
+                    labelsToOffsets);
+            bciRenumbering.clear();
+            labelsToOffsets.clear();
+            byteCodeOffset = 0;
+            renumberedOffset = 0;
         }
-        bcCodes.add(endMarker);
-        segment.getClassBands().doBciRenumbering(bciRenumbering,
-                labelsToOffsets);
-        bciRenumbering.clear();
-        labelsToOffsets.clear();
-        byteCodeOffset = 0;
-        renumberedOffset = 0;
     }
 
     public void visitLabel(Label label) {
@@ -299,6 +301,8 @@ public class BcBands extends BandSet {
             } else if (constant instanceof CPClass) {
                 bcCodes.add(new Integer(236)); // cldc
                 bcClassRef.add(constant);
+            } else {
+                throw new RuntimeException("Constant should not be null");
             }
         } else {
             byteCodeOffset += 2;
@@ -329,7 +333,7 @@ public class BcBands extends BandSet {
             bcLabel.add(labels[i]);
             bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         }
-        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
+        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - ((byteCodeOffset + 1) % 4);
         byteCodeOffset += padding + 8 + 8 * keys.length;
         updateRenumbering();
     }
@@ -407,7 +411,7 @@ public class BcBands extends BandSet {
             bcLabel.add(labels[i]);
             bcLabelRelativeOffsets.add(new Integer(byteCodeOffset));
         }
-        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - byteCodeOffset + 1;
+        int padding = (byteCodeOffset + 1) % 4 == 0 ? 0 : 4 - ((byteCodeOffset + 1) % 4);
         byteCodeOffset+= (padding + 12 + 4 * labels.length);
         updateRenumbering();
     }

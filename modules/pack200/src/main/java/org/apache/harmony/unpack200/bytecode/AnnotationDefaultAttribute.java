@@ -18,6 +18,8 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AnnotationDefault class file attribute
@@ -55,6 +57,17 @@ public class AnnotationDefaultAttribute extends AnnotationsAttribute {
 
     public boolean equals(Object obj) {
         return this == obj;
+    }
+
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        List nested = new ArrayList();
+        nested.add(attributeName);
+        nested.addAll(element_value.getClassFileEntries());
+        ClassFileEntry[] nestedEntries = new ClassFileEntry[nested.size()];
+        for (int i = 0; i < nestedEntries.length; i++) {
+            nestedEntries[i] = (ClassFileEntry) nested.get(i);
+        }
+        return nestedEntries;
     }
 
 }

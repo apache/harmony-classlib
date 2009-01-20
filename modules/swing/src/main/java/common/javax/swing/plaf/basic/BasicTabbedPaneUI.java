@@ -986,7 +986,6 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
                 return run;
             }
         }
-        assert false : "incorrect tabIndex";
         return 0;
     }
 

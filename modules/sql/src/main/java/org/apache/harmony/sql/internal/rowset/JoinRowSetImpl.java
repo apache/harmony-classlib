@@ -37,7 +37,6 @@ import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.spi.SyncFactoryException;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.SSLSocketWrapper;
@@ -65,6 +60,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.ssl.SSLSocketFactory#getDefaultCipherSuites()
      */
+    @Override
     public String[] getDefaultCipherSuites() {
         if (instantiationException != null) {
             return new String[0];
@@ -75,6 +71,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.ssl.SSLSocketFactory#getSupportedCipherSuites()
      */
+    @Override
     public String[] getSupportedCipherSuites() {
         if (instantiationException != null) {
             return new String[0];
@@ -85,6 +82,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.ssl.SSLSocketFactory#createSocket(Socket,String,int,boolean)
      */
+    @Override
     public Socket createSocket(Socket s, String host, int port,
             boolean autoClose) throws IOException {
         if (instantiationException != null) {
@@ -99,6 +97,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.SocketFactory#createSocket()
      */
+    @Override
     public Socket createSocket() throws IOException {
         if (instantiationException != null) {
             throw instantiationException;
@@ -109,6 +108,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.SocketFactory#createSocket(String,int)
      */
+    @Override
     public Socket createSocket(String host, int port)
             throws IOException, UnknownHostException {
         if (instantiationException != null) {
@@ -121,6 +121,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.SocketFactory#createSocket(String,int,InetAddress,int)
      */
+    @Override
     public Socket createSocket(String host, int port,
             InetAddress localHost, int localPort) throws IOException,
             UnknownHostException {
@@ -134,6 +135,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.SocketFactory#createSocket(InetAddress,int)
      */
+    @Override
     public Socket createSocket(InetAddress host, int port)
             throws IOException {
         if (instantiationException != null) {
@@ -146,6 +148,7 @@ public class SSLSocketFactoryImpl extends SSLSocketFactory {
     /**
      * @see javax.net.SocketFactory#createSocket(InetAddress,int,InetAddress,int)
      */
+    @Override
     public Socket createSocket(InetAddress address, int port,
             InetAddress localAddress, int localPort) throws IOException {
         if (instantiationException != null) {

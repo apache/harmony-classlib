@@ -27,26 +27,27 @@ import junit.framework.TestCase;
  */
 public class PreferenceChangeListenerTest extends TestCase {
 
-	PreferenceChangeListener l;
+    PreferenceChangeListener l;
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		l = new PreferenceChangeListenerImpl();
-	}
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        l = new PreferenceChangeListenerImpl();
+    }
 
-	public void testPreferenceChange() {
-		l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
-				"", ""));
-	}
+    public void testPreferenceChange() {
+        l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
+                "", ""));
+    }
 
-	public static class PreferenceChangeListenerImpl implements
-			PreferenceChangeListener {
-		public void preferenceChange(PreferenceChangeEvent pce) {
-		}
+    public static class PreferenceChangeListenerImpl implements
+    PreferenceChangeListener {
+        public void preferenceChange(PreferenceChangeEvent pce) {
+        }
 
-	}
+    }
 
 }

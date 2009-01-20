@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.SSLParameters;
@@ -65,6 +60,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ssl.SSLServerSocketFactory#getDefaultCipherSuites()
      */
+    @Override
     public String[] getDefaultCipherSuites() {
         if (instantiationException != null) {
             return new String[0];
@@ -75,6 +71,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ssl.SSLServerSocketFactory#getSupportedCipherSuites()
      */
+    @Override
     public String[] getSupportedCipherSuites() {
         if (instantiationException != null) {
             return new String[0];
@@ -85,6 +82,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ServerSocketFactory#createServerSocket()
      */
+    @Override
     public ServerSocket createServerSocket() throws IOException {
         if (instantiationException != null) {
             throw instantiationException;
@@ -96,6 +94,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ServerSocketFactory#createServerSocket(int)
      */
+    @Override
     public ServerSocket createServerSocket(int port) throws IOException {
         if (instantiationException != null) {
             throw instantiationException;
@@ -107,6 +106,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ServerSocketFactory#createServerSocket(int,int)
      */
+    @Override
     public ServerSocket createServerSocket(int port, int backlog)
             throws IOException {
         if (instantiationException != null) {
@@ -119,6 +119,7 @@ public class SSLServerSocketFactoryImpl extends SSLServerSocketFactory {
     /**
      * @see javax.net.ServerSocketFactory#createServerSocket(int,int,InetAddress)
      */
+    @Override
     public ServerSocket createServerSocket(int port, int backlog,
             InetAddress iAddress) throws IOException {
         if (instantiationException != null) {

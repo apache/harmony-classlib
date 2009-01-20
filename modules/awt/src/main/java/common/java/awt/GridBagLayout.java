@@ -90,8 +90,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void addLayoutComponent(Component comp, Object constraints) {
         toolkit.lockAWT();
         try {
-            // awt.7F=AddLayoutComponent: attempt to add null component
-            assert comp != null : Messages.getString("awt.7F"); //$NON-NLS-1$
             GridBagConstraints cons;
             if (constraints != null) {
                 if (!GridBagConstraints.class.isInstance(constraints)) {
@@ -125,8 +123,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void removeLayoutComponent(Component comp) {
         toolkit.lockAWT();
         try {
-            // awt.82=RemoveLayoutComponent: attempt to remove null component
-            assert comp != null : Messages.getString("awt.82"); //$NON-NLS-1$
             Container parent = comp.getParent();
             if (parent != null) {
                 getParentInfo(parent).consTable.remove(comptable.get(comp));
@@ -154,10 +150,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     public void setConstraints(Component comp, GridBagConstraints constraints) {
         toolkit.lockAWT();
         try {
-            // awt.83=SetConstraints: attempt to get constraints of null component
-            assert comp != null : Messages.getString("awt.83"); //$NON-NLS-1$
-            // awt.84=SetConstraints: attempt to set null constraints
-            assert constraints != null : Messages.getString("awt.84"); //$NON-NLS-1$
             GridBagConstraints consClone = (GridBagConstraints) constraints.clone();
             try {
                 //                consClone.verify();
@@ -383,8 +375,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     protected GridBagConstraints lookupConstraints(Component comp) {
         toolkit.lockAWT();
         try {
-            // awt.89=LookupConstraints: attempt to get constraints of null component
-            assert comp != null : Messages.getString("awt.89"); //$NON-NLS-1$
             GridBagConstraints cons = comptable.get(comp);
             if (cons == null) {
                 // if comp is not in the layout, return a copy of default constraints
@@ -435,10 +425,6 @@ public class GridBagLayout implements LayoutManager2, Serializable {
     protected void AdjustForGravity(GridBagConstraints constraints, Rectangle r) {
         toolkit.lockAWT();
         try {
-            // awt.8A=AdjustForGravity: attempt to use null constraints
-            assert constraints != null : Messages.getString("awt.8A"); //$NON-NLS-1$
-            // awt.8B=AdjustForGravity: attempt to use null rectangle
-            assert r != null : Messages.getString("awt.8B"); //$NON-NLS-1$
             try {
                 //                ((GridBagConstraints) constraints).verify();
             } catch (IllegalArgumentException e) {

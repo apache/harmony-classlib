@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.AccessController;
@@ -28,16 +23,11 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.Security;
 
 import org.apache.harmony.security.fortress.Engine;
-
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
 
 public class TrustManagerFactory {
     // Store TrustManager service name
@@ -49,39 +39,17 @@ public class TrustManagerFactory {
     // Store default property name
     private static final String PROPERTYNAME = "ssl.TrustManagerFactory.algorithm";
 
-    // Store used provider
-    private final Provider provider;
-
-    // Storeused TrustManagerFactorySpi implementation
-    private final TrustManagerFactorySpi spiImpl;
-
-    // Store used algorithm
-    private final String algorithm;
-
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected TrustManagerFactory(TrustManagerFactorySpi factorySpi,
-            Provider provider, String algorithm) {
-        this.provider = provider;
-        this.algorithm = algorithm;
-        this.spiImpl = factorySpi;
+    public static final String getDefaultAlgorithm() {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                return Security.getProperty(PROPERTYNAME);
+            }
+        });
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public final String getAlgorithm() {
-        return algorithm;
-    }
-
-    /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
     public static final TrustManagerFactory getInstance(String algorithm)
             throws NoSuchAlgorithmException {
@@ -90,20 +58,17 @@ public class TrustManagerFactory {
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
-            return new TrustManagerFactory((TrustManagerFactorySpi) engine.spi,
-                    engine.provider, algorithm);
+            return new TrustManagerFactory((TrustManagerFactorySpi) engine.spi, engine.provider,
+                    algorithm);
         }
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
-    public static final TrustManagerFactory getInstance(String algorithm,
-            String provider) throws NoSuchAlgorithmException,
-            NoSuchProviderException {
+    public static final TrustManagerFactory getInstance(String algorithm, String provider)
+            throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
             throw new IllegalArgumentException("Provider is null oe empty");
         }
@@ -115,13 +80,11 @@ public class TrustManagerFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
-     * throws NullPointerException if algorithm is null (instead of
-     * NoSuchAlgorithmException as in 1.4 release)
+     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
+     *             1.4 release)
      */
-    public static final TrustManagerFactory getInstance(String algorithm,
-            Provider provider) throws NoSuchAlgorithmException {
+    public static final TrustManagerFactory getInstance(String algorithm, Provider provider)
+            throws NoSuchAlgorithmException {
         if (provider == null) {
             throw new IllegalArgumentException("Provider is null");
         }
@@ -130,54 +93,44 @@ public class TrustManagerFactory {
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);
-            return new TrustManagerFactory((TrustManagerFactorySpi) engine.spi,
-                    provider, algorithm);
+            return new TrustManagerFactory((TrustManagerFactorySpi) engine.spi, provider, algorithm);
         }
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
+    // Store used provider
+    private final Provider provider;
+
+    // Store used TrustManagerFactorySpi implementation
+    private final TrustManagerFactorySpi spiImpl;
+
+    // Store used algorithm
+    private final String algorithm;
+
+    protected TrustManagerFactory(TrustManagerFactorySpi factorySpi, Provider provider,
+            String algorithm) {
+        this.provider = provider;
+        this.algorithm = algorithm;
+        this.spiImpl = factorySpi;
+    }
+
+    public final String getAlgorithm() {
+        return algorithm;
+    }
+
     public final Provider getProvider() {
         return provider;
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final void init(KeyStore ks) throws KeyStoreException {
         spiImpl.engineInit(ks);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public final void init(ManagerFactoryParameters spec)
-            throws InvalidAlgorithmParameterException {
+    public final void init(ManagerFactoryParameters spec) throws InvalidAlgorithmParameterException {
         spiImpl.engineInit(spec);
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public final TrustManager[] getTrustManagers() {
         return spiImpl.engineGetTrustManagers();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    public static final String getDefaultAlgorithm() {
-        return AccessController
-                .doPrivileged(new java.security.PrivilegedAction<String>() {
-                    public String run() {
-                        return Security.getProperty(PROPERTYNAME);
-                    }
-                });
-    }
 }

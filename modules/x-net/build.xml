@@ -127,8 +127,6 @@
             <javac-elements>
                 <src>
                     <pathelement location="${hy.x-net.src.test}/support/common/java" />
-                    <!-- FIXME: X-NET tests should not reach into security module code -->
-                    <pathelement location="${hy.x-net}/../security/src/test/support/common/java"/>
                 </src>
 
                 <include name="**/*.java" />

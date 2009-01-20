@@ -27,6 +27,8 @@
 #include <poll.h>
 #endif
 
+#include <sys/ioctl.h>
+
 /* We do not get these header files "for free" on zOS, so we will use the
   definitions for these structures defined in OSNetworkSystem.h */
 #if !defined(ZOS)
@@ -56,7 +58,9 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
 
 // Alternative Select function
 int
-selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
+selectRead
+(JNIEnv * env, hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept)
+{
   I_32 result = 0;
   I_32 timeout;
   struct pollfd my_pollfd;
@@ -67,11 +71,19 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   my_pollfd.revents = 0;
   result = poll (&my_pollfd, 1, timeout);
   
+  if (result == 0)
+    return HYPORT_ERROR_SOCKET_TIMEOUT;
+
+  if (result == -1)
+    return HYPORT_ERROR_SOCKET_OPFAILED;
+
   return result;
 }
 
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
-  (JNIEnv * env, jobject clz, jobject address, jobject localaddr,  jint ttl, jint timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
+  (JNIEnv * env, jobject thiz, jobject address, jobject localaddr, jint ttl, jint timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
 #if !defined(ZOS)
@@ -242,9 +254,11 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  * Assumption: outFlags is zeroed
  */
-JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
-  (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
-   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
+  (JNIEnv * env, jobject thiz, jobjectArray readFDArray, jobjectArray writeFDArray,
+   jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout)
+{
   PORT_ACCESS_FROM_ENV (env);
   I_32 result =	0;		
   hysocket_t hysocketP;		
@@ -311,8 +325,11 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   return result;
 };
 
-JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
-  (JNIEnv * env , jobject clz){
+
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannel
+  (JNIEnv * env , jobject thiz)
+{
     PORT_ACCESS_FROM_ENV (env);
     int socket = 0;
     int opt;
@@ -474,4 +491,36 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 	hymem_free_memory(address);
 	hymem_free_memory(localAddr);
 	return channel_object;
+}
+
+/*
+ * Utilizes the ioctl call to get the available bytes pending on a socket
+ * which is similar to, but different to the call on other platforms.
+ *
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    availableStream
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
+  (JNIEnv * env, jobject thiz, jobject fileDescriptor)
+{
+  PORT_ACCESS_FROM_ENV(env);
+  hysocket_t hysocketP;
+  U_32 nbytes = 0;
+  I_32 result;
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+  if (!hysock_socketIsValid(hysocketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
+
+  result = ioctl(hysocketP->sock, FIONREAD, &nbytes);
+  if (result != 0) {
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;
+  }
+
+  return (jint) nbytes;
 }

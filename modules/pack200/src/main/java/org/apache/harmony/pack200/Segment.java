@@ -18,6 +18,7 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 public class Segment implements ClassVisitor {
 
@@ -38,25 +40,18 @@ public class Segment implements ClassVisitor {
     private BcBands bcBands;
     private FileBands fileBands;
 
-    // The current class - only to be used when processing the classes
-    private String currentClass;
-    private String superClass;
-
     private final SegmentFieldVisitor fieldVisitor = new SegmentFieldVisitor();
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
-    private final SegmentAnnotationVisitor annotationVisitor = new SegmentAnnotationVisitor();
     private Pack200ClassReader currentClassReader;
 
     public void pack(List classes, List files, OutputStream out)
             throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
-        cpBands = new CpBands(segmentHeader);
-        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader,
-                cpBands);
+        cpBands = new CpBands(this);
+        attributeDefinitionBands = new AttributeDefinitionBands(this);
         icBands = new IcBands(segmentHeader, cpBands);
-        classBands = new ClassBands(segmentHeader, cpBands,
-                attributeDefinitionBands, classes.size());
+        classBands = new ClassBands(this, classes.size());
         bcBands = new BcBands(cpBands, this);
         fileBands = new FileBands(cpBands, segmentHeader, files);
 
@@ -90,12 +85,11 @@ public class Segment implements ClassVisitor {
 
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
-        currentClass = name;
-        superClass = superName;
         bcBands.setCurrentClass(name);
         bcBands.setSuperClass(superName);
         segmentHeader.addMajorVersion(version);
-        classBands.addClass(version, access, name, superName, interfaces);
+        classBands.addClass(version, access, name, signature, superName,
+                interfaces);
     }
 
     public void visitSource(String source, String debug) {
@@ -107,8 +101,9 @@ public class Segment implements ClassVisitor {
 
     }
 
-    public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
-        return annotationVisitor;
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_CLASS,
+                desc, visible);
     }
 
     public void visitAttribute(Attribute arg0) {
@@ -141,12 +136,13 @@ public class Segment implements ClassVisitor {
      */
     public class SegmentMethodVisitor implements MethodVisitor {
 
-        public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
-            return annotationVisitor;
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            return new SegmentAnnotationVisitor(
+                    MetadataBandGroup.CONTEXT_METHOD, desc, visible);
         }
 
         public AnnotationVisitor visitAnnotationDefault() {
-            return annotationVisitor;
+            return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_METHOD);
         }
 
         public void visitAttribute(Attribute arg0) {
@@ -181,9 +177,10 @@ public class Segment implements ClassVisitor {
             classBands.addMaxStack(maxStack, maxLocals);
         }
 
-        public AnnotationVisitor visitParameterAnnotation(int arg0,
-                String arg1, boolean arg2) {
-            return annotationVisitor;
+        public AnnotationVisitor visitParameterAnnotation(int parameter,
+                String desc, boolean visible) {
+            return new SegmentAnnotationVisitor(
+                    MetadataBandGroup.CONTEXT_METHOD, parameter, desc, visible);
         }
 
         public void visitTryCatchBlock(Label start, Label end, Label handler,
@@ -254,36 +251,170 @@ public class Segment implements ClassVisitor {
 
     public class SegmentAnnotationVisitor implements AnnotationVisitor {
 
-        public void visit(String arg0, Object arg1) {
-            // TODO Auto-generated method stub
+        private int context = -1;
+        private int parameter = -1;
+        private String desc;
+        private boolean visible;
 
+        private final List nameRU = new ArrayList();
+        private final List T = new ArrayList(); // tags
+        private final List values = new ArrayList();
+        private final List caseArrayN = new ArrayList();
+        private final List nestTypeRS = new ArrayList();
+        private final List nestNameRU = new ArrayList();
+        private final List nestPairN = new ArrayList();
+
+
+        public SegmentAnnotationVisitor(int context, String desc,
+                boolean visible) {
+            this.context = context;
+            this.desc = desc;
+            this.visible = visible;
         }
 
-        public AnnotationVisitor visitAnnotation(String arg0, String arg1) {
-            // TODO Auto-generated method stub
-            return null;
+        public SegmentAnnotationVisitor(int context) {
+            this.context = context;
         }
 
-        public AnnotationVisitor visitArray(String arg0) {
-            // TODO Auto-generated method stub
-            return null;
+        public SegmentAnnotationVisitor(int context, int parameter,
+                String desc, boolean visible) {
+            this.context = context;
+            this.parameter = parameter;
+            this.desc = desc;
+            this.visible = visible;
+        }
+
+        public void visit(String name, Object value) {
+            nameRU.add(name);
+            values.add(value);
+            addTag(value);
+        }
+
+        private void addTag(Object value) {
+            if(value instanceof Integer) {
+                T.add("I");
+            } else if (value instanceof Double) {
+                T.add("D");
+            } else if (value instanceof Float) {
+                T.add("F");
+            } else if (value instanceof Long) {
+                T.add("J");
+            } else if (value instanceof Byte) {
+                T.add("B");
+            } else if (value instanceof Character) {
+                T.add("C");
+            } else if (value instanceof Short) {
+                T.add("S");
+            } else if (value instanceof Boolean) {
+                T.add("Z");
+            } else if (value instanceof String) {
+                T.add("s");
+            } else if (value instanceof Type) {
+                T.add("c");
+            }
+        }
+
+        public AnnotationVisitor visitAnnotation(String name, String desc) {
+            T.add("@");
+            nameRU.add(name);
+            nestTypeRS.add(desc);
+            nestPairN.add(new Integer(0));
+            return new AnnotationVisitor() {
+                public void visit(String name, Object value) {
+                    Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
+                    nestPairN.add(new Integer(numPairs.intValue() + 1));
+                    nestNameRU.add(name);
+                    values.add(value);
+                    addTag(value);
+                }
+
+                public AnnotationVisitor visitAnnotation(String arg0,
+                        String arg1) {
+                    throw new RuntimeException("Not yet supported");
+//                    return null;
+                }
+
+                public AnnotationVisitor visitArray(String arg0) {
+                    throw new RuntimeException("Not yet supported");
+//                    return null;
+                }
+
+                public void visitEnd() {
+                    throw new RuntimeException("Not yet supported");
+                }
+
+                public void visitEnum(String name, String desc, String value) {
+                    Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
+                    nestPairN.add(new Integer(numPairs.intValue() + 1));
+                    T.add("e");
+                    nestNameRU.add(name);
+                    values.add(desc);
+                    values.add(value);
+                }
+            };
+        }
+
+        public AnnotationVisitor visitArray(String name) {
+            T.add("[");
+            nameRU.add(name);
+            caseArrayN.add(new Integer(0));
+            return new AnnotationVisitor() {
+                public void visit(String name, Object value) {
+                    Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
+                    caseArrayN.add(new Integer(numCases.intValue() + 1));
+                    nameRU.add(name);
+                    values.add(value);
+                    addTag(value);
+                }
+
+                public AnnotationVisitor visitAnnotation(String arg0,
+                        String arg1) {
+                    throw new RuntimeException("Not yet supported");
+                }
+
+                public AnnotationVisitor visitArray(String arg0) {
+                    throw new RuntimeException("Not yet supported");
+//                    return null;
+                }
+
+                public void visitEnd() {
+                    throw new RuntimeException("Not yet supported");
+                }
+
+                public void visitEnum(String name, String desc, String value) {
+                    Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
+                    caseArrayN.add(new Integer(numCases.intValue() + 1));
+                    T.add("e");
+                    nameRU.add(name);
+                    values.add(desc);
+                    values.add(value);
+                }
+            };
         }
 
         public void visitEnd() {
-            // TODO Auto-generated method stub
-
+            if (desc == null) {
+                Segment.this.classBands.addAnnotationDefault(nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+            } else if(parameter != -1) {
+                Segment.this.classBands.addParameterAnnotation(parameter, desc, visible, nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+            } else {
+                Segment.this.classBands.addAnnotation(context, desc, visible, nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+            }
         }
 
-        public void visitEnum(String arg0, String arg1, String arg2) {
-            // TODO Auto-generated method stub
-
+        public void visitEnum(String name, String desc, String value) {
+            T.add("e");
+            nameRU.add(name);
+            values.add(desc);
+            values.add(value);
         }
     }
 
     public class SegmentFieldVisitor implements FieldVisitor {
 
-        public AnnotationVisitor visitAnnotation(String arg0, boolean arg1) {
-            return annotationVisitor;
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_FIELD,
+                    desc, visible);
         }
 
         public void visitAttribute(Attribute arg0) {
@@ -298,5 +429,25 @@ public class Segment implements ClassVisitor {
 
     public boolean lastConstantHadWideIndex() {
         return currentClassReader.lastConstantHadWideIndex();
+    }
+
+    public CpBands getCpBands() {
+        return cpBands;
+    }
+
+    public SegmentHeader getSegmentHeader() {
+        return segmentHeader;
+    }
+
+    public AttributeDefinitionBands getAttrBands() {
+        return attributeDefinitionBands;
+    }
+
+    public IcBands getIcBands() {
+        return icBands;
+    }
+
+    public Pack200ClassReader getCurrentClassReader() {
+        return currentClassReader;
     }
 }

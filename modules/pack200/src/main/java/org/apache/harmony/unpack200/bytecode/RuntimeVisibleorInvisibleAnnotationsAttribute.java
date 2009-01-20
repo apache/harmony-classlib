@@ -18,6 +18,8 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Annotations class file attribute, either a RuntimeVisibleAnnotations
@@ -65,5 +67,18 @@ public class RuntimeVisibleorInvisibleAnnotationsAttribute extends
 
     public boolean equals(Object obj) {
         return this == obj;
+    }
+
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        List nested = new ArrayList();
+        nested.add(attributeName);
+        for (int i = 0; i < annotations.length; i++) {
+            nested.addAll(annotations[i].getClassFileEntries());
+        }
+        ClassFileEntry[] nestedEntries = new ClassFileEntry[nested.size()];
+        for (int i = 0; i < nestedEntries.length; i++) {
+            nestedEntries[i] = (ClassFileEntry) nested.get(i);
+        }
+        return nestedEntries;
     }
 }

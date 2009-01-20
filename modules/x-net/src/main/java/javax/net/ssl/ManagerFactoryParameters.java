@@ -15,16 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 /**
- * @com.intel.drl.spec_ref
+ * Common interface for passing parameters to manager factory objects.
  * 
+ * @since 1.4
  */
 public interface ManagerFactoryParameters {
 }

@@ -430,6 +430,31 @@ public class XMLDecoderTest extends TestCase {
         assertEquals(o2, t2.getV());
     }
 
+    public void testSetExceptionListener_Called() throws Exception {
+        class MockExceptionListener implements ExceptionListener {
+
+            private boolean isCalled = false;
+
+            public void exceptionThrown(Exception e) {
+                isCalled = true;
+            }
+
+            public boolean isCalled() {
+                return isCalled;
+            }
+        }
+        
+        XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(
+                "<java><string/>".getBytes("UTF-8")));
+        MockExceptionListener mockListener = new MockExceptionListener();
+        xmlDecoder.setExceptionListener(mockListener);
+        
+        assertFalse(mockListener.isCalled());        
+        // Real Parsing should occur in method of ReadObject rather constructor.
+        assertNotNull(xmlDecoder.readObject());
+        assertTrue(mockListener.isCalled());
+    }
+
     public void testSetExceptionListener() {
         XMLDecoder dec = new XMLDecoder(new ByteArrayInputStream(xml123bytes));
         Object defaultL = dec.getExceptionListener();

@@ -340,6 +340,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="${basedir}/../../${junit.jar}" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
 
         <mkdir dir="${hy.awt.bin.test.classes}" />
@@ -364,6 +365,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="${basedir}/../../${junit.jar}" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
 
     </target>
@@ -430,7 +432,12 @@
             </assertions>
 
             <jvmarg line="${hy.test.vmargs}" />
-            <classpath location="${hy.awt.bin.test.classes}" />
+            <classpath>
+                <pathelement path="${hy.awt.bin.test.classes}" />
+                <fileset dir="${hy.hdk}/build/test/">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
 
             <formatter type="xml" />
 

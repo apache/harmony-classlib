@@ -38,6 +38,7 @@ public class SSLExceptionTest extends SerializationTest {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
+    @Override
     protected Object[] getData() {
         String msg = null;
         Exception cause = new Exception(msgs[1]);

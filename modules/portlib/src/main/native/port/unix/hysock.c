@@ -2489,17 +2489,13 @@ hysock_read (struct HyPortLibrary * portLibrary, hysocket_t sock, U_8 * buf,
   I_32 bytesRec = 0;
 
   bytesRec = recv (SOCKET_CAST (sock), buf, nbyte, flags);
-  if (-1 == bytesRec)
-    {
-      I_32 err = errno;
-      HYSOCKDEBUG ("<recv failed, err=%d>\n", err);
-      return portLibrary->error_set_last_error (portLibrary, err,
-                                                findError (err));
-    }
-  else
-    {
-      return bytesRec;
-    }
+  if (-1 == bytesRec) {
+    I_32 err = errno;
+    HYSOCKDEBUG ("<recv failed, err=%d>\n", err);
+    return portLibrary->error_set_last_error (portLibrary, err, findError(err));
+  } else {
+    return bytesRec;
+  }
 }
 
 #undef CDEV_CURRENT_FUNCTION

@@ -33,22 +33,22 @@ public final class KerberosToolboxImpl implements KerberosToolboxSpi {
         this.kdc = kdc;
     }
     
-    public KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT) {
+    public KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT) throws NotImplementedException {
         // TODO Auto-generated method stub
         throw new NotImplementedException();
     }
 
-    public KerberosTicket getTGT(String clientPrincipalName, char[] password) {
+    public KerberosTicket getTGT(String clientPrincipalName, char[] password) throws NotImplementedException {
         // TODO Auto-generated method stub
         throw new NotImplementedException();
     }
 
-	public KerberosApplicationRequest decodeApplicationRequest(byte[] token) {
+	public KerberosApplicationRequest decodeApplicationRequest(byte[] token) throws NotImplementedException {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
 
-	public byte[] encodeApplicationRequest(KerberosApplicationRequest kerberosApplicationRequest) {
+	public byte[] encodeApplicationRequest(KerberosApplicationRequest kerberosApplicationRequest) throws NotImplementedException {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}

@@ -38,6 +38,7 @@ public class SSLHandshakeExceptionTest extends SerializationTest {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
+    @Override
     protected Object[] getData() {
         return new Object[] { new SSLHandshakeException(null),
                 new SSLHandshakeException(msgs[0]), new SSLHandshakeException(msgs[1]) };

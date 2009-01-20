@@ -39,7 +39,7 @@ import java.io.IOException;
  * above.
  * </p>
  */
-final class OSMemory extends OSComponent implements IMemorySystem {
+final class OSMemory implements IMemorySystem {
 
 	/**
 	 * Defines the size, in bytes, of a native pointer type for the underlying
@@ -70,11 +70,11 @@ final class OSMemory extends OSComponent implements IMemorySystem {
 	}
 
 	/**
-	 * This class is not designed to be publically instantiated.
+	 * This class is not designed to be publicly instantiated.
 	 * 
 	 * @see #getOSMemory()
 	 */
-	OSMemory() {
+	private OSMemory() {
 		super();
 	}
 

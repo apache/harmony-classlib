@@ -748,143 +748,129 @@ hysock_close (struct HyPortLibrary * portLibrary, hysocket_t * sock)
 /* IPv6 - we may have more than one open socket at this point, an IPv6 and an IPv4.  Now
  * that we are connect to a specific address we can determine whether to use the IPv4
  * or IPv6 address and close the other address.
- *
  */
 I_32 VMCALL
-hysock_connect (struct HyPortLibrary * portLibrary, hysocket_t sock,
-		hysockaddr_t addr)
+hysock_connect (struct HyPortLibrary * portLibrary, hysocket_t sock, hysockaddr_t addr)
 {
   I_32 rc = 0;
   DWORD socketType;
-  int socketTypeLen = sizeof (DWORD);
+  int socketTypeLen = sizeof(DWORD);
   byte nAddrBytes[HYSOCK_INADDR6_LEN];
 
-  /* get the socket type, it should be the same for both sockets and one of the two should be open */
-  if (sock->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      if (getsockopt
-	  (sock->ipv4, SOL_SOCKET, SO_TYPE, (char *) &socketType,
-	   &socketTypeLen) == SOCKET_ERROR)
-	{
-	  rc = WSAGetLastError ();
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
+  /* Get the socket type.  It should be the same for both sockets
+   * and one of the two should be open.
+   */
+  if (sock->flags & SOCKET_IPV4_OPEN_MASK) {
+    if (getsockopt(sock->ipv4, SOL_SOCKET, SO_TYPE,
+          (char *) &socketType, &socketTypeLen) == SOCKET_ERROR) {
+      rc = WSAGetLastError();
+      return portLibrary->error_set_last_error(portLibrary, rc, findError(rc));
     }
-  else
-    {
-      if (getsockopt
-	  (sock->ipv6, SOL_SOCKET, SO_TYPE, (char *) &socketType,
-	   &socketTypeLen) == SOCKET_ERROR)
-	{
-	  rc = WSAGetLastError ();
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
+  } else {
+    if (getsockopt(sock->ipv6, SOL_SOCKET, SO_TYPE,
+        (char *) &socketType, &socketTypeLen) == SOCKET_ERROR) {
+      rc = WSAGetLastError();
+      return portLibrary->error_set_last_error(portLibrary, rc, findError(rc));
     }
+  }
 
-  /* here we need to do the connect based on the type of addressed passed in as well as the sockets which are open. If 
-     a socket with a type that matches the type of the address passed in is open then we use that one.  Otherwise we
-     use the socket that is open */
+  /* Here we need to do the connect based on the type of address
+   * passed in as well as the sockets which are open.
+   * If a socket with a type that matches the type of the address
+   * passed in is open then we use that one.  Otherwise we use the
+   * socket that is open.
+   */
   if (((((OSSOCKADDR *) & addr->addr)->sin_family != OS_AF_UNSPEC) &&
-       ((((OSSOCKADDR *) & addr->addr)->sin_family == OS_AF_INET4) ||
-	!(sock->flags & SOCKET_IPV6_OPEN_MASK)) &&
-       (sock->flags & SOCKET_IPV4_OPEN_MASK)))
-    {
-      rc =
-	connect (sock->ipv4, (const struct sockaddr FAR *) &addr->addr,
-		 sizeof (addr->addr));
-      if (socketType != SOCK_DGRAM)
-	{
-	  internalCloseSocket (portLibrary, sock, FALSE);
-	}
-      else
-	{
-	  /* we don't acutally want to close the sockets as connect can be called again on a datagram socket  but we 
-	     still need to set the flag that tells us which socket to use */
-	  sock->flags = sock->flags | SOCKET_USE_IPV4_MASK;
-	}
+      ((((OSSOCKADDR *) & addr->addr)->sin_family == OS_AF_INET4) ||
+      !(sock->flags & SOCKET_IPV6_OPEN_MASK)) &&
+       (sock->flags & SOCKET_IPV4_OPEN_MASK))) {
+
+    rc = connect(sock->ipv4, (const struct sockaddr FAR *) &addr->addr,
+                 sizeof (addr->addr));
+
+    if (socketType != SOCK_DGRAM) {
+      internalCloseSocket(portLibrary, sock, FALSE);
+    } else {
+      /* We don't acutally want to close the sockets as connect can
+       * be called again on a datagram socket  but we still need to
+       * set the flag that tells us which socket to use.
+       */
+      sock->flags = sock->flags | SOCKET_USE_IPV4_MASK;
     }
-  else if (((OSSOCKADDR *) & addr->addr)->sin_family == OS_AF_INET6)
-    {
-      rc =
-	connect (sock->ipv6, (const struct sockaddr FAR *) &addr->addr,
-		 sizeof (addr->addr));
-      if (socketType != SOCK_DGRAM)
-	{
-	  internalCloseSocket (portLibrary, sock, TRUE);
-	}
-      else
-	{
-	  /* we don't acutally want to close the sockets as connect can be called again on a datagram socket  but we 
-	     still need to set the flag that tells us which socket to use. */
-	  sock->flags = sock->flags & ~SOCKET_USE_IPV4_MASK;
-	}
+  } else if (((OSSOCKADDR *) & addr->addr)->sin_family == OS_AF_INET6) {
+    rc = connect(sock->ipv6, (const struct sockaddr FAR *) &addr->addr,
+                 sizeof (addr->addr));
+    if (socketType != SOCK_DGRAM) {
+      internalCloseSocket(portLibrary, sock, TRUE);
+    } else {
+      /* We don't acutally want to close the sockets as connect can
+       * be called again on a datagram socket  but we still need to
+       * set the flag that tells us which socket to use.
+       */
+      sock->flags = sock->flags & ~SOCKET_USE_IPV4_MASK;
     }
-  else
-    {
-      if (socketType != SOCK_DGRAM)
-	{
-	  /* this should never occur */
-	  return HYPORT_ERROR_SOCKET_BADAF;
-	}
-
-      /* for windows it seems to want to have it connect with an IN_ADDR any instead of with an 
-         UNSPEC familty type so lets be accomodating */
-
-      /* we need to disconnect on both sockets and swallow any expected errors */
-      memset (nAddrBytes, 0, HYSOCK_INADDR6_LEN);
-      if (sock->flags & SOCKET_IPV4_OPEN_MASK)
-	{
-	  hysock_sockaddr_init6 (portLibrary, addr, (U_8 *) nAddrBytes,
-				 HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4, 0,
-				 0, 0, sock);
-	  rc =
-	    connect (sock->ipv4, (const struct sockaddr FAR *) &addr->addr,
-		     sizeof (addr->addr));
-	}
-
-      /* filter out acceptable errors */
-      if (rc == SOCKET_ERROR)
-	{
-	  rc = WSAGetLastError ();
-	  if (rc == WSAEAFNOSUPPORT || rc == WSAEADDRNOTAVAIL)
-	    {
-	      rc = 0;
-	    }
-	}
-
-      if (rc == 0 && sock->flags & SOCKET_IPV6_OPEN_MASK)
-	{
-	  hysock_sockaddr_init6 (portLibrary, addr, (U_8 *) nAddrBytes,
-				 HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET6, 0,
-				 0, 0, sock);
-	  connect (sock->ipv6, (const struct sockaddr FAR *) &addr->addr,
-		   sizeof (addr->addr));
-	}
+  } else {
+    if (socketType != SOCK_DGRAM) {
+      /* This should never occur. */
+      return HYPORT_ERROR_SOCKET_BADAF;
     }
 
-  if (rc == SOCKET_ERROR)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<connect failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_ALREADYBOUND);
-	case WSAEAFNOSUPPORT:
-	  /* if it is a SOCK_DGRAM this is ok as posix says this may be returned when disconnecting */
-	  if (socketType == SOCK_DGRAM)
-	    {
-	      return 0;
-	    }
-	  /* no break here as default is what we want if we do not return above */
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
+    /* For windows it seems to want to have it connect with an
+     * IN_ADDR any instead of with an UNSPEC family type, so
+     * lets be accommodating.
+     */
+
+    /* We need to connect on both sockets and swallow any
+     * expected errors.
+     */
+    memset(nAddrBytes, 0, HYSOCK_INADDR6_LEN);
+    if (sock->flags & SOCKET_IPV4_OPEN_MASK) {
+      hysock_sockaddr_init6(portLibrary, addr, (U_8 *) nAddrBytes,
+                            HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET4,
+                            0, 0, 0, sock);
+      rc = connect(sock->ipv4, (const struct sockaddr FAR *) &addr->addr,
+                   sizeof (addr->addr));
     }
+
+    /* Filter out acceptable errors */
+    if (rc == SOCKET_ERROR) {
+      rc = WSAGetLastError();
+      if (rc == WSAEAFNOSUPPORT || rc == WSAEADDRNOTAVAIL) {
+        rc = 0;
+      }
+    }
+
+    if (rc == 0 && sock->flags & SOCKET_IPV6_OPEN_MASK) {
+      hysock_sockaddr_init6(portLibrary, addr, (U_8 *) nAddrBytes,
+                            HYSOCK_INADDR_LEN, HYADDR_FAMILY_AFINET6,
+                              0, 0, 0, sock);
+      connect(sock->ipv6, (const struct sockaddr FAR *) &addr->addr,
+              sizeof (addr->addr));
+    }
+  }
+
+  if (rc == SOCKET_ERROR) {
+    rc = WSAGetLastError();
+    HYSOCKDEBUG ("<connect failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+        return portLibrary->error_set_last_error(
+          portLibrary, rc, HYPORT_ERROR_SOCKET_ALREADYBOUND);
+      case WSAEAFNOSUPPORT :
+        /* If it is a SOCK_DGRAM this is ok as posix says
+         * this may be returned when disconnecting.
+         */
+        if (socketType == SOCK_DGRAM) {
+          return 0;
+        }
+        /* No break here as default is what we want if we
+         * do not return above.
+         */
+     default :
+       return portLibrary->error_set_last_error(
+         portLibrary, rc, findError(rc));
+    }
+  }
   return rc;
 }
 
@@ -2457,41 +2443,35 @@ hysock_read (struct HyPortLibrary * portLibrary, hysocket_t sock, U_8 * buf,
   I_32 bytesRec = 0;
   int socketTypeLen = sizeof (DWORD);
 
-  if (sock->flags & SOCKET_USE_IPV4_MASK
-      || !(sock->flags & SOCKET_IPV6_OPEN_MASK))
-    {
-      bytesRec = recv (sock->ipv4, (char *) buf, nbyte, flags);
-    }
-  else
-    {				/* If IPv6 is open */
-      bytesRec = recv (sock->ipv6, (char *) buf, nbyte, flags);
-    }
+  if (sock->flags & SOCKET_USE_IPV4_MASK ||
+     !(sock->flags & SOCKET_IPV6_OPEN_MASK)) {
 
-  if (SOCKET_ERROR == bytesRec)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<recv failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_NOTBOUND);
-	case WSAEMSGSIZE:
-	  rc =
-	    portLibrary->error_set_last_error (portLibrary, rc, WSAEMSGSIZE);
-	  if (flags == MSG_PEEK)
-	    {
-	      return nbyte;
-	    }
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
-    }
-  else
-    {
-      rc = bytesRec;
-    }
+      bytesRec = recv (sock->ipv4, (char *) buf, nbyte, flags);
+  } else {
+      /* If IPv6 is open */
+      bytesRec = recv (sock->ipv6, (char *) buf, nbyte, flags);
+  }
+
+  if (SOCKET_ERROR == bytesRec) {
+    rc = WSAGetLastError();
+    HYSOCKDEBUG ("<recv failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+        return portLibrary->error_set_last_error (
+            portLibrary, rc, HYPORT_ERROR_SOCKET_NOTBOUND);
+      case WSAEMSGSIZE :
+        rc = portLibrary->error_set_last_error (portLibrary, rc, WSAEMSGSIZE);
+        if (flags == MSG_PEEK) {
+            return nbyte;
+        }
+      default :
+        return portLibrary->error_set_last_error (
+            portLibrary, rc, findError (rc));
+      }
+  } else {
+    rc = bytesRec;
+  }
+
   return rc;
 }
 
@@ -2613,43 +2593,30 @@ hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
   I_32 rc = 0;
   I_32 result = 0;
 
-  if (NULL == timeout)
-    {
-      result =
-	select (nfds, &readfds->handle, &writefds->handle, &exceptfds->handle,
-		NULL);
-    }
-  else
-    {
-      result =
-	select (nfds, &readfds->handle, &writefds->handle, &exceptfds->handle,
-		&timeout->time);
-    }
-  if (SOCKET_ERROR == result)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<select failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_INVALIDTIMEOUT);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
+  if (NULL == timeout) {
+    result =
+	  select(nfds, &readfds->handle, &writefds->handle, &exceptfds->handle, NULL);
+  } else {
+    result =
+	  select(nfds, &readfds->handle, &writefds->handle, &exceptfds->handle, &timeout->time);
+  }
+  if (SOCKET_ERROR == result) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<select failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+        return portLibrary->error_set_last_error(
+          portLibrary, rc, HYPORT_ERROR_SOCKET_INVALIDTIMEOUT);
+      default :
+        return portLibrary->error_set_last_error (portLibrary, rc, findError (rc));
 	}
+  } else {
+    if (0 == result) {
+      rc = HYPORT_ERROR_SOCKET_TIMEOUT;
+    } else {
+      rc = result;
     }
-  else
-    {
-      if (0 == result)
-	{
-	  rc = HYPORT_ERROR_SOCKET_TIMEOUT;
-	}
-      else
-	{
-	  rc = result;
-	}
-    }
+  }
   return rc;
 }
 
@@ -2781,38 +2748,35 @@ hysock_set_nonblocking (struct HyPortLibrary * portLibrary,
   I_32 rc = 0;
   U_32 param = nonblocking;
 
-  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,
-     then we set it just on that one.  */
+  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.
+   * If only one is open, then we set it just on that one.
+   */
+  if (socketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    rc = ioctlsocket (socketP->ipv4, FIONBIO, &param);
+  }
 
-  if (socketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      rc = ioctlsocket (socketP->ipv4, FIONBIO, &param);
-    }
+  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    rc = ioctlsocket (socketP->ipv6, FIONBIO, &param);
+  }
 
-  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      rc = ioctlsocket (socketP->ipv6, FIONBIO, &param);
+  if (rc != 0) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<set_nonblocking (for bool) failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
+          HYPORT_ERROR_SOCKET_OPTARGSINVALID);
+        default :
+	        return portLibrary->error_set_last_error (portLibrary, rc,
+            findError (rc));
     }
-
-  if (rc != 0)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<set_nonblocking (for bool) failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    HYPORT_ERROR_SOCKET_OPTARGSINVALID);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
-						    findError (rc));
-	}
-    }
+  }
 
   return rc;
 }
 
 #undef CDEV_CURRENT_FUNCTION
+
 
 #define CDEV_CURRENT_FUNCTION hysock_setflag
 /**
@@ -2871,51 +2835,42 @@ hysock_setopt_bool (struct HyPortLibrary * portLibrary, hysocket_t socketP,
   BOOL option = (BOOL) * optval;
   I_32 optlen = sizeof (option);
 
-  if (0 > platformLevel)
-    {
-      return platformLevel;
-    }
-  if (0 > platformOption)
-    {
-      return platformOption;
-    }
+  if (0 > platformLevel) {
+    return platformLevel;
+  }
+  if (0 > platformOption) {
+    return platformOption;
+  }
 
-  /* If both the IPv4 and IPv6 socket are open then we want to set the option on both.  If only one is open,
-     then we set it just on that one.  */
-
-  if (socketP->flags & SOCKET_IPV4_OPEN_MASK)
-    {
-      rc =
-	setsockopt (socketP->ipv4, platformLevel, platformOption,
-		    (char *) &option, optlen);
-    }
-  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK)
-    {
-      if ((platformOption == IP_MULTICAST_LOOP)
-	  && (platformLevel == OS_IPPROTO_IP))
-	{
-	  platformLevel = IPPROTO_IPV6;
-	  platformOption = IPV6_MULTICAST_LOOP;
-	}
-      rc =
-	setsockopt (socketP->ipv6, platformLevel, platformOption,
+  /* If both the IPv4 and IPv6 socket are open then we want to set the
+   * option on both.  If only one is open, then we set it just on that one.
+   */
+  if (socketP->flags & SOCKET_IPV4_OPEN_MASK) {
+    rc = setsockopt(socketP->ipv4, platformLevel, platformOption,
+		  (char *) &option, optlen);
+  }
+  if (rc == 0 && socketP->flags & SOCKET_IPV6_OPEN_MASK) {
+    if ((platformOption == IP_MULTICAST_LOOP) &&
+        (platformLevel == OS_IPPROTO_IP)) {
+      platformLevel = IPPROTO_IPV6;
+	    platformOption = IPV6_MULTICAST_LOOP;
+	  }
+    rc = setsockopt(socketP->ipv6, platformLevel, platformOption,
 		    (char *) &option, optlen);
     }
 
-  if (rc != 0)
-    {
-      rc = WSAGetLastError ();
-      HYSOCKDEBUG ("<setsockopt (for bool) failed, err=%d>\n", rc);
-      switch (rc)
-	{
-	case WSAEINVAL:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
+  if (rc != 0) {
+    rc = WSAGetLastError ();
+    HYSOCKDEBUG ("<setsockopt (for bool) failed, err=%d>\n", rc);
+    switch (rc) {
+      case WSAEINVAL :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
 						    HYPORT_ERROR_SOCKET_OPTARGSINVALID);
-	default:
-	  return portLibrary->error_set_last_error (portLibrary, rc,
+	    default :
+	      return portLibrary->error_set_last_error (portLibrary, rc,
 						    findError (rc));
-	}
-    }
+	  }
+  }
 
   return rc;
 }

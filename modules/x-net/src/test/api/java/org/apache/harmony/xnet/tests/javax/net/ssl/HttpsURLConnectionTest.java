@@ -112,6 +112,7 @@ class MyHttpsURLConnection extends HttpsURLConnection {
     /*
      * @see javax.net.ssl.HttpsURLConnection#getCipherSuite()
      */
+    @Override
     public String getCipherSuite() {
         return null;
     }
@@ -119,6 +120,7 @@ class MyHttpsURLConnection extends HttpsURLConnection {
     /*
      * @see javax.net.ssl.HttpsURLConnection#getLocalCertificates()
      */
+    @Override
     public Certificate[] getLocalCertificates() {
         return null;
     }
@@ -126,6 +128,7 @@ class MyHttpsURLConnection extends HttpsURLConnection {
     /*
      * @see javax.net.ssl.HttpsURLConnection#getServerCertificates()
      */
+    @Override
     public Certificate[] getServerCertificates()
             throws SSLPeerUnverifiedException {
         return null;
@@ -134,12 +137,14 @@ class MyHttpsURLConnection extends HttpsURLConnection {
     /*
      * @see java.net.HttpURLConnection#disconnect()
      */
+    @Override
     public void disconnect() {
     }
 
     /*
      * @see java.net.HttpURLConnection#usingProxy()
      */
+    @Override
     public boolean usingProxy() {
         return false;
     }
@@ -147,6 +152,7 @@ class MyHttpsURLConnection extends HttpsURLConnection {
     /*
      * @see java.net.URLConnection#connect()
      */
+    @Override
     public void connect() throws IOException {
     }
 

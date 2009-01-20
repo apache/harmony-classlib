@@ -691,8 +691,7 @@ public class KeyStore {
 
                     
                     isGetKeyStore = true;
-                    keyStore = ks;
-                    return keyStore;
+                    return ks;
                 } catch (KeyStoreException e) {
                     // Store exception
                     throw lastException = e;

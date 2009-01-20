@@ -157,3 +157,21 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   
   return (jlong) mapAddress;
 }
+
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getCharArray
+  (JNIEnv * env, jobject thiz, jlong address, jcharArray jdest, jint offset, jint length)
+{
+  jboolean isCopy;
+  jchar *dest = (*env)->GetCharArrayElements (env, jdest, &isCopy);
+  memcpy (dest + offset, (const void *) address, (size_t) length);
+  (*env)->ReleaseCharArrayElements (env, jdest, dest, 0);
+}
+
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setCharArray
+  (JNIEnv * env, jobject thiz, jlong address, jcharArray jsrc, jint offset, jint length)
+{
+  jboolean isCopy;
+  jchar *src = (*env)->GetCharArrayElements (env, jsrc, &isCopy);
+  memcpy ((void *) address, (const jchar *) src + offset, (size_t) length);
+  (*env)->ReleaseCharArrayElements (env, jsrc, src, JNI_ABORT);
+}

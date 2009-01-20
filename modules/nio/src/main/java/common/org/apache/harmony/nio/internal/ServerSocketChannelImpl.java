@@ -32,7 +32,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.net.SocketImplProvider;
+import org.apache.harmony.luni.net.PlainSocketImpl;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.Platform;
 
@@ -42,10 +42,6 @@ import org.apache.harmony.luni.platform.Platform;
 public class ServerSocketChannelImpl extends ServerSocketChannel implements
         FileDescriptorHandler {
 
-    // ----------------------------------------------------
-    // Class variables
-    // ----------------------------------------------------
-
     // status un-init, not initialized.
     private static final int SERVER_STATUS_UNINIT = -1;
 
@@ -54,10 +50,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
 
     // status closed.
     private static final int SERVER_STATUS_CLOSED = 1;
-
-    // -------------------------------------------------------------------
-    // Instance variables
-    // -------------------------------------------------------------------
 
     // The fd to interact with native code
     private final FileDescriptor fd;
@@ -76,10 +68,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     private static class AcceptLock {}
     private final Object acceptLock = new AcceptLock();
 
-    // ----------------------------------------------------
-    // Constructor
-    // ----------------------------------------------------
-
     /*
      * Constructor
      */
@@ -87,9 +75,9 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         super(sp);
         status = SERVER_STATUS_OPEN;
         fd = new FileDescriptor();
-        Platform.getNetworkSystem().createServerStreamSocket(fd,
+        Platform.getNetworkSystem().createStreamSocket(fd,
                 NetUtil.preferIPv4Stack());
-        impl = SocketImplProvider.getServerSocketImpl(fd);
+        impl = new PlainSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
     }
     
@@ -99,14 +87,10 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         super(SelectorProvider.provider());
         status = SERVER_STATUS_OPEN;
         fd = new FileDescriptor();
-        impl = SocketImplProvider.getServerSocketImpl(fd);        
+        impl = new PlainSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
         isBound = false;
     }
-
-    // ----------------------------------------------------
-    // Methods
-    // ----------------------------------------------------
 
     /*
      * Getting the internal Socket If we have not the socket, we create a new
@@ -168,10 +152,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         return sockChannel;
     }
 
-    // -------------------------------------------------------------------
-    // Protected inherited methods
-    // -------------------------------------------------------------------
-
     /*
      * @see java.nio.channels.spi.AbstractSelectableChannel#implConfigureBlocking
      * 
@@ -201,10 +181,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     public FileDescriptor getFD() {
         return fd;
     }
-
-    // ----------------------------------------------------
-    // Adapter classes.
-    // ----------------------------------------------------
 
     /*
      * The adapter class of ServerSocket.

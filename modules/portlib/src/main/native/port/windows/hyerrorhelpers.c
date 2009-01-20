@@ -101,6 +101,7 @@ errorMessage (struct HyPortLibrary *portLibrary, I_32 errorCode)
   rc =
     MultiByteToWideChar (CP_ACP, MB_PRECOMPOSED, buffer, -1, ubuffer,
 			 HYERROR_DEFAULT_BUFFER_SIZE);
+
   if (rc == 0)
     {
       const char *format;
@@ -142,16 +143,16 @@ errorMessage (struct HyPortLibrary *portLibrary, I_32 errorCode)
 	{
 	  if ((out + 3) >= HYERROR_DEFAULT_BUFFER_SIZE)
 	    break;
-	  message[out++] = (char) (0x80 | (ch & 0x3f));
 	  message[out++] = (char) (0xc0 | (ch >> 6));
+	  message[out++] = (char) (0x80 | (ch & 0x3f));
 	}
       else
 	{
 	  if ((out + 4) >= HYERROR_DEFAULT_BUFFER_SIZE)
 	    break;
-	  message[out++] = (char) (0x80 | (ch & 0x3f));
-	  message[out++] = (char) (0x80 | ((ch >> 6) & 0x3f));
 	  message[out++] = (char) (0xe0 | (ch >> 12));
+	  message[out++] = (char) (0x80 | ((ch >> 6) & 0x3f));
+	  message[out++] = (char) (0x80 | (ch & 0x3f));
 	}
     }
   message[out] = '\0';

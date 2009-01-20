@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
-
 package org.apache.harmony.xnet.provider.jsse;
 
 import org.apache.harmony.xnet.provider.jsse.AlertException;
@@ -79,7 +74,7 @@ public class SSLSocketImpl extends SSLSocket {
     protected InputStream input;
     protected OutputStream output;
     // handshake complete listeners
-    private ArrayList listeners;
+    private ArrayList<HandshakeCompletedListener> listeners;
     // logger
     private Logger.Stream logger = Logger.getStream("socket");
 
@@ -211,6 +206,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getSupportedCipherSuites()
      * method documentation for more information
      */
+    @Override
     public String[] getSupportedCipherSuites() {
         return CipherSuite.getSupportedCipherSuiteNames();
     }
@@ -220,6 +216,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getEnabledCipherSuites()
      * method documentation for more information
      */
+    @Override
     public String[] getEnabledCipherSuites() {
         return sslParameters.getEnabledCipherSuites();
     }
@@ -229,6 +226,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[])
      * method documentation for more information
      */
+    @Override
     public void setEnabledCipherSuites(String[] suites) {
         sslParameters.setEnabledCipherSuites(suites);
     }
@@ -238,8 +236,9 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getSupportedProtocols()
      * method documentation for more information
      */
+    @Override
     public String[] getSupportedProtocols() {
-        return (String[]) ProtocolVersion.supportedProtocols.clone();
+        return ProtocolVersion.supportedProtocols.clone();
     }
 
     /**
@@ -247,6 +246,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getEnabledProtocols()
      * method documentation for more information
      */
+    @Override
     public String[] getEnabledProtocols() {
         return sslParameters.getEnabledProtocols();
     }
@@ -256,6 +256,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setEnabledProtocols(String[])
      * method documentation for more information
      */
+    @Override
     public void setEnabledProtocols(String[] protocols) {
         sslParameters.setEnabledProtocols(protocols);
     }
@@ -265,6 +266,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setUseClientMode(boolean)
      * method documentation for more information
      */
+    @Override
     public void setUseClientMode(boolean mode) {
         if (handshake_started) {
             throw new IllegalArgumentException(
@@ -278,6 +280,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getUseClientMode()
      * method documentation for more information
      */
+    @Override
     public boolean getUseClientMode() {
         return sslParameters.getUseClientMode();
     }
@@ -287,6 +290,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setNeedClientAuth(boolean)
      * method documentation for more information
      */
+    @Override
     public void setNeedClientAuth(boolean need) {
         sslParameters.setNeedClientAuth(need);
     }
@@ -296,6 +300,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getNeedClientAuth()
      * method documentation for more information
      */
+    @Override
     public boolean getNeedClientAuth() {
         return sslParameters.getNeedClientAuth();
     }
@@ -305,6 +310,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setWantClientAuth(boolean)
      * method documentation for more information
      */
+    @Override
     public void setWantClientAuth(boolean want) {
         sslParameters.setWantClientAuth(want);
     }
@@ -314,6 +320,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getWantClientAuth()
      * method documentation for more information
      */
+    @Override
     public boolean getWantClientAuth() {
         return sslParameters.getWantClientAuth();
     }
@@ -323,6 +330,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#setEnableSessionCreation(boolean)
      * method documentation for more information
      */
+    @Override
     public void setEnableSessionCreation(boolean flag) {
         sslParameters.setEnableSessionCreation(flag);
     }
@@ -332,6 +340,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getEnableSessionCreation()
      * method documentation for more information
      */
+    @Override
     public boolean getEnableSessionCreation() {
         return sslParameters.getEnableSessionCreation();
     }
@@ -343,6 +352,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getSession()
      * method documentation for more information
      */
+    @Override
     public SSLSession getSession() {
         if (!handshake_started) {
             try {
@@ -361,13 +371,14 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#addHandshakeCompletedListener(HandshakeCompletedListener)
      * method documentation for more information
      */
+    @Override
     public void addHandshakeCompletedListener(
             HandshakeCompletedListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("Provided listener is null");
         }
         if (listeners == null) {
-            listeners = new ArrayList();
+            listeners = new ArrayList<HandshakeCompletedListener>();
         }
         listeners.add(listener);
     }
@@ -377,6 +388,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#removeHandshakeCompletedListener(HandshakeCompletedListener)
      * method documentation for more information
      */
+    @Override
     public void removeHandshakeCompletedListener(
             HandshakeCompletedListener listener) {
         if (listener == null) {
@@ -401,6 +413,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#startHandshake()
      * method documentation for more information
      */
+    @Override
     public void startHandshake() throws IOException {
         if (appDataIS == null) {
             throw new IOException("Socket is not connected.");
@@ -450,6 +463,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getInputStream()
      * method documentation for more information
      */
+    @Override
     public InputStream getInputStream() throws IOException {
         if (socket_was_closed) {
             throw new IOException("Socket has already been closed.");
@@ -462,6 +476,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#getOutputStream()
      * method documentation for more information
      */
+    @Override
     public OutputStream getOutputStream() throws IOException {
         if (socket_was_closed) {
             throw new IOException("Socket has already been closed.");
@@ -474,6 +489,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see java.net.Socket#connect(SocketAddress)
      * method documentation for more information
      */
+    @Override
     public void connect(SocketAddress endpoint) throws IOException {
         super.connect(endpoint);
         init();
@@ -484,6 +500,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see java.net.Socket#connect(SocketAddress,int)
      * method documentation for more information
      */
+    @Override
     public void connect(SocketAddress endpoint, int timeout) 
             throws IOException {
         super.connect(endpoint, timeout);
@@ -495,6 +512,7 @@ public class SSLSocketImpl extends SSLSocket {
      * @see javax.net.ssl.SSLSocket#close()
      * method documentation for more information
      */
+    @Override
     public void close() throws IOException {
         if (logger != null) {
             logger.println("SSLSocket.close "+socket_was_closed);
@@ -517,6 +535,7 @@ public class SSLSocketImpl extends SSLSocket {
     /**
      * This method is not supported for SSLSocket implementation.
      */
+    @Override
     public void sendUrgentData(int data) throws IOException {
         throw new SocketException(
                 "Method sendUrgentData() is not supported.");
@@ -525,6 +544,7 @@ public class SSLSocketImpl extends SSLSocket {
     /**
      * This method is not supported for SSLSocket implementation.
      */
+    @Override
     public void setOOBInline(boolean on) throws SocketException {
         throw new SocketException(
                 "Methods sendUrgentData, setOOBInline are not supported.");
@@ -533,6 +553,7 @@ public class SSLSocketImpl extends SSLSocket {
     /**
      * This method is not supported for SSLSocket implementation.
      */
+    @Override
     public void shutdownOutput() {
         throw new UnsupportedOperationException(
                 "Method shutdownOutput() is not supported.");
@@ -541,6 +562,7 @@ public class SSLSocketImpl extends SSLSocket {
     /**
      * This method is not supported for SSLSocket implementation.
      */
+    @Override
     public void shutdownInput() {
         throw new UnsupportedOperationException(
                 "Method shutdownInput() is not supported.");
@@ -549,6 +571,7 @@ public class SSLSocketImpl extends SSLSocket {
     /**
      * Returns the string representation of the object.
      */
+    @Override
     public String toString() {
         return "[SSLSocketImpl]";
     }
@@ -770,7 +793,7 @@ public class SSLSocketImpl extends SSLSocket {
                 new HandshakeCompletedEvent(this, session);
             int size = listeners.size();
             for (int i=0; i<size; i++) {
-                ((HandshakeCompletedListener)listeners.get(i))
+                listeners.get(i)
                     .handshakeCompleted(event);
             }
         }
@@ -789,21 +812,21 @@ public class SSLSocketImpl extends SSLSocket {
                 + alertProtocol.getAlertDescription();
             shutdown();
             throw new SSLException(description);
-        } else {
-            if (logger != null) {
-                logger.println("Warning alert received: "
-                    + alertProtocol.getAlertDescription());
-            }
-            switch(alertProtocol.getDescriptionCode()) {
-                case AlertProtocol.CLOSE_NOTIFY:
-                    alertProtocol.setProcessed();
-                    appDataIS.setEnd();
-                    close();
-                    return;
-                default:
-                    alertProtocol.setProcessed();
-                // TODO: process other warning messages
-            }
+        }
+        
+        if (logger != null) {
+            logger.println("Warning alert received: "
+                + alertProtocol.getAlertDescription());
+        }
+        switch(alertProtocol.getDescriptionCode()) {
+            case AlertProtocol.CLOSE_NOTIFY:
+                alertProtocol.setProcessed();
+                appDataIS.setEnd();
+                close();
+                return;
+            default:
+                alertProtocol.setProcessed();
+            // TODO: process other warning messages
         }
     }
     

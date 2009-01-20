@@ -43,7 +43,7 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * A concrete connected-socket implementation.
  */
-class PlainSocketImpl extends SocketImpl {
+public class PlainSocketImpl extends SocketImpl {
 
     // Const copy from socket
 
@@ -89,6 +89,27 @@ class PlainSocketImpl extends SocketImpl {
         fd = new FileDescriptor();
     }
 
+    public PlainSocketImpl(FileDescriptor fd) {
+        super();
+        this.fd = fd;
+    }
+    
+    /**
+     * creates an instance with specified proxy.
+     */
+    public PlainSocketImpl(Proxy proxy) {
+        this();
+        this.proxy = proxy;
+    }
+    
+    public PlainSocketImpl(FileDescriptor fd, int localport, InetAddress addr, int port) {
+        super();
+        this.fd = fd;
+        this.localport = localport;
+        this.address = addr;
+        this.port = port;
+    }
+    
     @Override
     protected void accept(SocketImpl newImpl) throws IOException {
         if (NetUtil.usingSocks(proxy)) {
@@ -154,7 +175,7 @@ class PlainSocketImpl extends SocketImpl {
 
     @Override
     protected void bind(InetAddress anAddr, int aPort) throws IOException {
-        netImpl.bind(fd, aPort, anAddr);
+        netImpl.bind(fd, anAddr, aPort);
         // PlainSocketImpl2.socketBindImpl2(fd, aPort, anAddr);
         address = anAddr;
         if (0 != aPort) {
@@ -207,9 +228,8 @@ class PlainSocketImpl extends SocketImpl {
      */
     private void connect(InetAddress anAddr, int aPort, int timeout)
             throws IOException {
-        InetAddress normalAddr = anAddr.isAnyLocalAddress() ? InetAddress
-                .getLocalHost() : anAddr;
-
+        
+        InetAddress normalAddr = anAddr.isAnyLocalAddress() ? InetAddress.getLocalHost() : anAddr;
         try {
             if (streaming) {
                 if (NetUtil.usingSocks(proxy)) {
@@ -534,16 +554,16 @@ class PlainSocketImpl extends SocketImpl {
         if (shutdownInput) {
             return -1;
         }
-        try {
-            int read = netImpl.receiveStream(fd, buffer, offset, count,
-                    receiveTimeout);
-            if (read == -1) {
-                shutdownInput = true;
-            }
-            return read;
-        } catch (InterruptedIOException e) {
-            throw new SocketTimeoutException(e.getMessage());
+        int read = netImpl.read(fd, buffer, offset, count, receiveTimeout);
+        // Return of zero bytes for a blocking socket means a timeout occurred
+        if (read == 0) {
+            throw new SocketTimeoutException();
         }
+        // Return of -1 indicates the peer was closed
+        if (read == -1) {
+            shutdownInput = true;
+        }
+        return read;
     }
 
     int write(byte[] buffer, int offset, int count) throws IOException {
@@ -551,6 +571,6 @@ class PlainSocketImpl extends SocketImpl {
             return netImpl.sendDatagram2(fd, buffer, offset, count, port,
                     address);
         }
-        return netImpl.sendStream(fd, buffer, offset, count);
+        return netImpl.write(fd, buffer, offset, count);
     }
 }

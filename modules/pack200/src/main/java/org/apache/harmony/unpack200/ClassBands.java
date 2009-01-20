@@ -308,7 +308,7 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5, methodAttrCounts);
         int callCount = getCallCount(methodAttrIndexes, methodFlags,
                 AttributeLayout.CONTEXT_METHOD);
-        methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5,
+        methodAttrCalls = decodeBandInt("method_attr_calls", in, Codec.UNSIGNED5,
                 callCount);
 
         // assign empty method attributes
@@ -679,6 +679,7 @@ public class ClassBands extends BandSet {
                         IcTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
                             if (icAll[k].getC().equals(icTupleC)) {
+                                icTupleF = icAll[k].getF();
                                 icTupleC2 = icAll[k].getC2();
                                 icTupleN = icAll[k].getN();
                                 break;

@@ -32,7 +32,7 @@ public class InvalidPreferencesFormatExceptionTest extends TestCase {
      */
     public void testInvalidPreferencesFormatExceptionString() {
         InvalidPreferencesFormatException e = new InvalidPreferencesFormatException(
-                "msg");
+        "msg");
         assertNull(e.getCause());
         assertEquals("msg", e.getMessage());
     }
@@ -69,7 +69,7 @@ public class InvalidPreferencesFormatExceptionTest extends TestCase {
     public void testSerializationSelf() throws Exception {
 
         SerializationTest.verifySelf(new InvalidPreferencesFormatException(
-                "msg"));
+        "msg"));
     }
 
     /**

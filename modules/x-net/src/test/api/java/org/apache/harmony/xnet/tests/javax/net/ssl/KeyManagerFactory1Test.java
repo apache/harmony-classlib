@@ -31,7 +31,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.KeyManagerFactorySpi;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MyKeyManagerFactorySpi;
 import junit.framework.TestCase;
 

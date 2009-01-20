@@ -27,41 +27,43 @@ import junit.framework.TestCase;
  */
 public class NodeChangeListenerTest extends TestCase {
 
-	NodeChangeListener l;
+    NodeChangeListener l;
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		l = new NodeChangeListenerImpl();
-	}
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        l = new NodeChangeListenerImpl();
+    }
 
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    /*
+     * @see TestCase#tearDown()
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	public void testChildAdded() {
-		l.childAdded(new NodeChangeEvent(Preferences.userRoot(), Preferences
-				.userRoot()));
-	}
+    public void testChildAdded() {
+        l.childAdded(new NodeChangeEvent(Preferences.userRoot(), Preferences
+                .userRoot()));
+    }
 
-	public void testChildRemoved() {
-		l.childRemoved(new NodeChangeEvent(Preferences.userRoot(), Preferences
-				.userRoot()));
-	}
+    public void testChildRemoved() {
+        l.childRemoved(new NodeChangeEvent(Preferences.userRoot(), Preferences
+                .userRoot()));
+    }
 
-	public static class NodeChangeListenerImpl implements NodeChangeListener {
+    public static class NodeChangeListenerImpl implements NodeChangeListener {
 
-		public void childAdded(NodeChangeEvent e) {
-		}
+        public void childAdded(NodeChangeEvent e) {
+        }
 
-		public void childRemoved(NodeChangeEvent e) {
-		}
+        public void childRemoved(NodeChangeEvent e) {
+        }
 
-	}
+    }
 
 }

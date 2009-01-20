@@ -25,24 +25,24 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.suite());
-	}
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(AllTests.suite());
+    }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Suite for org.apache.harmony.prefs.tests.java.util.prefs");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(NodeChangeListenerTest.class);
-		suite.addTestSuite(PreferenceChangeListenerTest.class);
-		suite.addTestSuite(PreferencesFactoryTest.class);
-		suite.addTestSuite(BackingStoreExceptionTest.class);
-		suite.addTestSuite(InvalidPreferencesFormatExceptionTest.class);
-		suite.addTestSuite(PreferenceChangeEventTest.class);
-		suite.addTestSuite(NodeChangeEventTest.class);
-		suite.addTestSuite(PreferencesTest.class);
-		suite.addTestSuite(AbstractPreferencesTest.class);
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Suite for org.apache.harmony.prefs.tests.java.util.prefs");
+        // $JUnit-BEGIN$
+        suite.addTestSuite(NodeChangeListenerTest.class);
+        suite.addTestSuite(PreferenceChangeListenerTest.class);
+        suite.addTestSuite(PreferencesFactoryTest.class);
+        suite.addTestSuite(BackingStoreExceptionTest.class);
+        suite.addTestSuite(InvalidPreferencesFormatExceptionTest.class);
+        suite.addTestSuite(PreferenceChangeEventTest.class);
+        suite.addTestSuite(NodeChangeEventTest.class);
+        suite.addTestSuite(PreferencesTest.class);
+        suite.addTestSuite(AbstractPreferencesTest.class);
         suite.addTestSuite(FilePreferencesImplTest.class);
-		// $JUnit-END$
-		return suite;
-	}
+        // $JUnit-END$
+        return suite;
+    }
 }

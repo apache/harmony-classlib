@@ -25,6 +25,7 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.security.AccessController;
 
+import org.apache.harmony.luni.util.HistoricalNamesUtil;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -200,8 +201,7 @@ public class OutputStreamWriter extends Writer {
         if (encoder == null) {
             return null;
         }
-        return InputStreamReader.HistoricalNamesUtil.getHistoricalName(encoder
-                .charset().name());
+        return HistoricalNamesUtil.getHistoricalName(encoder.charset().name());
     }
 
     /**

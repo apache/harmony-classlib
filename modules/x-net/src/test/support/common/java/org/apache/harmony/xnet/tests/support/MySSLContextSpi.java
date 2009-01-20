@@ -40,6 +40,7 @@ import javax.net.ssl.TrustManager;
 
 public class MySSLContextSpi extends SSLContextSpi {
     private boolean init = false;
+    @Override
     protected void engineInit(KeyManager[] km, TrustManager[] tm,
             SecureRandom sr) throws KeyManagementException {
         if (sr == null) {
@@ -49,6 +50,7 @@ public class MySSLContextSpi extends SSLContextSpi {
         init = true;
     }
 
+    @Override
     protected SSLSocketFactory engineGetSocketFactory() {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -56,6 +58,7 @@ public class MySSLContextSpi extends SSLContextSpi {
         return null;
     }
 
+    @Override
     protected SSLServerSocketFactory engineGetServerSocketFactory() {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -63,6 +66,7 @@ public class MySSLContextSpi extends SSLContextSpi {
         return null;
     }
 
+    @Override
     protected SSLSessionContext engineGetServerSessionContext() {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -70,6 +74,7 @@ public class MySSLContextSpi extends SSLContextSpi {
         return null;
     }
 
+    @Override
     protected SSLSessionContext engineGetClientSessionContext() {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -80,6 +85,7 @@ public class MySSLContextSpi extends SSLContextSpi {
     /*
      * FIXME: add these methods
      */   
+    @Override
     protected SSLEngine engineCreateSSLEngine(String host, int port) {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -87,6 +93,7 @@ public class MySSLContextSpi extends SSLContextSpi {
         return new tmpSSLEngine(host, port);
     }
 
+    @Override
     protected SSLEngine engineCreateSSLEngine() {
         if (!init) {
             throw new RuntimeException("Not initialiazed");
@@ -105,38 +112,64 @@ public class MySSLContextSpi extends SSLContextSpi {
             tmpHost = host;
             tmpPort = port;        
         }
+        @Override
         public String getPeerHost() {
             return tmpHost;        
         }
+        @Override
         public int getPeerPort() {
             return tmpPort;
         }
+        @Override
         public void beginHandshake() throws SSLException { }
+        @Override
         public void closeInbound() throws SSLException { }
+        @Override
         public void closeOutbound() {}
+        @Override
         public Runnable getDelegatedTask() { return null; }
+        @Override
         public String[] getEnabledCipherSuites() { return null; }
+        @Override
         public String[] getEnabledProtocols() {return null; }
+        @Override
         public boolean getEnableSessionCreation() { return true; }
+        @Override
         public SSLEngineResult.HandshakeStatus getHandshakeStatus() { return null; };
+        @Override
         public boolean getNeedClientAuth() { return true; }
+        @Override
         public SSLSession getSession() { return null; }
+        @Override
         public String[] getSupportedCipherSuites()  { return null; }
+        @Override
         public String[] getSupportedProtocols()  { return null; }
+        @Override
         public boolean getUseClientMode()  { return true; }
+        @Override
         public boolean getWantClientAuth()  { return true; }
+        @Override
         public boolean isInboundDone()  { return true; }
+        @Override
         public boolean isOutboundDone()  { return true; }
+        @Override
         public void setEnabledCipherSuites(String[] suites) { }
+        @Override
         public void setEnabledProtocols(String[] protocols) { }
+        @Override
         public void setEnableSessionCreation(boolean flag) { }
+        @Override
         public void setNeedClientAuth(boolean need) { }
+        @Override
         public void setUseClientMode(boolean mode) { }
+        @Override
         public void setWantClientAuth(boolean want) { }        
+        @Override
         public SSLEngineResult unwrap(ByteBuffer src, ByteBuffer[] dsts,
                 int offset, int length) throws SSLException {
             return null;
         }        
+        @Override
         public SSLEngineResult wrap(ByteBuffer[] srcs, int offset,
                 int length, ByteBuffer dst) throws SSLException { 
             return null;

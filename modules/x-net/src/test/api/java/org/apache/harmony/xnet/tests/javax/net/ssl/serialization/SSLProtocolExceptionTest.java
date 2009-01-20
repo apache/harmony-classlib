@@ -38,6 +38,7 @@ public class SSLProtocolExceptionTest extends SerializationTest {
             "New message",
             "Long message for Exception. Long message for Exception. Long message for Exception." };
 
+    @Override
     protected Object[] getData() {
         return new Object[] { new SSLProtocolException(null),
                 new SSLProtocolException(msgs[0]), new SSLProtocolException(msgs[1]) };

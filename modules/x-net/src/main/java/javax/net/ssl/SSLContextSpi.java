@@ -15,70 +15,29 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class SSLContextSpi {
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     public SSLContextSpi() {
+        super();
     }
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
-    protected abstract void engineInit(KeyManager[] km, TrustManager[] tm,
-            SecureRandom sr) throws KeyManagementException;
+    protected abstract void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
+            throws KeyManagementException;
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSocketFactory engineGetSocketFactory();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLServerSocketFactory engineGetServerSocketFactory();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLEngine engineCreateSSLEngine(String host, int port);
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLEngine engineCreateSSLEngine();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSessionContext engineGetServerSessionContext();
 
-    /**
-     * @com.intel.drl.spec_ref
-     *  
-     */
     protected abstract SSLSessionContext engineGetClientSessionContext();
 
 }

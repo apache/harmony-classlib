@@ -30,7 +30,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.TrustManagerFactorySpi;
 
-import org.apache.harmony.security.tests.support.SpiEngUtils;
+import org.apache.harmony.xnet.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MyTrustManagerFactorySpi;
 import junit.framework.TestCase;
 

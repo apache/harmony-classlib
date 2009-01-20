@@ -141,6 +141,52 @@ public class BufferedInputStreamTest extends TestCase {
         // regression for HARMONY-667
         BufferedInputStream buf = new BufferedInputStream(null, 5);
         buf.close();
+
+        InputStream in = new InputStream() {
+            Object lock = new Object();
+
+            @Override
+            public int read() {
+                return 1;
+            }
+
+            @Override
+            public int read(byte[] buf, int offset, int length) {
+                synchronized (lock) {
+                    try {
+                        lock.wait(3000);
+                    } catch (InterruptedException e) {
+                        // Ignore
+                    }
+                }
+                return 1;
+            }
+
+            @Override
+            public void close() {
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
+            }
+        };
+        final BufferedInputStream bufin = new BufferedInputStream(in);
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    bufin.close();
+                } catch (Exception e) {
+                    // Ignored
+                }
+            }
+        });
+        thread.start();
+        try {
+            bufin.read(new byte[100], 0, 99);
+            fail("Should throw IOException");
+        } catch (IOException e) {
+            // Expected
+        }
     }
 
     /**

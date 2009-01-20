@@ -389,6 +389,35 @@ public class InetAddressTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.net.InetAddress#getLocalHost()
+     */
+    public void test_getLocalHost_extended() throws Exception {
+        class Inet_SecurityManager extends SecurityManager {
+            @Override
+            public void checkConnect(String host, int port) {
+                super.checkConnect(host, port);
+                throw new SecurityException();
+            }
+        }
+
+        // Bogus, but we don't know the host name or ip of the machine
+        // running the test, so we can't build our own address
+        DatagramSocket dg = new DatagramSocket(0, InetAddress.getLocalHost());
+        assertEquals("Incorrect host returned", InetAddress.getLocalHost(), dg
+                .getLocalAddress());
+        dg.close();
+
+        SecurityManager oldman = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new Inet_SecurityManager());
+            assertTrue("Host address should be a loop back address",
+                    InetAddress.getLocalHost().isLoopbackAddress());
+        } finally {
+            System.setSecurityManager(oldman);
+        }
+    }
+    
+    /**
      * @tests java.net.InetAddress#hashCode()
      */
     public void test_hashCode() {

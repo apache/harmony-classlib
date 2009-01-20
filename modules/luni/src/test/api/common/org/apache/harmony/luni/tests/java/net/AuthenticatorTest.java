@@ -16,14 +16,21 @@
 
 package org.apache.harmony.luni.tests.java.net;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.net.Authenticator.RequestorType;
 
 import junit.framework.TestCase;
+import tests.support.Support_PortManager;
 
 public class AuthenticatorTest extends TestCase {
 
@@ -118,6 +125,69 @@ public class AuthenticatorTest extends TestCase {
     public void test_getRequestorType() throws Exception {
         MockAuthenticator mock = new MockAuthenticator();
         assertNull(mock.getRequestorType());
+    }
+
+    /**
+     * @tests java.net.Authenticator#setDefault(java.net.Authenticator)
+     */
+    public void test_setDefault() {
+        final int port = Support_PortManager.getNextPort();
+        final Object lock = new Object();
+        final int[] result = new int[1];
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    ServerSocket ss = null;
+                    synchronized (lock) {
+                        ss = new ServerSocket(port);
+                        lock.notifyAll();
+                    }
+                    Socket s = ss.accept();
+                    InputStream in = s.getInputStream();
+                    in.read(new byte[1024]);
+                    OutputStream out = s.getOutputStream();
+                    out
+                            .write("HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate:Basic realm=\"something\"\r\n\r\n"
+                                    .getBytes("ISO8859_1"));
+                    Thread.sleep(500);
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        synchronized (lock) {
+            t.start();
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                // ignored
+            }
+        }
+        Authenticator.setDefault(new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                synchronized (lock) {
+                    result[0] = 1;
+                }
+                return null;
+            }
+        });
+        Authenticator.setDefault(new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                synchronized (lock) {
+                    result[0] = 2;
+                }
+                return null;
+            }
+        });
+        try {
+            new URL("http://localhost:" + port).openStream();
+        } catch (IOException e) {
+            // ignored
+        }
+        synchronized (lock) {
+            assertEquals("wrong authenticator: " + result[0], 2, result[0]);
+        }
     }
 
     /*

@@ -15,27 +15,35 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package javax.net.ssl;
 
 import java.security.cert.CertPathParameters;
 
 /**
- * @com.intel.drl.spec_ref
+ * Container for {@link CertPathParameters}.
  * 
+ * @since 1.5
  */
 public class CertPathTrustManagerParameters implements ManagerFactoryParameters {
 
-    private CertPathParameters param;
+    private final CertPathParameters param;
 
+    /**
+     * Constructs an instance by cloning the parameters passed.
+     * 
+     * @param parameters the parameters to wrap
+     * 
+     * @throws NullPointerException if {@code parameters} is {@code null}
+     */
     public CertPathTrustManagerParameters(CertPathParameters parameters) {
         param = (CertPathParameters) parameters.clone();
     }
 
+    /**
+     * The parameters contained within.
+     * 
+     * @return a cloned instance of the parameters
+     */
     public CertPathParameters getParameters() {
         return (CertPathParameters) param.clone();
     }
