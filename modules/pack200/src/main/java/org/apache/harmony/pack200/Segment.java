@@ -422,8 +422,6 @@ public class Segment implements ClassVisitor {
         }
 
         public void visitEnd() {
-            // TODO Auto-generated method stub
-
         }
     }
 
