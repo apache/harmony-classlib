@@ -1612,6 +1612,17 @@ public class URITest extends TestCase {
                 "file:///~/first"), b.relativize(a));
     }
 
+    // Regression test for HARMONY-6075
+    public void test_relativize3() throws Exception {
+        URI uri = new URI("file", null, "/test/location", null);
+
+        URI base = new URI("file", null, "/test", null);
+
+        URI relative = base.relativize(uri);
+        assertEquals("location", relative.getSchemeSpecificPart());
+        assertNull(relative.getScheme());
+    }
+
     /**
      * @tests java.net.URI#relativize(java.net.URI)
      */
