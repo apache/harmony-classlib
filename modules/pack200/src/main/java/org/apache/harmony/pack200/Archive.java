@@ -74,32 +74,31 @@ public class Archive {
             files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
         }
         if (inputStream != null) {
-            while (inputStream.available() > 0) {
-                JarEntry jarEntry = inputStream.getNextJarEntry();
-                if (jarEntry != null) {
-                    boolean added = addJarEntry(jarEntry,
-                            new BufferedInputStream(inputStream), classes,
-                            files);
-                    if (!added) { // not added because segment has reached
-                        // maximum size
-                        if(classes.size() > 0 || files.size() > 0) {
-                            new Segment().pack(classes, files, outputStream);
-                            classes = new ArrayList();
-                            files = new ArrayList();
-                            currentSegmentSize = 0;
-                        }
-                        if (!addJarEntry(jarEntry, new BufferedInputStream(
-                                inputStream), classes, files)) {
-                            throw new Pack200Exception(
-                                    "Segment limit is too small for the files you are trying to pack");
-                        }
-                    } else if (segmentLimit == 0) {
-                        // create a new segment for each class
+            JarEntry jarEntry = inputStream.getNextJarEntry();
+            while (jarEntry != null) {
+                boolean added = addJarEntry(jarEntry,
+                        new BufferedInputStream(inputStream), classes,
+                        files);
+                if (!added) { // not added because segment has reached
+                    // maximum size
+                    if(classes.size() > 0 || files.size() > 0) {
                         new Segment().pack(classes, files, outputStream);
                         classes = new ArrayList();
                         files = new ArrayList();
+                        currentSegmentSize = 0;
                     }
+                    if (!addJarEntry(jarEntry, new BufferedInputStream(
+                            inputStream), classes, files)) {
+                        throw new Pack200Exception(
+                                "Segment limit is too small for the files you are trying to pack");
+                    }
+                } else if (segmentLimit == 0) {
+                    // create a new segment for each class
+                    new Segment().pack(classes, files, outputStream);
+                    classes = new ArrayList();
+                    files = new ArrayList();
                 }
+                jarEntry = inputStream.getNextJarEntry();
             }
         } else {
             Enumeration jarEntries = jarFile.entries();

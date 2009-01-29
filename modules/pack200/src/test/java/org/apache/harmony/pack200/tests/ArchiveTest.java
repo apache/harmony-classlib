@@ -112,8 +112,11 @@ public class ArchiveTest extends TestCase {
         JarFile jarFile = new JarFile(file2);
         file2.deleteOnExit();
 
-        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
-                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
+        JarFile jarFile2 = new JarFile(compareFile);
+
+        assertEquals(jarFile2.size(), jarFile.size());
 
         compareFiles(jarFile, jarFile2);
     }
