@@ -240,7 +240,7 @@ public class ClassBands extends BandSet {
             }
         }
         // Calculate code headers
-        codeHeaders = new int[codeFlags.size()];
+        codeHeaders = new int[codeHandlerCount.size()];
         int removed = 0;
         for (int i = 0; i < codeHeaders.length; i++) {
             int numHandlers = ((Integer) codeHandlerCount.get(i - removed))
@@ -271,6 +271,8 @@ public class ClassBands extends BandSet {
                 codeMaxLocals.remove(i - removed);
                 codeMaxStack.remove(i - removed);
                 removed++;
+            } else if (!segment.getSegmentHeader().have_all_code_flags()) {
+                codeFlags.add(new Long(0));
             }
         }
 
@@ -590,6 +592,18 @@ public class ClassBands extends BandSet {
         }
     }
 
+    public void endOfMethod() {
+        if(codeFlags.size() > 0) {
+            long latestCodeFlag = ((Long)codeFlags.get(codeFlags.size() - 1)).longValue();
+            int latestLocalVariableTableN = ((Integer)codeLocalVariableTableN.get(codeLocalVariableTableN.size() - 1)).intValue();
+            if(latestCodeFlag == (1 << 2) && latestLocalVariableTableN == 0) {
+                codeLocalVariableTableN.remove(codeLocalVariableTableN.size() - 1);
+                codeFlags.remove(codeFlags.size() - 1);
+                codeFlags.add(new Integer(0));
+            }
+        }
+    }
+
     protected static int countArgs(String descriptor) {
         int bra = descriptor.indexOf('(');
         int ket = descriptor.indexOf(')');
@@ -699,10 +713,12 @@ public class ClassBands extends BandSet {
         codeMaxLocals.add(new Integer(maxLocals));
     }
 
-    public void addCode() {
+    public void addCode(boolean stripDebug) {
         codeHandlerCount.add(ZERO);
-        codeFlags.add(new Long((1 << 2))); // TODO: What if there's no debug information?
-        codeLocalVariableTableN.add(new Integer(0));
+        if(!stripDebug) {
+            codeFlags.add(new Long((1 << 2))); // TODO: What if there's no debug information?
+            codeLocalVariableTableN.add(new Integer(0));
+        }
     }
 
     public void addHandler(Label start, Label end, Label handler, String type) {

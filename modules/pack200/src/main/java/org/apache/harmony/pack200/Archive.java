@@ -43,6 +43,7 @@ public class Archive {
     private JarFile jarFile;
     private long segmentLimit = 1000000;
     private long currentSegmentSize;
+    private boolean stripDebug;
 
     public Archive(JarInputStream inputStream, OutputStream outputStream,
             boolean gzip) throws IOException {
@@ -61,6 +62,10 @@ public class Archive {
 
     public void setSegmentLimit(int limit) {
         segmentLimit = limit;
+    }
+
+    public void stripDebugAttributes() {
+        stripDebug = true;
     }
 
     public void pack() throws Pack200Exception, IOException {
@@ -82,7 +87,7 @@ public class Archive {
                 if (!added) { // not added because segment has reached
                     // maximum size
                     if(classes.size() > 0 || files.size() > 0) {
-                        new Segment().pack(classes, files, outputStream);
+                        new Segment().pack(classes, files, outputStream, stripDebug);
                         classes = new ArrayList();
                         files = new ArrayList();
                         currentSegmentSize = 0;
@@ -94,7 +99,7 @@ public class Archive {
                     }
                 } else if (segmentLimit == 0) {
                     // create a new segment for each class
-                    new Segment().pack(classes, files, outputStream);
+                    new Segment().pack(classes, files, outputStream, stripDebug);
                     classes = new ArrayList();
                     files = new ArrayList();
                 }
@@ -108,7 +113,7 @@ public class Archive {
                         jarFile.getInputStream(jarEntry)), classes, files);
                 if (!added) { // not added because segment has reached maximum
                     // size
-                    new Segment().pack(classes, files, outputStream);
+                    new Segment().pack(classes, files, outputStream, stripDebug);
                     classes = new ArrayList();
                     files = new ArrayList();
                     currentSegmentSize = 0;
@@ -118,14 +123,14 @@ public class Archive {
                     }
                 } else if (segmentLimit == 0) {
                     // create a new segment for each class
-                    new Segment().pack(classes, files, outputStream);
+                    new Segment().pack(classes, files, outputStream, stripDebug);
                     classes = new ArrayList();
                     files = new ArrayList();
                 }
             }
         }
         if(classes.size() > 0 || files.size() > 0) {
-            new Segment().pack(classes, files, outputStream);
+            new Segment().pack(classes, files, outputStream, stripDebug);
         }
         outputStream.close();
     }

@@ -43,11 +43,14 @@ public class Segment implements ClassVisitor {
     private final SegmentFieldVisitor fieldVisitor = new SegmentFieldVisitor();
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
     private Pack200ClassReader currentClassReader;
+    private boolean stripDebug;
 
-    public void pack(List classes, List files, OutputStream out)
+    public void pack(List classes, List files, OutputStream out, boolean stripDebug)
             throws IOException, Pack200Exception {
+        this.stripDebug = stripDebug;
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
+        segmentHeader.setHave_all_code_flags(!stripDebug);
         cpBands = new CpBands(this);
         attributeDefinitionBands = new AttributeDefinitionBands(this);
         icBands = new IcBands(segmentHeader, cpBands);
@@ -93,7 +96,9 @@ public class Segment implements ClassVisitor {
     }
 
     public void visitSource(String source, String debug) {
-        classBands.addSourceFile(source);
+        if(!stripDebug) {
+            classBands.addSourceFile(source);
+        }
     }
 
     public void visitOuterClass(String owner, String name, String desc) {
@@ -150,7 +155,7 @@ public class Segment implements ClassVisitor {
         }
 
         public void visitCode() {
-            classBands.addCode();
+            classBands.addCode(stripDebug);
         }
 
         public void visitFrame(int arg0, int arg1, Object[] arg2, int arg3,
@@ -164,13 +169,17 @@ public class Segment implements ClassVisitor {
         }
 
         public void visitLineNumber(int line, Label start) {
-            classBands.addLineNumber(line, start);
+            if(!stripDebug) {
+                classBands.addLineNumber(line, start);
+            }
         }
 
         public void visitLocalVariable(String name, String desc,
                 String signature, Label start, Label end, int index) {
-            classBands.addLocalVariable(name, desc, signature, start, end,
-                    index);
+            if(!stripDebug) {
+                classBands.addLocalVariable(name, desc, signature, start, end,
+                        index);
+            }
         }
 
         public void visitMaxs(int maxStack, int maxLocals) {
@@ -189,6 +198,7 @@ public class Segment implements ClassVisitor {
         }
 
         public void visitEnd() {
+            classBands.endOfMethod();
             bcBands.visitEnd();
         }
 

@@ -195,6 +195,35 @@ public class ArchiveTest extends TestCase {
         out.close();
     }
 
+    public void testStripDebug() throws IOException, Pack200Exception, URISyntaxException {
+        in = new JarInputStream(Archive.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sqlUnpacked.jar"));
+        file = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file);
+        Archive archive = new Archive(in, out, false);
+        archive.stripDebugAttributes();
+        archive.pack();
+        in.close();
+        out.close();
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file2 = File.createTempFile("sqloutNoDebug", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
+        org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(in2, out2);
+        u2archive.unpack();
+
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpackedNoDebug.jar").toURI());
+        JarFile jarFile = new JarFile(file2);
+        assertTrue(file2.length() < 250000);
+        file2.deleteOnExit();
+
+        JarFile jarFile2 = new JarFile(compareFile);
+
+        compareFiles(jarFile, jarFile2);
+    }
+
     public void testAnnotations() throws IOException, Pack200Exception,
             URISyntaxException {
         in = new JarInputStream(
