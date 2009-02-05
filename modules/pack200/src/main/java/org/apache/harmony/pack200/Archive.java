@@ -147,8 +147,12 @@ public class Archive {
         if(segmentLimit != -1 && segmentLimit != 0) {
             // -1 is a special case where only one segment is created and
             // 0 is a special case where one segment is created for each file
-            int packedSize = name.endsWith(".class") ? estimatePackedSize(size)
-                    : (int) size;
+
+            // This is fairly close to the RI, but still a little smaller as the exact sum is not given in the spec.
+            int packedSize  = (int)size // size of the file
+                    + 24 // 3x8 bytes for 3 longs in file_modtime, file_options and file_size bands
+                    + (name.endsWith(".class") ? 1 : name.getBytes().length); // size of entry in file_name band
+
             if (packedSize + currentSegmentSize > segmentLimit) {
                 return false;
             } else {
@@ -167,10 +171,6 @@ public class Archive {
         }
         files.add(new File(name, bytes, jarEntry.getTime()));
         return true;
-    }
-
-    private int estimatePackedSize(long size) {
-        return (int) size; // TODO: try to match the RI as closely as possible
     }
 
     static class File {
