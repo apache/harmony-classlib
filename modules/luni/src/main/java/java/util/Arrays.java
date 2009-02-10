@@ -2520,7 +2520,7 @@ public class Arrays {
             Object fromVal = in[start];
             Object rVal = in[r];
             if (c.compare(fromVal, rVal) <= 0) {
-                int l_1 = find(in, rVal, 0, start + 1, med - 1, c);
+                int l_1 = find(in, rVal, -1, start + 1, med - 1, c);
                 int toCopy = l_1 - start + 1;
                 System.arraycopy(in, start, out, i, toCopy);
                 i += toCopy;
