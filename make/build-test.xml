@@ -53,7 +53,7 @@
     </target>
 
     <target name="test-modules" depends="support-jar, test-jre-vm-info">
-        <call-modules target="-test-module" />
+        <poll-modules target="-test-module" />
     </target>
 
     <target name="gen-report" depends="full-report,short-report" />
