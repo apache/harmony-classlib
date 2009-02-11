@@ -1308,6 +1308,50 @@ public class ArraysTest extends junit.framework.TestCase {
 									objectArray[counter + 1]) <= 0);
 	}
 
+    // Regression HARMONY-6076
+    public void test_sort$Ljava_lang_ObjectLjava_util_Comparator_stable() {
+        Element[] array = new Element[11];
+        array[0] = new Element(122);
+        array[1] = new Element(146);
+        array[2] = new Element(178);
+        array[3] = new Element(208);
+        array[4] = new Element(117);
+        array[5] = new Element(146);
+        array[6] = new Element(173);
+        array[7] = new Element(203);
+        array[8] = new Element(56);
+        array[9] = new Element(208);
+        array[10] = new Element(96);
+
+        Comparator<Element> comparator = new Comparator<Element>() {
+            public int compare(Element object1, Element object2) {
+                return object1.value - object2.value;
+            }
+        };
+
+        Arrays.sort(array, comparator);
+
+        for (int i = 1; i < array.length; i++) {
+            assertTrue(comparator.compare(array[i - 1], array[i]) <= 0);
+            if (comparator.compare(array[i - 1], array[i]) == 0) {
+                assertTrue(array[i - 1].index < array[i].index);
+            }
+        }
+    }
+
+    public static class Element {
+        public int value;
+
+        public int index;
+
+        private static int count = 0;
+
+        public Element(int value) {
+            this.value = value;
+            index = count++;
+        }
+    }
+
 	/**
 	 * @tests java.util.Arrays#sort(short[])
 	 */
