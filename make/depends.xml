@@ -53,7 +53,6 @@
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
     <target name="-select-win-deps-x86" if="is.x86">
-        <property name="people.apache.base" value="${people.apache.base.x86}"/>
         <property name="awtdeps.dir" value="${awtdeps.dir.x86}"/>
         <property name="awtdeps.tar" value="${awtdeps.tar.x86}"/>
         <property name="awtdeps.url" value="${awtdeps.url.x86}"/>
