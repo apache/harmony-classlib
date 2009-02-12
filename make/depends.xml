@@ -74,7 +74,6 @@
     </target>
 
     <target name="-select-win-deps-x86_64" if="is.x86_64">
-        <property name="people.apache.base" value="${people.apache.base.x86_64}"/>
         <property name="awtdeps.dir" value="${awtdeps.dir.x86_64}"/>
         <property name="awtdeps.tar" value="${awtdeps.tar.x86_64}"/>
         <property name="awtdeps.url" value="${awtdeps.url.x86_64}"/>
