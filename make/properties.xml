@@ -313,8 +313,8 @@
     </condition>
     <property name="hy.portlib.stubs" value="false" />
 
-    <condition property="hy.libstdc++.suffix" value=".libstdc++6">
-        <isset property="use.libstdc++6"/>
+    <condition property="hy.libstdc++.suffix" value=".libstdc++5">
+        <isset property="use.libstdc++5"/>
     </condition>
     <property name="hy.libstdc++.suffix" value="" />
 
