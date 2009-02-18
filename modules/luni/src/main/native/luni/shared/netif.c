@@ -819,12 +819,15 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
      32 interfaces.  If this turns out not to be big enough then we expand the buffer to be able to support another
      32 interfaces and try again.  We do this until the result indicates that the result fit into the buffer provided */
   /* we need  socket to do the ioctl so create one */
-  socketP =
-    socket (AF_INET6, SOCK_DGRAM, 0);
+  socketP = socket (preferIPv4Stack(env) ? AF_INET : AF_INET6, SOCK_DGRAM, 0);
   if (socketP < 0)
     {
-      throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_NORECOVERY);
-	   return NULL;
+      socketP = socket (AF_INET, SOCK_DGRAM, 0);
+      if (socketP < 0)
+        {
+          throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_NORECOVERY);
+          return NULL;
+        }
     }
 
   for (;;)
@@ -992,14 +995,15 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
                       break;
                     }
                 }
-				ipv6 = fopen("/proc/net/if_inet6", "r");
-              while(fscanf(ipv6, "%4x%4x%4x%4x%4x%4x%4x%4x %x %x %x %x %s\n", &oct6[0], &oct6[1], &oct6[2], &oct6[3], &oct6[4], &oct6[5], &oct6[6], &oct6[7],
-              		&index6, &other, &scope, &other, ifname6) != EOF) {
-              		if(strncmp(ifc.ifc_req[counter].ifr_name, ifname6, IFNAMSIZ) == 0) {
-              				numAddresses++;
-              			}
-               }
-				fclose(ipv6);
+	      if ((ipv6 = fopen("/proc/net/if_inet6", "r"))) {
+                while(fscanf(ipv6, "%4x%4x%4x%4x%4x%4x%4x%4x %x %x %x %x %s\n", &oct6[0], &oct6[1], &oct6[2], &oct6[3], &oct6[4], &oct6[5], &oct6[6], &oct6[7],
+                             &index6, &other, &scope, &other, ifname6) != EOF) {
+                  if(strncmp(ifc.ifc_req[counter].ifr_name, ifname6, IFNAMSIZ) == 0) {
+                    numAddresses++;
+                  }
+                }
+                fclose(ipv6);
+              }
 
               /* allocate space for the addresses */
               interfaces[currentAdapterIndex].numberAddresses = numAddresses;
@@ -1058,21 +1062,22 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
                       currentIPAddressIndex++;
                     }
 
-              ipv6 = fopen("/proc/net/if_inet6", "r");
-              while(fscanf(ipv6, "%4x%4x%4x%4x%4x%4x%4x%4x %x %x %x %x %s\n", &oct6[0], &oct6[1], &oct6[2], &oct6[3], &oct6[4], &oct6[5], &oct6[6], &oct6[7],
-              	&index6, &other, &scope, &other, ifname6) != EOF) {
-              	if(strncmp(ifc.ifc_req[counter].ifr_name, ifname6, IFNAMSIZ) == 0) {
-              		sprintf(addr6, "%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", oct6[0], oct6[1], oct6[2], oct6[3], oct6[4], oct6[5], oct6[6], oct6[7]);
-              		inet_pton(AF_INET6, addr6, 
-              			(void *)(&interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].addr.in6Addr));
+	      if ((ipv6 = fopen("/proc/net/if_inet6", "r"))) {
+                while(fscanf(ipv6, "%4x%4x%4x%4x%4x%4x%4x%4x %x %x %x %x %s\n", &oct6[0], &oct6[1], &oct6[2], &oct6[3], &oct6[4], &oct6[5], &oct6[6], &oct6[7],
+                             &index6, &other, &scope, &other, ifname6) != EOF) {
+                  if(strncmp(ifc.ifc_req[counter].ifr_name, ifname6, IFNAMSIZ) == 0) {
+                    sprintf(addr6, "%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", oct6[0], oct6[1], oct6[2], oct6[3], oct6[4], oct6[5], oct6[6], oct6[7]);
+                    inet_pton(AF_INET6, addr6, 
+                              (void *)(&interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].addr.in6Addr));
 
-    	              interfaces[currentAdapterIndex].
-       	             addresses[currentIPAddressIndex].length = sizeof (struct in6_addr);
-                       interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].scope = scope;
-   				         currentIPAddressIndex++;
-              			}
-               }
-			fclose(ipv6);
+                    interfaces[currentAdapterIndex].
+                      addresses[currentIPAddressIndex].length = sizeof (struct in6_addr);
+                    interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].scope = scope;
+                    currentIPAddressIndex++;
+                  }
+                }
+                fclose(ipv6);
+              }
 
 #endif
 /* we mean to increment the outside counter here as we want to skip the next entry as it is for the same interface
