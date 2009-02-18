@@ -60,8 +60,8 @@ jboolean getPlatformIsUp(JNIEnv * env, jstring ifname, jint index);
 jboolean getPlatformIsLoopback(JNIEnv * env, jstring ifname, jint index);
 jboolean getPlatformIsPoint2Point(JNIEnv * env, jstring ifname, jint index);
 jboolean getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint index);
-jint getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index);
-jbyteArray getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index);
-I_32 getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct* interfaceAddressArray);
+jint getPlatformMTU(JNIEnv * env, jstring ifname, jint index);
+jbyteArray getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index);
+I_32 getPlatformInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct* interfaceAddressArray);
 I_32 freeInterfaceAddressArray(JNIEnv * env, struct interfaceAddressArray_struct * array);
 #endif /* helpers_h */

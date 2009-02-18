@@ -785,7 +785,7 @@ jboolean getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint jindex)
 
 
 jint
-getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index)
+getPlatformMTU(JNIEnv * env, jstring ifname, jint index)
 {
 	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
 	ULONG OutBufferLength = 0;
@@ -822,7 +822,7 @@ getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index)
 }
 
 jbyteArray 
-getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index)
+getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 {   
 	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
 	ULONG OutBufferLength = 0;
@@ -864,7 +864,7 @@ getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 
 
 void
-getPlatformGetInterfaceAddressesImpl(JNIEnv * env, 
+getPlatformInterfaceAddressesImpl(JNIEnv * env, 
 									 char* name, 
 									 jint index,
 									 PIP_ADAPTER_ADDRESSES adapters,
@@ -1021,7 +1021,7 @@ getPlatformGetInterfaceAddressesImpl(JNIEnv * env,
 }
 
 I_32 
-getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct * interfaceAddressArray)
+getPlatformInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct * interfaceAddressArray)
 {	
 	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
 	PIP_ADAPTER_ADDRESSES Adapters = NULL;
@@ -1036,7 +1036,7 @@ getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, inter
 		char* adapterName = convertInterfaceName(env, ifname);
 		if (NULL != adapterName)
 		{
-			getPlatformGetInterfaceAddressesImpl (env, adapterName, index, AdapterAddresses, interfaceAddressArray);
+			getPlatformInterfaceAddressesImpl (env, adapterName, index, AdapterAddresses, interfaceAddressArray);
 			hymem_free_memory (adapterName);
 		}		
 	} else {

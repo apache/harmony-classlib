@@ -422,7 +422,7 @@ getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint jindex)
 }
 
 jint
-getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index)
+getPlatformMTU(JNIEnv * env, jstring ifname, jint index)
 {
        struct ifconf ifc;
 	char buff[2048];
@@ -472,7 +472,7 @@ getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index)
 }
 
 jbyteArray 
-getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index)
+getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 {
        const int MAC_ADDR_SIZE = 6;
 
@@ -709,7 +709,7 @@ jint getNextNetlinkMsg (JNIEnv * env,
 }
 
 I_32 
-getPlatformGetInterfaceAddresses(JNIEnv * env, 
+getPlatformInterfaceAddresses(JNIEnv * env, 
                                  jstring ifname, 
                                  jint index,                               
                                  interfaceAddressArray_struct* interfaceAddressArray)

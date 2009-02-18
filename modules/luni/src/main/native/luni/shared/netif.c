@@ -1274,7 +1274,7 @@ Java_java_net_NetworkInterface_supportMulticastImpl (JNIEnv * env, jobject obj, 
 JNIEXPORT jint JNICALL
 Java_java_net_NetworkInterface_getMTUImpl (JNIEnv * env, jobject obj, jstring ifname, jint index)
 {
-	return getPlatformGetMTU(env, ifname, index);
+	return getPlatformMTU(env, ifname, index);
 }
 
 char* 
@@ -1362,7 +1362,7 @@ Java_java_net_NetworkInterface_getInterfaceAddressesImpl (JNIEnv * env, jobject 
 	
 	// get the interface address info according to different system calls.
     
-	result = getPlatformGetInterfaceAddresses(env, ifname, index, &interfaceAddressArray);
+	result = getPlatformInterfaceAddresses(env, ifname, index, &interfaceAddressArray);
 
 	if (result != 0) {
 		/* this means an error occured.  The value returned is the socket error that should be returned */
@@ -1405,10 +1405,10 @@ Java_java_net_NetworkInterface_getInterfaceAddressesImpl (JNIEnv * env, jobject 
 	return interfaceAddresses;
 }
 
-jbyteArray getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index);
+jbyteArray getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index);
 
 JNIEXPORT jbyteArray JNICALL
 Java_java_net_NetworkInterface_getHardwareAddressImpl(JNIEnv * env, jobject obj, jstring ifname, jint index)
 {
-	return getPlatformGetHardwareAddress(env, ifname, index);
+	return getPlatformHardwareAddress(env, ifname, index);
 }
