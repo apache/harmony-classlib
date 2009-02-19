@@ -33,7 +33,6 @@ import org.objectweb.asm.Opcodes;
 
 public class ClassBands extends BandSet {
 
-    private static final Integer ZERO = new Integer(0);
     private final SegmentHeader header;
     private final CpBands cpBands;
     private final AttributeDefinitionBands attrBands;
@@ -52,8 +51,8 @@ public class ClassBands extends BandSet {
     private final List classEnclosingMethodDesc = new ArrayList();
     private final List classSignature = new ArrayList();
 
-    private final List classFileVersionMinor = new ArrayList();
-    private final List classFileVersionMajor = new ArrayList();
+    private final IntList classFileVersionMinor = new IntList();
+    private final IntList classFileVersionMajor = new IntList();
 
     private final int[] class_field_count;
     private final CPNameAndType[][] field_descr;
@@ -67,33 +66,33 @@ public class ClassBands extends BandSet {
     private final long[][] method_flags;
     private int[] method_attr_calls;
     private final List methodSignature = new ArrayList();
-    private final List methodExceptionNumber = new ArrayList();
+    private final IntList methodExceptionNumber = new IntList();
     private final List methodExceptionClasses = new ArrayList();
 
     private int[] codeHeaders;
-    private final List codeMaxStack = new ArrayList();
-    private final List codeMaxLocals = new ArrayList();
-    private final List codeHandlerCount = new ArrayList();
+    private final IntList codeMaxStack = new IntList();
+    private final IntList codeMaxLocals = new IntList();
+    private final IntList codeHandlerCount = new IntList();
     private final List codeHandlerStartP = new ArrayList();
     private final List codeHandlerEndPO = new ArrayList();
     private final List codeHandlerCatchPO = new ArrayList();
     private final List codeHandlerClass = new ArrayList();
     private final List codeFlags = new ArrayList();
-    private final List codeLineNumberTableN = new ArrayList();
+    private final IntList codeLineNumberTableN = new IntList();
     private final List codeLineNumberTableBciP = new ArrayList();
-    private final List codeLineNumberTableLine = new ArrayList();
-    private final List codeLocalVariableTableN = new ArrayList();
+    private final IntList codeLineNumberTableLine = new IntList();
+    private final IntList codeLocalVariableTableN = new IntList();
     private final List codeLocalVariableTableBciP = new ArrayList();
     private final List codeLocalVariableTableSpanO = new ArrayList();
     private final List codeLocalVariableTableNameRU = new ArrayList();
     private final List codeLocalVariableTableTypeRS = new ArrayList();
-    private final List codeLocalVariableTableSlot = new ArrayList();
-    private final List codeLocalVariableTypeTableN = new ArrayList();
+    private final IntList codeLocalVariableTableSlot = new IntList();
+    private final IntList codeLocalVariableTypeTableN = new IntList();
     private final List codeLocalVariableTypeTableBciP = new ArrayList();
     private final List codeLocalVariableTypeTableSpanO = new ArrayList();
     private final List codeLocalVariableTypeTableNameRU = new ArrayList();
     private final List codeLocalVariableTypeTableTypeRS = new ArrayList();
-    private final List codeLocalVariableTypeTableSlot = new ArrayList();
+    private final IntList codeLocalVariableTypeTableSlot = new IntList();
 
     private final MetadataBandGroup class_RVA_bands;
     private final MetadataBandGroup class_RIA_bands;
@@ -235,19 +234,17 @@ public class ClassBands extends BandSet {
             int major = major_versions[i];
             if (major != defaultMajorVersion) {
                 class_flags[i] |= 1 << 24;
-                classFileVersionMajor.add(new Integer(major));
-                classFileVersionMinor.add(ZERO);
+                classFileVersionMajor.add(major);
+                classFileVersionMinor.add(0);
             }
         }
         // Calculate code headers
         codeHeaders = new int[codeHandlerCount.size()];
         int removed = 0;
         for (int i = 0; i < codeHeaders.length; i++) {
-            int numHandlers = ((Integer) codeHandlerCount.get(i - removed))
-                    .intValue();
-            int maxLocals = ((Integer) codeMaxLocals.get(i - removed))
-                    .intValue();
-            int maxStack = ((Integer) codeMaxStack.get(i - removed)).intValue();
+            int numHandlers = codeHandlerCount.get(i - removed);
+            int maxLocals = codeMaxLocals.get(i - removed);
+            int maxStack = codeMaxStack.get(i - removed);
             if (numHandlers == 0) {
                 int header = maxLocals * 12 + maxStack + 1;
                 if (header < 145 && maxStack < 12) {
@@ -277,7 +274,7 @@ public class ClassBands extends BandSet {
         }
 
         // Compute any required IcLocals
-        List innerClassesN = new ArrayList();
+        IntList innerClassesN = new IntList();
         List icLocal = new ArrayList();
         for (int i = 0; i < class_this.length; i++) {
             CPClass cpClass = class_this[i];
@@ -302,12 +299,12 @@ public class ClassBands extends BandSet {
                     }
                 }
                 if(innerN != 0) {
-                    innerClassesN.add(new Integer(innerN));
+                    innerClassesN.add(innerN);
                     class_flags[i] |= (1 << 23);
                 }
             }
         }
-        class_InnerClasses_N = listToArray(innerClassesN);
+        class_InnerClasses_N = innerClassesN.toArray();
         class_InnerClasses_RC = new CPClass[icLocal.size()];
         class_InnerClasses_F = new int[icLocal.size()];
         classInnerClassesOuterRCN = new ArrayList();
@@ -328,39 +325,39 @@ public class ClassBands extends BandSet {
             }
         }
         // Calculate any backwards calls from metadata bands
-        List classAttrCalls = new ArrayList();
-        List fieldAttrCalls = new ArrayList();
-        List methodAttrCalls = new ArrayList();
+        IntList classAttrCalls = new IntList();
+        IntList fieldAttrCalls = new IntList();
+        IntList methodAttrCalls = new IntList();
         if(class_RVA_bands.hasContent()) {
-            classAttrCalls.add(new Integer(class_RVA_bands.numBackwardsCalls()));
+            classAttrCalls.add(class_RVA_bands.numBackwardsCalls());
         }
         if(class_RIA_bands.hasContent()) {
-            classAttrCalls.add(new Integer(class_RIA_bands.numBackwardsCalls()));
+            classAttrCalls.add(class_RIA_bands.numBackwardsCalls());
         }
         if(field_RVA_bands.hasContent()) {
-            fieldAttrCalls.add(new Integer(field_RVA_bands.numBackwardsCalls()));
+            fieldAttrCalls.add(field_RVA_bands.numBackwardsCalls());
         }
         if(field_RIA_bands.hasContent()) {
-            fieldAttrCalls.add(new Integer(field_RIA_bands.numBackwardsCalls()));
+            fieldAttrCalls.add(field_RIA_bands.numBackwardsCalls());
         }
         if(method_RVA_bands.hasContent()) {
-            methodAttrCalls.add(new Integer(method_RVA_bands.numBackwardsCalls()));
+            methodAttrCalls.add(method_RVA_bands.numBackwardsCalls());
         }
         if(method_RIA_bands.hasContent()) {
-            methodAttrCalls.add(new Integer(method_RIA_bands.numBackwardsCalls()));
+            methodAttrCalls.add(method_RIA_bands.numBackwardsCalls());
         }
         if(method_RVPA_bands.hasContent()) {
-            methodAttrCalls.add(new Integer(method_RVPA_bands.numBackwardsCalls()));
+            methodAttrCalls.add(method_RVPA_bands.numBackwardsCalls());
         }
         if(method_RIPA_bands.hasContent()) {
-            methodAttrCalls.add(new Integer(method_RIPA_bands.numBackwardsCalls()));
+            methodAttrCalls.add(method_RIPA_bands.numBackwardsCalls());
         }
         if(method_AD_bands.hasContent()) {
-            methodAttrCalls.add(new Integer(method_AD_bands.numBackwardsCalls()));
+            methodAttrCalls.add(method_AD_bands.numBackwardsCalls());
         }
-        class_attr_calls = listToArray(classAttrCalls);
-        field_attr_calls = listToArray(fieldAttrCalls);
-        method_attr_calls = listToArray(methodAttrCalls);
+        class_attr_calls = classAttrCalls.toArray();
+        field_attr_calls = fieldAttrCalls.toArray();
+        method_attr_calls = methodAttrCalls.toArray();
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
@@ -449,7 +446,7 @@ public class ClassBands extends BandSet {
 //        *method_attr_indexes :UNSIGNED5 [SUM(*method_attr_count)]
         out.write(encodeBandInt("method_attr_calls", method_attr_calls, Codec.UNSIGNED5));
         out.write(encodeBandInt("methodExceptionNumber",
-                listToArray(methodExceptionNumber), Codec.UNSIGNED5));
+                methodExceptionNumber.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("methodExceptionClasses",
                 cpEntryListToArray(methodExceptionClasses), Codec.UNSIGNED5));
         out.write(encodeBandInt("methodSignature",
@@ -486,9 +483,9 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("class_InnerClasses_outer_RCN", cpEntryOrNullListToArray(classInnerClassesOuterRCN), Codec.UNSIGNED5));
         out.write(encodeBandInt("class_InnerClasses_name_RUN", cpEntryOrNullListToArray(classInnerClassesNameRUN), Codec.UNSIGNED5));
         out.write(encodeBandInt("classFileVersionMinor",
-                listToArray(classFileVersionMinor), Codec.UNSIGNED5));
+                classFileVersionMinor.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("classFileVersionMajor",
-                listToArray(classFileVersionMajor), Codec.UNSIGNED5));
+                classFileVersionMajor.toArray(), Codec.UNSIGNED5));
     }
 
     private int[] getInts(CPClass[] cpClasses) {
@@ -502,12 +499,12 @@ public class ClassBands extends BandSet {
     private void writeCodeBands(OutputStream out) throws IOException,
             Pack200Exception {
         out.write(encodeBandInt("codeHeaders", codeHeaders, Codec.BYTE1));
-        out.write(encodeBandInt("codeMaxStack", listToArray(codeMaxStack),
+        out.write(encodeBandInt("codeMaxStack", codeMaxStack.toArray(),
                 Codec.UNSIGNED5));
-        out.write(encodeBandInt("codeMaxLocals", listToArray(codeMaxLocals),
+        out.write(encodeBandInt("codeMaxLocals", codeMaxLocals.toArray(),
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("codeHandlerCount",
-                listToArray(codeHandlerCount), Codec.UNSIGNED5));
+                codeHandlerCount.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("codeHandlerStartP",
                 listToArray(codeHandlerStartP), Codec.BCI5));
         out.write(encodeBandInt("codeHandlerEndPO",
@@ -528,13 +525,13 @@ public class ClassBands extends BandSet {
         // *code_attr_indexes :UNSIGNED5 [SUM(*code_attr_count)]
         // *code_attr_calls :UNSIGNED5 [...]
         out.write(encodeBandInt("code_LineNumberTable_N",
-                listToArray(codeLineNumberTableN), Codec.UNSIGNED5));
+                codeLineNumberTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LineNumberTable_bci_P",
                 listToArray(codeLineNumberTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LineNumberTable_line",
-                listToArray(codeLineNumberTableLine), Codec.UNSIGNED5));
+                codeLineNumberTableLine.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTable_N",
-                listToArray(codeLocalVariableTableN), Codec.UNSIGNED5));
+                codeLocalVariableTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTable_bci_P",
                 listToArray(codeLocalVariableTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LocalVariableTable_span_O",
@@ -546,9 +543,9 @@ public class ClassBands extends BandSet {
                 cpEntryListToArray(codeLocalVariableTableTypeRS),
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTable_slot",
-                listToArray(codeLocalVariableTableSlot), Codec.UNSIGNED5));
+                codeLocalVariableTableSlot.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_N",
-                listToArray(codeLocalVariableTypeTableN), Codec.UNSIGNED5));
+                codeLocalVariableTypeTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_bci_P",
                 listToArray(codeLocalVariableTypeTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_span_O",
@@ -560,7 +557,7 @@ public class ClassBands extends BandSet {
                 cpEntryListToArray(codeLocalVariableTypeTableTypeRS),
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_slot",
-                listToArray(codeLocalVariableTypeTableSlot), Codec.UNSIGNED5));
+                codeLocalVariableTypeTableSlot.toArray(), Codec.UNSIGNED5));
 
     }
 
@@ -574,7 +571,7 @@ public class ClassBands extends BandSet {
             flags |= (1 << 19);
         }
         if (exceptions != null) {
-            methodExceptionNumber.add(new Integer(exceptions.length));
+            methodExceptionNumber.add(exceptions.length);
             for (int i = 0; i < exceptions.length; i++) {
                 methodExceptionClasses.add(cpBands.getCPClass(exceptions[i]));
             }
@@ -595,7 +592,7 @@ public class ClassBands extends BandSet {
     public void endOfMethod() {
         if(codeFlags.size() > 0) {
             long latestCodeFlag = ((Long)codeFlags.get(codeFlags.size() - 1)).longValue();
-            int latestLocalVariableTableN = ((Integer)codeLocalVariableTableN.get(codeLocalVariableTableN.size() - 1)).intValue();
+            int latestLocalVariableTableN = codeLocalVariableTableN.get(codeLocalVariableTableN.size() - 1);
             if(latestCodeFlag == (1 << 2) && latestLocalVariableTableN == 0) {
                 codeLocalVariableTableN.remove(codeLocalVariableTableN.size() - 1);
                 codeFlags.remove(codeFlags.size() - 1);
@@ -705,26 +702,26 @@ public class ClassBands extends BandSet {
                 .remove(tempMethodFlags.size() - 1);
         Long newFlag = new Long(latestFlag.intValue() | (1 << 17));
         tempMethodFlags.add(newFlag);
-        codeMaxStack.add(new Integer(maxStack));
+        codeMaxStack.add(maxStack);
         if ((newFlag.longValue() & (1 << 3)) == 0) { // not static
             maxLocals--; // minus 'this' local
         }
         maxLocals -= numMethodArgs;
-        codeMaxLocals.add(new Integer(maxLocals));
+        codeMaxLocals.add(maxLocals);
     }
 
     public void addCode(boolean stripDebug) {
-        codeHandlerCount.add(ZERO);
+        codeHandlerCount.add(0);
         if(!stripDebug) {
             codeFlags.add(new Long((1 << 2))); // TODO: What if there's no debug information?
-            codeLocalVariableTableN.add(new Integer(0));
+            codeLocalVariableTableN.add(0);
         }
     }
 
     public void addHandler(Label start, Label end, Label handler, String type) {
-        Integer handlers = (Integer) codeHandlerCount.remove(codeHandlerCount
+        int handlers = codeHandlerCount.remove(codeHandlerCount
                 .size() - 1);
-        codeHandlerCount.add(new Integer(handlers.intValue() + 1));
+        codeHandlerCount.add(handlers + 1);
         codeHandlerStartP.add(start);
         codeHandlerEndPO.add(end);
         codeHandlerCatchPO.add(handler);
@@ -736,13 +733,12 @@ public class ClassBands extends BandSet {
         if ((latestCodeFlag.intValue() & (1 << 1)) == 0) {
             codeFlags.remove(codeFlags.size() - 1);
             codeFlags.add(new Long(latestCodeFlag.intValue() | (1 << 1)));
-            codeLineNumberTableN.add(new Integer(1));
+            codeLineNumberTableN.add(1);
         } else {
-            Integer numLines = (Integer) codeLineNumberTableN
-                    .remove(codeLineNumberTableN.size() - 1);
-            codeLineNumberTableN.add(new Integer(numLines.intValue() + 1));
+            codeLineNumberTableN
+                    .increment(codeLineNumberTableN.size() - 1);
         }
-        codeLineNumberTableLine.add(new Integer(line));
+        codeLineNumberTableLine.add(line);
         codeLineNumberTableBciP.add(start);
         // TODO: bci renumbering
     }
@@ -754,32 +750,29 @@ public class ClassBands extends BandSet {
             if ((latestCodeFlag.intValue() & (1 << 3)) == 0) {
                 codeFlags.remove(codeFlags.size() - 1);
                 codeFlags.add(new Long(latestCodeFlag.intValue() | (1 << 3)));
-                codeLocalVariableTypeTableN.add(new Integer(1));
+                codeLocalVariableTypeTableN.add(1);
             } else {
-                Integer numLocals = (Integer) codeLocalVariableTypeTableN
-                        .remove(codeLocalVariableTypeTableN.size() - 1);
-                codeLocalVariableTypeTableN.add(new Integer(numLocals
-                        .intValue() + 1));
+                codeLocalVariableTypeTableN
+                        .increment(codeLocalVariableTypeTableN.size() - 1);
             }
             codeLocalVariableTypeTableBciP.add(start);
             codeLocalVariableTypeTableSpanO.add(end);
             codeLocalVariableTypeTableNameRU.add(cpBands.getCPUtf8(name));
             codeLocalVariableTypeTableTypeRS.add(cpBands
                     .getCPSignature(signature));
-            codeLocalVariableTypeTableSlot.add(new Integer(indx));
+            codeLocalVariableTypeTableSlot.add(indx);
         }
         // LocalVariableTable attribute
-        Integer numLocals = (Integer) codeLocalVariableTableN
-                .remove(codeLocalVariableTableN.size() - 1);
-        codeLocalVariableTableN.add(new Integer(numLocals.intValue() + 1));
+        codeLocalVariableTableN
+                .increment(codeLocalVariableTableN.size() - 1);
         codeLocalVariableTableBciP.add(start);
         codeLocalVariableTableSpanO.add(end);
         codeLocalVariableTableNameRU.add(cpBands.getCPUtf8(name));
         codeLocalVariableTableTypeRS.add(cpBands.getCPSignature(desc));
-        codeLocalVariableTableSlot.add(new Integer(indx));
+        codeLocalVariableTableSlot.add(indx);
     }
 
-    public void doBciRenumbering(List bciRenumbering, Map labelsToOffsets) {
+    public void doBciRenumbering(IntList bciRenumbering, Map labelsToOffsets) {
         renumberBci(codeLineNumberTableBciP, bciRenumbering, labelsToOffsets);
         renumberBci(codeLocalVariableTableBciP, bciRenumbering, labelsToOffsets);
         renumberOffsetBci(codeLocalVariableTableBciP,
@@ -796,7 +789,7 @@ public class ClassBands extends BandSet {
                 bciRenumbering, labelsToOffsets);
     }
 
-    private void renumberBci(List list, List bciRenumbering, Map labelsToOffsets) {
+    private void renumberBci(List list, IntList bciRenumbering, Map labelsToOffsets) {
         for (int i = list.size() - 1; i >= 0; i--) {
             Object label = list.get(i);
             if (label instanceof Integer) {
@@ -804,13 +797,13 @@ public class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                list.add(i, bciRenumbering.get(bytecodeIndex.intValue()));
+                list.add(i, new Integer(bciRenumbering.get(bytecodeIndex.intValue())));
             }
         }
     }
 
     private void renumberOffsetBci(List relative, List list,
-            List bciRenumbering, Map labelsToOffsets) {
+            IntList bciRenumbering, Map labelsToOffsets) {
         for (int i = list.size() - 1; i >= 0; i--) {
             Object label = list.get(i);
             if (label instanceof Integer) {
@@ -818,8 +811,8 @@ public class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                Integer renumberedOffset = new Integer(((Integer) bciRenumbering
-                        .get(bytecodeIndex.intValue())).intValue()
+                Integer renumberedOffset = new Integer(bciRenumbering
+                        .get(bytecodeIndex.intValue())
                         - ((Integer) relative.get(i)).intValue());
                 list.add(i, renumberedOffset);
             }
@@ -827,7 +820,7 @@ public class ClassBands extends BandSet {
     }
 
     private void renumberDoubleOffsetBci(List relative, List firstOffset, List list,
-            List bciRenumbering, Map labelsToOffsets) {
+            IntList bciRenumbering, Map labelsToOffsets) {
         // TODO: There's probably a nicer way of doing this...
         for (int i = list.size() - 1; i >= 0; i--) {
             Object label = list.get(i);
@@ -836,8 +829,8 @@ public class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                Integer renumberedOffset = new Integer(((Integer) bciRenumbering
-                        .get(bytecodeIndex.intValue())).intValue()
+                Integer renumberedOffset = new Integer(bciRenumbering
+                        .get(bytecodeIndex.intValue())
                         - ((Integer) relative.get(i)).intValue() - ((Integer) firstOffset.get(i)).intValue());
                 list.add(i, renumberedOffset);
             }
