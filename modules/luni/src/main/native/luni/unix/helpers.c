@@ -360,6 +360,7 @@ getPlatformNetworkInterfaceAttribute(JNIEnv * env, jstring ifname, u_long iiFlag
 
 	if ((fd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
 		throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_NORECOVERY);
+                return 0;
 	}
 
 	memset(buff, 0, sizeof(buff));
@@ -499,6 +500,7 @@ getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 	if (ioctl(fd, SIOCGIFCONF, (char *)&ifc) != 0) {
 		close(fd);	
 		throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_NORECOVERY);		
+		return NULL; 
 	}
 
 	ifr = ifc.ifc_req;
