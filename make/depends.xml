@@ -26,7 +26,16 @@
     </description>
 
     <import file="${basedir}/make/properties.xml" />
-    <property file="make/depends.properties" />
+    <loadproperties srcfile="${basedir}/make/depends.properties">
+      <filterchain>
+        <filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+            <param type="token" name="${hy.arch}" value=""/>
+            <param type="token" name="${hy.os.family}" value=""/>
+            <param type="token" name="${hy.platform}" value=""/>
+            <param type="token" name="${hy.platform.variant}" value=""/>
+        </filterreader>
+      </filterchain>
+    </loadproperties>
 
     <target name="check" description="Check whether dependencies are available"
             depends="-check,-check-win,-check-unix,-extract" />
@@ -52,47 +61,7 @@
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
-    <target name="-select-win-deps-x86" if="is.x86">
-        <property name="awtdeps.dir" value="${awtdeps.dir.x86}"/>
-        <property name="awtdeps.tar" value="${awtdeps.tar.x86}"/>
-        <property name="awtdeps.url" value="${awtdeps.url.x86}"/>
-        <property name="awtdeps.md5" value="${awtdeps.md5.x86}"/>
-        <property name="awtdeps.extract.dir" value="${awtdeps.extract.dir.x86}"/>
-        <property name="awtdeps.testfile" value="${awtdeps.testfile.x86}"/>
-
-        <property name="msvcr.dir" value="${msvcr.dir.x86}"/>
-        <property name="msvcr.dll" value="${msvcr.dll.x86}"/>
-        <property name="msvcr.url" value="${msvcr.url.x86}"/>
-        <property name="msvcr.md5" value="${msvcr_VS2003SP1.md5.x86}"/>
-        <property name="msvcr.md5.deprecated" value="${msvcr_VS2003.md5.x86}"/>
-
-        <property name="msvcp.dir" value="${msvcp.dir.x86}"/>
-        <property name="msvcp.dll" value="${msvcp.dll.x86}"/>
-        <property name="msvcp.url" value="${msvcp.url.x86}"/>
-        <property name="msvcp.md5" value="${msvcp_VS2003SP1.md5.x86}"/>
-        <property name="msvcp.md5.deprecated" value="${msvcp_VS2003.md5.x86}"/>
-    </target>
-
-    <target name="-select-win-deps-x86_64" if="is.x86_64">
-        <property name="awtdeps.dir" value="${awtdeps.dir.x86_64}"/>
-        <property name="awtdeps.tar" value="${awtdeps.tar.x86_64}"/>
-        <property name="awtdeps.url" value="${awtdeps.url.x86_64}"/>
-        <property name="awtdeps.md5" value="${awtdeps.md5.x86_64}"/>
-        <property name="awtdeps.extract.dir" value="${awtdeps.extract.dir.x86_64}"/>
-        <property name="awtdeps.testfile" value="${awtdeps.testfile.x86_64}"/>
-
-        <property name="msvcr.dir" value="${msvcr.dir.x86_64}"/>
-        <property name="msvcr.dll" value="${msvcr.dll.x86_64}"/>
-        <property name="msvcr.url" value="${msvcr.url.x86_64}"/>
-        <property name="msvcr.md5" value="${msvcr.md5.x86_64}"/>
-
-        <property name="msvcp.dir" value="${msvcp.dir.x86_64}"/>
-        <property name="msvcp.dll" value="${msvcp.dll.x86_64}"/>
-        <property name="msvcp.url" value="${msvcp.url.x86_64}"/>
-        <property name="msvcp.md5" value="${msvcp.md5.x86_64}"/>
-    </target>
-
-    <target name="-really-check-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
+    <target name="-really-check-win" if="is.windows">
         <property environment="hyenv" />
 
         <check-one-file src="${msvcr.url}" dest="${msvcr.dll}" />
@@ -258,7 +227,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${asm.md5}" />
     </target>
 
-    <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
+    <target name="-download-win" if="is.windows">
 
     <property environment="hyenv" />
 
