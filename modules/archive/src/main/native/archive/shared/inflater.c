@@ -19,7 +19,7 @@
 #include "iohelp.h"
 #include "exceptions.h"
 #include "jclglob.h"
-#include "jclprots.h"
+#include "zip.h"
 
 #include "inflater.h"
 
