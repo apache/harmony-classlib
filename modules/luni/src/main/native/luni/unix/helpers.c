@@ -920,12 +920,11 @@ getPlatformIsExecutable (JNIEnv * env, char *path)
 {
   I_32 result;
   struct stat buffer;
+  PORT_ACCESS_FROM_ENV (env);
 
   result = stat (path, &buffer);
   if (result == -1)
     return 0;
-
-  PORT_ACCESS_FROM_ENV (env);
 
   //if the current user is 'root', then the file is executable when 
   //either of user/group/others has the permission to execute.
