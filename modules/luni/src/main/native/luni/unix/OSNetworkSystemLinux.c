@@ -318,7 +318,20 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
           }
       }
           (*env)->ReleaseIntArrayElements(env, outFlags, flagArray, changed ? 0 : JNI_ABORT);
+  } else if (result == 0) {
+
+    result = HYPORT_ERROR_SOCKET_TIMEOUT;
+
+  } else {
+
+    if (errno == EINTR) {
+      result = HYPORT_ERROR_SOCKET_INTERRUPTED;
+    } else {
+      result = HYPORT_ERROR_SOCKET_OPFAILED;
+    }
+
   }
+      
   hymem_free_memory(my_pollfds);
   
   /* return both correct and error result, let java code handle	exceptions */
