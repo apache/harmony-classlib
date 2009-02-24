@@ -42,6 +42,11 @@
 #include "jclprots.h"
 #include "harmonyglob.h"
 
+#if defined(LINUX)
+#define HAS_RTNETLINK 1
+#endif
+
+#if defined(HAS_RTNETLINK)
 #include <asm/types.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
@@ -70,6 +75,7 @@ typedef struct netlinkContext_struct
   U_32 remainingLength;
   U_32 done;
 } netlinkContext_struct;
+#endif
 
 int portCmp (const void **a, const void **b);
 
@@ -486,6 +492,7 @@ getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 	jboolean isEmpty = JNI_TRUE;        
 	jbyteArray bytearray = NULL;
 
+#if defined(SIOCGIFHWADDR)
 	/* required call if we are going to call port library methods */
 	PORT_ACCESS_FROM_ENV (env);
 
@@ -537,9 +544,11 @@ getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 	}	
 	close(fd);
 	hymem_free_memory (interfaceName);	
+#endif
 	return bytearray;
 }
 
+#if defined(HAS_RTNETLINK)
 void 
 initNetlinkContext (I_32 netlinkSocketHandle,
                     struct netlinkContext_struct * netlinkContext)
@@ -709,6 +718,7 @@ jint getNextNetlinkMsg (JNIEnv * env,
         }
     }
 }
+#endif
 
 I_32 
 getPlatformInterfaceAddresses(JNIEnv * env, 
@@ -717,15 +727,16 @@ getPlatformInterfaceAddresses(JNIEnv * env,
                                  interfaceAddressArray_struct* interfaceAddressArray)
 {
        interfaceAddress_struct *interfaces = NULL;
-       int counter = 0;
+       U_32 numAddresses = 0;
 
+#if defined(HAS_RTNETLINK)
+       int counter = 0;
      	U_8 addressFamily = 0;
        int netlinkSocketHandle = 0;	
        netlinkContext_struct netlinkContext;	
        struct addrReq_struct addrRequest;	
        U_32 sendLength = 0;
        U_32 result = 0;
-       U_32 numAddresses = 0;
 
        struct nlmsghdr *currentNlHeader = NULL;
        struct ifaddrmsg *returnedAddrHeader = NULL;
@@ -893,13 +904,15 @@ getPlatformInterfaceAddresses(JNIEnv * env,
          }
 
       
-       interfaceAddressArray -> length = numAddresses;
-	interfaceAddressArray -> elements = interfaces;
-
        /* do any final clean up before returning */
        close (netlinkSocketHandle);
        cleanupNetlinkContext(env, &netlinkContext);
-	return 0;	
+
+#endif
+       interfaceAddressArray -> length = numAddresses;
+       interfaceAddressArray -> elements = interfaces;
+
+       return 0;	
 }
 
 I_32
