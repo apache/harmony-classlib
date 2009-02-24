@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/vfs.h>
+#include <sys/statvfs.h>
 
 #include <utime.h>
 
@@ -246,10 +246,10 @@ getPlatformIsWriteOnly (JNIEnv * env, char *path)
 }
 
 jlong getPlatformTotal (JNIEnv * env, char *path) {
-	struct statfs fs_buf;
+	struct statvfs fs_buf;
 	jlong total_size;
 	int ret;
-	if((ret = statfs(path, &fs_buf) < 0))
+	if((ret = statvfs(path, &fs_buf) < 0))
 	{
 		return 0l;
 	}
@@ -259,10 +259,10 @@ jlong getPlatformTotal (JNIEnv * env, char *path) {
 }
 
 jlong getPlatformUsableTotal (JNIEnv * env, char *path) {
-    struct statfs fs_buf;
+    struct statvfs fs_buf;
 	jlong total_size;
 	int ret;
-	if((ret = statfs(path, &fs_buf) < 0))
+	if((ret = statvfs(path, &fs_buf) < 0))
 	{
 		return 0l;
 	}
@@ -272,10 +272,10 @@ jlong getPlatformUsableTotal (JNIEnv * env, char *path) {
 }
 
 jlong getPlatformFreeTotal (JNIEnv * env, char *path) {
-	struct statfs fs_buf;
+	struct statvfs fs_buf;
 	jlong total_size;
 	int ret;
-	if((ret = statfs(path, &fs_buf) < 0))
+	if((ret = statvfs(path, &fs_buf) < 0))
 	{
 		return 0l;
 	}
