@@ -93,8 +93,8 @@ public class SocketTest extends SocketTestCase {
                 }
 
                 socket.setSoTimeout(5000);
-                socket.accept();
-
+                Socket client = socket.accept();
+                client.close();
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
