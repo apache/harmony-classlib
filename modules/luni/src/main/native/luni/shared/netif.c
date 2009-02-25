@@ -164,6 +164,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 	struct ifconf ifc;
 	int ifconfCommand = SIOCGIFCONF;
 	char * lastName;
+    FILE * ipv6 = NULL;
 #endif
 	/* required call if we are going to call port library methods */
 	PORT_ACCESS_FROM_ENV (env);
@@ -908,7 +909,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
   networkInterfaceArray.elements = interfaces;
   networkInterfaceArray.length = numAdapters;
   lastName = NULL;
-  FILE * ipv6 = NULL;
+
   for (counter = 0; counter < totalInterfaces; counter++)
     {
       /* make sure the interface is still up */
