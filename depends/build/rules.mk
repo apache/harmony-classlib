@@ -21,12 +21,18 @@ CFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CFLAGS) $(WARNFLAGS)
 CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS) $(WARNFLAGS)
 EXPFILE = $(notdir $(basename $(DLLNAME))).exp
 
+ifneq ($(HY_OS),zos)
 # Convert $(LIBPATH)libblah.so to -L$(LIBPATH) ... -lblah, also for $(DLLPATH)
 MDLLIBARGS := \
   $(MDLLIBPREFIX) -L$(LIBPATH) -L$(DLLPATH) \
   $(patsubst $(LIBPATH)lib%$(HY_LINKLIB_SUFFIX),-l%, \
     $(patsubst $(DLLPATH)lib%$(HY_LINKLIB_SUFFIX),-l%, $(MDLLIBFILES))) \
   $(MDLLIBSUFFIX)
+else
+# Do not change on zOS
+MDLLIBARGS := \
+  $(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX)
+endif
 
 all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
