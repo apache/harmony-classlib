@@ -431,13 +431,14 @@ getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint jindex)
 jint
 getPlatformMTU(JNIEnv * env, jstring ifname, jint index)
 {
-       struct ifconf ifc;
-	char buff[2048];
-	int fd, i, n, result;
-	struct ifreq *ifr = NULL;
-	char * interfaceName = 0;	
-       int mtu = 0;
-	
+   int mtu = 0;
+#ifdef SIOCGIFMTU
+   struct ifconf ifc;
+   char buff[2048];
+   int fd, i, n, result;
+   struct ifreq *ifr = NULL;
+   char * interfaceName = 0;	
+
 	/* required call if we are going to call port library methods */
 	PORT_ACCESS_FROM_ENV (env);
 
@@ -475,24 +476,24 @@ getPlatformMTU(JNIEnv * env, jstring ifname, jint index)
 	}	
 	close(fd);
 	hymem_free_memory (interfaceName);	
+#endif
 	return mtu;
 }
 
 jbyteArray 
 getPlatformHardwareAddress(JNIEnv * env, jstring ifname, jint index)
 {
-       const int MAC_ADDR_SIZE = 6;
-
+    jbyteArray bytearray = NULL;
+#if defined(SIOCGIFHWADDR)
+    const int MAC_ADDR_SIZE = 6;
 	struct ifconf ifc;
 	char buff[2048];
 	int fd, i, j, n, result;
 	struct ifreq *ifr = NULL;
 	char * interfaceName = 0;
 	char array[MAC_ADDR_SIZE];
-	jboolean isEmpty = JNI_TRUE;        
-	jbyteArray bytearray = NULL;
+	jboolean isEmpty = JNI_TRUE; 
 
-#if defined(SIOCGIFHWADDR)
 	/* required call if we are going to call port library methods */
 	PORT_ACCESS_FROM_ENV (env);
 
