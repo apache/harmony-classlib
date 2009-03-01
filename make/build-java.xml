@@ -215,6 +215,12 @@ ${built.files.list}
             <fileset dir="${depends.manifests}"/>
         </copy>
 
+        <unjar src="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0/xalan.jar" dest="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0.tmp"/>
+        <delete file="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0/xalan.jar"/>
+        <replace file="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0.tmp/META-INF/MANIFEST.MF" token="Class-Path: xercesImpl.jar xml-apis.jar serializer.jar" value="" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0/xalan.jar" basedir="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0.tmp" manifest="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0.tmp/META-INF/MANIFEST.MF"/>
+        <delete dir="${hy.jdk}/jre/lib/boot/xalan-j_2.7.0.tmp" />
+
         <!-- Copy across the extension dependency jars -->
         <copy tofile="${hy.jdk}/jre/lib/ext/bcprov.jar" verbose="true"
               flatten="yes" overwrite="true">
