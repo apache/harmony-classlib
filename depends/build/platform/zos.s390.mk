@@ -40,3 +40,6 @@ DLL_LDFLAGS =
 
 # We can't use the -Xlinker options on zOS
 EXERPATHPREFIX =
+
+# Override default debug flags
+HYDEBUGCFLAGS = -g -O0
