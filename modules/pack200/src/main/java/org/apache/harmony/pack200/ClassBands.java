@@ -183,7 +183,7 @@ public class ClassBands extends BandSet {
     public void currentClassReferencesInnerClass(CPClass inner) {
         if(!(index >= class_this.length)) {
             CPClass currentClass = class_this[index];
-            if(currentClass != null && !currentClass.equals(inner) && !isInnerClassOf(currentClass, inner)) {
+            if(currentClass != null && !currentClass.equals(inner) && !isInnerClassOf(currentClass.toString(), inner)) {
                 Set referencedInnerClasses = (Set)classReferencesInnerClass.get(currentClass);
                 if(referencedInnerClasses == null) {
                     referencedInnerClasses = new HashSet();
@@ -194,13 +194,20 @@ public class ClassBands extends BandSet {
         }
     }
 
-    private boolean isInnerClassOf(CPClass possibleInner, CPClass possibleOuter) {
-        String currentClassName = possibleInner.toString();
-        if(possibleInner.isInnerClass()) {
-            String superClassName = currentClassName.substring(0, currentClassName.lastIndexOf('$'));
-            return superClassName.equals(possibleOuter.toString());
+    private boolean isInnerClassOf(String possibleInner, CPClass possibleOuter) {
+        if(isInnerClass(possibleInner)) {
+            String superClassName = possibleInner.substring(0, possibleInner.lastIndexOf('$'));
+            if(superClassName.equals(possibleOuter.toString())) {
+                return true;
+            } else { // do this recursively
+                return isInnerClassOf(superClassName, possibleOuter);
+            }
         }
         return false;
+    }
+
+    private boolean isInnerClass(String possibleInner) {
+        return possibleInner.indexOf('$') != -1;
     }
 
     public void addField(int flags, String name, String desc, String signature,
@@ -292,7 +299,7 @@ public class ClassBands extends BandSet {
                         .hasNext();) {
                     CPClass inner = (CPClass) iterator2.next();
                     IcTuple icTuple = segment.getIcBands().getIcTuple(inner);
-                    if(icTuple != null) {
+                    if(icTuple != null && ! icTuple.isAnonymous()) {
                         // should transmit an icLocal entry
                         icLocal.add(icTuple);
                         innerN++;
