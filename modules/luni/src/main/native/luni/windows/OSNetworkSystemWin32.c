@@ -378,3 +378,47 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStream
 
   return (jint) nbytes;
 }
+
+
+/**
+ * A helper method, call selectRead with a small timeout until read is ready or an error occurs.
+ *
+ * @param	env						pointer to the JNI library
+ * @param	hysocketP				socket pointer
+ * @param	timeout				timeout value
+ */
+
+I_32
+pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
+                BOOLEAN poll)
+{
+
+  I_32 result;
+  hysocket_t hysocketP;
+  PORT_ACCESS_FROM_ENV (env);
+
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
+  if (!hysock_socketIsValid (hysocketP))
+    {
+      throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
+      return (jint) - 1;
+    }
+
+  if (0 == timeout)
+    {
+      result = hysock_select_read (hysocketP, 0, 0, FALSE);
+    }
+  else
+    {
+      result =
+        hysock_select_read (hysocketP, timeout / 1000,
+                            (timeout % 1000) * 1000, FALSE);
+    }
+  if (HYPORT_ERROR_SOCKET_TIMEOUT == result)
+    throwJavaIoInterruptedIOException (env, result);
+  else if (0 > result)
+    throwJavaNetSocketException (env, result);
+
+  return result;
+}
+

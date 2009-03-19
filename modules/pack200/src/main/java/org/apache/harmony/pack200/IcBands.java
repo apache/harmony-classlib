@@ -156,6 +156,12 @@ public class IcBands extends BandSet {
             return C.compareTo(((IcTuple)arg0).C);
         }
 
+        public boolean isAnonymous() {
+            String className = C.toString();
+            String innerName = className.substring(className.lastIndexOf('$') + 1);
+            return Character.isDigit(innerName.charAt(0));
+        }
+
     }
 
     public IcTuple getIcTuple(CPClass inner) {

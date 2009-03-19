@@ -1321,6 +1321,7 @@ public final class URI implements Comparable<URI>, Serializable {
         result.query = relative.query;
         // the result URI is the remainder of the relative URI's path
         result.path = relativePath.substring(thisPath.length());
+        result.setSchemeSpecificPart();
         return result;
     }
 

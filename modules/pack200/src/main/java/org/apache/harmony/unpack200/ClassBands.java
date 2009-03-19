@@ -207,39 +207,6 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5, signatureCount);
         int signatureIndex = 0;
 
-        int backwardsCallsUsed = parseFieldMetadataBands(in, fieldAttrCalls);
-
-        // Parse non-predefined attribute bands
-        int backwardsCallIndex = backwardsCallsUsed;
-        int limit = options.hasFieldFlagsHi() ? 62 : 31;
-        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
-        int[] counts = new int[limit + 1];
-        List[] otherAttributes = new List[limit + 1];
-        for (int i = 0; i < limit; i++) {
-            AttributeLayout layout = attrMap.getAttributeLayout(i,
-                    AttributeLayout.CONTEXT_FIELD);
-            if (layout != null && !(layout.isDefaultLayout())) {
-                otherLayouts[i] = layout;
-                counts[i] = SegmentUtils.countMatches(fieldFlags, layout);
-            }
-        }
-        for (int i = 0; i < counts.length; i++) {
-            if (counts[i] > 0) {
-                NewAttributeBands bands = attrMap
-                        .getAttributeBands(otherLayouts[i]);
-                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
-                int numBackwardsCallables = otherLayouts[i]
-                        .numBackwardsCallables();
-                if (numBackwardsCallables > 0) {
-                    int[] backwardsCalls = new int[numBackwardsCallables];
-                    System.arraycopy(fieldAttrCalls, backwardsCallIndex,
-                            backwardsCalls, 0, numBackwardsCallables);
-                    bands.setBackwardsCalls(backwardsCalls);
-                    backwardsCallIndex += numBackwardsCallables;
-                }
-            }
-        }
-
         AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_DEPRECATED,
                 AttributeLayout.CONTEXT_FIELD);
@@ -276,12 +243,56 @@ public class ClassBands extends BandSet {
                     fieldAttributes[i][j].add(new SignatureAttribute(value));
                     signatureIndex++;
                 }
-                // Non-predefined attributes
+            }
+        }
+
+        int backwardsCallsUsed = parseFieldMetadataBands(in, fieldAttrCalls);
+
+        // Parse non-predefined attribute bands
+        int backwardsCallIndex = backwardsCallsUsed;
+        int limit = options.hasFieldFlagsHi() ? 62 : 31;
+        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
+        int[] counts = new int[limit + 1];
+        List[] otherAttributes = new List[limit + 1];
+        for (int i = 0; i < limit; i++) {
+            AttributeLayout layout = attrMap.getAttributeLayout(i,
+                    AttributeLayout.CONTEXT_FIELD);
+            if (layout != null && !(layout.isDefaultLayout())) {
+                otherLayouts[i] = layout;
+                counts[i] = SegmentUtils.countMatches(fieldFlags, layout);
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            if (counts[i] > 0) {
+                NewAttributeBands bands = attrMap
+                        .getAttributeBands(otherLayouts[i]);
+                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
+                int numBackwardsCallables = otherLayouts[i]
+                        .numBackwardsCallables();
+                if (numBackwardsCallables > 0) {
+                    int[] backwardsCalls = new int[numBackwardsCallables];
+                    System.arraycopy(fieldAttrCalls, backwardsCallIndex,
+                            backwardsCalls, 0, numBackwardsCallables);
+                    bands.setBackwardsCalls(backwardsCalls);
+                    backwardsCallIndex += numBackwardsCallables;
+                }
+            }
+        }
+
+        // Non-predefined attributes
+        for (int i = 0; i < classCount; i++) {
+            for (int j = 0; j < fieldFlags[i].length; j++) {
+                long flag = fieldFlags[i][j];
+                int othersAddedAtStart = 0;
                 for (int k = 0; k < otherLayouts.length; k++) {
                     if (otherLayouts[k] != null
                             && otherLayouts[k].matches(flag)) {
                         // Add the next attribute
-                        fieldAttributes[i][j].add(otherAttributes[k].get(0));
+                        if(otherLayouts[k].getIndex()<15) {
+                            fieldAttributes[i][j].add(othersAddedAtStart++, otherAttributes[k].get(0));
+                        } else {
+                            fieldAttributes[i][j].add(otherAttributes[k].get(0));
+                        }
                         otherAttributes[k].remove(0);
                     }
                 }
@@ -340,6 +351,50 @@ public class ClassBands extends BandSet {
         long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
                 Codec.UNSIGNED5, count1);
 
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_METHOD);
+
+        // Add attributes to the attribute arrays
+        int methodExceptionsIndex = 0;
+        int methodSignatureIndex = 0;
+        for (int i = 0; i < methodAttributes.length; i++) {
+            for (int j = 0; j < methodAttributes[i].length; j++) {
+                long flag = methodFlags[i][j];
+                if (methodExceptionsLayout.matches(flag)) {
+                    int n = numExceptions[methodExceptionsIndex];
+                    int[] exceptions = methodExceptionsRS[methodExceptionsIndex];
+                    CPClass[] exceptionClasses = new CPClass[n];
+                    for (int k = 0; k < n; k++) {
+                        exceptionClasses[k] = cpBands
+                                .cpClassValue(exceptions[k]);
+                    }
+                    methodAttributes[i][j].add(new ExceptionsAttribute(
+                            exceptionClasses));
+                    methodExceptionsIndex++;
+                }
+                if (methodSignatureLayout.matches(flag)) {
+                    // We've got a signature attribute
+                    long result = methodSignatureRS[methodSignatureIndex];
+                    String desc = methodDescr[i][j];
+                    int colon = desc.indexOf(':');
+                    String type = desc.substring(colon + 1);
+                    // TODO Got to get better at this ... in any case, it should
+                    // be e.g. KIB or KIH
+                    if (type.equals("B") || type.equals("H"))
+                        type = "I";
+                    CPUTF8 value = (CPUTF8) methodSignatureLayout.getValue(
+                            result, type, cpBands.getConstantPool());
+                    methodAttributes[i][j]
+                            .add(new SignatureAttribute(value));
+                    methodSignatureIndex++;
+                }
+                if (deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
+                }
+            }
+        }
+
         // Parse method metadata bands
         int backwardsCallsUsed = parseMethodMetadataBands(in, methodAttrCalls);
 
@@ -374,64 +429,20 @@ public class ClassBands extends BandSet {
             }
         }
 
-        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
-                AttributeLayout.ATTRIBUTE_DEPRECATED,
-                AttributeLayout.CONTEXT_METHOD);
-
-        // Add attributes to the attribute arrays
-        int methodExceptionsIndex = 0;
-        int methodSignatureIndex = 0;
+        // Non-predefined attributes
         for (int i = 0; i < methodAttributes.length; i++) {
             for (int j = 0; j < methodAttributes[i].length; j++) {
                 long flag = methodFlags[i][j];
-             // Non-predefined attributes
+                int othersAddedAtStart = 0;
                 for (int k = 0; k < otherLayouts.length; k++) {
                     if (otherLayouts[k] != null
-                            && otherLayouts[k].matches(flag)
-                            && otherLayouts[k].getIndex() < 15) {
+                            && otherLayouts[k].matches(flag)) {
                         // Add the next attribute
-                        methodAttributes[i][j].add(otherAttributes[k].get(0));
-                        otherAttributes[k].remove(0);
-                    }
-                }
-                if (methodExceptionsLayout.matches(flag)) {
-                    int n = numExceptions[methodExceptionsIndex];
-                    int[] exceptions = methodExceptionsRS[methodExceptionsIndex];
-                    CPClass[] exceptionClasses = new CPClass[n];
-                    for (int k = 0; k < n; k++) {
-                        exceptionClasses[k] = cpBands
-                                .cpClassValue(exceptions[k]);
-                    }
-                    methodAttributes[i][j].add(new ExceptionsAttribute(
-                            exceptionClasses));
-                    methodExceptionsIndex++;
-                }
-                if (methodSignatureLayout.matches(flag)) {
-                    // We've got a signature attribute
-                    long result = methodSignatureRS[methodSignatureIndex];
-                    String desc = methodDescr[i][j];
-                    int colon = desc.indexOf(':');
-                    String type = desc.substring(colon + 1);
-                    // TODO Got to get better at this ... in any case, it should
-                    // be e.g. KIB or KIH
-                    if (type.equals("B") || type.equals("H"))
-                        type = "I";
-                    CPUTF8 value = (CPUTF8) methodSignatureLayout.getValue(
-                            result, type, cpBands.getConstantPool());
-                    methodAttributes[i][j]
-                            .add(new SignatureAttribute(value));
-                    methodSignatureIndex++;
-                }
-                if (deprecatedLayout.matches(flag)) {
-                    methodAttributes[i][j].add(new DeprecatedAttribute());
-                }
-                // Non-predefined attributes
-                for (int k = 0; k < otherLayouts.length; k++) {
-                    if (otherLayouts[k] != null
-                            && otherLayouts[k].matches(flag)
-                            && otherLayouts[k].getIndex() >= 15) {
-                        // Add the next attribute
-                        methodAttributes[i][j].add(otherAttributes[k].get(0));
+                        if(otherLayouts[k].getIndex() < 15) {
+                            methodAttributes[i][j].add(othersAddedAtStart++, otherAttributes[k].get(0));
+                        } else {
+                            methodAttributes[i][j].add(otherAttributes[k].get(0));
+                        }
                         otherAttributes[k].remove(0);
                     }
                 }

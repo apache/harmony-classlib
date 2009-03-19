@@ -52,5 +52,10 @@ jobject getBooleanValue (JNIEnv * env, hysocket_t hysocketP, int level,
 jobject getLingerOption (JNIEnv * env, hysocket_t hysocketP);
 void setReceiveBufferSize (JNIEnv * env, hysocket_t hysocketP,
          jobject optVal);
+void createSocket (JNIEnv* env, jobject thisObjFD, int sockType,
+                   jboolean preferIPv4Stack);
+I_32 pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
+                     BOOLEAN poll);
+
 #endif /* socket_h */
 

@@ -43,6 +43,7 @@ public class Archive {
     private JarFile jarFile;
     private long segmentLimit = 1000000;
     private long currentSegmentSize;
+    private boolean stripDebug;
 
     public Archive(JarInputStream inputStream, OutputStream outputStream,
             boolean gzip) throws IOException {
@@ -63,6 +64,10 @@ public class Archive {
         segmentLimit = limit;
     }
 
+    public void stripDebugAttributes() {
+        stripDebug = true;
+    }
+
     public void pack() throws Pack200Exception, IOException {
         List classes = new ArrayList();
         List files = new ArrayList();
@@ -71,33 +76,33 @@ public class Archive {
         if (manifest != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             manifest.write(baos);
+            // TODO: Need to add this in some cases, but I'm not sure which at the moment
+//            files.add(new File("META-INF", new byte[0], 0));
             files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
         }
         if (inputStream != null) {
-            while (inputStream.available() > 0) {
-                JarEntry jarEntry = inputStream.getNextJarEntry();
-                if (jarEntry != null) {
-                    boolean added = addJarEntry(jarEntry,
-                            new BufferedInputStream(inputStream), classes,
-                            files);
-                    if (!added) { // not added because segment has reached
-                        // maximum size
-                        new Segment().pack(classes, files, outputStream);
+            JarEntry jarEntry = inputStream.getNextJarEntry();
+            while (jarEntry != null) {
+                boolean added = addJarEntry(jarEntry,
+                        new BufferedInputStream(inputStream), classes,
+                        files);
+                if (!added) { // not added because segment has reached
+                    // maximum size
+                    if(classes.size() > 0 || files.size() > 0) {
+                        new Segment().pack(classes, files, outputStream, stripDebug);
                         classes = new ArrayList();
                         files = new ArrayList();
                         currentSegmentSize = 0;
-                        if (!addJarEntry(jarEntry, new BufferedInputStream(
-                                inputStream), classes, files)) {
-                            throw new Pack200Exception(
-                                    "Segment limit is too small for the files you are trying to pack");
-                        }
-                    } else if (segmentLimit == 0) {
-                        // create a new segment for each class
-                        new Segment().pack(classes, files, outputStream);
-                        classes = new ArrayList();
-                        files = new ArrayList();
+                        addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
+                        currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
                     }
+                } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
+                    // create a new segment for each class unless size = 0
+                    new Segment().pack(classes, files, outputStream, stripDebug);
+                    classes = new ArrayList();
+                    files = new ArrayList();
                 }
+                jarEntry = inputStream.getNextJarEntry();
             }
         } else {
             Enumeration jarEntries = jarFile.entries();
@@ -107,24 +112,23 @@ public class Archive {
                         jarFile.getInputStream(jarEntry)), classes, files);
                 if (!added) { // not added because segment has reached maximum
                     // size
-                    new Segment().pack(classes, files, outputStream);
+                    new Segment().pack(classes, files, outputStream, stripDebug);
                     classes = new ArrayList();
                     files = new ArrayList();
                     currentSegmentSize = 0;
-                    if (!addJarEntry(jarEntry, new BufferedInputStream(jarFile
-                            .getInputStream(jarEntry)), classes, files)) {
-                        throw new Pack200Exception("Segment limit is too small");
-                    }
-                } else if (segmentLimit == 0) {
-                    // create a new segment for each class
-                    new Segment().pack(classes, files, outputStream);
+                    addJarEntry(jarEntry, new BufferedInputStream(jarFile
+                            .getInputStream(jarEntry)), classes, files);
+                    currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
+                } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
+                    // create a new segment for each class unless size = 0
+                    new Segment().pack(classes, files, outputStream, stripDebug);
                     classes = new ArrayList();
                     files = new ArrayList();
                 }
             }
         }
         if(classes.size() > 0 || files.size() > 0) {
-            new Segment().pack(classes, files, outputStream);
+            new Segment().pack(classes, files, outputStream, stripDebug);
         }
         outputStream.close();
     }
@@ -134,17 +138,19 @@ public class Archive {
         String name = jarEntry.getName();
         long size = jarEntry.getSize();
         if (size > Integer.MAX_VALUE) {
-            throw new RuntimeException("Large Class!");
+            throw new RuntimeException("Large Class!"); // TODO: Should probably allow this
+        } else if (size < 0) {
+            throw new RuntimeException("Error: size for " + name + " is " + size);
         }
         if(segmentLimit != -1 && segmentLimit != 0) {
             // -1 is a special case where only one segment is created and
-            // 0 is a special case where one segment is created for each file
-            int packedSize = name.endsWith(".class") ? estimatePackedSize(size)
-                    : (int) size;
-            if (packedSize + currentSegmentSize > segmentLimit) {
-                return false;
+            // 0 is a special case where one segment is created for each file except for files in "META-INF"
+
+            long packedSize = estimateSize(jarEntry);
+            if (packedSize + currentSegmentSize > segmentLimit && currentSegmentSize > 0) {
+                return false; // don't add this JarEntry to the current segment
             } else {
-                currentSegmentSize += packedSize;
+                currentSegmentSize += packedSize; // do add this JarEntry
             }
         }
         byte[] bytes = new byte[(int) size];
@@ -161,8 +167,18 @@ public class Archive {
         return true;
     }
 
-    private int estimatePackedSize(long size) {
-        return (int) size; // TODO: try to match the RI as closely as possible
+    private long estimateSize(JarEntry jarEntry) {
+        // The heuristic used here is for compatibility with the RI and should not be changed
+        String name = jarEntry.getName();
+        if(name.startsWith("META-INF") || name.startsWith("/META-INF")) {
+            return 0;
+        } else {
+            long fileSize = jarEntry.getSize();
+            if(fileSize < 0) {
+                fileSize = 0;
+            }
+            return name.length() + fileSize + 5;
+        }
     }
 
     static class File {
@@ -187,6 +203,10 @@ public class Archive {
 
         public long getModtime() {
             return modtime;
+        }
+
+        public String toString() {
+            return name;
         }
     }
 

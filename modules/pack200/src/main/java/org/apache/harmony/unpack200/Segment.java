@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
+import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 
@@ -528,7 +529,6 @@ public class Segment {
         long[] fileSize = fileBands.getFileSize();
         byte[][] fileBits = fileBands.getFileBits();
 
-        // out.setLevel(JarEntry.DEFLATED)
         // now write the files out
         int classNum = 0;
         int numberOfFiles = header.getNumberOfFiles();
@@ -546,23 +546,32 @@ public class Segment {
             boolean deflate = fileDeflate[i];
 
             JarEntry entry = new JarEntry(name);
-            if (deflate)
+            if (deflate) {
                 entry.setMethod(ZipEntry.DEFLATED);
+            } else {
+                entry.setMethod(ZipEntry.STORED);
+                CRC32 crc = new CRC32();
+                if(fileIsClass[i]) {
+                    crc.update(classFilesContents[classNum]);
+                    entry.setSize(classFilesContents[classNum].length);
+                } else {
+                    crc.update(fileBits[i]);
+                    entry.setSize(fileSize[i]);
+                }
+                entry.setCrc(crc.getValue());
+            }
             // On Windows at least, need to correct for timezone
             entry.setTime(modtime - TimeZone.getDefault().getRawOffset());
             out.putNextEntry(entry);
 
+            // write to output stream
             if (fileIsClass[i]) {
-                // write to dos
                 entry.setSize(classFilesContents[classNum].length);
                 out.write(classFilesContents[classNum]);
                 classNum++;
             } else {
-                long size = fileSize[i];
-                entry.setSize(size);
-
-                byte[] data = fileBits[i];
-                out.write(data);
+                entry.setSize(fileSize[i]);
+                out.write(fileBits[i]);
             }
         }
     }

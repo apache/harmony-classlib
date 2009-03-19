@@ -19,7 +19,12 @@ INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include
 
 BUILDFILES = $(SHAREDSUB)pngencoder.o
 
+ifneq ($(HY_OS),zos)
 OSLIBS += -lpng
+else
+MDLLIBFILES += $(LIBPATH)libpng.a
+DEFINES += -DPNGAPI=
+endif
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)

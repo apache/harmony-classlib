@@ -509,6 +509,15 @@ public class IntegerTest extends TestCase {
                 -Integer.MAX_VALUE));
         assertEquals("Returned incorrect octal string", "-2147483648", Integer.toString(
                 Integer.MIN_VALUE));
+        
+        // Test for HARMONY-6068
+        assertEquals("Returned incorrect octal String", "-1000", Integer.toString(-1000));
+        assertEquals("Returned incorrect octal String", "1000", Integer.toString(1000));
+        assertEquals("Returned incorrect octal String", "0", Integer.toString(0));
+        assertEquals("Returned incorrect octal String", "708", Integer.toString(708));
+        assertEquals("Returned incorrect octal String", "-100", Integer.toString(-100));
+        assertEquals("Returned incorrect octal String", "-1000000008", Integer.toString(-1000000008));
+        assertEquals("Returned incorrect octal String", "2000000008", Integer.toString(2000000008));
     }
 
     /**

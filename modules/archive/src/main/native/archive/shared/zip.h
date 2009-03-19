@@ -52,4 +52,9 @@ typedef struct JCLZipFileLink
     throwNew##type(env, (const char*) zError(err));    \
   }
 
+void throwNewIllegalStateException PROTOTYPE((JNIEnv* env,
+                                              const char* message));
+void throwNewIllegalArgumentException PROTOTYPE((JNIEnv* env,
+                                                 const char* message));
+
 #endif /* zip_h */

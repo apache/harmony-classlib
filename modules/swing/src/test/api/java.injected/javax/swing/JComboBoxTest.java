@@ -202,11 +202,7 @@ public class JComboBoxTest extends SwingTestCase {
         assertEquals("b", comboBox.getSelectedItem());
         comboBox.setSelectedItem("b");
         assertTrue(itemController.getEvents().isEmpty());
-        if (isHarmony()) {
-            assertNull(actionController.getEvent());
-        } else {
-            assertNotNull(actionController.getEvent());
-        }
+        assertNotNull(actionController.getEvent());
         actionController.reset();
         itemController.reset();
         comboBox.setEditable(false);
@@ -221,11 +217,7 @@ public class JComboBoxTest extends SwingTestCase {
         assertEquals(1, comboBox.getSelectedIndex());
         comboBox.setSelectedItem("b");
         assertEquals(1, comboBox.getSelectedIndex());
-        if (isHarmony()) {
-            assertNull(actionController.getEvent());
-        } else {
-            assertNotNull(actionController.getEvent());
-        }
+        assertNotNull(actionController.getEvent());
         assertTrue(itemController.getEvents().isEmpty());
         comboBox.setSelectedItem("a");
         assertEquals("a", comboBox.getSelectedItem());

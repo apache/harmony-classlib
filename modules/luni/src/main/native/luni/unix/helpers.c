@@ -31,7 +31,6 @@
 #include <dirent.h>
 
 #include "helpers.h"
-#include "jclprots.h"
 #include "harmonyglob.h"
 
 int portCmp (const void **a, const void **b);

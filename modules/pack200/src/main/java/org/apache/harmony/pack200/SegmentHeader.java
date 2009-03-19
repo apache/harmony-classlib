@@ -369,4 +369,8 @@ public class SegmentHeader extends BandSet {
         return have_file_options;
     }
 
+    public boolean have_all_code_flags() {
+        return have_all_code_flags;
+    }
+
 }

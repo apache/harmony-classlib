@@ -112,8 +112,11 @@ public class ArchiveTest extends TestCase {
         JarFile jarFile = new JarFile(file2);
         file2.deleteOnExit();
 
-        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
-                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
+        JarFile jarFile2 = new JarFile(compareFile);
+
+        assertEquals(jarFile2.size(), jarFile.size());
 
         compareFiles(jarFile, jarFile2);
     }
@@ -137,6 +140,97 @@ public class ArchiveTest extends TestCase {
         file2.deleteOnExit();
         JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/jndiUnpacked.jar").toURI()));
+
+        compareFiles(jarFile, jarFile2);
+    }
+
+    public void testSegmentLimits() throws IOException, Pack200Exception {
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        Archive archive = new Archive(in, out, true);
+        archive.setSegmentLimit(0);
+        archive.pack();
+        in.close();
+        out.close();
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        archive = new Archive(in, out, true);
+        archive.setSegmentLimit(-1);
+        archive.pack();
+        in.close();
+        out.close();
+
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/hw.jar"));
+        file = File.createTempFile("helloworld", ".pack.gz");
+        out = new FileOutputStream(file);
+        archive = new Archive(in, out, true);
+        archive.setSegmentLimit(5000);
+        archive.pack();
+        in.close();
+        out.close();
+    }
+
+    public void testStripDebug() throws IOException, Pack200Exception, URISyntaxException {
+        in = new JarInputStream(Archive.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sqlUnpacked.jar"));
+        file = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file);
+        Archive archive = new Archive(in, out, false);
+        archive.stripDebugAttributes();
+        archive.pack();
+        in.close();
+        out.close();
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file2 = File.createTempFile("sqloutNoDebug", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
+        org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(in2, out2);
+        u2archive.unpack();
+
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpackedNoDebug.jar").toURI());
+        JarFile jarFile = new JarFile(file2);
+        assertTrue(file2.length() < 250000);
+        file2.deleteOnExit();
+
+        JarFile jarFile2 = new JarFile(compareFile);
+
+        compareFiles(jarFile, jarFile2);
+    }
+
+    public void testAnnotations() throws IOException, Pack200Exception,
+            URISyntaxException {
+        in = new JarInputStream(
+                Archive.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/annotationsUnpacked.jar"));
+        file = File.createTempFile("annotations", ".pack");
+        out = new FileOutputStream(file);
+        new Archive(in, out, false).pack();
+        in.close();
+        out.close();
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file2 = File.createTempFile("annotationsout", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
+        org.apache.harmony.unpack200.Archive archive = new org.apache.harmony.unpack200.Archive(
+                in2, out2);
+        archive.unpack();
+        JarFile jarFile = new JarFile(file2);
+        file2.deleteOnExit();
+        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/annotationsUnpacked.jar").toURI()));
 
         compareFiles(jarFile, jarFile2);
     }
