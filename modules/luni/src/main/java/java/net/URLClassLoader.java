@@ -330,6 +330,7 @@ public class URLClassLoader extends SecureClassLoader {
             return index;
         }
 
+        @Override
         void findResources(String name, ArrayList<URL> resources) {
             URL res = findResourceInOwn(name);
             if (res != null && !resources.contains(res)) {
@@ -353,6 +354,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         }
 
+        @Override
         Class<?> findClass(String packageName, String name, String origName) {
             String entryName = prefixName + name;
             JarEntry entry = jf.getJarEntry(entryName);
@@ -443,6 +445,7 @@ public class URLClassLoader extends SecureClassLoader {
             return null;
         }
 
+        @Override
         URL findResource(String name) {
             URL res = findResourceInOwn(name);
             if (res != null) {
@@ -540,6 +543,7 @@ public class URLClassLoader extends SecureClassLoader {
             prefix = buf.toString();
         }
 
+        @Override
         Class<?> findClass(String packageName, String name, String origName) {
             String filename = prefix + name;
             try {
@@ -561,13 +565,14 @@ public class URLClassLoader extends SecureClassLoader {
             return null;
         }
 
+        @Override
         URL findResource(String name) {
             int idx = 0;
             String filename;
 
             // Do not create a UNC path, i.e. \\host
-            while (idx < name.length() && ((name.charAt(idx) == '/') //$NON-NLS-1$
-                    || (name.charAt(idx) == '\\'))) { //$NON-NLS-1$
+            while (idx < name.length() && 
+                   ((name.charAt(idx) == '/') || (name.charAt(idx) == '\\'))) {
                 idx++;
             }
 
@@ -580,13 +585,13 @@ public class URLClassLoader extends SecureClassLoader {
 
                 if (new File(filename).exists()) {
                     return targetURL(url, name);
-                } else {
-                    return null;
                 }
+                return null;
             } catch (IllegalArgumentException e) {
                 return null;
             } catch (UnsupportedEncodingException e) {
-                return null;
+                // must not happen
+                throw new AssertionError(e);
             }
         }
 

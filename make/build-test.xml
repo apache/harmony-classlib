@@ -53,7 +53,7 @@
     </target>
 
     <target name="test-modules" depends="support-jar, test-jre-vm-info">
-        <call-modules target="-test-module" />
+        <poll-modules target="-test-module" />
     </target>
 
     <target name="gen-report" depends="full-report,short-report" />
@@ -298,6 +298,14 @@
 
        <!-- now let's delete empty reports -->
        <delete><fileset refid="empty.test.reports"/></delete>
+
+       <!-- Need to ensure the file is UTF-8 on non-ASCII platforms -->
+        <move file="${per.crashed.tests.file}"
+              tofile="${per.crashed.tests.file}.orig" />
+        <copy file="${per.crashed.tests.file}.orig"
+              tofile="${per.crashed.tests.file}" outputencoding="UTF-8" />
+        <delete file="${per.crashed.tests.file}.orig" />
+
     </target>
 
 </project>

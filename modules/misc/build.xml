@@ -121,7 +121,8 @@
         </jar>
     </target>
 
-    <target name="build-native" >
+    <target name="build-native" depends="build-native-all" />
+    <target name="build-native-all" >
         <make dir="${hy.misc.src.main.native}/accessors/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->

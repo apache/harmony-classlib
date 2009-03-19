@@ -32,6 +32,7 @@ import java.nio.channels.Channel;
 final class OSNetworkSystem implements INetworkSystem {
 
     private static final int ERRORCODE_SOCKET_TIMEOUT = -209;
+    private static final int ERRORCODE_SOCKET_INTERRUPTED = -208;
 
     private static final int INETADDR_REACHABLE = 0;
 
@@ -365,7 +366,8 @@ final class OSNetworkSystem implements INetworkSystem {
         if (0 <= result) {
             return flags;
         }
-        if (ERRORCODE_SOCKET_TIMEOUT == result) {
+        if (ERRORCODE_SOCKET_TIMEOUT == result ||
+            ERRORCODE_SOCKET_INTERRUPTED == result) {
             return new int[0];
         }
         throw new SocketException();

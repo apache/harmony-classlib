@@ -39,7 +39,7 @@
 #include <dirent.h>
 
 #include "helpers.h"
-#include "jclprots.h"
+#include "nethelp.h"
 #include "harmonyglob.h"
 
 #if defined(LINUX)

@@ -71,7 +71,8 @@
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
     
     <!-- Build native code -->
-    <target name="build-native" >
+    <target name="build-native" depends="build-native-all" />
+    <target name="build-native-all" >
         <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->

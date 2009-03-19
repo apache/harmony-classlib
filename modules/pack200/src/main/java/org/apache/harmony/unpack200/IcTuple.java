@@ -271,7 +271,7 @@ public class IcTuple {
 
     public String toString() {
         StringBuffer result = new StringBuffer();
-        result.append(this.getClass().getName());
+        result.append("IcTuple ");
         result.append('(');
         result.append(simpleClassName());
         result.append(" in ");

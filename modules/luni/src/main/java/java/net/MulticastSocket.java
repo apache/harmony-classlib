@@ -176,7 +176,6 @@ public class MulticastSocket extends DatagramSocket {
      * @deprecated Replaced by getTimeToLive
      * @see #getTimeToLive()
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public byte getTTL() throws IOException {
         checkClosedAndBind(false);
@@ -345,7 +344,6 @@ public class MulticastSocket extends DatagramSocket {
      * 
      * @deprecated use MulticastSocket#setTimeToLive
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public void send(DatagramPacket pack, byte ttl) throws IOException {
         checkClosedAndBind(false);
@@ -540,7 +538,6 @@ public class MulticastSocket extends DatagramSocket {
      * @deprecated Replaced by setTimeToLive
      * @see #setTimeToLive(int)
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public void setTTL(byte ttl) throws IOException {
         checkClosedAndBind(false);

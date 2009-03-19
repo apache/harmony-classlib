@@ -71,8 +71,16 @@ public class ArchiveTest extends TestCase {
         JarFile jarFile = new JarFile(file);
         file.deleteOnExit();
 
-        JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
-                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
+
+        JarFile jarFile2 = new JarFile(compareFile);
+
+        long differenceInJarSizes = Math.abs(compareFile.length()
+                - file.length());
+
+        assertTrue("Expected jar files to be a similar size, difference was "
+                + differenceInJarSizes + " bytes", differenceInJarSizes < 100);
 
         Enumeration entries = jarFile.entries();
         Enumeration entries2 = jarFile2.entries();

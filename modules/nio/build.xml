@@ -69,7 +69,8 @@
             depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <!-- Build natives.-->
-    <target name="build-native">
+    <target name="build-native" depends="build-native-all" />
+    <target name="build-native-all" >
         <make dir="${hy.nio.src.main.native}/nio/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->

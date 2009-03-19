@@ -151,7 +151,8 @@
         </jar>
     </target>
 
-    <target name="build-native"
+    <target name="build-native" depends="build-native-all" />
+    <target name="build-native-all"
         depends="-build-native-common,-build-native-unix,-build-native-windows" />
         
     <target name="-build-native-common">
