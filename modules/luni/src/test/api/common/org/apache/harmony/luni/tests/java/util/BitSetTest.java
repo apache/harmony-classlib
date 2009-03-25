@@ -421,7 +421,7 @@ public class BitSetTest extends junit.framework.TestCase {
         bs.set(63);
         assertTrue("Test highest bit", bs.get(63));
 
-        bs = new BitSet();
+        bs = new BitSet(0);
         assertEquals("Test1: Wrong length,", 0, bs.length());
         assertEquals("Test1: Wrong size,", 0, bs.size());
 
