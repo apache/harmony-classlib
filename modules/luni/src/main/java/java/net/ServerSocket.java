@@ -20,7 +20,7 @@ package java.net;
 import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 
-import org.apache.harmony.luni.net.PlainSocketImpl;
+import org.apache.harmony.luni.net.PlainServerSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Msg;
 
@@ -56,7 +56,7 @@ public class ServerSocket {
      */
     public ServerSocket() throws IOException {
         impl = factory != null ? factory.createSocketImpl()
-                : new PlainSocketImpl();
+                : new PlainServerSocketImpl();
     }
 
     protected ServerSocket(SocketImpl impl) {
@@ -109,7 +109,7 @@ public class ServerSocket {
         super();
         checkListen(aport);
         impl = factory != null ? factory.createSocketImpl()
-                : new PlainSocketImpl();
+                : new PlainServerSocketImpl();
         InetAddress addr = localAddr == null ? InetAddress.ANY : localAddr;
 
         synchronized (this) {

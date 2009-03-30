@@ -39,7 +39,9 @@
 
 #include "nethelp.h"
 #include "harmonyglob.h"
+#include "helpers.h"
 #include "hysock.h"
+#include "socket.h"
 #include "hyport.h"
 #include "jni.h"
 #include "OSNetworkSystem.h"
@@ -79,6 +81,29 @@ selectRead
 
   return result;
 }
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    createServerStreamSocket
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocket
+  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  hysocket_t socketP;
+  BOOLEAN value = TRUE;
+
+  createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
+
+  /* Also sets HY_SO_REUSEADDR = TRUE on Linux only */
+  socketP =
+    (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
+  hysock_setopt_bool (socketP, HY_SOL_SOCKET, HY_SO_REUSEADDR, &value);
+}
+
 
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
