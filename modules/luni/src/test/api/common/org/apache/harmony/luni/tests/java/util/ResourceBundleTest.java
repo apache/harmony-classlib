@@ -229,7 +229,7 @@ public class ResourceBundleTest extends junit.framework.TestCase {
                 .getDefault());
         assertEquals("Wrong value read", "parent", bundle.getString("property"));
         bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
-        assertEquals("Wrong cached value", "resource", bundle
+        assertEquals("Wrong cached value", "en_US_resource", bundle
                 .getString("property"));
 
         // Regression test for Harmony-3823
