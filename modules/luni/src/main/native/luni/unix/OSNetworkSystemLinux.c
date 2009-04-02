@@ -71,7 +71,9 @@ selectRead
   my_pollfd.fd = hysocketP->sock;
   my_pollfd.events = POLLIN | POLLPRI;
   my_pollfd.revents = 0;
-  result = poll (&my_pollfd, 1, timeout);
+  do {
+    result = poll (&my_pollfd, 1, timeout);
+  } while (result == -1 && errno == EINTR);
   
   if (result == 0)
     return HYPORT_ERROR_SOCKET_TIMEOUT;
