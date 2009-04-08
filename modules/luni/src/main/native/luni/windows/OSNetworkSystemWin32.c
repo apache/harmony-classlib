@@ -32,6 +32,19 @@ void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    createServerStreamSocket
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocket
+  (JNIEnv * env, jobject thiz, jobject thisObjFD, jboolean preferIPv4Stack)
+{
+  createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
+}
+
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    selectImpl
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
  */

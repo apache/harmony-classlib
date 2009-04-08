@@ -134,9 +134,12 @@ public interface INetworkSystem {
 			SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
 			throws IOException;
 
-	public void createStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
-			throws SocketException;
+	public void createServerStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
+            throws SocketException;
 
+    public void createStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
+            throws SocketException;
+    
 	public void listenStreamSocket(FileDescriptor aFD, int backlog)
 			throws SocketException;
 

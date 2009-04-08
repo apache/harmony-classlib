@@ -94,6 +94,9 @@ final class OSNetworkSystem implements INetworkSystem {
     public native void createDatagramSocket(FileDescriptor fd,
             boolean preferIPv4Stack) throws SocketException;
 
+    public native void createServerStreamSocket(FileDescriptor fd,
+            boolean preferIPv4Stack) throws SocketException;
+
     public native void createStreamSocket(FileDescriptor fd,
             boolean preferIPv4Stack) throws SocketException;
 

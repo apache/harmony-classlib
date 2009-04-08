@@ -35,7 +35,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.harmony.luni.net.PlainSocketImpl;
+import org.apache.harmony.luni.net.PlainServerSocketImpl;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_Exec;
@@ -333,7 +333,7 @@ public class ServerSocketTest extends SocketTestCase {
 
     private static class MockSocketImplFactory implements SocketImplFactory {
         public SocketImpl createSocketImpl() {
-            return new PlainSocketImpl();
+            return new PlainServerSocketImpl();
         }
     }
 
