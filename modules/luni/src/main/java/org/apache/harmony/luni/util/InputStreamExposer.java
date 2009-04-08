@@ -99,8 +99,9 @@ public class InputStreamExposer {
      * @param is
      *            the stream to be read.
      * @return the snapshot wrapping the buffer where the bytes are read to.
+     * @throws UnsupportedOperationException if the input stream data cannot be exposed
      */
-    public static byte[] expose(InputStream is) throws IOException {
+    public static byte[] expose(InputStream is) throws IOException, UnsupportedOperationException {
         if (is instanceof ExposedByteArrayInputStream) {
             return ((ExposedByteArrayInputStream) is).expose();
         }
@@ -109,17 +110,7 @@ public class InputStreamExposer {
             return expose((ByteArrayInputStream) is);
         }
 
-        // this may be slow, put optimizations suitable for your stream
-        // before trying this
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
-
-        while (true) {
-            int count = is.read(buffer);
-            if (count == -1) {
-                return baos.toByteArray();
-            }
-            baos.write(buffer, 0, count);
-        }
+        // We don't know how to do this
+        throw new UnsupportedOperationException();
     }
 }

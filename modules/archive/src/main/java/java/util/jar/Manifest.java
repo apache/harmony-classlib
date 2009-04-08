@@ -17,6 +17,7 @@
 
 package java.util.jar;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -204,10 +205,15 @@ public class Manifest implements Cloneable {
      */
     public void read(InputStream is) throws IOException {
         byte[] buf;
+        // Try to read get a reference to the bytes directly
         try {
             buf = InputStreamExposer.expose(is);
-        } catch (OutOfMemoryError oome) {
-            throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
+        } catch (UnsupportedOperationException uoe) {
+            buf = readFully(is);
+        }
+
+        if (buf.length == 0) {
+            return;
         }
 
         // a workaround for HARMONY-5662
@@ -226,7 +232,45 @@ public class Manifest implements Cloneable {
         im.initEntries(entries, chunks);
         im = null;
     }
+    
+    /*
+     * Helper to read the entire contents of the manifest from the
+     * given input stream.  Usually we can do this in a single read
+     * but we need to account for 'infinite' streams, by ensuring we
+     * have a line feed within a reasonable number of characters. 
+     */
+    private byte[] readFully(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
 
+        while (true) {
+            int count = is.read(buffer);
+            if (count == -1) {
+                // TODO: Do we need to copy this, or can we live with junk at the end?
+                return baos.toByteArray();
+            }
+            baos.write(buffer, 0, count);
+
+            if (!containsLine(buffer, count)) {
+                throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
+            }
+        }
+    }
+
+    /*
+     * Check to see if the buffer contains a newline or carriage
+     * return character within the first 'length' bytes.  Used to
+     * check the validity of the manifest input stream.
+     */
+    private boolean containsLine(byte[] buffer, int length) {
+        for (int i = 0; i < length; i++) {
+            if (buffer[i] == 0x0A || buffer[i] == 0x0D) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Returns the hashCode for this instance.
      * 

@@ -371,6 +371,10 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readDirect
   I_32 result, localCount;
 
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
+  if (!hysock_socketIsValid(hysocketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
 
   /* A non-zero timeout will first check, and potentially wait, to see if any
    * bytes are available
@@ -448,6 +452,10 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeDirect
   I_32 result;
 
   hysocket_t socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
+  if (!hysock_socketIsValid(socketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
 
   result = hysock_write(socketP, (U_8 *) message, (I_32) count, HYSOCK_NOFLAGS);
   if (0 > result) {

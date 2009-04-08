@@ -405,7 +405,6 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
 {
     int len;
     int wlen;
-    int absLen;
     char *canonicalpath;
     int srcArrayCount=0;
     int destArrayCount=0;
@@ -414,10 +413,8 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
     int *slashStack; //record position of every separator.
     
     // Buffer to store absolute path name.
-    wchar_t *absPath = 0;
-    wchar_t *temp = 0;
-    int i = 0;
-
+    char absPath[ABS_PATH_BUF_LEN];
+ 
     if (!path) {
         *pathW = (void*) 0;
         return;
@@ -431,7 +428,15 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
         return;
     }
 
-    len = strlen(path);
+    // calculate an absolute path first
+    if (!GetFullPathNameA(path, ABS_PATH_BUF_LEN, absPath, (void*) 0))
+    {
+        // error occurred
+        *pathW = (void*) 0;
+        return;
+    }
+
+    len = strlen(absPath);
 
     slashStack = portLibrary->mem_allocate_memory(portLibrary, len*sizeof(int));
     canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len+5);
@@ -440,15 +445,15 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
 
     for(srcArrayCount=0,destArrayCount=4;srcArrayCount<len;srcArrayCount++){
         // we have an absolute path already.
-        if(path[srcArrayCount]=='.'){
+        if(absPath[srcArrayCount]=='.'){
             // count the dots following last separator.
-            if(dotsCount>0 || path[srcArrayCount-1]=='\\'){
+            if(dotsCount>0 || absPath[srcArrayCount-1]=='\\'){
                 dotsCount++;
                 continue;
             }
         }
         // deal with the dots when we meet next separator.
-        if(path[srcArrayCount]=='\\'){
+        if(absPath[srcArrayCount]=='\\'){
             if(dotsCount == 1){
                 dotsCount = 0;
                 continue;
@@ -471,40 +476,17 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
             canonicalpath[destArrayCount++]='.';
             dotsCount--;
         }
-        canonicalpath[destArrayCount++]=path[srcArrayCount];
+        canonicalpath[destArrayCount++]=absPath[srcArrayCount];
     }
     while(canonicalpath[destArrayCount-1] == '.'){
         destArrayCount--;
     }        
     canonicalpath[destArrayCount]='\0';
-
     wlen = MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, 0);
     *pathW = portLibrary->mem_allocate_memory(portLibrary, wlen*sizeof(wchar_t));
     MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, wlen);
     portLibrary->mem_free_memory(portLibrary, canonicalpath);
     portLibrary->mem_free_memory(portLibrary, slashStack);
-
-    // calculate an absolute path
-    // call unicode version explicitly, should not include "\\?\" prefix
-    absLen = GetFullPathNameW(*pathW + 4, 0, absPath, (void*) 0);
-    absPath = portLibrary->mem_allocate_memory(portLibrary, (absLen + 4)*sizeof(wchar_t));
-    absLen = GetFullPathNameW(*pathW + 4, absLen, absPath + 4, (void*) 0);
-
-    if (absLen == 0)
-    {
-        // error occurred
-        *pathW = (void*) 0;
-        return;
-    }
-    // add prefix "\\?\"
-    for (i = 0; i < 4; ++i) {
-        absPath[i] = (*pathW)[i];
-    }
-
-    temp = *pathW;
-    *pathW = absPath;
-    absPath = temp;
-    portLibrary->mem_free_memory(portLibrary, absPath);
 }
 
 #undef ABS_PATH_BUF_LEN
@@ -526,6 +508,7 @@ hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
 {
     int returnVar=0;
     wchar_t *pathW;
+
     convert_path_to_unicode(portLibrary, path, &pathW);
     returnVar = CreateDirectoryW (pathW, 0);
     portLibrary->mem_free_memory(portLibrary, pathW);
