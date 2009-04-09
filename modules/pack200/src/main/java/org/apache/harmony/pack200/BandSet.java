@@ -23,6 +23,12 @@ import java.util.List;
 
 public abstract class BandSet {
 
+    private final int effort;
+
+    public BandSet(int effort) {
+        this.effort = effort;
+    }
+
     public abstract void pack(OutputStream out) throws IOException, Pack200Exception;
 
     public byte[] encodeScalar(int[] band, BHSDCodec codec) throws Pack200Exception {

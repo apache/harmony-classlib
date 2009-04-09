@@ -64,7 +64,8 @@ public class CpBands extends BandSet {
 
     private final Segment segment;
 
-    public CpBands(Segment segment) {
+    public CpBands(Segment segment, int effort) {
+        super(effort);
         this.segmentHeader = segment.getSegmentHeader();
         this.segment = segment;
         defaultAttributeNames.add("AnnotationDefault");

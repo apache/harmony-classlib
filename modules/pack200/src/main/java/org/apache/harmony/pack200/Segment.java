@@ -44,19 +44,21 @@ public class Segment implements ClassVisitor {
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
     private Pack200ClassReader currentClassReader;
     private boolean stripDebug;
+    private int effort;
 
-    public void pack(List classes, List files, OutputStream out, boolean stripDebug)
+    public void pack(List classes, List files, OutputStream out, boolean stripDebug, int effort)
             throws IOException, Pack200Exception {
+        this.effort = effort;
         this.stripDebug = stripDebug;
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
         segmentHeader.setHave_all_code_flags(!stripDebug);
-        cpBands = new CpBands(this);
-        attributeDefinitionBands = new AttributeDefinitionBands(this);
-        icBands = new IcBands(segmentHeader, cpBands);
-        classBands = new ClassBands(this, classes.size());
-        bcBands = new BcBands(cpBands, this);
-        fileBands = new FileBands(cpBands, segmentHeader, files);
+        cpBands = new CpBands(this, effort);
+        attributeDefinitionBands = new AttributeDefinitionBands(this, effort);
+        icBands = new IcBands(segmentHeader, cpBands, effort);
+        classBands = new ClassBands(this, classes.size(), effort);
+        bcBands = new BcBands(cpBands, this, effort);
+        fileBands = new FileBands(cpBands, segmentHeader, files, effort);
 
         processClasses(classes);
 

@@ -35,7 +35,8 @@ public class IcBands extends BandSet {
 
     private final Map outerToInner = new HashMap();
 
-    public IcBands(SegmentHeader segmentHeader, CpBands cpBands) {
+    public IcBands(SegmentHeader segmentHeader, CpBands cpBands, int effort) {
+        super(effort);
         this.segmentHeader = segmentHeader;
         this.cpBands = cpBands;
     }

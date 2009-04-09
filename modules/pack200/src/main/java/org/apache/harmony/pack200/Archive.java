@@ -109,7 +109,7 @@ public class Archive {
                     if (!added) { // not added because segment has reached
                         // maximum size
                         if(classes.size() > 0 || files.size() > 0) {
-                            new Segment().pack(classes, files, outputStream, stripDebug);
+                            new Segment().pack(classes, files, outputStream, stripDebug, effort);
                             classes = new ArrayList();
                             files = new ArrayList();
                             currentSegmentSize = 0;
@@ -118,7 +118,7 @@ public class Archive {
                         }
                     } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
                         // create a new segment for each class unless size = 0
-                        new Segment().pack(classes, files, outputStream, stripDebug);
+                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
                         classes = new ArrayList();
                         files = new ArrayList();
                     }
@@ -132,7 +132,7 @@ public class Archive {
                             jarFile.getInputStream(jarEntry)), classes, files);
                     if (!added) { // not added because segment has reached maximum
                         // size
-                        new Segment().pack(classes, files, outputStream, stripDebug);
+                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
                         classes = new ArrayList();
                         files = new ArrayList();
                         currentSegmentSize = 0;
@@ -141,14 +141,14 @@ public class Archive {
                         currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
                     } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
                         // create a new segment for each class unless size = 0
-                        new Segment().pack(classes, files, outputStream, stripDebug);
+                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
                         classes = new ArrayList();
                         files = new ArrayList();
                     }
                 }
             }
             if(classes.size() > 0 || files.size() > 0) {
-                new Segment().pack(classes, files, outputStream, stripDebug);
+                new Segment().pack(classes, files, outputStream, stripDebug, effort);
             }
             outputStream.close();
         }

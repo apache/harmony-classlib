@@ -49,7 +49,8 @@ public class AttributeDefinitionBands extends BandSet {
     private final CpBands cpBands;
     private final Segment segment;
 
-    public AttributeDefinitionBands(Segment segment) {
+    public AttributeDefinitionBands(Segment segment, int effort) {
+        super(effort);
         this.segmentHeader = segment.getSegmentHeader();
         this.cpBands = segment.getCpBands();
         this.segment = segment;

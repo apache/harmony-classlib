@@ -24,6 +24,10 @@ import java.io.OutputStream;
  */
 public class SegmentHeader extends BandSet {
 
+    public SegmentHeader() {
+        super(1); // Don't do anything special for the header
+    }
+
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
     private static final int archive_minver = 7;
     private static final int archive_majver = 150;

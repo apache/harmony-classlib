@@ -33,7 +33,8 @@ public class FileBands extends BandSet {
     private final byte[][] file_bits;
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
-            List files) {
+            List files, int effort) {
+        super(effort);
         this.segmentHeader = segmentHeader;
         int size =  files.size();
         fileName = new CPUTF8[size];

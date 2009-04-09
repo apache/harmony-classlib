@@ -33,7 +33,8 @@ public class BcBands extends BandSet {
     private final CpBands cpBands;
     private final Segment segment;
 
-    public BcBands(CpBands cpBands, Segment segment) {
+    public BcBands(CpBands cpBands, Segment segment, int effort) {
+        super(effort);
         this.cpBands = cpBands;
         this.segment = segment;
     }
