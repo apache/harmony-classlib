@@ -409,6 +409,9 @@ public class CpBands extends BandSet {
     }
 
     public CPSignature getCPSignature(String signature) {
+        if(signature == null) {
+            return null;
+        }
         CPSignature cpS = (CPSignature) stringsToCpSignature.get(signature);
         if (cpS == null) {
             List cpClasses = new ArrayList();

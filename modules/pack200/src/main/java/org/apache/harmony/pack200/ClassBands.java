@@ -947,7 +947,7 @@ public class ClassBands extends BandSet {
 
     public void addAnnotationDefault(List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
         method_AD_bands.addAnnotation(null, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
-        Integer flag = (Integer) tempMethodFlags.remove(tempMethodFlags.size() - 1);
-        tempMethodFlags.add(new Integer(flag.intValue() | (1<<25)));
+        Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+        tempMethodFlags.add(new Long(flag.longValue() | (1<<25)));
     }
 }
