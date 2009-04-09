@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.GZIPOutputStream;
 
@@ -44,6 +45,7 @@ public class Archive {
     private long segmentLimit = 1000000;
     private long currentSegmentSize;
     private boolean stripDebug;
+    private int effort = 5;
 
     public Archive(JarInputStream inputStream, OutputStream outputStream,
             boolean gzip) throws IOException {
@@ -54,7 +56,12 @@ public class Archive {
         this.outputStream = new BufferedOutputStream(outputStream);
     }
 
-    public Archive(JarFile jarFile, OutputStream outputStream) {
+    public Archive(JarFile jarFile, OutputStream outputStream,
+            boolean gzip) throws IOException {
+
+        if (gzip) {
+            outputStream = new GZIPOutputStream(outputStream);
+        }
         this.outputStream = new BufferedOutputStream(outputStream);
         this.jarFile = jarFile;
         inputStream = null;
@@ -64,6 +71,10 @@ public class Archive {
         segmentLimit = limit;
     }
 
+    public void setEffort(int effort) {
+        this.effort = effort;
+    }
+
     public void stripDebugAttributes() {
         stripDebug = true;
     }
@@ -71,66 +82,127 @@ public class Archive {
     public void pack() throws Pack200Exception, IOException {
         List classes = new ArrayList();
         List files = new ArrayList();
-        Manifest manifest = jarFile != null ? jarFile.getManifest()
-                : inputStream.getManifest();
-        if (manifest != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            manifest.write(baos);
-            // TODO: Need to add this in some cases, but I'm not sure which at the moment
-//            files.add(new File("META-INF", new byte[0], 0));
-            files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
-        }
-        if (inputStream != null) {
-            JarEntry jarEntry = inputStream.getNextJarEntry();
-            while (jarEntry != null) {
-                boolean added = addJarEntry(jarEntry,
-                        new BufferedInputStream(inputStream), classes,
-                        files);
-                if (!added) { // not added because segment has reached
-                    // maximum size
-                    if(classes.size() > 0 || files.size() > 0) {
+
+        if(effort == 0) {
+            doZeroEffortPack();
+        } else {
+
+            if (inputStream != null) {
+                Manifest manifest = jarFile != null ? jarFile.getManifest()
+                        : inputStream.getManifest();
+                if (manifest != null) {
+                    System.out.println("manifest exists");
+                    System.out.println(manifest.toString());
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    manifest.write(baos);
+                    files.add(new File("META-INF", new byte[0], 0));
+                    files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
+                }
+                JarEntry jarEntry = inputStream.getNextJarEntry();
+                while (jarEntry != null) {
+                    if(jarEntry.getName().startsWith("META-INF")) {
+                        System.out.println(jarEntry.getName());
+                    }
+                    boolean added = addJarEntry(jarEntry,
+                            new BufferedInputStream(inputStream), classes,
+                            files);
+                    if (!added) { // not added because segment has reached
+                        // maximum size
+                        if(classes.size() > 0 || files.size() > 0) {
+                            new Segment().pack(classes, files, outputStream, stripDebug);
+                            classes = new ArrayList();
+                            files = new ArrayList();
+                            currentSegmentSize = 0;
+                            addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
+                            currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
+                        }
+                    } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
+                        // create a new segment for each class unless size = 0
+                        new Segment().pack(classes, files, outputStream, stripDebug);
+                        classes = new ArrayList();
+                        files = new ArrayList();
+                    }
+                    jarEntry = inputStream.getNextJarEntry();
+                }
+            } else {
+                Enumeration jarEntries = jarFile.entries();
+                while (jarEntries.hasMoreElements()) {
+                    JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
+                    boolean added = addJarEntry(jarEntry, new BufferedInputStream(
+                            jarFile.getInputStream(jarEntry)), classes, files);
+                    if (!added) { // not added because segment has reached maximum
+                        // size
                         new Segment().pack(classes, files, outputStream, stripDebug);
                         classes = new ArrayList();
                         files = new ArrayList();
                         currentSegmentSize = 0;
-                        addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
+                        addJarEntry(jarEntry, new BufferedInputStream(jarFile
+                                .getInputStream(jarEntry)), classes, files);
                         currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
+                    } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
+                        // create a new segment for each class unless size = 0
+                        new Segment().pack(classes, files, outputStream, stripDebug);
+                        classes = new ArrayList();
+                        files = new ArrayList();
                     }
-                } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
-                    // create a new segment for each class unless size = 0
-                    new Segment().pack(classes, files, outputStream, stripDebug);
-                    classes = new ArrayList();
-                    files = new ArrayList();
                 }
-                jarEntry = inputStream.getNextJarEntry();
             }
+            if(classes.size() > 0 || files.size() > 0) {
+                new Segment().pack(classes, files, outputStream, stripDebug);
+            }
+            outputStream.close();
+        }
+    }
+
+    private void doZeroEffortPack() throws IOException, Pack200Exception {
+        JarOutputStream jarOutputStream = new JarOutputStream(outputStream);
+        if(inputStream != null) {
+            JarInputStream jarInputStream;
+            if(!(inputStream instanceof JarInputStream)) {
+                jarInputStream = new JarInputStream(inputStream);
+            } else {
+                jarInputStream = inputStream;
+            }
+            Manifest manifest = jarInputStream.getManifest();
+            if (manifest != null) {
+                jarOutputStream.putNextEntry(new JarEntry("META-INF/"));
+                jarOutputStream.closeEntry();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                manifest.write(baos);
+                jarOutputStream.putNextEntry(new JarEntry("META-INF/MANIFEST.MF"));
+                jarOutputStream.write(baos.toByteArray());
+                jarOutputStream.closeEntry();
+            }
+            BufferedInputStream buff = new BufferedInputStream(jarInputStream);
+            JarEntry jarEntry;
+            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                jarOutputStream.putNextEntry(jarEntry);
+                byte[] bytes = new byte[(int) jarEntry.getSize()];
+                int bytesRead = buff.read(bytes);
+                if(bytesRead != jarEntry.getSize()) {
+                    throw new Pack200Exception("Error reading from input jar file");
+                }
+                jarOutputStream.write(bytes, 0, bytesRead);
+                jarOutputStream.closeEntry();
+            }
+            jarOutputStream.close();
         } else {
             Enumeration jarEntries = jarFile.entries();
             while (jarEntries.hasMoreElements()) {
                 JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                boolean added = addJarEntry(jarEntry, new BufferedInputStream(
-                        jarFile.getInputStream(jarEntry)), classes, files);
-                if (!added) { // not added because segment has reached maximum
-                    // size
-                    new Segment().pack(classes, files, outputStream, stripDebug);
-                    classes = new ArrayList();
-                    files = new ArrayList();
-                    currentSegmentSize = 0;
-                    addJarEntry(jarEntry, new BufferedInputStream(jarFile
-                            .getInputStream(jarEntry)), classes, files);
-                    currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
-                } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
-                    // create a new segment for each class unless size = 0
-                    new Segment().pack(classes, files, outputStream, stripDebug);
-                    classes = new ArrayList();
-                    files = new ArrayList();
+                InputStream inStream = new BufferedInputStream(
+                        jarFile.getInputStream(jarEntry));
+                jarOutputStream.putNextEntry(jarEntry);
+                byte[] bytes = new byte[16384];
+                int bytesRead = inStream.read(bytes);
+                while (bytesRead != -1) {
+                    jarOutputStream.write(bytes, 0, bytesRead);
+                    bytesRead = inStream.read(bytes);
                 }
+                jarOutputStream.closeEntry();
             }
+            jarOutputStream.close();
         }
-        if(classes.size() > 0 || files.size() > 0) {
-            new Segment().pack(classes, files, outputStream, stripDebug);
-        }
-        outputStream.close();
     }
 
     private boolean addJarEntry(JarEntry jarEntry, InputStream stream,
@@ -140,7 +212,8 @@ public class Archive {
         if (size > Integer.MAX_VALUE) {
             throw new RuntimeException("Large Class!"); // TODO: Should probably allow this
         } else if (size < 0) {
-            throw new RuntimeException("Error: size for " + name + " is " + size);
+            size = 0;
+//            throw new RuntimeException("Error: size for " + name + " is " + size);
         }
         if(segmentLimit != -1 && segmentLimit != 0) {
             // -1 is a special case where only one segment is created and
