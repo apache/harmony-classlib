@@ -132,10 +132,27 @@ public final class IDN {
 		} catch (StringPrepParseException e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
-		return result;
+        return convertDots(result);
 	}
 
-	private static int convertFlags(int flag) {
+	private static String convertDots(String input) {
+	    String result = input;
+        if (result.indexOf("\u3002") != -1) {
+            result = result.replace("\u3002", "\u002E");
+        }
+
+        if (result.indexOf("\uFF0E") != -1) {
+            result = result.replace("\uFF0E", "\u002E");
+        }
+
+        if (result.indexOf("\uFF61") != -1) {
+            result = result.replace("\uFF61", "\u002E");
+        }
+
+        return result;
+    }
+
+    private static int convertFlags(int flag) {
 		int ICUFlag = ((flag & IDN.ALLOW_UNASSIGNED) == 0)? 0:IDNA.ALLOW_UNASSIGNED;
 		ICUFlag |= ((flag & IDN.USE_STD3_ASCII_RULES) == 0)? 0:IDNA.USE_STD3_RULES;
 		return ICUFlag;
