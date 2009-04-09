@@ -298,7 +298,7 @@ public class ArchiveTest extends TestCase {
 				in = new JarFile(inputFile);
 				file = File.createTempFile("temp", ".pack.gz");
 		        out = new FileOutputStream(file);
-		        System.out.println("packing " + children[i]);
+//		        System.out.println("packing " + children[i]);
 		        new Archive(in, out, true).pack();
 		        in.close();
 		        out.close();
