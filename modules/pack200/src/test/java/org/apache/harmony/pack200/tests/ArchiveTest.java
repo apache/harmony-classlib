@@ -28,7 +28,6 @@ import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
 import junit.framework.TestCase;
@@ -274,19 +273,19 @@ public class ArchiveTest extends TestCase {
 
     }
 
-    public void testE0again() throws IOException, Pack200Exception, URISyntaxException {
-        JarInputStream inputStream = new JarInputStream(Archive.class.getResourceAsStream("/org/apache/harmony/pack200/tests/jndi.jar"));
-        file = File.createTempFile("jndiE0", ".pack");
-        out = new FileOutputStream(file);
-        Archive archive = new Archive(inputStream, out, false);
-        archive.setEffort(0);
-        archive.pack();
-        inputStream.close();
-        out.close();
-        in = new JarFile(new File(Archive.class.getResource(
-                "/org/apache/harmony/pack200/tests/jndi.jar").toURI()));
-        compareFiles(in, new JarFile(file));
-    }
+//    public void testE0again() throws IOException, Pack200Exception, URISyntaxException {
+//        JarInputStream inputStream = new JarInputStream(Archive.class.getResourceAsStream("/org/apache/harmony/pack200/tests/jndi.jar"));
+//        file = File.createTempFile("jndiE0", ".pack");
+//        out = new FileOutputStream(file);
+//        Archive archive = new Archive(inputStream, out, false);
+//        archive.setEffort(0);
+//        archive.pack();
+//        inputStream.close();
+//        out.close();
+//        in = new JarFile(new File(Archive.class.getResource(
+//                "/org/apache/harmony/pack200/tests/jndi.jar").toURI()));
+//        compareFiles(in, new JarFile(file));
+//    }
 
     public void testMultipleJars() throws URISyntaxException, IOException, Pack200Exception {
     	File folder = new File(Archive.class
