@@ -818,9 +818,11 @@ public final class Scanner implements Iterator<String> {
         boolean hasNextLine = false;
         while (true) {
             if (matcher.find()) {
-                matchSuccessful = true;
-                hasNextLine = true;
-                break;
+                if (inputExhausted || matcher.end() != bufferLength) {
+                    matchSuccessful = true;
+                    hasNextLine = true;
+                    break;
+                }
             } else {
                 if (inputExhausted) {
                     matchSuccessful = false;
@@ -1392,10 +1394,12 @@ public final class Scanner implements Iterator<String> {
         String result = null;
         while (true) {
             if (matcher.find()) {
-                matchSuccessful = true;
-                findStartIndex = matcher.end();
-                result = matcher.group();
-                break;
+                if (inputExhausted || matcher.end() != bufferLength) {
+                    matchSuccessful = true;
+                    findStartIndex = matcher.end();
+                    result = matcher.group();
+                    break;
+                }
             } else {
                 if (inputExhausted) {
                     matchSuccessful = false;
