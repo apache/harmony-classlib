@@ -152,6 +152,7 @@ public class FileInputStreamTest extends TestCase {
             // Expected
         } finally {
             in.close();
+            file.delete();
         }
     }
 

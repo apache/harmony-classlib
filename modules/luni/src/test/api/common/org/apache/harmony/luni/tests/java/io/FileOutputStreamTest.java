@@ -157,6 +157,9 @@ public class FileOutputStreamTest extends TestCase {
             fail("Should throw NullPointerException");
         } catch (NullPointerException e) {
             // Expected
+        } finally {
+            out.close();
+            file.delete();
         }
     }
 
