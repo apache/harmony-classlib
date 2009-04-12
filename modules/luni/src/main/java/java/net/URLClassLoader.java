@@ -302,20 +302,18 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     class URLJarHandler extends URLHandler {
-        JarFile jf;
-        String prefixName;
-        IndexFile index = null;
-        Map<URL, URLHandler> subHandlers = new HashMap<URL, URLHandler>();
+        final JarFile jf;
+        final String prefixName;
+        final IndexFile index;
+        final Map<URL, URLHandler> subHandlers = new HashMap<URL, URLHandler>();
 
         public URLJarHandler(URL url, URL jarURL, JarFile jf, String prefixName) {
             super(url);
             this.jf = jf;
             this.prefixName = prefixName;
             this.codeSourceUrl = jarURL;
-            JarEntry je = jf.getJarEntry("META-INF/INDEX.LIST"); //$NON-NLS-1$
-            if (je != null) {
-                index = IndexFile.readIndexFile(jf, je, url);
-            }
+            final JarEntry je = jf.getJarEntry("META-INF/INDEX.LIST"); //$NON-NLS-1$
+            this.index = (je == null ? null : IndexFile.readIndexFile(jf, je, url));
         }
 
         public URLJarHandler(URL url, URL jarURL, JarFile jf, String prefixName, IndexFile index) {
@@ -474,7 +472,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         private synchronized URLHandler getSubHandler(URL url) {
             URLHandler sub = subHandlers.get(url);
-            if (url != null) {
+            if (sub != null) {
                 return sub;
             }
             String protocol = url.getProtocol();
