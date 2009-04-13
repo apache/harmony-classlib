@@ -240,7 +240,7 @@ public class PipedInputStreamTest extends TestCase {
 
             boolean pass = false;
 
-            boolean readerAlive = true;
+            volatile boolean readerAlive = true;
 
             public void run() {
                 try {

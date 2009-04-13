@@ -300,7 +300,7 @@ public class PipedWriterTest extends junit.framework.TestCase {
 
         class WriteRunnable implements Runnable {
             boolean pass = false;
-            boolean readerAlive = true;
+            volatile boolean readerAlive = true;
             public void run() {
                 try {
                     pw.write(1);
@@ -361,7 +361,7 @@ public class PipedWriterTest extends junit.framework.TestCase {
         class WriteRunnable implements Runnable {
             boolean pass = false;
 
-            boolean readerAlive = true;
+            volatile boolean readerAlive = true;
 
             public void run() {
                 try {
