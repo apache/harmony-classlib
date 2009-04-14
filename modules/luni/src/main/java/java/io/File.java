@@ -297,12 +297,8 @@ public class File implements Serializable, Comparable<File> {
                 && (newLength > (uncIndex + 1) || (newLength == 2 && newPath[0] != separatorChar))) {
             newLength--;
         }
-        String tempPath = new String(newPath, 0, newLength);
-        // If it's the same keep it identical for SecurityManager purposes
-        if (!tempPath.equals(origPath)) {
-            return tempPath;
-        }
-        return origPath;
+
+        return new String(newPath, 0, newLength);
     }
 
     /**
@@ -1266,9 +1262,7 @@ public class File implements Serializable, Comparable<File> {
         } else {
             userdir = System.getProperty("user.dir"); //$NON-NLS-1$
         }
-        if ((properPath = properPathImpl(pathBytes)) != null) {
-            return properPath;
-        }
+
         if (path.length() == 0) {
             return properPath = Util.getUTF8Bytes(userdir);
         }
