@@ -19,6 +19,8 @@ package java.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -261,19 +263,14 @@ public class Properties extends Hashtable<Object,Object> {
 		}
 		int mode = NONE, unicode = 0, count = 0;
 		char nextChar, buf[] = new char[40];
-		int offset = 0, keyLength = -1;
+		int offset = 0, keyLength = -1, intVal;
 		boolean firstChar = true;
-		byte[] inbuf = new byte[256];
-		int inbufCount = 0, inbufPos = 0;
+                BufferedInputStream bis = new BufferedInputStream(in);
 
 		while (true) {
-			if (inbufPos == inbufCount) {
-				if ((inbufCount = in.read(inbuf)) == -1) {
-                    break;
-                }
-				inbufPos = 0;
-			}
-			nextChar = (char) (inbuf[inbufPos++] & 0xff);
+			intVal = bis.read();
+                        if (intVal == -1) break;
+                        nextChar = (char) (intVal & 0xff);
 
 			if (offset == buf.length) {
 				char[] newBuf = new char[buf.length * 2];
@@ -331,19 +328,14 @@ public class Properties extends Hashtable<Object,Object> {
 				case '!':
 					if (firstChar) {
 						while (true) {
-							if (inbufPos == inbufCount) {
-								if ((inbufCount = in.read(inbuf)) == -1) {
-									inbufPos = -1;
-									break;
-								}
-								inbufPos = 0;
-							}
-							nextChar = (char) inbuf[inbufPos++]; // & 0xff
-																	// not
-																	// required
-							if (nextChar == '\r' || nextChar == '\n') {
-                                break;
-                            }
+                                                    intVal = bis.read();
+                                                    if (intVal == -1) break;
+                                                    nextChar = (char) intVal;   // & 0xff
+										// not
+										// required
+                                                    if (nextChar == '\r' || nextChar == '\n') {
+                                                        break;
+                                                    }
 						}
 						continue;
 					}
@@ -429,19 +421,14 @@ public class Properties extends Hashtable<Object,Object> {
     public synchronized void load(Reader reader) throws IOException {
         int mode = NONE, unicode = 0, count = 0;
         char nextChar, buf[] = new char[40];
-        int offset = 0, keyLength = -1;
+        int offset = 0, keyLength = -1, intVal;
         boolean firstChar = true;
-        char[] inbuf = new char[256];
-        int inbufCount = 0, inbufPos = 0;
+        BufferedReader br = new BufferedReader(reader);
 
         while (true) {
-            if (inbufPos == inbufCount) {
-                if ((inbufCount = reader.read(inbuf)) == -1) {
-                    break;
-                }
-                inbufPos = 0;
-            }
-            nextChar = inbuf[inbufPos++];
+            intVal = br.read();
+            if (intVal == -1) break;
+            nextChar = (char) intVal;
 
             if (offset == buf.length) {
                 char[] newBuf = new char[buf.length * 2];
@@ -461,7 +448,7 @@ public class Properties extends Hashtable<Object,Object> {
                 }
                 mode = NONE;
                 buf[offset++] = (char) unicode;
-                if (nextChar != '\n') {
+                if (nextChar != '\n' && nextChar != '\u0085') {
                     continue;
                 }
             }
@@ -471,6 +458,7 @@ public class Properties extends Hashtable<Object,Object> {
                 case '\r':
                     mode = CONTINUE; // Look for a following \n
                     continue;
+                case '\u0085':
                 case '\n':
                     mode = IGNORE; // Ignore whitespace on the next line
                     continue;
@@ -500,17 +488,12 @@ public class Properties extends Hashtable<Object,Object> {
                 case '!':
                     if (firstChar) {
                         while (true) {
-                            if (inbufPos == inbufCount) {
-                                if ((inbufCount = reader.read(inbuf)) == -1) {
-                                    inbufPos = -1;
-                                    break;
-                                }
-                                inbufPos = 0;
-                            }
-                            nextChar = (char) inbuf[inbufPos++]; // & 0xff
+                            intVal = br.read();
+                            if (intVal == -1) break;
+                            nextChar = (char) intVal; // & 0xff
                                                                     // not
                                                                     // required
-                            if (nextChar == '\r' || nextChar == '\n') {
+                            if (nextChar == '\r' || nextChar == '\n' || nextChar == '\u0085') {
                                 break;
                             }
                         }
@@ -523,6 +506,7 @@ public class Properties extends Hashtable<Object,Object> {
                         continue;
                     }
                 // fall into the next case
+                case '\u0085':
                 case '\r':
                     mode = NONE;
                     firstChar = true;
