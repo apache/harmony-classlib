@@ -26,6 +26,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -305,7 +306,13 @@ public class TestUtils {
             + "JDSM\n" + "-----END CERTIFICATE-----\n";
 
     public static byte[] getEncodedX509Certificate() {
-        return ENCODED_X509_CERTIFICATE.getBytes();
+        byte cert[];
+        try {
+            cert = ENCODED_X509_CERTIFICATE.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return cert;
     }
     
     /**
