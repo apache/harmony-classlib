@@ -1394,7 +1394,8 @@ public final class Scanner implements Iterator<String> {
         String result = null;
         while (true) {
             if (matcher.find()) {
-                if (inputExhausted || matcher.end() != bufferLength) {
+                if (inputExhausted || matcher.end() != bufferLength
+                        || bufferLength < buffer.capacity()) {
                     matchSuccessful = true;
                     findStartIndex = matcher.end();
                     result = matcher.group();
