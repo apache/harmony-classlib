@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1Oid;
@@ -449,7 +450,11 @@ public class AttributeTypeAndValue {
                     av.bytes = (byte[]) out.content;
                     out.content = av;
                 } else {
-                    av.bytes = av.rawString.getBytes();
+                    try {
+                        av.bytes = av.rawString.getBytes("UTF-8"); //$NON-NLS-1$
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e.getMessage());
+                    }
                     out.length = av.bytes.length;
                 }
             }
