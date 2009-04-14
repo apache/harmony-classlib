@@ -31,13 +31,29 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import junit.framework.TestCase;
-
-import org.apache.harmony.luni.util.InvalidJarIndexException;
-
 import tests.support.Support_Configuration;
+import tests.support.Support_Jetty;
 import tests.support.resource.Support_Resources;
 
 public class URLClassLoaderTest extends TestCase {
+
+    private static final String PREFIX = "http://localhost:";
+
+    private static final String ROOT = "../../support/src/test/resources/net.resources/HTTP/html/testres231";
+
+    private static String serverURL = null;
+
+    URLClassLoader ucl;
+
+    static {
+        int port = 0;
+        try {
+            port = Support_Jetty.startHttpServerWithDocRoot(ROOT);
+        } catch (Exception e) {
+            fail("Exception during setup jetty : " + e.getMessage());
+        }
+        serverURL = PREFIX + port + "/";
+    }
 
     class BogusClassLoader extends ClassLoader {
         public URL getResource(String res) {
@@ -60,24 +76,22 @@ public class URLClassLoaderTest extends TestCase {
         }
     }
 
-    URLClassLoader ucl;
-
     /**
      * @tests java.net.URLClassLoader#URLClassLoader(java.net.URL[])
      */
-    public void test_Constructor$Ljava_net_URL() {
+    public void test_Constructor$Ljava_net_URL() throws Exception {
         URL[] u = new URL[0];
         ucl = new URLClassLoader(u);
-        assertTrue("Failed to set parent", ucl != null
-                && ucl.getParent() == URLClassLoader.getSystemClassLoader());
+        assertNotNull(ucl);
+        assertSame("Failed to set parent", URLClassLoader
+                .getSystemClassLoader(), ucl.getParent());
 
         URLClassLoader loader = new URLClassLoader(new URL[] { null });
-        boolean exception = false;
         try {
             Class.forName("test", false, loader);
-            fail("Should throw ClassNotFoundException");
-        } catch (ClassNotFoundException e) {
-            // expected
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
         }
     }
 
@@ -98,15 +112,13 @@ public class URLClassLoaderTest extends TestCase {
      * @tests java.net.URLClassLoader#findResources(java.lang.String)
      */
     public void test_findResourcesLjava_lang_String() throws IOException {
-        Enumeration res = null;
         String[] resValues = { "This is a test resource file.",
                 "This is a resource from a subdir" };
-
         URL[] urls = new URL[2];
-        urls[0] = new URL(Support_Resources.getResourceURL("/"));
-        urls[1] = new URL(Support_Resources.getResourceURL("/subdir1/"));
+        urls[0] = new URL(serverURL);
+        urls[1] = new URL(serverURL + "/subdir1/");
         ucl = new URLClassLoader(urls);
-        res = ucl.findResources("RESOURCE.TXT");
+        Enumeration res = ucl.findResources("RESOURCE.TXT");
         assertNotNull("Failed to locate resources", res);
 
         int i = 0;
@@ -120,7 +132,7 @@ public class URLClassLoaderTest extends TestCase {
             assertEquals("Returned incorrect resource/or in wrong order",
                     resValues[i++], sb.toString());
         }
-        assertTrue("Incorrect number of resources returned: " + i, i == 2);
+        assertEquals("Incorrect number of resources returned: " + i, 2, i);
     }
 
     /**
@@ -146,22 +158,18 @@ public class URLClassLoaderTest extends TestCase {
     public void test_newInstance$Ljava_net_URL() throws MalformedURLException,
             ClassNotFoundException {
         // Verify that loaded class' have correct permissions
-        Class cl = null;
-        URL res = null;
         URL[] urls = new URL[1];
-        urls[0] = new URL(Support_Resources.getResourceURL("/UCL/UCL.jar"));
+        urls[0] = new URL(serverURL + "/UCL/UCL.jar");
         ucl = URLClassLoader.newInstance(urls);
-        cl = ucl.loadClass("ucl.ResClass");
+        Class cl = ucl.loadClass("ucl.ResClass");
 
-        res = cl.getClassLoader().getResource("XX.class");
+        URL res = cl.getClassLoader().getResource("XX.class");
         assertNotNull("Failed to load class", cl);
         assertNotNull(
                 "Loaded class unable to access resource from same codeSource",
                 res);
         cl = null;
-
-        urls[0] = new URL("jar:"
-                + Support_Resources.getResourceURL("/UCL/UCL.jar!/"));
+        urls[0] = new URL("jar:" + serverURL + "/UCL/UCL.jar!/");
         ucl = URLClassLoader.newInstance(urls);
         cl = ucl.loadClass("ucl.ResClass");
         assertNotNull("Failed to load class from explicit jar URL", cl);
@@ -210,42 +218,35 @@ public class URLClassLoaderTest extends TestCase {
         if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
             resPath = resPath.substring(1);
         }
-
-        java.net.URL[] urls = new java.net.URL[1];
-        java.net.URLClassLoader ucl = null;
-        boolean classFound;
-        boolean exception;
-        boolean goodException;
-        Enumeration en;
-        boolean resourcesFound;
         Support_Resources.copyFile(resources, "JarIndex", "hyts_11.jar");
         Support_Resources.copyFile(resources, "JarIndex", "hyts_12.jar");
         Support_Resources.copyFile(resources, "JarIndex", "hyts_13.jar");
         Support_Resources.copyFile(resources, "JarIndex", "hyts_14.jar");
+
+        URL[] urls = new URL[1];
         urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_11.jar");
-        ucl = URLClassLoader.newInstance(urls, null);
+        URLClassLoader ucl = URLClassLoader.newInstance(urls, null);
+
         URL resURL = ucl.findResource("Test.txt");
         URL reference = new URL("jar:file:/" + resPath.replace('\\', '/')
                 + "/JarIndex/hyts_14.jar!/Test.txt");
-        assertTrue("Resource not found: " + resURL + " ref: " + reference,
-                resURL.equals(reference));
+        assertEquals("Resource not found: " + resURL + " ref: " + reference,
+                reference, resURL);
 
-        Class c = Class.forName("cpack.CNothing", true, ucl);
-        assertNotNull(c);
+        assertNotNull(Class.forName("cpack.CNothing", true, ucl));
 
         Support_Resources.copyFile(resources, "JarIndex", "hyts_21.jar");
         Support_Resources.copyFile(resources, "JarIndex", "hyts_22.jar");
         Support_Resources.copyFile(resources, "JarIndex", "hyts_23.jar");
         urls[0] = new URL("file:/" + resPath + "/JarIndex/hyts_21.jar");
         ucl = URLClassLoader.newInstance(urls, null);
-        en = ucl.findResources("bpack/");
+        Enumeration en = ucl.findResources("bpack/");
 
+        boolean resourcesFound;
         try {
             resourcesFound = true;
             URL url1 = (URL) en.nextElement();
             URL url2 = (URL) en.nextElement();
-            System.out.println(url1);
-            System.out.println(url2);
             resourcesFound = resourcesFound
                     && url1.equals(new URL("jar:file:/"
                             + resPath.replace('\\', '/')
@@ -262,19 +263,18 @@ public class URLClassLoaderTest extends TestCase {
         }
         assertTrue("Resources not found (1)", resourcesFound);
 
-        Class c2 = Class.forName("bpack.Homer", true, ucl);
-        assertNotNull(c2);
+        assertNotNull(Class.forName("bpack.Homer", true, ucl));
 
         try {
             Class.forName("bpack.Bart", true, ucl);
-            fail("InvalidJarIndexException should be thrown");
-        } catch (InvalidJarIndexException e) {
-            // expected
+            fail("should throw ClassNotFoundException");
+        } catch (ClassNotFoundException e) {
+            // Expected
         }
 
         try {
             Class.forName("Main4", true, ucl);
-            fail("ClassNotFoundException should be thrown");
+            fail("should throw ClassNotFoundException");
         } catch (ClassNotFoundException e) {
             // Expected
         }
@@ -289,7 +289,7 @@ public class URLClassLoaderTest extends TestCase {
 
         try {
             Class.forName("cpack.Mock", true, ucl);
-            fail("ClassNotFoundException should be thrown");
+            fail("should throw ClassNotFoundException");
         } catch (ClassNotFoundException e) {
             // Expected
         }
@@ -311,7 +311,7 @@ public class URLClassLoaderTest extends TestCase {
         try {
             URLClassLoaderExt cl = new URLClassLoaderExt(new URL[557]);
             cl.findClass("0");
-            fail("NullPointerException should be thrown");
+            fail("should throw NullPointerException");
         } catch (NullPointerException npe) {
             // Expected
         }
@@ -323,12 +323,12 @@ public class URLClassLoaderTest extends TestCase {
         try {
             Class.forName("foo.Foo", false, cl);
         } catch (Exception ex) {
-            // Don't care
+            // Ignored
         }
 
         try {
             Class.forName("foo.Foo", false, cl);
-            fail("NullPointerException should be thrown");
+            fail("should throw ClassNotFoundException");
         } catch (ClassNotFoundException cnfe) {
             // Expected
         }
@@ -339,13 +339,11 @@ public class URLClassLoaderTest extends TestCase {
      */
     public void test_findResourceLjava_lang_String()
             throws MalformedURLException {
-        URL res = null;
-
         URL[] urls = new URL[2];
-        urls[0] = new URL("http://" + Support_Configuration.HomeAddress);
-        urls[1] = new URL(Support_Resources.getResourceURL("/"));
+        urls[0] = new URL(serverURL);
+        urls[1] = new URL(serverURL);
         ucl = new URLClassLoader(urls);
-        res = ucl.findResource("RESOURCE.TXT");
+        URL res = ucl.findResource("RESOURCE.TXT");
         assertNotNull("Failed to locate resource", res);
 
         StringBuffer sb = new StringBuffer();
@@ -387,6 +385,27 @@ public class URLClassLoaderTest extends TestCase {
                 loader.getResource(f.getName()));
         assertEquals("URL was not correctly encoded", f2.toURI().toURL(),
                 loader.getResource(f2.getName()));
+    }
+
+    public void test_findResource() throws Exception {
+        File resources = Support_Resources.createTempFolder();
+        String resPath = resources.toString();
+        if (resPath.charAt(0) == '/' || resPath.charAt(0) == ' ') {
+            resPath = resPath.substring(1);
+        }
+        Support_Resources.copyFile(resources, "JarIndex", "hyts_21.jar");
+        Support_Resources.copyFile(resources, "JarIndex", "hyts_22.jar");
+        Support_Resources.copyFile(resources, "JarIndex", "hyts_23.jar");
+
+        URLClassLoader urlClassloader = URLClassLoader.newInstance(
+                new URL[] { new URL("file:/" + resPath
+                        + "/JarIndex/hyts_21.jar") }, null);
+        Enumeration en = urlClassloader.findResources("bpack/");
+        assertTrue(en.hasMoreElements());
+        URL expected = new URL("jar:file:/" + resPath.replace('\\', '/')
+                + "/JarIndex/hyts_22.jar!/bpack/");
+        assertEquals(expected, (URL) en.nextElement());
+        assertEquals(expected, urlClassloader.findResource("bpack/"));
     }
 
     /**
@@ -452,11 +471,10 @@ public class URLClassLoaderTest extends TestCase {
      * Regression test for HARMONY-2255
      */
     public void test_getResourceAsStream() {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(
-                "tests/api/java/net/test%.properties");
+        InputStream in = this.getClass()
+                .getResourceAsStream("test%.properties");
         assertNotNull(in);
-        in = this.getClass().getClassLoader().getResourceAsStream(
-                "tests/api/java/net/test%25.properties");
+        in = this.getClass().getResourceAsStream("test%25.properties");
         assertNull(in);
     }
 }

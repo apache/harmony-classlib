@@ -341,6 +341,7 @@ public class URLClassLoader extends SecureClassLoader {
                 String indexedName = (pos > 0) ? name.substring(0, pos) : name;
                 ArrayList<URL> urls = index.get(indexedName);
                 if (urls != null) {
+                    urls.remove(url);
                     for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
                         if (h != null) {
@@ -376,6 +377,7 @@ public class URLClassLoader extends SecureClassLoader {
                     urls = index.get(packageName);
                 }
                 if (urls != null) {
+                    urls.remove(url);
                     for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
                         if (h != null) {
@@ -456,6 +458,7 @@ public class URLClassLoader extends SecureClassLoader {
                 String indexedName = (pos > 0) ? name.substring(0, pos) : name;
                 ArrayList<URL> urls = index.get(indexedName);
                 if (urls != null) {
+                    urls.remove(url);
                     for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
                         if (h != null) {
