@@ -20,6 +20,7 @@ package java.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
@@ -479,7 +480,7 @@ public abstract class ResourceBundle {
             if (stream != null) {
                 try {
                     try {
-                        bundle = new PropertyResourceBundle(stream);
+                        bundle = new PropertyResourceBundle(new InputStreamReader(stream));
                     } finally {
                         stream.close();
                     }
@@ -928,7 +929,7 @@ public abstract class ResourceBundle {
                 }
                 if (streams != null) {
                     try {
-                        ret = new PropertyResourceBundle(streams);
+                        ret = new PropertyResourceBundle(new InputStreamReader(streams));
                         ret.setLocale(locale);
                         streams.close();
                     } catch (IOException e) {
