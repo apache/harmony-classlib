@@ -18,6 +18,7 @@ package org.apache.harmony.pack200.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 
 /**
- * 
+ *
  */
 public class CodecEncodingTest extends TestCase {
 
@@ -170,6 +171,54 @@ public class CodecEncodingTest extends TestCase {
         assertEquals("(2,128,1,1)", CodecEncoding.getCodec(116,
                 new ByteArrayInputStream(new byte[] { 0x0B, (byte) 0x7F }),
                 null).toString());
+    }
+
+    public void testGetSpecifier() throws IOException, Pack200Exception {
+        // Test canonical codecs
+        for (int i = 1; i <= 115; i++) {
+            assertEquals(i, CodecEncoding.getSpecifier(CodecEncoding.getCodec(i, null, null))[0]);
+        }
+
+        // Test a range of non-canonical codecs
+        Codec c1 = new BHSDCodec(2, 125, 0, 1);
+        int[] specifiers = CodecEncoding.getSpecifier(c1);
+        assertEquals(3, specifiers.length);
+        assertEquals(116, specifiers[0]);
+        byte[] bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
+        InputStream in = new ByteArrayInputStream(bytes);
+        assertEquals(c1, CodecEncoding.getCodec(116, in, null));
+
+        c1 = new BHSDCodec(3, 125, 2, 1);
+        specifiers = CodecEncoding.getSpecifier(c1);
+        assertEquals(3, specifiers.length);
+        assertEquals(116, specifiers[0]);
+        bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
+        in = new ByteArrayInputStream(bytes);
+        assertEquals(c1, CodecEncoding.getCodec(116, in, null));
+
+        c1 = new BHSDCodec(4, 125);
+        specifiers = CodecEncoding.getSpecifier(c1);
+        assertEquals(3, specifiers.length);
+        assertEquals(116, specifiers[0]);
+        bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
+        in = new ByteArrayInputStream(bytes);
+        assertEquals(c1, CodecEncoding.getCodec(116, in, null));
+
+        c1 = new BHSDCodec(5, 125, 2, 0);
+        specifiers = CodecEncoding.getSpecifier(c1);
+        assertEquals(3, specifiers.length);
+        assertEquals(116, specifiers[0]);
+        bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
+        in = new ByteArrayInputStream(bytes);
+        assertEquals(c1, CodecEncoding.getCodec(116, in, null));
+
+        c1 = new BHSDCodec(3, 5, 2, 1);
+        specifiers = CodecEncoding.getSpecifier(c1);
+        assertEquals(3, specifiers.length);
+        assertEquals(116, specifiers[0]);
+        bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
+        in = new ByteArrayInputStream(bytes);
+        assertEquals(c1, CodecEncoding.getCodec(116, in, null));
     }
 
 }

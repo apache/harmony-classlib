@@ -24,9 +24,11 @@ import java.util.List;
 public abstract class BandSet {
 
     private final int effort;
+    protected final SegmentHeader segmentHeader;
 
-    public BandSet(int effort) {
+    public BandSet(int effort, SegmentHeader header) {
         this.effort = effort;
+        this.segmentHeader = header;
     }
 
     public abstract void pack(OutputStream out) throws IOException, Pack200Exception;
@@ -40,7 +42,32 @@ public abstract class BandSet {
     }
 
     public byte[] encodeBandInt(String name, int[] ints, BHSDCodec defaultCodec) throws Pack200Exception {
-        // TODO non-default codecs
+        if(effort > 1 && (ints.length > 99 || effort == 9)) {
+            Codec betterCodec = lookForBetterCodec(name, ints, defaultCodec);
+            if(betterCodec != null) {
+                if(betterCodec instanceof BHSDCodec) {
+                    int[] specifierBand = CodecEncoding.getSpecifier(betterCodec);
+                    int specifier = specifierBand[0];
+                    if(specifierBand.length > 0) {
+                        for (int i = 1; i < specifierBand.length; i++) {
+                            segmentHeader.appendBandCodingSpecifier(specifierBand[i]);
+                        }
+                    }
+                    byte[] specifierEncoded = defaultCodec.encode(new int[] {specifier});
+                    byte[] rest = betterCodec.encode(ints);
+                    byte[] band = new byte[specifierEncoded.length + rest.length];
+                    System.arraycopy(specifierEncoded, 0, band, 0, specifierEncoded.length);
+                    System.arraycopy(rest, 0, band, specifierEncoded.length, rest.length);
+                    return band;
+                } else if (betterCodec instanceof PopulationCodec) {
+
+                } else if (betterCodec instanceof RunCodec) {
+
+                }
+            }
+        }
+
+        // If we get here then we've decided to use the default codec.
         if(ints.length > 0) {
 //            System.out.println("encoding " + name + ", size = " + ints.length);
             int first = ints[0];
@@ -67,6 +94,12 @@ public abstract class BandSet {
             return defaultCodec.encode(ints);
         }
         return new byte[0];
+    }
+
+    private Codec lookForBetterCodec(String name, int[] ints,
+            BHSDCodec defaultCodec) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public boolean isPredictableSourceFileName(String className, String sourceFileName) {

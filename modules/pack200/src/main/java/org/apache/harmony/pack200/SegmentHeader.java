@@ -25,7 +25,7 @@ import java.io.OutputStream;
 public class SegmentHeader extends BandSet {
 
     public SegmentHeader() {
-        super(1); // Don't do anything special for the header
+        super(1, null); // Don't do anything special for the header
     }
 
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
@@ -48,7 +48,7 @@ public class SegmentHeader extends BandSet {
     private int cp_Imethod_count;
 
     private int attribute_definition_count;
-    private final byte[] band_headers = new byte[0];
+    private final IntList band_headers = new IntList();
 
     private boolean have_all_code_flags = true; // true by default
 
@@ -84,13 +84,13 @@ public class SegmentHeader extends BandSet {
         writeArchiveSpecialCounts(out);
         writeCpCounts(out);
         writeClassCounts(out);
-        if (band_headers.length > 0) {
-            out.write(band_headers);
+        if (band_headers.size()> 0) {
+            out.write(encodeScalar(band_headers.toArray(), BHSDCodec.BYTE1));
         }
     }
 
     private void calculateArchiveOptions() {
-        if (attribute_definition_count > 0 || band_headers.length > 0) {
+        if (attribute_definition_count > 0 || band_headers.size() > 0) {
             archive_options |= 1;
         }
         if (cp_Int_count > 0 || cp_Float_count > 0 || cp_Long_count > 0
@@ -292,10 +292,9 @@ public class SegmentHeader extends BandSet {
     private void writeArchiveSpecialCounts(OutputStream out)
             throws IOException, Pack200Exception {
         if ((archive_options & 1) > 0) { // have_special_formats
-            out.write(encodeScalar(band_headers.length, Codec.UNSIGNED5));
-            out
-                    .write(encodeScalar(attribute_definition_count,
-                            Codec.UNSIGNED5));
+            out.write(encodeScalar(band_headers.size(), Codec.UNSIGNED5));
+            out.write(encodeScalar(attribute_definition_count,
+                    Codec.UNSIGNED5));
         }
     }
 
@@ -375,6 +374,10 @@ public class SegmentHeader extends BandSet {
 
     public boolean have_all_code_flags() {
         return have_all_code_flags;
+    }
+
+    public void appendBandCodingSpecifier(int specifier) {
+        band_headers.add(specifier);
     }
 
 }

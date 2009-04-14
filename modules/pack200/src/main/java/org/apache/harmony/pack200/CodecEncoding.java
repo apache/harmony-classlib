@@ -215,12 +215,31 @@ public class CodecEncoding {
     }
 
     public static int getSpecifierForDefaultCodec(BHSDCodec defaultCodec) {
+        return getSpecifier(defaultCodec)[0];
+    }
+
+    public static int[] getSpecifier(Codec codec) {
+        // lazy initialization
         if(canonicalCodecsToSpecifiers == null) {
             canonicalCodecsToSpecifiers = new HashMap();
             for (int i = 0; i < canonicalCodec.length; i++) {
                 canonicalCodecsToSpecifiers.put(canonicalCodec[i], new Integer(i));
             }
         }
-        return ((Integer)canonicalCodecsToSpecifiers.get(defaultCodec)).intValue();
+
+        if(canonicalCodecsToSpecifiers.containsKey(codec)) {
+            return new int[] {((Integer)canonicalCodecsToSpecifiers.get(codec)).intValue()};
+        } else if (codec instanceof BHSDCodec) {
+            // Cache these?
+            BHSDCodec bhsdCodec = (BHSDCodec)codec;
+            int[] specifiers = new int[3];
+            specifiers[0] = 116;
+            specifiers[1] = (bhsdCodec.isDelta() ? 1 : 0) + 2
+                    * bhsdCodec.getS() + 8 * (bhsdCodec.getB()-1);
+            specifiers[2] = bhsdCodec.getH() - 1;
+            return specifiers;
+        }
+
+        return null;
     }
 }

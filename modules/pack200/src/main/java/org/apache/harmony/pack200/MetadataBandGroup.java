@@ -61,8 +61,8 @@ public class MetadataBandGroup extends BandSet {
      * Constructs a new MetadataBandGroup
      * @param type - must be either AD, RVA, RIA, RVPA or RIPA.
      */
-    public MetadataBandGroup(String type, int context, CpBands cpBands, int effort) {
-        super(effort);
+    public MetadataBandGroup(String type, int context, CpBands cpBands, SegmentHeader segmentHeader, int effort) {
+        super(effort, segmentHeader);
         this.type = type;
         this.cpBands = cpBands;
         this.context = context;

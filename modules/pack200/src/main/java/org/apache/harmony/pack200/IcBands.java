@@ -29,15 +29,13 @@ import java.util.TreeSet;
 public class IcBands extends BandSet {
 
     private final Set innerClasses = new TreeSet();
-    private final SegmentHeader segmentHeader;
     private final CpBands cpBands;
     private int bit16Count = 0;
 
     private final Map outerToInner = new HashMap();
 
     public IcBands(SegmentHeader segmentHeader, CpBands cpBands, int effort) {
-        super(effort);
-        this.segmentHeader = segmentHeader;
+        super(effort, segmentHeader);
         this.cpBands = cpBands;
     }
 

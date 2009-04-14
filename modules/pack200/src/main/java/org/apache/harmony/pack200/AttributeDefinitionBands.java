@@ -37,8 +37,6 @@ public class AttributeDefinitionBands extends BandSet {
 
     private final Map layouts = new HashMap();
 
-    private final SegmentHeader segmentHeader;
-
     private final Map classAttributes = new HashMap();
     private final Map methodAttributes = new HashMap();
     private final Map fieldAttributes = new HashMap();
@@ -50,8 +48,7 @@ public class AttributeDefinitionBands extends BandSet {
     private final Segment segment;
 
     public AttributeDefinitionBands(Segment segment, int effort) {
-        super(effort);
-        this.segmentHeader = segment.getSegmentHeader();
+        super(effort, segment.getSegmentHeader());
         this.cpBands = segment.getCpBands();
         this.segment = segment;
     }

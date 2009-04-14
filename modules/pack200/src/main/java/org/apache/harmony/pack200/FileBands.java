@@ -24,7 +24,6 @@ import org.apache.harmony.pack200.Archive.File;
 
 public class FileBands extends BandSet {
 
-    private final SegmentHeader segmentHeader;
     private final CPUTF8[] fileName;
     private int[] file_name;
     private final long[] file_modtime;
@@ -34,8 +33,7 @@ public class FileBands extends BandSet {
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
             List files, int effort) {
-        super(effort);
-        this.segmentHeader = segmentHeader;
+        super(effort, segmentHeader);
         int size =  files.size();
         fileName = new CPUTF8[size];
         file_modtime = new long[size];
