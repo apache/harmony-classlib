@@ -22,7 +22,7 @@
 
 package java.security;
 
-import java.io.BufferedInputStream;
+import java.io.InputStreamReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public final class Security {
                 if (f.exists()) {
                     try {
                         FileInputStream fis = new FileInputStream(f);
-                        InputStream is = new BufferedInputStream(fis);
+                        InputStreamReader is = new InputStreamReader(fis);
                         secprops.load(is);
                         loaded = true;
                         is.close();
@@ -90,14 +90,14 @@ public final class Security {
 //                                    + securityFile +": " + e);
                         }
                         f = new File(securityFile);
-                        InputStream is;
+                        InputStreamReader is;
                         try {
                             if (f.exists()) {
                                 FileInputStream fis = new FileInputStream(f);
-                                is = new BufferedInputStream(fis);
+                                is = new InputStreamReader(fis);
                             } else {
                                 URL url = new URL(securityFile);
-                                is = new BufferedInputStream(url.openStream());
+                                is = new InputStreamReader(url.openStream());
                             }
                             secprops.load(is);
                             loaded = true;
