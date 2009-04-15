@@ -58,15 +58,17 @@ public class FileTest extends TestCase {
         // Delete all old temporary files
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         String[] files = tempDir.list();
-        for (int i = 0; i < files.length; i++) {
-            File f = new File(tempDir, files[i]);
-            if (f.isDirectory()) {
-                if (files[i].startsWith("hyts_resources")) {
-                    deleteTempFolder(f);
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                File f = new File(tempDir, files[i]);
+                if (f.isDirectory()) {
+                    if (files[i].startsWith("hyts_resources")) {
+                        deleteTempFolder(f);
+                    }
                 }
-            }
-            if (files[i].startsWith("hyts_") || files[i].startsWith("hyjar_")) {
-                new File(tempDir, files[i]).delete();
+                if (files[i].startsWith("hyts_") || files[i].startsWith("hyjar_")) {
+                    new File(tempDir, files[i]).delete();
+                }
             }
         }
     }
