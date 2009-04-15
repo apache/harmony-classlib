@@ -47,6 +47,7 @@ import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
+import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.nio.AddressUtil;
 import org.apache.harmony.nio.internal.nls.Messages;
 
@@ -843,6 +844,81 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             checkOpen();
             return ((Boolean) socketImpl.getOption(SocketOptions.TCP_NODELAY))
                     .booleanValue();
+        }
+
+        @Override
+        public void setKeepAlive(boolean value) throws SocketException {
+            checkOpen();
+            socketImpl.setOption(SocketOptions.SO_KEEPALIVE, value ? Boolean.TRUE
+                    : Boolean.FALSE);
+        }
+
+        @Override
+        public void setOOBInline(boolean oobinline) throws SocketException {
+            checkOpen();
+            socketImpl.setOption(SocketOptions.SO_OOBINLINE, oobinline ? Boolean.TRUE
+                    : Boolean.FALSE);
+        }
+
+        @Override
+        public synchronized void setReceiveBufferSize(int size)
+                throws SocketException {
+            checkOpen();
+            if (size < 1) {
+                throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            }
+            socketImpl
+                    .setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
+        }
+
+        @Override
+        public void setReuseAddress(boolean reuse) throws SocketException {
+            checkOpen();
+            socketImpl.setOption(SocketOptions.SO_REUSEADDR, reuse ? Boolean.TRUE
+                    : Boolean.FALSE);
+        }
+
+        @Override
+        public synchronized void setSendBufferSize(int size) throws SocketException {
+            checkOpen();
+            if (size < 1) {
+                throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            }
+            socketImpl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
+        }
+
+        @Override
+        public void setSoLinger(boolean on, int timeout) throws SocketException {
+            checkOpen();
+            if (on && timeout < 0) {
+                throw new IllegalArgumentException(Msg.getString("K0045")); //$NON-NLS-1$
+            }
+            int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
+            socketImpl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
+        }
+
+        @Override
+        public synchronized void setSoTimeout(int timeout) throws SocketException {
+            checkOpen();
+            if (timeout < 0) {
+                throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            }
+            socketImpl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
+        }
+
+        @Override
+        public void setTcpNoDelay(boolean on) throws SocketException {
+            checkOpen();
+            socketImpl.setOption(SocketOptions.TCP_NODELAY, Boolean.valueOf(on));
+        }
+
+        @Override
+        public void setTrafficClass(int value) throws SocketException {
+            checkOpen();
+            if (value < 0 || value > 255) {
+                throw new IllegalArgumentException();
+            }
+            socketImpl.setOption(SocketOptions.IP_TOS, Integer.valueOf(value));
         }
 
         /**
