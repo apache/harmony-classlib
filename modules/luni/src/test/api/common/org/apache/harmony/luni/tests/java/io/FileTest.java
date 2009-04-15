@@ -112,7 +112,7 @@ public class FileTest extends TestCase {
     public void test_ConstructorLjava_io_FileLjava_lang_String2() throws IOException {
         File f = new File((File)null, "input.tst");
         assertEquals("Created Incorrect File", 
-                addTrailingSlash(new File(".").getCanonicalPath()) + "input.tst", 
+                new File("input.tst").getAbsolutePath(), 
                 f.getAbsolutePath());
     }
     
