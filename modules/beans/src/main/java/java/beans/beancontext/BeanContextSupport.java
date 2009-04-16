@@ -288,10 +288,12 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
             // trigger hook
             synchronized (child) {
+                addSerializable(childBCSC);
                 childJustAddedHook(child, childBCSC);
             }
             if (proxy != null) {
                 synchronized (proxy) {
+                    addSerializable(proxyBCSC);
                     childJustAddedHook(proxy, proxyBCSC);
                 }
             }
@@ -987,10 +989,12 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
             // trigger hook
             synchronized (child) {
+                removeSerializable(childBCSC);
                 childJustRemovedHook(child, childBCSC);
             }
             if (peer != null) {
                 synchronized (peer) {
+                    removeSerializable(peerBCSC);
                     childJustRemovedHook(peer, peerBCSC);
                 }
             }
@@ -1243,19 +1247,6 @@ public class BeanContextSupport extends BeanContextChildSupport implements
         serializing = true;
 
         try {
-            // count serializable children
-            synchronized (children) {
-                serializable = 0;
-                for (Iterator iter = children.values().iterator(); iter
-                        .hasNext();) {
-                    BCSChild bcsc = (BCSChild) iter.next();
-                    if (bcsc.child instanceof Serializable
-                            && (bcsc.proxyPeer == null || bcsc.proxyPeer instanceof Serializable)) {
-                        serializable++;
-                    }
-                }
-            }
-
             oos.defaultWriteObject();
 
             bcsPreSerializationHook(oos);
@@ -1306,6 +1297,29 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
         synchronized (bcmListeners) {
             deserialize(ois, bcmListeners);
+        }
+    }
+
+    /*
+     * Increase variable serializable if child and proxyPeer fields of the given
+     * BCSChild object are serializable
+     */
+    private void addSerializable(BCSChild bcsc) {
+        if (bcsc.child instanceof Serializable
+                && (bcsc.proxyPeer == null || bcsc.proxyPeer instanceof Serializable)) {
+            serializable++;
+        }
+    }
+
+    /*
+     * Decrease variable serializable if child and proxyPeer fields of the given
+     * BCSChild object are serializable
+     */
+    private void removeSerializable(BCSChild bcsc) {
+        if (serializable > 0
+                && bcsc.child instanceof Serializable
+                && (bcsc.proxyPeer == null || bcsc.proxyPeer instanceof Serializable)) {
+            serializable--;
         }
     }
 

@@ -1422,6 +1422,43 @@ public class BeanContextSupportTest extends TestCase {
         support.records.assertEndOfRecords();
     }
 
+    public void test_readChildren_NPE_scenario1() throws Exception {
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        beanContextSupport.add(beanContextSupport);
+        assertEquals(1, beanContextSupport.size());
+        assertFalse(beanContextSupport.isSerializing());
+        try {
+            beanContextSupport.readChildren((ObjectInputStream) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void test_readChildren_NPE_scenario2() throws Exception {
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        beanContextSupport.readChildren((ObjectInputStream) null);
+    }
+
+    public void test_readChildren_NPE_scenario3() throws Exception {
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        beanContextSupport.add(new Object());
+        beanContextSupport.readChildren((ObjectInputStream) null);
+    }
+
+    public void test_readChildren_NPE_scenario4() throws Exception {
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        beanContextSupport.add("Serializable");
+        try {
+            beanContextSupport.readChildren((ObjectInputStream) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        beanContextSupport.remove("Serializable");
+        beanContextSupport.readChildren((ObjectInputStream) null);
+    }
+
     public void testRemoveAll() {
         MockBeanContextSupport support = new MockBeanContextSupport();
         support.records.assertRecord("initialize", null);
