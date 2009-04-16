@@ -112,7 +112,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
         if (error[ERROR_CODE] != 0) {
             return null;
         }
-        return new String(result);
+        return decodeWindowsStr(new String(result));
     }
 
     @Override
@@ -133,7 +133,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     @Override
     protected void putSpi(String name, String value) {
         int[] errorCode = new int[1];
-        putValue(path, encodeWindowsStr(name).getBytes(), value.getBytes(), userNode, errorCode);
+        putValue(path, encodeWindowsStr(name).getBytes(), encodeWindowsStr(value).getBytes(), userNode, errorCode);
         if (errorCode[ERROR_CODE] == RETURN_ACCESS_DENIED) {
             // prefs.E=Access denied\!
             throw new SecurityException(Messages.getString("prefs.E")); //$NON-NLS-1$
