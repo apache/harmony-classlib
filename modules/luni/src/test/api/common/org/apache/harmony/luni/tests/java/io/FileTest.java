@@ -195,8 +195,8 @@ public class FileTest extends TestCase {
         String dirName = null;
         String fileName = "input.tst";
         File f = new File(dirName, fileName);
-        assertEquals("Test 1: Created Incorrect File.",
-                addTrailingSlash(new File(".").getCanonicalPath()) + "input.tst",
+        assertEquals("Test 1: Created Incorrect File", 
+                new File("input.tst").getAbsolutePath(), 
                 f.getAbsolutePath());
 
         dirName = tempDirectory.getPath();
