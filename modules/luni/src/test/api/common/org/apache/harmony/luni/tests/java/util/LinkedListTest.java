@@ -213,6 +213,22 @@ public class LinkedListTest extends junit.framework.TestCase {
         }
 	}
 
+    public void test_addAll_Self_Ljava_util_Collection() {
+        LinkedList linkedList = new LinkedList();
+        linkedList.addLast(1);
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.addAll(linkedList));
+        assertEquals(2, linkedList.size());
+    }
+
+    public void test_addAll_Self_ILjava_util_Collection() {
+        LinkedList linkedList = new LinkedList();
+        linkedList.addLast(1);
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.addAll(1, linkedList));
+        assertEquals(2, linkedList.size());
+    }
+
 	/**
 	 * @tests java.util.LinkedList#addFirst(java.lang.Object)
 	 */
