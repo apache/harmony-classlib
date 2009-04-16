@@ -28,6 +28,8 @@ import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.pack200.PopulationCodec;
+import org.apache.harmony.pack200.RunCodec;
 
 /**
  *
@@ -176,12 +178,12 @@ public class CodecEncodingTest extends TestCase {
     public void testGetSpecifier() throws IOException, Pack200Exception {
         // Test canonical codecs
         for (int i = 1; i <= 115; i++) {
-            assertEquals(i, CodecEncoding.getSpecifier(CodecEncoding.getCodec(i, null, null))[0]);
+            assertEquals(i, CodecEncoding.getSpecifier(CodecEncoding.getCodec(i, null, null), null)[0]);
         }
 
         // Test a range of non-canonical codecs
         Codec c1 = new BHSDCodec(2, 125, 0, 1);
-        int[] specifiers = CodecEncoding.getSpecifier(c1);
+        int[] specifiers = CodecEncoding.getSpecifier(c1, null);
         assertEquals(3, specifiers.length);
         assertEquals(116, specifiers[0]);
         byte[] bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
@@ -189,7 +191,7 @@ public class CodecEncodingTest extends TestCase {
         assertEquals(c1, CodecEncoding.getCodec(116, in, null));
 
         c1 = new BHSDCodec(3, 125, 2, 1);
-        specifiers = CodecEncoding.getSpecifier(c1);
+        specifiers = CodecEncoding.getSpecifier(c1, null);
         assertEquals(3, specifiers.length);
         assertEquals(116, specifiers[0]);
         bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
@@ -197,7 +199,7 @@ public class CodecEncodingTest extends TestCase {
         assertEquals(c1, CodecEncoding.getCodec(116, in, null));
 
         c1 = new BHSDCodec(4, 125);
-        specifiers = CodecEncoding.getSpecifier(c1);
+        specifiers = CodecEncoding.getSpecifier(c1, null);
         assertEquals(3, specifiers.length);
         assertEquals(116, specifiers[0]);
         bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
@@ -205,7 +207,7 @@ public class CodecEncodingTest extends TestCase {
         assertEquals(c1, CodecEncoding.getCodec(116, in, null));
 
         c1 = new BHSDCodec(5, 125, 2, 0);
-        specifiers = CodecEncoding.getSpecifier(c1);
+        specifiers = CodecEncoding.getSpecifier(c1, null);
         assertEquals(3, specifiers.length);
         assertEquals(116, specifiers[0]);
         bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
@@ -213,12 +215,97 @@ public class CodecEncodingTest extends TestCase {
         assertEquals(c1, CodecEncoding.getCodec(116, in, null));
 
         c1 = new BHSDCodec(3, 5, 2, 1);
-        specifiers = CodecEncoding.getSpecifier(c1);
+        specifiers = CodecEncoding.getSpecifier(c1, null);
         assertEquals(3, specifiers.length);
         assertEquals(116, specifiers[0]);
         bytes = new byte[] {(byte) specifiers[1], (byte) specifiers[2]};
         in = new ByteArrayInputStream(bytes);
         assertEquals(c1, CodecEncoding.getCodec(116, in, null));
+    }
+
+    public void testGetSpeciferForRunCodec() throws Pack200Exception, IOException {
+        RunCodec runCodec = new RunCodec(25, Codec.DELTA5, Codec.BYTE1);
+        int[] specifiers = CodecEncoding.getSpecifier(runCodec, null);
+        assertTrue(specifiers[0] > 116);
+        assertTrue(specifiers[0] < 141);
+        byte[] bytes = new byte[specifiers.length - 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) specifiers[i+1];
+        }
+        InputStream in = new ByteArrayInputStream(bytes);
+        RunCodec runCodec2 = (RunCodec) CodecEncoding.getCodec(specifiers[0], in, null);
+        assertEquals(runCodec.getK(), runCodec2.getK());
+        assertEquals(runCodec.getACodec(), runCodec2.getACodec());
+        assertEquals(runCodec.getBCodec(), runCodec2.getBCodec());
+
+        // One codec is the same as the default
+        runCodec = new RunCodec(4096, Codec.DELTA5, Codec.BYTE1);
+        specifiers = CodecEncoding.getSpecifier(runCodec, Codec.DELTA5);
+        assertTrue(specifiers[0] > 116);
+        assertTrue(specifiers[0] < 141);
+        bytes = new byte[specifiers.length - 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) specifiers[i+1];
+        }
+        in = new ByteArrayInputStream(bytes);
+        runCodec2 = (RunCodec) CodecEncoding.getCodec(specifiers[0], in, Codec.DELTA5);
+        assertEquals(runCodec.getK(), runCodec2.getK());
+        assertEquals(runCodec.getACodec(), runCodec2.getACodec());
+        assertEquals(runCodec.getBCodec(), runCodec2.getBCodec());
+
+        // Nested run codecs
+        runCodec = new RunCodec(64, Codec.SIGNED5, new RunCodec(25, Codec.UDELTA5, Codec.DELTA5));
+        specifiers = CodecEncoding.getSpecifier(runCodec, null);
+        assertTrue(specifiers[0] > 116);
+        assertTrue(specifiers[0] < 141);
+        bytes = new byte[specifiers.length - 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) specifiers[i+1];
+        }
+        in = new ByteArrayInputStream(bytes);
+        runCodec2 = (RunCodec) CodecEncoding.getCodec(specifiers[0], in, null);
+        assertEquals(runCodec.getK(), runCodec2.getK());
+        assertEquals(runCodec.getACodec(), runCodec2.getACodec());
+        RunCodec bCodec = (RunCodec) runCodec.getBCodec();
+        RunCodec bCodec2 = (RunCodec) runCodec2.getBCodec();
+        assertEquals(bCodec.getK(), bCodec2.getK());
+        assertEquals(bCodec.getACodec(), bCodec2.getACodec());
+        assertEquals(bCodec.getBCodec(), bCodec2.getBCodec());
+
+        // Nested with one the same as the default
+        runCodec = new RunCodec(64, Codec.SIGNED5, new RunCodec(25, Codec.UDELTA5, Codec.DELTA5));
+        specifiers = CodecEncoding.getSpecifier(runCodec, Codec.UDELTA5);
+        assertTrue(specifiers[0] > 116);
+        assertTrue(specifiers[0] < 141);
+        bytes = new byte[specifiers.length - 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) specifiers[i+1];
+        }
+        in = new ByteArrayInputStream(bytes);
+        runCodec2 = (RunCodec) CodecEncoding.getCodec(specifiers[0], in, Codec.UDELTA5);
+        assertEquals(runCodec.getK(), runCodec2.getK());
+        assertEquals(runCodec.getACodec(), runCodec2.getACodec());
+        bCodec = (RunCodec) runCodec.getBCodec();
+        bCodec2 = (RunCodec) runCodec2.getBCodec();
+        assertEquals(bCodec.getK(), bCodec2.getK());
+        assertEquals(bCodec.getACodec(), bCodec2.getACodec());
+        assertEquals(bCodec.getBCodec(), bCodec2.getBCodec());
+    }
+
+    public void testGetSpeciferForPopulationCodec() throws IOException, Pack200Exception {
+        PopulationCodec pCodec = new PopulationCodec(Codec.BYTE1, Codec.CHAR3, Codec.UNSIGNED5);
+        int[] specifiers = CodecEncoding.getSpecifier(pCodec, null);
+        assertTrue(specifiers[0] > 140);
+        assertTrue(specifiers[0] < 189);
+        byte[] bytes = new byte[specifiers.length - 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) specifiers[i+1];
+        }
+        InputStream in = new ByteArrayInputStream(bytes);
+        PopulationCodec pCodec2 = (PopulationCodec) CodecEncoding.getCodec(specifiers[0], in, null);
+        assertEquals(pCodec.getFavouredCodec(), pCodec2.getFavouredCodec());
+        assertEquals(pCodec.getTokenCodec(), pCodec2.getTokenCodec());
+        assertEquals(pCodec.getUnfavouredCodec(), pCodec2.getUnfavouredCodec());
     }
 
 }

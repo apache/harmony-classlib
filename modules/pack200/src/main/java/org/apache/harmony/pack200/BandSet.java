@@ -46,7 +46,7 @@ public abstract class BandSet {
             Codec betterCodec = lookForBetterCodec(name, ints, defaultCodec);
             if(betterCodec != null) {
                 if(betterCodec instanceof BHSDCodec) {
-                    int[] specifierBand = CodecEncoding.getSpecifier(betterCodec);
+                    int[] specifierBand = CodecEncoding.getSpecifier(betterCodec, defaultCodec);
                     int specifier = specifierBand[0];
                     if(specifierBand.length > 0) {
                         for (int i = 1; i < specifierBand.length; i++) {
