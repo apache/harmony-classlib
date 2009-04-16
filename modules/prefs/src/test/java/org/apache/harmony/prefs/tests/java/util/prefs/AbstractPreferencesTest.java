@@ -553,6 +553,25 @@ public class AbstractPreferencesTest extends TestCase {
         assertTrue(pref.nodeExists("child2/grandchild"));
     }
 
+    public void test_nodeExists() throws BackingStoreException {
+        AbstractPreferences test = (AbstractPreferences) Preferences.userRoot()
+                .node("test");
+        try {
+            test.nodeExists(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        test.removeNode();
+        try {
+            test.nodeExists(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
     public void testParent() {
         assertSame(parent, pref.parent());
         AbstractPreferences child1 = new MockAbstractPreferences(pref, "child1");

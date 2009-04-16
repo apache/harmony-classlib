@@ -609,6 +609,9 @@ public abstract class AbstractPreferences extends Preferences {
 
     @Override
     public boolean nodeExists(String name) throws BackingStoreException {
+        if (null == name) {
+            throw new NullPointerException();
+        }
         AbstractPreferences startNode = null;
         synchronized (lock) {
             if (isRemoved()) {
