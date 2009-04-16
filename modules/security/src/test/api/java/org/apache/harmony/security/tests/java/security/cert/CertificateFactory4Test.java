@@ -58,12 +58,12 @@ public class CertificateFactory4Test extends TestCase {
         CertificateFactory fact = CertificateFactory.getInstance("X.509");
         for (int i = 0; i < CERTIFICATES_ENCODED_X509.length; i++) {
             ByteArrayInputStream bais = new ByteArrayInputStream(
-                    CERTIFICATES_ENCODED_X509[i].getBytes());
+                    CERTIFICATES_ENCODED_X509[i].getBytes("UTF-8"));
             fact.generateCertificate(bais);
 
             // try again with generateCertificates()
             bais = new ByteArrayInputStream(CERTIFICATES_ENCODED_X509[i]
-                    .getBytes());
+                    .getBytes("UTF-8"));
             fact.generateCertificate(bais);
         }
 

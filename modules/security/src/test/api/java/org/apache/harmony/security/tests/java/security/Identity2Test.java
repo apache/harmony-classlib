@@ -20,6 +20,7 @@ package org.apache.harmony.security.tests.java.security;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.Identity;
 import java.security.IdentityScope;
 import java.security.KeyManagementException;
@@ -97,8 +98,7 @@ public class Identity2Test extends junit.framework.TestCase {
 			+ "1777XQ9UEZyrKJvF5ntleeO0ayBqLGVKCWzWZX9YsXCpv47FNLZbupE=\n"
 			+ "-----END CERTIFICATE-----\n";
 
-	ByteArrayInputStream certArray = new ByteArrayInputStream(certificate
-			.getBytes());
+	ByteArrayInputStream certArray;
 
 	String certificate2 = "-----BEGIN CERTIFICATE-----\n"
 			+ "MIICZzCCAdCgAwIBAgIBGzANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQGEwJVUzEY\n"
@@ -116,8 +116,18 @@ public class Identity2Test extends junit.framework.TestCase {
 			+ "VGQRYYlt+myhl2vy6yPzEVCjiKwMEb1Spu0irCf+lFW2hsdjvmSQMtZvOw==\n"
 			+ "-----END CERTIFICATE-----\n";
 
-	ByteArrayInputStream certArray2 = new ByteArrayInputStream(certificate2
-			.getBytes());
+	ByteArrayInputStream certArray2;
+
+        {
+            try {
+                certArray = new ByteArrayInputStream(certificate
+                            .getBytes("UTF-8"));
+                certArray2 = new ByteArrayInputStream(certificate2
+                            .getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
 
 	public static class IdentitySubclass extends Identity {
 		public IdentitySubclass() {

@@ -18,6 +18,7 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -48,8 +49,15 @@ public class KeyStorePrivateKeyEntryTest extends TestCase {
                 + "1777XQ9UEZyrKJvF5ntleeO0ayBqLGVKCWzWZX9YsXCpv47FNLZbupE=\n"
                 + "-----END CERTIFICATE-----\n";
 
-        ByteArrayInputStream certArray = new ByteArrayInputStream(
-                certificateData.getBytes());
+        ByteArrayInputStream certArray;
+        {
+            try{
+                 certArray = new ByteArrayInputStream(
+                    certificateData.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate certificate = cf.generateCertificate(certArray);
         assertTrue(certificate instanceof X509Certificate);
