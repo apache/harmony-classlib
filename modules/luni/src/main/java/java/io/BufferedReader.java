@@ -211,6 +211,7 @@ public class BufferedReader extends Reader {
             if (pos < count || fillbuf() != -1) {
                 return buf[pos++];
             }
+            markpos = -1;
             return -1;
         }
     }

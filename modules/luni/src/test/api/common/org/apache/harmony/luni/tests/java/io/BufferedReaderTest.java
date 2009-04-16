@@ -26,9 +26,10 @@ import java.io.PipedReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import junit.framework.TestCase;
 import tests.support.Support_StringReader;
 
-public class BufferedReaderTest extends junit.framework.TestCase {
+public class BufferedReaderTest extends TestCase {
 
 	BufferedReader br;
 
@@ -490,8 +491,36 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 			return;
 
 		}
-
 	}
+
+    public void test_reset_IOException() throws Exception {
+        int[] expected = new int[] { '1', '2', '3', '4', '5', '6', '7', '8',
+                '9', '0', -1 };
+        br = new BufferedReader(new Support_StringReader("1234567890"));
+        br.mark(10);
+        for (int i = 0; i < 11; i++) {
+            assertEquals(expected[i], br.read());
+        }
+        try {
+            br.reset();
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // Expected
+        }
+        for (int i = 0; i < 11; i++) {
+            assertEquals(-1, br.read());
+        }
+
+        br = new BufferedReader(new Support_StringReader("1234567890"));
+        br.mark(10);
+        for (int i = 0; i < 10; i++) {
+            assertEquals(expected[i], br.read());
+        }
+        br.reset();
+        for (int i = 0; i < 11; i++) {
+            assertEquals(expected[i], br.read());
+        }
+    }
 
 	/**
 	 * @tests java.io.BufferedReader#skip(long)
