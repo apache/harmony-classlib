@@ -1666,8 +1666,8 @@ public class CharacterTest extends TestCase {
                 .getDirectionality(0xFB4F));
         assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character
                 .getDirectionality(0x10838));
-        
-        assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Character
+        // Unicode standard 5.1 changed category of unicode point 0x0600 from AL to AN
+        assertEquals(Character.DIRECTIONALITY_ARABIC_NUMBER, Character
                 .getDirectionality(0x0600));
         assertEquals(Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Character
                 .getDirectionality(0xFEFC));
