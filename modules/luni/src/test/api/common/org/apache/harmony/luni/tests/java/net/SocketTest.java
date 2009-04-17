@@ -35,6 +35,7 @@ import java.net.SocketImplFactory;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.Permission;
+import java.util.Locale;
 
 import org.apache.harmony.luni.net.PlainSocketImpl;
 
@@ -860,17 +861,53 @@ public class SocketTest extends SocketTestCase {
 
         InputStream in = pingClient.getInputStream();
         in.read(new byte[42]);
-
-        // Check EOF
-        assertEquals(-1, in.read());
+        if (isUnix()) {
+            try {
+                in.read();
+                fail("Should throw SocketException");
+            } catch (SocketException e) {
+                // expected
+            }
+        } else {
+            // Check EOF
+            assertEquals(-1, in.read());
+        }
 
         in.close();
 
-        // No exception when reading a closed stream
-        assertEquals(-1, in.read());
+        if (isUnix()) {
+            try {
+                in.read();
+                fail("Should throw SocketException");
+            } catch (SocketException e) {
+                // expected
+            }
+            try {
+                in.read(new byte[5]);
+                fail("Should throw SocketException");
+            } catch (SocketException e) {
+                // expected
+            }
+        } else {
+            // No exception when reading a closed stream
+            assertEquals(-1, in.read());
+            assertEquals(-1, in.read(new byte[5]));
+        }
 
         pingClient.close();
         pingServer.close();
+    }
+
+    private boolean isUnix() {
+        String osName = System.getProperty("os.name");
+
+        // only comparing ASCII, so assume english locale
+        osName = (osName == null ? null : osName.toLowerCase(Locale.ENGLISH));
+
+        if (osName != null && osName.startsWith("windows")) { //$NON-NLS-1$
+            return false;
+        }
+        return true;
     }
 
     /**
