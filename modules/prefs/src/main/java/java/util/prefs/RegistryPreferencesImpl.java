@@ -109,7 +109,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     protected String getSpi(String key) {
         int[] error = new int[1];
         byte[] result = getValue(path, encodeWindowsStr(key).getBytes(), userNode, error);
-        if (error[ERROR_CODE] != 0) {
+        if (error[ERROR_CODE] != RETURN_SUCCESS) {
             return null;
         }
         return decodeWindowsStr(new String(result));

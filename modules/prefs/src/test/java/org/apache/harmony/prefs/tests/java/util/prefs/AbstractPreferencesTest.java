@@ -115,28 +115,33 @@ public class AbstractPreferencesTest extends TestCase {
         try {
             pref = new MockAbstractPreferences(
                     (AbstractPreferences) Preferences.userRoot(), "mo/ck");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref = new MockAbstractPreferences(null, "mock");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             new MockAbstractPreferences(null, " ");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             new MockAbstractPreferences(pref, "");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             new MockAbstractPreferences(pref, null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         if (!(pref instanceof MockAbstractPreferences)) {
             return;
@@ -229,8 +234,9 @@ public class AbstractPreferencesTest extends TestCase {
 
         try {
             pref.get(null, "abc");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.get("", "abc");
         pref.get("key", null);
@@ -241,21 +247,24 @@ public class AbstractPreferencesTest extends TestCase {
         pref.removeNode();
         try {
             pref.get("key", "abc");
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.get(null, "abc");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
     }
 
     public void testGetBoolean() {
         try {
             pref.getBoolean(null, false);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.put("testGetBooleanKey", "false");
@@ -267,28 +276,32 @@ public class AbstractPreferencesTest extends TestCase {
     public void testPutByteArray() {
         try {
             pref.putByteArray(null, new byte[0]);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             pref.putByteArray("testPutByteArrayKey4", null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.putByteArray(longKey, new byte[0]);
         try {
             pref.putByteArray(longKey + "a", new byte[0]);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         byte[] longArray = new byte[(int) (Preferences.MAX_VALUE_LENGTH * 0.74)];
         byte[] longerArray = new byte[(int) (Preferences.MAX_VALUE_LENGTH * 0.75) + 1];
         pref.putByteArray(longKey, longArray);
         try {
             pref.putByteArray(longKey, longerArray);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
 
         pref.putByteArray("testPutByteArrayKey", new byte[0]);
@@ -305,8 +318,9 @@ public class AbstractPreferencesTest extends TestCase {
     public void testGetByteArray() throws UnsupportedEncodingException {
         try {
             pref.getByteArray(null, new byte[0]);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         byte[] b64Array = new byte[] { 0x59, 0x57, 0x4a, 0x6a };// BASE64
         // encoding for
@@ -335,8 +349,9 @@ public class AbstractPreferencesTest extends TestCase {
     public void testGetDouble() {
         try {
             pref.getDouble(null, 0);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.put("testGetDoubleKey", "1");
@@ -352,8 +367,9 @@ public class AbstractPreferencesTest extends TestCase {
     public void testGetFloat() {
         try {
             pref.getFloat(null, 0f);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.put("testGetFloatKey", "1");
         pref.put("testGetFloatKey2", "value");
@@ -364,8 +380,9 @@ public class AbstractPreferencesTest extends TestCase {
     public void testGetInt() {
         try {
             pref.getInt(null, 0);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.put("testGetIntKey", "1");
@@ -377,8 +394,9 @@ public class AbstractPreferencesTest extends TestCase {
     public void testGetLong() {
         try {
             pref.getLong(null, 0);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.put("testGetLongKey", "1");
@@ -459,23 +477,27 @@ public class AbstractPreferencesTest extends TestCase {
     public void testNode() throws BackingStoreException {
         try {
             pref.node(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             pref.node("/java/util/prefs/");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref.node("/java//util/prefs");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref.node(longName + "a");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         assertNotNull(pref.node(longName));
 
@@ -519,18 +541,21 @@ public class AbstractPreferencesTest extends TestCase {
     public void testNodeExists() throws BackingStoreException {
         try {
             pref.nodeExists(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             pref.nodeExists("/java/util/prefs/");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref.nodeExists("/java//util/prefs");
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
 
         assertTrue(pref.nodeExists("/"));
@@ -592,51 +617,59 @@ public class AbstractPreferencesTest extends TestCase {
 
         try {
             pref.put(null, "value");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             pref.put("key", null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.put(longKey, longValue);
         try {
             pref.put(longKey + 1, longValue);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref.put(longKey, longValue + 1);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
 
         pref.removeNode();
         try {
             pref.put(longKey, longValue + 1);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
 
         try {
             pref.put(longKey, longValue);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
     }
 
     public void testPutBoolean() {
         try {
             pref.putBoolean(null, false);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.putBoolean(longKey, false);
         try {
             pref.putBoolean(longKey + "a", false);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.putBoolean("testPutBooleanKey", false);
         assertEquals("false", pref.get("testPutBooleanKey", null));
@@ -646,14 +679,16 @@ public class AbstractPreferencesTest extends TestCase {
     public void testPutDouble() {
         try {
             pref.putDouble(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.putDouble(longKey, 3);
         try {
             pref.putDouble(longKey + "a", 3);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.putDouble("testPutDoubleKey", 3);
         assertEquals("3.0", pref.get("testPutDoubleKey", null));
@@ -663,14 +698,16 @@ public class AbstractPreferencesTest extends TestCase {
     public void testPutFloat() {
         try {
             pref.putFloat(null, 3f);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.putFloat(longKey, 3f);
         try {
             pref.putFloat(longKey + "a", 3f);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.putFloat("testPutFloatKey", 3f);
         assertEquals("3.0", pref.get("testPutFloatKey", null));
@@ -680,14 +717,16 @@ public class AbstractPreferencesTest extends TestCase {
     public void testPutInt() {
         try {
             pref.putInt(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.putInt(longKey, 3);
         try {
             pref.putInt(longKey + "a", 3);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.putInt("testPutIntKey", 3);
         assertEquals("3", pref.get("testPutIntKey", null));
@@ -697,14 +736,16 @@ public class AbstractPreferencesTest extends TestCase {
     public void testPutLong() {
         try {
             pref.putLong(null, 3L);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         pref.putLong(longKey, 3L);
         try {
             pref.putLong(longKey + "a", 3L);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.putLong("testPutLongKey", 3L);
         assertEquals("3", pref.get("testPutLongKey", null));
@@ -723,14 +764,17 @@ public class AbstractPreferencesTest extends TestCase {
 
         try {
             pref.remove(null);
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
 
         pref.removeNode();
         try {
             pref.remove("key");
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
     }
 
@@ -843,14 +887,14 @@ public class AbstractPreferencesTest extends TestCase {
 
     public void testAddPreferenceChangeListener() {
         // TODO: start from here
-
     }
 
     public void testRemoveNodeChangeListener() {
         try {
             pref.removeNodeChangeListener(null);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         MockNodeChangeListener l1 = new MockNodeChangeListener();
         MockNodeChangeListener l2 = new MockNodeChangeListener();
@@ -861,21 +905,24 @@ public class AbstractPreferencesTest extends TestCase {
         pref.removeNodeChangeListener(l1);
         try {
             pref.removeNodeChangeListener(l1);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         try {
             pref.removeNodeChangeListener(l2);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
     }
 
     public void testRemovePreferenceChangeListener() {
         try {
             pref.removePreferenceChangeListener(null);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         MockPreferenceChangeListener l1 = new MockPreferenceChangeListener();
         MockPreferenceChangeListener l2 = new MockPreferenceChangeListener();
@@ -883,15 +930,17 @@ public class AbstractPreferencesTest extends TestCase {
         pref.addPreferenceChangeListener(l1);
         try {
             pref.removePreferenceChangeListener(l2);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
         pref.removePreferenceChangeListener(l1);
         pref.removePreferenceChangeListener(l1);
         try {
             pref.removePreferenceChangeListener(l1);
-            fail();
+            fail("should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // Expected
         }
 
     }
@@ -1023,7 +1072,7 @@ public class AbstractPreferencesTest extends TestCase {
     public void testExportNode() throws Exception {
         try {
             pref.exportNode(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // Expected
         }
@@ -1075,7 +1124,7 @@ public class AbstractPreferencesTest extends TestCase {
     public void testExportSubtree() throws Exception {
         try {
             pref.exportSubtree(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // Expected
         }
@@ -1195,8 +1244,9 @@ public class AbstractPreferencesTest extends TestCase {
         p.setResult(MockAbstractPreferences.backingException);
         try {
             p.childrenNames();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.put("exceptionkey", "value");
         p.absolutePath();
@@ -1205,8 +1255,9 @@ public class AbstractPreferencesTest extends TestCase {
         p.remove("key");
         try {
             p.clear();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.putInt("key", 3);
         p.getInt("key", 3);
@@ -1222,27 +1273,31 @@ public class AbstractPreferencesTest extends TestCase {
         p.getByteArray("key", new byte[0]);
         try {
             p.keys();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
 
         try {
             p.keys();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         try {
             p.childrenNames();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.parent();
         p.node("");
         p.nodeExists("");
         try {
             p.removeNode();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.name();
         p.absolutePath();
@@ -1256,29 +1311,34 @@ public class AbstractPreferencesTest extends TestCase {
         p.toString();
         try {
             p.sync();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         try {
             p.flush();
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         try {
             p.exportNode(new ByteArrayOutputStream());
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         try {
             p.exportSubtree(new ByteArrayOutputStream());
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.isRemovedImpl();
         try {
             p.getChildImpl(null);
-            fail();
+            fail("should throw BackingStoreException");
         } catch (BackingStoreException e) {
+            // Expected
         }
         p.cachedChildrenImpl();
     }
@@ -1292,85 +1352,99 @@ public class AbstractPreferencesTest extends TestCase {
         p.setResult(MockAbstractPreferences.runtimeException);
         try {
             p.childrenNames();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.put("exceptionkey", "value");
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.absolutePath();
         p.toString();
         assertEquals("exception default", p.get("key", "exception default"));
         try {
             p.remove("key");
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.clear();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.putInt("key", 3);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getInt("key", 3);
         try {
             p.putLong("key", 3l);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getLong("key", 3l);
         try {
             p.putDouble("key", 3);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getDouble("key", 3);
         try {
             p.putBoolean("key", true);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getBoolean("key", true);
         try {
             p.putFloat("key", 3f);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getFloat("key", 3f);
         try {
             p.putByteArray("key", new byte[0]);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.getByteArray("key", new byte[0]);
         try {
             p.keys();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.keys();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.childrenNames();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.parent();
         p.node("");
         p.nodeExists("");
         try {
             p.removeNode();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.name();
         p.absolutePath();
@@ -1384,29 +1458,34 @@ public class AbstractPreferencesTest extends TestCase {
         p.toString();
         try {
             p.sync();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.flush();
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.exportNode(new ByteArrayOutputStream());
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         try {
             p.exportSubtree(new ByteArrayOutputStream());
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.isRemovedImpl();
         try {
             p.getChildImpl(null);
-            fail();
+            fail("should throw MockRuntimeException");
         } catch (MockRuntimeException e) {
+            // Expected
         }
         p.cachedChildrenImpl();
     }
@@ -1419,8 +1498,9 @@ public class AbstractPreferencesTest extends TestCase {
         p.setResult(MockAbstractPreferences.returnNull);
         try {
             p.childrenNames();
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.absolutePath();
         p.toString();
@@ -1429,8 +1509,9 @@ public class AbstractPreferencesTest extends TestCase {
         p.remove("key");
         try {
             p.clear();
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.putInt("key", 3);
         p.getInt("key", 3);
@@ -1447,16 +1528,18 @@ public class AbstractPreferencesTest extends TestCase {
         p.keys();
         try {
             p.childrenNames();
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.parent();
         p.node("");
         p.nodeExists("");
         try {
             p.removeNode();
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.name();
         p.absolutePath();
@@ -1472,19 +1555,22 @@ public class AbstractPreferencesTest extends TestCase {
         p.flush();
         try {
             p.exportNode(System.out);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.exportSubtree(System.out);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.isRemovedImpl();
         try {
             p.getChildImpl("");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         p.cachedChildrenImpl();
     }
@@ -1506,160 +1592,191 @@ public class AbstractPreferencesTest extends TestCase {
         pref.flush();
         try {
             pref.nodeExists("child");
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.childrenNames();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.remove(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.clear();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.get("key", "null default");
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.put("nullkey", "value");
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putInt("key", 3);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getInt("key", 3);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putLong("key", 3l);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getLong("key", 3l);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putDouble("key", 3);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getDouble("key", 3);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putBoolean("key", true);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getBoolean("key", true);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putFloat("key", 3f);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getFloat("key", 3f);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.putByteArray("key", new byte[0]);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.getByteArray("key", new byte[0]);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.keys();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.keys();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.childrenNames();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.parent();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.node(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.removeNode();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref
-            .addPreferenceChangeListener(new MockPreferenceChangeListener());
-            fail();
+                    .addPreferenceChangeListener(new MockPreferenceChangeListener());
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref
-            .removePreferenceChangeListener(new MockPreferenceChangeListener());
-            fail();
+                    .removePreferenceChangeListener(new MockPreferenceChangeListener());
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.addNodeChangeListener(new MockNodeChangeListener());
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.removeNodeChangeListener(new MockNodeChangeListener());
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.sync();
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.exportNode(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             pref.exportSubtree(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         if (!(pref instanceof MockAbstractPreferences)) {
             return;
@@ -1669,8 +1786,9 @@ public class AbstractPreferencesTest extends TestCase {
         p.cachedChildrenImpl();
         try {
             p.getChildImpl(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
     }
 
@@ -1682,93 +1800,111 @@ public class AbstractPreferencesTest extends TestCase {
         p.removeNode();
         try {
             p.get(null, "null default");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.put(null, "value");
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putInt(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getInt(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putLong(null, 3l);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getLong(null, 3l);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putDouble(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getDouble(null, 3);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putBoolean(null, true);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getBoolean(null, true);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putFloat(null, 3f);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getFloat(null, 3f);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.putByteArray(null, new byte[0]);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.getByteArray(null, new byte[0]);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.addPreferenceChangeListener(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.removePreferenceChangeListener(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
         try {
             p.addNodeChangeListener(null);
-            fail();
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
         try {
             p.removeNodeChangeListener(null);
-            fail();
+            fail("should throw IllegalStateException");
         } catch (IllegalStateException e) {
+            // Expected
         }
     }
 
@@ -1866,4 +2002,3 @@ public class AbstractPreferencesTest extends TestCase {
     }
 
 }
-

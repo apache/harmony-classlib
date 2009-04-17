@@ -23,7 +23,6 @@
 
 package org.apache.harmony.prefs.internal.nls;
 
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Locale;
