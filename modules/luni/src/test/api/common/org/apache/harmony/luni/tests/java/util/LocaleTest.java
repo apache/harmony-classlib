@@ -259,7 +259,7 @@ public class LocaleTest extends junit.framework.TestCase {
         
         // Non-bug difference for HARMONY-5442
         Locale l_CountryCS = new Locale("", "CS"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("", l_CountryCS.getISO3Country()); //$NON-NLS-1$
+        assertEquals("SCG", l_CountryCS.getISO3Country()); //$NON-NLS-1$
         
         // Regression for Harmony-1129
         l = new Locale("ak", ""); //$NON-NLS-1$ //$NON-NLS-2$
