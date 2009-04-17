@@ -180,8 +180,8 @@ public class TimeZoneTest extends junit.framework.TestCase {
      */
     public void test_getDisplayNameZILjava_util_Locale() {
         TimeZone timezone = TimeZone.getTimeZone("Asia/Shanghai");
-        assertEquals("GMT+0800", timezone.getDisplayName(false, TimeZone.SHORT,
-                Locale.CHINA));
+        assertEquals("\u683c\u6797\u5c3c\u6cbb\u6807\u51c6\u65f6\u95f4+0800",
+                timezone.getDisplayName(false, TimeZone.SHORT, Locale.CHINA));
         try {
             timezone.getDisplayName(false, 100, Locale.CHINA);
             fail("should throw IllegalArgumentException");
