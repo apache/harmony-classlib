@@ -311,11 +311,15 @@ public class File implements Serializable, Comparable<File> {
      * @see java.lang.SecurityManager#checkRead(FileDescriptor)
      */
     public boolean canRead() {
+        if (path.length() == 0) {
+            return false;
+        }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkRead(path);
         }
-        return exists() && !isWriteOnlyImpl(properPath(true));
+        byte[] pp = properPath(true);
+        return existsImpl(pp) && !isWriteOnlyImpl(pp);
     }
 
     /**
