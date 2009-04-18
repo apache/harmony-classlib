@@ -22,7 +22,31 @@ import java.util.ArrayList;
 import org.apache.harmony.regex.internal.nls.Messages;
 
 /**
- * Note: main functionality of this class is hidden into nodes match methods. 
+ * Provides a means of matching regular expressions against a given input,
+ * finding occurrences of regular expressions in a given input, or replacing
+ * parts of a given input. A {@code Matcher} instance has an associated {@link
+ * Pattern} instance and an input text. A typical use case is to
+ * iteratively find all occurrences of the {@code Pattern}, until the end of
+ * the input is reached, as the following example illustrates:
+ *
+ * <p/>
+ *
+ * <pre>
+ * Pattern p = Pattern.compile("[A-Za-z]+");
+ *
+ * Matcher m = p.matcher("Hello, Android!");
+ * while (m.find()) {
+ *     System.out.println(m.group()); // prints "Hello" and "Android"
+ * }
+ * </pre>
+ *
+ * <p/>
+ *
+ * The {@code Matcher} has a state that results from the previous operations.
+ * For example, it knows whether the most recent attempt to find the
+ * {@code Pattern} was successful and at which position the next attempt would
+ * resume the search. Depending on the application's needs, it may become
+ * necessary to explicitly {@link #reset()} this state from time to time.
  */
 public final class Matcher implements MatchResult {
 
@@ -53,12 +77,25 @@ public final class Matcher implements MatchResult {
     private ArrayList replacementParts = null;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Appends a literal part of the input plus a replacement for the current
+     * match to a given {@link StringBuffer}. The literal part is exactly the
+     * part of the input between the previous match and the current match. The
+     * method can be used in conjunction with {@link #find()} and
+     * {@link #appendTail(StringBuffer)} to walk through the input and replace
+     * all occurrences of the {@code Pattern} with something else.
+     *
+     * @param buffer
+     *            the {@code StringBuffer} to append to.
+     * @param replacement
+     *            the replacement text.
+     * @return the {@code Matcher} itself.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
-    public Matcher appendReplacement(StringBuffer sb, String replacement) {
+    public Matcher appendReplacement(StringBuffer buffer, String replacement) {
         processedRepl = processReplacement(replacement);
-        sb.append(string.subSequence(appendPos, start()));
-        sb.append(processedRepl);
+        buffer.append(string.subSequence(appendPos, start()));
+        buffer.append(processedRepl);
         appendPos = end();
         return this;
     }
@@ -148,18 +185,31 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Provides a new input and resets the {@code Matcher}. This results in the
+     * region being set to the whole input. Results of a previous find get lost.
+     * The next attempt to find an occurrence of the {@link Pattern} in the
+     * string will start at the beginning of the input.
+     *
+     * @param input
+     *            the new input sequence.
+     *
+     * @return the {@code Matcher} itself.
      */
-    public Matcher reset(CharSequence newSequence) {
-        if (newSequence == null) {
+    public Matcher reset(CharSequence input) {
+        if (input == null) {
             throw new NullPointerException(Messages.getString("regex.01")); //$NON-NLS-1$
         }
-        this.string = newSequence;
+        this.string = input;
         return reset();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Resets the {@code Matcher}. This results in the region being set to the
+     * whole input. Results of a previous find get lost. The next attempt to
+     * find an occurrence of the {@link Pattern} in the string will start at the
+     * beginning of the input.
+     *
+     * @return the {@code Matcher} itself.
      */
     public Matcher reset() {
         this.leftBound = 0;
@@ -172,44 +222,57 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Resets this matcher and sets a region. Only characters inside the region
+     * are considered for a match.
+     *
+     * @param start
+     *            the first character of the region.
+     * @param end
+     *            the first character after the end of the region.
+     * @return the {@code Matcher} itself.
      */
-    public Matcher region(int leftBound, int rightBound) {
+    public Matcher region(int start, int end) {
 
-        if (leftBound > rightBound || leftBound < 0 || rightBound < 0
-                || leftBound > string.length() || rightBound > string.length()) {
+        if (start > end || start < 0 || end < 0
+                || start > string.length() || end > string.length()) {
             throw new IndexOutOfBoundsException( Messages.getString("regex.02", //$NON-NLS-1$
-                            Integer.toString(leftBound), Integer.toString(rightBound)));
+                            Integer.toString(start), Integer.toString(end)));
         }
 
-        this.leftBound = leftBound;
-        this.rightBound = rightBound;
-        matchResult.reset(null, leftBound, rightBound);
+        this.leftBound = start;
+        this.rightBound = end;
+        matchResult.reset(null, start, end);
         appendPos = 0;
         replacement = null;
 
         return this;
     }
 
-	/**
-	 * TODO: appendTail(StringBuffer) javadoc
-	 * 
-	 * @param sb
-	 * @return
-	 */
-    public StringBuffer appendTail(StringBuffer sb) {
-        return sb.append(string.subSequence(appendPos, string.length()));
+    /**
+     * Appends the (unmatched) remainder of the input to the given
+     * {@link StringBuffer}. The method can be used in conjunction with
+     * {@link #find()} and {@link #appendReplacement(StringBuffer, String)} to
+     * walk through the input and replace all matches of the {@code Pattern}
+     * with something else.
+     *
+     * @param buffer
+     *            the {@code StringBuffer} to append to.
+     * @return the {@code StringBuffer}.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
+     */
+    public StringBuffer appendTail(StringBuffer buffer) {
+        return buffer.append(string.subSequence(appendPos, string.length()));
     }
 
-	/**
-	 * This is very similar to replaceAll except only the first occurrence of a
-	 * sequence matching the pattern is replaced.
-	 * 
-	 * @param replacement
-	 *            A string to replace occurrences of character sequences
-	 *            matching the pattern.
-	 * @return A new string with replacements inserted
-	 */
+    /**
+     * Replaces the first occurrence of this matcher's pattern in the input with
+     * a given string.
+     *
+     * @param replacement
+     *            the replacement text.
+     * @return the modified input string.
+     */
     public String replaceFirst(String replacement) {
         reset();
         if (find()) {
@@ -222,16 +285,14 @@ public final class Matcher implements MatchResult {
 
     }
 
-	/**
-	 * Replace all occurrences of character sequences which match the pattern
-	 * with the given replacement string. The replacement string may refer to
-	 * capturing groups using the syntax "$<group number>".
-	 * 
-	 * @param replacement
-	 *            A string to replace occurrences of character sequences
-	 *            matching the pattern.
-	 * @return A new string with replacements inserted
-	 */
+    /**
+     * Replaces all occurrences of this matcher's pattern in the input with a
+     * given string.
+     *
+     * @param replacement
+     *            the replacement text.
+     * @return the modified input string.
+     */
     public String replaceAll(String replacement) {
         StringBuffer sb = new StringBuffer();
         reset();
@@ -242,40 +303,59 @@ public final class Matcher implements MatchResult {
         return appendTail(sb).toString();
     }
 
-	/**
-	 * Return a reference to the pattern used by this Matcher.
-	 * 
-	 * @return A reference to the pattern used by this Matcher.
-	 */
+    /**
+     * Returns the {@link Pattern} instance used inside this matcher.
+     *
+     * @return the {@code Pattern} instance.
+     */
     public Pattern pattern() {
         return pat;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the text that matched a given group of the regular expression.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     * @return the text that matched the group.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
-    public String group(int groupIndex) {
-        return matchResult.group(groupIndex);
+    public String group(int group) {
+        return matchResult.group(group);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the text that matched the whole regular expression.
+     *
+     * @return the text.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
     public String group() {
         return group(0);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the next occurrence of the {@link Pattern} in the input. The
+     * method starts the search from the given character in the input.
+     *
+     * @param start
+     *            The index in the input at which the find operation is to
+     *            begin. If this is less than the start of the region, it is
+     *            automatically adjusted to that value. If it is beyond the end
+     *            of the region, the method will fail.
+     * @return true if (and only if) a match has been found.
      */
-    public boolean find(int startIndex) {
+    public boolean find(int start) {
         int stringLength = string.length();
-        if (startIndex < 0 || startIndex > stringLength)
+        if (start < 0 || start > stringLength)
             throw new IndexOutOfBoundsException(Messages.getString("regex.03", //$NON-NLS-1$ 
-                    new Integer(startIndex)));
+                    new Integer(start)));
 
-        startIndex = findAt(startIndex);
-        if (startIndex >= 0 && matchResult.isValid()) {
+        start = findAt(start);
+        if (start >= 0 && matchResult.isValid()) {
             matchResult.finalizeMatch();
             return true;
         }
@@ -294,14 +374,14 @@ public final class Matcher implements MatchResult {
         return foundIndex;
     }
 
-	/**
-	 * The find() method matches the pattern against the character sequence
-	 * beginning at the character after the last match or at the beginning of
-	 * the sequence if called immediately after reset(). The method returns true
-	 * if and only if a match is found.
-	 * 
-	 * @return A boolean indicating if the pattern was matched.
-	 */
+    /**
+     * Returns the next occurrence of the {@link Pattern} in the input. If a
+     * previous match was successful, the method continues the search from the
+     * first character following that match in the input. Otherwise it searches
+     * either from the region start (if one has been set), or from position 0.
+     *
+     * @return true if (and only if) a match has been found.
+     */
     public boolean find() {
         int length = string.length();
         if (!hasTransparentBounds())
@@ -321,45 +401,66 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character of the text that matched a given
+     * group.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     * @return the character index.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
-    public int start(int groupIndex) {
-        return matchResult.start(groupIndex);
+    public int start(int group) {
+        return matchResult.start(group);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character following the text that matched
+     * a given group.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     * @return the character index.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
-    public int end(int groupIndex) {
-        return matchResult.end(groupIndex);
+    public int end(int group) {
+        return matchResult.end(group);
     }
 
-	/**
-	 * This method is identical in function to the Pattern.matches() method. It
-	 * returns true if and only if the regular expression pattern matches the
-	 * entire input character sequence.
-	 * 
-	 * @return A boolean indicating if the pattern matches the entire input
-	 *         character sequence.
-	 */
+    /**
+     * Tries to match the {@link Pattern} against the entire region (or the
+     * entire input, if no region has been set).
+     *
+     * @return true if (and only if) the {@code Pattern} matches the entire
+     *         region.
+     */
     public boolean matches() {
         return lookingAt(leftBound, Matcher.MODE_MATCH);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a replacement string for the given one that has all backslashes
+     * and dollar signs escaped.
+     *
+     * @param s
+     *            the input string.
+     * @return the input string, with all backslashes and dollar signs having
+     *         been escaped.
      */
-    public static String quoteReplacement(String string) {
+    public static String quoteReplacement(String s) {
         // first check whether we have smth to quote
-        if (string.indexOf('\\') < 0 && string.indexOf('$') < 0)
-            return string;
-        StringBuffer res = new StringBuffer(string.length() * 2);
+        if (s.indexOf('\\') < 0 && s.indexOf('$') < 0)
+            return s;
+        StringBuffer res = new StringBuffer(s.length() * 2);
         char ch;
-        int len = string.length();
+        int len = s.length();
 
         for (int i = 0; i < len; i++) {
 
-            switch (ch = string.charAt(i)) {
+            switch (ch = s.charAt(i)) {
             case '$':
                 res.append('\\');
                 res.append('$');
@@ -392,15 +493,13 @@ public final class Matcher implements MatchResult {
         return false;
     }
 
-	/**
-	 * This method attempts to match the pattern against the character sequence
-	 * starting at the beginning. If the pattern matches even a prefix of the
-	 * input character sequence, lookingAt() will return true. Otherwise it will
-	 * return false.
-	 * 
-	 * @return A boolean indicating if the pattern matches a prefix of the input
-	 *         character sequence.
-	 */
+    /**
+     * Tries to match the {@link Pattern}, starting from the beginning of the
+     * region (or the beginning of the input, if no region has been set).
+     * Doesn't require the {@code Pattern} to match against the whole region.
+     *
+     * @return true if (and only if) the {@code Pattern} matches.
+     */
     public boolean lookingAt() {
         return lookingAt(leftBound, Matcher.MODE_FIND);
     }
@@ -413,37 +512,61 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character of the text that matched the
+     * whole regular expression.
+     *
+     * @return the character index.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
     public int start() {
         return start(0);
     }
 
-	/**
-	 * Return the number of capturing groups in the pattern.
-	 * 
-	 * @return The number of capturing groups in the pattern.
-	 */
+    /**
+     * Returns the number of groups in the results, which is always equal to
+     * the number of groups in the original regular expression.
+     *
+     * @return the number of groups.
+     */
     public int groupCount() {
         return matchResult.groupCount();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character following the text that matched
+     * the whole regular expression.
+     *
+     * @return the character index.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
     public int end() {
         return end(0);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Converts the current match into a separate {@link MatchResult} instance
+     * that is independent from this matcher. The new object is unaffected when
+     * the state of this matcher changes.
+     *
+     * @return the new {@code MatchResult}.
+     * @throws IllegalStateException
+     *             if no successful match has been made.
      */
     public MatchResult toMatchResult() {
         return this.matchResult.cloneImpl();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Determines whether this matcher has anchoring bounds enabled or not. When
+     * anchoring bounds are enabled, the start and end of the input match the
+     * '^' and '$' meta-characters, otherwise not. Anchoring bounds are enabled
+     * by default.
+     *
+     * @param value
+     *            the new value for anchoring bounds.
+     * @return the {@code Matcher} itself.
      */
     public Matcher useAnchoringBounds(boolean value) {
         matchResult.useAnchoringBounds(value);
@@ -451,14 +574,26 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether this matcher has anchoring bounds enabled. When
+     * anchoring bounds are enabled, the start and end of the input match the
+     * '^' and '$' meta-characters, otherwise not. Anchoring bounds are enabled
+     * by default.
+     *
+     * @return true if (and only if) the {@code Matcher} uses anchoring bounds.
      */
     public boolean hasAnchoringBounds() {
         return matchResult.hasAnchoringBounds();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Determines whether this matcher has transparent bounds enabled or not.
+     * When transparent bounds are enabled, the parts of the input outside the
+     * region are subject to lookahead and lookbehind, otherwise they are not.
+     * Transparent bounds are disabled by default.
+     *
+     * @param value
+     *            the new value for transparent bounds.
+     * @return the {@code Matcher} itself.
      */
     public Matcher useTransparentBounds(boolean value) {
         matchResult.useTransparentBounds(value);
@@ -466,53 +601,77 @@ public final class Matcher implements MatchResult {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether this matcher has transparent bounds enabled. When
+     * transparent bounds are enabled, the parts of the input outside the region
+     * are subject to lookahead and lookbehind, otherwise they are not.
+     * Transparent bounds are disabled by default.
+     *
+     * @return true if (and only if) the {@code Matcher} uses anchoring bounds.
      */
     public boolean hasTransparentBounds() {
         return matchResult.hasTransparentBounds();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns this matcher's region start, that is, the first character that is
+     * considered for a match.
+     *
+     * @return the start of the region.
      */
     public int regionStart() {
         return matchResult.getLeftBound();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns this matcher's region end, that is, the first character that is
+     * not considered for a match.
+     *
+     * @return the end of the region.
      */
     public int regionEnd() {
         return matchResult.getRightBound();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether more input might change a successful match into an
+     * unsuccessful one.
+     *
+     * @return true if (and only if) more input might change a successful match
+     *         into an unsuccessful one.
      */
     public boolean requireEnd() {
         return matchResult.requireEnd;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Indicates whether the last match hit the end of the input.
+     *
+     * @return true if (and only if) the last match hit the end of the input.
      */
     public boolean hitEnd() {
         return matchResult.hitEnd;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets a new pattern for the {@code Matcher}. Results of a previous find
+     * get lost. The next attempt to find an occurrence of the {@link Pattern}
+     * in the string will start at the beginning of the input.
+     *
+     * @param pattern
+     *            the new {@code Pattern}.
+     *
+     * @return the {@code Matcher} itself.
      */
-    public Matcher usePattern(Pattern pat) {
-    	if (pat == null) {
+    public Matcher usePattern(Pattern pattern) {
+    	if (pattern == null) {
     		throw new IllegalArgumentException(Messages.getString("regex.1B"));
     	}
         int startIndex = matchResult.getPreviousMatchEnd();
         int mode = matchResult.mode();
-        this.pat = pat;
-        this.start = pat.start;
+        this.pat = pattern;
+        this.start = pattern.start;
         matchResult = new MatchResultImpl(this.string, leftBound, rightBound,
-                pat.groupCount(), pat.compCount(), pat.consCount());
+                pattern.groupCount(), pattern.compCount(), pattern.consCount());
         matchResult.setStartIndex(startIndex);
         matchResult.setMode(mode);
         return this;

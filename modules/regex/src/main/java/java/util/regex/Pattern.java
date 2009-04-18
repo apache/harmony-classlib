@@ -29,12 +29,33 @@ import org.apache.harmony.regex.internal.nls.Messages;
 
 
 /**
- * Pattern implements a compiler for regular expressions as defined by the J2SE
- * specification. The regular expression syntax is largely similar to the syntax
- * defined by Perl 5 but has both omissions and extensions. A formal and
- * complete definition of the regular expression syntax is not provided by the
- * J2SE speTBD (TODO)
- * 
+ * Represents a pattern used for matching, searching, or replacing strings.
+ * {@code Pattern}s are specified in terms of regular expressions and compiled
+ * using an instance of this class. They are then used in conjunction with a
+ * {@link Matcher} to perform the actual search.
+ * <p/>
+ * A typical use case looks like this:
+ * <p/>
+ * <pre>
+ * Pattern p = Pattern.compile("Hello, A[a-z]*!");
+ *
+ * Matcher m = p.matcher("Hello, Android!");
+ * boolean b1 = m.matches(); // true
+ *
+ * m.setInput("Hello, Robot!");
+ * boolean b2 = m.matches(); // false
+ * </pre>
+ * <p/>
+ * The above code could also be written in a more compact fashion, though this
+ * variant is less efficient, since {@code Pattern} and {@code Matcher} objects
+ * are created on the fly instead of being reused.
+ * fashion:
+ * <pre>
+ *     boolean b1 = Pattern.matches("Hello, A[a-z]*!", "Hello, Android!"); // true
+ *     boolean b2 = Pattern.matches("Hello, A[a-z]*!", "Hello, Robot!");   // false
+ * </pre>
+ *
+ * @see Matcher
  */
 public final class Pattern implements Serializable {
     
@@ -43,42 +64,56 @@ public final class Pattern implements Serializable {
     static final boolean _DEBUG_ = false;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that a pattern matches Unix line endings ('\n')
+     * only against the '.', '^', and '$' meta characters.
      */
     public static final int UNIX_LINES = 1 << 0;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that a {@code Pattern} is matched
+     * case-insensitively. That is, the patterns "a+" and "A+" would both match
+     * the string "aAaAaA".
      */
     public static final int CASE_INSENSITIVE = 1 << 1;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that a {@code Pattern} may contain whitespace or
+     * comments. Otherwise comments and whitespace are taken as literal
+     * characters.
      */
     public static final int COMMENTS = 1 << 2;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that the meta characters '^' and '$' match only
+     * the beginning and end end of an input line, respectively. Normally, they
+     * match the beginning and the end of the complete input.
      */
     public static final int MULTILINE = 1 << 3;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that the whole {@code Pattern} is to be taken
+     * literally, that is, all meta characters lose their meanings.
      */
     public static final int LITERAL = 1 << 4;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that the '.' meta character matches arbitrary
+     * characters, including line endings, which is normally not the case.
      */
     public static final int DOTALL = 1 << 5;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that a {@code Pattern} is matched
+     * case-insensitively with regard to all Unicode characters. It is used in
+     * conjunction with the {@link #CASE_INSENSITIVE} constant to extend its
+     * meaning to all Unicode characters.
      */
     public static final int UNICODE_CASE = 1 << 6;
 
     /**
-     * @com.intel.drl.spec_ref
+     * This constant specifies that a character in a {@code Pattern} and a
+     * character in the input string only match if they are canonically
+     * equivalent.
      */
     public static final int CANON_EQ = 1 << 7;
     
@@ -128,45 +163,64 @@ public final class Pattern implements Serializable {
 
     transient AbstractSet start = null;
 
-	/**
-	 * Create a matcher for this pattern and a given input character sequence
-	 * 
-	 * @param cs
-	 *            The input character sequence
-	 * @return A new matcher
-	 */
-    public Matcher matcher(CharSequence cs) {
-        return new Matcher(this, cs);
+    /**
+     * Returns a {@link Matcher} for the {@code Pattern} and a given input. The
+     * {@code Matcher} can be used to match the {@code Pattern} against the
+     * whole input, find occurrences of the {@code Pattern} in the input, or
+     * replace parts of the input.
+     *
+     * @param input
+     *            the input to process.
+     *
+     * @return the resulting {@code Matcher}.
+     */
+    public Matcher matcher(CharSequence input) {
+        return new Matcher(this, input);
     }
 
-	/**
-	 * Split an input string using the pattern as a token separator.
-	 * 
-	 * @param input
-	 *            Input sequence to tokenize
-	 * @param limit
-	 *            If positive, the maximum number of tokens to return. If
-	 *            negative, an indefinite number of tokens are returned. If
-	 *            zero, an indefinite number of tokens are returned but trailing
-	 *            empty tokens are excluded.
-	 * @return A sequence of tokens split out of the input string.
-	 */
-    public String[] split(CharSequence input, int limit) {
+    /**
+     * Splits the given input sequence around occurrences of the {@code Pattern}.
+     * The function first determines all occurrences of the {@code Pattern}
+     * inside the input sequence. It then builds an array of the
+     * &quot;remaining&quot; strings before, in-between, and after these
+     * occurrences. An additional parameter determines the maximal number of
+     * entries in the resulting array and the handling of trailing empty
+     * strings.
+     *
+     * @param inputSeq
+     *            the input sequence.
+     * @param limit
+     *            Determines the maximal number of entries in the resulting
+     *            array.
+     *            <ul>
+     *            <li>For n &gt; 0, it is guaranteed that the resulting array
+     *            contains at most n entries.
+     *            <li>For n &lt; 0, the length of the resulting array is
+     *            exactly the number of occurrences of the {@code Pattern} +1.
+     *            All entries are included.
+     *            <li>For n == 0, the length of the resulting array is at most
+     *            the number of occurrences of the {@code Pattern} +1. Empty
+     *            strings at the end of the array are not included.
+     *            </ul>
+     *
+     * @return the resulting array.
+     */
+    public String[] split(CharSequence inputSeq, int limit) {
         ArrayList res = new ArrayList();
-        Matcher mat = matcher(input);
+        Matcher mat = matcher(inputSeq);
         int index = 0;
         int curPos = 0;       
         
-        if (input.length() == 0) {
+        if (inputSeq.length() == 0) {
             return new String [] {""}; //$NON-NLS-1$
         } else {
             while (mat.find() && (index + 1 < limit || limit <= 0)) {
-                  res.add(input.subSequence(curPos, mat.start()).toString());
+                  res.add(inputSeq.subSequence(curPos, mat.start()).toString());
                   curPos = mat.end();
                   index++;
             }
                 
-            res.add(input.subSequence(curPos, input.length()).toString());
+            res.add(inputSeq.subSequence(curPos, inputSeq.length()).toString());
             index++;
                              
             /*
@@ -182,95 +236,79 @@ public final class Pattern implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Splits a given input around occurrences of a regular expression. This is
+     * a convenience method that is equivalent to calling the method
+     * {@link #split(java.lang.CharSequence, int)} with a limit of 0.
+     *
+     * @param input
+     *            the input sequence.
+     *
+     * @return the resulting array.
      */
     public String[] split(CharSequence input) {
         return split(input, 0);
     }
 
-	/**
-	 * Returns the pattern string passed to the compile method
-	 * 
-	 * @return A string representation of the pattern
-	 */
+    /**
+     * Returns the regular expression that was compiled into this
+     * {@code Pattern}.
+     *
+     * @return the regular expression.
+     */
     public String pattern() {
         return lexemes.toString();
     }
 
-	/**
-	 * Return a textual representation of the pattern.
-	 * 
-	 * @return The regular expression string
-	 */
+    @Override
     public String toString() {
         return this.pattern();
     }
 
-	/**
-	 * Return the mask of flags used to compile the pattern
-	 * 
-	 * @return A mask of flags used to compile the pattern.
-	 */
+    /**
+     * Returns the flags that have been set for this {@code Pattern}.
+     *
+     * @return the flags that have been set. A combination of the constants
+     *         defined in this class.
+     *
+     * @see #CANON_EQ
+     * @see #CASE_INSENSITIVE
+     * @see #COMMENTS
+     * @see #DOTALL
+     * @see #LITERAL
+     * @see #MULTILINE
+     * @see #UNICODE_CASE
+     * @see #UNIX_LINES
+     */
     public int flags() {
         return this.flags;
     }
 
-	/**
-     * Return a compiled pattern corresponding to the input regular expression
-     * string.
-     * 
-     * The input <code>flags</code> is a mask of the following flags:
-     * <dl>
-     * <dt><code>UNIX_LINES</code> (0x0001)
-     * <dd>Enables UNIX lines mode where only \n is recognized as a line
-     * terminator. The default setting of this flag is <em>off</em> indicating
-     * that all of the following character sequences are recognized as line
-     * terminators: \n, \r, \r\n, NEL (&#92;u0085), &#92;u2028 and &#92;u2029.
-     * <dt><code>CASE_INSENSITIVE</code> (0x0002)
-     * <dd>Directs matching to be done in a way that ignores differences in
-     * case. If input character sequences are encoded in character sets other
-     * than ASCII, then the UNICODE_CASE must also be set to enable Unicode case
-     * detection.
-     * <dt><code>UNICODE_CASE</code> (0x0040)
-     * <dd>Enables Unicode case folding if used in conjunction with the
-     * <code>CASE_INSENSITIVE</code> flag. If <code>CASE_INSENSITIVE</code>
-     * is not set, then this flag has no effect.
-     * <dt><code>COMMENTS</code> (0x0004)
-     * <dd>Directs the pattern compiler to ignore whitespace and comments in
-     * the pattern. Whitespace consists of sequences including only these
-     * characters: SP (&#92;u0020), HT (\t or &#92;u0009), LF (\n or ), VT
-     * (&#92;u000b), FF (\f or &#92;u000c), and CR (\r or ). A comment is any
-     * sequence of characters beginning with the "#" (&#92;u0023) character and
-     * ending in a LF character.
-     * <dt><code>MULTILINE</code> (0x0008)
-     * <dd>Turns on multiple line mode for matching of character sequences. By
-     * default, this mode is off so that the character "^" (&#92;u005e) matches
-     * the beginning of the entire input sequence and the character "$"
-     * (&#92;u0024) matches the end of the input character sequence. In multiple
-     * line mode, the character "^" matches any character in the input sequence
-     * which immediately follows a line terminator and the character "$" matches
-     * any character in the input sequence which immediately precedes a line
-     * terminator.
-     * <dt><code>DOTALL</code> (0x0020)
-     * <dd>Enables the DOT (".") character in regular expressions to match line
-     * terminators. By default, line terminators are not matched by DOT.
-     * <dt><code>CANON_EQ</code> (0x0080)
-     * <dd>Enables matching of character sequences which are canonically
-     * equivalent according to the Unicode standard. Canonical equivalence is
-     * described here: http://www.unicode.org/reports/tr15/. By default,
-     * canonical equivalence is not detected while matching.
-     * </dl>
-     * 
-     * @param regex
-     *            A regular expression string.
+    /**
+     * Compiles a regular expression, creating a new {@code Pattern} instance in
+     * the process. Allows to set some flags that modify the behavior of the
+     * {@code Pattern}.
+     *
+     * @param pattern
+     *            the regular expression.
      * @param flags
-     *            A set of flags to control the compilation of the pattern.
-     * @return A compiled pattern
+     *            the flags to set. Basically, any combination of the constants
+     *            defined in this class is valid.
+     *
+     * @return the new {@code Pattern} instance.
+     *
      * @throws PatternSyntaxException
-     *             If the input regular expression does not match the required
-     *             grammar.
+     *             if the regular expression is syntactically incorrect.
+     *
+     * @see #CANON_EQ
+     * @see #CASE_INSENSITIVE
+     * @see #COMMENTS
+     * @see #DOTALL
+     * @see #LITERAL
+     * @see #MULTILINE
+     * @see #UNICODE_CASE
+     * @see #UNIX_LINES
      */
-    public static Pattern compile(String regex, int flags)
+    public static Pattern compile(String pattern, int flags)
             throws PatternSyntaxException {
     	
     	if ((flags != 0) &&
@@ -281,7 +319,7 @@ public final class Pattern implements Serializable {
     	
         AbstractSet.counter = 1;
 
-        return new Pattern().compileImpl(regex, flags);
+        return new Pattern().compileImpl(pattern, flags);
     }
 
     /**
@@ -294,11 +332,11 @@ public final class Pattern implements Serializable {
      * 
      * @return Compiled pattern
      */
-    private Pattern compileImpl(String regex, int flags)
+    private Pattern compileImpl(String pattern, int flags)
             throws PatternSyntaxException {
-        this.lexemes = new Lexer(regex, flags);
+        this.lexemes = new Lexer(pattern, flags);
         this.flags = flags;
-        this.pattern = regex;
+        this.pattern = pattern;
 
         start = processExpression(-1, this.flags, null);
         if (!lexemes.isEmpty()) {
@@ -1276,9 +1314,19 @@ public final class Pattern implements Serializable {
             return new UCIRangeSet(charClass);
         }
     }
-    
+
     /**
-     * @com.intel.drl.spec_ref
+     * Compiles a regular expression, creating a new Pattern instance in the
+     * process. This is actually a convenience method that calls {@link
+     * #compile(String, int)} with a {@code flags} value of zero.
+     *
+     * @param pattern
+     *            the regular expression.
+     *
+     * @return the new {@code Pattern} instance.
+     *
+     * @throws PatternSyntaxException
+     *             if the regular expression is syntactically incorrect.
      */
     public static Pattern compile(String pattern) {
         return compile(pattern, 0);
@@ -1298,14 +1346,39 @@ public final class Pattern implements Serializable {
     	}
     	
     }
-    
+
     /**
-     * @com.intel.drl.spec_ref
+     * Tries to match a given regular expression against a given input. This is
+     * actually nothing but a convenience method that compiles the regular
+     * expression into a {@code Pattern}, builds a {@link Matcher} for it, and
+     * then does the match. If the same regular expression is used for multiple
+     * operations, it is recommended to compile it into a {@code Pattern}
+     * explicitly and request a reusable {@code Matcher}.
+     *
+     * @param regex
+     *            the regular expression.
+     * @param input
+     *            the input to process.
+     *
+     * @return true if and only if the {@code Pattern} matches the input.
+     *
+     * @see Pattern#compile(java.lang.String, int)
+     * @see Matcher#matches()
      */
     public static boolean matches(String regex, CharSequence input) {
         return Pattern.compile(regex).matcher(input).matches();
     }
 
+    /**
+     * Quotes a given string using "\Q" and "\E", so that all other
+     * meta-characters lose their special meaning. If the string is used for a
+     * {@code Pattern} afterwards, it can only be matched literally.
+     *
+     * @param s
+     *            the string to quote.
+     *
+     * @return the quoted string.
+     */
     public static String quote(String s) {
         StringBuffer sb = new StringBuffer().append("\\Q"); //$NON-NLS-1$
         int apos = 0;

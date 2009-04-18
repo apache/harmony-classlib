@@ -26,39 +26,74 @@ import java.util.Arrays;
 import org.apache.harmony.regex.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * Encapsulates a syntax error that occurred during the compilation of a
+ * {@link Pattern}. Might include a detailed description, the original regular
+ * expression, and the index at which the error occurred.
+ *
+ * @see Pattern#compile(String)
+ * @see Pattern#compile(java.lang.String,int)
+ *
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.7.2.2 $
  */
 public class PatternSyntaxException extends IllegalArgumentException {
     
     private static final long serialVersionUID = -3864639126226059218L;
-    
+
+    /**
+     * Holds the description of the syntax error, or null if the description is
+     * not known.
+     */
     private String desc;
-    
+
+    /**
+     * Holds the syntactically incorrect regular expression, or null if the
+     * regular expression is not known.
+     */
     private String pattern;
-   
+
+    /**
+     * Holds the index around which the error occured, or -1, in case it is
+     * unknown.
+     */
     private int index = -1;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new PatternSyntaxException for a given message, pattern, and
+     * error index.
+     *
+     * @param description
+     *            the description of the syntax error, or {@code null} if the
+     *            description is not known.
+     * @param pattern
+     *            the syntactically incorrect regular expression, or
+     *            {@code null} if the regular expression is not known.
+     * @param index
+     *            the character index around which the error occurred, or -1 if
+     *            the index is not known.
      */
-    public PatternSyntaxException(String desc, String pattern, int index) {
-        this.desc = desc;
+    public PatternSyntaxException(String description, String pattern, int index) {
+        this.desc = description;
         this.pattern = pattern;
         this.index = index;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the syntactically incorrect regular expression.
+     *
+     * @return the regular expression.
+     *
      */
     public String getPattern() {
         return pattern;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a detailed error message for the exception. The message is
+     * potentially multi-line, and it might include a detailed description, the
+     * original regular expression, and the index at which the error occured.
+     *
+     * @return the error message.
      */
     public String getMessage() {
         String filler = ""; //$NON-NLS-1$
@@ -73,14 +108,21 @@ public class PatternSyntaxException extends IllegalArgumentException {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the description of the syntax error, or {@code null} if the
+     * description is not known.
+     *
+     * @return the description.
      */
     public String getDescription() {
         return desc;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the character index around which the error occurred, or -1 if the
+     * index is not known.
+     *
+     * @return the index.
+     *
      */
     public int getIndex() {
         return index;

@@ -22,45 +22,83 @@
 package java.util.regex;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * Holds the results of a successful match of a {@link Pattern} against a
+ * given string. The result is divided into groups, with one group for each
+ * pair of parentheses in the regular expression and an additional group for
+ * the whole regular expression. The start, end, and contents of each group
+ * can be queried.
+ *
+ * @see Matcher
+ * @see Matcher#toMatchResult()
+ *
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.6.2.2 $
  */
 public interface MatchResult {
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character following the text that matched
+     * the whole regular expression.
+     *
+     * @return the character index.
      */
     int end();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character following the text that matched
+     * a given group.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     *
+     * @return the character index.
      */
     int end(int group);
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the text that matched the whole regular expression.
+     *
+     * @return the text.
      */
     String group();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the text that matched a given group of the regular expression.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     *
+     * @return the text that matched the group.
      */
     String group(int group);
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the number of groups in the result, which is always equal to
+     * the number of groups in the original regular expression.
+     *
+     * @return the number of groups.
      */
     int groupCount();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character of the text that matched
+     * the whole regular expression.
+     *
+     * @return the character index.
      */
     int start();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the index of the first character of the text that matched a given
+     * group.
+     *
+     * @param group
+     *            the group, ranging from 0 to groupCount() - 1, with 0
+     *            representing the whole pattern.
+     *
+     * @return the character index.
      */
     int start(int group);
 }
