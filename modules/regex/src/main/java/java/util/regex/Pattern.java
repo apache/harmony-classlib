@@ -153,8 +153,6 @@ public final class Pattern implements Serializable {
      */
     transient private boolean needsBackRefReplacement = false;
 
-    transient private int groupIndex = -1;
-
     transient private int globalGroupIndex = -1;
 
     transient private int compCount = -1;
@@ -1441,7 +1439,6 @@ public final class Pattern implements Serializable {
             throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         AbstractSet.counter = 1;
-        groupIndex = -1;
         globalGroupIndex = -1;
         compCount = -1;
         consCount = -1;

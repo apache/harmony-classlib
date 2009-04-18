@@ -350,9 +350,10 @@ public final class Matcher implements MatchResult {
      */
     public boolean find(int start) {
         int stringLength = string.length();
-        if (start < 0 || start > stringLength)
+        if (start < 0 || start > stringLength) {
             throw new IndexOutOfBoundsException(Messages.getString("regex.03", //$NON-NLS-1$ 
-                    new Integer(start)));
+                    Integer.valueOf(start)));
+        }
 
         start = findAt(start);
         if (start >= 0 && matchResult.isValid()) {
