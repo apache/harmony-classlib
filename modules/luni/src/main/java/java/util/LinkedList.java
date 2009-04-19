@@ -340,6 +340,9 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         if (adding == 0) {
             return false;
         }
+        Collection<? extends E> elements = (collection == this) ?
+                new ArrayList<E>(collection) : collection;
+
         Link<E> previous = voidLink;
         if (location < (size / 2)) {
             for (int i = 0; i < location; i++) {
@@ -351,7 +354,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
             }
         }
         Link<E> next = previous.next;
-        for (E e : collection) {
+        for (E e : elements) {
             Link<E> newLink = new Link<E>(e, previous, null);
             previous.next = newLink;
             previous = newLink;
@@ -376,8 +379,11 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 		if (adding == 0) {
             return false;
         }
+        Collection<? extends E> elements = (collection == this) ?
+                new ArrayList<E>(collection) : collection;
+
 		Link<E> previous = voidLink.previous;
-        for (E e : collection) {
+        for (E e : elements) {
 			Link<E> newLink = new Link<E>(e, previous, null);
 			previous.next = newLink;
 			previous = newLink;

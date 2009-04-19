@@ -1983,11 +1983,16 @@ public class Collections {
      * 
      * @throws IndexOutOfBoundsException
      *             if index1 or index2 is out of range of this list
+     * @since 1.4
      */
     @SuppressWarnings("unchecked")
     public static void swap(List<?> list, int index1, int index2) {
         if (list == null) {
             throw new NullPointerException();
+        }
+        final int size = list.size();
+        if (index1 < 0 || index1 >= size || index2 < 0 || index2 >= size) {
+            throw new IndexOutOfBoundsException();
         }
         if (index1 == index2) {
             return;

@@ -518,7 +518,6 @@ int test_hyfile_seek(struct HyPortLibrary *hyportLibrary)
   }
   
   offset = hyportLibrary->file_seek(hyportLibrary, fd, -193, HySeekEnd);
-  printf("  offset = %d\n", offset);
   if (offset != 7) {
     Hytest_setErrMsg(hyportLibrary, "Output should be [%d] not [%d] (%s)\n",7,offset,HY_GET_CALLSITE());
     hyportLibrary->file_close(hyportLibrary, fd);
@@ -676,7 +675,6 @@ int test_hyfile_length(struct HyPortLibrary *hyportLibrary)
   }
   
   length = hyportLibrary->file_length(hyportLibrary, tmpAbsolutePath);
-  printf("  length = %d\n", length);
   if (length != 200) {
     Hytest_setErrMsg(hyportLibrary, "Output should be [%d] not [%d] (%s)\n",200,length,HY_GET_CALLSITE());
     cleanup(*hyportLibrary);
@@ -922,7 +920,6 @@ int test_hyfile_lastmod(struct HyPortLibrary *hyportLibrary)
   }
   
   time = hyportLibrary->file_lastmod (hyportLibrary, tmpAbsolutePath);  
-  printf("  last modify time = %I64d\n", time);
   if (time == -1) {
     Hytest_setErrMsg(hyportLibrary, "fail to get last modify time(%s)\n",HY_GET_CALLSITE());
     cleanup(*hyportLibrary);

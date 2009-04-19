@@ -33,7 +33,8 @@ public class BcBands extends BandSet {
     private final CpBands cpBands;
     private final Segment segment;
 
-    public BcBands(CpBands cpBands, Segment segment) {
+    public BcBands(CpBands cpBands, Segment segment, int effort) {
+        super(effort, segment.getSegmentHeader());
         this.cpBands = cpBands;
         this.segment = segment;
     }
@@ -61,7 +62,6 @@ public class BcBands extends BandSet {
     private final List bcInitRef = new ArrayList();
 
     private String currentClass;
-    private String superClass;
 
     private static final int MULTIANEWARRAY = 197;
     private static final int ALOAD_0 = 42;
@@ -80,10 +80,6 @@ public class BcBands extends BandSet {
 
     public void setCurrentClass(String name) {
         currentClass = name;
-    }
-
-    public void setSuperClass(String superName) {
-        superClass = superName;
     }
 
     public void finaliseBands() {
@@ -229,7 +225,7 @@ public class BcBands extends BandSet {
     }
 
     public void visitIincInsn(int var, int increment) {
-        if (increment > Byte.MAX_VALUE) {
+        if (var > 255 || increment > 255) {
             byteCodeOffset += 6;
             bcCodes.add(WIDE);
             bcCodes.add(IINC);
@@ -427,7 +423,7 @@ public class BcBands extends BandSet {
 
     public void visitVarInsn(int opcode, int var) {
         // ILOAD, LLOAD, FLOAD, DLOAD, ALOAD, ISTORE, LSTORE, FSTORE, DSTORE, ASTORE or RET
-        if (var > Byte.MAX_VALUE) {
+        if (var > 255) {
             byteCodeOffset += 4;
             bcCodes.add(WIDE);
             bcCodes.add(opcode);

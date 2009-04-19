@@ -243,7 +243,7 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 
             boolean pass = false;
 
-            boolean readerAlive = true;
+            volatile boolean readerAlive = true;
 
             public void run() {
                 try {

@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tests.support.Support_Jetty;
+
 import junit.framework.TestCase;
 
 /**
@@ -249,7 +251,13 @@ public class HttpURLConnectionTest extends TestCase {
         }
     }
 
-    public void setUp() {
+    private int jettyPort = 0;
+
+    private String jettyURL;
+
+    public void setUp() throws Exception {
+        jettyPort = Support_Jetty.startDefaultHttpServer();
+        jettyURL = "http://localhost:" + jettyPort + "/servlet";
         if (DEBUG) {
             System.out.println("\n==============================");
             System.out.println("===== Execution: " + getName());
@@ -300,7 +308,7 @@ public class HttpURLConnectionTest extends TestCase {
      * @tests HttpURLConnection.getHeaderFields
      */
     public void test_getHeaderFields() throws Exception {
-        URL url = new URL("http://www.apache.org");
+        URL url = new URL(jettyURL);
         HttpURLConnection httpURLConnect = (HttpURLConnection) url
                 .openConnection();
         assertEquals(200, httpURLConnect.getResponseCode());
@@ -361,7 +369,7 @@ public class HttpURLConnectionTest extends TestCase {
      * Test whether getOutputStream can work after connection
      */
     public void test_getOutputStream_AfterConnect() throws Exception {
-        URL url = new URL("http://www.apache.org");
+        URL url = new URL(jettyURL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
         connection.connect();
@@ -421,15 +429,16 @@ public class HttpURLConnectionTest extends TestCase {
      */
     public void testUsingProxy2() throws Exception {
         try {
-            System.setProperty("http.proxyHost", "www.apache.org");
-            URL url = new URL("http://www.apache.org");
+            System.setProperty("http.proxyHost", "localhost");
+            System.setProperty("http.proxyPort", jettyPort + "");
+            URL url = new URL(jettyURL);
             HttpURLConnection urlConnect = (HttpURLConnection) url
                     .openConnection();
             urlConnect.getInputStream();
             assertTrue(urlConnect.usingProxy());
             
             System.setProperty("http.proxyPort", "81");
-            url = new URL("http://www.apache.org");
+            url = new URL(jettyURL);
             urlConnect = (HttpURLConnection) url.openConnection();
             urlConnect.getInputStream();
             assertFalse(urlConnect.usingProxy());

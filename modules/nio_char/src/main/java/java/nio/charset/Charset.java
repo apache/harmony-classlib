@@ -109,6 +109,8 @@ public abstract class Charset implements Comparable<Charset> {
     // cached Charset table
     private final static HashMap<String, Charset> cachedCharsetTable = new HashMap<String, Charset>();
 
+    private static boolean inForNameInternal = false;
+
     static {
         /*
          * Create built-in charset provider even if no privilege to access
@@ -322,6 +324,11 @@ public abstract class Charset implements Comparable<Charset> {
      */
     @SuppressWarnings("unchecked")
     public static SortedMap<String, Charset> availableCharsets() {
+        // workaround: conflicted Charsets with icu4j 4.0
+        Charset.forName("TIS-620");
+        Charset.forName("windows-1258");
+        Charset.forName("cp856");
+        Charset.forName("cp922");
         // Initialize the built-in charsets map cache if necessary
         if (null == _builtInCharsets) {
             synchronized (Charset.class) {
@@ -468,8 +475,10 @@ public abstract class Charset implements Comparable<Charset> {
 
             // examine each configuration file
             while (e.hasMoreElements()) {
-                cs = searchConfiguredCharsets(charsetName, contextClassLoader,
+			     inForNameInternal = true;
+			     cs = searchConfiguredCharsets(charsetName, contextClassLoader,
                         e.nextElement());
+				 inForNameInternal = false;
                 if (null != cs) {
                     cacheCharset(cs);
                     return cs;
@@ -477,6 +486,8 @@ public abstract class Charset implements Comparable<Charset> {
             }
         } catch (IOException ex) {
             // Unexpected ClassLoader exception, ignore
+		} finally {
+		    inForNameInternal = false;
         }
         return null;
     }
@@ -485,13 +496,17 @@ public abstract class Charset implements Comparable<Charset> {
      * save charset into cachedCharsetTable
      */
     private static void cacheCharset(Charset cs) {
-        cachedCharsetTable.put(cs.name(), cs);
+        if (!cachedCharsetTable.containsKey(cs.name())){
+            cachedCharsetTable.put(cs.name(), cs);  
+        }
         Set<String> aliasesSet = cs.aliases();
         if (null != aliasesSet) {
             Iterator<String> iter = aliasesSet.iterator();
             while (iter.hasNext()) {
                 String alias = iter.next();
-                cachedCharsetTable.put(alias, cs);
+                if (!cachedCharsetTable.containsKey(alias)) {
+                    cachedCharsetTable.put(alias, cs); 
+                }
             }
         }
     }
@@ -525,8 +540,32 @@ public abstract class Charset implements Comparable<Charset> {
      *             If the specified charset name is illegal.
      */
     public static boolean isSupported(String charsetName) {
-        Charset cs = forNameInternal(charsetName);
-        return (null != cs);
+        if (inForNameInternal  == true) {
+            Charset cs = cachedCharsetTable.get(charsetName);
+            if (null != cs) {
+                return true;
+            }
+
+            if (null == charsetName) {
+                throw new IllegalArgumentException();
+            }
+            checkCharsetName(charsetName);
+
+            // Try built-in charsets
+            if (_builtInProvider == null) {
+                _builtInProvider = new CharsetProviderImpl();
+            }
+            cs = _builtInProvider.charsetForName(charsetName);
+            if (null != cs) {
+                cacheCharset(cs);
+                return true;
+            }
+            return false;
+        } else {
+            Charset cs = forNameInternal(charsetName);
+            return (null != cs);
+        }
+
     }
 
     /**

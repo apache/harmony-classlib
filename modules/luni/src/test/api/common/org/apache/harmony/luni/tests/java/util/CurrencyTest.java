@@ -102,11 +102,11 @@ public class CurrencyTest extends junit.framework.TestCase {
         loc = new Locale("", "ZAR");
         Currency.getInstance(loc);
 
-        loc = new Locale("", "FX");
-        Currency.getInstance(loc);
+        // loc = new Locale("", "FX");
+        // Currency.getInstance(loc);
 
-        loc = new Locale("", "FXX");
-        Currency.getInstance(loc);
+        // loc = new Locale("", "FXX");
+        // Currency.getInstance(loc);
     }
 
     /**
@@ -119,15 +119,15 @@ public class CurrencyTest extends junit.framework.TestCase {
         Currency currUS = Currency.getInstance("USD");
 
         Locale.setDefault(Locale.US);
-        assertEquals("currK.getSymbol()", "KRW", currK.getSymbol());
+        assertEquals("currK.getSymbol()", "\u20a9", currK.getSymbol());
         // Some non-bug differences below because of CLDR data.
-        assertEquals("currI.getSymbol()", "0#Rs.|1#Re.|1<Rs.", currI
+        assertEquals("currI.getSymbol()", "\u20a8", currI
                 .getSymbol());
         assertEquals("currUS.getSymbol()", "$", currUS.getSymbol());
 
         Locale.setDefault(new Locale("ko", "KR"));
         assertEquals("currK.getSymbol()", "\uffe6", currK.getSymbol());
-        assertEquals("currI.getSymbol()", "0#Rs.|1#Re.|1<Rs.", currI
+        assertEquals("currI.getSymbol()", "0\u2264Rs.|1\u2264Re.|1<Rs.", currI
                 .getSymbol());
         assertEquals("currUS.getSymbol()", "US$", currUS.getSymbol());
 
@@ -189,10 +189,10 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertEquals("CAD", currCA.getSymbol(Locale.JAPANESE));
         assertEquals("$Ca", currCA.getSymbol(Locale.FRANCE));
         assertEquals("CAD", currCA.getSymbol(Locale.FRENCH));
-        assertEquals("Can$", currCA.getSymbol(Locale.US));
+        assertEquals("CA$", currCA.getSymbol(Locale.US));
         assertEquals("CAD", currCA.getSymbol(Locale.ENGLISH));
         assertEquals("Can$", currCA.getSymbol(new Locale("es", "US")));
-        assertEquals("Can$", currCA.getSymbol(new Locale("en", "US")));
+        assertEquals("CA$", currCA.getSymbol(new Locale("en", "US")));
 
         assertEquals("$", currCA.getSymbol(Locale.CANADA));
         assertEquals("$", currCA.getSymbol(Locale.CANADA_FRENCH));

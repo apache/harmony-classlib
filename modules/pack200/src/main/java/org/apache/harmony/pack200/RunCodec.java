@@ -105,7 +105,7 @@ public class RunCodec extends Codec {
             for (int i = 0; i < band.length; i++) {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
                 Codec theCodec = favouredValue ? popCodec.getFavouredCodec()
-                        : popCodec.getUnvafouredCodec();
+                        : popCodec.getUnfavouredCodec();
                 if (theCodec instanceof BHSDCodec
                         && ((BHSDCodec) theCodec).isDelta()) {
                     BHSDCodec bhsd = (BHSDCodec) theCodec;
@@ -134,5 +134,17 @@ public class RunCodec extends Codec {
     public byte[] encode(long value) throws Pack200Exception {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public Codec getACodec() {
+        return aCodec;
+    }
+
+    public Codec getBCodec() {
+        return bCodec;
     }
 }

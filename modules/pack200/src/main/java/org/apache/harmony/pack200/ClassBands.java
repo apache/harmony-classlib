@@ -33,7 +33,6 @@ import org.objectweb.asm.Opcodes;
 
 public class ClassBands extends BandSet {
 
-    private final SegmentHeader header;
     private final CpBands cpBands;
     private final AttributeDefinitionBands attrBands;
 
@@ -116,9 +115,9 @@ public class ClassBands extends BandSet {
 
     private final Map classReferencesInnerClass = new HashMap();
 
-    public ClassBands(Segment segment, int numClasses) {
+    public ClassBands(Segment segment, int numClasses, int effort) {
+        super(effort, segment.getSegmentHeader());
         this.segment = segment;
-        this.header = segment.getSegmentHeader();
         this.cpBands = segment.getCpBands();
         this.attrBands = segment.getAttrBands();
         class_this = new CPClass[numClasses];
@@ -135,15 +134,15 @@ public class ClassBands extends BandSet {
         major_versions = new int[numClasses];
         class_flags = new long[numClasses];
 
-        class_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_CLASS, cpBands);
-        class_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_CLASS, cpBands);
-        field_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_FIELD, cpBands);
-        field_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_FIELD, cpBands);
-        method_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
-        method_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
-        method_RVPA_bands = new MetadataBandGroup("RVPA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
-        method_RIPA_bands = new MetadataBandGroup("RIPA", MetadataBandGroup.CONTEXT_METHOD, cpBands);
-        method_AD_bands = new MetadataBandGroup("AD", MetadataBandGroup.CONTEXT_METHOD, cpBands);
+        class_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_CLASS, cpBands, segmentHeader, effort);
+        class_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_CLASS, cpBands, segmentHeader, effort);
+        field_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_FIELD, cpBands, segmentHeader, effort);
+        field_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_FIELD, cpBands, segmentHeader, effort);
+        method_RVA_bands = new MetadataBandGroup("RVA", MetadataBandGroup.CONTEXT_METHOD, cpBands, segmentHeader, effort);
+        method_RIA_bands = new MetadataBandGroup("RIA", MetadataBandGroup.CONTEXT_METHOD, cpBands, segmentHeader, effort);
+        method_RVPA_bands = new MetadataBandGroup("RVPA", MetadataBandGroup.CONTEXT_METHOD, cpBands, segmentHeader, effort);
+        method_RIPA_bands = new MetadataBandGroup("RIPA", MetadataBandGroup.CONTEXT_METHOD, cpBands, segmentHeader, effort);
+        method_AD_bands = new MetadataBandGroup("AD", MetadataBandGroup.CONTEXT_METHOD, cpBands, segmentHeader, effort);
     }
 
     private int index = 0;
@@ -236,7 +235,7 @@ public class ClassBands extends BandSet {
     }
 
     public void finaliseBands() {
-        int defaultMajorVersion = header.getDefaultMajorVersion();
+        int defaultMajorVersion = segmentHeader.getDefaultMajorVersion();
         for (int i = 0; i < class_flags.length; i++) {
             int major = major_versions[i];
             if (major != defaultMajorVersion) {
@@ -433,7 +432,7 @@ public class ClassBands extends BandSet {
     private void writeFieldAttributeBands(OutputStream out) throws IOException,
             Pack200Exception {
         out.write(encodeFlags("field_flags", field_flags, Codec.UNSIGNED5,
-                Codec.UNSIGNED5, header.have_field_flags_hi()));
+                Codec.UNSIGNED5, segmentHeader.have_field_flags_hi()));
 //        *field_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
 //        *field_attr_indexes :UNSIGNED5 [SUM(*field_attr_count)]
         out.write(encodeBandInt("field_attr_calls", field_attr_calls, Codec.UNSIGNED5));
@@ -448,7 +447,7 @@ public class ClassBands extends BandSet {
     private void writeMethodAttributeBands(OutputStream out)
             throws IOException, Pack200Exception {
         out.write(encodeFlags("method_flags", method_flags, Codec.UNSIGNED5,
-                Codec.UNSIGNED5, header.have_method_flags_hi()));
+                Codec.UNSIGNED5, segmentHeader.have_method_flags_hi()));
 //        *method_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
 //        *method_attr_indexes :UNSIGNED5 [SUM(*method_attr_count)]
         out.write(encodeBandInt("method_attr_calls", method_attr_calls, Codec.UNSIGNED5));
@@ -468,7 +467,7 @@ public class ClassBands extends BandSet {
     private void writeClassAttributeBands(OutputStream out) throws IOException,
             Pack200Exception {
         out.write(encodeFlags("class_flags", class_flags, Codec.UNSIGNED5,
-                Codec.UNSIGNED5, header.have_class_flags_hi()));
+                Codec.UNSIGNED5, segmentHeader.have_class_flags_hi()));
 //        *class_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
 //        *class_attr_indexes :UNSIGNED5 [SUM(*class_attr_count)]
         out.write(encodeBandInt("class_attr_calls", class_attr_calls, Codec.UNSIGNED5));
@@ -526,7 +525,7 @@ public class ClassBands extends BandSet {
     private void writeCodeAttributeBands(OutputStream out) throws IOException,
             Pack200Exception {
         out.write(encodeFlags("codeFlags", longListToArray(codeFlags),
-                Codec.UNSIGNED5, Codec.UNSIGNED5, header.have_code_flags_hi()));
+                Codec.UNSIGNED5, Codec.UNSIGNED5, segmentHeader.have_code_flags_hi()));
 
         // *code_attr_count :UNSIGNED5 [COUNT(1<<16,...)]
         // *code_attr_indexes :UNSIGNED5 [SUM(*code_attr_count)]
@@ -947,7 +946,7 @@ public class ClassBands extends BandSet {
 
     public void addAnnotationDefault(List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
         method_AD_bands.addAnnotation(null, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
-        Integer flag = (Integer) tempMethodFlags.remove(tempMethodFlags.size() - 1);
-        tempMethodFlags.add(new Integer(flag.intValue() | (1<<25)));
+        Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
+        tempMethodFlags.add(new Long(flag.longValue() | (1<<25)));
     }
 }

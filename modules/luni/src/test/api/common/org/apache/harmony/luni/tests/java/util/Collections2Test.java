@@ -464,4 +464,33 @@ public class Collections2Test extends TestCase {
         assertTrue(emptyList instanceof RandomAccess);
     }
 
+    // Regression test for http://issues.apache.org/jira/browse/HARMONY-6122
+    public void test_Collections_swap_IndexOutOfBoundsException() {
+        try {
+            Collections.swap(new ArrayList<Object>(), -1, 3);
+            fail("IOOBE expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        
+        List<Object> list = new ArrayList<Object>();
+        list.add("0");
+        try {
+            Collections.swap(list, 0, -1);
+            fail("IOOBE expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            Collections.swap(list, 0, 3);
+            fail("IOOBE expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            Collections.swap(new ArrayList<Object>(), 3, 3);
+            fail("IOOBE expected");
+        } catch (IndexOutOfBoundsException e) {
+        }
+    }
+
 }

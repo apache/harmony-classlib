@@ -23,6 +23,7 @@
 package org.apache.harmony.security.asn1;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -115,7 +116,11 @@ public class ASN1UTCTime extends ASN1Time {
     public void setEncodingContent(BerOutputStream out) {
         SimpleDateFormat sdf = new SimpleDateFormat(UTC_PATTERN);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC")); //$NON-NLS-1$
-        out.content = sdf.format(out.content).getBytes();
+        try {
+            out.content = sdf.format(out.content).getBytes("UTF-8"); //$NON-NLS-1$
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         out.length = ((byte[]) out.content).length;
     }
 }

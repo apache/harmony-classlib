@@ -16,7 +16,6 @@
  */
 package org.apache.harmony.unpack200;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -127,7 +126,7 @@ public abstract class BandSet {
             for (int i = 0; i < band.length; i++) {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
                 Codec theCodec = favouredValue ? popCodec.getFavouredCodec()
-                        : popCodec.getUnvafouredCodec();
+                        : popCodec.getUnfavouredCodec();
                 if (theCodec instanceof BHSDCodec
                         && ((BHSDCodec) theCodec).isDelta()) {
                     BHSDCodec bhsd = (BHSDCodec) theCodec;
@@ -251,7 +250,7 @@ public abstract class BandSet {
             for (int i = 0; i < band.length; i++) {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
                 Codec theCodec = favouredValue ? popCodec.getFavouredCodec()
-                        : popCodec.getUnvafouredCodec();
+                        : popCodec.getUnfavouredCodec();
                 if (theCodec instanceof BHSDCodec
                         && ((BHSDCodec) theCodec).isDelta()) {
                     BHSDCodec bhsd = (BHSDCodec) theCodec;

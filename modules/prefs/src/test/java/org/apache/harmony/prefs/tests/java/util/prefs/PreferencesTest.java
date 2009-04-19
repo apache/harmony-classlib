@@ -77,26 +77,15 @@ public class PreferencesTest extends TestCase {
         assertEquals("lang", p.name());
         assertEquals("System Preference Node: " + p.absolutePath(), p
                 .toString());
+
+        assertEquals(0, p.childrenNames().length);
+        assertEquals(0, p.keys().length);
+        parent.removeNode();
         try {
-            assertEquals(0, p.childrenNames().length);
-        } catch (BackingStoreException e) {
-            // could be thrown according to specification
-        }
-        try {
-            assertEquals(0, p.keys().length);
-        } catch (BackingStoreException e) {
-            // could be thrown according to specification
-        }
-        try {
-            parent.removeNode();
-        } catch (BackingStoreException e) {
-            // could be thrown according to specification
-        }
-        try {
-            p = Preferences.userNodeForPackage(null);
-            fail("NullPointerException has not been thrown");
+            Preferences.userNodeForPackage(null);
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
-            // expected
+            // Expected
         }
     }
 
@@ -109,8 +98,6 @@ public class PreferencesTest extends TestCase {
         assertEquals("", p.name());
         assertEquals("System Preference Node: " + p.absolutePath(), p
                 .toString());
-        // assertEquals(0, p.childrenNames().length);
-        // assertEquals(0, p.keys().length);
     }
 
     public void testConsts() {
@@ -133,9 +120,10 @@ public class PreferencesTest extends TestCase {
         assertEquals(0, p.keys().length);
 
         try {
-            p = Preferences.userNodeForPackage(null);
-            fail();
+            Preferences.userNodeForPackage(null);
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
+            // Expected
         }
     }
 
@@ -147,8 +135,6 @@ public class PreferencesTest extends TestCase {
         assertTrue(p.isUserNode());
         assertEquals("", p.name());
         assertEquals("User Preference Node: " + p.absolutePath(), p.toString());
-        // assertEquals(0, p.childrenNames().length);
-        // assertEquals(p.keys().length, 0);
     }
 
     public void testImportPreferences() throws Exception {
@@ -160,7 +146,8 @@ public class PreferencesTest extends TestCase {
 
             prefs.put("prefskey", "oldvalue");
             prefs.put("prefskey2", "oldvalue2");
-            in = PreferencesTest.class.getResourceAsStream("/prefs/java/util/prefs/userprefs.xml");
+            in = PreferencesTest.class
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs.xml");
             Preferences.importPreferences(in);
 
             prefs = Preferences.userNodeForPackage(PreferencesTest.class);
@@ -171,39 +158,43 @@ public class PreferencesTest extends TestCase {
             assertEquals("newvalue3", prefs.get("prefskey3", null));
 
             in = PreferencesTest.class
-            .getResourceAsStream("/prefs/java/util/prefs/userprefs-badform.xml");
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs-badform.xml");
             try {
                 Preferences.importPreferences(in);
-                fail();
+                fail("should throw InvalidPreferencesFormatException");
             } catch (InvalidPreferencesFormatException e) {
+                // Expected
             }
 
             in = PreferencesTest.class
-            .getResourceAsStream("/prefs/java/util/prefs/userprefs-badtype.xml");
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs-badtype.xml");
             try {
                 Preferences.importPreferences(in);
-                fail();
+                fail("should throw InvalidPreferencesFormatException");
             } catch (InvalidPreferencesFormatException e) {
+                // Expected
             }
 
             in = PreferencesTest.class
-            .getResourceAsStream("/prefs/java/util/prefs/userprefs-badencoding.xml");
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs-badencoding.xml");
             try {
                 Preferences.importPreferences(in);
-                fail();
+                fail("should throw InvalidPreferencesFormatException");
             } catch (InvalidPreferencesFormatException e) {
+                // Expected
             }
 
             in = PreferencesTest.class
-            .getResourceAsStream("/prefs/java/util/prefs/userprefs-higherversion.xml");
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs-higherversion.xml");
             try {
                 Preferences.importPreferences(in);
-                fail();
+                fail("should throw InvalidPreferencesFormatException");
             } catch (InvalidPreferencesFormatException e) {
+                // Expected
             }
 
             in = PreferencesTest.class
-            .getResourceAsStream("/prefs/java/util/prefs/userprefs-ascii.xml");
+                    .getResourceAsStream("/prefs/java/util/prefs/userprefs-ascii.xml");
             Preferences.importPreferences(in);
             prefs = Preferences.userNodeForPackage(PreferencesTest.class);
         } finally {
@@ -211,6 +202,7 @@ public class PreferencesTest extends TestCase {
                 prefs = Preferences.userRoot().node("tests");
                 prefs.removeNode();
             } catch (Exception e) {
+                // Ignored
             }
         }
     }
@@ -218,30 +210,34 @@ public class PreferencesTest extends TestCase {
     public void testImportPreferencesException() throws Exception {
         try {
             Preferences.importPreferences(null);
-            fail();
+            fail("should throw MalformedURLException");
         } catch (MalformedURLException e) {
+            // Expected
         }
 
         byte[] source = new byte[0];
         InputStream in = new ByteArrayInputStream(source);
         try {
             Preferences.importPreferences(in);
-            fail();
+            fail("should throw InvalidPreferencesFormatException");
         } catch (InvalidPreferencesFormatException e) {
+            // Expected
         }
 
         stream.setResult(MockInputStream.exception);
         try {
             Preferences.importPreferences(stream);
-            fail();
+            fail("should throw IOException");
         } catch (IOException e) {
+            // Expected
         }
 
         stream.setResult(MockInputStream.runtimeException);
         try {
             Preferences.importPreferences(stream);
-            fail();
+            fail("should throw RuntimeException");
         } catch (RuntimeException e) {
+            // Expected
         }
     }
 
@@ -251,101 +247,39 @@ public class PreferencesTest extends TestCase {
             manager.install();
             try {
                 Preferences.userRoot();
-                fail();
+                fail("should throw SecurityException");
             } catch (SecurityException e) {
+                // Expected
             }
             try {
                 Preferences.systemRoot();
-                fail();
+                fail("should throw SecurityException");
             } catch (SecurityException e) {
+                // Expected
             }
             try {
                 Preferences.userNodeForPackage(null);
-                fail();
+                fail("should throw SecurityException");
             } catch (SecurityException e) {
+                // Expected
             }
 
             try {
                 Preferences.systemNodeForPackage(null);
-                fail();
+                fail("should throw SecurityException");
             } catch (SecurityException e) {
+                // Expected
             }
 
             try {
                 Preferences.importPreferences(stream);
-                fail();
+                fail("should throw SecurityException");
             } catch (SecurityException e) {
+                // Expected
             }
         } finally {
             manager.restoreDefault();
         }
-    }
-
-    public void testAbstractMethods() {
-        Preferences p = new MockPreferences();
-        p.absolutePath();
-        try {
-            p.childrenNames();
-        } catch (BackingStoreException e4) {
-        }
-        try {
-            p.clear();
-        } catch (BackingStoreException e5) {
-        }
-        try {
-            p.exportNode(null);
-        } catch (IOException e6) {
-        } catch (BackingStoreException e6) {
-        }
-        try {
-            p.exportSubtree(null);
-        } catch (IOException e7) {
-        } catch (BackingStoreException e7) {
-        }
-        try {
-            p.flush();
-        } catch (BackingStoreException e8) {
-        }
-        p.get(null, null);
-        p.getBoolean(null, false);
-        p.getByteArray(null, null);
-        p.getFloat(null, 0.1f);
-        p.getDouble(null, 0.1);
-        p.getInt(null, 1);
-        p.getLong(null, 1l);
-        p.isUserNode();
-        try {
-            p.keys();
-        } catch (BackingStoreException e) {
-        }
-        p.name();
-        p.node(null);
-        try {
-            p.nodeExists(null);
-        } catch (BackingStoreException e1) {
-        }
-        p.parent();
-        p.put(null, null);
-        p.putBoolean(null, false);
-        p.putByteArray(null, null);
-        p.putDouble(null, 1);
-        p.putFloat(null, 1f);
-        p.putInt(null, 1);
-        p.putLong(null, 1l);
-        p.remove(null);
-        try {
-            p.removeNode();
-        } catch (BackingStoreException e2) {
-        }
-        p.addNodeChangeListener(null);
-        p.addPreferenceChangeListener(null);
-        p.removeNodeChangeListener(null);
-        p.removePreferenceChangeListener(null);
-        try {
-            p.sync();
-        } catch (BackingStoreException e3) {
-        }
-        p.toString();
     }
 
     static class MockInputStream extends InputStream {

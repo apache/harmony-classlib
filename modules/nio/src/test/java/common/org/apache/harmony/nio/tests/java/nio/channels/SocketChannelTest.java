@@ -3085,6 +3085,39 @@ public class SocketChannelTest extends TestCase {
         }
     }
 
+    public void testSocket_setOptions() throws IOException {
+        channel1.connect(localAddr1);
+        Socket socket = channel1.socket();
+
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[] {1, 2, 3});
+        socket.setKeepAlive(true);
+        channel1.write(buffer);
+
+        socket.setOOBInline(true);
+        channel1.write(buffer);
+
+        socket.setReceiveBufferSize(100);
+        channel1.write(buffer);
+
+        socket.setReuseAddress(true);
+        channel1.write(buffer);
+
+        socket.setSendBufferSize(100);
+        channel1.write(buffer);
+
+        socket.setSoLinger(true, 100);
+        channel1.write(buffer);
+
+        socket.setSoTimeout(1000);
+        channel1.write(buffer);
+
+        socket.setTcpNoDelay(true);
+        channel1.write(buffer);
+
+        socket.setTrafficClass(10);
+        channel1.write(buffer);
+    }
+
     class MockSocketChannel extends SocketChannel{
         
         private boolean isWriteCalled = false;

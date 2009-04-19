@@ -56,8 +56,8 @@ policy.provider=org.apache.harmony.security.fortress.DefaultPolicy
 # and an optional policy file in the user's home directory.
 # It is possible to specify any number of policy files, via policy.url.n keys.
 # See also: "JavaTM 2 Platform Security Architecture.", chapter 3. Permissions and Security Policy
-policy.url.1=file:/${java.home}/lib/security/java.policy
-policy.url.2=file:/${user.home}/.java.policy
+policy.url.1=file:${java.home}/lib/security/java.policy
+policy.url.2=file:${user.home}/.java.policy
 
 
 # Flag to enable/disable properties expansion (${...}) in policy files. 
