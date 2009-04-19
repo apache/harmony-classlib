@@ -134,7 +134,7 @@ public class PopulationCodec extends Codec {
         return favouredCodec;
     }
 
-    public Codec getUnvafouredCodec() {
+    public Codec getUnfavouredCodec() {
         return unvafouredCodec;
     }
 
@@ -146,5 +146,13 @@ public class PopulationCodec extends Codec {
     public byte[] encode(long value) throws Pack200Exception {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public Codec getTokenCodec() {
+        return tokenCodec;
+    }
+
+    public int getL() {
+        return l;
     }
 }

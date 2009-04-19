@@ -441,6 +441,13 @@ public final class BHSDCodec extends Codec {
     }
 
     /**
+     * @return the s
+     */
+    public int getS() {
+        return s;
+    }
+
+    /**
      * @return the l
      */
     public int getL() {

@@ -34,8 +34,6 @@ import org.objectweb.asm.Type;
  */
 public class CpBands extends BandSet {
 
-    private final SegmentHeader segmentHeader;
-
     // Don't need to include default attribute names in the constant pool bands
     private final Set defaultAttributeNames = new HashSet();
 
@@ -64,8 +62,8 @@ public class CpBands extends BandSet {
 
     private final Segment segment;
 
-    public CpBands(Segment segment) {
-        this.segmentHeader = segment.getSegmentHeader();
+    public CpBands(Segment segment, int effort) {
+        super(effort, segment.getSegmentHeader());
         this.segment = segment;
         defaultAttributeNames.add("AnnotationDefault");
         defaultAttributeNames.add("RuntimeVisibleAnnotations");
@@ -409,6 +407,9 @@ public class CpBands extends BandSet {
     }
 
     public CPSignature getCPSignature(String signature) {
+        if(signature == null) {
+            return null;
+        }
         CPSignature cpS = (CPSignature) stringsToCpSignature.get(signature);
         if (cpS == null) {
             List cpClasses = new ArrayList();

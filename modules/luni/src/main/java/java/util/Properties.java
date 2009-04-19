@@ -19,6 +19,7 @@ package java.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -255,19 +256,14 @@ public class Properties extends Hashtable<Object, Object> {
     public synchronized void load(InputStream in) throws IOException {
         int mode = NONE, unicode = 0, count = 0;
         char nextChar, buf[] = new char[40];
-        int offset = 0, keyLength = -1;
+        int offset = 0, keyLength = -1, intVal;
         boolean firstChar = true;
-        byte[] inbuf = new byte[256];
-        int inbufCount = 0, inbufPos = 0;
+        BufferedInputStream bis = new BufferedInputStream(in);
 
         while (true) {
-            if (inbufPos == inbufCount) {
-                if ((inbufCount = in.read(inbuf)) == -1) {
-                    break;
-                }
-                inbufPos = 0;
-            }
-            nextChar = (char) (inbuf[inbufPos++] & 0xff);
+            intVal = bis.read();
+            if (intVal == -1) break;
+            nextChar = (char) (intVal & 0xff);
 
             if (offset == buf.length) {
                 char[] newBuf = new char[buf.length * 2];
@@ -326,16 +322,11 @@ public class Properties extends Hashtable<Object, Object> {
                 case '!':
                     if (firstChar) {
                         while (true) {
-                            if (inbufPos == inbufCount) {
-                                if ((inbufCount = in.read(inbuf)) == -1) {
-                                    inbufPos = -1;
-                                    break;
-                                }
-                                inbufPos = 0;
-                            }
-                            nextChar = (char) inbuf[inbufPos++]; // & 0xff
-                            // not
-                            // required
+                            intVal = bis.read();
+                            if (intVal == -1) break;
+                            nextChar = (char) intVal; // & 0xff
+                                                      // not
+                                                      // required
                             if (nextChar == '\r' || nextChar == '\n') {
                                 break;
                             }

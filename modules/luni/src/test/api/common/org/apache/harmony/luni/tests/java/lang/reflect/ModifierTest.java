@@ -184,6 +184,235 @@ public class ModifierTest extends junit.framework.TestCase {
 						"public abstract"));
 	}
 
+    public void test_Constants_Value() {
+        assertEquals(1024, Modifier.ABSTRACT);
+        assertEquals(16, Modifier.FINAL);
+        assertEquals(512, Modifier.INTERFACE);
+        assertEquals(256, Modifier.NATIVE);
+        assertEquals(2, Modifier.PRIVATE);
+        assertEquals(4, Modifier.PROTECTED);
+        assertEquals(1, Modifier.PUBLIC);
+        assertEquals(8, Modifier.STATIC);
+        assertEquals(2048, Modifier.STRICT);
+        assertEquals(32, Modifier.SYNCHRONIZED);
+        assertEquals(128, Modifier.TRANSIENT);
+        assertEquals(64, Modifier.VOLATILE);
+    }
+
+    abstract class AbstractClazz {
+    }
+
+    final class FinalClazz {
+    }
+    
+    static class StaticClazz {
+    }
+
+    interface InterfaceClazz {
+    }
+    
+    public class PublicClazz {
+    }
+
+    protected class ProtectedClazz {
+    }
+
+    private class PrivateClazz {
+    }
+
+    public abstract class PublicAbstractClazz {
+    }
+
+    protected abstract class ProtectedAbstractClazz {
+    }
+
+    private abstract class PrivateAbstractClazz {
+    }
+
+    public final class PublicFinalClazz {
+    }
+
+    protected final class ProtectedFinalClazz {
+    }
+
+    private final class PrivateFinalClazz {
+    }
+
+    public static class PublicStaticClazz {
+    }
+
+    protected static class ProtectedStaticClazz {
+    }
+
+    private static class PrivateStaticClazz {
+    }
+
+    public interface PublicInterface {
+    }
+
+    protected interface ProtectedInterface {
+    }
+
+    private interface PrivateInterface {
+    }
+
+    static abstract class StaticAbstractClazz {
+    }
+
+    public static abstract class PublicStaticAbstractClazz {
+    }
+
+    protected static abstract class ProtectedStaticAbstractClazz {
+    }
+
+    private static abstract class PrivateStaticAbstractClazz {
+    }
+
+    static final class StaticFinalClazz {
+    }
+
+    public static final class PublicStaticFinalClazz {
+    }
+
+    protected static final class ProtectedStaticFinalClazz {
+    }
+
+    private static final class PrivateStaticFinalClazz {
+    }
+
+    static interface StaticInterface {
+    }
+
+    public static interface PublicStaticInterface {
+    }
+
+    protected static interface ProtectedStaticInterface {
+    }
+
+    private static interface PrivateStaticInterface {
+    }
+
+    static abstract interface StaticAbstractInterface {
+    }
+
+    public static abstract interface PublicStaticAbstractInterface {
+    }
+
+    protected static abstract interface ProtectedStaticAbstractInterface {
+    }
+
+    private static abstract interface PrivateStaticAbstractInterface {
+    }
+
+    public void test_Class_Modifier() {
+        assertEquals(Modifier.ABSTRACT, AbstractClazz.class.getModifiers());
+        assertEquals(Modifier.FINAL, FinalClazz.class.getModifiers());
+        assertEquals(Modifier.STATIC, StaticClazz.class.getModifiers());
+        assertEquals(Modifier.INTERFACE + Modifier.STATIC + Modifier.ABSTRACT,
+                InterfaceClazz.class.getModifiers());
+
+        assertEquals(Modifier.PUBLIC, PublicClazz.class.getModifiers());
+        assertEquals(Modifier.PROTECTED, ProtectedClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE, PrivateClazz.class.getModifiers());
+
+        assertEquals(Modifier.PUBLIC + Modifier.ABSTRACT,
+                PublicAbstractClazz.class.getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.ABSTRACT,
+                ProtectedAbstractClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.ABSTRACT,
+                PrivateAbstractClazz.class.getModifiers());
+
+        assertEquals(Modifier.PUBLIC + Modifier.FINAL, PublicFinalClazz.class
+                .getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.FINAL,
+                ProtectedFinalClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.FINAL, PrivateFinalClazz.class
+                .getModifiers());
+
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC, PublicStaticClazz.class
+                .getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.STATIC,
+                ProtectedStaticClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.STATIC,
+                PrivateStaticClazz.class.getModifiers());
+
+        assertEquals(Modifier.PUBLIC + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PublicInterface.class.getModifiers());
+        assertEquals(Modifier.STATIC + Modifier.FINAL, StaticFinalClazz.class
+                .getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PrivateInterface.class.getModifiers());
+
+        assertEquals(Modifier.STATIC + Modifier.ABSTRACT,
+                StaticAbstractClazz.class.getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC + Modifier.ABSTRACT,
+                PublicStaticAbstractClazz.class.getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.STATIC + Modifier.ABSTRACT,
+                ProtectedStaticAbstractClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.STATIC + Modifier.ABSTRACT,
+                PrivateStaticAbstractClazz.class.getModifiers());
+
+        assertEquals(Modifier.STATIC + Modifier.FINAL, StaticFinalClazz.class
+                .getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC + Modifier.FINAL,
+                PublicStaticFinalClazz.class.getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.STATIC + Modifier.FINAL,
+                ProtectedStaticFinalClazz.class.getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.STATIC + Modifier.FINAL,
+                PrivateStaticFinalClazz.class.getModifiers());
+
+        assertEquals(Modifier.INTERFACE + Modifier.STATIC + Modifier.ABSTRACT,
+                StaticInterface.class.getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PublicStaticInterface.class.getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, ProtectedStaticInterface.class
+                .getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PrivateStaticInterface.class
+                .getModifiers());
+
+        assertEquals(Modifier.INTERFACE + Modifier.STATIC + Modifier.ABSTRACT,
+                StaticAbstractInterface.class.getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PublicStaticAbstractInterface.class
+                .getModifiers());
+        assertEquals(Modifier.PROTECTED + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, ProtectedStaticAbstractInterface.class
+                .getModifiers());
+        assertEquals(Modifier.PRIVATE + Modifier.INTERFACE + Modifier.STATIC
+                + Modifier.ABSTRACT, PrivateStaticAbstractInterface.class
+                .getModifiers());
+    }
+
+    static abstract class MethodClass {
+        
+        public abstract void publicAbstractMethod();
+        
+        public static void publicStaticMethod() {
+        }
+
+        public final void publicFinalMethod() {
+        }
+        
+        public static final void publicStaticFinalMethod() {
+        }
+    }
+
+    public void test_Method_Modifier() throws Exception {
+        assertEquals(Modifier.PUBLIC + Modifier.ABSTRACT, MethodClass.class
+                .getMethod("publicAbstractMethod", new Class[0]).getModifiers());
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC, MethodClass.class
+                .getMethod("publicStaticMethod", new Class[0]).getModifiers());
+        
+        assertEquals(Modifier.PUBLIC + Modifier.FINAL, MethodClass.class
+                .getMethod("publicFinalMethod", new Class[0]).getModifiers());
+        
+        assertEquals(Modifier.PUBLIC + Modifier.STATIC + Modifier.FINAL,
+                MethodClass.class.getMethod("publicStaticFinalMethod",
+                        new Class[0]).getModifiers());
+    }
+
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.

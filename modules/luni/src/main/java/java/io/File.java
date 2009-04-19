@@ -297,12 +297,8 @@ public class File implements Serializable, Comparable<File> {
                 && (newLength > (uncIndex + 1) || (newLength == 2 && newPath[0] != separatorChar))) {
             newLength--;
         }
-        String tempPath = new String(newPath, 0, newLength);
-        // If it's the same keep it identical for SecurityManager purposes
-        if (!tempPath.equals(origPath)) {
-            return tempPath;
-        }
-        return origPath;
+
+        return new String(newPath, 0, newLength);
     }
 
     /**
@@ -315,11 +311,15 @@ public class File implements Serializable, Comparable<File> {
      * @see java.lang.SecurityManager#checkRead(FileDescriptor)
      */
     public boolean canRead() {
+        if (path.length() == 0) {
+            return false;
+        }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkRead(path);
         }
-        return exists() && !isWriteOnlyImpl(properPath(true));
+        byte[] pp = properPath(true);
+        return existsImpl(pp) && !isWriteOnlyImpl(pp);
     }
 
     /**
@@ -933,10 +933,17 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory() || !canRead()) {
+
+        if (path.length() == 0) {
             return null;
         }
-        byte[][] implList = listImpl(properPath(true));
+
+        byte[] bs = properPath(true);
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+            return null;
+        }
+
+        byte[][] implList = listImpl(bs);
         if (implList == null) {
             // empty list
             return new String[0];
@@ -1026,10 +1033,17 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory() || !canRead()) {
+
+        if (path.length() == 0) {
             return null;
         }
-        byte[][] implList = listImpl(properPath(true));
+
+        byte[] bs = properPath(true);
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+            return null;
+        }
+
+        byte[][] implList = listImpl(bs);
         if (implList == null) {
             return new File[0];
         }
@@ -1066,24 +1080,30 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory() || !canRead()) {
+
+        if (path.length() == 0) {
             return null;
         }
-        byte[][] implList = listImpl(properPath(true));
+
+        byte[] bs = properPath(true);
+        if (!isDirectoryImpl(bs) || !existsImpl(bs) || isWriteOnlyImpl(bs)) {
+            return null;
+        }
+
+        byte[][] implList = listImpl(bs);
         if (implList == null) {
             // empty list
             return new String[0];
         }
-        java.util.Vector<String> tempResult = new java.util.Vector<String>();
+        List<String> tempResult = new ArrayList<String>();
         for (int index = 0; index < implList.length; index++) {
             String aName = Util.toString(implList[index]);
             if (filter == null || filter.accept(this, aName)) {
-                tempResult.addElement(aName);
+                tempResult.add(aName);
             }
         }
-        String[] result = new String[tempResult.size()];
-        tempResult.copyInto(result);
-        return result;
+
+        return tempResult.toArray(new String[tempResult.size()]);
     }
 
     private synchronized static native byte[][] listImpl(byte[] path);
@@ -1266,9 +1286,7 @@ public class File implements Serializable, Comparable<File> {
         } else {
             userdir = System.getProperty("user.dir"); //$NON-NLS-1$
         }
-        if ((properPath = properPathImpl(pathBytes)) != null) {
-            return properPath;
-        }
+
         if (path.length() == 0) {
             return properPath = Util.getUTF8Bytes(userdir);
         }

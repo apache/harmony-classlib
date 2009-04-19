@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -70,8 +71,14 @@ public class KeyStore3Test extends TestCase {
                 + "1777XQ9UEZyrKJvF5ntleeO0ayBqLGVKCWzWZX9YsXCpv47FNLZbupE=\n"
                 + "-----END CERTIFICATE-----\n";
 
-        ByteArrayInputStream certArray = new ByteArrayInputStream(
-                certificateData.getBytes());
+        ByteArrayInputStream certArray;
+        {
+            try {
+                certArray = new ByteArrayInputStream(certificateData.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         certificate = cf.generateCertificate(certArray);
     }

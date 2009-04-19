@@ -33,6 +33,7 @@ import java.net.SocketImpl;
 import java.net.SocketImplFactory;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.harmony.luni.net.PlainServerSocketImpl;
@@ -669,6 +670,26 @@ public class ServerSocketTest extends SocketTestCase {
         serverSocket.close();
         assertTrue("Socket should indicate it is closed(1):", serverSocket
                 .isClosed());
+    }
+
+    /*
+     * Regression HARMONY-6090
+     */
+    public void test_defaultValueReuseAddress() throws Exception {
+        String platform = System.getProperty("os.name").toLowerCase(Locale.US);
+        if (!platform.startsWith("windows")) {
+            // on Unix
+            assertTrue(new ServerSocket().getReuseAddress());
+            assertTrue(new ServerSocket(0).getReuseAddress());
+            assertTrue(new ServerSocket(0, 50).getReuseAddress());
+            assertTrue(new ServerSocket(0, 50, InetAddress.getLocalHost()).getReuseAddress());
+        } else {
+            // on Windows
+            assertFalse(new ServerSocket().getReuseAddress());
+            assertFalse(new ServerSocket(0).getReuseAddress());
+            assertFalse(new ServerSocket(0, 50).getReuseAddress());
+            assertFalse(new ServerSocket(0, 50, InetAddress.getLocalHost()).getReuseAddress());
+        }
     }
 
     /**

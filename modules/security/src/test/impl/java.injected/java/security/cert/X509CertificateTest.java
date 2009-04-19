@@ -263,12 +263,12 @@ public class X509CertificateTest extends TestCase {
         ByteArrayInputStream is = null;
         CertificateFactory certFactory = CertificateFactory
                 .getInstance("X.509");
-        is = new ByteArrayInputStream(Base64.decode(base64cert.getBytes()));
+        is = new ByteArrayInputStream(Base64.decode(base64cert.getBytes("UTF-8")));
         X509Certificate cert = (X509Certificate) certFactory
                 .generateCertificate(is);
         cert.getExtensionValue("1.1.1.1");
 
-        is = new ByteArrayInputStream(Base64.decode(base64crl.getBytes()));
+        is = new ByteArrayInputStream(Base64.decode(base64crl.getBytes("UTF-8")));
         X509CRL crl = (X509CRL) certFactory.generateCRL(is);
         crl.getExtensionValue("1.1.1.1");
     }
@@ -282,4 +282,5 @@ public class X509CertificateTest extends TestCase {
         junit.textui.TestRunner.run(suite());
     }
 }
+
 

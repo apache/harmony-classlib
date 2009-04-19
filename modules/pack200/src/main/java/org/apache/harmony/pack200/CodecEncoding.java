@@ -19,6 +19,7 @@ package org.apache.harmony.pack200;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -215,12 +216,122 @@ public class CodecEncoding {
     }
 
     public static int getSpecifierForDefaultCodec(BHSDCodec defaultCodec) {
+        return getSpecifier(defaultCodec, null)[0];
+    }
+
+    public static int[] getSpecifier(Codec codec, Codec defaultForBand) {
+        // lazy initialization
         if(canonicalCodecsToSpecifiers == null) {
             canonicalCodecsToSpecifiers = new HashMap();
             for (int i = 0; i < canonicalCodec.length; i++) {
                 canonicalCodecsToSpecifiers.put(canonicalCodec[i], new Integer(i));
             }
         }
-        return ((Integer)canonicalCodecsToSpecifiers.get(defaultCodec)).intValue();
+
+        if(canonicalCodecsToSpecifiers.containsKey(codec)) {
+            return new int[] {((Integer)canonicalCodecsToSpecifiers.get(codec)).intValue()};
+        } else if (codec instanceof BHSDCodec) {
+            // Cache these?
+            BHSDCodec bhsdCodec = (BHSDCodec)codec;
+            int[] specifiers = new int[3];
+            specifiers[0] = 116;
+            specifiers[1] = (bhsdCodec.isDelta() ? 1 : 0) + 2
+                    * bhsdCodec.getS() + 8 * (bhsdCodec.getB()-1);
+            specifiers[2] = bhsdCodec.getH() - 1;
+            return specifiers;
+        } else if (codec instanceof RunCodec) {
+            RunCodec runCodec = (RunCodec) codec;
+            int k = runCodec.getK();
+            int kb;
+            int kx;
+            if(k <= 256) {
+                kb = 0;
+                kx = k - 1;
+            } else if (k <= 4096) {
+                kb = 1;
+                kx = k/16 - 1;
+            } else if (k <= 65536) {
+                kb = 2;
+                kx = k/256 - 1;
+            } else {
+                kb = 3;
+                kx = k/4096 - 1;
+            }
+            Codec aCodec = runCodec.getACodec();
+            Codec bCodec = runCodec.getBCodec();
+            int abDef = 0;
+            if(aCodec.equals(defaultForBand)) {
+                abDef = 1;
+            } else if (bCodec.equals(defaultForBand)) {
+                abDef = 2;
+            }
+            int first = 117 + kb + (kx==3 ? 0 : 4) + (8 * abDef);
+            int[] aSpecifier = abDef == 1 ? new int[0] : getSpecifier(aCodec, defaultForBand);
+            int[] bSpecifier = abDef == 2 ? new int[0] : getSpecifier(bCodec, defaultForBand);
+            int[] specifier = new int[1 + (kx==3 ? 0 : 1) + aSpecifier.length + bSpecifier.length];
+            specifier[0] = first;
+            int index = 1;
+            if(kx != 3) {
+                specifier[1] = kx;
+                index++;
+            }
+            for (int i = 0; i < aSpecifier.length; i++) {
+                specifier[index] = aSpecifier[i];
+                index++;
+            }
+            for (int i = 0; i < bSpecifier.length; i++) {
+                specifier[index] = bSpecifier[i];
+                index++;
+            }
+            return specifier;
+        } else if (codec instanceof PopulationCodec) {
+            PopulationCodec populationCodec = (PopulationCodec) codec;
+            Codec tokenCodec = populationCodec.getTokenCodec();
+            Codec favouredCodec = populationCodec.getFavouredCodec();
+            Codec unfavouredCodec = populationCodec.getUnfavouredCodec();
+            int fDef = favouredCodec.equals(defaultForBand) ? 1 : 0;
+            int uDef = unfavouredCodec.equals(defaultForBand) ? 1 : 0;
+            int tDefL = 0;
+            long[] favoured = populationCodec.getFavoured();
+            if(favoured != null) {
+                int k = favoured.length;
+                if(tokenCodec == Codec.BYTE1) {
+                    tDefL = 1;
+                } else if (tokenCodec instanceof BHSDCodec) {
+                    BHSDCodec tokenBHSD = (BHSDCodec) tokenCodec;
+                    if(tokenBHSD.getS() == 0) {
+                        int[] possibleLValues = new int[] {4, 8, 16, 32, 64, 128, 192, 224, 240, 248, 252};
+                        int l = 256-tokenBHSD.getH();
+                        int index = Arrays.binarySearch(possibleLValues, l);
+                        if(index != -1) {
+                            // TODO: check range is ok for ks
+                            tDefL = index++;
+                        }
+                    }
+                }
+            }
+            int first = 141 + fDef + (2 * uDef) + (4 * tDefL);
+            int[] favouredSpecifier = fDef == 1 ? new int[0] : getSpecifier(favouredCodec, defaultForBand);
+            int[] tokenSpecifier = tDefL != 0 ? new int[0] : getSpecifier(tokenCodec, defaultForBand);
+            int[] unfavouredSpecifier = uDef == 1 ? new int[0] : getSpecifier(unfavouredCodec, defaultForBand);
+            int[] specifier = new int[1 + favouredSpecifier.length + unfavouredSpecifier.length + tokenSpecifier.length];
+            specifier[0] = first;
+            int index = 1;
+            for (int i = 0; i < favouredSpecifier.length; i++) {
+                specifier[index] = favouredSpecifier[i];
+                index++;
+            }
+            for (int i = 0; i < tokenSpecifier.length; i++) {
+                specifier[index] = tokenSpecifier[i];
+                index++;
+            }
+            for (int i = 0; i < unfavouredSpecifier.length; i++) {
+                specifier[index] = unfavouredSpecifier[i];
+                index++;
+            }
+            return specifier;
+        }
+
+        return null;
     }
 }

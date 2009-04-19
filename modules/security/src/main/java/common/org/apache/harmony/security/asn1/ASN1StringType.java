@@ -139,11 +139,15 @@ public abstract class ASN1StringType extends ASN1Type {
     }
 
     public void setEncodingContent(BerOutputStream out) {
-
-        byte[] bytes = ((String) out.content).getBytes();
-
-        out.content = bytes;
-        out.length = bytes.length;
+        try {
+            byte[] bytes = ((String) out.content).getBytes("UTF-8"); //$NON-NLS-1$
+            out.content = bytes;
+            out.length = bytes.length;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
+
+
 

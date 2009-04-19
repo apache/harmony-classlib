@@ -442,6 +442,7 @@ properties in preference to these:
     </target>
 
     <target name="test-jre-vm-info" depends="-get-test-vm-output">
+        <echo level="info" message="java -version${line.separator}${test.vm.info.tmp}" />
         <!-- Add other runtime names here -->
         <condition property="hy.test.vm.name" value="ri" >
             <contains string="${test.vm.info.tmp}" substring="HotSpot"/>
@@ -451,8 +452,8 @@ properties in preference to these:
         </condition>
         <!-- FIXME current behavior relies on the fact that J9 VM doesn't
              support -version parameter -->
-        <condition property="hy.test.vm.name" value="drl" else="ibm" >
-            <contains string="${test.vm.info.tmp}" substring="harmony" />
+        <condition property="hy.test.vm.name" value="ibm" else="drl" >
+            <contains string="${test.vm.info.tmp}" substring="IBM" casesensitive="false" />
         </condition>
         <echo level="info" message="hy.test.vm.name = ${hy.test.vm.name}" />
     </target>

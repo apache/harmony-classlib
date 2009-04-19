@@ -36,7 +36,7 @@
 
 #define PORT_LIB_OPTION "_org.apache.harmony.vmi.portlib"
 
-#define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2008 The Apache Software Foundation or its licensors, as applicable."
+#define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2009 The Apache Software Foundation or its licensors, as applicable."
 
 /* Tools launchers will invoke HY_TOOLS_PACKAGE+"."+<execname>+"."+HY_TOOLS_MAIN_TYPE */
 #define HY_TOOLS_PACKAGE "org.apache.harmony.tools"
@@ -58,7 +58,7 @@ static int invocation
 PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             jint version, jboolean ignoreUnrecognized, char *mainClass,
             UDATA classArg, char *propertiesFileName,
-            int isStandaloneJar, char *vmdllsubdir));
+            int isStandaloneJar, char *vmdllsubdir, int versionFlag));
 static int createVMArgs
 PROTOTYPE ((HyPortLibrary * portLibrary, int argc, char **argv,
             jint version, jboolean ignoreUnrecognized,
@@ -227,8 +227,9 @@ gpProtectedMain (struct haCmdlineOptions *args)
 			/* The arg is a JAR file to run */
 			isStandaloneJar = 1;
 		}
-		if (0 == strcmp ("-version", argv[i])) {
-            versionFlag = 1;
+		if (0 == strncmp ("-version", argv[i], 8)) {
+            /* Display version information */
+            versionFlag = i;
 		}
 		if (0 == strcmp ("-showversion", argv[i])) {
 			/* We are being asked to print our version and continue */
@@ -363,12 +364,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
         }
     }
     
-  if (versionFlag == 1) {
-    /* 
-     * We are being asked to print our version, and quit 
-     */
-    hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");    
-  }
   /* set up the properties file */
   propertiesFileName = hymem_allocate_memory (strlen (vmiPath) + 12);
   if (propertiesFileName == NULL)
@@ -392,7 +387,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   /* main launcher processing in this function */
   rc = invocation
       (PORTLIB, argc, argv, handle, JNI_VERSION_1_4, JNI_TRUE, mainClass,
-       classArg, propertiesFileName, isStandaloneJar, vmdllsubdir);
+       classArg, propertiesFileName, isStandaloneJar, vmdllsubdir, versionFlag);
   if (rc)
     {
 	  /* Print an error message except in the case where an uncaught Exception 
@@ -642,7 +637,7 @@ static int
 invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
             jint version, jboolean ignoreUnrecognized, char *mainClass,
             UDATA classArg, char *propertiesFileName,
-            int isStandaloneJar, char *vmdllsubdir)
+            int isStandaloneJar, char *vmdllsubdir, int versionFlag)
 {
   JavaVMInitArgs vm_args;
   JavaVM *jvm;
@@ -678,6 +673,27 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
     }
 
   rc = 0;
+
+  if (versionFlag) {
+      jclass clazz;
+      jmethodID mID;
+      jstring jStrObject;
+        
+      jStrObject = (*env)->NewStringUTF (env, argv[versionFlag]);
+      if (!jStrObject) return 3;
+        
+      clazz = (*env)->FindClass (env, "org/apache/harmony/luni/util/Version");
+      if (!clazz) return 3;
+        
+      mID = (*env)->GetStaticMethodID (env, clazz, "version",
+                         "(Ljava/lang/String;)V");
+      if (!mID) return 3;
+        
+      (*env)->CallStaticVoidMethod(env, clazz, mID, jStrObject);
+        
+      return 0;
+  }
+
   if (mainClass)
     {
       if (isStandaloneJar)
@@ -952,7 +968,8 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
    {
        if ( (strcmp (argv[i], "-jar") != 0) 
            && (strncmp (argv[i], "-vmdir:", 7) != 0)
-           && (strncmp (argv[i], "-vm:", 4) != 0) )
+           && (strncmp (argv[i], "-vm:", 4) != 0) 
+           && (strncmp (argv[i], "-version", 8) != 0))
        {
           /* special coding for -classpath and -cp */
           /* they get passed to the vm as -Djava.class.path */

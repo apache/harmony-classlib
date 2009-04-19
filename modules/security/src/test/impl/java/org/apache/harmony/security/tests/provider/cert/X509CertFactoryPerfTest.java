@@ -316,7 +316,11 @@ public class X509CertFactoryPerfTest extends TestCase {
         "-----END CERTIFICATE-----\n";
 
     static {
-        certEncoding_b64 = base64certEncoding.getBytes();
+        try {
+            certEncoding_b64 = base64certEncoding.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         stream_b64 = new ByteArrayInputStream(certEncoding_b64);
         stream_b64.mark(certEncoding_b64.length);
     }
@@ -839,4 +843,6 @@ public class X509CertFactoryPerfTest extends TestCase {
         junit.textui.TestRunner.run(suite());
     }
 }
+
+
 

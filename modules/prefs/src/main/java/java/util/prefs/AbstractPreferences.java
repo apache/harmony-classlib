@@ -79,11 +79,13 @@ public abstract class AbstractPreferences extends Preferences {
                 Preferences sroot = Preferences.systemRoot();
                 try {
                     uroot.flush();
-                } catch (BackingStoreException e) {//ignore
+                } catch (BackingStoreException e) {
+                    // ignore
                 }
                 try {
                     sroot.flush();
-                } catch (BackingStoreException e) {//ignore
+                } catch (BackingStoreException e) {
+                    // ignore
                 }
             }
         });
@@ -402,13 +404,13 @@ public abstract class AbstractPreferences extends Preferences {
         if (key == null) {
             throw new NullPointerException();
         }
-        String result;
+        String result = null;
         synchronized (lock) {
             checkState();
             try {
                 result = getSpi(key);
             } catch (Exception e) {
-                result = null;
+                // ignored
             }
         }
         return (result == null ? deflt : result);
@@ -419,9 +421,10 @@ public abstract class AbstractPreferences extends Preferences {
         String result = get(key, null);
         if (result == null) {
             return deflt;
-        } else if (result.equalsIgnoreCase("true")) { //$NON-NLS-1$
+        }
+        if ("true".equalsIgnoreCase(result)) { //$NON-NLS-1$
             return true;
-        } else if (result.equalsIgnoreCase("false")) { //$NON-NLS-1$
+        } else if ("false".equalsIgnoreCase(result)) { //$NON-NLS-1$
             return false;
         } else {
             return deflt;
@@ -437,17 +440,15 @@ public abstract class AbstractPreferences extends Preferences {
         if (svalue.length() == 0) { 
             return new byte[0];
         }
-        byte[] dres;
         try {
             byte[] bavalue = svalue.getBytes("US-ASCII"); //$NON-NLS-1$
             if (bavalue.length % 4 != 0) {
                 return deflt;
             }
-            dres = Base64.decode(bavalue);
+            return Base64.decode(bavalue);
         } catch (Exception e) {
-            dres = deflt;
+            return deflt;
         }
-        return dres;
     }
 
     @Override
@@ -456,13 +457,11 @@ public abstract class AbstractPreferences extends Preferences {
         if (result == null) {
             return deflt;
         }
-        double dres;
         try {
-            dres = Double.parseDouble(result);
+            return Double.parseDouble(result);
         } catch (NumberFormatException e) {
-            dres = deflt;
+            return deflt;
         }
-        return dres;
     }
 
     @Override
@@ -471,13 +470,11 @@ public abstract class AbstractPreferences extends Preferences {
         if (result == null) {
             return deflt;
         }
-        float fres;
         try {
-            fres = Float.parseFloat(result);
+            return Float.parseFloat(result);
         } catch (NumberFormatException e) {
-            fres = deflt;
+            return deflt;
         }
-        return fres;
     }
 
     @Override
@@ -486,13 +483,11 @@ public abstract class AbstractPreferences extends Preferences {
         if (result == null) {
             return deflt;
         }
-        int ires;
         try {
-            ires = Integer.parseInt(result);
+            return Integer.parseInt(result);
         } catch (NumberFormatException e) {
-            ires = deflt;
+            return deflt;
         }
-        return ires;
     }
 
     @Override
@@ -501,13 +496,11 @@ public abstract class AbstractPreferences extends Preferences {
         if (result == null) {
             return deflt;
         }
-        long lres;
         try {
-            lres = Long.parseLong(result);
+            return Long.parseLong(result);
         } catch (NumberFormatException e) {
-            lres = deflt;
+            return deflt;
         }
-        return lres;
     }
 
     @Override
@@ -546,24 +539,22 @@ public abstract class AbstractPreferences extends Preferences {
                 startNode = this;
             }
         }
-        Preferences result = null;
         try {
-            result = startNode.nodeImpl(name, true);
+            return startNode.nodeImpl(name, true);
         } catch (BackingStoreException e) {
-            //should not happen
+            // should not happen
+            return null;
         }
-        return result;
     }
 
     private void validateName(String name) {
         if (name.endsWith("/") && name.length() > 1) { //$NON-NLS-1$
             // prefs.6=Name cannot end with '/'\!
-            throw new IllegalArgumentException(Messages.getString("prefs.6"));  //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("prefs.6")); //$NON-NLS-1$
         }
         if (name.indexOf("//") >= 0) { //$NON-NLS-1$
             // prefs.7=Name cannot contains consecutive '/'\!
-            throw new IllegalArgumentException(
-                    Messages.getString("prefs.7"));  //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("prefs.7")); //$NON-NLS-1$
         }
     }
 
@@ -580,7 +571,6 @@ public abstract class AbstractPreferences extends Preferences {
                     temp = getNodeFromBackend(createNew, currentNode, name);
                 }
             }
-
             currentNode = temp;
         }
         return currentNode;
@@ -589,12 +579,12 @@ public abstract class AbstractPreferences extends Preferences {
     private AbstractPreferences getNodeFromBackend(boolean createNew,
             AbstractPreferences currentNode, String name)
             throws BackingStoreException {
-        AbstractPreferences temp;
         if (name.length() > MAX_NAME_LENGTH) {
             // prefs.8=Name length is too long: {0}
-            throw new IllegalArgumentException(Messages.getString("prefs.8",  //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("prefs.8", //$NON-NLS-1$
                     name));
         }
+        AbstractPreferences temp;
         if (createNew) {
             temp = currentNode.childSpi(name);
             currentNode.cachedNode.put(name, temp);
@@ -609,6 +599,9 @@ public abstract class AbstractPreferences extends Preferences {
 
     @Override
     public boolean nodeExists(String name) throws BackingStoreException {
+        if (null == name) {
+            throw new NullPointerException();
+        }
         AbstractPreferences startNode = null;
         synchronized (lock) {
             if (isRemoved()) {

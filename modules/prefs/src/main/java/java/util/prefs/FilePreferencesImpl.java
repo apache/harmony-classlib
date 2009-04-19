@@ -64,7 +64,6 @@ class FilePreferencesImpl extends AbstractPreferences {
                 SYSTEM_HOME = System.getProperty("java.home") + "/.systemPrefs";//$NON-NLS-1$//$NON-NLS-2$
                 return null;
             }
-
         });
     }
 
@@ -192,7 +191,8 @@ class FilePreferencesImpl extends AbstractPreferences {
                 prefs = XMLParser.loadFilePrefs(prefsFile);
             }
             return prefs.getProperty(key);
-        } catch (Exception e) {// if Exception happened, return null
+        } catch (Exception e) {
+            // if Exception happened, return null
             return null;
         }
     }

@@ -332,7 +332,7 @@ public class ObjectInputStreamTest extends TestCase implements
         ois.read(buf, 0, 10);
         ois.close();
         assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0,
-                10));
+                10, "UTF-8"));
     }
 
     /**
@@ -428,7 +428,7 @@ public class ObjectInputStreamTest extends TestCase implements
         ois.readFully(buf);
         ois.close();
         assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0,
-                10));
+                10, "UTF-8"));
     }
 
     /**
@@ -442,7 +442,7 @@ public class ObjectInputStreamTest extends TestCase implements
         ois.readFully(buf, 0, 10);
         ois.close();
         assertEquals("Read incorrect bytes", "HelloWorld", new String(buf, 0,
-                10));
+                10, "UTF-8"));
     }
 
     /**
@@ -499,8 +499,8 @@ public class ObjectInputStreamTest extends TestCase implements
         // - class A implements Serializable
         // - class C extends A
 
-        byte[] cName = C.class.getName().getBytes();
-        byte[] aName = A.class.getName().getBytes();
+        byte[] cName = C.class.getName().getBytes("UTF-8");
+        byte[] aName = A.class.getName().getBytes("UTF-8");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -675,7 +675,7 @@ public class ObjectInputStreamTest extends TestCase implements
         ois.skipBytes(5);
         ois.read(buf, 0, 5);
         ois.close();
-        assertEquals("Skipped incorrect bytes", "World", new String(buf, 0, 5));
+        assertEquals("Skipped incorrect bytes", "World", new String(buf, 0, 5, "UTF-8"));
 
         // Regression for HARMONY-844
         try {

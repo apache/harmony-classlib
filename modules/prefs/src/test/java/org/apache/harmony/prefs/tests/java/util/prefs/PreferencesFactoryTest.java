@@ -38,11 +38,11 @@ public class PreferencesFactoryTest extends TestCase {
     }
 
     public void testUserRoot() {
-        f.userRoot();
+        assertNull(f.userRoot());
     }
 
     public void testSystemRoot() {
-        f.systemRoot();
+        assertNull(f.systemRoot());
     }
 
     public static class PreferencesFactoryImpl implements PreferencesFactory {

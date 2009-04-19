@@ -44,19 +44,21 @@ public class Segment implements ClassVisitor {
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
     private Pack200ClassReader currentClassReader;
     private boolean stripDebug;
+    private int effort;
 
-    public void pack(List classes, List files, OutputStream out, boolean stripDebug)
+    public void pack(List classes, List files, OutputStream out, boolean stripDebug, int effort)
             throws IOException, Pack200Exception {
+        this.effort = effort;
         this.stripDebug = stripDebug;
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
         segmentHeader.setHave_all_code_flags(!stripDebug);
-        cpBands = new CpBands(this);
-        attributeDefinitionBands = new AttributeDefinitionBands(this);
-        icBands = new IcBands(segmentHeader, cpBands);
-        classBands = new ClassBands(this, classes.size());
-        bcBands = new BcBands(cpBands, this);
-        fileBands = new FileBands(cpBands, segmentHeader, files);
+        cpBands = new CpBands(this, effort);
+        attributeDefinitionBands = new AttributeDefinitionBands(this, effort);
+        icBands = new IcBands(segmentHeader, cpBands, effort);
+        classBands = new ClassBands(this, classes.size(), effort);
+        bcBands = new BcBands(cpBands, this, effort);
+        fileBands = new FileBands(cpBands, segmentHeader, files, effort);
 
         processClasses(classes);
 
@@ -89,7 +91,6 @@ public class Segment implements ClassVisitor {
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
         bcBands.setCurrentClass(name);
-        bcBands.setSuperClass(superName);
         segmentHeader.addMajorVersion(version);
         classBands.addClass(version, access, name, signature, superName,
                 interfaces);
@@ -295,6 +296,9 @@ public class Segment implements ClassVisitor {
         }
 
         public void visit(String name, Object value) {
+            if (name == null) {
+                name = "";
+            }
             nameRU.add(name);
             values.add(value);
             addTag(value);
@@ -326,6 +330,9 @@ public class Segment implements ClassVisitor {
 
         public AnnotationVisitor visitAnnotation(String name, String desc) {
             T.add("@");
+            if (name == null) {
+                name = "";
+            }
             nameRU.add(name);
             nestTypeRS.add(desc);
             nestPairN.add(new Integer(0));
@@ -366,12 +373,18 @@ public class Segment implements ClassVisitor {
 
         public AnnotationVisitor visitArray(String name) {
             T.add("[");
+            if (name == null) {
+                name = "";
+            }
             nameRU.add(name);
             caseArrayN.add(new Integer(0));
             return new AnnotationVisitor() {
                 public void visit(String name, Object value) {
                     Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
                     caseArrayN.add(new Integer(numCases.intValue() + 1));
+                    if (name == null) {
+                        name = "";
+                    }
                     nameRU.add(name);
                     values.add(value);
                     addTag(value);
@@ -388,13 +401,15 @@ public class Segment implements ClassVisitor {
                 }
 
                 public void visitEnd() {
-                    throw new RuntimeException("Not yet supported");
                 }
 
                 public void visitEnum(String name, String desc, String value) {
                     Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
                     caseArrayN.add(new Integer(numCases.intValue() + 1));
                     T.add("e");
+                    if(name == null) {
+                        name = "";
+                    }
                     nameRU.add(name);
                     values.add(desc);
                     values.add(value);
@@ -414,6 +429,9 @@ public class Segment implements ClassVisitor {
 
         public void visitEnum(String name, String desc, String value) {
             T.add("e");
+            if (name == null) {
+                name = "";
+            }
             nameRU.add(name);
             values.add(desc);
             values.add(value);
