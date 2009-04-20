@@ -5154,6 +5154,10 @@ public class ScannerTest extends TestCase {
         result = s.findInLine("est");
         // RI fails. It is a RI's bug.
         assertNull(result);
+        
+        s = new Scanner( "   *\n");
+        result = s.findInLine(Pattern.compile( "^\\s*(?:\\*(?=[^/]))"));
+        assertEquals("   *", result);
     }
 
     /**
