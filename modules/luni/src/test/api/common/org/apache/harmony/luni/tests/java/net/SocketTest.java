@@ -499,19 +499,6 @@ public class SocketTest extends SocketTestCase {
         }
         theSocket.close();
 
-        // Now validate that we get a interrupted exception if we try to connect
-        // to an address on which nobody is accepting connections and the
-        // timeout expired
-        theSocket = new Socket();
-        try {
-            theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
-                    1), 200);
-            fail("No interrupted exception when connecting to address nobody listening on with short timeout 200");
-        } catch (SocketTimeoutException e) {
-            // Expected
-        }
-        theSocket.close();
-
         // Now validate that we get the right exception if we connect when we
         // are already connected
         server = new ServerSocket(0);
@@ -1091,12 +1078,6 @@ public class SocketTest extends SocketTestCase {
         out.close();
         pingClient.close();
         sinkServer.close();
-
-        // Regression test for HARMONY-2934
-        Socket socket = new Socket("127.0.0.1", 0, false);
-        OutputStream o = socket.getOutputStream();
-        o.write(1);
-        socket.close();
 
         // Regression test for HARMONY-873
         ServerSocket ss2 = new ServerSocket(0);

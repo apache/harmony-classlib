@@ -20,7 +20,9 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -100,4 +102,31 @@ public class UnixSocketTest extends TestCase {
         pingServer.close();
     }
 
+    public void test_connectLjava_net_SocketAddressI() throws Exception {
+        // Now validate that we get a interrupted exception if we try to connect
+        // to an address on which nobody is accepting connections and the
+        // timeout expired
+        Socket theSocket = new Socket();
+        try {
+            theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
+                    1), 200);
+            fail("No interrupted exception when connecting to address nobody listening on with short timeout 200");
+        } catch (ConnectException e) {
+            // Expected
+        }
+        theSocket.close();
+    }
+
+    public void test_getOutputStream() throws Exception {
+        // Regression test for HARMONY-2934
+        Socket socket = new Socket("127.0.0.1", 0, false);
+        OutputStream o = socket.getOutputStream();
+        try {
+            o.write(1);
+        } catch (SocketException e) {
+            // expected
+        } finally {
+            socket.close();
+        }
+    }
 }
