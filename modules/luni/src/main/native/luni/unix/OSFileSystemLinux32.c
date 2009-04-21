@@ -36,6 +36,12 @@
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 typedef int OSSOCKET;   
 typedef struct hysocket_struct
 {
@@ -55,6 +61,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_lockIm
   int rc;
   int waitMode = (waitFlag) ? F_SETLKW : F_SETLK;
   struct flock lock = { 0 };
+  jlong lockHandle = handle - FD_BIAS;
 
   // If start or length overflow the max values we can represent, then max them out.
 #if __WORDSIZE==32
@@ -85,7 +92,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_lockIm
 
   do
     {
-      rc = fcntl (handle, waitMode, &lock);
+      rc = fcntl (lockHandle, waitMode, &lock);
     }
   while ((rc < 0) && (errno == EINTR));
 
@@ -100,6 +107,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_unlock
 {
   int rc;
   struct flock lock = { 0 };
+  jlong lockHandle = handle - FD_BIAS;
 
   // If start or length overflow the max values we can represent, then max them out.
 #if __WORDSIZE==32
@@ -121,7 +129,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_unlock
 
   do
     {
-      rc = fcntl (handle, F_SETLKW, &lock);
+      rc = fcntl (lockHandle, F_SETLKW, &lock);
     }
   while ((rc < 0) && (errno == EINTR));
 
