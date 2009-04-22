@@ -22,20 +22,21 @@ import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
 
 /**
- * This class must be implemented by the VM vendor.
- * 
- * An instance of class Package contains information about a Java package. This
- * includes implementation and specification versions. Typically this
- * information is retrieved from the manifest.
+ * Contains information about a Java package. This includes implementation and
+ * specification versions. Typically this information is retrieved from the
+ * manifest.
  * <p>
  * Packages are managed by class loaders. All classes loaded by the same loader
- * from the same package share a Package instance.
- * 
- * 
+ * from the same package share a {@code Package} instance.
+ *
  * @see ClassLoader
  * @since 1.0
  */
 public class Package implements AnnotatedElement {
+
+    /*
+     * This class must be implemented by the VM vendor.
+     */
 
     /**
      * Prevent this class from being instantiated
@@ -43,112 +44,115 @@ public class Package implements AnnotatedElement {
     private Package(){
         //do nothing
     }
-    
+
     /**
-     * Gets the annotation associated with the given annotation type and this
-     * package.
-     * 
-     * @return An instance of {@link Annotation} or <code>null</code>.
-     * @since 1.5
+     * Gets the annotation associated with the specified annotation type and
+     * this package, if present.
+     *
+     * @param annotationType
+     *            the annotation type to look for.
+     * @return an instance of {@link Annotation} or {@code null}.
      * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
+     * @since 1.5
      */
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         return null;
     }
 
     /**
-     * Gets all of the annotations associated with this package.
-     * 
-     * @return An array of {@link Annotation} instances, which may be empty.
-     * @since 1.5
+     * Gets all annotations associated with this package, if any.
+     *
+     * @return an array of {@link Annotation} instances, which may be empty.
      * @see java.lang.reflect.AnnotatedElement#getAnnotations()
+     * @since 1.5
      */
     public Annotation[] getAnnotations() {
         return new Annotation[0];
     }
 
     /**
-     * Gets all of the annotations directly declared on this element.
-     * 
-     * @return An array of {@link Annotation} instances, which may be empty.
-     * @since 1.5
+     * Gets all annotations directly declared on this package, if any.
+     *
+     * @return an array of {@link Annotation} instances, which may be empty.
      * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
+     * @since 1.5
      */
     public Annotation[] getDeclaredAnnotations() {
         return new Annotation[0];
     }
 
     /**
-     * Indicates whether or not the given annotation is present.
-     * 
-     * @return A value of <code>true</code> if the annotation is present,
-     *         otherwise <code>false</code>.
-     * @since 1.5
+     * Indicates whether the specified annotation is present.
+     *
+     * @param annotationType
+     *            the annotation type to look for.
+     * @return {@code true} if the annotation is present; {@code false}
+     *         otherwise.
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
+     * @since 1.5
      */
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return false;
     }
 
     /**
-     * Return the title of the implementation of this package, or null if this
-     * is unknown. The format of this string is unspecified.
-     * 
-     * @return The implementation title, or null
+     * Returns the title of the implementation of this package, or {@code null}
+     * if this is unknown. The format of this string is unspecified.
+     *
+     * @return the implementation title, may be {@code null}.
      */
     public String getImplementationTitle() {
         return null;
     }
 
     /**
-     * Return the name of the vendor or organization that provided this
-     * implementation of the package, or null if this is unknown. The format of
-     * this string is unspecified.
-     * 
-     * @return The implementation vendor name, or null
+     * Returns the name of the vendor or organization that provides this
+     * implementation of the package, or {@code null} if this is unknown. The
+     * format of this string is unspecified.
+     *
+     * @return the implementation vendor name, may be {@code null}.
      */
     public String getImplementationVendor() {
         return null;
     }
 
     /**
-     * Return the version of the implementation of this package, or null if this
-     * is unknown. The format of this string is unspecified.
-     * 
-     * @return The implementation version, or null
+     * Returns the version of the implementation of this package, or {@code
+     * null} if this is unknown. The format of this string is unspecified.
+     *
+     * @return the implementation version, may be {@code null}.
      */
     public String getImplementationVersion() {
         return null;
     }
 
     /**
-     * Return the name of this package in the standard dot notation; for
+     * Returns the name of this package in the standard dot notation; for
      * example: "java.lang".
      * 
-     * @return The name of this package
+     * @return the name of this package.
      */
     public String getName() {
         return null;
     }
 
     /**
-     * Attempt to locate the requested package in the caller's class loader. If
-     * no package information can be located, null is returned.
+     * Attempts to locate the requested package in the caller's class loader. If
+     * no package information can be located, {@code null} is returned.
      * 
-     * @param packageName The name of the package to find
-     * @return The package requested, or null
-     * 
-     * @see ClassLoader#getPackage
+     * @param packageName
+     *            the name of the package to find.
+     * @return the requested package, or {@code null}.
+     * @see ClassLoader#getPackage(java.lang.String)
      */
     public static Package getPackage(String packageName) {
         return null;
     }
 
     /**
-     * Return all the packages known to the caller's class loader.
+     * Returns all the packages known to the caller's class loader.
      * 
-     * @return All the packages known to the caller's class loader
-     * 
+     * @return all the packages known to the caller's class loader.
      * @see ClassLoader#getPackages
      */
     public static Package[] getPackages() {
@@ -156,89 +160,81 @@ public class Package implements AnnotatedElement {
     }
 
     /**
-     * Return the title of the specification this package implements, or null if
-     * this is unknown.
+     * Returns the title of the specification this package implements, or
+     * {@code null} if this is unknown.
      * 
-     * @return The specification title, or null
+     * @return the specification title, may be {@code null}.
      */
     public String getSpecificationTitle() {
         return null;
     }
 
     /**
-     * Return the name of the vendor or organization that owns and maintains the
-     * specification this package implements, or null if this is unknown.
+     * Returns the name of the vendor or organization that owns and maintains
+     * the specification this package implements, or {@code null} if this is
+     * unknown.
      * 
-     * @return The specification vendor name, or null
+     * @return the specification vendor name, may be {@code null}.
      */
     public String getSpecificationVendor() {
         return null;
     }
 
     /**
-     * Return the version of the specification this package implements, or null
-     * if this is unknown. The version string is a sequence of non-negative
-     * integers separated by dots; for example: "1.2.3".
+     * Returns the version of the specification this package implements, or
+     * {@code null} if this is unknown. The version string is a sequence of
+     * non-negative integers separated by dots; for example: "1.2.3".
      * 
-     * @return The specification version string, or null
+     * @return the specification version string, may be {@code null}.
      */
     public String getSpecificationVersion() {
         return null;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Any two objects which
-     * answer <code>true</code> when passed to <code>equals</code> must
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     */
     @Override
     public int hashCode() {
         return 0;
     }
 
     /**
-     * Return true if this package's specification version is compatible with
+     * Indicates whether this package's specification version is compatible with
      * the specified version string. Version strings are compared by comparing
      * each dot separated part of the version as an integer.
-     * 
-     * @param version The version string to compare against
-     * @return true if the package versions are compatible, false otherwise
-     * 
-     * @throws NumberFormatException if the package's version string or the one
-     *         provided is not in the correct format
+     *
+     * @param version
+     *            the version string to compare against.
+     * @return {@code true} if the package versions are compatible; {@code
+     *         false} otherwise.
+     * @throws NumberFormatException
+     *             if this package's version string or the one provided are not
+     *             in the correct format.
      */
     public boolean isCompatibleWith(String version) throws NumberFormatException {
         return false;
     }
 
     /**
-     * Return true if this package is sealed, false otherwise.
-     * 
-     * @return true if this package is sealed, false otherwise
+     * Indicates whether this package is sealed.
+     *
+     * @return {@code true} if this package is sealed; {@code false} otherwise.
      */
     public boolean isSealed() {
         return false;
     }
 
     /**
-     * Return true if this package is sealed with respect to the specified URL,
-     * false otherwise.
-     * 
-     * @param url the URL to test
-     * @return true if this package is sealed, false otherwise
+     * Indicates whether this package is sealed with respect to the specified
+     * URL.
+     *
+     * @param url
+     *            the URL to check.
+     * @return {@code true} if this package is sealed with {@code url}; {@code
+     *         false} otherwise
      */
     public boolean isSealed(URL url) {
         return false;
     }
 
-    /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
-     * 
-     * @return a printable representation for the receiver.
-     */
     @Override
     public String toString() {
         return null;

@@ -18,16 +18,25 @@
 package java.lang.ref;
 
 /**
- * This class must be implemented by the vm vendor. The documented methods must
- * be implemented to support the provided subclass implementations. As the
- * provided subclass implementations are trivial and simply call
- * initReference(Object) and initReference(Object, ReferenceQueue) from their
- * constructors, the vm vendor may elect to implement the subclasses as well.
- * Abstract class which describes behavior common to all reference objects.
- * 
+ * Provides an abstract class which describes behavior common to all reference
+ * objects. It is not possible to create immediate subclasses of
+ * {@code Reference} in addition to the ones provided by this package. It is
+ * also not desirable to do so, since references require very close cooperation
+ * with the system's garbage collector. The existing, specialized reference
+ * classes should be used instead.
+ *
  * @since 1.2
  */
 public abstract class Reference<T> {
+
+  /*
+   * This class must be implemented by the vm vendor. The documented methods must
+   * be implemented to support the provided subclass implementations. As the
+   * provided subclass implementations are trivial and simply call
+   * initReference(Object) and initReference(Object, ReferenceQueue) from their
+   * constructors, the vm vendor may elect to implement the subclasses as well.
+   * Abstract class which describes behavior common to all reference objects.
+   */
 
     /**
      * Constructs a new instance of this class.
@@ -38,37 +47,39 @@ public abstract class Reference<T> {
     }
 
     /**
-     * Make the referent null. This does not force the reference object to be
-     * enqueued.
+     * Makes the referent {@code null}. This does not force the reference
+     * object to be enqueued.
      */
     public void clear() {
         return;
     }
 
     /**
-     * Force the reference object to be enqueued if it has been associated with
+     * Forces the reference object to be enqueued if it has been associated with
      * a queue.
-     * 
-     * @return boolean true if Reference is enqueued. false otherwise.
+     *
+     * @return {@code true} if this call has caused the {@code Reference} to
+     * become enqueued, or {@code false} otherwise
      */
     public boolean enqueue() {
         return false;
     }
 
-    /**
-     * Return the referent of the reference object.
-     * 
-     * @return Referent to which reference refers, or null if object has been
-     *         cleared.
-     */
+  /**
+   * Returns the referent of the reference object.
+   *
+   * @return the referent to which reference refers, or {@code null} if the
+   *         object has been cleared.
+   */
     public T get() {
         return null;
     }
 
     /**
-     * Return whether the reference object has been enqueued.
-     * 
-     * @return boolean true if Reference has been enqueued. false otherwise.
+     * Checks whether the reference object has been enqueued.
+     *
+     * @return {@code true} if the {@code Reference} has been enqueued, {@code
+     *         false} otherwise
      */
     public boolean isEnqueued() {
         return false;

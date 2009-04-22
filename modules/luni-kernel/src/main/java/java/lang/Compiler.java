@@ -18,11 +18,9 @@
 package java.lang;
 
 /**
- * This class must be implemented by the VM vendor. This class is a placeholder
- * for environments which explicitly manage the action of a "Just In Time"
- * compiler.
- * 
- * @see Cloneable
+ * Placeholder class for environments which explicitly manage the action of a
+ * <em>Just In Time (JIT)</em> compiler. This class is usually implemented by
+ * the virtual machine vendor.
  */
 public final class Compiler {
 
@@ -34,51 +32,55 @@ public final class Compiler {
     }
 
     /**
-     * Low level interface to the JIT compiler. Can return any object, or null
-     * if no JIT compiler is available.
-     * 
-     * @return Object result of executing command
-     * @param cmd Object a command for the JIT compiler
+     * Executes an operation according to the specified command object. This
+     * method is the low-level interface to the JIT compiler. It may return any
+     * object or {@code null} if no JIT compiler is available.
+     *
+     * @param cmd
+     *            the command object for the JIT compiler.
+     * @return the result of executing command or {@code null}.
      */
     public static Object command(Object cmd) {
         return null;
     }
 
     /**
-     * Compiles the class using the JIT compiler. Answers true if the
-     * compilation was successful, or false if it failed or there was no JIT
-     * compiler available.
-     * 
-     * @return boolean indicating compilation success
-     * @param classToCompile java.lang.Class the class to JIT compile
+     * Compiles the specified class using the JIT compiler and indicates if
+     * compilation has been successful.
+     *
+     * @param classToCompile
+     *            java.lang.Class the class to JIT compile
+     * @return {@code true} if the compilation has been successful;
+     *         {@code false} if it has failed or if there is no JIT compiler
+     *         available.
      */
     public static boolean compileClass(Class<?> classToCompile) {
         return false;
     }
 
     /**
-     * Compiles all classes whose name matches the argument using the JIT
-     * compiler. Answers true if the compilation was successful, or false if it
-     * failed or there was no JIT compiler available.
-     * 
-     * @return boolean indicating compilation success
-     * @param nameRoot String the string to match against class names
+     * Compiles all classes whose name matches the specified name using the JIT
+     * compiler and indicates if compilation has been successful.
+     *
+     * @param nameRoot
+     *            the string to match class names with.
+     * @return {@code true} if the compilation has been successful;
+     *         {@code false} if it has failed or if there is no JIT compiler
+     *         available.
      */
     public static boolean compileClasses(String nameRoot) {
         return false;
     }
 
     /**
-     * Disable the JIT compiler
-     * 
+     * Disables the JIT compiler.
      */
     public static void disable() {
         return;
     }
 
     /**
-     * Disable the JIT compiler
-     * 
+     * Enables the JIT compiler.
      */
     public static void enable() {
         return;

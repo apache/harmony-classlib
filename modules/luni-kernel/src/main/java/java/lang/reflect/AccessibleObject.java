@@ -20,24 +20,28 @@ package java.lang.reflect;
 import java.lang.annotation.Annotation;
 
 /**
- * This class must be implemented by the VM vendor. This class is the superclass
- * of all member reflect classes (Field, Constructor, Method). AccessibleObject
- * provides the ability to toggle access checks for these objects. By default
- * accessing a member (for example, setting a field or invoking a method) checks
- * the validity of the access (for example, invoking a private method from
- * outside the defining class is prohibited) and throws IllegalAccessException
- * if the operation is not permitted. If the accessible flag is set to true,
- * these checks are omitted. This allows privileged applications such as Java
- * Object Serialization, inspectors, and debuggers to have complete access to
+ * {@code AccessibleObject} is the superclass of all member reflection classes
+ * (Field, Constructor, Method). AccessibleObject provides the ability to toggle
+ * a flag controlling access checks for these objects. By default, accessing a
+ * member (for example, setting a field or invoking a method) checks the
+ * validity of the access (for example, invoking a private method from outside
+ * the defining class is prohibited) and throws IllegalAccessException if the
+ * operation is not permitted. If the accessible flag is set to true, these
+ * checks are omitted. This allows privileged code, such as Java object
+ * serialization, object inspectors, and debuggers to have complete access to
  * objects.
- * 
+ *
  * @see Field
  * @see Constructor
  * @see Method
  * @see ReflectPermission
- * @since 1.2
  */
 public class AccessibleObject implements AnnotatedElement {
+
+    /*
+     * This class must be implemented by the VM vendor.
+     */
+
     /**
      * TODO Is this necessary?
      */
@@ -46,15 +50,18 @@ public class AccessibleObject implements AnnotatedElement {
     /**
      * Attempts to set the value of the accessible flag for all the objects in
      * the array provided. Only one security check is performed. Setting this
-     * flag to false will enable access checks, setting to true will disable
-     * them. If there is a security manager, checkPermission is called with a
-     * ReflectPermission("suppressAccessChecks").
-     * 
-     * @param objects the accessible objects
-     * @param flag the new value for the accessible flag
+     * flag to {@code false} will enable access checks, setting to {@code true}
+     * will disable them. If there is a security manager, checkPermission is
+     * called with a {@code ReflectPermission("suppressAccessChecks")}.
+     *
+     * @param objects
+     *            the accessible objects
+     * @param flag
+     *            the new value for the accessible flag
+     * @throws SecurityException
+     *             if the request is denied
      * @see #setAccessible(boolean)
      * @see ReflectPermission
-     * @throws SecurityException if the request is denied
      */
     public static void setAccessible(AccessibleObject[] objects, boolean flag)
             throws SecurityException {
@@ -93,8 +100,9 @@ public class AccessibleObject implements AnnotatedElement {
     static final native Class<?> getStackClass(int depth);
 
     /**
-     * AccessibleObject constructor. AccessibleObjects can only be created by
-     * the Virtual Machine.
+     * Constructs a new {@code AccessibleObject} instance. {@code
+     * AccessibleObject} instances can only be constructed by the virtual
+     * machine.
      */
     protected AccessibleObject() {
         super();
@@ -148,10 +156,11 @@ public class AccessibleObject implements AnnotatedElement {
     native boolean checkAccessibility(Class<?> senderClass, Object receiver);
 
     /**
-     * Returns the value of the accessible flag. This is false if access checks
-     * are performed, true if they are skipped.
-     * 
-     * @return the value of the accessible flag
+     * Indicates whether this object is accessible without security checks being
+     * performed. Returns the accessible flag.
+     *
+     * @return {@code true} if this object is accessible without security
+     *         checks, {@code false} otherwise
      */
     public boolean isAccessible() {
         return false;
