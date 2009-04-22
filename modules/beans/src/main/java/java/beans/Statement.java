@@ -215,7 +215,9 @@ public class Statement {
 					result = action.run();
 				}
             } else {
-                Method method = findMethod(theTarget.getClass(), theMethodName, theArguments, false);
+                Method method = findMethod(theTarget.getClass(), theMethodName,
+                        theArguments, false);
+                method.setAccessible(true);
                 result = method.invoke(theTarget, theArguments);
             }
         } catch (InvocationTargetException ite) {
