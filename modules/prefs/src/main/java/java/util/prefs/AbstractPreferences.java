@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.apache.harmony.luni.util.Base64;
@@ -560,18 +559,23 @@ public abstract class AbstractPreferences extends Preferences {
 
     private AbstractPreferences nodeImpl(String path, boolean createNew)
             throws BackingStoreException {
-        StringTokenizer st = new StringTokenizer(path, "/"); //$NON-NLS-1$
+        String[] names = path.split("/");//$NON-NLS-1$
         AbstractPreferences currentNode = this;
         AbstractPreferences temp = null;
-        while (st.hasMoreTokens() && null != currentNode) {
-            String name = st.nextToken();
-            synchronized (currentNode.lock) {
-                temp = currentNode.cachedNode.get(name);
-                if (temp == null) {
-                    temp = getNodeFromBackend(createNew, currentNode, name);
+        if (null != currentNode) {
+            for (int i = 0; i < names.length; i++) {
+                String name = names[i];
+                synchronized (currentNode.lock) {
+                    temp = currentNode.cachedNode.get(name);
+                    if (temp == null) {
+                        temp = getNodeFromBackend(createNew, currentNode, name);
+                    }
+                }
+                currentNode = temp;
+                if (null == currentNode) {
+                    break;
                 }
             }
-            currentNode = temp;
         }
         return currentNode;
     }
