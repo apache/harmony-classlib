@@ -22,15 +22,11 @@ import java.util.Random;
 
 /**
  * Provides primality probabilistic methods.
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class Primality {
 
     /** Just to denote that this class can't be instantiated. */
     private Primality() {}
-
-    /* Private Fields */
 
     /** All prime numbers with bit length lesser than 10 bits. */
     private static final int primes[] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
@@ -78,8 +74,6 @@ class Primality {
             BIprimes[i] = BigInteger.valueOf(primes[i]);
         }
     }
-
-    /* Package Methods */
 
     /**
      * It uses the sieve of Eratosthenes to discard several composite numbers in
@@ -226,8 +220,6 @@ class Primality {
 
         return millerRabin(n, certainty);
     }
-
-    /* Private Methods */
 
     /**
      * The Miller-Rabin primality test.

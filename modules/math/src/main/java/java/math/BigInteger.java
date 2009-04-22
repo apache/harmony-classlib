@@ -25,9 +25,24 @@ import java.io.Serializable;
 
 import org.apache.harmony.math.internal.nls.Messages;
 
+/**
+ * This class represents immutable integer numbers of arbitrary length. Large
+ * numbers are typically used in security applications and therefore BigIntegers
+ * offer dedicated functionality like the generation of large prime numbers or
+ * the computation of modular inverse.
+ * <p>
+ * Since the class was modeled to offer all the functionality as the {@link Integer}
+ * class does, it provides even methods that operate bitwise on a two's
+ * complement representation of large integers. Note however that the
+ * implementations favors an internal representation where magnitude and sign
+ * are treated separately. Hence such operations are inefficient and should be
+ * discouraged. In simple words: Do NOT implement any bit fields based on
+ * BigInteger.
+ */
 public class BigInteger extends Number implements Comparable<BigInteger>,
         Serializable {
 
+    /** This is the serialVersionUID used by the sun implementation. */
     private static final long serialVersionUID = -8287574255936472291L;
 
     /* Fields used for the internal representation. */
@@ -41,11 +56,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** The sign of this. */
     transient int sign;
 
+    /**
+     * The {@code BigInteger} constant 0.
+     */
+    public static final BigInteger ZERO = new BigInteger(0, 0);
+
+    /**
+     * The {@code BigInteger} constant 1.
+     */
     public static final BigInteger ONE = new BigInteger(1, 1);
 
+    /**
+     * The {@code BigInteger} constant 10.
+     */
     public static final BigInteger TEN = new BigInteger(1, 10);
-
-    public static final BigInteger ZERO = new BigInteger(0, 0);
 
     /** The {@code BigInteger} constant -1. */
     static final BigInteger MINUS_ONE = new BigInteger(-1, 1);
@@ -59,7 +83,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     /** The {@code BigInteger} constant -1 used for comparison. */
     static final int LESS = -1;
 
-    /** All the {@ BigInteger} numbers in the range [0,10] are cached. */
+    /** All the {@code BigInteger} numbers in the range [0,10] are cached. */
     static final BigInteger[] SMALL_VALUES = { ZERO, ONE, new BigInteger(1, 2),
             new BigInteger(1, 3), new BigInteger(1, 4), new BigInteger(1, 5),
             new BigInteger(1, 6), new BigInteger(1, 7), new BigInteger(1, 8),
@@ -76,16 +100,26 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     private transient int firstNonzeroDigit = -2;
 
-    /* Serialized Fields */
-
+    /** sign field, used for serialization. */
     private int signum;
 
+    /** absolute value field, used for serialization */
     private byte[] magnitude;
 
+    /** Cache for the hash code. */
     private transient int hashCode = 0;
 
-    /* Public Constructors */
-
+    /**
+     * Constructs a random non-negative {@code BigInteger} instance in the range
+     * [0, 2^(numBits)-1].
+     *
+     * @param numBits
+     *            maximum length of the new {@code BigInteger} in bits.
+     * @param rnd
+     *            is an optional random generator to be used.
+     * @throws IllegalArgumentException
+     *             if {@code numBits} < 0.
+     */
     public BigInteger(int numBits, Random rnd) {
         if (numBits < 0) {
             // math.1B=numBits must be non-negative
@@ -108,6 +142,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
     }
 
+    /**
+     * Constructs a random {@code BigInteger} instance in the range [0,
+     * 2^(bitLength)-1] which is probably prime. The probability that the
+     * returned {@code BigInteger} is prime is beyond (1-1/2^certainty).
+     *
+     * @param bitLength
+     *            length of the new {@code BigInteger} in bits.
+     * @param certainty
+     *            tolerated primality uncertainty.
+     * @param rnd
+     *            is an optional random generator to be used.
+     * @throws ArithmeticException
+     *             if {@code bitLength} < 2.
+     */
     public BigInteger(int bitLength, int certainty, Random rnd) {
         if (bitLength < 2) {
             // math.1C=bitLength < 2
@@ -119,10 +167,41 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         digits = me.digits;
     }
 
+    /**
+     * Constructs a new {@code BigInteger} instance from the string
+     * representation. The string representation consists of an optional minus
+     * sign followed by a non-empty sequence of decimal digits.
+     *
+     * @param val
+     *            string representation of the new {@code BigInteger}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     * @throws NumberFormatException
+     *             if {@code val} is not a valid representation of a {@code
+     *             BigInteger}.
+     */
     public BigInteger(String val) {
         this(val, 10);
     }
 
+    /**
+     * Constructs a new {@code BigInteger} instance from the string
+     * representation. The string representation consists of an optional minus
+     * sign followed by a non-empty sequence of digits in the specified radix.
+     * For the conversion the method {@code Character.digit(char, radix)} is
+     * used.
+     *
+     * @param val
+     *            string representation of the new {@code BigInteger}.
+     * @param radix
+     *            the base to be used for the conversion.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     * @throws NumberFormatException
+     *             if {@code val} is not a valid representation of a {@code
+     *             BigInteger} or if {@code radix < Character.MIN_RADIX} or
+     *             {@code radix > Character.MAX_RADIX}.
+     */
     public BigInteger(String val, int radix) {
         if (val == null) {
             throw new NullPointerException();
@@ -138,6 +217,24 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         setFromString(this, val, radix);
     }
 
+    /**
+     * Constructs a new {@code BigInteger} instance with the given sign and the
+     * given magnitude. The sign is given as an integer (-1 for negative, 0 for
+     * zero, 1 for positive). The magnitude is specified as a byte array. The
+     * most significant byte is the entry at index 0.
+     *
+     * @param signum
+     *            sign of the new {@code BigInteger} (-1 for negative, 0 for
+     *            zero, 1 for positive).
+     * @param magnitude
+     *            magnitude of the new {@code BigInteger} with the most
+     *            significant byte first.
+     * @throws NullPointerException
+     *             if {@code magnitude == null}.
+     * @throws NumberFormatException
+     *             if the sign is not one of -1, 0, 1 or if the sign is zero and
+     *             the magnitude contains non-zero entries.
+     */
     public BigInteger(int signum, byte[] magnitude) {
         if (magnitude == null) {
             throw new NullPointerException();
@@ -166,6 +263,19 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
     }
 
+    /**
+     * Constructs a new {@code BigInteger} from the given two's complement
+     * representation. The most significant byte is the entry at index 0. The
+     * most significant bit of this entry determines the sign of the new {@code
+     * BigInteger} instance. The given array must not be empty.
+     *
+     * @param val
+     *            two's complement representation of the new {@code BigInteger}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     * @throws NumberFormatException
+     *             if the length of {@code val} is zero.
+     */
     public BigInteger(byte[] val) {
         if (val.length == 0) {
             // math.12=Zero length BigInteger
@@ -180,8 +290,6 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
         cutOffLeadingZeroes();
     }
-
-    /* Package Constructors */
 
     /**
      * Constructs a number which array is of size 1.
@@ -272,6 +380,12 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         }
     }
 
+    /**
+     * Returns the two's complement representation of this BigInteger in a byte
+     * array.
+     *
+     * @return two's complement representation of {@code this}.
+     */
     public byte[] toByteArray() {
         if (this.sign == 0) {
             return new byte[] { 0 };
@@ -395,27 +509,76 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         bi.cutOffLeadingZeroes();
     }
 
+    /**
+     * Returns a (new) {@code BigInteger} whose value is the absolute value of
+     * {@code this}.
+     *
+     * @return {@code abs(this)}.
+     */
     public BigInteger abs() {
         return ((sign < 0) ? new BigInteger(1, numberLength, digits) : this);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is the {@code -this}.
+     *
+     * @return {@code -this}.
+     */
     public BigInteger negate() {
         return ((sign == 0) ? this
                 : new BigInteger(-sign, numberLength, digits));
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this + val}.
+     *
+     * @param val
+     *            value to be added to {@code this}.
+     * @return {@code this + val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger add(BigInteger val) {
         return Elementary.add(this, val);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this - val}.
+     *
+     * @param val
+     *            value to be subtracted from {@code this}.
+     * @return {@code this - val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger subtract(BigInteger val) {
         return Elementary.subtract(this, val);
     }
 
+    /**
+     * Returns the sign of this {@code BigInteger}.
+     *
+     * @return {@code -1} if {@code this < 0},
+     *         {@code 0} if {@code this == 0},
+     *         {@code 1} if {@code this > 0}.
+     */
     public int signum() {
         return sign;
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this >> n}. For
+     * negative arguments, the result is also negative. The shift distance may
+     * be negative which means that {@code this} is shifted left.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method on negative values is
+     * not recommended as the current implementation is not efficient.
+     *
+     * @param n
+     *            shift distance
+     * @return {@code this >> n} if {@code n >= 0}; {@code this << (-n)}
+     *         otherwise
+     */
     public BigInteger shiftRight(int n) {
         if ((n == 0) || (sign == 0)) {
             return this;
@@ -424,6 +587,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                 this, -n));
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this << n}. The
+     * result is equivalent to {@code this * 2^n} if n >= 0. The shift distance
+     * may be negative which means that {@code this} is shifted right. The
+     * result then corresponds to {@code floor(this / 2^(-n))}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method on negative values is
+     * not recommended as the current implementation is not efficient.
+     *
+     * @param n
+     *            shift distance.
+     * @return {@code this << n} if {@code n >= 0}; {@code this >> (-n)}.
+     *         otherwise
+     */
     public BigInteger shiftLeft(int n) {
         if ((n == 0) || (sign == 0)) {
             return this;
@@ -436,10 +613,37 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return (sign == 0) ? this : BitLevel.shiftLeftOneBit(this);
     }
 
+    /**
+     * Returns the length of the value's two's complement representation without
+     * leading zeros for positive numbers / without leading ones for negative
+     * values.
+     * <p>
+     * The two's complement representation of {@code this} will be at least
+     * {@code bitLength() + 1} bits long.
+     * <p>
+     * The value will fit into an {@code int} if {@code bitLength() < 32} or
+     * into a {@code long} if {@code bitLength() < 64}.
+     *
+     * @return the length of the minimal two's complement representation for
+     *         {@code this} without the sign bit.
+     */
     public int bitLength() {
         return BitLevel.bitLength(this);
     }
 
+    /**
+     * Tests whether the bit at position n in {@code this} is set. The result is
+     * equivalent to {@code this & (2^n) != 0}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param n
+     *            position where the bit in {@code this} has to be inspected.
+     * @return {@code this & (2^n) != 0}.
+     * @throws ArithmeticException
+     *             if {@code n < 0}.
+     */
     public boolean testBit(int n) {
         if (n == 0) {
             return ((digits[0] & 1) != 0);
@@ -467,6 +671,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return ((digit & n) != 0);
     }
 
+    /**
+     * Returns a new {@code BigInteger} which has the same binary representation
+     * as {@code this} but with the bit at position n set. The result is
+     * equivalent to {@code this | 2^n}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param n
+     *            position where the bit in {@code this} has to be set.
+     * @return {@code this | 2^n}.
+     * @throws ArithmeticException
+     *             if {@code n < 0}.
+     */
     public BigInteger setBit(int n) {
         if (!testBit(n)) {
             return BitLevel.flipBit(this, n);
@@ -474,6 +692,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return this;
     }
 
+    /**
+     * Returns a new {@code BigInteger} which has the same binary representation
+     * as {@code this} but with the bit at position n cleared. The result is
+     * equivalent to {@code this & ~(2^n)}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param n
+     *            position where the bit in {@code this} has to be cleared.
+     * @return {@code this & ~(2^n)}.
+     * @throws ArithmeticException
+     *             if {@code n < 0}.
+     */
     public BigInteger clearBit(int n) {
         if (testBit(n)) {
             return BitLevel.flipBit(this, n);
@@ -481,6 +713,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return this;
     }
 
+    /**
+     * Returns a new {@code BigInteger} which has the same binary representation
+     * as {@code this} but with the bit at position n flipped. The result is
+     * equivalent to {@code this ^ 2^n}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param n
+     *            position where the bit in {@code this} has to be flipped.
+     * @return {@code this ^ 2^n}.
+     * @throws ArithmeticException
+     *             if {@code n < 0}.
+     */
     public BigInteger flipBit(int n) {
         if (n < 0) {
             // math.15=Negative bit address
@@ -489,6 +735,16 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return BitLevel.flipBit(this, n);
     }
 
+    /**
+     * Returns the position of the lowest set bit in the two's complement
+     * representation of this {@code BigInteger}. If all bits are zero (this=0)
+     * then -1 is returned as result.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @return position of lowest bit if {@code this != 0}, {@code -1} otherwise
+     */
     public int getLowestSetBit() {
         if (sign == 0) {
             return -1;
@@ -498,35 +754,122 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return ((i << 5) + Integer.numberOfTrailingZeros(digits[i]));
     }
 
+    /**
+     * Use {@code bitLength(0)} if you want to know the length of the binary
+     * value in bits.
+     * <p>
+     * Returns the number of bits in the binary representation of {@code this}
+     * which differ from the sign bit. If {@code this} is positive the result is
+     * equivalent to the number of bits set in the binary representation of
+     * {@code this}. If {@code this} is negative the result is equivalent to the
+     * number of bits set in the binary representation of {@code -this-1}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @return number of bits in the binary representation of {@code this} which
+     *         differ from the sign bit
+     */
     public int bitCount() {
         return BitLevel.bitCount(this);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code ~this}. The result
+     * of this operation is {@code -this-1}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @return {@code ~this}.
+     */
     public BigInteger not() {
         return Logical.not(this);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this & val}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param val
+     *            value to be and'ed with {@code this}.
+     * @return {@code this & val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger and(BigInteger val) {
         return Logical.and(this, val);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this | val}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param val
+     *            value to be or'ed with {@code this}.
+     * @return {@code this | val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger or(BigInteger val) {
         return Logical.or(this, val);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this ^ val}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param val
+     *            value to be xor'ed with {@code this}
+     * @return {@code this ^ val}
+     * @throws NullPointerException
+     *             if {@code val == null}
+     */
     public BigInteger xor(BigInteger val) {
         return Logical.xor(this, val);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this & ~val}.
+     * Evaluating {@code x.andNot(val)} returns the same result as {@code
+     * x.and(val.not())}.
+     * <p>
+     * <b>Implementation Note:</b> Usage of this method is not recommended as
+     * the current implementation is not efficient.
+     *
+     * @param val
+     *            value to be not'ed and then and'ed with {@code this}.
+     * @return {@code this & ~val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger andNot(BigInteger val) {
         return Logical.andNot(this, val);
     }
 
+    /**
+     * Returns this {@code BigInteger} as an int value. If {@code this} is too
+     * big to be represented as an int, then {@code this} % 2^32 is returned.
+     *
+     * @return this {@code BigInteger} as an int value.
+     */
     @Override
     public int intValue() {
         return (sign * digits[0]);
     }
 
+    /**
+     * Returns this {@code BigInteger} as an long value. If {@code this} is too
+     * big to be represented as an long, then {@code this} % 2^64 is returned.
+     *
+     * @return this {@code BigInteger} as a long value.
+     */
     @Override
     public long longValue() {
         long value = (numberLength > 1) ? (((long) digits[1]) << 32)
@@ -534,16 +877,48 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return (sign * value);
     }
 
+    /**
+     * Returns this {@code BigInteger} as an float value. If {@code this} is too
+     * big to be represented as an float, then {@code Float.POSITIVE_INFINITY}
+     * or {@code Float.NEGATIVE_INFINITY} is returned. Note, that not all
+     * integers x in the range [-Float.MAX_VALUE, Float.MAX_VALUE] can be
+     * represented as a float. The float representation has a mantissa of length
+     * 24. For example, 2^24+1 = 16777217 is returned as float 16777216.0.
+     *
+     * @return this {@code BigInteger} as a float value.
+     */
     @Override
     public float floatValue() {
         return (float) doubleValue();
     }
 
+    /**
+     * Returns this {@code BigInteger} as an double value. If {@code this} is
+     * too big to be represented as an double, then {@code
+     * Double.POSITIVE_INFINITY} or {@code Double.NEGATIVE_INFINITY} is
+     * returned. Note, that not all integers x in the range [-Double.MAX_VALUE,
+     * Double.MAX_VALUE] can be represented as a double. The double
+     * representation has a mantissa of length 53. For example, 2^53+1 =
+     * 9007199254740993 is returned as double 9007199254740992.0.
+     *
+     * @return this {@code BigInteger} as a double value
+     */
     @Override
     public double doubleValue() {
         return Conversion.bigInteger2Double(this);
     }
 
+    /**
+     * Compares this {@code BigInteger} with {@code val}. Returns one of the
+     * three values 1, 0, or -1.
+     *
+     * @param val
+     *            value to be compared with {@code this}.
+     * @return {@code 1} if {@code this > val}, {@code -1} if {@code this < val}
+     *         , {@code 0} if {@code this == val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public int compareTo(BigInteger val) {
         if (sign > val.sign) {
             return GREATER;
@@ -562,14 +937,37 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                 numberLength));
     }
 
+    /**
+     * Returns the minimum of this {@code BigInteger} and {@code val}.
+     *
+     * @param val
+     *            value to be used to compute the minimum with {@code this}.
+     * @return {@code min(this, val)}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger min(BigInteger val) {
         return ((this.compareTo(val) == LESS) ? this : val);
     }
 
+    /**
+     * Returns the maximum of this {@code BigInteger} and {@code val}.
+     *
+     * @param val
+     *            value to be used to compute the maximum with {@code this}
+     * @return {@code max(this, val)}
+     * @throws NullPointerException
+     *             if {@code val == null}
+     */
     public BigInteger max(BigInteger val) {
         return ((this.compareTo(val) == GREATER) ? this : val);
     }
 
+    /**
+     * Returns a hash code for this {@code BigInteger}.
+     *
+     * @return hash code for {@code this}.
+     */
     @Override
     public int hashCode() {
         if (hashCode != 0) {
@@ -582,6 +980,15 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return hashCode;
     }
 
+    /**
+     * Returns {@code true} if {@code x} is a BigInteger instance and if this
+     * instance is equal to this {@code BigInteger}.
+     *
+     * @param x
+     *            object to be compared with {@code this}.
+     * @return true if {@code x} is a BigInteger and {@code this == x},
+     *          {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object x) {
         if (this == x) {
@@ -603,15 +1010,43 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return i < 0;
     }
 
+    /**
+     * Returns a string representation of this {@code BigInteger} in decimal
+     * form.
+     *
+     * @return a string representation of {@code this} in decimal form.
+     */
     @Override
     public String toString() {
         return Conversion.toDecimalScaledString(this, 0);
     }
 
+    /**
+     * Returns a string containing a string representation of this {@code
+     * BigInteger} with base radix. If {@code radix < Character.MIN_RADIX} or
+     * {@code radix > Character.MAX_RADIX} then a decimal representation is
+     * returned. The characters of the string representation are generated with
+     * method {@code Character.forDigit}.
+     *
+     * @param radix
+     *            base to be used for the string representation.
+     * @return a string representation of this with radix 10.
+     */
     public String toString(int radix) {
         return Conversion.bigInteger2String(this, radix);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is greatest common divisor
+     * of {@code this} and {@code val}. If {@code this==0} and {@code val==0}
+     * then zero is returned, otherwise the result is positive.
+     *
+     * @param val
+     *            value with which the greatest common divisor is computed.
+     * @return {@code gcd(this, val)}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger gcd(BigInteger val) {
         BigInteger val1 = this.abs();
         BigInteger val2 = val.abs();
@@ -634,6 +1069,15 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this * val}.
+     *
+     * @param val
+     *            value to be multiplied with {@code this}.
+     * @return {@code this * val}.
+     * @throws NullPointerException
+     *             if {@code val == null}.
+     */
     public BigInteger multiply(BigInteger val) {
         // This let us to throw NullPointerException when val == null
         if (val.sign == 0) {
@@ -645,6 +1089,15 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return Multiplication.multiply(this, val);
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this ^ exp}.
+     *
+     * @param exp
+     *            exponent to which {@code this} is raised.
+     * @return {@code this ^ exp}.
+     * @throws ArithmeticException
+     *             if {@code exp < 0}.
+     */
     public BigInteger pow(int exp) {
         if (exp < 0) {
             // math.16=Negative exponent
@@ -668,6 +1121,20 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return Multiplication.pow(this, exp);
     }
 
+    /**
+     * Returns a {@code BigInteger} array which contains {@code this / divisor}
+     * at index 0 and {@code this % divisor} at index 1.
+     *
+     * @param divisor
+     *            value by which {@code this} is divided.
+     * @return {@code [this / divisor, this % divisor]}.
+     * @throws NullPointerException
+     *             if {@code divisor == null}.
+     * @throws ArithmeticException
+     *             if {@code divisor == 0}.
+     * @see #divide
+     * @see #remainder
+     */
     public BigInteger[] divideAndRemainder(BigInteger divisor) {
         int divisorSign = divisor.sign;
         if (divisorSign == 0) {
@@ -704,6 +1171,17 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return new BigInteger[] { result0, result1 };
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this / divisor}.
+     *
+     * @param divisor
+     *            value by which {@code this} is divided.
+     * @return {@code this / divisor}.
+     * @throws NullPointerException
+     *             if {@code divisor == null}.
+     * @throws ArithmeticException
+     *             if {@code divisor == 0}.
+     */
     public BigInteger divide(BigInteger divisor) {
         if (divisor.sign == 0) {
             // math.17=BigInteger divide by zero
@@ -747,6 +1225,19 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return result;
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this % divisor}.
+     * Regarding signs this methods has the same behavior as the % operator on
+     * int's, i.e. the sign of the remainder is the same as the sign of this.
+     *
+     * @param divisor
+     *            value by which {@code this} is divided.
+     * @return {@code this % divisor}.
+     * @throws NullPointerException
+     *             if {@code divisor == null}.
+     * @throws ArithmeticException
+     *             if {@code divisor == 0}.
+     */
     public BigInteger remainder(BigInteger divisor) {
         if (divisor.sign == 0) {
             // math.17=BigInteger divide by zero
@@ -773,6 +1264,21 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return result;
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code 1/this mod m}. The
+     * modulus {@code m} must be positive. The result is guaranteed to be in the
+     * interval {@code [0, m)} (0 inclusive, m exclusive). If {@code this} is
+     * not relatively prime to m, then an exception is thrown.
+     *
+     * @param m
+     *            the modulus.
+     * @return {@code 1/this mod m}.
+     * @throws NullPointerException
+     *             if {@code m == null}
+     * @throws ArithmeticException
+     *             if {@code m < 0 or} if {@code this} is not relatively prime
+     *             to {@code m}
+     */
     public BigInteger modInverse(BigInteger m) {
         if (m.sign <= 0) {
             // math.18=BigInteger: modulus not positive
@@ -799,6 +1305,25 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this^exponent mod
+     * m}. The modulus {@code m} must be positive. The result is guaranteed to
+     * be in the interval {@code [0, m)} (0 inclusive, m exclusive). If the
+     * exponent is negative, then {@code this.modInverse(m)^(-exponent) mod m)}
+     * is computed. The inverse of this only exists if {@code this} is
+     * relatively prime to m, otherwise an exception is thrown.
+     *
+     * @param exponent
+     *            the exponent.
+     * @param m
+     *            the modulus.
+     * @return {@code this^exponent mod val}.
+     * @throws NullPointerException
+     *             if {@code m == null} or {@code exponent == null}.
+     * @throws ArithmeticException
+     *             if {@code m < 0} or if {@code exponent<0} and this is not
+     *             relatively prime to {@code m}.
+     */
     public BigInteger modPow(BigInteger exponent, BigInteger m) {
         if (m.sign <= 0) {
             // math.18=BigInteger: modulus not positive
@@ -827,6 +1352,21 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return res;
     }
 
+    /**
+     * Returns a new {@code BigInteger} whose value is {@code this mod m}. The
+     * modulus {@code m} must be positive. The result is guaranteed to be in the
+     * interval {@code [0, m)} (0 inclusive, m exclusive). The behavior of this
+     * function is not equivalent to the behavior of the % operator defined for
+     * the built-in {@code int}'s.
+     *
+     * @param m
+     *            the modulus.
+     * @return {@code this mod m}.
+     * @throws NullPointerException
+     *             if {@code m == null}.
+     * @throws ArithmeticException
+     *             if {@code m < 0}.
+     */
     public BigInteger mod(BigInteger m) {
         if (m.sign <= 0) {
             // math.18=BigInteger: modulus not positive
@@ -836,10 +1376,31 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return ((rem.sign < 0) ? rem.add(m) : rem);
     }
 
+    /**
+     * Tests whether this {@code BigInteger} is probably prime. If {@code true}
+     * is returned, then this is prime with a probability beyond
+     * (1-1/2^certainty). If {@code false} is returned, then this is definitely
+     * composite. If the argument {@code certainty} <= 0, then this method
+     * returns true.
+     *
+     * @param certainty
+     *            tolerated primality uncertainty.
+     * @return {@code true}, if {@code this} is probably prime, {@code false}
+     *         otherwise.
+     */
     public boolean isProbablePrime(int certainty) {
         return Primality.isProbablePrime(abs(), certainty);
     }
 
+    /**
+     * Returns the smallest integer x > {@code this} which is probably prime as
+     * a {@code BigInteger} instance. The probability that the returned {@code
+     * BigInteger} is prime is beyond (1-1/2^80).
+     *
+     * @return smallest integer > {@code this} which is robably prime.
+     * @throws ArithmeticException
+     *             if {@code this < 0}.
+     */
     public BigInteger nextProbablePrime() {
         if (sign < 0) {
             // math.1A=start < 0: {0}
@@ -848,6 +1409,21 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return Primality.nextProbablePrime(this);
     }
 
+    /**
+     * Returns a random positive {@code BigInteger} instance in the range [0,
+     * 2^(bitLength)-1] which is probably prime. The probability that the
+     * returned {@code BigInteger} is prime is beyond (1-1/2^80).
+     * <p>
+     * <b>Implementation Note:</b> Currently {@code rnd} is ignored.
+     *
+     * @param bitLength
+     *            length of the new {@code BigInteger} in bits.
+     * @param rnd
+     *            random generator used to generate the new {@code BigInteger}.
+     * @return probably prime random {@code BigInteger} instance.
+     * @throws IllegalArgumentException
+     *             if {@code bitLength < 2}.
+     */
     public static BigInteger probablePrime(int bitLength, Random rnd) {
         return new BigInteger(bitLength, 100, rnd);
     }

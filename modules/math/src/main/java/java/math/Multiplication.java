@@ -21,9 +21,6 @@ import org.apache.harmony.math.internal.nls.Messages;
 
 /**
  * Static library that provides all multiplication of {@link BigInteger} methods.
- *
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class Multiplication {
 
