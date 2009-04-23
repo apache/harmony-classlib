@@ -27,39 +27,58 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * @com.intel.drl.spec_ref
+ * The <i>Service Provider Interface</i> (<b>SPI</b>) definition for the
+ * {@code KeyGenerator} class.
  * 
+ * @see KeyGenerator
  */
 public abstract class KeyGeneratorSpi {
+
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code KeyGeneratorSpi} instance.
      */
     public KeyGeneratorSpi() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Generates a secret key.
+     *
+     * @return the generated secret key.
      */
     protected abstract SecretKey engineGenerateKey();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code KeyGeneratorSpi} instance with the specified
+     * algorithm parameters and randomness source.
+     *
+     * @param params
+     *            the parameters for the key generation algorithm.
+     * @param random
+     *            the randomness source for any random bytes.
+     * @throws InvalidAlgorithmParameterException
+     *             if the parameters cannot be uses to initialize this key
+     *             generator algorithm.
      */
     protected abstract void engineInit(AlgorithmParameterSpec params,
             SecureRandom random) throws InvalidAlgorithmParameterException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code KeyGenerator} instance for the specified key
+     * size (in bits) using the specified randomness source.
+     *
+     * @param keysize
+     *            the size of the key (in bits).
+     * @param random
+     *            the randomness source for any random bytes.
      */
     protected abstract void engineInit(int keysize, SecureRandom random);
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code KeyGenerator} with the specified randomness
+     * source.
+     *
+     * @param random
+     *            the randomness source for any random bytes.
      */
     protected abstract void engineInit(SecureRandom random);
 }

@@ -25,14 +25,14 @@ package javax.crypto.interfaces;
 import javax.crypto.spec.DHParameterSpec;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The interface for a Diffie-Hellman key.
  */
 public interface DHKey {
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the parameters for this key.
+     *
+     * @return the parameters for this key.
      */
     public DHParameterSpec getParams();
 }

@@ -26,7 +26,7 @@ import java.math.BigInteger;
 import java.security.spec.KeySpec;
 
 /**
- * @com.intel.drl.spec_ref
+ * The key specification for a Diffie-Hellman public key.
  */
 public class DHPublicKeySpec implements KeySpec {
 
@@ -35,7 +35,16 @@ public class DHPublicKeySpec implements KeySpec {
     private final BigInteger g;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new <code>DHPublicKeySpec</code> instance with the specified
+     * <i>public value</i> <code>y</code>, the <i>prime modulus</i>
+     * <code>p</code> and the <i>base generator</i> <code>g</code>.
+     *
+     * @param y
+     *            the public value.
+     * @param p
+     *            the prime modulus.
+     * @param g
+     *            the base generator.
      */
     public DHPublicKeySpec(BigInteger y, BigInteger p, BigInteger g) {
         this.y = y;
@@ -44,21 +53,27 @@ public class DHPublicKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>public value</i> <code>y</code>.
+     *
+     * @return the public value <code>y</code>.
      */
     public BigInteger getY() {
         return y;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>prime modulus</i> <code>p</code>.
+     *
+     * @return the prime modulus <code>p</code>.
      */
     public BigInteger getP() {
         return p;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>base generator</i> <code>g</code>;
+     *
+     * @return the base generator <code>g</code>;
      */
     public BigInteger getG() {
         return g;

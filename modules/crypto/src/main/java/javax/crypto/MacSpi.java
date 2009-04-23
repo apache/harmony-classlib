@@ -29,46 +29,73 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.nio.ByteBuffer;
 
 /**
- * @com.intel.drl.spec_ref
+ * The <i>Service-Provider Interface</i> (<b>SPI</b>) definition for the {@code
+ * Mac} class.
  * 
+ * @see Mac
  */
-
 public abstract class MacSpi {
+
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code MacSpi} instance.
      */
     public MacSpi() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the length of this MAC (in bytes).
+     *
+     * @return the length of this MAC (in bytes).
      */
     protected abstract int engineGetMacLength();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code MacSpi} instance with the specified key and
+     * algorithm parameters.
+     *
+     * @param key
+     *            the key to initialize this algorithm.
+     * @param params
+     *            the parameters for this algorithm.
+     * @throws InvalidKeyException
+     *             if the specified key cannot be used to initialize this
+     *             algorithm, or it is {@code null}.
+     * @throws InvalidAlgorithmParameterException
+     *             if the specified parameters cannot be used to initialize this
+     *             algorithm.
      */
     protected abstract void engineInit(Key key, AlgorithmParameterSpec params)
             throws InvalidKeyException, InvalidAlgorithmParameterException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Updates this {@code MacSpi} instance with the specified byte.
+     *
+     * @param input
+     *            the byte.
      */
     protected abstract void engineUpdate(byte input);
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Updates this {@code MacSpi} instance with the data from the specified
+     * buffer {@code input} from the specified {@code offset} and length {@code
+     * len}.
+     *
+     * @param input
+     *            the buffer.
+     * @param offset
+     *            the offset in the buffer.
+     * @param len
+     *            the length of the data in the buffer.
      */
     protected abstract void engineUpdate(byte[] input, int offset, int len);
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Updates this {@code MacSpi} instance with the data from the specified
+     * buffer, starting at {@link ByteBuffer#position()}, including the next
+     * {@link ByteBuffer#remaining()} bytes.
+     *
+     * @param input
+     *            the buffer.
      */
     protected void engineUpdate(ByteBuffer input) {
         if (!input.hasRemaining()) {
@@ -90,20 +117,32 @@ public abstract class MacSpi {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Computes the digest of this MAC based on the data previously specified in
+     * {@link #engineUpdate} calls.
+     * <p>
+     * This {@code MacSpi} instance is reverted to its initial state and
+     * can be used to start the next MAC computation with the same parameters or
+     * initialized with different parameters.
+     *
+     * @return the generated digest.
      */
     protected abstract byte[] engineDoFinal();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Resets this {@code MacSpi} instance to its initial state.
+     * <p>
+     * This {@code MacSpi} instance is reverted to its initial state and can be
+     * used to start the next MAC computation with the same parameters or
+     * initialized with different parameters.
      */
     protected abstract void engineReset();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Clones this {@code MacSpi} instance.
+     *
+     * @return the cloned instance.
+     * @throws CloneNotSupportedException
+     *             if cloning is not supported.
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
