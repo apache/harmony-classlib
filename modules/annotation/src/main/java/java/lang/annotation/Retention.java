@@ -18,11 +18,10 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * A meta-annotation used to determine the scope of retention for an annotation.
- * The default value is {@link RetentionPolicy#RUNTIME}.
- * </p>
- * 
+ * Defines a meta-annotation for determining the scope of retention for an
+ * annotation. If the retention annotation is not set {@code
+ * RetentionPolicy.CLASS} is used as default retention.
+ *
  * @since 1.5
  */
 @Documented

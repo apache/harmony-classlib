@@ -18,11 +18,9 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * A meta-annotation used to indicate that an annotation is automatically
+ * Defines a meta-annotation for indicating that an annotation is automatically
  * inherited.
- * </p>
- * 
+ *
  * @since 1.5
  */
 @Documented
