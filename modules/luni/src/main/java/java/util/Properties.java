@@ -269,7 +269,21 @@ public class Properties extends Hashtable<Object,Object> {
 
 		while (true) {
 			intVal = bis.read();
-                        if (intVal == -1) break;
+            if (intVal == -1) {
+                // if mode is UNICODE but has less than 4 hex digits, should
+                // throw an IllegalArgumentException
+                // luni.08=Invalid Unicode sequence: expected format \\uxxxx
+                if (mode == UNICODE && count < 4) {
+                    throw new IllegalArgumentException(Messages
+                            .getString("luni.08")); //$NON-NLS-1$
+                }
+                // if mode is SLASH and no data is read, should append '\u0000'
+                // to buf
+                if (mode == SLASH) {
+                    buf[offset++] = '\u0000';
+                }
+                break;
+            }
                         nextChar = (char) (intVal & 0xff);
 
 			if (offset == buf.length) {
@@ -284,8 +298,10 @@ public class Properties extends Hashtable<Object,Object> {
 					if (++count < 4) {
                         continue;
                     }
-				} else {
-                    throw new IllegalArgumentException();
+                } else if (count <= 4) {
+                    // luni.09=Invalid Unicode sequence: illegal character
+                    throw new IllegalArgumentException(Messages
+                            .getString("luni.09")); //$NON-NLS-1$
                 }
 				mode = NONE;
 				buf[offset++] = (char) unicode;
@@ -419,6 +435,9 @@ public class Properties extends Hashtable<Object,Object> {
      * @since 1.6
      */
     public synchronized void load(Reader reader) throws IOException {
+        if (reader == null) {
+            throw new NullPointerException();
+        }
         int mode = NONE, unicode = 0, count = 0;
         char nextChar, buf[] = new char[40];
         int offset = 0, keyLength = -1, intVal;
@@ -427,7 +446,21 @@ public class Properties extends Hashtable<Object,Object> {
 
         while (true) {
             intVal = br.read();
-            if (intVal == -1) break;
+            if (intVal == -1) {
+                // if mode is UNICODE but has less than 4 hex digits, should
+                // throw an IllegalArgumentException
+                // luni.08=Invalid Unicode sequence: expected format \\uxxxx
+                if (mode == UNICODE && count < 4) {
+                    throw new IllegalArgumentException(Messages
+                            .getString("luni.08")); //$NON-NLS-1$
+                }
+                // if mode is SLASH and no data is read, should append '\u0000'
+                // to buf
+                if (mode == SLASH) {
+                    buf[offset++] = '\u0000';
+                }
+                break;
+            }
             nextChar = (char) intVal;
 
             if (offset == buf.length) {
@@ -560,21 +593,12 @@ public class Properties extends Hashtable<Object,Object> {
             }
             buf[offset++] = nextChar;
         }
-        if (mode == UNICODE && count <= 4) {
-            // luni.08=Invalid Unicode sequence: expected format \\uxxxx
-            throw new IllegalArgumentException(Messages.getString("luni.08"));
-        }
         if (keyLength == -1 && offset > 0) {
             keyLength = offset;
         }
         if (keyLength >= 0) {
             String temp = new String(buf, 0, offset);
-            String key = temp.substring(0, keyLength);
-            String value = temp.substring(keyLength);
-            if (mode == SLASH) {
-                value += "\u0000";
-            }
-            put(key, value);
+            put(temp.substring(0, keyLength), temp.substring(keyLength));
         }
     }   
 
