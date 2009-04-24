@@ -25,19 +25,33 @@ import java.util.Vector;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * ZipOutputStream is used to write ZipEntries to the underlying stream. Output
- * from ZipOutputStream conforms to the ZipFile file format.
- * 
- * @see ZipInputStream
+ * This class provides an implementation of {@code FilterOutputStream} that
+ * compresses data entries into a <i>ZIP-archive</i> output stream.
+ * <p>
+ * {@code ZipOutputStream} is used to write {@code ZipEntries} to the underlying
+ * stream. Output from {@code ZipOutputStream} conforms to the {@code ZipFile}
+ * file format.
+ * <p>
+ * While {@code DeflaterOutputStream} can write a compressed <i>ZIP-archive</i>
+ * entry, this extension can write uncompressed entries as well. In this case
+ * special rules apply, for this purpose refer to the <a
+ * href="http://www.pkware.com/documents/casestudies/APPNOTE.TXT">file format
+ * specification</a>.
+ *
  * @see ZipEntry
+ * @see ZipFile
  */
 public class ZipOutputStream extends DeflaterOutputStream implements
         ZipConstants {
 
-    /** Method for compressed entries */
+    /**
+     * Indicates deflated entries.
+     */
     public static final int DEFLATED = 8;
 
-    /** Method for uncompressed entries */
+    /**
+     * Indicates uncompressed entries.
+     */
     public static final int STORED = 0;
 
     static final int ZIPDataDescriptorFlag = 8;
@@ -63,21 +77,22 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     private byte[] nameBytes;
 
     /**
-     * Constructs a new ZipOutputStream on p1
+     * Constructs a new {@code ZipOutputStream} with the specified output
+     * stream.
      * 
      * @param p1
-     *            OutputStream The InputStream to output to
+     *            the {@code OutputStream} to write the data to.
      */
     public ZipOutputStream(OutputStream p1) {
         super(p1, new Deflater(Deflater.DEFAULT_COMPRESSION, true));
     }
 
     /**
-     * Closes the current ZipEntry if any. Closes the underlying output stream.
-     * If the stream is already closed this method does nothing.
+     * Closes the current {@code ZipEntry}, if any, and the underlying output
+     * stream. If the stream is already closed this method does nothing.
      * 
-     * @exception IOException
-     *                If an error occurs closing the stream
+     * @throws IOException
+     *             If an error occurs closing the stream.
      */
     @Override
     public void close() throws IOException {
@@ -89,11 +104,11 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     }
 
     /**
-     * Closes the current ZipEntry. Any entry terminal data is written to the
-     * underlying stream.
+     * Closes the current {@code ZipEntry}. Any entry terminal data is written
+     * to the underlying stream.
      * 
-     * @exception IOException
-     *                If an error occurs closing the entry
+     * @throws IOException
+     *             If an error occurs closing the entry.
      */
     public void closeEntry() throws IOException {
         if (cDir == null) {
@@ -175,10 +190,10 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
     /**
      * Indicates that all entries have been written to the stream. Any terminal
-     * ZipFile information is written to the underlying stream.
+     * information is written to the underlying stream.
      * 
-     * @exception IOException
-     *                If an error occurs while finishing
+     * @throws IOException
+     *             if an error occurs while terminating the stream.
      */
     @Override
     public void finish() throws IOException {
@@ -216,15 +231,15 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     }
 
     /**
-     * Writes entry information for ze to the underlying stream. Data associated
-     * with the entry can then be written using write(). After data is written
-     * closeEntry() must be called to complete the storing of ze on the
-     * underlying stream.
+     * Writes entry information to the underlying stream. Data associated with
+     * the entry can then be written using {@code write()}. After data is
+     * written {@code closeEntry()} must be called to complete the writing of
+     * the entry to the underlying stream.
      * 
      * @param ze
-     *            ZipEntry to store
-     * @exception IOException
-     *                If an error occurs storing the entry
+     *            the {@code ZipEntry} to store.
+     * @throws IOException
+     *             If an error occurs storing the entry.
      * @see #write
      */
     public void putNextEntry(ZipEntry ze) throws java.io.IOException {
@@ -307,10 +322,10 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     }
 
     /**
-     * Sets the ZipFile comment associated with the file being written.
+     * Sets the {@code ZipFile} comment associated with the file being written.
      * 
      * @param comment
-     *            the file comment
+     *            the comment associated with the file.
      */
     public void setComment(String comment) {
         if (comment.length() > 0xFFFF) {
@@ -321,10 +336,12 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
     /**
      * Sets the compression level to be used for writing entry data. This level
-     * may be set on a per entry basis.
+     * may be set on a per entry basis. The level must have a value between -1
+     * and 8 according to the {@code Deflater} compression level bounds.
      * 
      * @param level
-     *            the compression level, must have a value between 0 and 10.
+     *            the compression level (ranging from -1 to 8).
+     * @see Deflater
      */
     public void setLevel(int level) {
         if (level < Deflater.DEFAULT_COMPRESSION
@@ -336,10 +353,11 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
     /**
      * Sets the compression method to be used when compressing entry data.
-     * method must be one of STORED or DEFLATED.
+     * method must be one of {@code STORED} (for no compression) or {@code
+     * DEFLATED}.
      * 
      * @param method
-     *            Compression method to use
+     *            the compression method to use.
      */
     public void setMethod(int method) {
         if (method != STORED && method != DEFLATED) {

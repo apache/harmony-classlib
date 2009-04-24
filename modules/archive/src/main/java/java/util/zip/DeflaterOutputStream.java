@@ -24,54 +24,68 @@ import java.io.OutputStream;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * The DeflaterOutputStream class implements a stream filter for the writing of
- * compressed data to a stream. Compression is performed by an instance of
- * Deflater.
+ * This class provides an implementation of {@code FilterOutputStream} that
+ * compresses data using the <i>DEFLATE</i> algorithm. Basically it wraps the
+ * {@code Deflater} class and takes care of the buffering.
+ *
+ * @see Deflater
  */
 public class DeflaterOutputStream extends FilterOutputStream {
     static final int BUF_SIZE = 512;
 
+    /**
+     * The buffer for the data to be written to.
+     */
     protected byte[] buf;
 
+    /**
+     * The deflater used.
+     */
     protected Deflater def;
 
     boolean done = false;
 
     /**
-     * Constructs a new DeflaterOutputStream instance using os as the underlying
-     * stream. The provided Deflater instance will be used to compress data.
+     * This constructor lets you pass the {@code Deflater} specifying the
+     * compression algorithm.
      * 
      * @param os
-     *            OutputStream to receive compressed data
+     *            is the {@code OutputStream} where to write the compressed data
+     *            to.
      * @param def
-     *            Deflater to perform compression
+     *            is the specific {@code Deflater} that is used to compress
+     *            data.
      */
     public DeflaterOutputStream(OutputStream os, Deflater def) {
         this(os, def, BUF_SIZE);
     }
 
     /**
-     * Constructs a new DeflaterOutputStream instance using os as the underlying
+     * This is the most basic constructor. You only need to pass the {@code
+     * OutputStream} to which the compressed data shall be written to. The
+     * default settings for the {@code Deflater} and internal buffer are used.
+     * In particular the {@code Deflater} produces a ZLIB header in the output
      * stream.
      * 
      * @param os
-     *            OutputStream to receive compressed data
+     *            is the OutputStream where to write the compressed data to.
      */
     public DeflaterOutputStream(OutputStream os) {
         this(os, new Deflater());
     }
 
     /**
-     * Constructs a new DeflaterOutputStream instance using os as the underlying
-     * stream. The provided Deflater instance will be used to compress data. The
-     * internal buffer for storing compressed data will be of size bsize.
+     * This constructor lets you specify both the compression algorithm as well
+     * as the internal buffer size to be used.
      * 
      * @param os
-     *            OutputStream to receive compressed data
+     *            is the {@code OutputStream} where to write the compressed data
+     *            to.
      * @param def
-     *            Deflater to perform compression
+     *            is the specific {@code Deflater} that will be used to compress
+     *            data.
      * @param bsize
-     *            size of internal compression buffer
+     *            is the size to be used for the internal buffer.
      */
     public DeflaterOutputStream(OutputStream os, Deflater def, int bsize) {
         super(os);
@@ -89,8 +103,8 @@ public class DeflaterOutputStream extends FilterOutputStream {
      * Compress the data in the input buffer and write it to the underlying
      * stream.
      * 
-     * @exception java.io.IOException
-     *                If an error occurs during deflation.
+     * @throws IOException
+     *             If an error occurs during deflation.
      */
     protected void deflate() throws IOException {
         int x = 0;
@@ -105,8 +119,9 @@ public class DeflaterOutputStream extends FilterOutputStream {
      * all underlying streams. This stream can no longer be used after close()
      * has been called.
      * 
-     * @exception java.io.IOException
-     *                If an error occurs during close.
+     * @throws IOException
+     *             If an error occurs while closing the data compression
+     *             process.
      */
     @Override
     public void close() throws IOException {
@@ -118,12 +133,11 @@ public class DeflaterOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Write any unwritten data to the underlying stream. Do not close the
-     * stream. This allows subsequent Deflater's to write to the same stream.
-     * This Deflater cannot be used again.
+     * Writes any unwritten data to the underlying stream. Does not close the
+     * stream.
      * 
-     * @exception java.io.IOException
-     *                If an error occurs.
+     * @throws IOException
+     *             If an error occurs.
      */
     public void finish() throws IOException {
         if (done) {
@@ -149,17 +163,17 @@ public class DeflaterOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Compress data from a buffer and write it to the underlying stream.
+     * Compresses {@code nbytes} of data from {@code buf} starting at
+     * {@code off} and writes it to the underlying stream.
      * 
      * @param buffer
-     *            Buffer of data to compress
+     *            the buffer of data to compress.
      * @param off
-     *            offset in buffer to extract data from
+     *            offset in buffer to extract data from.
      * @param nbytes
-     *            Number of bytes of data to compress and write
-     * 
-     * @exception IOException
-     *                If an error occurs during writing.
+     *            the number of bytes of data to read from the buffer.
+     * @throws IOException
+     *             If an error occurs during writing.
      */
     @Override
     public void write(byte[] buffer, int off, int nbytes) throws IOException {

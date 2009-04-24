@@ -26,9 +26,7 @@ import java.security.PrivilegedAction;
 import java.util.SortedMap;
 
 /**
- * Class that initialize Packer and Unpacker
- * 
- * See JSR200
+ * Class factory for {@link Pack200.Packer} and {@link Pack200.Unpacker}.
  */
 public abstract class Pack200 {
 
@@ -44,11 +42,14 @@ public abstract class Pack200 {
     }
 
     /**
-     * The method first read from system property for the classname of a Packer,
-     * if such property exists, the class shall be initialized; or the default
-     * Packer will be returned
+     * Returns a new instance of a packer engine.
+     * <p>
+     * The implementation of the packer engine is defined by the system property
+     * {@code 'java.util.jar.Pack200.Packer'}. If this system property is
+     * defined an instance of the specified class is returned, otherwise the
+     * system's default implementation is returned.
      * 
-     * @return a instance of Packer
+     * @return an instance of {@code Packer}
      */
     public static Pack200.Packer newPacker() {
         return (Packer) AccessController
@@ -71,11 +72,14 @@ public abstract class Pack200 {
     }
 
     /**
-     * The method first read from system property for the classname of a
-     * Unpacker, if such property exists, the class shall be initialized; or the
-     * default Unpacker will be returned
+     * Returns a new instance of a unpacker engine.
+     * <p>
+     * The implementation of the unpacker engine is defined by the system
+     * property {@code 'java.util.jar.Pack200.Unpacker'}. If this system
+     * property is defined an instance of the specified class is returned,
+     * otherwise the system's default implementation is returned.
      * 
-     * @return a instance of Unpacker
+     * @return a instance of {@code Unpacker}.
      */
     public static Pack200.Unpacker newUnpacker() {
         return (Unpacker) AccessController
@@ -95,24 +99,23 @@ public abstract class Pack200 {
     }
 
     /**
-     * interface of Packer
-     * 
-     * See JSR 200 specification
+     * The interface defining the API for converting a JAR file to an output
+     * stream in the Pack200 format.
      */
     public static interface Packer {
 
         /**
-         * the format of a class attribute name
+         * the format of a class attribute name.
          */
         static final String CLASS_ATTRIBUTE_PFX = "pack.class.attribute."; //$NON-NLS-1$
 
         /**
-         * the format of a code attribute name
+         * the format of a code attribute name.
          */
         static final String CODE_ATTRIBUTE_PFX = "pack.code.attribute."; //$NON-NLS-1$
 
         /**
-         * the deflation hint to set in the output archive
+         * the deflation hint to set in the output archive.
          */
         static final String DEFLATE_HINT = "pack.deflate.hint";//$NON-NLS-1$
 
@@ -122,48 +125,48 @@ public abstract class Pack200 {
         static final String EFFORT = "pack.effort";//$NON-NLS-1$
 
         /**
-         * a String of error
+         * a String representation for {@code error}.
          */
         static final String ERROR = "error";//$NON-NLS-1$
 
         /**
-         * a String of false
+         * a String representation of {@code false}.
          */
         static final String FALSE = "false";//$NON-NLS-1$
 
         /**
-         * the format of a field attribute name
+         * the format of a field attribute name.
          */
         static final String FIELD_ATTRIBUTE_PFX = "pack.field.attribute.";//$NON-NLS-1$
 
         /**
-         * a String of keep
+         * a String representation for {@code keep}.
          */
         static final String KEEP = "keep";//$NON-NLS-1$
 
         /**
-         * decide if all elements shall transmit in their original order
+         * decide if all elements shall transmit in their original order.
          */
         static final String KEEP_FILE_ORDER = "pack.keep.file.order";//$NON-NLS-1$
 
         /**
-         * a String of latest
+         * a String representation for {@code latest}.
          */
         static final String LATEST = "latest";//$NON-NLS-1$
 
         /**
-         * the format of a method attribute name
+         * the format of a method attribute name.
          */
         static final String METHOD_ATTRIBUTE_PFX = "pack.method.attribute.";//$NON-NLS-1$
 
         /**
-         * Packer shall attempt to determine the latest modification time if
-         * this is set to LASTEST
+         * if it shall attempt to determine the latest modification time if this
+         * is set to {@code LATEST}.
          */
         static final String MODIFICATION_TIME = "pack.modification.time";//$NON-NLS-1$
 
         /**
-         * a String of pass
+         * a String representation of {@code pass}.
          */
         static final String PASS = "pass";//$NON-NLS-1$
 
@@ -173,7 +176,7 @@ public abstract class Pack200 {
         static final String PASS_FILE_PFX = "pack.pass.file.";//$NON-NLS-1$
 
         /**
-         * packer progress as a percentage
+         * packer progress as a percentage.
          */
         static final String PROGRESS = "pack.progress";//$NON-NLS-1$
 
@@ -183,12 +186,12 @@ public abstract class Pack200 {
         static final String SEGMENT_LIMIT = "pack.segment.limit";//$NON-NLS-1$
 
         /**
-         * a String of strip
+         * a String representation of {@code strip}.
          */
         static final String STRIP = "strip";//$NON-NLS-1$
 
         /**
-         * a String of true
+         * a String representation of {@code true}.
          */
         static final String TRUE = "true";//$NON-NLS-1$
 
@@ -198,32 +201,34 @@ public abstract class Pack200 {
         static final String UNKNOWN_ATTRIBUTE = "pack.unknown.attribute";//$NON-NLS-1$
 
         /**
-         * 
-         * @return the properties of packer
+         * Returns a sorted map of the properties of this packer.
+         *
+         * @return the properties of the packer.
          */
         SortedMap<String, String> properties();
 
         /**
-         * Pack jarfile with pack arithmetic
+         * Pack the specified JAR file to the specified output stream.
          * 
          * @param in
-         *            jarfile to be compact
+         *            JAR file to be compressed.
          * @param out
-         *            stream of compact data
+         *            stream of compressed data.
          * @throws IOException
-         *             if I/O exception occurs
+         *             if I/O exception occurs.
          */
         void pack(JarFile in, OutputStream out) throws IOException;
 
         /**
-         * Pack jarStream with pack arithmetic
+         * Pack the data from the specified jar input stream to the specified
+         * output stream.
          * 
          * @param in
-         *            stream of uncompact jar data
+         *            stream of uncompressed JAR data.
          * @param out
-         *            stream of compact data
+         *            stream of compressed data.
          * @throws IOException
-         *             if I/O exception occurs
+         *             if I/O exception occurs.
          */
         void pack(JarInputStream in, OutputStream out) throws IOException;
 
@@ -245,81 +250,83 @@ public abstract class Pack200 {
     }
 
     /**
-     * interface of unpacker
-     * 
-     * See JSR 200 specification
+     * The interface defining the API for converting a packed stream in the
+     * Pack200 format to a JAR file.
      */
     public static interface Unpacker {
 
         /**
          * The String indicating if the unpacker should ignore all transmitted
-         * values,can be replaced by either true or false
+         * values,can be replaced by either {@code true} or {@code false}.
          */
         static final String DEFLATE_HINT = "unpack.deflate.hint";//$NON-NLS-1$
 
         /**
-         * a String of false
+         * a String representation of {@code false}.
          */
         static final String FALSE = "false";//$NON-NLS-1$
 
         /**
-         * a String of keep
+         * a String representation of {@code keep}.
          */
         static final String KEEP = "keep";//$NON-NLS-1$
 
         /**
-         * the progress as a percentage
+         * the progress as a {@code percentage}.
          */
         static final String PROGRESS = "unpack.progress";//$NON-NLS-1$
 
         /**
-         * a String of true
+         * a String representation of {@code true}.
          */
         static final String TRUE = "true";//$NON-NLS-1$
 
         /**
-         * 
-         * @return the properties of unpacker
+         * Returns a sorted map of the properties of this unpacker.
+         *
+         * @return the properties of unpacker.
          */
         SortedMap<String, String> properties();
 
         /**
-         * unpack stream into jarfile with pack arithmetic
+         * Unpack the specified stream to the specified JAR output stream.
          * 
          * @param in
-         *            stream to uncompact
+         *            stream to uncompressed.
          * @param out
-         *            jarstream of uncompact data
+         *            JAR output stream of uncompressed data.
          * @throws IOException
-         *             if I/O exception occurs
+         *             if I/O exception occurs.
          */
         void unpack(InputStream in, JarOutputStream out) throws IOException;
 
         /**
-         * unpack File into jarfile with pack arithmetic
+         * Unpack the contents of the specified {@code File} to the specified
+         * JAR output stream.
          * 
          * @param in
-         *            file to be uncompact
+         *            file to be uncompressed.
          * @param out
-         *            jarstream of uncompact data
+         *            JAR output stream of uncompressed data.
          * @throws IOException
-         *             if I/O exception occurs
+         *             if I/O exception occurs.
          */
         void unpack(File in, JarOutputStream out) throws IOException;
 
         /**
-         * add a listener for PropertyChange events
+         * add a listener for {@code PropertyChange} events.
          * 
          * @param listener
-         *            the listener to listen if PropertyChange events occurs
+         *            the listener to listen if {@code PropertyChange} events
+         *            occurs.
          */
         void addPropertyChangeListener(PropertyChangeListener listener);
 
         /**
-         * remove a listener
+         * remove a listener.
          * 
          * @param listener
-         *            listener to remove
+         *            listener to remove.
          */
         void removePropertyChangeListener(PropertyChangeListener listener);
     }
