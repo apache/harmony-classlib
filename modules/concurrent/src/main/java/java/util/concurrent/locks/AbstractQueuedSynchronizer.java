@@ -1760,6 +1760,9 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
          *      {@link #acquire} with saved state as argument.
          * <li> If interrupted while blocked in step 4, throw exception
          * </ol>
+         *
+         * @throws InterruptedException if the current thread is interrupted (and
+         * interruption of thread suspension is supported).
          */
         public final void await() throws InterruptedException {
             if (Thread.interrupted()) 
@@ -1791,6 +1794,15 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
          *      {@link #acquire} with saved state as argument.
          * <li> If interrupted while blocked in step 4, throw InterruptedException
          * </ol>
+         *
+         * @param nanosTimeout the maximum time to wait, in nanoseconds
+         * @return A value less than or equal to zero if the wait has
+         * timed out; otherwise an estimate, that
+         * is strictly less than the <tt>nanosTimeout</tt> argument,
+         * of the time still remaining when this method returned.
+         *
+         * @throws InterruptedException if the current thread is interrupted (and
+         * interruption of thread suspension is supported).
          */
         public final long awaitNanos(long nanosTimeout) throws InterruptedException {
             if (Thread.interrupted()) 
@@ -1832,6 +1844,13 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
          * <li> If interrupted while blocked in step 4, throw InterruptedException
          * <li> If timed out while blocked in step 4, return false, else true
          * </ol>
+         *
+         * @param deadline the absolute time to wait until
+         * @return <tt>false</tt> if the deadline has
+         * elapsed upon return, else <tt>true</tt>.
+         *
+         * @throws InterruptedException if the current thread is interrupted (and
+         * interruption of thread suspension is supported).
          */
         public final boolean awaitUntil(Date deadline) throws InterruptedException {
             if (deadline == null)
@@ -1873,6 +1892,13 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
          * <li> If interrupted while blocked in step 4, throw InterruptedException
          * <li> If timed out while blocked in step 4, return false, else true
          * </ol>
+         *
+         * @param time the maximum time to wait
+         * @param unit the time unit of the <tt>time</tt> argument.
+         * @return <tt>false</tt> if the waiting time detectably elapsed
+         * before return from the method, else <tt>true</tt>.
+         * @throws InterruptedException if the current thread is interrupted (and
+         * interruption of thread suspension is supported).
          */
         public final boolean await(long time, TimeUnit unit) throws InterruptedException {
             if (unit == null)

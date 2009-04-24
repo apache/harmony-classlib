@@ -216,6 +216,8 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
      * inspecting <tt>remainingCapacity</tt> because it may be the
      * case that a waiting consumer is ready to <tt>take</tt> an
      * element out of an otherwise full queue.
+     *
+     * @return the remaining capacity
      */
     public int remainingCapacity() {
         return capacity - count.get();

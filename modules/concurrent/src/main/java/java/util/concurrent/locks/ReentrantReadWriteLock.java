@@ -398,7 +398,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
         private final Sync sync;
         
         /** 
-         * Constructor for use by subclasses 
+         * Constructor for use by subclasses.
          * @param lock the outer lock object
          * @throws NullPointerException if lock null
          */
@@ -576,6 +576,8 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
         /**
          * Throws UnsupportedOperationException because ReadLocks
          * do not support conditions.
+         * @return A new {@link Condition} instance for this <tt>Lock</tt>
+         * instance.
          * @throws UnsupportedOperationException always
          */
         public Condition newCondition() {
@@ -605,7 +607,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
         private final Sync sync;
         
         /** 
-         * Constructor for use by subclasses 
+         * Constructor for use by subclasses.
          * @param lock the outer lock object
          * @throws NullPointerException if lock null
          */
