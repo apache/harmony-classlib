@@ -20,10 +20,10 @@ package java.util.logging;
 import java.util.List;
 
 /**
- * The management interface for the logging sub-system.
+ * {@code LoggingMXBean} is the management interface for the logging sub-system.
  * <p>
- * ObjectName =
- * {@link LogManager#LOGGING_MXBEAN_NAME java.util.logging:type=Logging}
+ * The ObjectName for identifying the {@code LoggingMXBean} in a bean server is
+ * {@link LogManager#LOGGING_MXBEAN_NAME}.
  * </p>
  * 
  * @since 1.5
@@ -31,46 +31,48 @@ import java.util.List;
 public interface LoggingMXBean {
 
     /**
-     * Gets the String value of the logging level of a logger. An empty String
-     * is returned when the logger's level is defined by its parent.
+     * Gets the string value of the logging level of a logger. An empty string
+     * is returned when the logger's level is defined by its parent. A
+     * {@code null} is returned if the specified logger does not exist.
      * 
      * @param loggerName
-     *            The name of the logger lookup.
-     * @return A String if the logger was found, otherwise <code>null</code>.
+     *            the name of the logger lookup.
+     * @return a {@code String} if the logger is found, otherwise {@code null}.
      * @see Level#getName()
      */
     String getLoggerLevel(String loggerName);
 
     /**
-     * Gets a list of all currently registered logger's names. This is performed
+     * Gets a list of all currently registered logger names. This is performed
      * using the {@link LogManager#getLoggerNames()}.
      * 
-     * @return A List of String instances.
+     * @return a list of logger names.
      */
     List<String> getLoggerNames();
 
     /**
      * Gets the name of the parent logger of a logger. If the logger doesn't
-     * exist then <code>null</code> is returned. If the logger is the root
-     * logger, then an empty String is returned.
+     * exist then {@code null} is returned. If the logger is the root logger,
+     * then an empty {@code String} is returned.
      * 
      * @param loggerName
-     *            The name of the logger to lookup.
-     * @return A String if the logger was found, otherwise <code>null</code>.
+     *            the name of the logger to lookup.
+     * @return a {@code String} if the logger was found, otherwise {@code null}.
      */
     String getParentLoggerName(String loggerName);
 
     /**
-     * Sets the log level of a logger.
+     * Sets the log level of a logger. LevelName set to {@code null} means the
+     * level is inherited from the nearest non-null ancestor.
      * 
      * @param loggerName
-     *            The name of the logger to set the level on, which must not be
-     *            <code>null</code>.
+     *            the name of the logger to set the level on, which must not be
+     *            {@code null}.
      * @param levelName
-     *            The level to set on the logger, which may be <code>null</code>.
+     *            the level to set on the logger, which may be {@code null}.
      * @throws IllegalArgumentException
-     *             if <code>loggerName</code> is not a registered logger or if
-     *             <code>levelName</code> is not null and an invalid value.
+     *             if {@code loggerName} is not a registered logger or if
+     *             {@code levelName} is not null and not valid.
      * @throws SecurityException
      *             if a security manager exists and the caller doesn't have
      *             LoggingPermission("control").
