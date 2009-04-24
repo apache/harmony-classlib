@@ -243,18 +243,27 @@ public class PropertyDescriptor extends FeatureDescriptor {
                 writeMethod = beanClass.getMethod(setterName,
                         new Class[] { getter.getReturnType() });
             } else {
-                Method[] methods = beanClass.getMethods();
-                for (Method method : methods) {
-                    if (method.getName().equals(setterName)) {
-                        if (method.getParameterTypes().length == 1) {
-                            writeMethod = method;
-                            break;
+                Class<?> clazz = beanClass;
+                Method[] methods = null;
+                while (clazz != null && writeMethod == null) {
+                    methods = clazz.getDeclaredMethods();
+                    for (Method method : methods) {
+                        if (setterName.equals(method.getName())) {
+                            if (method.getParameterTypes().length == 1) {
+                                writeMethod = method;
+                                break;
+                            }
                         }
                     }
+                    clazz = clazz.getSuperclass();
                 }
             }
         } catch (Exception e) {
             throw new IntrospectionException(e.getLocalizedMessage());
+        }
+        if (writeMethod == null) {
+            throw new IntrospectionException(Messages.getString(
+                    "beans.64", setterName)); //$NON-NLS-1$
         }
         setWriteMethod(writeMethod);
     }
