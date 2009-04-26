@@ -25,8 +25,7 @@ package javax.crypto;
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This is the base class for {@code ExemptionMechanismException}.
  */
 public class ExemptionMechanismException extends GeneralSecurityException {
 
@@ -36,16 +35,18 @@ public class ExemptionMechanismException extends GeneralSecurityException {
     private static final long serialVersionUID = 1572699429277957109L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code ExemptionMechanismException} with the specified
+     * message.
      * 
+     * @param msg
+     *            the exception message.
      */
     public ExemptionMechanismException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
+     * Creates a new {@code ExemptionMechanismException} with no message.
      */
     public ExemptionMechanismException() {
     }

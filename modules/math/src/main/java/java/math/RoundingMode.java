@@ -20,33 +20,67 @@ package java.math;
 import org.apache.harmony.math.internal.nls.Messages;
 
 /**
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
+ * Specifies the rounding behavior for operations whose results cannot be
+ * represented exactly.
  */
 public enum RoundingMode {
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where positive values are rounded towards positive infinity
+     * and negative values towards negative infinity.
+     * <br>
+     * Rule: {@code x.round().abs() >= x.abs()}
+     */
     UP(BigDecimal.ROUND_UP),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where the values are rounded towards zero.
+     * <br>
+     * Rule: {@code x.round().abs() <= x.abs()}
+     */
     DOWN(BigDecimal.ROUND_DOWN),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode to round towards positive infinity. For positive values
+     * this rounding mode behaves as {@link #UP}, for negative values as
+     * {@link #DOWN}.
+     * <br>
+     * Rule: {@code x.round() >= x}
+     */
     CEILING(BigDecimal.ROUND_CEILING),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode to round towards negative infinity. For positive values
+     * this rounding mode behaves as {@link #DOWN}, for negative values as
+     * {@link #UP}.
+     * <br>
+     * Rule: {@code x.round() <= x}
+     */
     FLOOR(BigDecimal.ROUND_FLOOR),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where values are rounded towards the nearest neighbor. Ties
+     * are broken by rounding up.
+     */
     HALF_UP(BigDecimal.ROUND_HALF_UP),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where values are rounded towards the nearest neighbor. Ties
+     * are broken by rounding down.
+     */
     HALF_DOWN(BigDecimal.ROUND_HALF_DOWN),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where values are rounded towards the nearest neighbor. Ties
+     * are broken by rounding to the even neighbor.
+     */
     HALF_EVEN(BigDecimal.ROUND_HALF_EVEN),
 
-    /** @ar.org.fitc.spec_ref */
+    /**
+     * Rounding mode where the rounding operations throws an ArithmeticException
+     * for the case that rounding is necessary, i.e. for the case that the value
+     * cannot be represented exactly.
+     */
     UNNECESSARY(BigDecimal.ROUND_UNNECESSARY);
 
     /** The old constant of <code>BigDecimal</code>. */
@@ -57,9 +91,16 @@ public enum RoundingMode {
         bigDecimalRM = rm;
     }
 
-    /** @ar.org.fitc.spec_ref */
-    public static RoundingMode valueOf(int rM) {
-        switch (rM) {
+    /**
+     * Converts rounding mode constants from class {@code BigDecimal} into
+     * {@code RoundingMode} values.
+     *
+     * @param mode
+     *            rounding mode constant as defined in class {@code BigDecimal}
+     * @return corresponding rounding mode object
+     */
+    public static RoundingMode valueOf(int mode) {
+        switch (mode) {
             case BigDecimal.ROUND_CEILING:
                 return CEILING;
             case BigDecimal.ROUND_DOWN:

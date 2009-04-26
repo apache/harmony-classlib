@@ -1028,14 +1028,13 @@ class Lexer {
      * Process octal integer.
      */
     private int readOctals() {
-        char ch;
         int max = 3;
         int i = 1;
         int first;
         int res;
         int length = pattern.length - 2;
 
-        switch (first = Character.digit((ch = pattern[index]), 8)) {
+        switch (first = Character.digit(pattern[index], 8)) {
         case -1:
             throw new PatternSyntaxException(Messages.getString("regex.19") //$NON-NLS-1$
                     , this.toString(), index);
@@ -1048,7 +1047,7 @@ class Lexer {
         }
 
         while (i < max && index < length
-                && (first = Character.digit((ch = pattern[index]), 8)) >= 0) {
+                && (first = Character.digit(pattern[index], 8)) >= 0) {
             res = res * 8 + first;
             nextIndex();
             i++;

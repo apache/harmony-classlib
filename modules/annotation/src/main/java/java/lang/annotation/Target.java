@@ -18,11 +18,9 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * A meta-annotation used to determine what {@link ElementType}s an annotation
- * can be applied to.
- * </p>
- * 
+ * Defines a meta-annotation for determining what {@link ElementType}s an
+ * annotation can be applied to.
+ *
  * @since 1.5
  */
 @Documented

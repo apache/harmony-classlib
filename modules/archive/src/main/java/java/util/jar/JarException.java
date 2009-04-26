@@ -28,18 +28,18 @@ public class JarException extends ZipException {
     private static final long serialVersionUID = 7159778400963954473L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * Constructs a new {@code JarException} instance.
      */
     public JarException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
-     * 
+     * Constructs a new {@code JarException} instance with the specified
+     * message.
+     *
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for the exception.
      */
     public JarException(String detailMessage) {
         super(detailMessage);

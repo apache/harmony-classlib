@@ -25,8 +25,8 @@ package javax.crypto;
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception, that is thrown when the data length provided to a block cipher
+ * does not match the block size of the cipher.
  */
 public class IllegalBlockSizeException extends GeneralSecurityException {
 
@@ -36,16 +36,18 @@ public class IllegalBlockSizeException extends GeneralSecurityException {
     private static final long serialVersionUID = -1965144811953540392L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code IllegalBlockSizeException} with the specified
+     * message.
      * 
+     * @param msg
+     *            the message
      */
     public IllegalBlockSizeException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
+     * Creates a new {@code IllegalBlockSizeException}.
      */
     public IllegalBlockSizeException() {
     }

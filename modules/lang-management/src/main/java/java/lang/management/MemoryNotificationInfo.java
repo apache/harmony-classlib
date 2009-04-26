@@ -37,11 +37,14 @@ public class MemoryNotificationInfo {
      * </p>
      * 
      * @param cd The CompositeDate object to retrieve data from.
-     * @return A MemoryNotificationInfo instance.
+     * @return A MemoryNotificationInfo instance or {@code null} if {@code cd} is {@code null}
      * @throws IllegalArgumentException if <code>cd</code> does not contain
      *         MemoryUsage data.
      */
     public static MemoryNotificationInfo from(CompositeData cd) {
+        if (cd == null) {
+            return null;
+        }
         String poolName = (String) cd.get("poolName");
         MemoryUsage usage = MemoryUsage.from((CompositeData) cd.get("usage"));
         long count = ((Long) cd.get("count")).longValue();
@@ -62,9 +65,19 @@ public class MemoryNotificationInfo {
      * @param poolName The memory pool name.
      * @param usage The memory usage snapshot.
      * @param count The threshold crossing count.
+     * 
+     * @throws NullPointerException if {@code poolName} or {@code usage} is {@code null}
      */
     public MemoryNotificationInfo(String poolName, MemoryUsage usage, long count) {
         super();
+        if (poolName == null) {
+            throw new NullPointerException("pooName is null"); //$NON-NLS-1$
+        }
+        
+        if (usage == null) {
+            throw new NullPointerException("usage is null"); //$NON-NLS-1$
+        }
+        
         this.poolName = poolName;
         this.usage = usage;
         this.count = count;

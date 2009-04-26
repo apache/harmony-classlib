@@ -918,13 +918,13 @@ public class TestRdnParser extends TestCase {
 	 * <p>Test method to test if the null character in utf8 where is put when the types are not equals between them.</p>
 	 *
 	 */
-	public void testRDNNULL() {
+	public void testRDNNULL() throws Exception {
 		try {
 			String y="ca=nine+type="+Rdn.escapeValue("\\00");
 			Rdn x=new Rdn("ca=nine+type=\"liom,\"+type=\"\\00\"");
 			byte[] temp=new byte[]{99,97,61,110,105,110,101,43,116,121,112,101,61,0,43,116,121,112,101,61,108,105,111,109,92,44};
 			for(int i=0;i<26;i++){
-				assertEquals(temp[i],x.toString().getBytes()[i]);
+				assertEquals(temp[i],x.toString().getBytes("UTF-8")[i]);
 			}
 			
 			x=new Rdn("ca=nine+pe=\"liom,\"+type=\"\\00\"");

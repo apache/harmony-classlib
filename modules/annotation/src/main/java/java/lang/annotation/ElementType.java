@@ -18,59 +18,43 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * An enumeration of element types.
- * </p>
- * 
+ * Defines an enumeration for Java program elements. It is used in conjunction
+ * with the {@link Target} meta-annotation to restrict the use of an annotation
+ * to certain program elements.
+ *
  * @since 1.5
  */
 public enum ElementType {
     /**
-     * <p>
      * Class, interface or enum declaration.
-     * </p>
      */
     TYPE,
     /**
-     * <p>
      * Field declaration.
-     * </p>
      */
     FIELD,
     /**
-     * <p>
      * Method declaration.
-     * </p>
      */
     METHOD,
     /**
-     * <p>
      * Parameter declaration.
-     * </p>
      */
     PARAMETER,
     /**
-     * <p>
      * Constructor declaration.
-     * </p>
      */
     CONSTRUCTOR,
     /**
-     * <p>
      * Local variable declaration.
-     * </p>
      */
     LOCAL_VARIABLE,
     /**
-     * <p>
      * Annotation type declaration.
-     * </p>
      */
     ANNOTATION_TYPE,
     /**
-     * <p>
      * Package declaration.
-     * </p>
      */
     PACKAGE
 }

@@ -25,18 +25,30 @@ import java.io.InputStream;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * InflaterOutputStream read data which has been compressed using the DEFLATE
- * compression method.
+ * This class provides an implementation of {@code FilterInputStream} that
+ * uncompresses data that was compressed using the <i>DEFLATE</i> algorithm
+ * (see <a href="http://www.gzip.org/algorithm.txt">specification</a>).
+ * Basically it wraps the {@code Inflater} class and takes care of the
+ * buffering.
  * 
  * @see Inflater
  * @see DeflaterOutputStream
  */
 public class InflaterInputStream extends FilterInputStream {
 
+    /**
+     * The inflater used for this stream.
+     */
     protected Inflater inf;
 
+    /**
+     * The input buffer used for decompression.
+     */
     protected byte[] buf;
 
+    /**
+     * The length of the buffer.
+     */
     protected int len;
 
     boolean closed;
@@ -46,38 +58,41 @@ public class InflaterInputStream extends FilterInputStream {
     static final int BUF_SIZE = 512;
 
     /**
-     * Constructs a new InflaterOutputStream on is
+     * This is the most basic constructor. You only need to pass the {@code
+     * InputStream} from which the compressed data is to be read from. Default
+     * settings for the {@code Inflater} and internal buffer are be used. In
+     * particular the Inflater expects a ZLIB header from the input stream.
      * 
      * @param is
-     *            The InputStream to read data from
+     *            the {@code InputStream} to read data from.
      */
     public InflaterInputStream(InputStream is) {
         this(is, new Inflater(), BUF_SIZE);
     }
 
     /**
-     * Constructs a new InflaterOutputStream on is, using the Inflater provided
-     * in inf.
+     * This constructor lets you pass a specifically initialized Inflater,
+     * for example one that expects no ZLIB header.
      * 
      * @param is
-     *            The InputStream to read data from
+     *            the {@code InputStream} to read data from.
      * @param inf
-     *            The Inflater to use for decompression
+     *            the specific {@code Inflater} for uncompressing data.
      */
     public InflaterInputStream(InputStream is, Inflater inf) {
         this(is, inf, BUF_SIZE);
     }
 
     /**
-     * Constructs a new InflaterOutputStream on is, using the Inflater provided
-     * in inf. The size of the inflation buffer is determined by bsize.
+     * This constructor lets you specify both the {@code Inflater} as well as
+     * the internal buffer size to be used.
      * 
      * @param is
-     *            The InputStream to read data from
+     *            the {@code InputStream} to read data from.
      * @param inf
-     *            The Inflater to use for decompression
+     *            the specific {@code Inflater} for uncompressing data.
      * @param bsize
-     *            size of the inflation buffer
+     *            the size to be used for the internal buffer.
      */
     public InflaterInputStream(InputStream is, Inflater inf, int bsize) {
         super(is);
@@ -94,9 +109,9 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Reads a single byte of decompressed data.
      * 
-     * @return byte read
+     * @return the byte read.
      * @throws IOException
-     *             If an error occurs reading
+     *             if an error occurs reading the byte.
      */
     @Override
     public int read() throws IOException {
@@ -108,18 +123,18 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Reads up to nbytes of decompressed data and stores it in buf starting at
-     * off.
+     * Reads up to {@code nbytes} of decompressed data and stores it in
+     * {@code buffer} starting at {@code off}.
      * 
      * @param buffer
-     *            Buffer to store into
+     *            the buffer to write data to.
      * @param off
-     *            offset in buffer to store at
+     *            offset in buffer to start writing.
      * @param nbytes
-     *            number of bytes to store
+     *            number of bytes to read.
      * @return Number of uncompressed bytes read
      * @throws IOException
-     *             If an error occurs reading
+     *             if an IOException occurs.
      */
     @Override
     public int read(byte[] buffer, int off, int nbytes) throws IOException {
@@ -177,6 +192,12 @@ public class InflaterInputStream extends FilterInputStream {
         throw new ArrayIndexOutOfBoundsException();
     }
 
+    /**
+     * Fills the input buffer with data to be decompressed.
+     *
+     * @throws IOException
+     *             if an {@code IOException} occurs.
+     */
     protected void fill() throws IOException {
         if (closed) {
             throw new IOException(Messages.getString("archive.1E")); //$NON-NLS-1$
@@ -187,13 +208,13 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Skips up to nbytes of uncompressed data.
+     * Skips up to n bytes of uncompressed data.
      * 
      * @param nbytes
-     *            Number of bytes to skip
-     * @return Number of uncompressed bytes skipped
+     *            the number of bytes to skip.
+     * @return the number of uncompressed bytes skipped.
      * @throws IOException
-     *             If an error occurs skipping
+     *             if an error occurs skipping.
      */
     @Override
     public long skip(long nbytes) throws IOException {
@@ -215,10 +236,11 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Returns 0 if this stream has been closed, 1 otherwise.
+     * Returns whether data can be read from this stream.
      * 
+     * @return 0 if this stream has been closed, 1 otherwise.
      * @throws IOException
-     *             If an error occurs
+     *             If an error occurs.
      */
     @Override
     public int available() throws IOException {
@@ -233,10 +255,10 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Closes the stream
+     * Closes the input stream.
      * 
      * @throws IOException
-     *             If an error occurs closing the stream
+     *             If an error occurs closing the input stream.
      */
     @Override
     public void close() throws IOException {
@@ -249,13 +271,11 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Marks the current position in the stream.
-     * 
-     * This implementation overrides the supertype implementation to do nothing
-     * at all.
+     * Marks the current position in the stream. This implementation overrides
+     * the super type implementation to do nothing at all.
      * 
      * @param readlimit
-     *            of no use
+     *            of no use.
      */
     @Override
     public void mark(int readlimit) {
@@ -263,11 +283,10 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Reset the position of the stream to the last mark position.
-     * 
-     * This implementation overrides the supertype implementation and always
-     * throws an {@link IOException IOException} when called.
-     * 
+     * Reset the position of the stream to the last marked position. This
+     * implementation overrides the supertype implementation and always throws
+     * an {@link IOException IOException} when called.
+     *
      * @throws IOException
      *             if the method is called
      */
@@ -277,10 +296,10 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Answers whether the receiver implements mark semantics. This type does
-     * not support mark, so always responds <code>false</code>.
+     * Returns whether the receiver implements {@code mark} semantics. This type
+     * does not support {@code mark()}, so always responds {@code false}.
      * 
-     * @return false
+     * @return false, always
      */
     @Override
     public boolean markSupported() {

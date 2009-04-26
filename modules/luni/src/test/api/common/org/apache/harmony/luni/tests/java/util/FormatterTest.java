@@ -1807,24 +1807,24 @@ public class FormatterTest extends TestCase {
         china.set(Calendar.MILLISECOND, 609);
 
         final Object[][] lowerCaseGermanTriple = {
-                {0L,                        'a', "Do"},  //$NON-NLS-2$
-                {Long.MAX_VALUE,            'a', "So"},  //$NON-NLS-2$
-                {-1000L,                    'a', "Do"},  //$NON-NLS-2$
-                {new Date(1147327147578L),  'a', "Do"},  //$NON-NLS-2$
-                {paris,                     'a', "Mo"},  //$NON-NLS-2$
-                {china,                     'a', "Mo"},  //$NON-NLS-2$
+                {0L,                        'a', "Do."},  //$NON-NLS-2$
+                {Long.MAX_VALUE,            'a', "So."},  //$NON-NLS-2$
+                {-1000L,                    'a', "Do."},  //$NON-NLS-2$
+                {new Date(1147327147578L),  'a', "Do."},  //$NON-NLS-2$
+                {paris,                     'a', "Mo."},  //$NON-NLS-2$
+                {china,                     'a', "Mo."},  //$NON-NLS-2$
                 {0L,                        'b', "Jan"},  //$NON-NLS-2$
                 {Long.MAX_VALUE,            'b', "Aug"},  //$NON-NLS-2$
                 {-1000L,                    'b', "Jan"},  //$NON-NLS-2$
                 {new Date(1147327147578L),  'b', "Mai"},  //$NON-NLS-2$
                 {paris,                     'b', "Mai"},  //$NON-NLS-2$
                 {china,                     'b', "Mai"},  //$NON-NLS-2$
-                {0L,                        'c', "Do Jan 01 08:00:00 CST 1970"},  //$NON-NLS-2$
-                {Long.MAX_VALUE,            'c', "So Aug 17 15:12:55 CST 292278994"},  //$NON-NLS-2$
-                {-1000L,                    'c', "Do Jan 01 07:59:59 CST 1970"},  //$NON-NLS-2$
-                {new Date(1147327147578L),  'c', "Do Mai 11 13:59:07 CST 2006"},  //$NON-NLS-2$
-                {paris,                     'c', "Mo Mai 08 12:00:00 CEST 2006"},  //$NON-NLS-2$
-                {china,                     'c', "Mo Mai 08 12:00:00 GMT-08:00 2006"},  //$NON-NLS-2$
+                {0L,                        'c', "Do. Jan 01 08:00:00 GMT+08:00 1970"},  //$NON-NLS-2$
+                {Long.MAX_VALUE,            'c', "So. Aug 17 15:18:47 GMT+08:00 292278994"},  //$NON-NLS-2$
+                {-1000L,                    'c', "Do. Jan 01 07:59:59 GMT+08:00 1970"},  //$NON-NLS-2$
+                {new Date(1147327147578L),  'c', "Do. Mai 11 13:59:07 GMT+08:00 2006"},  //$NON-NLS-2$
+                {paris,                     'c', "Mo. Mai 08 12:00:00 MESZ 2006"},  //$NON-NLS-2$
+                {china,                     'c', "Mo. Mai 08 12:00:00 GMT-08:00 2006"},  //$NON-NLS-2$
                 {0L,                        'd', "01"},  //$NON-NLS-2$
                 {Long.MAX_VALUE,            'd', "17"},  //$NON-NLS-2$
                 {-1000L,                    'd', "01"},  //$NON-NLS-2$
@@ -1867,18 +1867,18 @@ public class FormatterTest extends TestCase {
                 {new Date(1147327147578L),  'm', "05"}, //$NON-NLS-2$
                 {paris,                     'm', "05"}, //$NON-NLS-2$
                 {china,                     'm', "05"}, //$NON-NLS-2$
-                {0L,                        'p', "am"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'p', "pm"}, //$NON-NLS-2$
-                {-1000L,                    'p', "am"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'p', "pm"}, //$NON-NLS-2$
-                {paris,                     'p', "pm"}, //$NON-NLS-2$
-                {china,                     'p', "pm"}, //$NON-NLS-2$
-                {0L,                        'r', "08:00:00 AM"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'r', "03:12:55 PM"}, //$NON-NLS-2$
-                {-1000L,                    'r', "07:59:59 AM"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'r', "01:59:07 PM"}, //$NON-NLS-2$
-                {paris,                     'r', "12:00:00 PM"}, //$NON-NLS-2$
-                {china,                     'r', "12:00:00 PM"}, //$NON-NLS-2$
+                {0L,                        'p', "vorm."}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'p', "nachm."}, //$NON-NLS-2$
+                {-1000L,                    'p', "vorm."}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'p', "nachm."}, //$NON-NLS-2$
+                {paris,                     'p', "nachm."}, //$NON-NLS-2$
+                {china,                     'p', "nachm."}, //$NON-NLS-2$
+                {0L,                        'r', "08:00:00 vorm."}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'r', "03:18:47 nachm."}, //$NON-NLS-2$
+                {-1000L,                    'r', "07:59:59 vorm."}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'r', "01:59:07 nachm."}, //$NON-NLS-2$
+                {paris,                     'r', "12:00:00 nachm."}, //$NON-NLS-2$
+                {china,                     'r', "12:00:00 nachm."}, //$NON-NLS-2$
                 {0L,                        's', "0"}, //$NON-NLS-2$
                 {Long.MAX_VALUE,            's', "9223372036854775"}, //$NON-NLS-2$
                 {-1000L,                    's', "-1"}, //$NON-NLS-2$
@@ -1913,12 +1913,12 @@ public class FormatterTest extends TestCase {
                 {new Date(1147327147578L),  'b', "mai"}, //$NON-NLS-2$
                 {paris,                     'b', "mai"}, //$NON-NLS-2$
                 {china,                     'b', "mai"}, //$NON-NLS-2$
-                {0L,                        'c', "jeu. janv. 01 08:00:00 CST 1970"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'c', "dim. ao\u00fbt 17 15:12:55 CST 292278994"}, //$NON-NLS-2$
-                {-1000L,                    'c', "jeu. janv. 01 07:59:59 CST 1970"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'c', "jeu. mai 11 13:59:07 CST 2006"}, //$NON-NLS-2$
-                {paris,                     'c', "lun. mai 08 12:00:00 CEST 2006"}, //$NON-NLS-2$
-                {china,                     'c', "lun. mai 08 12:00:00 GMT-08:00 2006"}, //$NON-NLS-2$
+                {0L,                        'c', "jeu. janv. 01 08:00:00 UTC+08:00 1970"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'c', "dim. ao\u00fbt 17 15:18:47 UTC+08:00 292278994"}, //$NON-NLS-2$
+                {-1000L,                    'c', "jeu. janv. 01 07:59:59 UTC+08:00 1970"}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'c', "jeu. mai 11 13:59:07 UTC+08:00 2006"}, //$NON-NLS-2$
+                {paris,                     'c', "lun. mai 08 12:00:00 HAEC 2006"}, //$NON-NLS-2$
+                {china,                     'c', "lun. mai 08 12:00:00 UTC-08:00 2006"}, //$NON-NLS-2$
                 {0L,                        'd', "01"}, //$NON-NLS-2$
                 {Long.MAX_VALUE,            'd', "17"}, //$NON-NLS-2$
                 {-1000L,                    'd', "01"}, //$NON-NLS-2$
@@ -1968,7 +1968,7 @@ public class FormatterTest extends TestCase {
                 {paris,                     'p', "pm"}, //$NON-NLS-2$
                 {china,                     'p', "pm"}, //$NON-NLS-2$
                 {0L,                        'r', "08:00:00 AM"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'r', "03:12:55 PM"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'r', "03:18:47 PM"}, //$NON-NLS-2$
                 {-1000L,                    'r', "07:59:59 AM"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'r', "01:59:07 PM"}, //$NON-NLS-2$
                 {paris,                     'r', "12:00:00 PM"}, //$NON-NLS-2$
@@ -2001,18 +2001,18 @@ public class FormatterTest extends TestCase {
                 {new Date(1147327147578L),  'a', "\u6728"}, //$NON-NLS-2$
                 {paris,                     'a', "\u6708"}, //$NON-NLS-2$
                 {china,                     'a', "\u6708"}, //$NON-NLS-2$
-                {0L,                        'b', "1"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'b', "8"}, //$NON-NLS-2$
-                {-1000L,                    'b', "1"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'b', "5"}, //$NON-NLS-2$
-                {paris,                     'b', "5"}, //$NON-NLS-2$
-                {china,                     'b', "5"}, //$NON-NLS-2$
-                {0L,                        'c', "\u6728 1 01 08:00:00 CST 1970"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'c', "\u65e5 8 17 15:12:55 CST 292278994"}, //$NON-NLS-2$
-                {-1000L,                    'c', "\u6728 1 01 07:59:59 CST 1970"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'c', "\u6728 5 11 13:59:07 CST 2006"}, //$NON-NLS-2$
-                {paris,                     'c', "\u6708 5 08 12:00:00 CEST 2006"}, //$NON-NLS-2$
-                {china,                     'c', "\u6708 5 08 12:00:00 GMT-08:00 2006"}, //$NON-NLS-2$
+                {0L,                        'b', "1\u6708"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'b', "8\u6708"}, //$NON-NLS-2$
+                {-1000L,                    'b', "1\u6708"}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'b', "5\u6708"}, //$NON-NLS-2$
+                {paris,                     'b', "5\u6708"}, //$NON-NLS-2$
+                {china,                     'b', "5\u6708"}, //$NON-NLS-2$
+                {0L,                        'c', "\u6728 1\u6708 01 08:00:00 GMT+08:00 1970"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'c', "\u65e5 8\u6708 17 15:18:47 GMT+08:00 292278994"}, //$NON-NLS-2$
+                {-1000L,                    'c', "\u6728 1\u6708 01 07:59:59 GMT+08:00 1970"}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'c', "\u6728 5\u6708 11 13:59:07 GMT+08:00 2006"}, //$NON-NLS-2$
+                {paris,                     'c', "\u6708 5\u6708 08 12:00:00 GMT+02:00 2006"}, //$NON-NLS-2$
+                {china,                     'c', "\u6708 5\u6708 08 12:00:00 GMT-08:00 2006"}, //$NON-NLS-2$
                 {0L,                        'd', "01"}, //$NON-NLS-2$
                 {Long.MAX_VALUE,            'd', "17"}, //$NON-NLS-2$
                 {-1000L,                    'd', "01"}, //$NON-NLS-2$
@@ -2025,12 +2025,12 @@ public class FormatterTest extends TestCase {
                 {new Date(1147327147578L),  'e', "11"}, //$NON-NLS-2$
                 {paris,                     'e', "8"}, //$NON-NLS-2$
                 {china,                     'e', "8"}, //$NON-NLS-2$
-                {0L,                        'h', "1"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'h', "8"}, //$NON-NLS-2$
-                {-1000L,                    'h', "1"}, //$NON-NLS-2$
-                {new Date(1147327147578L),  'h', "5"}, //$NON-NLS-2$
-                {paris,                     'h', "5"}, //$NON-NLS-2$
-                {china,                     'h', "5"}, //$NON-NLS-2$
+                {0L,                        'h', "1\u6708"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'h', "8\u6708"}, //$NON-NLS-2$
+                {-1000L,                    'h', "1\u6708"}, //$NON-NLS-2$
+                {new Date(1147327147578L),  'h', "5\u6708"}, //$NON-NLS-2$
+                {paris,                     'h', "5\u6708"}, //$NON-NLS-2$
+                {china,                     'h', "5\u6708"}, //$NON-NLS-2$
                 {0L,                        'j', "001"}, //$NON-NLS-2$
                 {Long.MAX_VALUE,            'j', "229"}, //$NON-NLS-2$
                 {-1000L,                    'j', "001"}, //$NON-NLS-2$
@@ -2062,7 +2062,7 @@ public class FormatterTest extends TestCase {
                 {paris,                     'p', "\u5348\u5f8c"}, //$NON-NLS-2$
                 {china,                     'p', "\u5348\u5f8c"}, //$NON-NLS-2$
                 {0L,                        'r', "08:00:00 \u5348\u524d"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'r', "03:12:55 \u5348\u5f8c"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'r', "03:18:47 \u5348\u5f8c"}, //$NON-NLS-2$
                 {-1000L,                    'r', "07:59:59 \u5348\u524d"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'r', "01:59:07 \u5348\u5f8c"}, //$NON-NLS-2$
                 {paris,                     'r', "12:00:00 \u5348\u5f8c"}, //$NON-NLS-2$
@@ -2098,7 +2098,7 @@ public class FormatterTest extends TestCase {
             f = new Formatter(Locale.GERMAN);
             f.format(formatSpecifier, lowerCaseGermanTriple[i][input]);
             assertEquals("Format pattern: " + formatSpecifier //$NON-NLS-2$
-                            + " Argument: " + lowerCaseGermanTriple[i][pattern], //$NON-NLS-2$
+                            + " Argument: " + lowerCaseGermanTriple[i][input], //$NON-NLS-2$
                             lowerCaseGermanTriple[i][output], f.toString());
 
             f = new Formatter(Locale.GERMAN);
@@ -2186,7 +2186,7 @@ public class FormatterTest extends TestCase {
                 {paris,                     'L', "453"}, //$NON-NLS-2$
                 {china,                     'L', "609"}, //$NON-NLS-2$
                 {0L,                        'M', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'M', "12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'M', "18"}, //$NON-NLS-2$
                 {-1000L,                    'M', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'M', "59"}, //$NON-NLS-2$
                 {paris,                     'M', "00"}, //$NON-NLS-2$
@@ -2204,19 +2204,19 @@ public class FormatterTest extends TestCase {
                 {paris,                     'Q', "1147082400453"}, //$NON-NLS-2$
                 {china,                     'Q', "1147118400609"}, //$NON-NLS-2$
                 {0L,                        'R', "08:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'R', "15:12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'R', "15:18"}, //$NON-NLS-2$
                 {-1000L,                    'R', "07:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'R', "13:59"}, //$NON-NLS-2$
                 {paris,                     'R', "12:00"}, //$NON-NLS-2$
                 {china,                     'R', "12:00"}, //$NON-NLS-2$
                 {0L,                        'S', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'S', "55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'S', "47"}, //$NON-NLS-2$
                 {-1000L,                    'S', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'S', "07"}, //$NON-NLS-2$
                 {paris,                     'S', "00"}, //$NON-NLS-2$
                 {china,                     'S', "00"}, //$NON-NLS-2$
                 {0L,                        'T', "08:00:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'T', "15:12:55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'T', "15:18:47"}, //$NON-NLS-2$
                 {-1000L,                    'T', "07:59:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'T', "13:59:07"}, //$NON-NLS-2$
                 {paris,                     'T', "12:00:00"}, //$NON-NLS-2$
@@ -2286,7 +2286,7 @@ public class FormatterTest extends TestCase {
                 {paris,                     'L', "453"}, //$NON-NLS-2$
                 {china,                     'L', "609"}, //$NON-NLS-2$
                 {0L,                        'M', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'M', "12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'M', "18"}, //$NON-NLS-2$
                 {-1000L,                    'M', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'M', "59"}, //$NON-NLS-2$
                 {paris,                     'M', "00"}, //$NON-NLS-2$
@@ -2304,19 +2304,19 @@ public class FormatterTest extends TestCase {
                 {paris,                     'Q', "1147082400453"}, //$NON-NLS-2$
                 {china,                     'Q', "1147118400609"}, //$NON-NLS-2$
                 {0L,                        'R', "08:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'R', "15:12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'R', "15:18"}, //$NON-NLS-2$
                 {-1000L,                    'R', "07:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'R', "13:59"}, //$NON-NLS-2$
                 {paris,                     'R', "12:00"}, //$NON-NLS-2$
                 {china,                     'R', "12:00"}, //$NON-NLS-2$
                 {0L,                        'S', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'S', "55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'S', "47"}, //$NON-NLS-2$
                 {-1000L,                    'S', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'S', "07"}, //$NON-NLS-2$
                 {paris,                     'S', "00"}, //$NON-NLS-2$
                 {china,                     'S', "00"}, //$NON-NLS-2$
                 {0L,                        'T', "08:00:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'T', "15:12:55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'T', "15:18:47"}, //$NON-NLS-2$
                 {-1000L,                    'T', "07:59:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'T', "13:59:07"}, //$NON-NLS-2$
                 {paris,                     'T', "12:00:00"}, //$NON-NLS-2$
@@ -2386,7 +2386,7 @@ public class FormatterTest extends TestCase {
                 {paris,                     'L', "453"}, //$NON-NLS-2$
                 {china,                     'L', "609"}, //$NON-NLS-2$
                 {0L,                        'M', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'M', "12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'M', "18"}, //$NON-NLS-2$
                 {-1000L,                    'M', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'M', "59"}, //$NON-NLS-2$
                 {paris,                     'M', "00"}, //$NON-NLS-2$
@@ -2404,19 +2404,19 @@ public class FormatterTest extends TestCase {
                 {paris,                     'Q', "1147082400453"}, //$NON-NLS-2$
                 {china,                     'Q', "1147118400609"}, //$NON-NLS-2$
                 {0L,                        'R', "08:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'R', "15:12"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'R', "15:18"}, //$NON-NLS-2$
                 {-1000L,                    'R', "07:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'R', "13:59"}, //$NON-NLS-2$
                 {paris,                     'R', "12:00"}, //$NON-NLS-2$
                 {china,                     'R', "12:00"}, //$NON-NLS-2$
                 {0L,                        'S', "00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'S', "55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'S', "47"}, //$NON-NLS-2$
                 {-1000L,                    'S', "59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'S', "07"}, //$NON-NLS-2$
                 {paris,                     'S', "00"}, //$NON-NLS-2$
                 {china,                     'S', "00"}, //$NON-NLS-2$
                 {0L,                        'T', "08:00:00"}, //$NON-NLS-2$
-                {Long.MAX_VALUE,            'T', "15:12:55"}, //$NON-NLS-2$
+                {Long.MAX_VALUE,            'T', "15:18:47"}, //$NON-NLS-2$
                 {-1000L,                    'T', "07:59:59"}, //$NON-NLS-2$
                 {new Date(1147327147578L),  'T', "13:59:07"}, //$NON-NLS-2$
                 {paris,                     'T', "12:00:00"}, //$NON-NLS-2$

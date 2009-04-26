@@ -499,19 +499,6 @@ public class SocketTest extends SocketTestCase {
         }
         theSocket.close();
 
-        // Now validate that we get a interrupted exception if we try to connect
-        // to an address on which nobody is accepting connections and the
-        // timeout expired
-        theSocket = new Socket();
-        try {
-            theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
-                    1), 200);
-            fail("No interrupted exception when connecting to address nobody listening on with short timeout 200");
-        } catch (SocketTimeoutException e) {
-            // Expected
-        }
-        theSocket.close();
-
         // Now validate that we get the right exception if we connect when we
         // are already connected
         server = new ServerSocket(0);
@@ -819,83 +806,6 @@ public class SocketTest extends SocketTestCase {
         is.close();
         client.close();
         server.close();
-
-        // Simple read/write test over the IO streams
-        final ServerSocket pingServer = new ServerSocket(0);
-        Runnable runnable = new Runnable() {
-            public void run() {
-                try {
-                    Socket worker = pingServer.accept();
-                    pingServer.close();
-                    InputStream in = worker.getInputStream();
-                    in.read();
-                    OutputStream out = worker.getOutputStream();
-                    out.write(new byte[42]);
-                    worker.close();
-                } catch (IOException e) {
-                    fail(e.getMessage());
-                }
-            }
-        };
-        Thread thread = new Thread(runnable, "Socket.getInputStream");
-        thread.start();
-
-        Socket pingClient = new Socket(InetAddress.getLocalHost(), pingServer
-                .getLocalPort());
-
-        // Busy wait until the client is connected.
-        int c = 0;
-        while (!pingClient.isConnected()) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-            }
-            if (++c > 4) {
-                fail("thread is not alive");
-            }
-        }
-
-        // Write some data to the server to provoke it
-        OutputStream out = pingClient.getOutputStream();
-        out.write(new byte[256]);
-
-        InputStream in = pingClient.getInputStream();
-        in.read(new byte[42]);
-        if (isUnix()) {
-            try {
-                in.read();
-                fail("Should throw SocketException");
-            } catch (SocketException e) {
-                // expected
-            }
-        } else {
-            // Check EOF
-            assertEquals(-1, in.read());
-        }
-
-        in.close();
-
-        if (isUnix()) {
-            try {
-                in.read();
-                fail("Should throw SocketException");
-            } catch (SocketException e) {
-                // expected
-            }
-            try {
-                in.read(new byte[5]);
-                fail("Should throw SocketException");
-            } catch (SocketException e) {
-                // expected
-            }
-        } else {
-            // No exception when reading a closed stream
-            assertEquals(-1, in.read());
-            assertEquals(-1, in.read(new byte[5]));
-        }
-
-        pingClient.close();
-        pingServer.close();
     }
 
     private boolean isUnix() {
@@ -1168,12 +1078,6 @@ public class SocketTest extends SocketTestCase {
         out.close();
         pingClient.close();
         sinkServer.close();
-
-        // Regression test for HARMONY-2934
-        Socket socket = new Socket("127.0.0.1", 0, false);
-        OutputStream o = socket.getOutputStream();
-        o.write(1);
-        socket.close();
 
         // Regression test for HARMONY-873
         ServerSocket ss2 = new ServerSocket(0);

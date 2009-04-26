@@ -20,36 +20,60 @@ package java.util.zip;
 import org.apache.harmony.luni.platform.OSResourcesMonitor;
 
 /**
- * The Deflater class is used to compress bytes using the DEFLATE compression
- * algorithm. Deflation is performed by the ZLIB compression library.
- * 
+ * This class compresses data using the <i>DEFLATE</i> algorithm (see <a
+ * href="http://www.gzip.org/algorithm.txt">specification</a>).
+ * <p>
+ * Basically this class is part of the API to the stream based ZLIB compression
+ * library and is used as such by {@code DeflaterOutputStream} and its
+ * descendants.
+ * <p>
+ * The typical usage of a {@code Deflater} instance outside this package
+ * consists of a specific call to one of its constructors before being passed to
+ * an instance of {@code DeflaterOutputStream}.
+ *
  * @see DeflaterOutputStream
  * @see Inflater
  */
 public class Deflater {
 
-    /** Constant value representing the best available compression level. */
+    /**
+     * Upper bound for the compression level range.
+     */
     public static final int BEST_COMPRESSION = 9;
 
-    /** Constant value representing the fastest available compression level. */
+    /**
+     * Lower bound for compression level range.
+     */
     public static final int BEST_SPEED = 1;
 
-    /** Constant value representing the default compression level. */
+    /**
+     * Usage of the default compression level.
+     */
     public static final int DEFAULT_COMPRESSION = -1;
 
-    /** Constant value representing the default compression strategy. */
+    /**
+     * Default value for compression strategy.
+     */
     public static final int DEFAULT_STRATEGY = 0;
 
-    /** Constant value representing the deflate compression strategy. */
+    /**
+     * Default value for compression method.
+     */
     public static final int DEFLATED = 8;
 
-    /** Constant value representing the filtered compression strategy. */
+    /**
+     * Possible value for compression strategy.
+     */
     public static final int FILTERED = 1;
 
-    /** Constant value representing the Huffman compression strategy. */
+    /**
+     * Possible value for compression strategy.
+     */
     public static final int HUFFMAN_ONLY = 2;
 
-    /** Constant value representing the no compression strategy. */
+    /**
+     * Possible value for compression level.
+     */
     public static final int NO_COMPRESSION = 0;
 
     private static final int Z_NO_FLUSH = 0;
@@ -84,35 +108,38 @@ public class Deflater {
     private int inLength;
 
     /**
-     * Constructs a new Deflater instance with default compression level and
-     * strategy.
+     * Constructs a new {@code Deflater} instance with default compression
+     * level. The strategy can be specified with {@link #setStrategy}, only. A
+     * header is added to the output by default; use constructor {@code
+     * Deflater(level, boolean)} if you need to omit the header.
      */
     public Deflater() {
         this(DEFAULT_COMPRESSION, false);
     }
 
     /**
-     * Constructs a new Deflater instance with compression level level and
-     * default compression strategy. THe compression level provided must be
-     * between 0 and 9.
+     * Constructs a new {@code Deflater} instance with a specific compression
+     * level. The strategy can be specified with {@code setStrategy}, only. A
+     * header is added to the output by default; use
+     * {@code Deflater(level, boolean)} if you need to omit the header.
      * 
      * @param level
-     *            the compression level to use
+     *            the compression level in the range between 0 and 9.
      */
     public Deflater(int level) {
         this(level, false);
     }
 
     /**
-     * Constructs a new Deflater instance with compression level level and
-     * default compression strategy. If the noHeader parameter is specified then
-     * no ZLIB header will be written as part of the compressed output. The
-     * compression level specified must be between 0 and 9.
+     * Constructs a new {@code Deflater} instance with a specific compression
+     * level. If noHeader is passed as true no ZLib header is added to the
+     * output. In a ZIP archive every entry (compressed file) comes with such a
+     * header. The strategy can be specified with the setStrategy method, only.
      * 
      * @param level
-     *            the compression level to use
+     *            the compression level in the range between 0 and 9.
      * @param noHeader
-     *            if true do not write the ZLIB header
+     *            {@code true} indicates that no ZLIB header should be written.
      */
     public Deflater(int level, boolean noHeader) {
         super();
@@ -125,31 +152,29 @@ public class Deflater {
     }
 
     /**
-     * Deflates data into the supplied buffer
+     * Deflates the data (previously passed to {@code setInput}) into the
+     * supplied buffer.
      * 
      * @param buf
-     *            buffer to store compressed data
-     * 
-     * @return number of bytes of compressed data stored
-     * 
+     *            buffer to write compressed data to.
+     * @return number of bytes of compressed data written to {@code buf}.
+     * @see #deflate(byte[], int, int)
      */
     public int deflate(byte[] buf) {
         return deflate(buf, 0, buf.length);
     }
 
     /**
-     * Deflates data into the supplied buffer using the region from off to
-     * nbytes - 1.
+     * Deflates data (previously passed to {@code setInput}) into a specific
+     * region within the supplied buffer.
      * 
      * @param buf
-     *            buffer to store compressed data
+     *            the buffer to write compressed data to.
      * @param off
-     *            offset inf buf to start storing data
+     *            the offset within {@code buf} at which to start writing to.
      * @param nbytes
-     *            number of bytes of compressed data to store in buf
-     * 
-     * @return number of bytes of compressed data stored
-     * 
+     *            maximum number of bytes of compressed data to be written.
+     * @return the number of bytes of compressed data written to {@code buf}.
      */
     public synchronized int deflate(byte[] buf, int off, int nbytes) {
         if (streamHandle == -1) {
@@ -173,10 +198,11 @@ public class Deflater {
     private synchronized native void endImpl(long handle);
 
     /**
-     * Frees all resources held onto by this Deflater. Any unused input or
-     * output is discarded. This is also called from the finalize method.
-     * 
-     * @see #finalize
+     * Frees all resources held onto by this deflating algorithm. Any unused
+     * input or output is discarded. While this method is used by {@code
+     * finalize()}, it can be called explicitly in order to free native
+     * resources before the next GC cycle. After {@code end()} was called other
+     * methods will typically throw an {@code IllegalStateException}.
      */
     public synchronized void end() {
         if (streamHandle != -1) {
@@ -192,10 +218,10 @@ public class Deflater {
     }
 
     /**
-     * Indicates to the Deflater that all uncompressed input has been provided
+     * Indicates to the {@code Deflater} that all uncompressed input has been provided
      * to it.
      * 
-     * @see #finished()
+     * @see #finished
      */
     public synchronized void finish() {
         flushParm = Z_FINISH;
@@ -205,7 +231,7 @@ public class Deflater {
      * Returns whether or not all provided data has been successfully
      * compressed.
      * 
-     * @return true if all data has been compressed, false otherwise
+     * @return true if all data has been compressed, false otherwise.
      */
     public synchronized boolean finished() {
         return finished;
@@ -216,9 +242,8 @@ public class Deflater {
      * preset dictionary is used getAdler() will return the Adler32 checksum of
      * the dictionary used.
      * 
-     * @return The Adler32 checksum of uncompressed data or preset dictionary if
-     *         used
-     * 
+     * @return the Adler32 checksum of uncompressed data or preset dictionary if
+     *         used.
      * @see #setDictionary(byte[])
      * @see #setDictionary(byte[], int, int)
      */
@@ -233,7 +258,7 @@ public class Deflater {
     private synchronized native int getAdlerImpl(long handle);
 
     /**
-     * Returns the total number of bytes of input consumed by the deflater.
+     * Returns the total number of bytes of input consumed by the {@code Deflater}.
      * 
      * @return number of bytes of input read.
      */
@@ -248,7 +273,7 @@ public class Deflater {
     private synchronized native long getTotalInImpl(long handle);
 
     /**
-     * Returns the total number of compressed bytes output by this Deflater.
+     * Returns the total number of compressed bytes output by this {@code Deflater}.
      * 
      * @return number of compressed bytes output.
      */
@@ -263,14 +288,14 @@ public class Deflater {
     private synchronized native long getTotalOutImpl(long handle);
 
     /**
-     * Indicates whether or not all bytes of uncompressed input have been
-     * consumed by the Deflater. If needsInput() answers true setInput() must be
-     * called before deflation can continue. If all bytes of uncompressed data
-     * have been provided to the Deflater finish() must be called to ensure the
-     * compressed data is output.
+     * Counterpart to setInput(). Indicates whether or not all bytes of
+     * uncompressed input have been consumed by the {@code Deflater}. If needsInput()
+     * returns true setInput() must be called before deflation can continue. If
+     * all bytes of uncompressed data have been provided to the {@code Deflater}
+     * finish() must be called to ensure the compressed data is output.
      * 
-     * @return True if input is required for deflation to continue, false
-     *         otherwise
+     * @return {@code true} if input is required for deflation to continue,
+     *         {@code false} otherwise.
      * @see #finished()
      * @see #setInput(byte[])
      * @see #setInput(byte[], int, int)
@@ -283,12 +308,12 @@ public class Deflater {
     }
 
     /**
-     * Resets the <code>Deflater</code> to accept new input without affecting
-     * any previously made settings for the compression strategy or level. This
-     * operation <i>must</i> be called after <code>finished()</code> returns
-     * <code>true</code> if the <code>Deflater</code> is to be reused.
+     * Resets the {@code Deflater} to accept new input without affecting any
+     * previously made settings for the compression strategy or level. This
+     * operation <i>must</i> be called after {@code finished()} returns
+     * {@code true} if the {@code Deflater} is to be reused.
      * 
-     * @see #finished()
+     * @see #finished
      */
     public synchronized void reset() {
         if (streamHandle == -1) {
@@ -304,30 +329,31 @@ public class Deflater {
     private synchronized native void resetImpl(long handle);
 
     /**
-     * Defines a dictionary to be used for compression by the receiver.
+     * Sets the dictionary to be used for compression by this {@code Deflater}.
+     * setDictionary() can only be called if this {@code Deflater} supports the writing
+     * of ZLIB headers. This is the default behaviour but can be overridden
+     * using {@code Deflater(int, boolean)}.
      * 
      * @param buf
-     *            the entire set of bytes comprising the dictionary
-     * @see #setDictionary(byte[], int, int)
+     *            the buffer containing the dictionary data bytes.
+     * @see Deflater#Deflater(int, boolean)
      */
     public void setDictionary(byte[] buf) {
         setDictionary(buf, 0, buf.length);
     }
 
     /**
-     * Sets the dictionary to be used for compression by this Deflater.
-     * 
-     * <code>setDictionary()</code> can only be called if this Deflater
-     * supports the writing of ZLIB headers. This is the default behaviour but
-     * can be overridden using <code>Deflater(int, boolean)</code>.
-     * 
+     * Sets the dictionary to be used for compression by this {@code Deflater}.
+     * setDictionary() can only be called if this {@code Deflater} supports the writing
+     * of ZLIB headers. This is the default behaviour but can be overridden
+     * using {@code Deflater(int, boolean)}.
+     *
      * @param buf
-     *            the byte array containing the dictionary
+     *            the buffer containing the dictionary data bytes.
      * @param off
-     *            offset into the byte array
+     *            the offset of the data.
      * @param nbytes
-     *            number of bytes comprising the dictionary
-     * 
+     *            the length of the data.
      * @see Deflater#Deflater(int, boolean)
      */
     public synchronized void setDictionary(byte[] buf, int off, int nbytes) {
@@ -347,27 +373,27 @@ public class Deflater {
             int nbytes, long handle);
 
     /**
-     * Sets the input buffer the Deflater will use to extract uncompressed bytes
+     * Sets the input buffer the {@code Deflater} will use to extract uncompressed bytes
      * for later compression.
      * 
      * @param buf
-     *            the input buffer
+     *            the buffer.
      */
     public void setInput(byte[] buf) {
         setInput(buf, 0, buf.length);
     }
 
     /**
-     * Sets the input buffer the Deflater will use to extract uncompressed bytes
+     * Sets the input buffer the {@code Deflater} will use to extract uncompressed bytes
      * for later compression. Input will be taken from the buffer region
      * starting at off and ending at nbytes - 1.
      * 
      * @param buf
-     *            the input data byte array
+     *            the buffer containing the input data bytes.
      * @param off
-     *            offset into the input bytes
+     *            the offset of the data.
      * @param nbytes
-     *            number of valid bytes in the input array
+     *            the length of the data.
      */
     public synchronized void setInput(byte[] buf, int off, int nbytes) {
         if (streamHandle == -1) {
@@ -436,12 +462,12 @@ public class Deflater {
     }
 
     /**
-     * Returns a long int of total number of bytes read by the Deflater. This
-     * method performs the same as getTotalIn except it returns a long value
+     * Returns a long int of total number of bytes read by the {@code Deflater}. This
+     * method performs the same as {@code getTotalIn} except it returns a long value
      * instead of an integer
      * 
      * @see #getTotalIn()
-     * @return bytes exactly read by deflater
+     * @return total number of bytes read by {@code Deflater}.
      */
     public synchronized long getBytesRead() {
         // Throw NPE here
@@ -452,12 +478,12 @@ public class Deflater {
     }
 
     /**
-     * Returns a long int of total number of bytes of read by the Deflater. This
-     * method performs the same as getTotalOut except it returns a long value
-     * instead of an integer
+     * Returns a long int of total number of bytes of read by the {@code Deflater}. This
+     * method performs the same as {@code getTotalOut} except it returns a long
+     * value instead of an integer
      * 
      * @see #getTotalOut()
-     * @return bytes exactly write by deflater
+     * @return bytes exactly write by {@code Deflater}
      */
     public synchronized long getBytesWritten() {
         // Throw NPE here

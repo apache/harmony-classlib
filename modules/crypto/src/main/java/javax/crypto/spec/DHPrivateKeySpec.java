@@ -26,7 +26,7 @@ import java.math.BigInteger;
 import java.security.spec.KeySpec;
 
 /**
- * @com.intel.drl.spec_ref
+ * The key specification for a Diffie-Hellman private key.
  */
 public class DHPrivateKeySpec implements KeySpec {
 
@@ -35,7 +35,16 @@ public class DHPrivateKeySpec implements KeySpec {
     private final BigInteger g;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new <code>DHPrivateKeySpec</code> with the specified <i>private
+     * value</i> <code>x</code>. <i>prime modulus</i> <code>p</code> and <i>base
+     * generator</i> <code>g</code>.
+     *
+     * @param x
+     *            the private value.
+     * @param p
+     *            the prime modulus.
+     * @param g
+     *            the base generator.
      */
     public DHPrivateKeySpec(BigInteger x, BigInteger p, BigInteger g) {
         this.x = x;
@@ -44,21 +53,27 @@ public class DHPrivateKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>private value</i> <code>x</code>.
+     *
+     * @return the private value <code>x</code>.
      */
     public BigInteger getX() {
         return x;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>prime modulus</i> <code>p</code>.
+     *
+     * @return the prime modulus <code>p</code>.
      */
     public BigInteger getP() {
         return p;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the <i>base generator</i> <code>g</code>.
+     *
+     * @return the base generator <code>g</code>.
      */
     public BigInteger getG() {
         return g;

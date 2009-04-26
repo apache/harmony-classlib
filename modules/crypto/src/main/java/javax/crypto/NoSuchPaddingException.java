@@ -25,8 +25,8 @@ package javax.crypto;
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception that is thrown when the requested padding mechanism is not
+ * supported.
  */
 public class NoSuchPaddingException extends GeneralSecurityException {
 
@@ -36,16 +36,18 @@ public class NoSuchPaddingException extends GeneralSecurityException {
     private static final long serialVersionUID = -4572885201200175466L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code NoSuchPaddingException} with the specified
+     * message.
      * 
+     * @param msg
+     *            the message.
      */
     public NoSuchPaddingException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
+     * Creates a new {@code NoSuchPaddingException}.
      */
     public NoSuchPaddingException() {
     }

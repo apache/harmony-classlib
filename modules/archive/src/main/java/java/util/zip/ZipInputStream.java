@@ -28,8 +28,19 @@ import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
- * ZipInputStream is an input stream for reading zip files.
- * 
+ * This class provides an implementation of {@code FilterInputStream} that
+ * uncompresses data from a <i>ZIP-archive</i> input stream.
+ * <p>
+ * A <i>ZIP-archive</i> is a collection of compressed (or uncompressed) files -
+ * the so called ZIP entries. Therefore when reading from a {@code
+ * ZipInputStream} first the entry's attributes will be retrieved with {@code
+ * getNextEntry} before its data is read.
+ * <p>
+ * While {@code InflaterInputStream} can read a compressed <i>ZIP-archive</i>
+ * entry, this extension can read uncompressed entries as well.
+ * <p>
+ * Use {@code ZipFile} if you can access the archive as a file directly.
+ *
  * @see ZipEntry
  * @see ZipFile
  */
@@ -63,10 +74,10 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     private char[] charBuf = new char[256];
 
     /**
-     * Constructs a new ZipInputStream on the specified input stream.
+     * Constructs a new {@code ZipInputStream} from the specified input stream.
      * 
      * @param stream
-     *            the input stream
+     *            the input stream to representing a ZIP archive.
      */
     public ZipInputStream(InputStream stream) {
         super(new PushbackInputStream(stream, BUF_SIZE), new Inflater(true));
@@ -76,7 +87,10 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     }
 
     /**
-     * Closes this ZipInputStream.
+     * Closes this {@code ZipInputStream}.
+     *
+     * @throws IOException
+     *             if an {@code IOException} occurs.
      */
     @Override
     public void close() throws IOException {
@@ -88,10 +102,10 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     }
 
     /**
-     * Closes the current zip entry and positions to read the next entry.
+     * Closes the current ZIP entry and positions to read the next entry.
      * 
      * @throws IOException
-     *             if an IO exception occurs closing the entry
+     *             if an {@code IOException} occurs.
      */
     public void closeEntry() throws IOException {
         if (zipClosed) {
@@ -145,11 +159,13 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     }
 
     /**
-     * Reads the next zip entry from this ZipInputStream.
+     * Reads the next entry from this {@code ZipInputStream}.
      * 
-     * @return the next entry
+     * @return the next {@code ZipEntry} contained in the input stream.
      * @throws IOException
-     *             if an IO exception occurs reading the next entry
+     *             if the stream is not positioned at the beginning of an entry
+     *             or if an other {@code IOException} occurs.
+     * @see ZipEntry
      */
     public ZipEntry getNextEntry() throws IOException {
         if (currentEntry != null) {
@@ -308,11 +324,13 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     }
 
     /**
-     * Skips up to the specified number of bytes in the current zip entry.
+     * Skips up to the specified number of bytes in the current ZIP entry.
      * 
      * @param value
-     *            the number of bytes to skip
-     * @return the number of bytes skipped
+     *            the number of bytes to skip.
+     * @return the number of bytes skipped.
+     * @throws IOException
+     *             if an {@code IOException} occurs.
      */
     @Override
     public long skip(long value) throws IOException {
@@ -333,9 +351,11 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     }
 
     /**
-     * Answers 1 if the EOF has been reached, otherwise returns 0.
+     * Returns 0 if the {@code EOF} has been reached, otherwise returns 1.
      * 
-     * @return 0 after EOF of current entry, 1 otherwise
+     * @return 0 after {@code EOF} of current entry, 1 otherwise.
+     * @throws IOException
+     *             if an IOException occurs.
      */
     @Override
     public int available() throws IOException {
@@ -357,6 +377,13 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
         return 1;
     }
 
+    /**
+     * creates a {@link ZipEntry } with the given name.
+     *
+     * @param name
+     *            the name of the entry.
+     * @return the created {@code ZipEntry}.
+     */
     protected ZipEntry createZipEntry(String name) {
         return new ZipEntry(name);
     }

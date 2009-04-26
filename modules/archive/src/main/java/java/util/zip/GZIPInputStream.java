@@ -24,7 +24,9 @@ import java.io.InputStream;
 import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
- * The GZIPInputStream class is used to read data stored in the GZIP format.
+ * The {@code GZIPInputStream} class is used to read data stored in the GZIP
+ * format, reading and decompressing GZIP data from the underlying stream into
+ * its buffer.
  */
 public class GZIPInputStream extends InflaterInputStream {
 
@@ -36,36 +38,44 @@ public class GZIPInputStream extends InflaterInputStream {
 
     private static final int FNAME = 8;
 
-    /** Value of GZIP header magic number. */
+    /**
+     * The magic header for the GZIP format.
+     */
     public final static int GZIP_MAGIC = 0x8b1f;
 
+    /**
+     * The checksum algorithm used when handling uncompressed data.
+     */
     protected CRC32 crc = new CRC32();
 
+    /**
+     * Indicates the end of the input stream.
+     */
     protected boolean eos = false;
 
     /**
-     * Construct a GZIPInputStream to read from GZIP data from the underlying
-     * stream
-     * 
+     * Construct a {@code GZIPInputStream} to read from GZIP data from the
+     * underlying stream.
+     *
      * @param is
-     *            InputStream to read data from
+     *            the {@code InputStream} to read data from.
      * @throws IOException
-     *             if an IO error occurs reading the stream
+     *             if an {@code IOException} occurs.
      */
     public GZIPInputStream(InputStream is) throws IOException {
         this(is, BUF_SIZE);
     }
 
     /**
-     * Construct a GZIPInputStream to read from GZIP data from the underlying
-     * stream. Set the internal buffer size to size
+     * Construct a {@code GZIPInputStream} to read from GZIP data from the
+     * underlying stream. Set the internal buffer size to {@code size}.
      * 
      * @param is
-     *            InputStream to read data from
+     *            the {@code InputStream} to read data from.
      * @param size
-     *            Internal read buffer size
+     *            the internal read buffer size.
      * @throws IOException
-     *             if an IO exception occurs reading the stream
+     *             if an {@code IOException} occurs.
      */
     public GZIPInputStream(InputStream is, int size) throws IOException {
         super(is, new Inflater(true), size);

@@ -120,7 +120,6 @@ abstract class AbstractSet {
      */
     public int findBack(int stringIndex, int startSearch,
             CharSequence testString, MatchResultImpl matchResult) {
-        int shift;
         while (startSearch >= stringIndex) {
             if (matches(startSearch, testString, matchResult) >= 0) {
                 return startSearch;

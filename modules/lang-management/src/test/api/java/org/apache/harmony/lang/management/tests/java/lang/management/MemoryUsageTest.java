@@ -90,6 +90,10 @@ public class MemoryUsageTest extends TestCase {
         }
     }
 
+    public void test_from_NullCompositeData() {
+        assertNull(MemoryUsage.from(null));
+    }
+
     public void testConstructor() {
         try {
             new MemoryUsage(-2, 2048, 4096, 8128);

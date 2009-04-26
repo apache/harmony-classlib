@@ -21,22 +21,20 @@ package java.util.regex;
  * Hashtable implementation for int arrays.
  */
 class IntArrHash {
-        int[] table;
+        final int[] table;
         
-        Object [] values;
+        final Object[] values;
                 
-        int mask;
-
-        int size; // maximum shift
+        final int mask;
 
         public IntArrHash(int size) {
-            while (size >= mask) {
-                mask = (mask << 1) | 1;
+            int tmpMask = 0;
+            while (size >= tmpMask) {
+                tmpMask = (tmpMask << 1) | 1;
             }
-            mask = (mask << 1) | 1;
+            mask = (tmpMask << 1) | 1;
             table = new int[mask + 1];
             values = new Object [mask + 1];
-            this.size = size;
         }
 
         public void put(int key, int [] value) {

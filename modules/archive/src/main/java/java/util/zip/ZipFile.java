@@ -30,10 +30,18 @@ import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
- * ZipFile is used to read zip entries and their associated data from zip files.
+ * This class provides random read access to a <i>ZIP-archive</i> file.
+ * <p>
+ * While {@code ZipInputStream} provides stream based read access to a
+ * <i>ZIP-archive</i>, this class implements more efficient (file based) access
+ * and makes use of the <i>central directory</i> within a <i>ZIP-archive</i>.
+ * <p>
+ * Use {@code ZipOutputStream} if you want to create an archive.
+ * <p>
+ * A temporary ZIP file can be marked for automatic deletion upon closing it.
  * 
- * @see ZipInputStream
  * @see ZipEntry
+ * @see ZipOutputStream
  */
 public class ZipFile implements ZipConstants {
 
@@ -49,37 +57,41 @@ public class ZipFile implements ZipConstants {
         ntvinit();
     }
 
-    /** Open ZIP file for read. */
+    /**
+     * Open zip file for read.
+     */
     public static final int OPEN_READ = 1;
 
-    /** Delete ZIP file when closed. */
+    /**
+     * Delete zip file when closed.
+     */
     public static final int OPEN_DELETE = 4;
 
     /**
-     * Constructs a new ZipFile opened on the specified File.
+     * Constructs a new {@code ZipFile} with the specified file.
      * 
      * @param file
-     *            the File
+     *            the file to read from.
      * @throws ZipException
-     *             if a ZIP format exception occurs reading the file
+     *             if a ZIP error occurs.
      * @throws IOException
-     *             if an IO exception occurs reading the file
+     *             if an {@code IOException} occurs.
      */
     public ZipFile(File file) throws ZipException, IOException {
         this(file.getPath());
     }
 
     /**
-     * Constructs a new ZipFile opened on the specified file using the specified
-     * mode.
+     * Opens a file as <i>ZIP-archive</i>. "mode" must be {@code OPEN_READ} or
+     * {@code OPEN_DELETE} . The latter sets the "delete on exit" flag through a
+     * file.
      * 
      * @param file
-     *            the file
+     *            the ZIP file to read.
      * @param mode
-     *            the mode to use, either <code>OPEN_READ</code> or
-     *            <code>OPEN_READ | OPEN_DELETE</code>
+     *            the mode of the file open operation.
      * @throws IOException
-     *             if an IO exception occurs reading the file
+     *             if an {@code IOException} occurs.
      */
     public ZipFile(File file, int mode) throws IOException {
         if (mode == OPEN_READ || mode == (OPEN_READ | OPEN_DELETE)) {
@@ -99,19 +111,19 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Constructs a new ZipFile opened on the specified file path name.
+     * Opens a ZIP archived file.
      * 
-     * @param filename
-     *            the file path name
+     * @param name
+     *            the name of the ZIP file.
      * @throws IOException
-     *             if an IO exception occured reading the file
+     *             if an IOException occurs.
      */
-    public ZipFile(String filename) throws IOException {
+    public ZipFile(String name) throws IOException {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
-            security.checkRead(filename);
+            security.checkRead(name);
         }
-        fileName = filename;
+        fileName = name;
         openZip();
     }
 
@@ -138,10 +150,10 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Closes this ZipFile.
+     * Closes this ZIP file.
      * 
      * @throws IOException
-     *             if an IO exception occured closing the file
+     *             if an IOException occurs.
      */
     public synchronized void close() throws IOException {
         if (descriptor != -1 && fileName != null) {
@@ -159,21 +171,22 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Answers all of the ZIP entries contained in this ZipFile.
+     * Returns an enumeration of the entries. The entries are listed in the
+     * order in which they appear in the ZIP archive.
      * 
-     * @return an Enumeration of the ZIP entries
+     * @return the enumeration of the entries.
      */
     public Enumeration<? extends ZipEntry> entries() {
         return new ZFEnum<ZipEntry>();
     }
 
     /**
-     * Gets the zip entry with the specified name from this ZipFile.
+     * Gets the ZIP entry with the specified name from this {@code ZipFile}.
      * 
      * @param entryName
-     *            the name of the entry in the zip file
-     * @return a ZipEntry or null if the entry name does not exist in the zip
-     *         file
+     *            the name of the entry in the ZIP file.
+     * @return a {@code ZipEntry} or {@code null} if the entry name does not
+     *         exist in the ZIP file.
      */
     public ZipEntry getEntry(String entryName) {
         if (entryName != null) {
@@ -184,13 +197,13 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Answers an input stream on the data of the specified ZipEntry.
+     * Returns an input stream on the data of the specified {@code ZipEntry}.
      * 
      * @param entry
-     *            the ZipEntry
-     * @return an input stream on the ZipEntry data
+     *            the ZipEntry.
+     * @return an input stream of the data contained in the {@code ZipEntry}.
      * @throws IOException
-     *             if an IO exception occurs reading the data
+     *             if an {@code IOException} occurs.
      */
     public InputStream getInputStream(ZipEntry entry) throws IOException {
         if (descriptor == -1) {
@@ -208,9 +221,9 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Gets the file name of this ZipFile.
+     * Gets the file name of this {@code ZipFile}.
      * 
-     * @return the file name of this ZipFile
+     * @return the file name of this {@code ZipFile}.
      */
     public String getName() {
         return fileName;
@@ -226,9 +239,9 @@ public class ZipFile implements ZipConstants {
             throws ZipException;
 
     /**
-     * Returns the number of ZipEntries in this ZipFile.
+     * Returns the number of {@code ZipEntries} in this {@code ZipFile}.
      * 
-     * @return Number of entries in this file
+     * @return the number of entries in this file.
      */
     public int size() {
         if (size != -1) {

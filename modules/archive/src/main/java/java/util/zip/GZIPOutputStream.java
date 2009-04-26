@@ -21,36 +21,40 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * The GZIPOutputStream class is used to write data to a stream in the GZIP
- * storage format.
+ * The {@code GZIPOutputStream} class is used to write data to a stream in the
+ * GZIP storage format.
  */
 public class GZIPOutputStream extends DeflaterOutputStream {
 
+    /**
+     * The checksum algorithm used when treating uncompressed data.
+     */
     protected CRC32 crc = new CRC32();
 
     /**
-     * Construct a new GZIPOutputStream to write data in GZIP format to the
-     * underlying stream.
+     * Construct a new {@code GZIPOutputStream} to write data in GZIP format to
+     * the underlying stream.
      * 
      * @param os
-     *            OutputStream to write to
+     *            the {@code OutputStream} to write data to.
      * @throws IOException
-     *             if an IO error occurs writing to the output stream
+     *             if an {@code IOException} occurs.
      */
     public GZIPOutputStream(OutputStream os) throws IOException {
         this(os, BUF_SIZE);
     }
 
     /**
-     * Construct a new GZIPOutputStream to write data in GZIP format to the
-     * underlying stream. Set the internal compression buffer to sise size.
+     * Construct a new {@code GZIPOutputStream} to write data in GZIP format to
+     * the underlying stream. Set the internal compression buffer to size
+     * {@code size}.
      * 
      * @param os
-     *            OutputStream to write to
+     *            the {@code OutputStream} to write to.
      * @param size
-     *            Internal buffer size
+     *            the internal buffer size.
      * @throws IOException
-     *             if an IO error occurs writing to the output stream
+     *             if an {@code IOException} occurs.
      */
     public GZIPOutputStream(OutputStream os, int size) throws IOException {
         super(os, new Deflater(Deflater.DEFAULT_COMPRESSION, true), size);
@@ -64,7 +68,10 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 
     /**
      * Indicates to the stream that all data has been written out, and any GZIP
-     * terminal data can now be output.
+     * terminal data can now be written.
+     *
+     * @throws IOException
+     *             if an {@code IOException} occurs.
      */
     @Override
     public void finish() throws IOException {

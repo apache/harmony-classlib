@@ -18,10 +18,11 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * Indicates that an annotation in a class file is incorrectly formatted.
- * </p>
- * 
+ * Indicates that an annotation in the binary representation of a class is
+ * syntactically incorrect and the annotation parser is unable to process it.
+ * This exception is unlikely to ever occur, given that the code has been
+ * compiled by an ordinary Java compiler.
+ *
  * @since 1.5
  */
 public class AnnotationFormatError extends Error {
@@ -29,36 +30,34 @@ public class AnnotationFormatError extends Error {
     private static final long serialVersionUID = -4256701562333669892L;
 
     /**
-     * <p>
      * Constructs an instance with the message provided.
-     * </p>
-     * 
-     * @param message The details of the error.
+     *
+     * @param message
+     *            the details of the error.
      */
     public AnnotationFormatError(String message) {
         super(message);
     }
 
     /**
-     * <p>
      * Constructs an instance with a message and a cause.
-     * </p>
-     * 
-     * @param message The details of the error.
-     * @param cause The cause of the error or <code>null</code> if none.
+     *
+     * @param message
+     *            the details of the error.
+     * @param cause
+     *            the cause of the error or {@code null} if none.
      */
     public AnnotationFormatError(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * <p>
-     * Constructs an instance with a cause. If the cause is NOT
-     * <code>null</code>, then <code>cause.toString()</code> is used as the
+     * Constructs an instance with a cause. If the cause is not
+     * {@code null}, then {@code cause.toString()} is used as the
      * error's message.
-     * </p>
-     * 
-     * @param cause The cause of the error or <code>null</code> if none.
+     *
+     * @param cause
+     *            the cause of the error or {@code null} if none.
      */
     public AnnotationFormatError(Throwable cause) {
         super(cause == null ? null : cause.toString(), cause);

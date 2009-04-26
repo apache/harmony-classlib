@@ -18,31 +18,25 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * An enumeration for annotation retention policies.
- * </p>
- * 
+ * Defines an enumeration for annotation retention policies. Used in conjunction
+ * with the {@link Retention} annotation to specify an annotation's time-to-live
+ * in the overall development life cycle.
+ *
  * @since 1.5
  */
 public enum RetentionPolicy {
     /**
-     * <p>
      * Annotation is only available in the source code.
-     * </p>
      */
     SOURCE,
     /**
-     * <p>
      * Annotation is available in the source code and in the class file, but not
      * at runtime. This is the default policy.
-     * </p>
      */
     CLASS,
     /**
-     * <p>
      * Annotation is available in the source code, the class file and is
      * available at runtime.
-     * </p>
      */
     RUNTIME
 }

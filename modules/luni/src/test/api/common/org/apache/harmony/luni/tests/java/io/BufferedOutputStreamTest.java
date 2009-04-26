@@ -52,6 +52,49 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
         os.write(fileString.getBytes(), 0, 500);
     }
 
+    public void test_flush_Constructor_NullStream() throws IOException {
+        BufferedOutputStream buffos = new java.io.BufferedOutputStream(null);
+        try {
+            buffos.flush();
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            buffos.close();
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        buffos = new java.io.BufferedOutputStream(null, 10);
+        try {
+            buffos.flush();
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            buffos.close();
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        try {
+            new java.io.BufferedOutputStream(null, 0);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+        try {
+            new java.io.BufferedOutputStream(null, -1);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
     /**
      * @tests java.io.BufferedOutputStream#flush()
      */
@@ -99,8 +142,8 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
                 bais.available() >= 1000);
         byte[] wbytes = new byte[1013];
         bais.read(wbytes, 0, 1013);
-        assertTrue("Incorrect bytes written", fileString.substring(0, 1013)
-                .equals(new String(wbytes, 0, wbytes.length)));
+        assertEquals("Incorrect bytes written", new String(wbytes, 0,
+                wbytes.length), fileString.substring(0, 1013));
 
         // regression test for HARMONY-4177
         MockOutputStream mos = new MockOutputStream(5);
@@ -215,8 +258,44 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
             // expected
         }
 
+        try {
+            bos.write(byteArray, 0, byteArray.length + 1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            bos.write(byteArray, 1, byteArray.length);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            bos.write(byteArray, -1, byteArray.length);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            bos.write(byteArray, byteArray.length, -1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        bos.write(byteArray, byteArray.length, 0);
+        try {
+            bos.write(byteArray, byteArray.length, 1);
+            fail("should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+
         bos.write(byteArray, 0, 0);
         bos.write(byteArray, 0, 1);
+        bos.write(byteArray, 1, byteArray.length - 1);
         bos.write(byteArray, 0, byteArray.length);
 
         try {
@@ -566,20 +645,186 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
         assertEquals("Incorrect byte written", 't', wbytes[0]);
     }
 
+    public void test_write_Close() throws IOException {
+        BufferedOutputStream buffos = new BufferedOutputStream(
+                new ByteArrayOutputStream());
+        buffos.write(new byte[0]);
+        try {
+            buffos.write(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        byte[] buffer = "1234567890".getBytes();
+
+        buffos.write(Integer.MIN_VALUE);
+        buffos.write(Integer.MAX_VALUE);
+        buffos.write(buffer, 0, 10);
+        buffos.flush();
+
+        buffos.close();
+
+        buffos.write(Integer.MIN_VALUE);
+        buffos.write(Integer.MAX_VALUE);
+        buffos.write(buffer, 0, 10);
+        buffos.flush();
+    }
+
+    public void test_write_Scenario1() throws IOException {
+        ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
+        ByteArrayInputStream byteArrayis = null;
+        byte[] buffer = "1234567890".getBytes();
+
+        BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 10);
+        buffos.write(buffer, 0, 10);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 10, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 10, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+
+        buffos.write(buffer, 0, 10);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 20, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 20, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+
+        buffos.write(buffer, 0, 10);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 30, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 30, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+    }
+
+    public void test_write_Scenario2() throws IOException {
+        ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
+        ByteArrayInputStream byteArrayis = null;
+        byte[] buffer = "1234567890".getBytes();
+
+        BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 20);
+        buffos.write(buffer, 0, 10);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 0, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 10, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+
+        byte[] buffer2 = new byte[] { 'a', 'b', 'c', 'd' };
+        buffos.write(buffer2, 0, 4);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 10, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 14, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 4; i++) {
+            assertEquals(buffer2[i], byteArrayis.read());
+        }
+
+        buffos.close();
+
+        byte[] buffer3 = new byte[] { 'e', 'f', 'g', 'h', 'i' };
+        buffos.write(buffer3, 0, 5);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 14, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 19, byteArrayis
+                .available());
+        for (int i = 0; i < 10; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 4; i++) {
+            assertEquals(buffer2[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 5; i++) {
+            assertEquals(buffer3[i], byteArrayis.read());
+        }
+
+        buffos.write(new byte[] { 'j', 'k' });
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 19, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 21, byteArrayis
+                .available());
+    }
+
+    public void test_write_Scenario3() throws IOException {
+        ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
+        ByteArrayInputStream byteArrayis = null;
+        byte[] buffer = "1234567890".getBytes();
+
+        BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 5);
+        buffos.write(buffer, 0, 4);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 0, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 4, byteArrayis
+                .available());
+        for (int i = 0; i < 4; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+
+        buffos.write(buffer, 0, 5);
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes written, not buffered", 9, byteArrayis.available());
+        buffos.flush();
+        byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
+        assertEquals("Bytes not written after flush", 9, byteArrayis
+                .available());
+        for (int i = 0; i < 4; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+        for (int i = 0; i < 5; i++) {
+            assertEquals(buffer[i], byteArrayis.read());
+        }
+    }
+
     /**
      * Tears down the fixture, for example, close a network connection. This
      * method is called after a test is executed.
      */
-    protected void tearDown() {
-        try {
-            if (bais != null)
-                bais.close();
-            if (os != null)
-                os.close();
-            if (baos != null)
-                baos.close();
-        } catch (Exception e) {
-            System.out.println("Exception during tearDown" + e.toString());
+    protected void tearDown() throws IOException {
+        if (bais != null) {
+            bais.close();
+        }
+        if (os != null) {
+            os.close();
+        }
+        if (baos != null) {
+            baos.close();
         }
     }
 }

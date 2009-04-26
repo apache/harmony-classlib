@@ -27,8 +27,6 @@ package java.math;
  * <li>or</li>
  * <li>xor</li>
  * </ul>
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class Logical {
 

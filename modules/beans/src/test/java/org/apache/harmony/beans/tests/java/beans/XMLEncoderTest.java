@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.util.Map;
+import java.util.TreeMap;
 
 import junit.framework.TestCase;
 
@@ -44,6 +46,7 @@ import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Owner;
 import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Target;
 import org.apache.harmony.beans.tests.support.mock.MockBean4StaticField;
 import org.apache.harmony.beans.tests.support.mock.MockBean4StaticField_PD;
+import org.apache.harmony.beans.tests.support.mock.MockTreeMapClass;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -298,6 +301,18 @@ public class XMLEncoderTest extends TestCase {
         assertCodedXML(MockBean4StaticField.inst,
                 "/xml/MockBean4StaticField.xml", temp, enc);
 
+    }
+
+    public void testWriteObject_MockTreeMap() throws Exception {
+        Map<String, TreeMap<String, String>> innerTreeMap = new MockTreeMapClass();
+        TreeMap resultTreeMap = innerTreeMap.get("outKey");
+        resultTreeMap.put("innerKey", "innerValue");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLEncoder xmlEncoder = new XMLEncoder(baos);
+
+        assertCodedXML(innerTreeMap, "/xml/MockTreeMap.xml", baos, xmlEncoder);
+        assertEquals(1, innerTreeMap.size());
     }
 
     public void testClose() {

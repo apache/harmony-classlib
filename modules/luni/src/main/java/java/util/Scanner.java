@@ -372,10 +372,12 @@ public final class Scanner implements Iterator<String> {
          * bug is fixed.
          */
         int oldLimit = buffer.limit();
-        buffer.limit(horizonLineSeparator);
+        // Considering the look ahead feature, the line terminator should be involved as RI
+        buffer.limit(horizonLineSeparator + terminatorLength);
         // ========== To deal with regex bug ====================
 
-        matcher.region(findStartIndex, horizonLineSeparator);
+        // Considering the look ahead feature, the line terminator should be involved as RI
+        matcher.region(findStartIndex, horizonLineSeparator + terminatorLength);
         if (matcher.find()) {
             // The scanner advances past the input that matched
             findStartIndex = matcher.end();
@@ -383,6 +385,18 @@ public final class Scanner implements Iterator<String> {
             // terminator.
             if (horizonLineSeparator == matcher.end()) {
                 findStartIndex += terminatorLength;
+            }
+            // the line terminator itself should not be a part of
+            // the match result according to the Spec
+            if (horizonLineSeparator != bufferLength
+                    && (horizonLineSeparator + terminatorLength == matcher
+                            .end())) {
+                // ========== To deal with regex bug ====================
+                buffer.limit(oldLimit);
+                // ========== To deal with regex bug ====================
+
+                matchSuccessful = false;
+                return null;
             }
             matchSuccessful = true;
 
