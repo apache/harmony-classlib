@@ -21,9 +21,9 @@ import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
  * An error reporting facility for {@link Handler} implementations to record any
- * error that may happen during logging. <code>Handlers</code> should report
- * errors to an <code>ErrorManager</code>, instead of throwing exceptions,
- * which would interfere with the log issuer's execution.
+ * error that may happen during logging. {@code Handlers} should report errors
+ * to an {@code ErrorManager}, instead of throwing exceptions, which would
+ * interfere with the log issuer's execution.
  */
 public class ErrorManager {
 
@@ -70,7 +70,7 @@ public class ErrorManager {
     private boolean called;
 
     /**
-     * Constructs an instance of <code>ErrorManager</code>.
+     * Constructs an instance of {@code ErrorManager}.
      */
     public ErrorManager() {
         super();
@@ -83,13 +83,13 @@ public class ErrorManager {
      * should override this method.
      * 
      * @param message
-     *            The error message, which may be <code>null</code>.
+     *            the error message, which may be {@code null}.
      * @param exception
-     *            The exception associated with the error, which may be
-     *            <code>null</code>.
+     *            the exception associated with the error, which may be
+     *            {@code null}.
      * @param errorCode
-     *            The error code that identifies the type of error; see the
-     *            constant fields on this class.
+     *            the error code that identifies the type of error; see the
+     *            constant fields of this class for possible values.
      */
     public void error(String message, Exception exception, int errorCode) {
         synchronized (this) {

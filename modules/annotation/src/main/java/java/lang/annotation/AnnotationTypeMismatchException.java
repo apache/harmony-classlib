@@ -22,11 +22,9 @@ import java.lang.reflect.Method;
 import org.apache.harmony.annotation.internal.nls.Messages;
 
 /**
- * <p>
  * Indicates that an annotation type has changed since it was compiled or
  * serialized.
- * </p>
- * 
+ *
  * @since 1.5
  */
 public class AnnotationTypeMismatchException extends RuntimeException {
@@ -38,12 +36,14 @@ public class AnnotationTypeMismatchException extends RuntimeException {
     private String foundType;
 
     /**
-     * <p>
      * Constructs an instance for the given type element and the type found.
-     * </p>
-     * 
-     * @param element The annotation type element.
-     * @param foundType The invalid type that was found.
+     *
+     * @param element
+     *            the annotation type element.
+     * @param foundType
+     *            the invalid type that was found. This is actually the textual
+     *            type description found in the binary class representation,
+     *            so it may not be human-readable.
      */
     public AnnotationTypeMismatchException(Method element, String foundType) {
         super(Messages.getString("annotation.1", element, foundType)); //$NON-NLS-1$
@@ -52,22 +52,18 @@ public class AnnotationTypeMismatchException extends RuntimeException {
     }
 
     /**
-     * <p>
-     * The method object for the invalid type.
-     * </p>
-     * 
-     * @return A {@link Method} instance.
+     * Returns the method object for the invalid type.
+     *
+     * @return a {@link Method} instance.
      */
     public Method element() {
         return element;
     }
 
     /**
-     * <p>
-     * The invalid type.
-     * </p>
-     * 
-     * @return A String describing the invalid data.
+     * Returns the invalid type.
+     *
+     * @return a string describing the invalid data.
      */
     public String foundType() {
         return foundType;

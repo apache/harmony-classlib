@@ -30,7 +30,9 @@ import javax.crypto.SecretKey;
 import org.apache.harmony.crypto.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
+ * A key specification for a <code>SecretKey</code> and also a secret key
+ * implementation that is provider-independent. It can be used for raw secret
+ * keys that can be specified as <code>byte[]</code>.
  */
 public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
 
@@ -44,15 +46,24 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     private final String format = "RAW"; //$NON-NLS-1$
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new <code>SecretKeySpec</code> for the specified key data and
+     * algorithm name.
+     *
+     * @param key
+     *            the key data.
+     * @param algorithm
+     *            the algorithm name.
+     * @throws IllegalArgumentException
+     *             if the key data or the algorithm name is null or if the key
+     *             data is empty.
      */
     public SecretKeySpec(byte[] key, String algorithm) {
-    	if (key == null) {
-    		throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
-    	}
-    	if (key.length == 0) {
-    		throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
-    	}
+        if (key == null) {
+            throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
+        }
+        if (key.length == 0) {
+            throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
+        }
         if (algorithm == null) {
             throw new IllegalArgumentException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
@@ -63,21 +74,38 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new <code>SecretKeySpec</code> for the key data from the
+     * specified buffer <code>key</code> starting at <code>offset</code> with
+     * length <code>len</code> and the specified <code>algorithm</code> name.
+     *
+     * @param key
+     *            the key data.
+     * @param offset
+     *            the offset.
+     * @param len
+     *            the size of the key data.
+     * @param algorithm
+     *            the algorithm name.
+     * @throws IllegalArgumentException
+     *             if the key data or the algorithm name is null, the key data
+     *             is empty or <code>offset</code> and <code>len</code> do not
+     *             specify a valid chunk in the buffer <code>key</code>.
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>offset</code> or <code>len</code> is negative.
      */
     public SecretKeySpec(byte[] key, int offset, int len, String algorithm) {
-    	if (key == null) {
-    		throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
-    	}
-    	if (key.length == 0) {
-    		throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
-    	}
+        if (key == null) {
+            throw new IllegalArgumentException(Messages.getString("crypto.05")); //$NON-NLS-1$
+        }
+        if (key.length == 0) {
+            throw new IllegalArgumentException(Messages.getString("crypto.35")); //$NON-NLS-1$
+        }
         if (len < 0) {
             throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.36")); //$NON-NLS-1$
         }
-    	if ((key.length - offset < len)) {
-    		throw new IllegalArgumentException(Messages.getString("crypto.37")); //$NON-NLS-1$
-    	}
+        if ((key.length - offset < len)) {
+            throw new IllegalArgumentException(Messages.getString("crypto.37")); //$NON-NLS-1$
+        }
         if (algorithm == null) {
             throw new IllegalArgumentException(Messages.getString("crypto.02")); //$NON-NLS-1$
         }
@@ -87,21 +115,27 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the algorithm name.
+     *
+     * @return the algorithm name.
      */
     public String getAlgorithm() {
         return algorithm;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the name of the format used to encode the key.
+     *
+     * @return the format name "RAW".
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the encoded form of this secret key.
+     *
+     * @return the encoded form of this secret key.
      */
     public byte[] getEncoded() {
         byte[] result = new byte[key.length];
@@ -110,7 +144,9 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the hash code of this <code>SecretKeySpec</code> object.
+     *
+     * @return the hash code.
      */
     @Override
     public int hashCode() {
@@ -122,7 +158,13 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Compares the specified object with this <code>SecretKeySpec</code>
+     * instance.
+     *
+     * @param obj
+     *            the object to compare.
+     * @return true if the algorithm name and key of both object are equal,
+     *         otherwise false.
      */
     @Override
     public boolean equals(Object obj) {

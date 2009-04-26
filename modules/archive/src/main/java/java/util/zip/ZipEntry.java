@@ -22,10 +22,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * ZipEntry represents an entry in a zip file.
+ * An instance of {@code ZipEntry} represents an entry within a <i>ZIP-archive</i>.
+ * An entry has attributes such as name (= path) or the size of its data. While
+ * an entry identifies data stored in an archive, it does not hold the data
+ * itself. For example when reading a <i>ZIP-file</i> you will first retrieve
+ * all its entries in a collection and then read the data for a specific entry
+ * through an input stream.
  * 
  * @see ZipFile
- * @see ZipInputStream
+ * @see ZipOutputStream
  */
 public class ZipEntry implements ZipConstants, Cloneable {
     String name, comment;
@@ -37,20 +42,22 @@ public class ZipEntry implements ZipConstants, Cloneable {
     byte[] extra;
 
     /**
-     * Zip entry state: Deflated
+     * Zip entry state: Deflated.
      */
     public static final int DEFLATED = 8;
 
     /**
-     * Zip entry state: Stored
+     * Zip entry state: Stored.
      */
     public static final int STORED = 0;
 
     /**
-     * Constructs a new ZipEntry with the specified name.
+     * Constructs a new {@code ZipEntry} with the specified name.
      * 
      * @param name
-     *            the name of the zip entry
+     *            the name of the ZIP entry.
+     * @throws IllegalArgumentException
+     *             if the name length is outside the range (> 0xFFFF).
      */
     public ZipEntry(String name) {
         if (name == null) {
@@ -63,76 +70,79 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Gets the comment for this ZipEntry.
+     * Gets the comment for this {@code ZipEntry}.
      * 
-     * @return the comment for this ZipEntry, or null if there is no comment
+     * @return the comment for this {@code ZipEntry}, or {@code null} if there
+     *         is no comment. If we're reading an archive with
+     *         {@code ZipInputStream} the comment is not available.
      */
     public String getComment() {
         return comment;
     }
 
     /**
-     * Gets the compressed size of this ZipEntry.
+     * Gets the compressed size of this {@code ZipEntry}.
      * 
      * @return the compressed size, or -1 if the compressed size has not been
-     *         set
+     *         set.
      */
     public long getCompressedSize() {
         return compressedSize;
     }
 
     /**
-     * Gets the crc for this ZipEntry.
+     * Gets the checksum for this {@code ZipEntry}.
      * 
-     * @return the crc, or -1 if the crc has not been set
+     * @return the checksum, or -1 if the checksum has not been set.
      */
     public long getCrc() {
         return crc;
     }
 
     /**
-     * Gets the extra information for this ZipEntry.
+     * Gets the extra information for this {@code ZipEntry}.
      * 
-     * @return a byte array containing the extra information, or null if there
-     *         is none
+     * @return a byte array containing the extra information, or {@code null} if
+     *         there is none.
      */
     public byte[] getExtra() {
         return extra;
     }
 
     /**
-     * Gets the compression method for this ZipEntry.
+     * Gets the compression method for this {@code ZipEntry}.
      * 
-     * @return the compression method, either DEFLATED, STORED or -1 if the
-     *         compression method has not been set
+     * @return the compression method, either {@code DEFLATED}, {@code STORED}
+     *         or -1 if the compression method has not been set.
      */
     public int getMethod() {
         return compressionMethod;
     }
 
     /**
-     * Gets the name of this ZipEntry.
+     * Gets the name of this {@code ZipEntry}.
      * 
-     * @return the entry name
+     * @return the entry name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the uncompressed size of this ZipEntry.
+     * Gets the uncompressed size of this {@code ZipEntry}.
      * 
-     * @return the uncompressed size, or -1 if the size has not been set
+     * @return the uncompressed size, or {@code -1} if the size has not been
+     *         set.
      */
     public long getSize() {
         return size;
     }
 
     /**
-     * Gets the last modification time of this ZipEntry.
+     * Gets the last modification time of this {@code ZipEntry}.
      * 
      * @return the last modification time as the number of milliseconds since
-     *         Jan. 1, 1970
+     *         Jan. 1, 1970.
      */
     public long getTime() {
         if (time != -1) {
@@ -147,20 +157,20 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Answers if this ZipEntry is a directory.
+     * Determine whether or not this {@code ZipEntry} is a directory.
      * 
-     * @return <code>true</code> when this ZipEntry is a directory,
-     *         <code>false<code> otherwise
+     * @return {@code true} when this {@code ZipEntry} is a directory, {@code
+     *         false} otherwise.
      */
     public boolean isDirectory() {
         return name.charAt(name.length() - 1) == '/';
     }
 
     /**
-     * Sets the comment for this ZipEntry.
+     * Sets the comment for this {@code ZipEntry}.
      * 
      * @param string
-     *            the comment
+     *            the comment for this entry.
      */
     public void setComment(String string) {
         if (string == null || string.length() <= 0xFFFF) {
@@ -171,23 +181,22 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Sets the compressed size for this ZipEntry.
+     * Sets the compressed size for this {@code ZipEntry}.
      * 
      * @param value
-     *            the compressed size
+     *            the compressed size (in bytes).
      */
     public void setCompressedSize(long value) {
         compressedSize = value;
     }
 
     /**
-     * Sets the crc for this ZipEntry.
+     * Sets the checksum for this {@code ZipEntry}.
      * 
      * @param value
-     *            the crc
-     * 
+     *            the checksum for this entry.
      * @throws IllegalArgumentException
-     *             if value is < 0 or > 0xFFFFFFFFL
+     *             if {@code value} is < 0 or > 0xFFFFFFFFL.
      */
     public void setCrc(long value) {
         if (value >= 0 && value <= 0xFFFFFFFFL) {
@@ -198,13 +207,12 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Sets the extra information for this ZipEntry.
+     * Sets the extra information for this {@code ZipEntry}.
      * 
      * @param data
-     *            a byte array containing the extra information
-     * 
+     *            a byte array containing the extra information.
      * @throws IllegalArgumentException
-     *             when the length of data is > 0xFFFF bytes
+     *             when the length of data is greater than 0xFFFF bytes.
      */
     public void setExtra(byte[] data) {
         if (data == null || data.length <= 0xFFFF) {
@@ -215,13 +223,13 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Sets the compression method for this ZipEntry.
+     * Sets the compression method for this {@code ZipEntry}.
      * 
      * @param value
-     *            the compression method, either DEFLATED or STORED
-     * 
+     *            the compression method, either {@code DEFLATED} or {@code
+     *            STORED}.
      * @throws IllegalArgumentException
-     *             when value is not DEFLATED or STORED
+     *             when value is not {@code DEFLATED} or {@code STORED}.
      */
     public void setMethod(int value) {
         if (value != STORED && value != DEFLATED) {
@@ -231,13 +239,12 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Sets the uncompressed size of this ZipEntry.
+     * Sets the uncompressed size of this {@code ZipEntry}.
      * 
      * @param value
-     *            the uncompressed size
-     * 
+     *            the uncompressed size for this entry.
      * @throws IllegalArgumentException
-     *             if value is < 0 or > 0xFFFFFFFFL
+     *             if {@code value} < 0 or {@code value} > 0xFFFFFFFFL.
      */
     public void setSize(long value) {
         if (value >= 0 && value <= 0xFFFFFFFFL) {
@@ -248,11 +255,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Sets the last modification time of this ZipEntry.
+     * Sets the modification time of this {@code ZipEntry}.
      * 
      * @param value
-     *            the last modification time as the number of milliseconds since
-     *            Jan. 1, 1970
+     *            the modification time as the number of milliseconds since Jan.
+     *            1, 1970.
      */
     public void setTime(long value) {
         GregorianCalendar cal = new GregorianCalendar();
@@ -272,9 +279,9 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Answers the string representation of this ZipEntry.
+     * Returns the string representation of this {@code ZipEntry}.
      * 
-     * @return the string representation of this ZipEntry
+     * @return the string representation of this {@code ZipEntry}.
      */
     @Override
     public String toString() {
@@ -297,10 +304,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Constructs a new ZipEntry using the values obtained from ze.
+     * Constructs a new {@code ZipEntry} using the values obtained from {@code
+     * ze}.
      * 
      * @param ze
-     *            ZipEntry from which to obtain values.
+     *            the {@code ZipEntry} from which to obtain values.
      */
     public ZipEntry(ZipEntry ze) {
         name = ze.name;
@@ -316,9 +324,9 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Returns a shallow copy of this entry
+     * Returns a shallow copy of this entry.
      * 
-     * @return a copy of this entry
+     * @return a copy of this entry.
      */
     @Override
     public Object clone() {
@@ -326,9 +334,9 @@ public class ZipEntry implements ZipConstants, Cloneable {
     }
 
     /**
-     * Returns the hashCode for this ZipEntry.
+     * Returns the hash code for this {@code ZipEntry}.
      * 
-     * @return the hashCode of the entry
+     * @return the hash code of the entry.
      */
     @Override
     public int hashCode() {

@@ -18,11 +18,9 @@
 package java.lang.annotation;
 
 /**
- * <p>
- * A meta-annotation used to indicate that a type's annotation are documented
- * and part of the public API.
- * </p>
- * 
+ * Defines a meta-annotation for indicating that an annotation is documented and
+ * considered part of the public API.
+ *
  * @since 1.5
  */
 @Documented

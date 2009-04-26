@@ -18,7 +18,8 @@
 package java.util.zip;
 
 /**
- * The CRC32 class is used to compute a CRC32 Checksum from a set of data.
+ * The CRC32 class is used to compute a CRC32 checksum from data provided as
+ * input value.
  */
 public class CRC32 implements java.util.zip.Checksum {
 
@@ -27,16 +28,16 @@ public class CRC32 implements java.util.zip.Checksum {
     long tbytes = 0L;
 
     /**
-     * Returns the CRC32 Checksum for all input received.
+     * Returns the CRC32 checksum for all input received.
      * 
-     * @return The checksum for this instance
+     * @return The checksum for this instance.
      */
     public long getValue() {
         return crc;
     }
 
     /**
-     * Returns the CRC32 checksum to it initial state.
+     * Resets the CRC32 checksum to it initial state.
      */
     public void reset() {
         tbytes = crc = 0;
@@ -44,32 +45,35 @@ public class CRC32 implements java.util.zip.Checksum {
     }
 
     /**
-     * Updates this Checksum with value val
+     * Updates this checksum with the byte value provided as integer.
+     *
+     * @param val
+     *            represents the byte to update the checksum.
      */
     public void update(int val) {
         crc = updateByteImpl((byte) val, crc);
     }
 
     /**
-     * Updates this Checksum with the bytes contained in buffer buf.
+     * Updates this checksum with the bytes contained in buffer {@code buf}.
      * 
      * @param buf
-     *            Buffer to update Checksum
+     *            the buffer holding the data to update the checksum with.
      */
     public void update(byte[] buf) {
         update(buf, 0, buf.length);
     }
 
     /**
-     * Updates this Checksum with nbytes of data from buffer buf, starting at
-     * offset off.
+     * Updates this checksum with n bytes of data obtained from buffer {@code
+     * buf}, starting at offset {@code off}.
      * 
      * @param buf
-     *            Buffer to update Checksum
+     *            the buffer to update the checksum.
      * @param off
-     *            Offset in buf to obtain data from
+     *            the offset in {@code buf} to obtain data from.
      * @param nbytes
-     *            Number of bytes to read from buf
+     *            the number of bytes to read from {@code buf}.
      */
     public void update(byte[] buf, int off, int nbytes) {
         // avoid int overflow, check null buf

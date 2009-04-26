@@ -40,7 +40,15 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.harmony.crypto.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
+ * A {@code SealedObject} is a wrapper around a {@code serializable} object
+ * instance and encrypts it using a cryptographic cipher.
+ * <p>
+ * Since a {@code SealedObject} instance is a serializable object itself it can
+ * either be stored or transmitted over an insecure channel.
+ * <p>
+ * The wrapped object can later be decrypted (unsealed) using the corresponding
+ * key and then be deserialized to retrieve the original object.The sealed
+ * object itself keeps track of the cipher and corresponding parameters.
  */
 public class SealedObject implements Serializable {
 
@@ -51,7 +59,7 @@ public class SealedObject implements Serializable {
     private static final long serialVersionUID = 4482838265551344752L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * The {@link AlgorithmParameters} in encoded format.
      */
     protected byte[] encodedParams;
     private byte[] encryptedContent;
@@ -67,7 +75,23 @@ public class SealedObject implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code SealedObject} instance wrapping the specified object
+     * and sealing it using the specified cipher.
+     * <p>
+     * The cipher must be fully initialized.
+     *
+     * @param object
+     *            the object to seal, can be {@code null}.
+     * @param c
+     *            the cipher to encrypt the object.
+     * @throws IOException
+     *             if the serialization fails.
+     * @throws IllegalBlockSizeException
+     *             if the specified cipher is a block cipher and the length of
+     *             the serialized data is not a multiple of the ciphers block
+     *             size.
+     * @throws NullPointerException
+     *             if the cipher is {@code null}.
      */
     public SealedObject(Serializable object, Cipher c)
                 throws IOException, IllegalBlockSizeException {
@@ -92,7 +116,11 @@ public class SealedObject implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code SealedObject} instance by copying the data from
+     * the specified object.
+     *
+     * @param so
+     *            the object to copy.
      */
     protected SealedObject(SealedObject so) {
         if (so == null) {
@@ -105,14 +133,28 @@ public class SealedObject implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the algorithm this object was sealed with.
+     *
+     * @return the algorithm this object was sealed with.
      */
     public final String getAlgorithm() {
         return sealAlg;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the wrapped object, decrypting it using the specified key.
+     *
+     * @param key
+     *            the key to decrypt the data with.
+     * @return the encapsulated object.
+     * @throws IOException
+     *             if deserialization fails.
+     * @throws ClassNotFoundException
+     *             if deserialization fails.
+     * @throws NoSuchAlgorithmException
+     *             if the algorithm to decrypt the data is not available.
+     * @throws InvalidKeyException
+     *             if the specified key cannot be used to decrypt the data.
      */
     public final Object getObject(Key key)
                 throws IOException, ClassNotFoundException,
@@ -155,7 +197,22 @@ public class SealedObject implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the wrapped object, decrypting it using the specified
+     * cipher.
+     *
+     * @param c
+     *            the cipher to decrypt the data.
+     * @return the encapsulated object.
+     * @throws IOException
+     *             if deserialization fails.
+     * @throws ClassNotFoundException
+     *             if deserialization fails.
+     * @throws IllegalBlockSizeException
+     *             if the specified cipher is a block cipher and the length of
+     *             the serialized data is not a multiple of the ciphers block
+     *             size.
+     * @throws BadPaddingException
+     *             if the padding of the data does not match the padding scheme.
      */
     public final Object getObject(Cipher c)
                 throws IOException, ClassNotFoundException,
@@ -171,7 +228,24 @@ public class SealedObject implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the wrapped object, decrypting it using the specified key. The
+     * specified provider is used to retrieve the cipher algorithm.
+     *
+     * @param key
+     *            the key to decrypt the data.
+     * @param provider
+     *            the name of the provider that provides the cipher algorithm.
+     * @return the encapsulated object.
+     * @throws IOException
+     *             if deserialization fails.
+     * @throws ClassNotFoundException
+     *             if deserialization fails.
+     * @throws NoSuchAlgorithmException
+     *             if the algorithm used to decrypt the data is not available.
+     * @throws NoSuchProviderException
+     *             if the specified provider is not available.
+     * @throws InvalidKeyException
+     *             if the specified key cannot be used to decrypt the data.
      */
     public final Object getObject(Key key, String provider)
                 throws IOException, ClassNotFoundException,

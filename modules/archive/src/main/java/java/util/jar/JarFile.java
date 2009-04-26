@@ -28,13 +28,17 @@ import java.util.zip.ZipFile;
 import org.apache.harmony.archive.util.Util;
 
 /**
- * JarFile is used to read jar entries and their associated data from jar files.
+ * {@code JarFile} is used to read jar entries and their associated data from
+ * jar files.
  * 
  * @see JarInputStream
  * @see JarEntry
  */
 public class JarFile extends ZipFile {
 
+    /**
+     * The MANIFEST file name.
+     */
     public static final String MANIFEST_NAME = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
     static final String META_DIR = "META-INF/"; //$NON-NLS-1$
@@ -120,26 +124,26 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Create a new JarFile using the contents of file.
+     * Create a new {@code JarFile} using the contents of the specified file.
      * 
      * @param file
-     *            java.io.File
-     * @exception java.io.IOException
-     *                If the file cannot be read.
+     *            the JAR file as {@link File}.
+     * @throws IOException
+     *             If the file cannot be read.
      */
     public JarFile(File file) throws IOException {
         this(file, true);
     }
 
     /**
-     * Create a new JarFile using the contents of file.
+     * Create a new {@code JarFile} using the contents of the specified file.
      * 
      * @param file
-     *            java.io.File
+     *            the JAR file as {@link File}.
      * @param verify
-     *            verify a signed jar file
-     * @exception java.io.IOException
-     *                If the file cannot be read.
+     *            if this JAR file is signed whether it must be verified.
+     * @throws IOException
+     *             If the file cannot be read.
      */
     public JarFile(File file, boolean verify) throws IOException {
         super(file);
@@ -150,16 +154,17 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Create a new JarFile using the contents of file.
+     * Create a new {@code JarFile} using the contents of file.
      * 
      * @param file
-     *            java.io.File
+     *            the JAR file as {@link File}.
      * @param verify
-     *            verify a signed jar file
+     *            if this JAR filed is signed whether it must be verified.
      * @param mode
-     *            the mode to use, either OPEN_READ or OPEN_READ | OPEN_DELETE
-     * @exception java.io.IOException
-     *                If the file cannot be read.
+     *            the mode to use, either {@link ZipFile#OPEN_READ OPEN_READ} or
+     *            {@link ZipFile#OPEN_DELETE OPEN_DELETE}.
+     * @throws IOException
+     *             If the file cannot be read.
      */
     public JarFile(File file, boolean verify, int mode) throws IOException {
         super(file, mode);
@@ -170,12 +175,13 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Create a new JarFile from the contents of the file specified by filename.
+     * Create a new {@code JarFile} from the contents of the file specified by
+     * filename.
      * 
      * @param filename
-     *            java.lang.String
-     * @exception java.io.IOException
-     *                If fileName cannot be opened for reading.
+     *            the file name referring to the JAR file.
+     * @throws IOException
+     *             if file name cannot be opened for reading.
      */
     public JarFile(String filename) throws IOException {
         this(filename, true);
@@ -183,14 +189,15 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Create a new JarFile from the contents of the file specified by filename.
+     * Create a new {@code JarFile} from the contents of the file specified by
+     * {@code filename}.
      * 
      * @param filename
-     *            java.lang.String
+     *            the file name referring to the JAR file.
      * @param verify
-     *            verify a signed jar file
-     * @exception java.io.IOException
-     *                If fileName cannot be opened for reading.
+     *            if this JAR filed is signed whether it must be verified.
+     * @throws IOException
+     *             If file cannot be opened or read.
      */
     public JarFile(String filename, boolean verify) throws IOException {
         super(filename);
@@ -201,11 +208,12 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Return an enumeration containing the JarEntrys contained in this JarFile.
+     * Return an enumeration containing the {@code JarEntrys} contained in this
+     * {@code JarFile}.
      * 
-     * @return java.util.Enumeration
-     * @exception java.lang.IllegalStateException
-     *                If this JarFile has been closed.
+     * @return the {@code Enumeration} containing the JAR entries.
+     * @throws IllegalStateException
+     *             if this {@code JarFile} is closed.
      */
     @Override
     public Enumeration<JarEntry> entries() {
@@ -233,21 +241,27 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Return the JarEntry specified by name or null if no such entry exists.
+     * Return the {@code JarEntry} specified by its name or {@code null} if no
+     * such entry exists.
      * 
      * @param name
-     *            the name of the entry in the jar file
-     * @return java.util.jar.JarEntry
+     *            the name of the entry in the JAR file.
+     * @return the JAR entry defined by the name.
      */
     public JarEntry getJarEntry(String name) {
         return (JarEntry) getEntry(name);
     }
 
     /**
-     * Returns the Manifest object associated with this JarFile or null if no
-     * manifest entry exists.
+     * Returns the {@code Manifest} object associated with this {@code JarFile}
+     * or {@code null} if no MANIFEST entry exists.
      * 
-     * @return java.util.jar.Manifest
+     * @return the MANIFEST.
+     * @throws IOException
+     *             if an error occurs reading the MANIFEST file.
+     * @throws IllegalStateException
+     *             if the jar file is closed.
+     * @see Manifest
      */
     public Manifest getManifest() throws IOException {
         if (manifest != null) {
@@ -318,13 +332,14 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Return an InputStream for reading the decompressed contents of ze.
+     * Return an {@code InputStream} for reading the decompressed contents of
+     * ZIP entry.
      * 
      * @param ze
-     *            the ZipEntry to read from
-     * @return java.io.InputStream
-     * @exception java.io.IOException
-     *                If an error occurred while creating the InputStream.
+     *            the ZIP entry to be read.
+     * @return the input stream to read from.
+     * @throws IOException
+     *             if an error occurred while creating the input stream.
      */
     @Override
     public InputStream getInputStream(ZipEntry ze) throws IOException {
@@ -361,11 +376,12 @@ public class JarFile extends ZipFile {
     }
 
     /**
-     * Return the JarEntry specified by name or null if no such entry exists
+     * Return the {@code JarEntry} specified by name or {@code null} if no such
+     * entry exists.
      * 
      * @param name
-     *            the name of the entry in the jar file
-     * @return java.util.jar.JarEntry
+     *            the name of the entry in the JAR file.
+     * @return the ZIP entry extracted.
      */
     @Override
     public ZipEntry getEntry(String name) {

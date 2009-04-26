@@ -82,8 +82,7 @@ class SequenceSet extends LeafSet {
 
     public int findBack(int strIndex, int lastIndex, CharSequence testString,
             MatchResultImpl matchResult) {
-        String testStr = testString.toString();
-
+        
         while (lastIndex >= strIndex) {
             lastIndex = lastIndexOf(testString, strIndex, lastIndex);
 
@@ -162,7 +161,7 @@ class SequenceSet extends LeafSet {
         return true;
     }
 
-    class IntHash {
+    static class IntHash {
         int[] table, values;
 
         int mask;

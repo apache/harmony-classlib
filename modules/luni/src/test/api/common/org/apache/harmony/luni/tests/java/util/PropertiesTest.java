@@ -25,10 +25,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Enumeration;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -47,10 +47,11 @@ public class PropertiesTest extends junit.framework.TestCase {
      * @tests java.util.Properties#Properties()
      */
     public void test_Constructor() {
+        // Test for method java.util.Properties()
         Properties p = new Properties();
         // do something to avoid getting a variable unused warning
         p.clear();
-        assertTrue("Created incorrect Properties", p.isEmpty());
+        assertTrue("Created incorrect Properties", true);
     }
 
     public void test_loadLjava_io_InputStream_NPE() throws Exception {
@@ -62,15 +63,15 @@ public class PropertiesTest extends junit.framework.TestCase {
             // Expected
         }
     }
-
-    public void test_loadLjava_io_Reader_NPE() throws Exception {
+    
+    public void test_loadsave() throws Exception{
         Properties p = new Properties();
         try {
-            p.load((Reader) null);
-            fail("should throw NullPointerException");
+            p.load((InputStream) null);
+            fail("should throw NPE");
         } catch (NullPointerException npe) {
-            // Expected
-        }
+        	// expected
+        }        
     }
 
     /**
@@ -93,8 +94,10 @@ public class PropertiesTest extends junit.framework.TestCase {
      * @tests java.util.Properties#getProperty(java.lang.String)
      */
     public void test_getPropertyLjava_lang_String() {
+        // Test for method java.lang.String
+        // java.util.Properties.getProperty(java.lang.String)
         assertEquals("Did not retrieve property", "this is a test property",
-                tProps.getProperty("test.prop"));
+                ((String) tProps.getProperty("test.prop")));
     }
 
     /**
@@ -102,10 +105,12 @@ public class PropertiesTest extends junit.framework.TestCase {
      *        java.lang.String)
      */
     public void test_getPropertyLjava_lang_StringLjava_lang_String() {
+        // Test for method java.lang.String
+        // java.util.Properties.getProperty(java.lang.String, java.lang.String)
         assertEquals("Did not retrieve property", "this is a test property",
-                tProps.getProperty("test.prop", "Blarg"));
-        assertEquals("Did not return default value", "Gabba", tProps
-                .getProperty("notInThere.prop", "Gabba"));
+                ((String) tProps.getProperty("test.prop", "Blarg")));
+        assertEquals("Did not return default value", "Gabba", ((String) tProps
+                .getProperty("notInThere.prop", "Gabba")));
     }
 
     /**
@@ -173,11 +178,122 @@ public class PropertiesTest extends junit.framework.TestCase {
     /**
      * @tests java.util.Properties#load(java.io.InputStream)
      */
-    public void test_loadLjava_io_InputStream() throws Exception {
-        InputStream is = new ByteArrayInputStream(writeProperties());
-        Properties prop = new Properties();
-        prop.load(is);
-        is.close();
+    public void test_loadLjava_io_InputStream() {
+        // Test for method void java.util.Properties.load(java.io.InputStream)
+        Properties prop = null;
+        try {
+            InputStream is;
+            prop = new Properties();
+            prop.load(is = new ByteArrayInputStream(writeProperties()));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
+        assertEquals("Failed to load correct properties", "harmony.tests", prop
+                .getProperty("test.pkg"));
+        assertNull("Load failed to parse incorrectly", prop
+                .getProperty("commented.entry"));
+
+        prop = new Properties();
+		try {
+			prop.load(new ByteArrayInputStream("=".getBytes()));
+		} catch (IOException e) {
+			// expected
+		}
+        assertTrue("Failed to add empty key", prop.get("").equals(""));
+
+        prop = new Properties();
+        try {
+			prop.load(new ByteArrayInputStream(" = ".getBytes()));
+		} catch (IOException e) {
+			// expected
+		}
+        assertTrue("Failed to add empty key2", prop.get("").equals(""));
+
+		prop = new Properties();
+		try {
+			prop.load(new ByteArrayInputStream(" a= b".getBytes()));
+		} catch (IOException e) {
+			// expected
+		}
+		assertEquals("Failed to ignore whitespace", "b", prop.get("a"));
+
+		prop = new Properties();
+		try {
+			prop.load(new ByteArrayInputStream(" a b".getBytes()));
+		} catch (IOException e) {
+			// expected
+		}
+		assertEquals("Failed to interpret whitespace as =", "b", prop.get("a"));
+
+		prop = new Properties();
+		try {
+			prop.load(new ByteArrayInputStream("#\u008d\u00d2\na=\u008d\u00d3"
+					.getBytes("ISO8859_1")));
+		} catch (IOException e) {
+			// expected
+		}
+		assertEquals("Failed to parse chars >= 0x80", "\u008d\u00d3", prop
+				.get("a"));
+
+		prop = new Properties();
+		try {
+			prop.load(new ByteArrayInputStream(
+					"#properties file\r\nfred=1\r\n#last comment"
+							.getBytes("ISO8859_1")));
+		} catch (IOException e) {
+			// expected
+		} catch (IndexOutOfBoundsException e) {
+			fail("IndexOutOfBoundsException when last line is a comment with no line terminator");
+		}
+        assertEquals("Failed to load when last line contains a comment", "1",
+                prop.get("fred"));
+    }
+
+    /**
+	 * @tests java.util.Properties#load(java.io.InputStream)
+	 */
+    public void test_loadLjava_io_InputStream_subtest0() {
+        try {
+            InputStream is = Support_Resources
+                    .getStream("hyts_PropertiesTest.properties");
+            Properties props = new Properties();
+            props.load(is);
+            is.close();
+            assertEquals("1", "\n \t \f", props.getProperty(" \r"));
+            assertEquals("2", "a", props.getProperty("a"));
+            assertEquals("3", "bb as,dn   ", props.getProperty("b"));
+            assertEquals("4", ":: cu", props.getProperty("c\r \t\nu"));
+            assertEquals("5", "bu", props.getProperty("bu"));
+            assertEquals("6", "d\r\ne=e", props.getProperty("d"));
+            assertEquals("7", "fff", props.getProperty("f"));
+            assertEquals("8", "g", props.getProperty("g"));
+            assertEquals("9", "", props.getProperty("h h"));
+            assertEquals("10", "i=i", props.getProperty(" "));
+            assertEquals("11", "   j", props.getProperty("j"));
+            assertEquals("12", "   c", props.getProperty("space"));
+            assertEquals("13", "\\", props.getProperty("dblbackslash"));
+        } catch (IOException e) {
+            fail("Unexpected: " + e);
+        }
+    }
+
+    /**
+     * @throws IOException
+     * @tests java.util.Properties#load(java.io.Reader)
+     * @since 1.6
+     */
+    public void test_loadLjava_io_Reader() throws IOException {
+        Properties prop = null;
+        try {
+            InputStream is;
+            prop = new Properties();
+            is = new ByteArrayInputStream(writeProperties());
+            prop.load(new InputStreamReader(is));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
         assertEquals("Failed to load correct properties", "harmony.tests", prop
                 .getProperty("test.pkg"));
         assertNull("Load failed to parse incorrectly", prop
@@ -205,15 +321,26 @@ public class PropertiesTest extends junit.framework.TestCase {
         assertEquals("value", prop.getProperty("a"));
 
         prop = new Properties();
-        prop.load(new ByteArrayInputStream("#\u008d\u00d2\na=\u008d\u00d3"
-                .getBytes("ISO8859_1")));
-        assertEquals("Failed to parse chars >= 0x80", "\u008d\u00d3", prop
-                .get("a"));
+        prop.load(new InputStreamReader(new ByteArrayInputStream(
+                "#\u008d\u00d2\na=\u008d\u00d3".getBytes("UTF-8"))));
+        try {
+            prop
+                    .load(new InputStreamReader(new ByteArrayInputStream(
+                            "#\u008d\u00d2\na=\\\\u008d\\\\\\uu00d3"
+                                    .getBytes("UTF-8"))));
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
         prop = new Properties();
-        prop.load(new ByteArrayInputStream(
-                "#properties file\r\nfred=1\r\n#last comment"
-                        .getBytes("ISO8859_1")));
+        try {
+            prop.load(new InputStreamReader(new ByteArrayInputStream(
+                    "#properties file\r\nfred=1\r\n#last comment"
+                            .getBytes("ISO8859_1"))));
+        } catch (IndexOutOfBoundsException e) {
+            fail("IndexOutOfBoundsException when last line is a comment with no line terminator");
+        }
         assertEquals("Failed to load when last line contains a comment", "1",
                 prop.get("fred"));
 
@@ -257,132 +384,7 @@ public class PropertiesTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.Properties#load(java.io.InputStream)
-     */
-    public void test_loadLjava_io_InputStream_subtest0() throws Exception {
-        InputStream is = Support_Resources
-                .getStream("hyts_PropertiesTest.properties");
-        Properties props = new Properties();
-        props.load(is);
-        is.close();
-        assertEquals("1", "\n \t \f", props.getProperty(" \r"));
-        assertEquals("2", "a", props.getProperty("a"));
-        assertEquals("3", "bb as,dn   ", props.getProperty("b"));
-        assertEquals("4", ":: cu", props.getProperty("c\r \t\nu"));
-        assertEquals("5", "bu", props.getProperty("bu"));
-        assertEquals("6", "d\r\ne=e", props.getProperty("d"));
-        assertEquals("7", "fff", props.getProperty("f"));
-        assertEquals("8", "g", props.getProperty("g"));
-        assertEquals("9", "", props.getProperty("h h"));
-        assertEquals("10", "i=i", props.getProperty(" "));
-        assertEquals("11", "   j", props.getProperty("j"));
-        assertEquals("12", "   c", props.getProperty("space"));
-        assertEquals("13", "\\", props.getProperty("dblbackslash"));
-    }
-
-    /**
-     * @tests java.util.Properties#load(java.io.Reader)
-     * @since 1.6
-     */
-    public void test_loadLjava_io_Reader() throws Exception {
-        InputStream is = new ByteArrayInputStream(writeProperties());
-        Properties prop = new Properties();
-        prop.load(new InputStreamReader(is));
-        is.close();
-        assertEquals("Failed to load correct properties", "harmony.tests", prop
-                .getProperty("test.pkg"));
-        assertNull("Load failed to parse incorrectly", prop
-                .getProperty("commented.entry"));
-
-        prop = new Properties();
-        prop.load(new StringReader("="));
-        assertEquals("Failed to add empty key", "", prop.get(""));
-
-        prop = new Properties();
-        prop.load(new StringReader(" = "));
-        assertEquals("Failed to add empty key2", "", prop.get(""));
-
-        prop = new Properties();
-        prop.load(new StringReader(" a= b"));
-        assertEquals("Failed to ignore whitespace", "b", prop.get("a"));
-
-        prop = new Properties();
-        prop.load(new StringReader(" a b"));
-        assertEquals("Failed to interpret whitespace as =", "b", prop.get("a"));
-
-        prop = new Properties();
-        prop.load(new InputStreamReader(new ByteArrayInputStream(
-                "#comment\na=value".getBytes("UTF-8"))));
-        assertEquals("value", prop.getProperty("a"));
-
-        prop = new Properties();
-        prop.load(new InputStreamReader(new ByteArrayInputStream(
-                "#\u008d\u00d2\na=\u008d\u00d3".getBytes("UTF-8"))));
-
-        prop = new Properties();
-        try {
-            prop
-                    .load(new InputStreamReader(new ByteArrayInputStream(
-                            "#\u008d\u00d2\na=\\\\u008d\\\\\\uu00d3"
-                                    .getBytes("UTF-8"))));
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-
-        prop = new Properties();
-        prop.load(new InputStreamReader(new ByteArrayInputStream(
-                "#properties file\r\nfred=1\r\n#last comment"
-                        .getBytes("ISO8859_1"))));
-        assertEquals("Failed to load when last line contains a comment", "1",
-                prop.get("fred"));
-
-        // Regression tests for HARMONY-5414
-        prop = new Properties();
-        prop.load(new InputStreamReader(new ByteArrayInputStream("a=\\u1234z"
-                .getBytes())));
-
-        prop = new Properties();
-        try {
-            prop.load(new InputStreamReader(new ByteArrayInputStream("a=\\u123"
-                    .getBytes())));
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-
-        prop = new Properties();
-        try {
-            prop.load(new InputStreamReader(new ByteArrayInputStream(
-                    "a=\\u123z".getBytes())));
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException expected) {
-            // Expected
-        }
-
-        prop = new Properties();
-        Properties expected = new Properties();
-        expected.put("a", "\u0000");
-        prop.load(new InputStreamReader((new ByteArrayInputStream("a=\\"
-                .getBytes()))));
-        assertEquals("Failed to read trailing slash value", expected, prop);
-
-        prop = new Properties();
-        expected = new Properties();
-        expected.put("a", "\u1234\u0000");
-        prop.load(new InputStreamReader(new ByteArrayInputStream("a=\\u1234\\"
-                .getBytes())));
-        assertEquals("Failed to read trailing slash value #2", expected, prop);
-
-        prop = new Properties();
-        expected = new Properties();
-        expected.put("a", "q");
-        prop.load(new InputStreamReader(new ByteArrayInputStream("a=\\q"
-                .getBytes())));
-        assertEquals("Failed to read slash value #3", expected, prop);
-    }
-
-    /**
+     * @throws IOException
      * @tests java.util.Properties#load(java.io.Reader)
      * @since 1.6
      */
@@ -411,8 +413,13 @@ public class PropertiesTest extends junit.framework.TestCase {
      * @tests java.util.Properties#propertyNames()
      */
     public void test_propertyNames() {
+        // Test for method java.util.Enumeration
+        // java.util.Properties.propertyNames()
+
         Enumeration names = tProps.propertyNames();
+        int i = 0;
         while (names.hasMoreElements()) {
+            ++i;
             String p = (String) names.nextElement();
             assertTrue("Incorrect names returned", p.equals("test.prop")
                     || p.equals("bogus.prop"));
@@ -470,28 +477,35 @@ public class PropertiesTest extends junit.framework.TestCase {
             set.add("another");
             fail("Should throw UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {
-            // Expected
+            // expected
         }
     }
 
     /**
      * @tests java.util.Properties#save(java.io.OutputStream, java.lang.String)
      */
-    public void test_saveLjava_io_OutputStreamLjava_lang_String()
-            throws Exception {
+    public void test_saveLjava_io_OutputStreamLjava_lang_String() {
+        // Test for method void java.util.Properties.save(java.io.OutputStream,
+        // java.lang.String)
         Properties myProps = new Properties();
+        Properties myProps2 = new Properties();
+
         myProps.setProperty("Property A", "aye");
         myProps.setProperty("Property B", "bee");
         myProps.setProperty("Property C", "see");
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        myProps.save(out, "A Header");
-        out.close();
-
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        Properties myProps2 = new Properties();
-        myProps2.load(in);
-        in.close();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            myProps.save(out, "A Header");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2.load(in);
+            in.close();
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
 
         Enumeration e = myProps.propertyNames();
         String nextKey;
@@ -507,6 +521,8 @@ public class PropertiesTest extends junit.framework.TestCase {
      *        java.lang.String)
      */
     public void test_setPropertyLjava_lang_StringLjava_lang_String() {
+        // Test for method java.lang.Object
+        // java.util.Properties.setProperty(java.lang.String, java.lang.String)
         Properties myProps = new Properties();
         myProps.setProperty("Yoink", "Yabba");
         assertEquals("Failed to set property", "Yabba", myProps
@@ -519,37 +535,49 @@ public class PropertiesTest extends junit.framework.TestCase {
     /**
      * @tests java.util.Properties#store(java.io.OutputStream, java.lang.String)
      */
-    public void test_storeLjava_io_OutputStreamLjava_lang_String()
-            throws Exception {
+    public void test_storeLjava_io_OutputStreamLjava_lang_String() {
+        // Test for method void java.util.Properties.store(java.io.OutputStream,
+        // java.lang.String)
         Properties myProps = new Properties();
+        Properties myProps2 = new Properties();
+        Enumeration e;
+        String nextKey;
+
         myProps.put("Property A", " aye\\\f\t\n\r\b");
         myProps.put("Property B", "b ee#!=:");
         myProps.put("Property C", "see");
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        myProps.store(out, "A Header");
-        out.close();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            myProps.store(out, "A Header");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2.load(in);
+            in.close();
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        Properties myProps2 = new Properties();
-        myProps2.load(in);
-        in.close();
-
-        Enumeration e = myProps.propertyNames();
-        String nextKey;
+        e = myProps.propertyNames();
         while (e.hasMoreElements()) {
             nextKey = (String) e.nextElement();
             assertTrue("Stored property list not equal to original", myProps2
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
         }
+
     }
 
     /**
+     * @throws IOException
      * @tests java.util.Properties#store(java.io.Writer, java.lang.String)
      * @since 1.6
      */
     public void test_storeLjava_io_WriterLjava_lang_String() throws IOException {
         Properties myProps = new Properties();
+        Properties myProps2 = new Properties();
+
         myProps.put("Property A", " aye\\\f\t\n\r\b");
         myProps.put("Property B", "b ee#!=:");
         myProps.put("Property C", "see");
@@ -561,14 +589,13 @@ public class PropertiesTest extends junit.framework.TestCase {
         assertTrue(scanner.nextLine().startsWith("#"));
         out.close();
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        Properties myProps2 = new Properties();
         myProps2.load(in);
         in.close();
 
-        Enumeration propertyNames = myProps.propertyNames();
+        Enumeration e = myProps.propertyNames();
         String nextKey;
-        while (propertyNames.hasMoreElements()) {
-            nextKey = (String) propertyNames.nextElement();
+        while (e.hasMoreElements()) {
+            nextKey = (String) e.nextElement();
             assertTrue("Stored property list not equal to original", myProps2
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
         }
@@ -576,8 +603,8 @@ public class PropertiesTest extends junit.framework.TestCase {
         try {
             myProps.store((Writer) null, "some comments");
             fail("Should throw NullPointerException");
-        } catch (NullPointerException e) {
-            // Expected
+        } catch (NullPointerException e1) {
+            // expected
         }
 
         myProps.put(String.class, "wrong type");
@@ -585,10 +612,9 @@ public class PropertiesTest extends junit.framework.TestCase {
             myProps.store(new OutputStreamWriter(new ByteArrayOutputStream()),
                     "some comments");
             fail("Should throw ClassCastException");
-        } catch (ClassCastException e) {
-            // Expected
+        } catch (ClassCastException e1) {
+            // expected
         }
-
         myProps.remove(String.class);
         myProps.store(new OutputStreamWriter(new ByteArrayOutputStream()),
                 "some comments");
@@ -598,30 +624,41 @@ public class PropertiesTest extends junit.framework.TestCase {
             myProps.store(new OutputStreamWriter(new ByteArrayOutputStream()),
                     "some comments");
             fail("Should throw ClassCastException");
-        } catch (ClassCastException e) {
-            // Expected
+        } catch (ClassCastException e1) {
+            // expected
         }
     }
 
     /**
      * @tests java.util.Properties#loadFromXML(java.io.InputStream)
      */
-    public void test_loadFromXMLLjava_io_InputStream() throws Exception {
-        InputStream is = new ByteArrayInputStream(writePropertiesXML("UTF-8"));
-        Properties prop = new Properties();
-        prop.loadFromXML(is);
-        is.close();
-
+    public void test_loadFromXMLLjava_io_InputStream() {
+        // Test for method void
+        // java.util.Properties.loadFromXML(java.io.InputStream)
+        Properties prop = null;
+        try {
+            InputStream is;
+            prop = new Properties();
+            prop.loadFromXML(is = new ByteArrayInputStream(
+                    writePropertiesXMLUTF_8()));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
         assertEquals("Failed to load correct properties", "value3", prop
                 .getProperty("key3"));
         assertEquals("Failed to load correct properties", "value1", prop
                 .getProperty("key1"));
 
-        is = new ByteArrayInputStream(writePropertiesXML("ISO-8859-1"));
-        prop = new Properties();
-        prop.loadFromXML(is = new ByteArrayInputStream(
-                writePropertiesXML("ISO-8859-1")));
-        is.close();
+        try {
+            InputStream is;
+            prop = new Properties();
+            prop.loadFromXML(is = new ByteArrayInputStream(
+                    writePropertiesXMLISO_8859_1()));
+            is.close();
+        } catch (Exception e) {
+            fail("Exception during load test : " + e.getMessage());
+        }
         assertEquals("Failed to load correct properties", "value2", prop
                 .getProperty("key2"));
         assertEquals("Failed to load correct properties", "value1", prop
@@ -632,9 +669,15 @@ public class PropertiesTest extends junit.framework.TestCase {
      * @tests java.util.Properties#storeToXML(java.io.OutputStream,
      *        java.lang.String, java.lang.String)
      */
-    public void test_storeToXMLLjava_io_OutputStreamLjava_lang_StringLjava_lang_String()
-            throws Exception {
+    public void test_storeToXMLLjava_io_OutputStreamLjava_lang_StringLjava_lang_String() {
+        // Test for method void
+        // java.util.Properties.storeToXML(java.io.OutputStream,
+        // java.lang.String, java.lang.String)
         Properties myProps = new Properties();
+        Properties myProps2 = new Properties();
+        Enumeration e;
+        String nextKey;
+
         myProps.setProperty("key1", "value1");
         myProps.setProperty("key2", "value2");
         myProps.setProperty("key3", "value3");
@@ -650,34 +693,49 @@ public class PropertiesTest extends junit.framework.TestCase {
         myProps.setProperty("<a>&amp;key13&lt;</a>",
                 "&amp;&value13<b>&amp;</b>");
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // store in UTF-8 encoding
-        myProps.storeToXML(out, "comment");
-        out.close();
+            // store in UTF-8 encoding
+            myProps.storeToXML(out, "comment");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2.loadFromXML(in);
+            in.close();
+        } catch (InvalidPropertiesFormatException ipfe) {
+            fail("InvalidPropertiesFormatException occurred reading file: "
+                    + ipfe.getMessage());
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        Properties myProps2 = new Properties();
-        myProps2.loadFromXML(in);
-        in.close();
-
-        Enumeration e = myProps.propertyNames();
-        String nextKey;
+        e = myProps.propertyNames();
         while (e.hasMoreElements()) {
             nextKey = (String) e.nextElement();
             assertTrue("Stored property list not equal to original", myProps2
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
         }
 
-        // store in ISO-8859-1 encoding
-        out = new ByteArrayOutputStream();
-        myProps.storeToXML(out, "comment", "ISO-8859-1");
-        out.close();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        in = new ByteArrayInputStream(out.toByteArray());
-        myProps2 = new Properties();
-        myProps2.loadFromXML(in);
-        in.close();
+            // store in ISO-8859-1 encoding
+            myProps.storeToXML(out, "comment", "ISO-8859-1");
+            out.close();
+            ByteArrayInputStream in = new ByteArrayInputStream(out
+                    .toByteArray());
+            myProps2 = new Properties();
+            myProps2.loadFromXML(in);
+            in.close();
+        } catch (InvalidPropertiesFormatException ipfe) {
+            fail("InvalidPropertiesFormatException occurred reading file: "
+                    + ipfe.getMessage());
+        } catch (IOException ioe) {
+            fail("IOException occurred reading/writing file : "
+                    + ioe.getMessage());
+        }
 
         e = myProps.propertyNames();
         while (e.hasMoreElements()) {
@@ -686,12 +744,12 @@ public class PropertiesTest extends junit.framework.TestCase {
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
         }
     }
-
+ 
     /**
      * if loading from single line like "hello" without "\n\r" neither "=", it
      * should be same as loading from "hello="
      */
-    public void testLoadSingleLine() throws Exception {
+    public void testLoadSingleLine() throws Exception{
         Properties props = new Properties();
         InputStream sr = new ByteArrayInputStream("hello".getBytes());
         props.load(sr);
@@ -703,6 +761,7 @@ public class PropertiesTest extends junit.framework.TestCase {
      * is called before a test is executed.
      */
     protected void setUp() {
+
         tProps = new Properties();
         tProps.put("test.prop", "this is a test property");
         tProps.put("bogus.prop", "bogus");
@@ -713,7 +772,6 @@ public class PropertiesTest extends junit.framework.TestCase {
      * method is called after a test is executed.
      */
     protected void tearDown() {
-        tProps = null;
     }
 
     /**
@@ -721,8 +779,9 @@ public class PropertiesTest extends junit.framework.TestCase {
      * method is called after a test is executed.
      */
     protected byte[] writeProperties() throws IOException {
+        PrintStream ps = null;
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(bout);
+        ps = new PrintStream(bout);
         ps.println("#commented.entry=Bogus");
         ps.println("test.pkg=harmony.tests");
         ps.println("test.proj=Automated Tests");
@@ -730,10 +789,29 @@ public class PropertiesTest extends junit.framework.TestCase {
         return bout.toByteArray();
     }
 
-    protected byte[] writePropertiesXML(String encoding) throws Exception {
+    protected byte[] writePropertiesXMLUTF_8() throws IOException {
+        PrintStream ps = null;
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(bout, true, encoding);
-        ps.println("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>");
+        ps = new PrintStream(bout, true, "UTF-8");
+        ps.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        ps
+                .println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
+        ps.println("<properties>");
+        ps.println("<comment>comment</comment>");
+        ps.println("<entry key=\"key4\">value4</entry>");
+        ps.println("<entry key=\"key3\">value3</entry>");
+        ps.println("<entry key=\"key2\">value2</entry>");
+        ps.println("<entry key=\"key1\"><!-- xml comment -->value1</entry>");
+        ps.println("</properties>");
+        ps.close();
+        return bout.toByteArray();
+    }
+
+    protected byte[] writePropertiesXMLISO_8859_1() throws IOException {
+        PrintStream ps = null;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ps = new PrintStream(bout, true, "ISO-8859-1");
+        ps.println("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
         ps
                 .println("<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">");
         ps.println("<properties>");

@@ -39,6 +39,9 @@ public class MemoryUsage {
      *         MemoryUsage data.
      */
     public static MemoryUsage from(CompositeData cd) {
+        if (cd == null) {
+            return null;
+        }
         try {
             long init = ((Long) cd.get("init")).longValue();
             long used = ((Long) cd.get("used")).longValue();

@@ -20,12 +20,10 @@ package java.lang.annotation;
 import org.apache.harmony.annotation.internal.nls.Messages;
 
 /**
- * <p>
  * Indicates that an element of an annotation type was accessed that was added
  * after the type was compiled or serialized. This does not apply to new
  * elements that have default values.
- * </p>
- * 
+ *
  * @since 1.5
  */
 public class IncompleteAnnotationException extends RuntimeException {
@@ -37,13 +35,13 @@ public class IncompleteAnnotationException extends RuntimeException {
     private String elementName;
 
     /**
-     * <p>
      * Constructs an instance with the incomplete annotation type and the name
      * of the element that's missing.
-     * </p>
-     * 
-     * @param annotationType The annotation type.
-     * @param elementName The name of the incomplete element.
+     *
+     * @param annotationType
+     *            the annotation type.
+     * @param elementName
+     *            the name of the incomplete element.
      */
     public IncompleteAnnotationException(
             Class<? extends Annotation> annotationType, String elementName) {
@@ -53,22 +51,18 @@ public class IncompleteAnnotationException extends RuntimeException {
     }
 
     /**
-     * <p>
-     * The annotation type.
-     * </p>
-     * 
-     * @return A Class instance.
+     * Returns the annotation type.
+     *
+     * @return a Class instance.
      */
     public Class<? extends Annotation> annotationType() {
         return annotationType;
     }
 
     /**
-     * <p>
-     * The incomplete element's name.
-     * </p>
-     * 
-     * @return The name of the element.
+     * Returns the incomplete element's name.
+     *
+     * @return the name of the element.
      */
     public String elementName() {
         return elementName;

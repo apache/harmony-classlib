@@ -20,8 +20,8 @@ package java.util.zip;
 import java.io.IOException;
 
 /**
- * This runtime exception is thrown by ZipFile and ZipInputStream when the file
- * or stream is not a valid zip file.
+ * This runtime exception is thrown by {@code ZipFile} and {@code
+ * ZipInputStream} when the file or stream is not a valid ZIP file.
  * 
  * @see ZipFile
  * @see ZipInputStream
@@ -31,18 +31,18 @@ public class ZipException extends IOException {
     private static final long serialVersionUID = 8000196834066748623L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * Constructs a new {@code ZipException} instance.
      */
     public ZipException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
-     * 
+     * Constructs a new {@code ZipException} instance with the specified
+     * message.
+     *
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for the exception.
      */
     public ZipException(String detailMessage) {
         super(detailMessage);

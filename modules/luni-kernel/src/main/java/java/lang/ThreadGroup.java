@@ -18,21 +18,30 @@
 package java.lang;
 
 /**
- * An implementation of this class is provided, but the documented constructors
- * are used by the vm specific implementation to create the required "system"
- * and "main" ThreadGroups. The documented methods are used by java.lang.Thread
- * to add and remove Threads from their ThreadGroups.
- * 
- * ThreadGroups are containers of Threads and ThreadGroups, therefore providing
- * a tree-like structure to organize Threads. The root ThreadGroup name is
- * "system" and it has no parent ThreadGroup. All other ThreadGroups have
- * exactly one parent ThreadGroup. All Threads belong to exactly one
- * ThreadGroup.
- * 
+ * A {@code ThreadGroup} is a means of organizing {@link Thread}s into a
+ * hierarchical structure. A {@code ThreadGroup} can contain zero or more
+ * {@code Thread}s and zero or more other {@code ThreadGroup}s. Each {@code
+ * Thread} and each {@code ThreadGroup} (except the root group) has a unique
+ * parent {@code ThreadGroup}. The result is a tree whose inner nodes are
+ * {@code ThreadGroup}s and whose leaf nodes are {@code Threads}. The unique
+ * root of the tree is a {@code ThreadGroup} that is created at VM startup and
+ * has the name "system". The benefit of using {@code ThreadGroup}s, in addition
+ * to the mere housekeeping aspect, is that all {@code Thread}s in a {@code
+ * ThreadGroup} can be manipulated together, that is, the {@code ThreadGroup}
+ * has methods that delegate to all its all {@code Thread}s.
+ *
  * @see Thread
  * @see SecurityManager
  */
 public class ThreadGroup implements Thread.UncaughtExceptionHandler {
+
+    /*
+     * An implementation of this class is provided, but the documented
+     * constructors are used by the vm specific implementation to create the
+     * required "system" and "main" ThreadGroups. The documented methods are
+     * used by java.lang.Thread to add and remove Threads from their
+     * ThreadGroups.
+     */
 
     // Name of this ThreadGroup
     private String name;
@@ -135,11 +144,10 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Returns the number of Threads which are children of the receiver,
-     * directly or indirectly.
-     * 
-     * @return Number of children Threads
+     * directly or indirectly and are running.
+     *
+     * @return the number of children Threads
      */
-
     public int activeCount() {
         int count = numThreads;
         // Lock this subpart of the tree as we walk
@@ -155,7 +163,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Returns the number of ThreadGroups which are children of the receiver,
      * directly or indirectly.
      * 
-     * @return Number of children ThreadGroups
+     * @return the number of children ThreadGroups
      */
     public int activeGroupCount() {
         int count = 0;
@@ -224,11 +232,13 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * The definition of this method depends on the deprecated method
-     * <code>suspend()</code>. The behavior of this call was never specified.
+     * Does nothing. The definition of this method depends on the deprecated
+     * method {@link #suspend()}. The exact behavior of this call was never
+     * specified.
      * 
      * @param b Used to control low memory implicit suspension
-     * 
+     * @return {@code true} (always)
+     *
      * @deprecated Required deprecated method suspend().
      */
     @Deprecated
@@ -238,8 +248,10 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * If there is a SecurityManager installed, call <code>checkAccess</code>
-     * in it passing the receiver as parameter, otherwise do nothing.
+     * Checks the accessibility of the ThreadGroup from the perspective of the
+     * caller. If there is a SecurityManager installed, calls
+     * {@code checkAccess} with the receiver as a parameter, otherwise does
+     * nothing.
      */
     public final void checkAccess() {
         // Forwards the message to the SecurityManager (if there's one) passing
@@ -252,13 +264,14 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Destroys the receiver and recursively all its subgroups. It is only legal
-     * to destroy a ThreadGroup that has no Threads. Any daemon ThreadGroup is
-     * destroyed automatically when it becomes empty (no Threads and no
-     * ThreadGroups in it).
+     * to destroy a ThreadGroup that has no Threads in it. Any daemon
+     * ThreadGroup is destroyed automatically when it becomes empty (no Threads
+     * and no ThreadGroups in it).
      * 
      * @throws IllegalThreadStateException if the receiver or any of its
-     *         subgroups has been destroyed already
-     * @throws SecurityException if <code>this.checkAccess()</code> fails with
+     *         subgroups has been destroyed already or if it still contains
+     *         threads.
+     * @throws SecurityException if {@code this.checkAccess()} fails with
      *         a SecurityException
      */
 
@@ -310,46 +323,38 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Copies an array with all Threads which are children of the receiver
-     * (directly or indirectly) into the array <code>threads</code> passed as
-     * parameters. If the array passed as parameter is too small no exception is
-     * thrown - the extra elements are simply not copied.
+     * Iterates over all active threads in this group (and its sub-groups) and
+     * stores the threads in the given array. Returns when the array is full or
+     * no more threads remain, whichever happens first.
      * 
-     * @param threads Thread array into which the Threads will be copied
-     * @return How many Threads were copied over
-     * 
+     * @param threads the array into which the Threads will be copied
+     * @return the number of Threads that were copied
      */
     public int enumerate(Thread[] threads) {
         return enumerate(threads, true);
     }
 
     /**
-     * Copies an array with all Threads which are children of the receiver into
-     * the array <code>threads</code> passed as parameter. Children Threads of
-     * subgroups are recursively copied as well if parameter
-     * <code>recurse</code> is <code>true</code>.
+     * Iterates over all active threads in this group (and, optionally, its
+     * sub-groups) and stores the threads in the given array. Returns when the
+     * array is full or no more threads remain, whichever happens first.
      * 
-     * If the array passed as parameter is too small no exception is thrown -
-     * the extra elements are simply not copied.
-     * 
-     * @param threads array into which the Threads will be copied
-     * @param recurse Indicates whether Threads in subgroups should be
-     *        recursively copied as well or not
-     * @return How many Threads were copied over
-     * 
+     * @param threads the array into which the Threads will be copied
+     * @param recurse indicates whether Threads in subgroups should be
+     *        recursively copied as well
+     * @return the number of Threads that were copied
      */
     public int enumerate(Thread[] threads, boolean recurse) {
         return enumerateGeneric(threads, recurse, 0, true);
     }
 
     /**
-     * Copies an array with all ThreadGroups which are children of the receiver
-     * (directly or indirectly) into the array <code>groups</code> passed as
-     * parameters. If the array passed as parameter is too small no exception is
-     * thrown - the extra elements are simply not copied.
+     * Iterates over all thread groups in this group (and its sub-groups) and
+     * and stores the groups in the given array. Returns when the array is full
+     * or no more groups remain, whichever happens first.
      * 
-     * @param groups array into which the ThreadGroups will be copied
-     * @return How many ThreadGroups were copied over
+     * @param groups the array into which the ThreadGroups will be copied
+     * @return the number of ThreadGroups that were copied
      * 
      */
     public int enumerate(ThreadGroup[] groups) {
@@ -357,18 +362,14 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Copies an array with all ThreadGroups which are children of the receiver
-     * into the array <code>groups</code> passed as parameter. Children
-     * ThreadGroups of subgroups are recursively copied as well if parameter
-     * <code>recurse</code> is <code>true</code>.
+     * Iterates over all thread groups in this group (and, optionally, its
+     * sub-groups) and and stores the groups in the given array. Returns when
+     * the array is full or no more groups remain, whichever happens first.
      * 
-     * If the array passed as parameter is too small no exception is thrown -
-     * the extra elements are simply not copied.
-     * 
-     * @param groups array into which the ThreadGroups will be copied
-     * @param recurse Indicates whether ThreadGroups in subgroups should be
+     * @param groups the array into which the ThreadGroups will be copied
+     * @param recurse indicates whether ThreadGroups in subgroups should be
      *        recursively copied as well or not
-     * @return How many ThreadGroups were copied over
+     * @return the number of ThreadGroups that were copied
      * 
      */
     public int enumerate(ThreadGroup[] groups, boolean recurse) {
@@ -426,9 +427,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers the maximum allowed priority for a Thread in the receiver.
+     * Returns the maximum allowed priority for a Thread in the receiver.
      * 
-     * @return the maximum priority (an <code>int</code>)
+     * @return the maximum priority
      * 
      * @see #setMaxPriority
      */
@@ -437,17 +438,17 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers the name of the receiver.
+     * Returns the name of the receiver.
      * 
-     * @return the receiver's name (a java.lang.String)
+     * @return the receiver's name
      */
     public final String getName() {
         return name;
     }
 
     /**
-     * Answers the receiver's parent ThreadGroup. It can be null if the receiver
-     * is the the root ThreadGroup.
+     * Returns the receiver's parent ThreadGroup. It can be {@code null}  if the
+     * receiver is the the root ThreadGroup.
      * 
      * @return the parent ThreadGroup
      * 
@@ -463,7 +464,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Interrupts every Thread in the receiver and recursively in all its
      * subgroups.
      * 
-     * @throws SecurityException if <code>this.checkAccess()</code> fails with
+     * @throws SecurityException if {@code this.checkAccess()} fails with
      *         a SecurityException
      * 
      * @see Thread#interrupt
@@ -485,9 +486,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers true if the receiver is a daemon ThreadGroup, false otherwise.
+     * Checks whether the receiver is a daemon ThreadGroup.
      * 
-     * @return if the receiver is a daemon ThreadGroup
+     * @return true if (and only if) the receiver is a daemon ThreadGroup
      * 
      * @see #setDaemon
      * @see #destroy
@@ -497,9 +498,9 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers true if the receiver has been destroyed already, false otherwise.
+     * Checks whether the receiver has already been destroyed.
      * 
-     * @return if the receiver has been destroyed already
+     * @return true if (and only if) the receiver has already been destroyed
      * 
      * @see #destroy
      */
@@ -508,7 +509,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Outputs to <code>System.out</code> a text representation of the
+     * Outputs to {@code System.out} a text representation of the
      * hierarchy of Threads and ThreadGroups in the receiver (and recursively).
      * Proper indentation is done to suggest the nesting of groups inside groups
      * and threads inside groups.
@@ -520,7 +521,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /*
-     * Outputs to <code>System.out</code>a text representation of the
+     * Outputs to {@code System.out}a text representation of the
      * hierarchy of Threads and ThreadGroups in the receiver (and recursively).
      * The indentation will be four spaces per level of nesting.
      * 
@@ -553,12 +554,12 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers true if the receiver is a direct or indirect parent group of
-     * ThreadGroup <code>g</code>, false otherwise.
+     * Checks whether the receiver is a direct or indirect parent group of a
+     * given ThreadGroup.
      * 
-     * @param g ThreadGroup to test
+     * @param g the potential child ThreadGroup
      * 
-     * @return if the receiver is parent of the ThreadGroup passed as parameter
+     * @return true if (and only if) the receiver is parent of {@code g}
      * 
      */
     public final boolean parentOf(ThreadGroup g) {
@@ -598,7 +599,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /**
      * Removes an immediate subgroup from the receiver.
      * 
-     * @param g Threadgroup to remove from the receiver
+     * @param g ThreadGroup to remove from the receiver
      * 
      * @see #add(Thread)
      * @see #add(ThreadGroup)
@@ -621,7 +622,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Resumes every Thread in the receiver and recursively in all its
      * subgroups.
      * 
-     * @throws SecurityException if <code>this.checkAccess()</code> fails with
+     * @throws SecurityException if {@code this.checkAccess()} fails with
      *         a SecurityException
      * 
      * @see Thread#resume
@@ -651,9 +652,10 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Configures the receiver to be a daemon ThreadGroup or not. Daemon
      * ThreadGroups are automatically destroyed when they become empty.
      * 
-     * @param isDaemon new value defining if receiver should be daemon or not
+     * @param isDaemon the new value defining if receiver should be daemon or
+     *                 not
      * 
-     * @throws SecurityException if <code>checkAccess()</code> for the parent
+     * @throws SecurityException if {@code checkAccess()} for the parent
      *         group fails with a SecurityException
      * 
      * @see #isDaemon
@@ -674,7 +676,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * 
      * @param newMax the new maximum priority to be set
      * 
-     * @throws SecurityException if <code>checkAccess()</code> fails with a
+     * @throws SecurityException if {@code checkAccess()} fails with a
      *         SecurityException
      * @throws IllegalArgumentException if the new priority is greater than
      *         Thread.MAX_PRIORITY or less than Thread.MIN_PRIORITY
@@ -703,8 +705,8 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
 
     /**
      * Sets the parent ThreadGroup of the receiver, and adds the receiver to the
-     * parent's collection of immediate children (if <code>parent</code> is
-     * not <code>null</code>).
+     * parent's collection of immediate children (if {@code parent} is
+     * not {@code null}).
      * 
      * @param parent The parent ThreadGroup, or null if the receiver is to be
      *        the root ThreadGroup
@@ -722,7 +724,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     /**
      * Stops every Thread in the receiver and recursively in all its subgroups.
      * 
-     * @throws SecurityException if <code>this.checkAccess()</code> fails with
+     * @throws SecurityException if {@code this.checkAccess()} fails with
      *         a SecurityException
      * 
      * @see Thread#stop()
@@ -772,7 +774,7 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * Suspends every Thread in the receiver and recursively in all its
      * subgroups.
      * 
-     * @throws SecurityException if <code>this.checkAccess()</code> fails with
+     * @throws SecurityException if {@code this.checkAccess()} fails with
      *         a SecurityException
      * 
      * @see Thread#suspend
@@ -818,10 +820,10 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Answers a string containing a concise, human-readable description of the
+     * Returns a string containing a concise, human-readable description of the
      * receiver.
      * 
-     * @return a printable representation for the receiver.
+     * @return a printable representation of the ThreadGroup
      */
     @Override
     public String toString() {
@@ -830,14 +832,14 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Any uncaught exception in any Thread has to be forwarded (by the VM) to
-     * the Thread's ThreadGroup by sending this message (uncaughtException).
-     * This allows users to define custom ThreadGroup classes and custom
-     * behavior for when a Thread has an uncaughtException or when it does
-     * (ThreadDeath).
+     * Handles uncaught exceptions. Any uncaught exception in any Thread
+     * is forwarded (by the VM) to the Thread's ThreadGroup by sending this
+     * message (uncaughtException). This allows users to define custom
+     * ThreadGroup classes and custom behavior for when a Thread has an
+     * uncaughtException or when it does (ThreadDeath).
      * 
-     * @param t Thread with an uncaught exception
-     * @param e The uncaught exception itself
+     * @param t the Thread that terminated with an uncaught exception
+     * @param e the uncaught exception itself
      * 
      * @see Thread#stop()
      * @see Thread#stop(Throwable)

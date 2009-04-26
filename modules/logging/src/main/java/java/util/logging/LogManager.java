@@ -43,83 +43,87 @@ import javax.management.ObjectName;
 import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
- * <code>LogManager</code> is used to manage named <code>Logger</code>s and
- * any shared logging properties.
+ * {@code LogManager} is used to maintain configuration properties of the
+ * logging framework, and to manage a hierarchical namespace of all named
+ * {@code Logger} objects.
  * <p>
- * There is one global <code>LogManager</code> instance in the application,
- * which can be obtained by calling the static method
- * <code>LogManager.getLogManager()</code>.
- * </p>
+ * There is only one global {@code LogManager} instance in the
+ * application, which can be get by calling static method
+ * {@link #getLogManager()}. This instance is created and
+ * initialized during class initialization and cannot be changed.
  * <p>
- * All methods on this type can be taken as being thread safe.
- * </p>
+ * The {@code LogManager} class can be specified by
+ * java.util.logging.manager system property, if the property is unavailable or
+ * invalid, the default class {@link java.util.logging.LogManager} will
+ * be used.
  * <p>
- * The <code>LogManager</code> class can be specified by the
- * "java.util.logging.manager" system property. If the property is unavailable
- * or invalid <code>java.util.logging.LogManager</code> will be used by
- * default.
- * </p>
+ * On initialization, {@code LogManager} reads its configuration from a
+ * properties file, which by default is the "lib/logging.properties" in the JRE
+ * directory.
  * <p>
- * On initialization, <code>LogManager</code> reads its configuration data
- * from a properties file, which by default is the "lib/logging.properties" file
- * in the JRE directory.
- * </p>
- * <p>
- * However, two system properties can be used instead to customize the
- * initialization of the <code>LogManager</code>:
+ * However, two optional system properties can be used to customize the initial
+ * configuration process of {@code LogManager}.
  * <ul>
  * <li>"java.util.logging.config.class"</li>
  * <li>"java.util.logging.config.file"</li>
  * </ul>
- * </p>
  * <p>
- * These properties can be set either by using the Preferences API, as a command
- * line option or by passing the appropriate system property definitions to
- * JNI_CreateJavaVM.
- * </p>
+ * These two properties can be set in three ways, by the Preferences API, by the
+ * "java" command line property definitions, or by system property definitions
+ * passed to JNI_CreateJavaVM.
  * <p>
- * The "java.util.logging.config.class" property should specify a class name. If
- * it is set, this class will be loaded and instantiated during
- * <code>LogManager</code>'s initialization, so that this object's default
- * constructor can read the initial configuration and define properties for the
- * <code>LogManager</code>.
- * </p>
+ * The "java.util.logging.config.class" should specifies a class name. If it is
+ * set, this given class will be loaded and instantiated during
+ * {@code LogManager} initialization, so that this object's default
+ * constructor can read the initial configuration and define properties for
+ * {@code LogManager}.
  * <p>
- * The "java.util.logging.config.file" system property can be used to specify a
- * properties file if the "java.util.logging.config.class" property has not been
- * used. This file will be read instead of the default properties file.
- * </p>
+ * If "java.util.logging.config.class" property is not set, or it is invalid, or
+ * some exception is thrown during the instantiation, then the
+ * "java.util.logging.config.file" system property can be used to specify a
+ * properties file. The {@code LogManager} will read initial
+ * configuration from this file.
  * <p>
- * Some global logging properties are as follows:
+ * If neither of these properties is defined, or some exception is thrown
+ * during these two properties using, the {@code LogManager} will read
+ * its initial configuration from default properties file, as described above.
+ * <p>
+ * The global logging properties may include:
  * <ul>
- * <li>"handlers" - a list of handler classes, separated by whitespace. These
- * classes must be subclasses of <code>Handler</code> and must have a public
- * no-argument constructor. They will be registered with the root
- * <code>Logger</code>.</li>
- * <li>"config" - a list of configuration classes, separated by whitespace.
- * These classes should also have a public no-argument default constructor,
- * which should contain all the code for applying that configuration to the
- * logging system.
+ * <li>"handlers". This property's values should be a list of class names for
+ * handler classes separated by whitespace, these classes must be subclasses of
+ * {@code Handler} and each must have a default constructor, these
+ * classes will be loaded, instantiated and registered as handlers on the root
+ * {@code Logger} (the {@code Logger} named ""). These
+ * {@code Handler}s maybe initialized lazily.</li>
+ * <li>"config". The property defines a list of class names separated by
+ * whitespace. Each class must have a default constructor, in which it can
+ * update the logging configuration, such as levels, handlers, or filters for
+ * some logger, etc. These classes will be loaded and instantiated during
+ * {@code LogManager} configuration</li>
  * </ul>
- * </p>
  * <p>
- * Besides global properties, properties for individual <code>Loggers</code>
- * and <code>Handlers</code> can be specified in the property files. The names
- * of these properties will start with the fully qualified name of the handler
- * or logger.
- * </p>
+ * This class, together with any handler and configuration classes associated
+ * with it, <b>must</b> be loaded from the system classpath when
+ * {@code LogManager} configuration occurs.
  * <p>
- * The <code>LogManager</code> organizes <code>Loggers</code> based on their
- * fully qualified names. For example, "x.y.z" is child of "x.y".
- * </p>
+ * Besides global properties, the properties for loggers and Handlers can be
+ * specified in the property files. The names of these properties will start
+ * with the complete dot separated names for the handlers or loggers.
  * <p>
- * Levels for <code>Loggers</code> can be defined by properties whose name end
- * with ".level". For example, "alogger.level = 4" sets the level for the logger
- * "alogger" to 4, Any children of "alogger" will also be given the level 4
- * unless specified lower down in the properties file. The property ".level"
- * will set the log level for the root logger.
- * </p>
- * 
+ * In the {@code LogManager}'s hierarchical namespace,
+ * {@code Loggers} are organized based on their dot separated names. For
+ * example, "x.y.z" is child of "x.y".
+ * <p>
+ * Levels for {@code Loggers} can be defined by properties whose name end
+ * with ".level". Thus "alogger.level" defines a level for the logger named as
+ * "alogger" and for all its children in the naming hierarchy. Log levels
+ * properties are read and applied in the same order as they are specified in
+ * the property file. The root logger's level can be defined by the property
+ * named as ".level".
+ * <p>
+ * All methods on this type can be taken as being thread safe.
+ *
  */
 public class LogManager {
     /*
@@ -140,16 +144,15 @@ public class LogManager {
     static LogManager manager;
 
     /**
-     * <p>
-     * The String value of the {@link LoggingMXBean}'s ObjectName.
-     * </p>
+     * The {@code String} value of the {@link LoggingMXBean}'s ObjectName.
      */
     public static final String LOGGING_MXBEAN_NAME = "java.util.logging:type=Logging"; //$NON-NLS-1$
 
     /**
-     * Get the <code>LoggingMXBean</code> instance
+     * Get the {@code LoggingMXBean} instance. this implementation always throws
+     * an UnsupportedOperationException.
      * 
-     * @return the <code>LoggingMXBean</code> instance
+     * @return the {@code LoggingMXBean} instance
      */
     public static LoggingMXBean getLoggingMXBean() {
         try {
@@ -226,8 +229,8 @@ public class LogManager {
 
     /**
      * Default constructor. This is not public because there should be only one
-     * <code>LogManager</code> instance, which can be get by
-     * <code>LogManager.getLogManager(</code>. This is protected so that
+     * {@code LogManager} instance, which can be get by
+     * {@code LogManager.getLogManager(}. This is protected so that
      * application can subclass the object.
      */
     protected LogManager() {
@@ -258,15 +261,15 @@ public class LogManager {
     }
 
     /**
-     * Check that the caller has <code>LoggingPermission("control")</code> so
+     * Check that the caller has {@code LoggingPermission("control")} so
      * that it is trusted to modify the configuration for logging framework. If
-     * the check passes, just return, otherwise <code>SecurityException</code>
+     * the check passes, just return, otherwise {@code SecurityException}
      * will be thrown.
      * 
      * @throws SecurityException
      *             if there is a security manager in operation and the invoker
      *             of this method does not have the required security permission
-     *             <code>LoggingPermission("control")</code>
+     *             {@code LoggingPermission("control")}
      */
     public void checkAccess() {
         if (null != System.getSecurityManager()) {
@@ -276,21 +279,20 @@ public class LogManager {
 
     /**
      * Add a given logger into the hierarchical namespace. The
-     * <code>Logger.addLogger()</code> factory methods call this method to add
-     * newly created Logger. This returns false if a logger with the given name
-     * has existed in the namespace
+     * {@code Logger.addLogger()} factory methods call this method to add newly
+     * created Logger. This returns false if a logger with the given name has
+     * existed in the namespace
      * <p>
-     * Note that the <code>LogManager</code> may only retain weak references
-     * to registered loggers. In order to prevent <code>Logger</code> objects
-     * from being unexpectedly garbage collected it is necessary for
-     * <i>applications</i> to maintain references to them.
+     * Note that the {@code LogManager} may only retain weak references to
+     * registered loggers. In order to prevent {@code Logger} objects from being
+     * unexpectedly garbage collected it is necessary for <i>applications</i>
+     * to maintain references to them.
      * </p>
      * 
      * @param logger
-     *            the logger to be added
+     *            the logger to be added.
      * @return true if the given logger is added into the namespace
-     *         successfully, false if the logger of given name has existed in
-     *         the namespace
+     *         successfully, false if the given logger exists in the namespace.
      */
     public synchronized boolean addLogger(Logger logger) {
         String name = logger.getName();
@@ -349,18 +351,18 @@ public class LogManager {
     }
 
     /**
-     * Get the logger with the given name
+     * Get the logger with the given name.
      * 
      * @param name
      *            name of logger
-     * @return logger with given name, or null if nothing is found
+     * @return logger with given name, or {@code null} if nothing is found.
      */
     public synchronized Logger getLogger(String name) {
         return loggers.get(name);
     }
 
     /**
-     * Get a <code>Enumeration</code> of all registered logger names
+     * Get a {@code Enumeration} of all registered logger names.
      * 
      * @return enumeration of registered logger names
      */
@@ -369,16 +371,16 @@ public class LogManager {
     }
 
     /**
-     * Get the global <code>LogManager</code> instance
+     * Get the global {@code LogManager} instance.
      * 
-     * @return the global <code>LogManager</code> instance
+     * @return the global {@code LogManager} instance
      */
     public static LogManager getLogManager() {
         return manager;
     }
 
     /**
-     * Get the value of property with given name
+     * Get the value of property with given name.
      * 
      * @param name
      *            the name of property
@@ -390,16 +392,16 @@ public class LogManager {
 
     /**
      * Re-initialize the properties and configuration. The initialization
-     * process is same as the <code>LogManager</code> instantiation.
+     * process is same as the {@code LogManager} instantiation.
      * <p>
-     * A <code>PropertyChangeEvent</code> must be fired.
+     * Notice : No {@code PropertyChangeEvent} are fired.
      * </p>
      * 
      * @throws IOException
-     *             if any IO related problems happened
+     *             if any IO related problems happened.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
-     *             not have the required permissions to perform this action
+     *             not have the required permissions to perform this action.
      */
     public void readConfiguration() throws IOException {
         checkAccess();
@@ -494,18 +496,18 @@ public class LogManager {
 
     /**
      * Re-initialize the properties and configuration from the given
-     * <code>InputStream</code>
+     * {@code InputStream}
      * <p>
-     * A <code>PropertyChangeEvent</code> must be fired.
+     * Notice : No {@code PropertyChangeEvent} are fired.
      * </p>
      * 
      * @param ins
-     *            the input stream.
+     *            the input stream
      * @throws IOException
-     *             if any IO related problems happened
+     *             if any IO related problems happened.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
-     *             not have the required permissions to perform this action
+     *             not have the required permissions to perform this action.
      */
     public void readConfiguration(InputStream ins) throws IOException {
         checkAccess();
@@ -517,12 +519,12 @@ public class LogManager {
      * <p>
      * All handlers are closed and removed from any named loggers. All loggers'
      * level is set to null, except the root logger's level is set to
-     * <code>Level.INFO</code>.
+     * {@code Level.INFO}.
      * </p>
      * 
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
-     *             not have the required permissions to perform this action
+     *             not have the required permissions to perform this action.
      */
     public void reset() {
         checkAccess();
@@ -542,11 +544,11 @@ public class LogManager {
     }
 
     /**
-     * Add a <code>PropertyChangeListener</code>, which will be invoked when
+     * Add a {@code PropertyChangeListener}, which will be invoked when
      * the properties are reread.
      * 
      * @param l
-     *            the <code>PropertyChangeListener</code> to be added
+     *            the {@code PropertyChangeListener} to be added.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
      *             not have the required permissions to perform this action
@@ -560,11 +562,11 @@ public class LogManager {
     }
 
     /**
-     * Remove a <code>PropertyChangeListener</code>, do nothing if the given
+     * Remove a {@code PropertyChangeListener}, do nothing if the given
      * listener is not found.
      * 
      * @param l
-     *            the <code>PropertyChangeListener</code> to be removed
+     *            the {@code PropertyChangeListener} to be removed.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
      *             not have the required permissions to perform this action

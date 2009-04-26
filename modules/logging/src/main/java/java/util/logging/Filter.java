@@ -18,18 +18,18 @@
 package java.util.logging;
 
 /**
- * A Filter provides a mechanism for exercising fine-grained control over what
- * records get logged.
+ * A {@code Filter} provides a mechanism for exercising fine-grained control
+ * over which records get logged.
  */
 public interface Filter {
 
     /**
-     * Checks the {@link LogRecord} to determine if it should be logged.
+     * Checks {@code record} to determine if it should be logged.
      * 
      * @param record
-     *            The {@link LogRecord} to be checked.
-     * @return <code>true</code> if the supplied log record needs to be
-     *         logged, otherwise <code>false</code>
+     *            the {@link LogRecord} to be checked.
+     * @return {@code true} if the supplied log record needs to be logged,
+     *         {@code false} otherwise.
      */
     boolean isLoggable(LogRecord record);
 }

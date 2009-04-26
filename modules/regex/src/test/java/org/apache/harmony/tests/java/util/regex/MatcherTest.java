@@ -37,6 +37,45 @@ public class MatcherTest extends TestCase {
     String[] groupPatterns = { "(a|b)*aabb", "((a)|b)*aabb", "((a|b)*)a(abb)",
             "(((a)|(b))*)aabb", "(((a)|(b))*)aa(b)b", "(((a)|(b))*)a(a(b)b)" };
 
+    public MatcherTest(String name) {
+        super(name);
+    }
+    
+    public void testRegionsIntInt() {
+        Pattern p = Pattern.compile("x*");
+        Matcher m = p.matcher("axxxxxa");
+        assertFalse(m.matches());
+        
+        m.region(1, 6);
+        assertEquals(1, m.regionStart());
+        assertEquals(6, m.regionEnd());
+        assertTrue(m.matches());
+        
+        try {
+            m.region(1, 0);
+            fail("expected an IOOBE");
+        } catch(IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            m.region(-1, 2);
+            fail("expected an IOOBE");
+        } catch(IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            m.region(10, 11);
+            fail("expected an IOOBE");
+        } catch(IndexOutOfBoundsException e) {
+        }
+        
+        try {
+            m.region(1, 10);
+            fail("expected an IOOBE");
+        } catch(IndexOutOfBoundsException e) {
+        }
+    }
+    
     public void testAppendReplacement() {
         Pattern pat = Pattern.compile("XX");
         Matcher m = pat.matcher("Today is XX-XX-XX ...");
@@ -74,6 +113,17 @@ public class MatcherTest extends TestCase {
      * Class under test for Matcher reset(CharSequence)
      */
     public void testResetCharSequence() {
+        Pattern p = Pattern.compile("abcd");
+        Matcher m = p.matcher("abcd");
+        assertTrue(m.matches());
+        m.reset("efgh");
+        assertFalse(m.matches());
+        
+        try {
+            m.reset(null);
+            fail("expected a NPE");
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testAppendSlashes() {
@@ -374,62 +424,6 @@ public class MatcherTest extends TestCase {
 
         mat.find();
         assertEquals("b", mat.group());
-    }
-
-    public void _testMatchesURI() {
-        final Pattern pat = Pattern
-                .compile("^(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?");
-        Runnable r1 = new Runnable() {
-            public void run() {
-                Matcher mat = pat
-                        .matcher("file:/c:/workspace/api/build.win32/classes/META-INF/"
-                                + "services/javax.xml.parsers.DocumentBuilderFactory");
-                while (mat.matches()) {
-                    // Do nothing
-                }
-                System.out.println("1: fail");
-            }
-        };
-
-        Runnable r2 = new Runnable() {
-            public void run() {
-                Matcher mat = pat.matcher("file:/c:/workspace/"
-                        + "services/javax.xml.parsers.DocumentBuilderFactory");
-                while (mat.matches()) {
-                    // Do nothing
-                }
-                System.out.println("2: fail");
-            }
-        };
-
-        Thread t1 = new Thread(r1);
-        Thread t2 = new Thread(r2);
-
-        t1.start();
-        t2.start();
-
-        try {
-            t1.join();
-            t2.join();
-        } catch (Exception e) {
-        }
-
-    }
-
-    public void _testUnifiedQuantifiers() {
-        // Pattern pat1 = Pattern.compile("\\s+a");
-        Pattern pat2 = Pattern.compile(" *a");
-
-        Matcher mat = pat2.matcher("      a");
-
-        System.out.println("unified: " + mat.find());
-    }
-
-    public void _testCompositeGroupQuantifiers() {
-        Pattern pat = Pattern.compile("(a|b){0,3}abb");
-        Matcher mat = pat.matcher("ababababababababababaab");
-
-        System.out.println("composite: " + mat.find());
     }
 
     public void testPosCompositeGroup() {
@@ -760,9 +754,5 @@ public class MatcherTest extends TestCase {
         String notANumber = "((-|\\+)?Infinity)|([nN]a[nN])";
         return new StringBuilder("((").append(hexDecimal).append(")|(").append(
                 notANumber).append("))").toString();
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(MatcherTest.class);
     }
 }

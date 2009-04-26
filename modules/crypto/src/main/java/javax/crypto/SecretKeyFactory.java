@@ -35,8 +35,16 @@ import org.apache.harmony.security.fortress.Engine;
 
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The public API for {@code SecretKeyFactory} implementations.
+ * <p>
+ * Secret key factories provide the following functionality:
+ * <ul>
+ * <li>convert {@link SecretKey} objects to and from {@link KeySpec} objects</li>
+ * <li>translate {@link SecretKey} objects from one provider implementation to
+ * another</li>
+ * </ul>
+ * Which key specifications are supported by the {@link #generateSecret} and
+ * {@link #getKeySpec} is provider dependent.
  */
 public class SecretKeyFactory {
 
@@ -53,8 +61,14 @@ public class SecretKeyFactory {
     private final String algorithm;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code SecretKeyFactory}
+     *
+     * @param keyFacSpi
+     *            the SPI delegate.
+     * @param provider
+     *            the provider providing this key factory.
+     * @param algorithm
+     *            the algorithm name for the secret key.
      */
     protected SecretKeyFactory(SecretKeyFactorySpi keyFacSpi,
             Provider provider, String algorithm) {
@@ -64,24 +78,34 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the name of the secret key algorithm.
+     *
+     * @return the name of the secret key algorithm.
      */
     public final String getAlgorithm() {
         return algorithm;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the provider for this {@code SecretKeyFactory} instance.
+     *
+     * @return the provider for this {@code SecretKeyFactory} instance.
      */
     public final Provider getProvider() {
         return provider;
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code SecretKeyFactory} instance for the specified key
+     * algorithm.
+     *
+     * @param algorithm
+     *            the name of the key algorithm.
+     * @return a secret key factory for the specified key algorithm.
+     * @throws NoSuchAlgorithmException
+     *             if no installed provider can provide the requested algorithm.
+     * @throws NullPointerException
+     *             if the specified algorithm is {@code null}.
      */
     public static final SecretKeyFactory getInstance(String algorithm)
             throws NoSuchAlgorithmException {
@@ -96,8 +120,23 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code SecretKeyFactory} instance for the specified key
+     * algorithm from the specified {@code provider}.
+     *
+     * @param algorithm
+     *            the name of the key algorithm.
+     * @param provider
+     *            the name of the provider that provides the requested
+     *            algorithm.
+     * @return a secret key factory for the specified key algorithm from the
+     *         specified provider.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provide the requested
+     *             algorithm.
+     * @throws NoSuchProviderException
+     *             if the specified provider does not exist.
+     * @throws IllegalArgumentException
+     *             if the specified provider name is {@code null} or empty.
      */
     public static final SecretKeyFactory getInstance(String algorithm,
             String provider) throws NoSuchAlgorithmException,
@@ -113,8 +152,22 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code SecretKeyFactory} instance for the specified key
+     * algorithm from the specified provider.
+     *
+     * @param algorithm
+     *            the name of the key algorithm.
+     * @param provider
+     *            the provider that provides the requested algorithm.
+     * @return a secret key factory for the specified key algorithm from the
+     *         specified provider.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provider the requested
+     *             algorithm.
+     * @throws IllegalArgumentException
+     *             if the specified provider is {@code null}.
+     * @throws NullPointerException
+     *             is the specified algorithm name is {@code null}.
      */
     public static final SecretKeyFactory getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
@@ -132,8 +185,14 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Generate a secret key from the specified key specification.
+     *
+     * @param keySpec
+     *            the key specification.
+     * @return a secret key.
+     * @throws InvalidKeySpecException
+     *             if the specified key specification cannot be used to generate
+     *             a secret key.
      */
     public final SecretKey generateSecret(KeySpec keySpec)
             throws InvalidKeySpecException {
@@ -141,8 +200,16 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the key specification of the specified secret key.
+     *
+     * @param key
+     *            the secret key to get the specification from.
+     * @param keySpec
+     *            the target key specification class.
+     * @return an instance of the specified key specification class.
+     * @throws InvalidKeySpecException
+     *             if the specified secret key cannot be transformed into the
+     *             requested key specification.
      */
     @SuppressWarnings("unchecked")
     public final KeySpec getKeySpec(SecretKey key, Class keySpec)
@@ -151,8 +218,15 @@ public class SecretKeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Translates the specified secret key into an instance of the corresponding
+     * key from the provider of this key factory.
+     *
+     * @param key
+     *            the secret key to translate.
+     * @return the corresponding translated key.
+     * @throws InvalidKeyException
+     *             if the specified key cannot be translated using this key
+     *             factory.
      */
     public final SecretKey translateKey(SecretKey key)
             throws InvalidKeyException {

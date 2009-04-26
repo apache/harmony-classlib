@@ -26,9 +26,6 @@ package java.math;
  * <li>Comparison.</li>
  * </ul>
  * In addition to this, some <i><b>Inplace</b></i> (mutable) methods are provided.
- * 
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class Elementary {
 

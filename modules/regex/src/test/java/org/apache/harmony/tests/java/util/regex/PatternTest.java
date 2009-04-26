@@ -41,17 +41,14 @@ public class PatternTest extends TestCase {
             "x(?c)y", "x(?cc)y", "x(?:c)y"
 
     };
-
-    /**
-     * Constructor for PatternTest.
-     * 
-     * @param name
-     */
+    
     public PatternTest(String name) {
         super(name);
     }
 
-    public void testMatcher() {
+    public void testCommentsInPattern() {
+        Pattern p = Pattern.compile("ab# this is a comment\ncd", Pattern.COMMENTS);
+        assertTrue(p.matcher("abcd").matches());
     }
 
     /*

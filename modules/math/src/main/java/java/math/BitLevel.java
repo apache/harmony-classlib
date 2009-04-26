@@ -31,15 +31,11 @@ package java.math;
  * </ul>
  * All operations are provided in immutable way, and some in both mutable and
  * immutable.
- * 
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class BitLevel {
 
     /** Just to denote that this class can't be instantiated. */
     private BitLevel() {}
-
 
     /** @see BigInteger#bitLength() */
     static int bitLength(BigInteger val) {

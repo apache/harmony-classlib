@@ -68,9 +68,7 @@ public class WriterTest extends TestCase {
         // Regression for HARMONY-51
         Object lock = new Object();
         Writer wr = new MockLockWriter(lock);
-        // FIXME This test should be added to the exclusion list until
-        // Thread.holdsLock works on IBM VME
-//      wr.write("Some string");
+        wr.write("Some string");
         wr.close();
     }
 

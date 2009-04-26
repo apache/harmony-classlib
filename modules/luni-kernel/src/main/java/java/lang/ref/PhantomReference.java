@@ -18,19 +18,30 @@
 package java.lang.ref;
 
 /**
- * PhantomReference objects are used to detect referents which are no longer
- * visible and are eligible to have their storage reclaimed.
- * 
+ * Implements a phantom reference, which is the weakest of the three types of
+ * references. Once the garbage collector decides that an object {@code obj} is
+ * <a href="package.html#definitions>phantom-reachable</a>, it is being enqueued
+ * on the corresponding queue, but its referent is not cleared. That is, the
+ * reference queue of the phantom reference must explicitly be processed by some
+ * application code. As a consequence, a phantom reference that is not
+ * registered with any reference queue does not make any sense.
+ * <p>
+ * Phantom references are useful for implementing cleanup operations that are
+ * necessary before an object gets garbage-collected. They are sometimes more
+ * flexible than the {@link Object#finalize()} method.
+ *
  * @since 1.2
  */
 public class PhantomReference<T> extends Reference<T> {
 
     /**
-     * Constructs a new instance of this class.
-     * 
-     * 
-     * @param r referent to track.
-     * @param q queue to register to the reference object with.
+     * Constructs a new phantom reference and registers it with the given
+     * reference queue. The reference queue may be {@code null}, but this case
+     * does not make any sense, since the reference will never be enqueued, and
+     * the {@link #get()} method always returns {@code null}.
+     *
+     * @param r the referent to track
+     * @param q the queue to register the phantom reference object with
      */
     public PhantomReference(T r, ReferenceQueue<? super T> q) {
         super();
@@ -38,10 +49,10 @@ public class PhantomReference<T> extends Reference<T> {
     }
 
     /**
-     * Return the referent of the reference object. Phantom reference objects
-     * referents are inaccessible, and so null is returned.
-     * 
-     * @return Object Returns null.
+     * Returns {@code null}.  The referent of a phantom reference is not
+     * accessible.
+     *
+     * @return {@code null} (always)
      */
     @Override
     public T get() {

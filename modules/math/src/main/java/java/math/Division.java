@@ -39,9 +39,6 @@ import org.apache.harmony.math.internal.nls.Messages;
  * </ul>
  * </li>
  *</ul>
- * 
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
  */
 class Division {
 

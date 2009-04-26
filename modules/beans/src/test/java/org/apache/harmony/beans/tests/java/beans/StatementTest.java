@@ -20,6 +20,7 @@ package org.apache.harmony.beans.tests.java.beans;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Statement;
 import java.util.Arrays;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import junit.framework.Test;
@@ -1016,6 +1017,33 @@ public class StatementTest extends TestCase {
         statement.execute();
         TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
                 TInspectorCluster.OFFSPRING_OBJECT_LIST);
+    }
+
+    public void test_Statement_Execute() throws Exception {
+        MockTreeMapInnerClass innerTreeMap = new MockTreeMapInnerClass();
+        Statement statement = new Statement(innerTreeMap, "get",
+                new Object[] { "key" });
+        statement.execute();
+        assertEquals("value", innerTreeMap.getReturnValue());
+        innerTreeMap.reset();
+    }
+
+    class MockTreeMapInnerClass extends TreeMap {
+
+        private Object returnValue = null;
+
+        public Object getReturnValue() {
+            return returnValue;
+        }
+
+        public void reset() {
+            returnValue = null;
+        }
+
+        @Override
+        public Object get(Object key) {
+            return returnValue = "value";
+        }
     }
 
     /*
