@@ -257,8 +257,19 @@ public class SimpleDateFormat extends DateFormat {
      * @exception IllegalArgumentException
      *                if the pattern is invalid
      */
+    @SuppressWarnings("nls")
     public void applyPattern(String template) {
         validatePattern(template);
+        /*
+         * ICU spec explicitly mentions that "ICU interprets a single 'y'
+         * differently than Java." We need to do a trick here to follow Java
+         * spec.
+         */
+        if (template.equals("y")) {
+            icuFormat.applyPattern("yy");
+            pattern = "y";
+            return;
+        }
         icuFormat.applyPattern(template);
         pattern = template;
     }
