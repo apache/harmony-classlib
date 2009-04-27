@@ -18,7 +18,8 @@
 package java.nio.charset;
 
 /**
- * Errors thrown when the encoder/decoder is malfunctioning.
+ * A {@code CoderMalfunctionError} is thrown when the encoder/decoder is
+ * malfunctioning.
  */
 public class CoderMalfunctionError extends Error {
 
@@ -29,10 +30,10 @@ public class CoderMalfunctionError extends Error {
     private static final long serialVersionUID = -1151412348057794301L;
 
     /**
-     * Constructs an instance of this error.
+     * Constructs a new {@code CoderMalfunctionError}.
      * 
      * @param ex
-     *            the original exception thrown by the encoder/decoder
+     *            the original exception thrown by the encoder/decoder.
      */
     public CoderMalfunctionError(Exception ex) {
         super(ex);

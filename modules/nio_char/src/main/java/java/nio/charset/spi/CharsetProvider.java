@@ -42,14 +42,14 @@ public abstract class CharsetProvider {
     }
 
     /**
-     * Answers an iterator over all the available charsets.
+     * Returns an iterator over all the available charsets.
      * 
      * @return the iterator.
      */
     public abstract Iterator<Charset> charsets();
 
     /**
-     * Answers the named charset.
+     * Returns the named charset.
      * <p>
      * If the charset is unavailable the method returns <code>null</code>.
      * 
