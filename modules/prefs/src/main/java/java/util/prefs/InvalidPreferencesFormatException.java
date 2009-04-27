@@ -18,44 +18,44 @@
 package java.util.prefs;
 
 /**
- * An exception to indicate that the input XML file is not well-formed or 
- * validating to the appropriate document type, which is specified by 
- * <code>Preferences</code>. 
- * 
- * @see Preferences
- *
- * @since 1.4
+ * An exception to indicate that the input XML file is not well-formed or could
+ * not be validated against the appropriate document type (specified by
+ * in the {@code Preferences}).
  */
 public class InvalidPreferencesFormatException extends Exception {
 
     private static final long serialVersionUID = -791715184232119669L;
 
     /**
-     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using an 
-     * exception message.
+     * Constructs a new {@code InvalidPreferencesFormatException} instance with
+     * a detailed exception message.
      * 
-     * @param s the exception message.
+     * @param s
+     *            the detailed exception message.
      */
     public InvalidPreferencesFormatException (String s) {
         super(s);
     }
 
     /**
-     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a 
-     * exception message and a nested <code>Throwable</code> instance.
+     * Constructs a new {@code InvalidPreferencesFormatException} instance with
+     * a detailed exception message and a nested {@code Throwable}.
      * 
-     * @param s the exception message.
-     * @param t the nested <code>Throwable</code> instance.
+     * @param s
+     *            the detailed exception message.
+     * @param t
+     *            the nested {@code Throwable}.
      */
     public InvalidPreferencesFormatException (String s, Throwable t) {
         super(s,t);
     }
 
     /**
-     * Constructs a new <code>InvalidPreferencesFormatException</code> instance using a
-     * nested <code>Throwable</code> instance.
-     *	
-     * @param t the nested <code>Throwable</code> instance.
+     * Constructs a new {@code InvalidPreferencesFormatException} instance with
+     * a nested {@code Throwable}.
+     *
+     * @param t
+     *            the nested {@code Throwable}.
      */
     public InvalidPreferencesFormatException (Throwable t) {
         super(t);
