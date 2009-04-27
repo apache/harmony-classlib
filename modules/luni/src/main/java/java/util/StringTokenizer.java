@@ -124,6 +124,9 @@ public class StringTokenizer implements Enumeration<Object> {
      * @return true if unprocessed tokens remain
      */
     public boolean hasMoreTokens() {
+        if (delimiters == null) {
+            throw new NullPointerException();
+        }
         int length = string.length();
         if (position < length) {
             if (returnDelimiters)
@@ -157,6 +160,9 @@ public class StringTokenizer implements Enumeration<Object> {
      *                if no tokens remain
      */
     public String nextToken() {
+        if (delimiters == null) {
+            throw new NullPointerException();
+        }
         int i = position;
         int length = string.length();
 
