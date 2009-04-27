@@ -1538,8 +1538,7 @@ public class DecimalFormatTest extends TestCase {
         assertEquals(df.getPositiveSuffix(), deserializedDF.getPositiveSuffix());
         assertEquals(df.getCurrency(), deserializedDF.getCurrency());
 
-        assertEquals(df.getDecimalFormatSymbols(), deserializedDF
-                .getDecimalFormatSymbols());
+        DecimalFormatSymbolsTest.assertDecimalFormatSymbolsRIFrance(deserializedDF.getDecimalFormatSymbols());
 
         assertEquals(df.getGroupingSize(), df.getGroupingSize());
         assertEquals(df.getMaximumFractionDigits(), deserializedDF

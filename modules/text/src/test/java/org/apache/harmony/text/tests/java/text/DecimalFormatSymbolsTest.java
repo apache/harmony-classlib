@@ -413,6 +413,10 @@ public class DecimalFormatSymbolsTest extends TestCase {
             } catch (Exception e) {
             }
         }
+        assertDecimalFormatSymbolsRIFrance(dfs);
+    }
+    
+    static void assertDecimalFormatSymbolsRIFrance(DecimalFormatSymbols dfs) {
         // Values based on Java 1.5 RI DecimalFormatSymbols for Locale.FRANCE
         /*
          * currency = [EUR]
