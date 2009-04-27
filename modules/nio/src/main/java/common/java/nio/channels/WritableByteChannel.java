@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * A WritableByteChannel is a type of Channel that can write bytes.
+ * A {@code WritableByteChannel} is a type of {@link Channel} that can write
+ * bytes.
  * <p>
- * Writes are synchronous on a WritableByteChannel, that is, if a write is
- * already in progress on the channel then subsequent writes will block until
- * the first write completes. It is undefined whether non-write operations will
- * block.
+ * Write operations are synchronous on a {@code WritableByteChannel}, that is,
+ * if a write is already in progress on the channel then subsequent writes will
+ * block until the first write completes. It is undefined whether non-write
+ * operations will block.
  */
 public interface WritableByteChannel extends Channel {
 
@@ -36,17 +37,14 @@ public interface WritableByteChannel extends Channel {
      * <code>remaining()</code> number of bytes in the buffer when the method
      * invoked. The bytes will be written from the buffer starting at the
      * buffer's <code>position</code>.
-     * </p>
      * <p>
      * The call may block if other threads are also attempting to write on the
      * same channel.
-     * </p>
      * <p>
      * Upon completion, the buffer's <code>position()</code> is updated to the
      * end of the bytes that were written. The buffer's <code>limit()</code>
      * is unmodified.
-     * </p>
-     * 
+     *
      * @param buffer
      *            the byte buffer containing the bytes to be written.
      * @return the number of bytes actually written.

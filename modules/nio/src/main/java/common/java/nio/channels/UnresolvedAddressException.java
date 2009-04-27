@@ -17,15 +17,15 @@
 package java.nio.channels;
 
 /**
- * Thrown when trying to use an unresolved network address in a network
- * operation.
+ * An {@code UnresolvedAddressException} is thrown when trying to use an
+ * unresolved network address in a network operation.
  */
 public class UnresolvedAddressException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 6136959093620794148L;
 
     /**
-     * Default constructor.
+     * Constructs an {@code UnresolvedAddressException}.
      */
     public UnresolvedAddressException() {
         super();

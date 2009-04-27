@@ -30,7 +30,7 @@ import org.apache.harmony.luni.platform.PlatformAddress;
  * The adapter extends Buffer, thus has its own position and limit.</li>
  * </ul>
  * </p>
- * 
+ *
  */
 final class LongToByteBufferAdapter extends LongBuffer implements DirectBuffer {
 

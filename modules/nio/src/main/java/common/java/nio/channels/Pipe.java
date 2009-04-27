@@ -21,32 +21,33 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 /**
- * A pipe contains two channels. One is the writable sink channel and the other is
- * readable source channel. When bytes are written into the writable channel they
- * can be read from readable channel. The order of these bytes remains unchanged. 
+ * A pipe contains two channels. One is the writable sink channel and the other
+ * is the readable source channel. When bytes are written into the writable
+ * channel they can be read from the readable channel. The order of these bytes
+ * remains unchanged.
  */
 public abstract class Pipe {
 
     /**
-     * Writable sink channel for writing into.
+     * Writable sink channel used to write to a pipe.
      */
     public static abstract class SinkChannel extends AbstractSelectableChannel
             implements WritableByteChannel, GatheringByteChannel {
         
         /**
-         * The Constructor.
+         * Constructs a new {@code SinkChannel}.
          * 
          * @param provider
-         *            the provider of the channel
+         *            the provider of the channel.
          */
         protected SinkChannel(SelectorProvider provider) {
             super(provider);
         }
 
         /**
-         * Indicates this channel supports only writing.
+         * Indicates that this channel only supports writing.
          * 
-         * @return a static value of OP_WRITE
+         * @return a static value of OP_WRITE.
          */
         @Override
         public final int validOps() {
@@ -55,26 +56,26 @@ public abstract class Pipe {
     }
 
     /**
-     * Readable source channel for reading from.
+     * Readable source channel used to read from a pipe.
      */
     public static abstract class SourceChannel extends
             AbstractSelectableChannel implements ReadableByteChannel,
             ScatteringByteChannel {
         
         /**
-         * The Constructor.
+         * Constructs a new {@code SourceChannel}.
          * 
          * @param provider
-         *            the provider of the channel
+         *            the provider of the channel.
          */
         protected SourceChannel(SelectorProvider provider) {
             super(provider);
         }
 
         /**
-         * Indicates this channel supports only reading.
+         * Indicates that this channel only supports reading.
          * 
-         * @return a static value of OP_READ
+         * @return a static value of OP_READ.
          */
         @Override
         public final int validOps() {
@@ -86,17 +87,17 @@ public abstract class Pipe {
     /**
      * Initializes a pipe.
      * 
-     * @return a new instance of pipe
+     * @return a new instance of pipe.
      * 
      * @throws IOException
-     *             if I/O error occurs
+     *             if an I/O error occurs.
      */
     public static Pipe open() throws IOException {
         return SelectorProvider.provider().openPipe();
     }
 
     /**
-     * The protected constructor.
+     * The protected default constructor.
      */
     protected Pipe() {
         super();
@@ -105,14 +106,14 @@ public abstract class Pipe {
     /**
      * Returns the sink channel of the pipe.
      * 
-     * @return a writable sink channel of the pipe
+     * @return a writable sink channel of the pipe.
      */
     public abstract SinkChannel sink();
 
     /**
      * Returns the source channel of the pipe.
      * 
-     * @return a readable source channel of the pipe
+     * @return a readable source channel of the pipe.
      */
     public abstract SourceChannel source();
 
