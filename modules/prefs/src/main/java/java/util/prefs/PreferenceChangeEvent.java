@@ -36,7 +36,7 @@ import java.util.EventObject;
  * 
  * @since 1.4
  */
-public class PreferenceChangeEvent extends EventObject implements Serializable {
+public class PreferenceChangeEvent extends EventObject {
 
     private static final long serialVersionUID = 793724513368024975L;
 
