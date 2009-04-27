@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.java.io;
+package org.apache.harmony.luni.tests.java.net;
 
 import java.io.IOException;
 import java.io.InputStream;
