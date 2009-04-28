@@ -591,6 +591,39 @@ public final class String implements Serializable, Comparable<String>,
         throw new StringIndexOutOfBoundsException();
     }
 
+    // Optimized for ASCII
+    private char compareValue(char ch) {
+        if (ch < 128) {
+            if ('A' <= ch && ch <= 'Z') {
+                return (char) (ch + ('a' - 'A'));
+            }
+            return ch;
+        }
+        return Character.toLowerCase(Character.toUpperCase(ch));
+    }
+
+    // Optimized for ASCII
+    private char toLowerCase(char ch) {
+        if (ch < 128) {
+            if ('A' <= ch && ch <= 'Z') {
+                return (char) (ch + ('a' - 'A'));
+            }
+            return ch;
+        }
+        return Character.toLowerCase(ch);
+    }
+
+    // Optimized for ASCII
+    private char toUpperCase(char ch) {
+        if (ch < 128) {
+            if ('a' <= ch && ch <= 'z') {
+                return (char) (ch - ('a' - 'A'));
+            }
+            return ch;
+        }
+        return Character.toUpperCase(ch);
+    }
+
     /**
      * Compares the specified String to this String using the Unicode values of
      * the characters. Answer 0 if the strings contain the same characters in
@@ -643,8 +676,8 @@ public final class String implements Serializable, Comparable<String>,
             if ((c1 = value[o1++]) == (c2 = target[o2++])) {
                 continue;
             }
-            c1 = Character.toLowerCase(Character.toUpperCase(c1));
-            c2 = Character.toLowerCase(Character.toUpperCase(c2));
+            c1 = compareValue(c1);
+            c2 = compareValue(c2);
             if ((result = c1 - c2) != 0) {
                 return result;
             }
@@ -802,9 +835,9 @@ public final class String implements Serializable, Comparable<String>,
         char[] target = string.value;
         while (o1 < end) {
             if ((c1 = value[o1++]) != (c2 = target[o2++])
-                    && Character.toUpperCase(c1) != Character.toUpperCase(c2)
+                    && toUpperCase(c1) != toUpperCase(c2)
                     // Required for unicode that we test both cases
-                    && Character.toLowerCase(c1) != Character.toLowerCase(c2)) {
+                    && toLowerCase(c1) != toLowerCase(c2)) {
                 return false;
             }
         }
@@ -1306,11 +1339,9 @@ public final class String implements Serializable, Comparable<String>,
             char[] target = string.value;
             while (thisStart < end) {
                 if ((c1 = value[thisStart++]) != (c2 = target[start++])
-                        && Character.toUpperCase(c1) != Character
-                                .toUpperCase(c2)
+                        && toUpperCase(c1) != toUpperCase(c2)
                         // Required for unicode that we test both cases
-                        && Character.toLowerCase(c1) != Character
-                                .toLowerCase(c2)) {
+                        && toLowerCase(c1) != toLowerCase(c2)) {
                     return false;
                 }
             }
@@ -1500,7 +1531,7 @@ public final class String implements Serializable, Comparable<String>,
     public String toLowerCase(Locale locale) {
         for (int o = offset, end = offset + count; o < end; o++) {
             char ch = value[o];
-            if (ch != Character.toLowerCase(ch)) {
+            if (ch != toLowerCase(ch)) {
                 char[] buffer = new char[count];
                 int i = o - offset;
                 // Not worth checking for i == 0 case
@@ -1508,12 +1539,12 @@ public final class String implements Serializable, Comparable<String>,
                 // Turkish
                 if (!"tr".equals(locale.getLanguage())) { //$NON-NLS-1$
                     while (i < count) {
-                        buffer[i++] = Character.toLowerCase(value[o++]);
+                        buffer[i++] = toLowerCase(value[o++]);
                     }
                 } else {
                     while (i < count) {
-                        buffer[i++] = (ch = value[o++]) != 0x49 ? Character
-                                .toLowerCase(ch) : (char) 0x131;
+                        buffer[i++] = (ch = value[o++]) != 0x49 ? toLowerCase(ch)
+                                : (char) 0x131;
                     }
                 }
                 return new String(0, count, buffer);
@@ -1626,8 +1657,8 @@ public final class String implements Serializable, Comparable<String>,
                     System.arraycopy(output, 0, newoutput, 0, output.length);
                     output = newoutput;
                 }
-                char upch = !turkish ? Character.toUpperCase(ch)
-                        : (ch != 0x69 ? Character.toUpperCase(ch)
+                char upch = !turkish ? toUpperCase(ch)
+                        : (ch != 0x69 ? toUpperCase(ch)
                                 : (char) 0x130);
                 if (ch != upch) {
                     if (output == null) {

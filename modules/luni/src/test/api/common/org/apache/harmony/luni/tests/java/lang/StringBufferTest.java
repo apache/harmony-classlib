@@ -25,20 +25,89 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class StringBufferTest extends TestCase {
 
-	/**
-	 * @tests java.lang.StringBuffer#setLength(int)
-	 */
-	public void test_setLengthI() {
-		// Regression for HARMONY-90
-		StringBuffer buffer = new StringBuffer("abcde");
-		try {
-			buffer.setLength(-1);
-			fail("Assert 0: IndexOutOfBoundsException must be thrown");
-		} catch (IndexOutOfBoundsException e) {
-			// expected
-		}
-	}
-    
+    /**
+     * @tests java.lang.StringBuffer#setLength(int)
+     */
+    public void test_setLengthI() {
+        // Regression for HARMONY-90
+        StringBuffer buffer = new StringBuffer("abcde");
+        try {
+            buffer.setLength(-1);
+            fail("Assert 0: IndexOutOfBoundsException must be thrown");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        assertEquals("abcde", buffer.toString());
+        buffer.setLength(1);
+        buffer.append('f');
+        assertEquals("af", buffer.toString());
+
+        buffer = new StringBuffer("abcde");
+        assertEquals("cde", buffer.substring(2));
+        buffer.setLength(3);
+        buffer.append('f');
+        assertEquals("abcf", buffer.toString());
+
+        buffer = new StringBuffer("abcde");
+        buffer.setLength(2);
+        try {
+            buffer.charAt(3);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        }
+
+        buffer = new StringBuffer();
+        buffer.append("abcdefg");
+        buffer.setLength(2);
+        buffer.setLength(5);
+        for (int i = 2; i < 5; i++) {
+            assertEquals(0, buffer.charAt(i));
+        }
+
+        buffer = new StringBuffer();
+        buffer.append("abcdefg");
+        buffer.delete(2, 4);
+        buffer.setLength(7);
+        assertEquals('a', buffer.charAt(0));
+        assertEquals('b', buffer.charAt(1));
+        assertEquals('e', buffer.charAt(2));
+        assertEquals('f', buffer.charAt(3));
+        assertEquals('g', buffer.charAt(4));
+        for (int i = 5; i < 7; i++) {
+            assertEquals(0, buffer.charAt(i));
+        }
+
+        buffer = new StringBuffer();
+        buffer.append("abcdefg");
+        buffer.replace(2, 5, "z");
+        buffer.setLength(7);
+        for (int i = 5; i < 7; i++) {
+            assertEquals(0, buffer.charAt(i));
+        }
+    }
+
+    /**
+     * @tests java.lang.StringBuffer#toString()
+     */
+    public void test_toString() throws Exception {
+        StringBuffer buffer = new StringBuffer();
+        assertEquals("", buffer.toString());
+
+        buffer.append("abcde");
+        assertEquals("abcde", buffer.toString());
+        buffer.setLength(1000);
+        byte[] bytes = buffer.toString().getBytes("GB18030");
+        for (int i = 5; i < bytes.length; i++) {
+            assertEquals(0, bytes[i]);
+        }
+
+        buffer.setLength(5);
+        buffer.append("fghij");
+        assertEquals("abcdefghij", buffer.toString());
+    }
+
     /**
      * @tests StringBuffer.StringBuffer(CharSequence);
      */

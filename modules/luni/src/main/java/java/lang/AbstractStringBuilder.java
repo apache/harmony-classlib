@@ -103,9 +103,6 @@ abstract class AbstractStringBuilder {
         int newSize = count + 4;
         if (newSize > value.length) {
             enlargeBuffer(newSize);
-        } else if (shared) {
-            value = value.clone();
-            shared = false;
         }
         value[count++] = 'n';
         value[count++] = 'u';
@@ -117,9 +114,6 @@ abstract class AbstractStringBuilder {
         int newSize = count + chars.length;
         if (newSize > value.length) {
             enlargeBuffer(newSize);
-        } else if (shared) {
-            value = value.clone();
-            shared = false;
         }
         System.arraycopy(chars, 0, value, count, chars.length);
         count = newSize;
@@ -134,9 +128,6 @@ abstract class AbstractStringBuilder {
             int newSize = count + length;
             if (newSize > value.length) {
                 enlargeBuffer(newSize);
-            } else if (shared) {
-                value = value.clone();
-                shared = false;
             }
             System.arraycopy(chars, start, value, count, length);
             count = newSize;
@@ -148,10 +139,6 @@ abstract class AbstractStringBuilder {
     final void append0(char ch) {
         if (count == value.length) {
             enlargeBuffer(count + 1);
-        }
-        if (shared) {
-            value = value.clone();
-            shared = false;
         }
         value[count++] = ch;
     }
@@ -165,9 +152,6 @@ abstract class AbstractStringBuilder {
         int newSize = count + adding;
         if (newSize > value.length) {
             enlargeBuffer(newSize);
-        } else if (shared) {
-            value = value.clone();
-            shared = false;
         }
         string.getChars(0, adding, value, count);
         count = newSize;
@@ -568,16 +552,16 @@ abstract class AbstractStringBuilder {
         if (length < 0) {
             throw new StringIndexOutOfBoundsException(length);
         }
-        if (count < length) {
-            if (length > value.length) {
-                enlargeBuffer(length);
+        if (length > value.length) {
+            enlargeBuffer(length);
+        } else {
+            if (shared) {
+                char[] newData = new char[value.length];
+                System.arraycopy(value, 0, newData, 0, count);
+                value = newData;
+                shared = false;
             } else {
-                if (shared) {
-                    char[] newData = new char[value.length];
-                    System.arraycopy(value, 0, newData, 0, count);
-                    value = newData;
-                    shared = false;
-                } else {
+                if (count < length) {
                     Arrays.fill(value, count, length, (char) 0);
                 }
             }
@@ -602,8 +586,8 @@ abstract class AbstractStringBuilder {
                 return ""; //$NON-NLS-1$
             }
 
-            shared = true;
-            return new String(start, count - start, value);
+            // Remove String sharing for more performance
+            return new String(value, start, count - start);
         }
         throw new StringIndexOutOfBoundsException(start);
     }
@@ -627,7 +611,7 @@ abstract class AbstractStringBuilder {
                 return ""; //$NON-NLS-1$
             }
 
-            shared = true;
+            // Remove String sharing for more performance
             return new String(value, start, end - start);
         }
         throw new StringIndexOutOfBoundsException();
@@ -643,8 +627,10 @@ abstract class AbstractStringBuilder {
         if (count == 0) {
             return ""; //$NON-NLS-1$
         }
-
-        if (count >= 256 && count <= (value.length >> 1)) {
+        // Optimize String sharing for more performance
+        int wasted = value.length - count;
+        if (wasted >= 256
+                || (wasted >= INITIAL_CAPACITY && wasted >= (count >> 1))) {
             return new String(value, 0, count);
         }
         shared = true;
