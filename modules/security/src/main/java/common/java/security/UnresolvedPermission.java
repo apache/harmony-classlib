@@ -346,8 +346,6 @@ public final class UnresolvedPermission extends Permission
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     * 
      * Outputs {@code type},{@code name},{@code actions}
      * fields via default mechanism; next manually writes certificates in the
      * following format: <br>
@@ -387,8 +385,6 @@ public final class UnresolvedPermission extends Permission
     }
 
     /** 
-     * @com.intel.drl.spec_ref
-     * 
      * Reads the object from stream and checks target type for validity. 
      */
     private void readObject(ObjectInputStream in) throws IOException,

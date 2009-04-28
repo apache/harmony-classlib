@@ -33,14 +33,8 @@ import org.apache.harmony.security.internal.nls.Messages;
 
 final class PermissionsHash extends PermissionCollection {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -8491988220802933440L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private final Hashtable perms = new Hashtable();
 
     /**

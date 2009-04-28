@@ -152,8 +152,6 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
     }
 
     /** 
-     * @com.intel.drl.spec_ref
-     * 
      * Output fields via default mechanism. 
      */
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
@@ -169,8 +167,6 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
     }
 
     /** 
-     * @com.intel.drl.spec_ref
-     * 
      * Reads the object from stream and checks elements grouping for validity. 
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException,

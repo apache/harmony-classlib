@@ -35,9 +35,6 @@ import org.apache.harmony.security.internal.nls.Messages;
  */
 final class AllPermissionCollection extends PermissionCollection {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -4023755556366636806L;
 
     private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(
