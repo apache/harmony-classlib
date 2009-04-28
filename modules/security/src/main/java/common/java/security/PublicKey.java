@@ -15,23 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * Superinterface for all specific public key interfaces
+ * {@code PublicKey} is the common interface for public keys.
  * 
- * 
- * @see PublicKey
  * @see PrivateKey
  */
 public interface PublicKey extends Key {
     /**
-     * @com.intel.drl.spec_ref
+     * The {@code serialVersionUID} to be compatible with JDK1.1.
      */
     public static final long serialVersionUID = 7187392471159151072L;
 }

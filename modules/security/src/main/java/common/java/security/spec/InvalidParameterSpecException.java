@@ -15,37 +15,34 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception that is thrown when an invalid parameter specification is
+ * encountered.
  */
 public class InvalidParameterSpecException extends GeneralSecurityException {
+
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * The serial version identifier.
      */
     private static final long serialVersionUID = -970468769593399342L;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidParameterSpecException} with the specified
+     * message.
+     * 
+     * @param msg
+     *            the detail message for this exception.
      */
     public InvalidParameterSpecException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidParameterSpecException}.
      */
     public InvalidParameterSpecException() {
     }

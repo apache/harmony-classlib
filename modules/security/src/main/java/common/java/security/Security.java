@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.BufferedInputStream;
@@ -44,7 +39,9 @@ import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * For access to security providers and properties.
+ * {@code Security} is the central class in the Java Security API. It manages
+ * the list of security {@code Provider} that have been installed into this
+ * runtime environment.
  */
 public final class Security {
 
@@ -131,14 +128,17 @@ public final class Security {
         secprops.put("security.provider.4", "org.bouncycastle.jce.provider.BouncyCastleProvider");  //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-	/**
-	 * Deprecated method which returns null.
-	 * @param algName 
-	 * @param propName 
-	 * @return <code>null</code>
-	 *
-	 * @deprecated	Use AlgorithmParameters and KeyFactory instead
-	 */
+    /**
+     * Returns value for the specified algorithm with the specified name.
+     *
+     * @param algName
+     *            the name of the algorithm.
+     * @param propName
+     *            the name of the property.
+     * @return value of the property.
+     * @deprecated Use {@link AlgorithmParameters} and {@link KeyFactory}
+     *             instead.
+     */
     @Deprecated
     public static String getAlgorithmProperty(String algName, String propName) {
         if (algName == null || propName == null) {
@@ -159,8 +159,25 @@ public final class Security {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Insert the given {@code Provider} at the specified {@code position}. The
+     * positions define the preference order in which providers are searched for
+     * requested algorithms.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code insertProvider.NAME} (where NAME is
+     * the provider name) to be granted, otherwise a {@code SecurityException}
+     * will be thrown.
+     *
+     * @param provider
+     *            the provider to insert.
+     * @param position
+     *            the position (starting from 1).
+     * @return the actual position or {@code -1} if the given {@code provider}
+     *         was already in the list. The actual position may be different
+     *         from the desired position.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
      */
     public static synchronized int insertProviderAt(Provider provider,
             int position) {
@@ -180,22 +197,46 @@ public final class Security {
         return result;
     }
 
-	/**
-	 * Adds the extra provider to the collection of providers.
-	 * @param provider 
-	 * 
-	 * @return int The priority/position of the provider added.
-	 * @exception SecurityException
-	 *                If there is a SecurityManager installed and it denies
-	 *                adding a new provider.
-	 */
+    /**
+     * Adds the given {@code provider} to the collection of providers at the
+     * next available position.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code insertProvider.NAME} (where NAME is
+     * the provider name) to be granted, otherwise a {@code SecurityException}
+     * will be thrown.
+     *
+     * @param provider
+     *            the provider to be added.
+     * @return the actual position or {@code -1} if the given {@code provider}
+     *         was already in the list.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
+     */
     public static int addProvider(Provider provider) {
         return insertProviderAt(provider, 0);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Removes the {@code Provider} with the specified name form the collection
+     * of providers. If the the {@code Provider} with the specified name is
+     * removed, all provider at a greater position are shifted down one
+     * position.
+     * <p>
+     * Returns silently if {@code name} is {@code null} or no provider with the
+     * specified name is installed.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code removeProvider.NAME} (where NAME is
+     * the provider name) to be granted, otherwise a {@code SecurityException}
+     * will be thrown.
+     *
+     * @param name
+     *            the name of the provider to remove.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
      */
     public static synchronized void removeProvider(String name) {
         // It is not clear from spec.:
@@ -222,34 +263,51 @@ public final class Security {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns an array containing all installed providers. The providers are
+     * ordered according their preference order.
+     *
+     * @return an array containing all installed providers.
      */
     public static synchronized Provider[] getProviders() {
         return Services.getProviders();
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the {@code Provider} with the specified name. Returns {@code
+     * null} if name is {@code null} or no provider with the specified name is
+     * installed.
+     *
+     * @param name
+     *            the name of the requested provider.
+     * @return the provider with the specified name, maybe {@code null}.
      */
     public static synchronized Provider getProvider(String name) {
         return Services.getProvider(name);
     }
 
-	/**
-	 * Returns the collection of providers which meet the user supplied string
-	 * filter.
-	 * 
-	 * @param filter
-	 *            case-insensitive filter
-	 * @return the providers which meet the user supplied string filter
-	 *         <code>filter</code>. A <code>null</code> value signifies
-	 *         that none of the installed providers meets the filter
-	 *         specification
-	 * @exception InvalidParameterException
-	 *                if an unusable filter is supplied
-	 */
+    /**
+     * Returns the array of providers which meet the user supplied string
+     * filter. The specified filter must be supplied in one of two formats:
+     * <nl>
+     * <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+     * <p>
+     * (for example: "MessageDigest.SHA")
+     * <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+     * ATTR_NAME:ATTR_VALUE
+     * <p>
+     * (for example: "Signature.MD2withRSA KeySize:512")
+     * </nl>
+     *
+     * @param filter
+     *            case-insensitive filter.
+     * @return the providers which meet the user supplied string filter {@code
+     *         filter}. A {@code null} value signifies that none of the
+     *         installed providers meets the filter specification.
+     * @throws InvalidParameterException
+     *             if an unusable filter is supplied.
+     * @throws NullPointerException
+     *             if {@code filter} is {@code null}.
+     */
     public static Provider[] getProviders(String filter) {
         if (filter == null) {
             throw new NullPointerException(Messages.getString("security.2A")); //$NON-NLS-1$
@@ -273,8 +331,28 @@ public final class Security {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the array of providers which meet the user supplied set of
+     * filters. The filter must be supplied in one of two formats:
+     * <nl>
+     * <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+     * <p>
+     * for example: "MessageDigest.SHA" The value associated with the key must
+     * be an empty string. <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+     * ATTR_NAME:ATTR_VALUE
+     * <p>
+     * for example: "Signature.MD2withRSA KeySize:512" where "KeySize:512" is
+     * the value of the filter map entry.
+     * </nl>
+     *
+     * @param filter
+     *            case-insensitive filter.
+     * @return the providers which meet the user supplied string filter {@code
+     *         filter}. A {@code null} value signifies that none of the
+     *         installed providers meets the filter specification.
+     * @throws InvalidParameterException
+     *             if an unusable filter is supplied.
+     * @throws NullPointerException
+     *             if {@code filter} is {@code null}.
      */
     public static synchronized Provider[] getProviders(Map<String,String> filter) {
         if (filter == null) {
@@ -340,19 +418,21 @@ public final class Security {
         }
     }
 
-	/**
-	 * Answers the value of the security property named by the argument.
-	 * 
-	 * 
-	 * @param key
-	 *            String The property name
-	 * @return String The property value
-	 * 
-	 * @exception SecurityException
-	 *                If there is a SecurityManager installed and it will not
-	 *                allow the property to be fetched from the current access
-	 *                control context.
-	 */
+    /**
+     * Returns the value of the security property named by the argument.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code getProperty.KEY} (where KEY is the
+     * specified {@code key}) to be granted, otherwise a {@code
+     * SecurityException} will be thrown.
+     *
+     * @param key
+     *            the name of the requested security property.
+     * @return the value of the security property.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
+     */
     public static String getProperty(String key) {
         if (key == null) {
             throw new NullPointerException(Messages.getString("security.2C")); //$NON-NLS-1$
@@ -368,19 +448,22 @@ public final class Security {
         return property;
     }
 
-	/**
-	 * Sets a given security property.
-	 * 
-	 * 
-	 * @param key
-	 *            String The property name.
-	 * @param datnum
-	 *            String The property value.
-	 * @exception SecurityException
-	 *                If there is a SecurityManager installed and it will not
-	 *                allow the property to be set from the current access
-	 *                control context.
-	 */
+    /**
+     * Sets the value of the specified security property.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code setProperty.KEY} (where KEY is the
+     * specified {@code key}) to be granted, otherwise a {@code
+     * SecurityException} will be thrown.
+     *
+     * @param key
+     *            the name of the security property.
+     * @param datnum
+     *            the value of the security property.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
+     */
     public static void setProperty(String key, String datnum) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -390,8 +473,16 @@ public final class Security {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns a {@code Set} of all registered algorithms for the specified
+     * cryptographic service. {@code "Signature"}, {@code "Cipher"} and {@code
+     * "KeyStore"} are examples for such kind of services.
+     *
+     * @param serviceName
+     *            the case-insensitive name of the service.
+     * @return a {@code Set} of all registered algorithms for the specified
+     *         cryptographic service, or an empty {@code Set} if {@code
+     *         serviceName} is {@code null} or if no registered provider
+     *         provides the requested service.
      */
     public static Set<String> getAlgorithms(String serviceName) {
         Set<String> result = new HashSet<String>();
@@ -409,7 +500,7 @@ public final class Security {
 
     /**
      * 
-     * Update sequence numbers of all providers
+     * Update sequence numbers of all providers.
      *  
      */
     private static void renumProviders() {

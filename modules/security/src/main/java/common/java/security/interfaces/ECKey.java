@@ -15,23 +15,19 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.interfaces;
 
 import java.security.spec.ECParameterSpec;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The base interface for Elliptic Curve (EC) public or private keys.
  */
 public interface ECKey {
+
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the EC key parameters.
+     * 
+     * @return the EC key parameters.
      */
     public ECParameterSpec getParams();
 }

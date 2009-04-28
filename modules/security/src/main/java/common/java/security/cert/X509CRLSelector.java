@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
- */
 
 package java.security.cert;
 
@@ -36,7 +32,11 @@ import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
 
 /**
- * @com.intel.drl.spec_ref
+ * A CRL selector ({@code CRLSelector} for selecting {@code
+ * X509CRL}s that match the specified criteria.
+ * <p>
+ * When constructed, all criteria are set to default values that will match any
+ * {@code X509CRL}.
  */
 public class X509CRLSelector implements CRLSelector {
 
@@ -56,12 +56,19 @@ public class X509CRLSelector implements CRLSelector {
     private X509Certificate certificateChecking;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code X509CertSelector}.
      */
     public X509CRLSelector() { }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets the criterion for the issuer distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the specified distinguished
+     * names.
+     *
+     * @param issuers
+     *            the list of issuer distinguished names to match, or {@code
+     *            null} if any issuer distinguished name will do.
      */
     public void setIssuers(Collection<X500Principal> issuers) {
         if (issuers == null) {
@@ -77,7 +84,23 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <b>Do not use:</b> use {@link #setIssuers(Collection)} or one of
+     * {@link #addIssuerName} instead. Sets the criterion for the issuer
+     * distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the specified distinguished
+     * names.
+     * <p>
+     * The specified parameter {@code names} is a collection with an entry for
+     * each name to be included in the criterion. The name is specified as a
+     * {@code String} or a byte array specifying the name (in RFC 2253 or ASN.1
+     * DER encoded form)
+     *
+     * @param names
+     *            the list of issuer distinguished names to match, or {@code
+     *            null} if any issuer distinguished name will do.
+     * @throws IOException
+     *             if parsing fails.
      */
     public void setIssuerNames(Collection<?> names) throws IOException {
         if (names == null) {
@@ -106,7 +129,13 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Adds an issuer to the criterion for the issuer distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the specified distinguished
+     * names.
+     *
+     * @param issuer
+     *            the issuer to add to the criterion
      */
     public void addIssuer(X500Principal issuer) {
         if (issuer == null) {
@@ -131,7 +160,17 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * <b>Do not use:</b>, use {@link #addIssuer(X500Principal)} or
+     * {@link #addIssuerName(byte[])} instead. It can fail to match some CRLs
+     * because of a loss of encoding information in a RFC 2253 string.
+     * <p>
+     * Adds an issuer to the criterion for the issuer distinguished names. The
+     * CRK issuer must match at least one of the specified distinguished names.
+     *
+     * @param iss_name
+     *            the RFC 2253 encoded name.
+     * @throws IOException
+     *             if parsing fails.
      */
     public void addIssuerName(String iss_name) throws IOException {
         if (issuerNames == null) {
@@ -149,7 +188,15 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Adds an issuer to the criterion for the issuer distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the specified distinguished
+     * names.
+     *
+     * @param iss_name
+     *            the issuer to add to the criterion in ASN.1 DER encoded form.
+     * @throws IOException
+     *             if parsing fails.
      */
     public void addIssuerName(byte[] iss_name) throws IOException {
         if (iss_name == null) {
@@ -165,21 +212,42 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets the criterion for the minimum CRL number.
+     * <p>
+     * The CRL must have a number extension with a value greater than or equal
+     * to the specified parameter.
+     *
+     * @param minCRL
+     *            the minimum CRL number or null to not check the minimum CRL
+     *            number
      */
     public void setMinCRLNumber(BigInteger minCRL) {
         this.minCRL = minCRL;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets the criterion for the maximum CRL number.
+     * <p>
+     * The CRL must have a number extension with a value less than or equal to
+     * the specified parameter.
+     *
+     * @param maxCRL
+     *            the maximum CRL number or null to not check the maximum CRL
+     *            number.
      */
     public void setMaxCRLNumber(BigInteger maxCRL) {
         this.maxCRL = maxCRL;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets the criterion for the CRL update period.
+     * <p>
+     * The CRL's {@code thisUpdate} value must be equal or before the specified
+     * date and the {@code nextUpdate} value must be after the specified date.
+     *
+     * @param dateAndTime
+     *            the date to search for valid CRL's or {@code null} to not
+     *            check the date.
      */
     public void setDateAndTime(Date dateAndTime) {
         if (dateAndTime == null) {
@@ -190,14 +258,23 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Sets a certificate hint to find CRLs. It's not a criterion but may help
+     * finding relevant CRLs.
+     *
+     * @param cert
+     *            the certificate hint or {@code null}.
      */
     public void setCertificateChecking(X509Certificate cert) {
         this.certificateChecking = cert;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the criterion for the issuer distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the distinguished names.
+     *
+     * @return the unmodifiable list of issuer distinguished names to match, or
+     *         {@code null} if any issuer distinguished name will do.
      */
     public Collection<X500Principal> getIssuers() {
         if (issuerNames == null) {
@@ -215,7 +292,12 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the criterion for the issuer distinguished names.
+     * <p>
+     * The CRL issuer must match at least one of the distinguished names.
+     *
+     * @return a copy of the list of issuer distinguished names to match, or
+     *         {@code null} if any issuer distinguished name will do.
      */
     public Collection<Object> getIssuerNames() {
         if (issuerNames == null) {
@@ -225,21 +307,39 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the criterion for the minimum CRL number.
+     * <p>
+     * The CRL must have a number extension with a value greater than or equal
+     * to the returned value.
+     *
+     * @return the minimum CRL number or {@code null} if the minimum CRL number
+     *         is not to be checked.
      */
     public BigInteger getMinCRL() {
         return minCRL;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the criterion for the maximum CRL number.
+     * <p>
+     * The CRL must have a number extension with a value less than or equal to
+     * the returned value.
+     *
+     * @return the maximum CRL number or null if the maximum CRL number is not
+     *         checked.
      */
     public BigInteger getMaxCRL() {
         return maxCRL;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the criterion for the CRL update period.
+     * <p>
+     * The CRL's {@code thisUpdate} value must be equal or before the returned
+     * date and the {@code nextUpdate} value must be after the returned date.
+     *
+     * @return the date to search for valid CRL's or {@code null} if the date is
+     *         not checked.
      */
     public Date getDateAndTime() {
         if (dateAndTime == -1) {
@@ -249,14 +349,19 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the certificate hint to find CRLs. It's not a criterion but may
+     * help finding relevant CRLs.
+     *
+     * @return the certificate hint or {@code null} if none set.
      */
     public X509Certificate getCertificateChecking() {
         return certificateChecking;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a string representation of this {@code X509CRLSelector} instance.
+     *
+     * @return a string representation of this {@code X509CRLSelector} instance.
      */
     public String toString() {
         StringBuffer result = new StringBuffer();
@@ -287,7 +392,13 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns whether the specified CRL matches all the criteria collected in
+     * this instance.
+     *
+     * @param crl
+     *            the CRL to check.
+     * @return {@code true} if the CRL matches all the criteria, otherwise
+     *         {@code false}.
      */
     public boolean match(CRL crl) {
         if (!(crl instanceof X509CRL)) {
@@ -334,7 +445,9 @@ public class X509CRLSelector implements CRLSelector {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Clones this {@code X509CRL} instance.
+     *
+     * @return the cloned instance.
      */
     public Object clone() {
         X509CRLSelector result;

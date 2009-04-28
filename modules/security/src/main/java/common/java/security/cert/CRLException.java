@@ -15,52 +15,50 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception that is thrown if errors occur during handling of {@code CRL}s.
  */
 public class CRLException extends GeneralSecurityException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -6694728944094197147L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Creates a new {@code CRLException} with the specified message.
+     * 
+     * @param msg
+     *            the detail message for this exception.
+     */
     public CRLException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
+    /**
+     * Creates a new {@code CRLException}.
+     */
     public CRLException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CRLException} with the specified message and cause.
+     * 
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the cause for this exception.
      */
     public CRLException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CRLException} with the specified cause.
+     * 
+     * @param cause
+     *            the cause for this exception.
      */
     public CRLException(Throwable cause) {
         super(cause);

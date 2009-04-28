@@ -15,29 +15,25 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.interfaces;
 
 import java.math.BigInteger;
 import java.security.PublicKey;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The interface for a PKCS#1 RSA public key.
  */
 public interface RSAPublicKey extends PublicKey, RSAKey {
+
     /**
-     * @com.intel.drl.spec_ref
+     * The serial version identifier.
      */
     public static final long serialVersionUID = -8727434096241101194L;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the public exponent {@code e}.
+     * 
+     * @return the public exponent {@code e}.
      */
     public BigInteger getPublicExponent();
 

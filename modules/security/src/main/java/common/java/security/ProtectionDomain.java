@@ -15,19 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This class represents a domain in which classes from the same source (URL)
- * and signed by the same keys are stored. All the classes inside are given the
- * same permissions.
+ * {@code ProtectionDomain} represents all permissions that are granted to a
+ * specific code source. The {@link ClassLoader} associates each class with the
+ * corresponding {@code ProtectionDomain}, depending on the location and the
+ * certificates (encapsulates in {@link CodeSource}) it loads the code from.
  * <p>
- * Note: a class can only belong to one and only one protection domain.
+ * A class belongs to exactly one protection domain and the protection domain
+ * can not be changed during the lifetime of the class.
  */
 public class ProtectionDomain {
 
@@ -47,13 +44,29 @@ public class ProtectionDomain {
     // permissions, true otherwise. 
     private boolean dynamicPerms;
 
-	/**
-	 * Constructs a protection domain from the given code source and the
-	 * permissions that that should be granted to the classes which are
-	 * encapsulated in it.
-	 * @param cs 
-	 * @param permissions 
-	 */
+    /**
+     * Constructs a new instance of {@code ProtectionDomain} with the specified
+     * code source and the specified static permissions.
+     * <p>
+     * If {@code permissions} is not {@code null}, the {@code permissions}
+     * collection is made immutable by calling
+     * {@link PermissionCollection#setReadOnly()} and it is considered as
+     * granted statically to this {@code ProtectionDomain}.
+     * <p>
+     * The policy will not be consulted by access checks against this {@code
+     * ProtectionDomain}.
+     * <p>
+     * If {@code permissions} is {@code null}, the method {@link
+     * ProtectionDomain#implies(Permission)} always returns {@code false}.
+     *
+     * @param cs
+     *            the code source associated with this domain, maybe {@code
+     *            null}.
+     * @param permissions
+     *            the {@code PermissionCollection} containing all permissions to
+     *            be statically granted to this {@code ProtectionDomain}, maybe
+     *            {@code null}.
+     */
     public ProtectionDomain(CodeSource cs, PermissionCollection permissions) {
         this.codeSource = cs;
         if (permissions != null) {
@@ -65,23 +78,33 @@ public class ProtectionDomain {
         //dynamicPerms = false;
     }
 
-	/**
-	 * Constructs a protection domain from the given code source and the
-	 * permissions that that should be granted to the classes which are
-	 * encapsulated in it. 
-	 * 
-	 * This constructor also allows the association of a ClassLoader and group
-	 * of Principals.
-	 * 
-	 * @param cs
-	 *            the CodeSource associated with this domain
-	 * @param permissions
-	 *            the Permissions associated with this domain
-	 * @param cl
-	 *            the ClassLoader associated with this domain
-	 * @param principals
-	 *            the Principals associated with this domain
-	 */
+    /**
+     * Constructs a new instance of {@code ProtectionDomain} with the specified
+     * code source, the permissions, the class loader and the principals.
+     * <p>
+     * If {@code permissions} is {@code null}, and access checks are performed
+     * against this protection domain, the permissions defined by the policy are
+     * consulted. If {@code permissions} is not {@code null}, the {@code
+     * permissions} collection is made immutable by calling
+     * {@link PermissionCollection#setReadOnly()}. If access checks are
+     * performed, the policy and the provided permission collection are checked.
+     * <p>
+     * External modifications of the provided {@code principals} array has no
+     * impact on this {@code ProtectionDomain}.
+     *
+     * @param cs
+     *            the code source associated with this domain, maybe {@code
+     *            null}.
+     * @param permissions
+     *            the permissions associated with this domain, maybe {@code
+     *            null}.
+     * @param cl
+     *            the class loader associated with this domain, maybe {@code
+     *            null}.
+     * @param principals
+     *            the principals associated with this domain, maybe {@code
+     *            null}.
+     */
     public ProtectionDomain(CodeSource cs, PermissionCollection permissions,
             ClassLoader cl, Principal[] principals) {
         this.codeSource = cs;
@@ -98,41 +121,45 @@ public class ProtectionDomain {
         dynamicPerms = true;
     }
 
-	/**
-	 * Returns the ClassLoader associated with the ProtectionDomain
-	 * 
-	 * @return ClassLoader associated ClassLoader
-	 */
+    /**
+     * Returns the {@code ClassLoader} associated with this {@code
+     * ProtectionDomain}.
+     *
+     * @return the {@code ClassLoader} associated with this {@code
+     *         ProtectionDomain}, maybe {@code null}.
+     */
     public final ClassLoader getClassLoader() {
         return classLoader;
     }
 
-	/**
-	 * Answers the code source of this domain.
-	 * 
-	 * @return java.security.CodeSource the code source of this domain
-	 */
+    /**
+     * Returns the {@code CodeSource} of this {@code ProtectionDomain}.
+     *
+     * @return the {@code CodeSource} of this {@code ProtectionDomain}, maybe
+     *         {@code null}.
+     */
     public final CodeSource getCodeSource() {
         return codeSource;
     }
 
-	/**
-	 * Answers the permissions that should be granted to the classes which are
-	 * encapsulated in this domain.
-	 * 
-	 * @return java.security.PermissionCollection collection of permissions
-	 *         associated with this domain.
-	 */
+    /**
+     * Returns the static permissions that are granted to this {@code
+     * ProtectionDomain}.
+     *
+     * @return the static permissions that are granted to this {@code
+     *         ProtectionDomain}, maybe {@code null}.
+     */
     public final PermissionCollection getPermissions() {
         return permissions;
     }
 
-	/**
-	 * Returns the Principals associated with this ProtectionDomain. A change to
-	 * the returned array will not impact the ProtectionDomain.
-	 * 
-	 * @return Principals[] Principals associated with the ProtectionDomain.
-	 */
+    /**
+     * Returns the principals associated with this {@code ProtectionDomain}.
+     * Modifications of the returned {@code Principal} array has no impact on
+     * this {@code ProtectionDomain}.
+     *
+     * @return the principals associated with this {@code ProtectionDomain}.
+     */
     public final Principal[] getPrincipals() {
         if( principals == null ) {
             return new Principal[0];
@@ -142,16 +169,26 @@ public class ProtectionDomain {
         return tmp;
     }
 
-	/**
-	 * Determines whether the permission collection of this domain implies the
-	 * argument permission.
-	 * 
-	 * 
-	 * @return boolean true if this permission collection implies the argument
-	 *         and false otherwise.
-	 * @param permission
-	 *            java.security.Permission the permission to check.
-	 */
+    /**
+     * Indicates whether the specified permission is implied by this {@code
+     * ProtectionDomain}.
+     * <p>
+     * If this {@code ProtectionDomain} was constructed with
+     * {@link #ProtectionDomain(CodeSource, PermissionCollection)}, the
+     * specified permission is only checked against the permission collection
+     * provided in the constructor. If {@code null} was provided, {@code false}
+     * is returned.
+     * <p>
+     * If this {@code ProtectionDomain} was constructed with
+     * {@link #ProtectionDomain(CodeSource, PermissionCollection, ClassLoader, Principal[])}
+     * , the specified permission is checked against the policy and the
+     * permission collection provided in the constructor.
+     *
+     * @param permission
+     *            the permission to check against the domain.
+     * @return {@code true} if the specified {@code permission} is implied by
+     *         this {@code ProtectionDomain}, {@code false} otherwise.
+     */
     public boolean implies(Permission permission) {
         // First, test with the Policy, as the default Policy.implies() 
         // checks for both dynamic and static collections of the 
@@ -168,12 +205,12 @@ public class ProtectionDomain {
         return permissions == null ? false : permissions.implies(permission);
     }
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * @return String a printable representation for the receiver.
-	 */
+    /**
+     * Returns a string containing a concise, human-readable description of the
+     * this {@code ProtectionDomain}.
+     *
+     * @return a printable representation for this {@code ProtectionDomain}.
+     */
     public String toString() {
         //FIXME: 1.5 use StreamBuilder here
         StringBuffer buf = new StringBuffer(200);

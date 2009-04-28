@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.Serializable;
@@ -28,81 +23,77 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Abstract superclass of classes which are collections of Permission objects.
- * 
+ * {@code PermissionCollection} is the common base class for all collections
+ * that provide a convenient method for determining whether or not a given
+ * permission is implied by any of the permissions present in this collection.
+ * <p>
+ * A {@code PermissionCollection} is typically created by using the
+ * {@link Permission#newPermissionCollection()} factory method. If the mentioned
+ * method returns {@code null}, then a {@code PermissionCollection} of any type
+ * can be used. If a collection is returned, it must be used for holding several
+ * permissions of the particular type.
+ * <p>
+ * Subclasses must be implemented thread save.
  */
 public abstract class PermissionCollection implements Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -6727011328946861783L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private boolean readOnly; // = false;
 
     /**
-     * Adds the argument to the collection.
-     * 
+     * Adds the specified {@code Permission} to this collection.
      * 
      * @param permission
-     *            java.security.Permission the permission to add to the
-     *            collection.
-     * @exception IllegalStateException
-     *                if the collection is read only.
+     *            the {@code Permission} to add.
+     * @throws IllegalStateException
+     *             if the collection is read only.
      */
     public abstract void add(Permission permission);
 
     /**
-     * Answers an enumeration of the permissions in the receiver.
+     * Returns an enumeration over all {@link Permission}s encapsulated by this
+     * {@code PermissionCollection}.
      * 
-     * 
-     * @return Enumeration the permissions in the receiver.
+     * @return an enumeration over all {@link Permission}s.
      */
     public abstract Enumeration<Permission> elements();
 
     /**
-     * Indicates whether the argument permission is implied by the permissions
-     * contained in the receiver.
+     * Indicates whether the specified permission is implied by this {@code
+     * PermissionCollection}.
      * 
-     * 
-     * @return boolean <code>true</code> if the argument permission is implied
-     *         by the permissions in the receiver, and <code>false</code> if
-     *         it is not.
      * @param permission
-     *            java.security.Permission the permission to check
+     *            the permission to check.
+     * @return {@code true} if the given permission is implied by the
+     *         permissions in this collection, {@code false} otherwise.
      */
     public abstract boolean implies(Permission permission);
 
     /**
-     * Indicates whether new permissions can be added to the receiver.
+     * Indicates whether new permissions can be added to this {@code
+     * PermissionCollection}.
      * 
-     * 
-     * @return boolean <code>true</code> if the receiver is read only
-     *         <code>false</code> if new elements can still be added to the
-     *         receiver.
+     * @return {@code true} if the receiver is read only, {@code false} if new
+     *         elements can still be added to this {@code PermissionCollection}.
      */
     public boolean isReadOnly() {
         return readOnly;
     }
 
     /**
-     * Marks the receiver as read only, so that no new permissions can be added
-     * to it.
-     * 
+     * Marks this {@code PermissionCollection} as read only, so that no new
+     * permissions can be added to it.
      */
     public void setReadOnly() {
         readOnly = true;
     }
 
     /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
+     * Returns a string containing a concise, human-readable description of this
+     * {@code PermissionCollection}.
      * 
-     * 
-     * @return a printable representation for the receiver.
+     * @return a printable representation for this {@code PermissionCollection}.
      */
     public String toString() {
         List elist = new ArrayList(100);

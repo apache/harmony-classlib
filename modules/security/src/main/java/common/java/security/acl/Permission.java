@@ -15,28 +15,31 @@
  *  limitations under the License.
  */
 
-/**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
-
 package java.security.acl;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The interface that represents a permission.
+ * <p>
+ * It can be granted or denied to a {@link java.security.Principal Principal} 
+ * using an {@link Acl}. 
  */
-
 public interface Permission {
 
     
     /**
-     * @com.intel.drl.spec_ref
+     * Checks whether the specified object equals this permission.
+     * 
+     * @param another
+     *            the permission object to compare to this permission.
+     * @return true if the specified permission object is equal to this, false
+     *         if not.
      */
     boolean equals(Object another);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the string representation of this permission.
+     * 
+     * @return the string representation of this permission.
      */
     String toString();
 }

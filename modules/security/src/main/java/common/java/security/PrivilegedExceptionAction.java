@@ -15,19 +15,26 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * {@code PrivilegedAction} represents an action, that can be executed
+ * privileged regarding access control. Instances of {@code PrivilegedAction}
+ * can be executed invoking {@code AccessController.doPrivileged()}.
+ *
+ * @see AccessController
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction)
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction,
+ *      AccessControlContext)
+ * @see PrivilegedAction
  */
 public interface PrivilegedExceptionAction<T> {
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the result of running the action.
+     *
+     * @return the result of running the action
+     * @throws Exception
+     *             if an exception occurred.
      */
     T run() throws Exception;
 }

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.IOException;
@@ -27,55 +22,102 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
 /**
- * @com.intel.drl.spec_ref
+ * {@code AlgorithmParametersSpi} is the Service Provider Interface (SPI)
+ * definition for {@code AlgorithmParameters}.
  * 
+ * @see AlgorithmParameters
  */
-
 public abstract class AlgorithmParametersSpi {
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code AlgorithmParametersSpi} with the specified
+     * {@code AlgorithmParameterSpec}.
+     *
+     * @param paramSpec
+     *            the parameter specification.
+     * @throws InvalidParameterSpecException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized or the given {@code paramSpec} is not appropriate
+     *             for initializing this {@code AlgorithmParametersSpi}.
      */
     protected abstract void engineInit(AlgorithmParameterSpec paramSpec)
             throws InvalidParameterSpecException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code AlgorithmParametersSpi} with the specified
+     * {@code byte[]} using the default decoding format for parameters. The
+     * default encoding format is ASN.1.
+     *
+     * @param params
+     *            the encoded parameters.
+     * @throws IOException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized, or the parameter could not be encoded.
      */
     protected abstract void engineInit(byte[] params) throws IOException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Initializes this {@code AlgorithmParametersSpi} with the specified
+     * {@code byte[]} using the specified decoding format.
+     *
+     * @param params
+     *            the encoded parameters.
+     * @param format
+     *            the name of the decoding format.
+     * @throws IOException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized, or the parameter could not be encoded.
      */
     protected abstract void engineInit(byte[] params, String format)
             throws IOException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the {@code AlgorithmParameterSpec} for this {@code
+     * AlgorithmParametersSpi}.
+     *
+     * @param paramSpec
+     *            the type of the parameter specification in which this
+     *            parameters should be converted.
+     * @return the {@code AlgorithmParameterSpec} for this {@code
+     *         AlgorithmParametersSpi}.
+     * @throws InvalidParameterSpecException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized, or if this parameters could not be converted to
+     *             the specified class.
      */
     protected abstract <T extends AlgorithmParameterSpec> T engineGetParameterSpec(
             Class<T> paramSpec) throws InvalidParameterSpecException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the parameters in their default encoding format. The default
+     * encoding format is ASN.1.
+     *
+     * @return the encoded parameters.
+     * @throws IOException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized, or if this parameters could not be encoded.
      */
     protected abstract byte[] engineGetEncoded() throws IOException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the parameters in the specified encoding format.
+     *
+     * @param format
+     *            the name of the encoding format.
+     * @return the encoded parameters.
+     * @throws IOException
+     *             if this {@code AlgorithmParametersSpi} has already been
+     *             initialized, or if this parameters could not be encoded.
      */
     protected abstract byte[] engineGetEncoded(String format)
             throws IOException;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns a string containing a concise, human-readable description of this
+     * {@code AlgorithmParametersSpi}.
+     *
+     * @return a printable representation for this {@code
+     *         AlgorithmParametersSpi}.
      */
     protected abstract String engineToString();
 

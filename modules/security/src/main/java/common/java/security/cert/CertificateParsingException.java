@@ -15,49 +15,51 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 /**
- * This class indicates that a given certificate could not be parsed.
+ * The exception that is thrown when a {@code Certificate} can not be parsed.
  */
 public class CertificateParsingException extends CertificateException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -7989222416793322029L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Creates a new {@code CertificateParsingException} with the specified
+     * message.
+     *
+     * @param msg
+     *            the detail message for the exception.
+     */
     public CertificateParsingException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
+    /**
+     * Creates a new {@code CertificateParsingException}.
+     */
     public CertificateParsingException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CertificateParsingException} with the specified
+     * message and cause.
+     *
+     * @param message
+     *            the detail message for the exception.
+     * @param cause
+     *            the exception's source.
      */
     public CertificateParsingException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CertificateParsingException} with the specified
+     * cause.
+     *
+     * @param cause
+     *            the exception's source.
      */
     public CertificateParsingException(Throwable cause) {
         super(cause);

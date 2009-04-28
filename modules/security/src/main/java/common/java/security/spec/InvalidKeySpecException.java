@@ -15,51 +15,55 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.security.GeneralSecurityException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception that is thrown when an invalid key specification is
+ * encountered.
  */
 public class InvalidKeySpecException extends GeneralSecurityException {
+
     /**
-     * @com.intel.drl.spec_ref
+     * The serial version identifier.
      */
     private static final long serialVersionUID = 3546139293998810778L;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidKeySpecException} with the specified message.
+     * 
+     * @param msg
+     *            the detail message of this exception.
      */
     public InvalidKeySpecException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidKeySpecException}.
      */
     public InvalidKeySpecException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidKeySpecException} with the specified message
+     * and cause.
+     * 
+     * @param message
+     *            the detail message of this exception.
+     * @param cause
+     *            the cause of this exception.
      */
     public InvalidKeySpecException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Creates a new {@code InvalidKeySpecException} with the specified cause.
+     * 
+     * @param cause
+     *            the cause of this exception.
      */
     public InvalidKeySpecException(Throwable cause) {
         super(cause);

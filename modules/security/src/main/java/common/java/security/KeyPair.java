@@ -15,29 +15,31 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.Serializable;
 
 /**
- * @com.intel.drl.spec_ref
+ * {@code KeyPair} is a container for a public key and a private key. Since the
+ * private key can be accessed, instances must be treated like a private key.
  * 
+ * @see PrivateKey
+ * @see PublicKey
  */
 public final class KeyPair implements Serializable {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = -7565189502268009837L;
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyPair} with a public key and the
+     * corresponding private key.
+     *
+     * @param publicKey
+     *            the public key.
+     * @param privateKey
+     *            the private key.
      */
     public KeyPair(PublicKey publicKey, PrivateKey privateKey) {
         this.privateKey = privateKey;
@@ -45,14 +47,18 @@ public final class KeyPair implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the private key.
+     *
+     * @return the private key.
      */
     public PrivateKey getPrivate() {
         return privateKey;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the public key.
+     *
+     * @return the public key.
      */
     public PublicKey getPublic() {
         return publicKey;

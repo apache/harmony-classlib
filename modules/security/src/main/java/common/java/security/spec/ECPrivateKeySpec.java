@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.math.BigInteger;
@@ -27,8 +22,7 @@ import java.math.BigInteger;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The parameters specifying an Elliptic Curve (EC) private key. 
  */
 public class ECPrivateKeySpec implements KeySpec {
     // Private value associated with this key
@@ -37,7 +31,13 @@ public class ECPrivateKeySpec implements KeySpec {
     private final ECParameterSpec params;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code ECPrivateKeySpec} with the specified private value
+     * {@code S} and parameter specification.
+     * 
+     * @param s
+     *            the private value {@code S}.
+     * @param params
+     *            the domain parameter specification.
      */
     public ECPrivateKeySpec(BigInteger s, ECParameterSpec params) {
         this.s = s;
@@ -52,14 +52,18 @@ public class ECPrivateKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the domain parameter specification.
+     * 
+     * @return the domain parameter specification.
      */
     public ECParameterSpec getParams() {
         return params;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the private value {@code S}.
+     * 
+     * @return the private value {@code S}.
      */
     public BigInteger getS() {
         return s;

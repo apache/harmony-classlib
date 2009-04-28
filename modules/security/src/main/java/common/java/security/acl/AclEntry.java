@@ -15,70 +15,103 @@
  *  limitations under the License.
  */
 
-/**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
-
 package java.security.acl;
 
 import java.security.Principal;
 import java.util.Enumeration;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The <i>Access Control List Entry</i> interface definition.
+ * <p>
+ * An {@code AclEntry} is a list of the {@link Permission}s that are 
+ *  granted (<i>positive</i>) or denied (<i>negative</i>) to a {@link Principal}.
  */
-
 public interface AclEntry extends Cloneable {
 
     /**
-     * @com.intel.drl.spec_ref
+     * Set the principal for this ACL entry.
+     * <p>
+     * The principal for an ACL entry can only be set once.
+     *
+     * @param user
+     *            the principal for this ACL entry.
+     * @return {@code true} on success, {@code false} if there is a principal already set for
+     *         this entry.
      */
     boolean setPrincipal(Principal user);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the principal of this ACL entry.
+     * 
+     * @return the principal of this ACL entry, or null if none is set.
      */
     Principal getPrincipal();
     
     /**
-     * @com.intel.drl.spec_ref
+     * Sets this ACL entry to be <i>negative</i>.
+     * <p>
+     * The permissions in this ACL entry will be denied to the principal
+     * associated with this entry.
+     * <p>
+     * Note: An ACL entry is <i>positive</i> by default and can only become
+     * <i>negative</i> by calling this method.
      */
     void setNegativePermissions();
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns whether this ACL entry is <i>negative</i>.
+     * 
+     * @return {@code true} if this ACL entry is negative, {@code false} if it's positive.
      */
     boolean isNegative();
     
     /**
-     * @com.intel.drl.spec_ref
+     * Adds the specified permission to this ACL entry.
+     * 
+     * @param permission
+     *            the permission to be added.
+     * @return {@code true} if the specified permission is added, {@code false} if the
+     *         permission was already in this entry.
      */
     boolean addPermission(Permission permission);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Removes the specified permission from this ACL entry.
+     * 
+     * @param permission
+     *            the permission to be removed.
+     * @return {@code true} if the permission is removed, {@code false} if the permission was
+     *         not in this entry.
      */
     boolean removePermission(Permission permission);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Checks whether the specified permission is in this ACL entry.
+     * 
+     * @param permission
+     *            the permission to check.
+     * @return {@code true} if the permission is in this entry, otherwise {@code false}.
      */
     boolean checkPermission(Permission permission);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the list of permissions of this ACL entry.
+     * 
+     * @return the list of permissions of this ACL entry,
      */
     Enumeration<Permission> permissions();
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the string representation of this ACL entry.
+     * 
+     * @return the string representation of this ACL entry.
      */
     String toString();
     
     /**
-     * @com.intel.drl.spec_ref
+     * Clones this ACL entry instance.
+     * 
+     * @return a copy of this entry.
      */
     Object clone();
     

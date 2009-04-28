@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.ByteArrayInputStream;
@@ -44,6 +39,14 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.internal.nls.Messages;
 
+/**
+ * {@code CodeSource} encapsulates the location from where code is loaded and
+ * the certificates that were used to verify that code. This information is used
+ * by {@code SecureClassLoader} to define protection domains for loaded classes.
+ *
+ * @see SecureClassLoader
+ * @see ProtectionDomain
+ */
 public class CodeSource implements Serializable {
 
     private static final long serialVersionUID = 4977541819976013951L;
@@ -64,15 +67,17 @@ public class CodeSource implements Serializable {
     // Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.  
     private transient CertificateFactory factory;
 
-	/**
-	 * Constructs a new instance of this class with its url and certificates
-	 * fields filled in from the arguments.
-	 * 
-	 * @param location
-	 *            URL the URL.
-	 * @param certs
-	 *            Certificate[] the Certificates.
-	 */
+    /**
+     * Constructs a new instance of {@code CodeSource} with the specified
+     * {@code URL} and the {@code Certificate}s.
+     *
+     * @param location
+     *            the {@code URL} representing the location from where code is
+     *            loaded, maybe {@code null}.
+     * @param certs
+     *            the {@code Certificate} used to verify the code, loaded from
+     *            the specified {@code location}, maybe {@code null}.
+     */
     public CodeSource(URL location, Certificate[] certs) {
         this.location = location;
         if (certs != null) {
@@ -81,6 +86,17 @@ public class CodeSource implements Serializable {
         }
     }
 
+    /**
+     * Constructs a new instance of {@code CodeSource} with the specified
+     * {@code URL} and the {@code CodeSigner}s.
+     *
+     * @param location
+     *            the {@code URL} representing the location from where code is
+     *            loaded, maybe {@code null}.
+     * @param signers
+     *            the {@code CodeSigner}s of the code, loaded from the specified
+     *            {@code location}. Maybe {@code null}.
+     */
     public CodeSource(URL location, CodeSigner[] signers) {
         this.location = location;
         if (signers != null) {
@@ -89,19 +105,19 @@ public class CodeSource implements Serializable {
         }
     }
 
-	/**
-	 * Compares the argument to the receiver, and answers true if they represent
-	 * the <em>same</em> object using a class specific comparison. In this
-	 * case, the receiver and the object must have the same URL and the same
-	 * collection of certificates.
-	 * 
-	 * 
-	 * @param obj
-	 *            the object to compare with this object
-	 * @return <code>true</code> if the object is the same as this object
-	 *         <code>false</code> if it is different from this object
-	 * @see #hashCode
-	 */
+    /**
+     * Compares the specified object with this {@code CodeSource} for equality.
+     * Returns {@code true} if the specified object is also an instance of
+     * {@code CodeSource}, points to the same {@code URL} location and the two
+     * code sources encapsulate the same {@code Certificate}s. The order of the
+     * {@code Certificate}s is ignored by this method.
+     *
+     * @param obj
+     *            object to be compared for equality with this {@code
+     *            CodeSource}.
+     * @return {@code true} if the specified object is equal to this {@code
+     *         CodeSource}, otherwise {@code false}.
+     */
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -137,12 +153,17 @@ public class CodeSource implements Serializable {
         return true;
     }
 
-	/**
-	 * Answers the certificates held onto by the receiver.
-	 * 
-	 * 
-	 * @return Certificate[] the receiver's certificates
-	 */
+    /**
+     * Returns the certificates of this {@code CodeSource}. If the
+     * {@link #CodeSource(URL, CodeSigner[])} constructor was used to create
+     * this instance, the certificates are obtained from the supplied signers.
+     * <p>
+     * External modifications of the returned {@code Certificate[]} has no
+     * impact on this {@code CodeSource}.
+     *
+     * @return the certificates of this {@code CodeSource} or {@code null} if
+     *         there is none.
+     */
     public final Certificate[] getCertificates() {
         getCertificatesNoClone();
         if (certs == null) {
@@ -176,6 +197,15 @@ public class CodeSource implements Serializable {
         return certs;
     }
 
+    /**
+     * Returns the {@code CodeSigner}s of this {@code CodeSource}. If the
+     * {@link #CodeSource(URL, Certificate[])} constructor was used to create
+     * this instance, the signers are obtained from the supplied certificates.
+     * Only X.509 certificates are analyzed.
+     *
+     * @return the signers of this {@code CodeSource}, or {@code null} if there
+     *         is none.
+     */
     public final CodeSigner[] getCodeSigners() {
         if (signers != null) {
             CodeSigner[] tmp = new CodeSigner[signers.length];
@@ -264,26 +294,25 @@ public class CodeSource implements Serializable {
         return null;
     }
 
-	/**
-	 * Answers the receiver's location.
-	 * 
-	 * 
-	 * @return URL the receiver's URL
-	 */
+    /**
+     * Returns the location of this {@code CodeSource}.
+     *
+     * @return the location of this {@code CodeSource}, maybe {@code null}.
+     */
     public final URL getLocation() {
         return location;
     }
 
-	/**
-	 * Answers an integer hash code for the receiver. Any two objects which
-	 * answer <code>true</code> when passed to <code>.equals</code> must
-	 * answer the same value for this method.
-	 * 
-	 * 
-	 * @return int the receiver's hash.
-	 * 
-	 * @see #equals
-	 */
+    /**
+     * Returns the hash code value for this {@code CodeSource}.
+     * Returns the same hash code for {@code CodeSource}s that are
+     * equal to each other as required by the general contract of
+     * {@link Object#hashCode}.
+     *
+     * @return the hash code value for this {@code CodeSource}.
+     * @see Object#equals(Object)
+     * @see CodeSource#equals(Object)
+     */
     public int hashCode() {
         //
         // hashCode() is undocumented there. Should we also use certs[i] to
@@ -292,15 +321,71 @@ public class CodeSource implements Serializable {
         return location == null ? 0 : location.hashCode();
     }
 
-	/**
-	 * Indicates whether the argument code source is implied by the receiver.
-	 * 
-	 * 
-	 * @return boolean <code>true</code> if the argument code source is
-	 *         implied by the receiver, and <code>false</code> if it is not.
-	 * @param cs
-	 *            CodeSource the code source to check
-	 */
+    /**
+     * Indicates whether the specified code source is implied by this {@code
+     * CodeSource}. Returns {@code true} if all of the following conditions are
+     * {@code true}, otherwise {@code false}:
+     * <p>
+     * <ul>
+     * <li>{@code cs} is not {@code null}
+     * <li>if this {@code CodeSource} has associated certificates, all
+     * certificates are present in {@code cs}. The certificates are extracted
+     * from the signers if signers are present.
+     * <li>if this {@code CodeSource}'s location is not {@code null}, the
+     * following conditions are checked
+     * <ul>
+     * <li>this {@code CodeSource}'s location is not {@code null}
+     * <li>this {@code CodeSource}'s location protocol is equal to {@code cs}'s
+     * location protocol
+     * <li>if this {@code CodeSource}'s location host is not {@code null}, the
+     * following conditions are checked
+     * <ul>
+     * <li>{@code cs}'s host is not {@code null}
+     * <li>the {@link SocketPermission} of this {@code CodeSource}'s location
+     * host implies the {@code SocketPermission} of {@code cs}'s location host
+     * </ul>
+     * <li>if this {@code CodeSource}'s location port != -1 the port of {@code
+     * cs}'s location is equal to this {@code CodeSource}'s location port
+     * <li>this {@code CodeSource}'s location file matches {@code cs}'s file
+     * whereas special wildcard matching applies as described below
+     * <li>this {@code CodeSource}'s location reference is equal to to {@code
+     * cs}'s location reference
+     * </ul>
+     * </ul>
+     * <p>
+     * Note: If this {@code CodeSource} has a {@code null} location and not any
+     * certificates, this method returns {@code true}.
+     * <p>
+     * Matching rules for the {@code CodeSource}'s location file:
+     * <ul>
+     * <li>if this {@code CodeSource}'s location file ends with {@code "/-"},
+     * then {@code cs}'s file must start with {@code CodeSource}'s location file
+     * (exclusive the trailing '-')
+     * <li>if this {@code CodeSource}'s location file ends with {@code "/*"},
+     * then {@code cs}'s file must start with {@code CodeSource}'s location file
+     * (exclusive the trailing '*') and must not have any further '/'
+     * <li>if this {@code CodeSource}'s location file ends with {@code "/"},
+     * then {@code cs}'s file must start with {@code CodeSource}'s location file
+     * <li>if this {@code CodeSource}'s location file does not end with {@code
+     * "/"}, then {@code cs}'s file must start with {@code CodeSource}'s
+     * location file with the '/' appended to it.
+     * </ul>
+     * Examples for locations that imply the location
+     * "http://harmony.apache.org/milestones/M9/apache-harmony.jar":
+     *
+     * <pre>
+     * http:
+     * http://&#42;/milestones/M9/*
+     * http://*.apache.org/milestones/M9/*
+     * http://harmony.apache.org/milestones/-
+     * http://harmony.apache.org/milestones/M9/apache-harmony.jar
+     * </pre>
+     *
+     * @param cs
+     *            the code source to check.
+     * @return {@code true} if the argument code source is implied by this
+     *         {@code CodeSource}, otherwise {@code false}.
+     */
     public boolean implies(CodeSource cs) {
         //
         // Here, javadoc:N refers to the appropriate item in the API spec for 
@@ -447,13 +532,13 @@ public class CodeSource implements Serializable {
         return true;
     }
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * 
-	 * @return a printable representation for the receiver.
-	 */
+    /**
+     * Returns a string containing a concise, human-readable description of the
+     * this {@code CodeSource} including its location, its certificates and its
+     * signers.
+     *
+     * @return a printable representation for this {@code CodeSource}.
+     */
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("CodeSource, url="); //$NON-NLS-1$

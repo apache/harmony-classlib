@@ -15,40 +15,49 @@
  *  limitations under the License.
  */
 
-/**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
-
 package java.security.acl;
 
 import java.security.Principal;
 import java.util.Enumeration;
 
 /**
- * @com.intel.drl.spec_ref
+ * A {@code Principal} that represents a group of principals.
  * 
+ * @see Principal
  */
-
 public interface Group extends Principal {
     
     /**
-     * @com.intel.drl.spec_ref
+     * Adds a member to this group.
+     * 
+     * @param user
+     *            the member to add.
+     * @return {@code true} if the member was added, {@code false} if it was already a member.
      */
     boolean addMember(Principal user);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Removes a member from this group.
+     * 
+     * @param user
+     *            the member to remove.
+     * @return {@code true} if the member was removed, {@code false} if it was not a member.
      */
     boolean removeMember(Principal user);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns whether the specified principal is a member of this group.
+     * 
+     * @param member
+     *            the principal to check.
+     * @return {@code true} if the principal is a member, otherwise {@code false}.
      */
     boolean isMember(Principal member);
     
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the members of this group.
+     * 
+     * @return the members of this group.
      */
     Enumeration<? extends Principal> members();
     
