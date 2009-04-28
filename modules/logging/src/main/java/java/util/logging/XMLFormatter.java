@@ -198,7 +198,6 @@ public class XMLFormatter extends Formatter {
      * @return the tail string for log records formatted as XML strings.
      */
     @Override
-    @SuppressWarnings("unused")
     public String getTail(Handler h) {
         return "</log>"; //$NON-NLS-1$
     }

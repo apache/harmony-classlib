@@ -491,7 +491,8 @@ public class LogRecord implements Serializable {
         // only check MAJOR version
         if (major != MAJOR) {
             // logging.5=Different version - {0}.{1}
-            throw new IOException(Messages.getString("logging.5", major, minor)); //$NON-NLS-1$ 
+            throw new IOException(Messages.getString("logging.5", //$NON-NLS-1$
+                    Byte.valueOf(major), Byte.valueOf(minor)));
         }
 
         int length = in.readInt();

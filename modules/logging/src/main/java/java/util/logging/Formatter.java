@@ -99,7 +99,6 @@ public abstract class Formatter {
      * @return the head string used to wrap a set of log records, empty in this
      *         implementation.
      */
-    @SuppressWarnings("unused")
     public String getHead(Handler h) {
         return ""; //$NON-NLS-1$
     }
@@ -113,7 +112,6 @@ public abstract class Formatter {
      * @return the tail string used to wrap a set of log records, empty in this
      *         implementation.
      */
-    @SuppressWarnings("unused")
     public String getTail(Handler h) {
         return ""; //$NON-NLS-1$
     }
