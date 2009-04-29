@@ -46,7 +46,7 @@
         <check-one-file src="${yoko-rmi-impl.url}" dest="${yoko-rmi-impl.jar}" />
         <check-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}" />
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
-        <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
+        <check-one-file src="${xalan.url}" dest="${xalan.orig.jar}" />
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
@@ -76,7 +76,7 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-fix-xalan-manifest" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -88,6 +88,9 @@
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
+        <uptodate property="xalan.uptodate"
+                  srcfile="${xalan.orig.jar}"
+                  targetfile="${xalan.jar}" />
     </target>
 
 
@@ -132,6 +135,17 @@
         </copy>
         <delete dir="${xerces.dir}.tmp" />
 	<touch file="${xerces.dir}/xercesImpl.jar" />
+    </target>
+
+    <target name="-fix-xalan-manifest" unless="xalan.uptodate">
+        <unjar src="${xalan.orig.jar}" dest="${xalan.dir}.tmp" />
+        <delete file="${xalan.jar}" />
+        <replace file="${xalan.dir}.tmp/META-INF/MANIFEST.MF"
+                 token="Class-Path: xercesImpl.jar xml-apis.jar serializer.jar"
+                 value="" />
+        <jar destfile="${xalan.jar}" basedir="${xalan.dir}.tmp"
+             manifest="${xalan.dir}.tmp/META-INF/MANIFEST.MF" />
+        <delete dir="${xalan.dir}.tmp" />
     </target>
 
     <target name="-check-unix" if="is.unix">
@@ -186,7 +200,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${bcel.md5}" />
 
     <mkdir dir="${xalan.dir}" />
-    <download-one-file src="${xalan.url}" dest="${xalan.jar}"
+    <download-one-file src="${xalan.url}" dest="${xalan.orig.jar}"
                            md5="${xalan.md5}" />
 
     <mkdir dir="${xerces.dir}" />
@@ -296,7 +310,7 @@ File @{dest} has incorrect md5 checksum.
 
     <target name="-really-download" unless="${dest}.exists">
         <echo>Fetching ${dest}</echo>
-    <get src="${src}" dest="${dest}" usetimestamp="true" verbose="true" />
+        <get src="${src}" dest="${dest}" verbose="true" />
     </target>
 
     <target name="-remove-file-if-bad" unless="${dest}.md5.verified">
