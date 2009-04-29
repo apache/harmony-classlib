@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
@@ -265,7 +266,8 @@ public class BufferedInputStreamTest extends TestCase {
      * @tests java.io.BufferedInputStream#read()
      */
     public void test_read() throws IOException {
-        int c = is.read();
+        InputStreamReader isr = new InputStreamReader(is);
+        int c = isr.read();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
 
         byte[] bytes = new byte[256];
