@@ -19,10 +19,12 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -189,12 +191,13 @@ public class PrintStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintStream#print(char)
      */
-    public void test_printC() {
+    public void test_printC() throws Exception {
         // Test for method void java.io.PrintStream.print(char)
         PrintStream os = new PrintStream(bos, true);
         os.print('t');
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        assertEquals("Incorrect char written", 't', bis.read());
+        InputStreamReader isr = new InputStreamReader(bis);
+        assertEquals("Incorrect char written", 't', isr.read());
     }
 
     /**
@@ -326,26 +329,28 @@ public class PrintStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintStream#println()
      */
-    public void test_println() {
+    public void test_println() throws Exception {
         // Test for method void java.io.PrintStream.println()
         char c;
         PrintStream os = new PrintStream(bos, true);
         os.println("");
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        assertTrue("Newline not written", (c = (char) bis.read()) == '\r'
+        InputStreamReader isr = new InputStreamReader(bis);
+        assertTrue("Newline not written", (c = (char) isr.read()) == '\r'
                 || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(char[])
      */
-    public void test_println$C() {
+    public void test_println$C() throws Exception {
         // Test for method void java.io.PrintStream.println(char [])
         PrintStream os = new PrintStream(bos, true);
         char[] sc = new char[4000];
         fileString.getChars(0, fileString.length(), sc, 0);
         os.println(sc);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte[] rbytes = new byte[4000];
         bis.read(rbytes, 0, fileString.length());
         assertEquals("Incorrect char[] written", fileString, new String(rbytes,
@@ -358,7 +363,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
         // hit a new line.
         int r;
         boolean newline = false;
-        while ((r = bis.read()) != -1) {
+        while ((r = isr.read()) != -1) {
             if (r == '\r' || r == '\n')
                 newline = true;
         }
@@ -368,127 +373,135 @@ public class PrintStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.PrintStream#println(char)
      */
-    public void test_printlnC() {
+    public void test_printlnC() throws Exception {
         // Test for method void java.io.PrintStream.println(char)
         int c;
         PrintStream os = new PrintStream(bos, true);
         os.println('t');
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        assertEquals("Incorrect char written", 't', bis.read());
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        InputStreamReader isr = new InputStreamReader(bis);
+        assertEquals("Incorrect char written", 't', isr.read());
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(double)
      */
-    public void test_printlnD() {
+    public void test_printlnD() throws Exception {
         // Test for method void java.io.PrintStream.println(double)
         int c;
         PrintStream os = new PrintStream(bos, true);
         os.println(2345.76834720202);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte[] rbuf = new byte[100];
         bis.read(rbuf, 0, 16);
         assertEquals("Incorrect double written", "2345.76834720202",
                 new String(rbuf, 0, 16));
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(float)
      */
-    public void test_printlnF() {
+    public void test_printlnF() throws Exception {
         // Test for method void java.io.PrintStream.println(float)
         int c;
         byte[] rbuf = new byte[100];
         PrintStream os = new PrintStream(bos, true);
         os.println(29.08764f);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         bis.read(rbuf, 0, 8);
         assertEquals("Incorrect float written", "29.08764", new String(rbuf, 0,
                 8));
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(int)
      */
-    public void test_printlnI() {
+    public void test_printlnI() throws Exception {
         // Test for method void java.io.PrintStream.println(int)
         int c;
         PrintStream os = new PrintStream(bos, true);
         os.println(768347202);
         byte[] rbuf = new byte[100];
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         bis.read(rbuf, 0, 9);
         assertEquals("Incorrect int written", "768347202", new String(rbuf, 0,
                 9));
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(long)
      */
-    public void test_printlnJ() {
+    public void test_printlnJ() throws Exception {
         // Test for method void java.io.PrintStream.println(long)
         int c;
         PrintStream os = new PrintStream(bos, true);
         os.println(9875645283333L);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte[] rbuf = new byte[100];
         bis.read(rbuf, 0, 13);
         assertEquals("Incorrect long written", "9875645283333", new String(
                 rbuf, 0, 13));
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(java.lang.Object)
      */
-    public void test_printlnLjava_lang_Object() {
+    public void test_printlnLjava_lang_Object() throws Exception {
         // Test for method void java.io.PrintStream.println(java.lang.Object)
         char c;
         PrintStream os = new PrintStream(bos, true);
         os.println(new java.util.Vector());
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte[] rbytes = new byte[2];
         bis.read(rbytes, 0, 2);
         assertEquals("Incorrect Vector written", "[]", new String(rbytes, 0, 2));
-        assertTrue("Newline not written", (c = (char) bis.read()) == '\r'
+        assertTrue("Newline not written", (c = (char) isr.read()) == '\r'
                 || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(java.lang.String)
      */
-    public void test_printlnLjava_lang_String() {
+    public void test_printlnLjava_lang_String() throws Exception {
         // Test for method void java.io.PrintStream.println(java.lang.String)
         char c;
         PrintStream os = new PrintStream(bos, true);
         os.println("Hello World");
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte rbytes[] = new byte[100];
         bis.read(rbytes, 0, 11);
         assertEquals("Incorrect string written", "Hello World", new String(
                 rbytes, 0, 11));
-        assertTrue("Newline not written", (c = (char) bis.read()) == '\r'
+        assertTrue("Newline not written", (c = (char) isr.read()) == '\r'
                 || c == '\n');
     }
 
     /**
      * @tests java.io.PrintStream#println(boolean)
      */
-    public void test_printlnZ() {
+    public void test_printlnZ() throws Exception {
         // Test for method void java.io.PrintStream.println(boolean)
         int c;
         PrintStream os = new PrintStream(bos, true);
         os.println(true);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        InputStreamReader isr = new InputStreamReader(bis);
         byte[] rbuf = new byte[100];
         bis.read(rbuf, 0, 4);
         assertEquals("Incorrect boolean written", "true",
                 new String(rbuf, 0, 4));
-        assertTrue("Newline not written", (c = bis.read()) == '\r' || c == '\n');
+        assertTrue("Newline not written", (c = isr.read()) == '\r' || c == '\n');
     }
 
     /**
