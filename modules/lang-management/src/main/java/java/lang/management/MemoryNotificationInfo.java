@@ -45,10 +45,23 @@ public class MemoryNotificationInfo {
         if (cd == null) {
             return null;
         }
-        String poolName = (String) cd.get("poolName");
-        MemoryUsage usage = MemoryUsage.from((CompositeData) cd.get("usage"));
-        long count = ((Long) cd.get("count")).longValue();
-        return new MemoryNotificationInfo(poolName, usage, count);
+         
+        final Object poolName = cd.get("poolName");
+        if (!(poolName instanceof String)) {
+            throw new IllegalArgumentException("'poolName' attribute is null or not a String");
+        }
+        
+        final Object usageObj = cd.get("usage");
+        if (!(usageObj instanceof CompositeData)) {
+            throw new IllegalArgumentException("'usage' attribute is null or not a CompositeData");
+        }
+        final MemoryUsage usage = MemoryUsage.from((CompositeData) usageObj);
+        
+        final Object count = cd.get("count");
+        if (!(count instanceof Long)) {
+            throw new IllegalArgumentException("'count' attribute is null");
+        }
+        return new MemoryNotificationInfo((String)poolName, usage, ((Long)count).longValue());
     }
 
     private final String poolName;
