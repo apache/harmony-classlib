@@ -925,7 +925,7 @@ public interface CallableStatement extends PreparedStatement {
      * Sets the value of a specified parameter to the content of a supplied
      * {@code InputStream}, which has a specified number of bytes.
      * <p>
-     * This is a good method for setting an SQL {@code LONVARCHAR} parameter
+     * This is a good method for setting an SQL {@code LONGVARCHAR} parameter
      * where the length of the data is large. Data is read from the {@code
      * InputStream} until end-of-file is reached or the specified number of
      * bytes is copied.

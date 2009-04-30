@@ -39,7 +39,7 @@ public class Time extends Date {
      * <p>
      * The result is undefined if any argument is out of bounds.
      *
-     * @deprecated Please use the constructor {@link #Time(long)}.
+     * @deprecated Use the constructor {@link #Time(long)}.
      * @param theHour
      *            a value in the range {@code [0,23]}.
      * @param theMinute

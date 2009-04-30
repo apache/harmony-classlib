@@ -40,7 +40,7 @@ public class Date extends java.util.Date {
      * Constructs a {@code Date} object corresponding to the supplied year,
      * month and day.
      *
-     * @deprecated Please use the constructor {@link #Date(long)}.
+     * @deprecated Use the constructor {@link #Date(long)}.
      * @param theYear
      *            the year, specified as the year minus 1900. Must be in the
      *            range {@code [0,8099]}.

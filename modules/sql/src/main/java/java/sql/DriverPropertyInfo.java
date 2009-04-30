@@ -42,8 +42,8 @@ public class DriverPropertyInfo {
     public String name;
 
     /**
-     * {@code True} when the value member must be provided during {@code
-     * Driver.connect}. {@code False} otherwise.
+     * {@code true} when the value member must be provided during {@code
+     * Driver.connect}. {@code false} otherwise.
      */
     public boolean required;
 
