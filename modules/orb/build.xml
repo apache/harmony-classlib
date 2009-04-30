@@ -68,10 +68,8 @@
     <target name="-copy-jars">
         <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.jars}">
-                <patternset includes="yoko-1.0/yoko-rmi-spec.jar" />
-                <patternset includes="yoko-1.0/yoko-rmi-impl.jar" />
-                <patternset includes="yoko-1.0/yoko.jar" />
-                <patternset includes="yoko-1.0/yoko-core.jar" />
+                <patternset includes="yoko-${yoko.version}/*.jar" />
+                <patternset includes="bcel-${bcel.version}/*.jar" />
             </fileset>
         </copy>
     </target>
@@ -79,7 +77,8 @@
     <target name="test" />
 
     <target name="clean">
-        <delete dir="${hy.jdk}/jre/lib/boot/yoko-1.0" />
+        <delete dir="${hy.jdk}/jre/lib/boot/yoko-${yoko.version}" />
+        <delete dir="${hy.jdk}/jre/lib/boot/bcel-${bcel.version}" />
     </target>
 
 </project>
