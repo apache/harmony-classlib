@@ -36,7 +36,6 @@
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
-        <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
@@ -62,15 +61,12 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-fix-xalan-manifest" />
+         depends="-extract-props,-extract-dejavu-fonts,-extract-xerces,-fix-xalan-manifest" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
                   srcfile="${dejavu-fonts.zip}"
                   targetfile="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
-        <uptodate property="mx4j.uptodate"
-                  srcfile="${mx4j.zip}"
-                  targetfile="${mx4j.jar}" />
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
@@ -83,31 +79,6 @@
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
         <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
-    </target>
-
-    <target name="-extract-mx4j" unless="mx4j.uptodate">
-
-        <!-- This doesn't work for me since my ant doesn't support
-             mapper in unzip.
-
-        <unzip src="${mx4j.zip}" dest="${mx4j.dir}">
-            <patternset>
-                <include name="**/mx4j.jar"/>
-                <include name="**/mx4j-remote.jar"/>
-            </patternset>
-            <mapper type="flatten" />
-        </unzip>
-          -->
-
-        <unzip src="${mx4j.zip}" dest="${mx4j.dir}.tmp" />
-        <copy todir="${mx4j.dir}" flatten="yes">
-            <fileset dir="${mx4j.dir}.tmp/mx4j-3.0.2/lib">
-                <include name="mx4j.jar"/>
-                <include name="mx4j-remote.jar"/>
-            </fileset>
-        </copy>
-        <delete dir="${mx4j.dir}.tmp" />
-	<touch file="${mx4j.jar}" />
     </target>
 
     <target name="-extract-xerces" unless="xerces.uptodate">
@@ -180,10 +151,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${bcprov.dir}" />
     <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
                            md5="${bcprov.md5}" />
-
-    <mkdir dir="${mx4j.dir}" />
-    <download-one-file src="${mx4j.url}" dest="${mx4j.zip}"
-                           md5="${mx4j.md5}" />
 
     <mkdir dir="${jetty.dir}" />
     <download-one-file src="${jetty.url}" dest="${jetty.jar}"
