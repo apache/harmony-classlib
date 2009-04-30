@@ -283,7 +283,7 @@ Generating snapshot zip
         <poll-modules target="check-depends" />
     </target>
 
-    <target name="fetch-depends"
+    <target name="fetch-depends" depends="-init-hdk"
         description="Fetches dependencies. Note: Some of Harmony's dependencies are licensed under terms other than the Apache License v2.">
         <ant antfile="make/depends.xml" inheritall="false" target="download" />
         <poll-modules target="fetch-depends" />
