@@ -18,20 +18,21 @@
 package java.sql;
 
 /**
- * A class holding information about Driver Properties for making a Connection.
- * This class is returned from the <code>Driver.getDriverProperties</code>
- * method and is useful in using Connections in an advanced way.
+ * A class holding information about driver properties of a database connection.
+ * This class is returned by the
+ * {@link Driver#getPropertyInfo(String, java.util.Properties)} method and
+ * allows for the advanced connection handling.
  */
 public class DriverPropertyInfo {
 
     /**
      * If the value member can be chosen from a set of possible values, they are
-     * contained here. Otherwise choices is null.
+     * contained here. Otherwise choices is {@code null}.
      */
     public String[] choices;
 
     /**
-     * A description of the property. May be null.
+     * A description of the property. May be {@code null}.
      */
     public String description;
 
@@ -41,26 +42,26 @@ public class DriverPropertyInfo {
     public String name;
 
     /**
-     * True when the value member must be provided during Driver.connect. False
-     * otherwise.
+     * {@code True} when the value member must be provided during {@code
+     * Driver.connect}. {@code False} otherwise.
      */
     public boolean required;
 
     /**
-     * The current value associated with this property. This is based on the
-     * data gathered by the getPropertyInfo method, the general Java environment
-     * and the default values for the driver.
+     * The current value associated with this property. It is depending on the
+     * data gathered by the {@code getPropertyInfo} method, the general Java
+     * environment and the driver's default values.
      */
     public String value;
 
     /**
-     * Creates a DriverPropertyInfo instance with the supplied name and value.
-     * Other members take their default values.
+     * Creates a {@code DriverPropertyInfo} instance with the supplied name and
+     * value. Other class members take their default values.
      * 
      * @param name
-     *            The property name
+     *            The property name.
      * @param value
-     *            The property value
+     *            The property value.
      */
     public DriverPropertyInfo(String name, String value) {
         this.name = name;
