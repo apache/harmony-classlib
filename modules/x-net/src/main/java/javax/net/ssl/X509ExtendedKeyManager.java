@@ -34,7 +34,7 @@ public abstract class X509ExtendedKeyManager implements X509KeyManager {
     }
 
     /**
-     * Chooses a alias for the client side of an SSL connection to authenticate
+     * Chooses an alias for the client side of an SSL connection to authenticate
      * it with the specified public key type and certificate issuers.
      *
      * @param keyType
@@ -54,7 +54,7 @@ public abstract class X509ExtendedKeyManager implements X509KeyManager {
     }
 
     /**
-     * Chooses a alias for the server side of an SSL connection to authenticate
+     * Chooses an alias for the server side of an SSL connection to authenticate
      * it with the specified public key type and certificate issuers.
      *
      * @param keyType
