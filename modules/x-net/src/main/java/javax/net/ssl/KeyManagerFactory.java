@@ -30,6 +30,9 @@ import java.security.UnrecoverableKeyException;
 
 import org.apache.harmony.security.fortress.Engine;
 
+/**
+ * The public API for {@code KeyManagerFactory} implementations.
+ */
 public class KeyManagerFactory {
     // Store KeyManagerFactory service name
     private static final String SERVICE = "KeyManagerFactory";
@@ -40,6 +43,14 @@ public class KeyManagerFactory {
     // Store default property name
     private static final String PROPERTY_NAME = "ssl.KeyManagerFactory.algorithm";
 
+    /**
+     * Returns the default key manager factory algorithm name.
+     * <p>
+     * The default algorithm name is specified by the security property:
+     * {@code 'ssl.KeyManagerFactory.algorithm'}.
+     *
+     * @return the default algorithm name.
+     */
     public static final String getDefaultAlgorithm() {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
@@ -49,9 +60,17 @@ public class KeyManagerFactory {
     }
 
     /**
-     * 
-     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code KeyManagerFactory} instance for the specified key
+     * management algorithm.
+     *
+     * @param algorithm
+     *            the name of the requested key management algorithm.
+     * @return a key manager factory for the requested algorithm.
+     * @throws NoSuchAlgorithmException
+     *             if no installed provider can provide the requested algorithm.
+     * @throws NullPointerException
+     *             if {@code algorithm} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static final KeyManagerFactory getInstance(String algorithm)
             throws NoSuchAlgorithmException {
@@ -66,8 +85,23 @@ public class KeyManagerFactory {
     }
 
     /**
-     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code KeyManagerFactory} instance for the specified key
+     * management algorithm from the specified provider.
+     *
+     * @param algorithm
+     *            the name of the requested key management algorithm name.
+     * @param provider
+     *            the name of the provider that provides the requested
+     *            algorithm.
+     * @return a key manager factory for the requested algorithm.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provide the requested
+     *             algorithm.
+     * @throws NoSuchProviderException
+     *             if the specified provider does not exist.
+     * @throws NullPointerException
+     *             if {@code algorithm} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static final KeyManagerFactory getInstance(String algorithm, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -82,8 +116,20 @@ public class KeyManagerFactory {
     }
 
     /**
-     * @throws NullPointerException if algorithm is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code KeyManagerFactory} instance for the specified key
+     * management algorithm from the specified provider.
+     *
+     * @param algorithm
+     *            the name of the requested key management algorithm name.
+     * @param provider
+     *            the provider that provides the requested algorithm.
+     * @return a key manager factory for the requested algorithm.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provide the requested
+     *             algorithm.
+     * @throws NullPointerException
+     *             if {@code algorithm} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static final KeyManagerFactory getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
@@ -108,6 +154,16 @@ public class KeyManagerFactory {
     // Store used algorithm
     private final String algorithm;
 
+    /**
+     * Creates a new {@code KeyManagerFactory}.
+     *
+     * @param factorySpi
+     *            the implementation delegate.
+     * @param provider
+     *            the provider.
+     * @param algorithm
+     *            the key management algorithm name.
+     */
     protected KeyManagerFactory(KeyManagerFactorySpi factorySpi, Provider provider, String algorithm) {
         super();
         this.provider = provider;
@@ -115,23 +171,62 @@ public class KeyManagerFactory {
         this.spiImpl = factorySpi;
     }
 
+    /**
+     * Returns the name of the key management algorithm.
+     *
+     * @return the name of the key management algorithm.
+     */
     public final String getAlgorithm() {
         return algorithm;
     }
 
+    /**
+     * Returns the provider for this {@code KeyManagerFactory} instance.
+     *
+     * @return the provider for this {@code KeyManagerFactory} instance.
+     */
     public final Provider getProvider() {
         return provider;
     }
 
+    /**
+     * Initializes this instance with the specified key store and password.
+     *
+     * @param ks
+     *            the key store or {@code null} to use the default key store.
+     * @param password
+     *            the password for the specified key store or {@code null} if no
+     *            key store is provided.
+     * @throws KeyStoreException
+     *             if initializing this key manager factory fails.
+     * @throws NoSuchAlgorithmException
+     *             if a required algorithm is not available.
+     * @throws UnrecoverableKeyException
+     *             if a key cannot be recovered.
+     */
     public final void init(KeyStore ks, char[] password) throws KeyStoreException,
             NoSuchAlgorithmException, UnrecoverableKeyException {
         spiImpl.engineInit(ks, password);
     }
 
+    /**
+     * Initializes this instance with the specified factory parameters.
+     *
+     * @param spec
+     *            the factory parameters.
+     * @throws InvalidAlgorithmParameterException
+     *             if an error occurs.
+     */
     public final void init(ManagerFactoryParameters spec) throws InvalidAlgorithmParameterException {
         spiImpl.engineInit(spec);
     }
 
+    /**
+     * Returns a list of key managers, one instance for each type of key in the
+     * key store.
+     *
+     * @return a list of key managers.
+     */
     public final KeyManager[] getKeyManagers() {
         return spiImpl.engineGetKeyManagers();
     }

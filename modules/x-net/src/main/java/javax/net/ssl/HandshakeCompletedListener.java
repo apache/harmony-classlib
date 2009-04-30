@@ -19,6 +19,16 @@ package javax.net.ssl;
 
 import java.util.EventListener;
 
+/**
+ * The listener to be implemented to receive event notifications on completion
+ * of SSL handshake on an SSL connection.
+ */
 public interface HandshakeCompletedListener extends EventListener {
+    /**
+     * The callback method that is invoked when a SSL handshake is completed.
+     *
+     * @param event
+     *            the information on the completed SSL handshake event.
+     */
     void handshakeCompleted(HandshakeCompletedEvent event);
 }

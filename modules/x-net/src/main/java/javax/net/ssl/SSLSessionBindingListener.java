@@ -19,10 +19,26 @@ package javax.net.ssl;
 
 import java.util.EventListener;
 
+/**
+ * The interface to be implemented by any object that requires notification when
+ * data objects are bound to (or unbound from) an {@code SSLSession}.
+ */
 public interface SSLSessionBindingListener extends EventListener {
 
+    /**
+     * Notifies this listener when a value is bound to an {@code SSLSession}.
+     *
+     * @param event
+     *            the event data.
+     */
     public void valueBound(SSLSessionBindingEvent event);
 
+    /**
+     * Notifies this listener when a value is unbound from an {@code SSLSession}.
+     *
+     * @param event
+     *            the event data.
+     */
     public void valueUnbound(SSLSessionBindingEvent event);
 
 }

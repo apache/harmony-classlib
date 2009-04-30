@@ -23,10 +23,10 @@ import java.util.List;
 import java.security.KeyStore;
 
 /**
- * A parameters object for {@link X509KeyManager}
- * 
+ * The parameters for {@code KeyManager}s. The parameters are a list of
+ * {@code KeyStore.Builder}s.
+ *
  * @since 1.5
- * @see X509KeyManager
  * @see KeyStore.Builder
  */
 public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
@@ -34,9 +34,11 @@ public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
     private final List<KeyStore.Builder> ksbuilders;
 
     /**
-     * Constructs an instance for the builder passed.
+     * Creates a new {@code KeyStoreBuilderParameters} with the specified key
+     * store builder.
      * 
-     * @param builder a builder
+     * @param builder
+     *            the key store builder.
      */
     public KeyStoreBuilderParameters(KeyStore.Builder builder) {
         super();
@@ -44,11 +46,13 @@ public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
     }
 
     /**
-     * Constructs an instance for the builder list passed.
+     * Creates a new {@code KeyStoreBuilderParameters} with the specified list
+     * of {@code KeyStore.Builder}s.
      * 
-     * @param parameters the builder list
-     * @throws NullPointerException if {@code parameters} is {@code null}
-     * @throws IllegalArgumentException if {@code parameters} is empty
+     * @param parameters
+     *            the list of key store builders
+     * @throws IllegalArgumentException
+     *             if the specified list is empty.
      */
     @SuppressWarnings("unchecked")
     public KeyStoreBuilderParameters(List parameters) {
@@ -63,9 +67,10 @@ public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
     }
 
     /**
-     * The list of builder parameters.
+     * Returns the unmodifiable list of {@code KeyStore.Builder}s associated
+     * with this parameters instance.
      * 
-     * @return an unmodifiable list of parameters
+     * @return the unmodifiable list of {@code KeyStore.Builder}s.
      */
     @SuppressWarnings("unchecked")
     public List getParameters() {

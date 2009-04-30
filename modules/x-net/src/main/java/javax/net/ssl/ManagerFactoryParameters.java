@@ -18,8 +18,9 @@
 package javax.net.ssl;
 
 /**
- * Common interface for passing parameters to manager factory objects.
- * 
+ * The marker interface for key manager factory parameters. Its purpose is to
+ * group key manager factory parameters objects.
+ *
  * @since 1.4
  */
 public interface ManagerFactoryParameters {
