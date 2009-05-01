@@ -160,7 +160,7 @@ public class ByteArrayInputStream extends InputStream {
      *             {@code offset + length} is greater than the size of
      *             {@code b}.
      * @throws NullPointerException
-     *             if {@code b} is null.
+     *             if {@code b} is {@code null}.
      */
     @Override
     public synchronized int read(byte b[], int offset, int length) {

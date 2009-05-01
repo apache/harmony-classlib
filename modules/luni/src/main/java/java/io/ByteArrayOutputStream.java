@@ -188,7 +188,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @param len
      *            the number of bytes of {@code buffer} to write.
      * @throws NullPointerException
-     *             If buffer is null.
+     *             if {@code buffer} is {@code null}.
      * @throws IndexOutOfBoundsException
      *             if {@code offset < 0} or {@code len < 0}, or if
      *             {@code offset + len} is greater than the length of
