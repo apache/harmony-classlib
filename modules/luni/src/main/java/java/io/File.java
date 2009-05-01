@@ -1409,9 +1409,9 @@ public class File implements Serializable, Comparable<File> {
      * dependent and may not be transferable between different operating / file
      * systems.
      * 
-     * @return an URL for this file.
+     * @return a URL for this file.
      * @throws java.net.MalformedURLException
-     *             if the path cannot be transformed into an URL.
+     *             if the path cannot be transformed into a URL.
      */
     @SuppressWarnings("nls")
     public URL toURL() throws java.net.MalformedURLException {
