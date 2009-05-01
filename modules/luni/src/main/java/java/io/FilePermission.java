@@ -84,7 +84,7 @@ public final class FilePermission extends Permission implements Serializable {
      *             it contains a string other than "read", "write", "execute"
      *             and "delete".
      * @throws NullPointerException
-     *             if {@code path} is null.
+     *             if {@code path} is {@code null}.
      */
     public FilePermission(String path, String actions) {
         super(path);

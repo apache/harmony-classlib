@@ -103,7 +103,7 @@ public class File implements Serializable, Comparable<File> {
      * @param name
      *            the file's name.
      * @throws NullPointerException
-     *             if {@code name} is null.
+     *             if {@code name} is {@code null}.
      */
     public File(File dir, String name) {
         if (name == null) {
@@ -136,7 +136,7 @@ public class File implements Serializable, Comparable<File> {
      * @param name
      *            the file's name.
      * @throws NullPointerException
-     *             if {@code name} is null.
+     *             if {@code name} is {@code null}.
      */
     public File(String dirPath, String name) {
         if (name == null) {
@@ -1216,9 +1216,10 @@ public class File implements Serializable, Comparable<File> {
 
     /**
      * Creates an empty temporary file using the given prefix and suffix as part
-     * of the file name. If suffix is null, {@code .tmp} is used. This method
-     * is a convenience method that calls {@link #createTempFile(String, String,
-     * File)} with the third argument being {@code null}.
+     * of the file name. If suffix is {@code null}, {@code .tmp} is used. This
+     * method is a convenience method that calls
+     * {@link #createTempFile(String, String, File)} with the third argument
+     * being {@code null}.
      * 
      * @param prefix
      *            the prefix to the temp file name.
