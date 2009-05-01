@@ -20,6 +20,7 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
+import java.io.UnsupportedEncodingException;
 
 public class PushbackInputStreamTest extends junit.framework.TestCase {
 
@@ -130,7 +131,7 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 		// Test for method int java.io.PushbackInputStream.read()
 		try {
 			assertTrue("Incorrect byte read", pis.read() == fileString
-					.getBytes()[0]);
+					.getBytes("UTF-8")[0]);
 		} catch (IOException e) {
 			fail("Exception during read test : " + e.getMessage());
 		}
@@ -145,7 +146,7 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 		try {
 			byte[] buf = new byte[100];
 			pis.read(buf, 0, buf.length);
-			assertTrue("Incorrect bytes read", new String(buf)
+			assertTrue("Incorrect bytes read", new String(buf, "UTF-8")
 					.equals(fileString.substring(0, 100)));
 		} catch (IOException e) {
 			fail("Exception during read test : " + e.getMessage());
@@ -160,13 +161,13 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
                 byte[] buf = new byte[50];
                 pis.skip(50);
                 pis.read(buf, 0, buf.length);
-                assertTrue("a) Incorrect bytes read", new String(buf)
+                assertTrue("a) Incorrect bytes read", new String(buf, "UTF-8")
                                 .equals(fileString.substring(50, 100)));
                 pis.unread(buf);
                 pis.skip(25);
                 byte[] buf2 = new byte[25];
                 pis.read(buf2, 0, buf2.length);
-                assertTrue("b) Incorrect bytes read", new String(buf2)
+                assertTrue("b) Incorrect bytes read", new String(buf2, "UTF-8")
                                 .equals(fileString.substring(75, 100)));
 	}
 
@@ -178,11 +179,11 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 		try {
 			byte[] buf = new byte[100];
 			pis.read(buf, 0, buf.length);
-			assertTrue("Incorrect bytes read", new String(buf)
+			assertTrue("Incorrect bytes read", new String(buf, "UTF-8")
 					.equals(fileString.substring(0, 100)));
 			pis.unread(buf);
 			pis.read(buf, 0, 50);
-			assertTrue("Failed to unread bytes", new String(buf, 0, 50)
+			assertTrue("Failed to unread bytes", new String(buf, 0, 50, "UTF-8")
 					.equals(fileString.substring(0, 50)));
 		} catch (IOException e) {
 			fail("IOException during unread test : " + e.getMessage());
@@ -197,11 +198,11 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 		// int)
 		byte[] buf = new byte[100];
 		pis.read(buf, 0, buf.length);
-		assertTrue("Incorrect bytes read", new String(buf)
+		assertTrue("Incorrect bytes read", new String(buf, "UTF-8")
 				.equals(fileString.substring(0, 100)));
 		pis.unread(buf, 50, 50);
 		pis.read(buf, 0, 50);
-		assertTrue("Failed to unread bytes", new String(buf, 0, 50)
+		assertTrue("Failed to unread bytes", new String(buf, 0, 50, "UTF-8")
 				.equals(fileString.substring(50, 100)));
 		
         // Regression for HARMONY-49
@@ -223,7 +224,7 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 		try {
 			int x;
 			assertTrue("Incorrect byte read", (x = pis.read()) == fileString
-					.getBytes()[0]);
+					.getBytes("UTF-8")[0]);
 			pis.unread(x);
 			assertTrue("Failed to unread", pis.read() == x);
 		} catch (IOException e) {
@@ -235,10 +236,10 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
+	protected void setUp() throws UnsupportedEncodingException {
 
 		pis = new PushbackInputStream(new ByteArrayInputStream(fileString
-				.getBytes()), 65535);
+				.getBytes("UTF-8")), 65535);
 	}
 
 	/**

@@ -159,7 +159,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
     public void test_read() throws IOException {
         // Test for method int java.io.RandomAccessFile.read()
         FileOutputStream fos = new java.io.FileOutputStream(fileName);
-        fos.write(fileString.getBytes(), 0, fileString.length());
+        fos.write(fileString.getBytes("UTF-8"), 0, fileString.length());
         fos.close();
 
         RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "r");
@@ -274,7 +274,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.seek(0);
         raf.readFully(buf);
         assertEquals("Incorrect bytes read/written", "HelloWorld", new String(
-                buf, 0, 10));
+                buf, 0, 10, "UTF-8"));
         raf.close();
     }
 
@@ -290,7 +290,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.seek(0);
         raf.readFully(buf, 0, buf.length);
         assertEquals("Incorrect bytes read/written", "HelloWorld", new String(
-                buf, 0, 10));
+                buf, 0, 10, "UTF-8"));
         try {
             raf.readFully(buf, 0, buf.length);
             fail("Reading past end of buffer did not throw EOFException");
@@ -318,7 +318,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         // Test for method java.lang.String java.io.RandomAccessFile.readLine()
         RandomAccessFile raf = new java.io.RandomAccessFile(fileName, "rw");
         String s = "Goodbye\nCruel\nWorld\n";
-        raf.write(s.getBytes(), 0, s.length());
+        raf.write(s.getBytes("UTF-8"), 0, s.length());
         raf.seek(0);
 
         assertEquals("Goodbye", raf.readLine());
@@ -415,7 +415,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.seek(0);
         raf.skipBytes(5);
         raf.readFully(buf);
-        assertEquals("Failed to skip bytes", "World", new String(buf, 0, 5));
+        assertEquals("Failed to skip bytes", "World", new String(buf, 0, 5, "UTF-8"));
         raf.close();
     }
 
@@ -670,7 +670,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
         raf.seek(0);
         raf.readFully(buf);
         assertEquals("Incorrect bytes read/written", "HelloWorld", new String(
-                buf, 0, 10));
+                buf, 0, 10, "UTF-8"));
         raf.close();
 
     }
