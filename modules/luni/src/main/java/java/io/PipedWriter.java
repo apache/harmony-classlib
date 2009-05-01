@@ -20,9 +20,9 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * PipedWriter is a class which places information on a communications pipe.
- * When two threads want to pass data back and forth, one creates a piped writer
- * and the other creates a piped reader.
+ * Places information on a communications pipe. When two threads want to pass
+ * data back and forth, one creates a piped writer and the other creates a piped
+ * reader.
  * 
  * @see PipedReader
  */
@@ -35,23 +35,25 @@ public class PipedWriter extends Writer {
     private boolean closed;
 
     /**
-     * Constructs a new unconnected PipedWriter. The resulting Stream must be
-     * connected to a PipedReader before data may be written to it.
+     * Constructs a new unconnected {@code PipedWriter}. The resulting writer
+     * must be connected to a {@code PipedReader} before data may be written to
+     * it.
+     *
+     * @see PipedReader
      */
     public PipedWriter() {
         super();
     }
 
     /**
-     * Constructs a new PipedWriter connected to the PipedReader
-     * <code>dest</code>. Any data written to this Writer can be read from
-     * the <code>dest</code>.
+     * Constructs a new {@code PipedWriter} connected to the {@link PipedReader}
+     * {@code dest}. Any data written to this writer can be read from {@code
+     * dest}.
      * 
      * @param dest
-     *            the PipedReader to connect to.
-     * 
-     * @throws java.io.IOException
-     *             if <code>dest</code> is already connected.
+     *            the {@code PipedReader} to connect to.
+     * @throws IOException
+     *             if {@code dest} is already connected.
      */
     public PipedWriter(PipedReader dest) throws IOException {
         super(dest);
@@ -59,12 +61,12 @@ public class PipedWriter extends Writer {
     }
 
     /**
-     * Close this PipedWriter. Any data buffered in the corresponding
-     * PipedReader can be read, then -1 will be returned to the reader. If this
-     * Writer is not connected, this method does nothing.
+     * Closes this writer. If a {@link PipedReader} is connected to this writer,
+     * it is closed as well and the pipe is disconnected. Any data buffered in
+     * the reader can still be read.
      * 
-     * @throws java.io.IOException
-     *             If an error occurs attempting to close this PipedWriter.
+     * @throws IOException
+     *             if an error occurs while closing this writer.
      */
     @Override
     public void close() throws IOException {
@@ -79,14 +81,14 @@ public class PipedWriter extends Writer {
     }
 
     /**
-     * Connects this PipedWriter to a PipedReader. Any data written to this
-     * Writer becomes readable in the Reader.
+     * Connects this {@code PipedWriter} to a {@link PipedReader}. Any data
+     * written to this writer becomes readable in the reader.
      * 
      * @param stream
-     *            the destination PipedReader.
-     * 
-     * @throws java.io.IOException
-     *             If this Writer or the dest is already connected.
+     *            the reader to connect to.
+     * @throws IOException
+     *             if this writer is closed or already connected, or if {@code
+     *             stream} is already connected.
      */
     public void connect(PipedReader stream) throws IOException {
         synchronized (lock) {
@@ -102,11 +104,11 @@ public class PipedWriter extends Writer {
     }
 
     /**
-     * Notifies the readers on the PipedReader that characters can be read. This
+     * Notifies the readers of this {@code PipedReader} that characters can be read. This
      * method does nothing if this Writer is not connected.
      * 
-     * @throws java.io.IOException
-     *             If an IO error occurs during the flush.
+     * @throws IOException
+     *             if an I/O error occurs while flushing this writer.
      */
     @Override
     public void flush() throws IOException {
@@ -116,31 +118,35 @@ public class PipedWriter extends Writer {
     }
 
     /**
-     * Writes <code>count</code> <code>chars</code> from the char array
-     * <code>buffer</code> starting at offset <code>index</code> to this
-     * PipedWriter. The written data can now be read from the destination
-     * PipedReader. Separate threads should be used for the reader of the
-     * PipedReader and the PipedWriter. There may be undesirable results if more
-     * than one Thread interacts a input or output pipe.
-     * 
+     * Writes {@code count} characters from the character array {@code buffer}
+     * starting at offset {@code index} to this writer. The written data can
+     * then be read from the connected {@link PipedReader} instance.
+     * <p>
+     * Separate threads should be used to write to a {@code PipedWriter} and to
+     * read from the connected {@code PipedReader}. If the same thread is used,
+     * a deadlock may occur.
+     *
      * @param buffer
-     *            the buffer to be written
+     *            the buffer to write.
      * @param offset
-     *            offset in buffer to get chars
+     *            the index of the first character in {@code buffer} to write.
      * @param count
-     *            number of chars in buffer to write
-     * 
-     * @throws java.io.IOException
-     *             If the receiving thread was terminated without closing the
-     *             pipe. This case is not currently handled correctly.
-     * @throws java.io.InterruptedIOException
-     *             If the pipe is full and the current thread is interrupted
+     *            the number of characters from {@code buffer} to write to this
+     *            writer.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code count < 0}, or if {@code
+     *             offset + count} is bigger than the length of {@code buffer}.
+     * @throws InterruptedIOException
+     *             if the pipe is full and the current thread is interrupted
      *             waiting for space to write data. This case is not currently
      *             handled correctly.
-     * @throws java.lang.NullPointerException
-     *             If the receiver has not been connected yet.
-     * @throws java.lang.IllegalArgumentException
-     *             If any of the arguments are out of bounds.
+     * @throws IOException
+     *             if this writer is closed or not connected, if the target
+     *             reader is closed or if the thread reading from the target
+     *             reader is no longer alive. This case is currently not handled
+     *             correctly.
+     * @throws NullPointerException
+     *             if {@code buffer} is {@code null}.
      */
     @Override
     public void write(char buffer[], int offset, int count) throws IOException {
@@ -165,24 +171,24 @@ public class PipedWriter extends Writer {
     }
 
     /**
-     * Writes the character <code>c</code> to this PipedWriter. The written
-     * data can now be read from the destination PipedReader. Separate threads
-     * should be used for the reader of the PipedReader and the PipedWriter.
-     * There may be undesirable results if more than one Thread interacts a
-     * input or output pipe.
+     * Writes a single character {@code c} to this writer. This character can
+     * then be read from the connected {@link PipedReader} instance.
+     * <p>
+     * Separate threads should be used to write to a {@code PipedWriter} and to
+     * read from the connected {@code PipedReader}. If the same thread is used,
+     * a deadlock may occur.
      * 
      * @param c
-     *            the character to be written
-     * 
-     * @throws java.io.IOException
-     *             If the receiving thread was terminated without closing the
-     *             pipe. This case is not currently handled correctly.
-     * @throws java.io.InterruptedIOException
-     *             If the pipe is full and the current thread is interrupted
+     *            the character to write.
+     * @throws InterruptedIOException
+     *             if the pipe is full and the current thread is interrupted
      *             waiting for space to write data. This case is not currently
      *             handled correctly.
-     * @throws java.lang.NullPointerException
-     *             If the receiver has not been connected yet.
+     * @throws IOException
+     *             if this writer is closed or not connected, if the target
+     *             reader is closed or if the thread reading from the target
+     *             reader is no longer alive. This case is currently not handled
+     *             correctly.
      */
     @Override
     public void write(int c) throws IOException {

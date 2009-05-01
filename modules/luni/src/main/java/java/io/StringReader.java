@@ -20,7 +20,8 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * StringReader is used as a character input stream on a String.
+ * A specialized {@link Reader} that reads characters from a {@code String} in
+ * a sequential manner.
  * 
  * @see StringWriter
  */
@@ -34,12 +35,12 @@ public class StringReader extends Reader {
     private int count;
 
     /**
-     * Construct a StringReader on the String <code>str</code>. The size of
-     * the reader is set to the <code>length()</code> of the String and the
-     * Object to synchronize access through is set to <code>str</code>.
+     * Construct a new {@code StringReader} with {@code str} as source. The size
+     * of the reader is set to the {@code length()} of the string and the Object
+     * to synchronize access through is set to {@code str}.
      * 
      * @param str
-     *            the String to filter reads on.
+     *            the source string for this reader.
      */
     public StringReader(String str) {
         super();
@@ -48,9 +49,9 @@ public class StringReader extends Reader {
     }
 
     /**
-     * This method closes this StringReader. Once it is closed, you can no
-     * longer read from it. Only the first invocation of this method has any
-     * effect.
+     * Closes this reader. Once it is closed, read operations on this reader
+     * will throw an {@code IOException}. Only the first invocation of this
+     * method has any effect.
      */
     @Override
     public void close() {
@@ -58,24 +59,27 @@ public class StringReader extends Reader {
     }
 
     /**
-     * Answer a boolean indicating whether or not this StringReader is closed.
+     * Returns a boolean indicating whether this reader is closed.
      * 
-     * @return <code>true</code> if closed, otherwise <code>false</code>.
+     * @return {@code true} if closed, otherwise {@code false}.
      */
     private boolean isClosed() {
         return str == null;
     }
 
     /**
-     * Set a Mark position in this Reader. The parameter <code>readLimit</code>
-     * is ignored for StringReaders. Sending reset() will reposition the reader
-     * back to the marked position provided the mark has not been invalidated.
+     * Sets a mark position in this reader. The parameter {@code readLimit} is
+     * ignored for this class. Calling {@code reset()} will reposition the
+     * reader back to the marked position.
      * 
      * @param readLimit
-     *            ignored for StringReaders.
-     * 
+     *            ignored for {@code StringReader} instances.
+     * @throws IllegalArgumentException
+     *             if {@code readLimit < 0}.
      * @throws IOException
-     *             If an error occurs attempting mark this StringReader.
+     *             if this reader is closed.
+     * @see #markSupported()
+     * @see #reset()
      */
     @Override
     public void mark(int readLimit) throws IOException {
@@ -92,12 +96,10 @@ public class StringReader extends Reader {
     }
 
     /**
-     * Answers a boolean indicating whether or not this StringReader supports
-     * mark() and reset(). This method always returns true.
+     * Indicates whether this reader supports the {@code mark()} and {@code
+     * reset()} methods. This implementation returns {@code true}.
      * 
-     * @return <code>true</code> if mark() and reset() are supported,
-     *         <code>false</code> otherwise. This implementation always
-     *         returns <code>true</code>.
+     * @return always {@code true}.
      */
     @Override
     public boolean markSupported() {
@@ -105,14 +107,14 @@ public class StringReader extends Reader {
     }
 
     /**
-     * Reads a single character from this StringReader and returns the result as
-     * an int. The 2 higher-order bytes are set to 0. If the end of reader was
-     * encountered then return -1.
+     * Reads a single character from the source string and returns it as an
+     * integer with the two higher-order bytes set to 0. Returns -1 if the end
+     * of the source string has been reached.
      * 
-     * @return the character read or -1 if end of reader.
-     * 
+     * @return the character read or -1 if the end of the source string has been
+     *         reached.
      * @throws IOException
-     *             If the StringReader is already closed.
+     *             if this reader is closed.
      */
     @Override
     public int read() throws IOException {
@@ -127,10 +129,26 @@ public class StringReader extends Reader {
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Reads at most {@code len} characters from the source string and stores
+     * them at {@code offset} in the character array {@code buf}. Returns the
+     * number of characters actually read or -1 if the end of the source string
+     * has been reached.
      * 
-     * @see java.io.Reader#read(char[], int, int)
+     * @param buf
+     *            the character array to store the characters read.
+     * @param offset
+     *            the initial position in {@code buffer} to store the characters
+     *            read from this reader.
+     * @param len
+     *            the maximum number of characters to read.
+     * @return the number of characters read or -1 if the end of the reader has
+     *         been reached.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code len < 0}, or if
+     *             {@code offset + len} is greater than the size of {@code buf}.
+     * @throws IOException
+     *             if this reader is closed.
      */
     @Override
     public int read(char buf[], int offset, int len) throws IOException {
@@ -158,19 +176,14 @@ public class StringReader extends Reader {
     }
 
     /**
-     * Answers a <code>boolean</code> indicating whether or not this
-     * StringReader is ready to be read without blocking. If the result is
-     * <code>true</code>, the next <code>read()</code> will not block. If
-     * the result is <code>false</code> this Reader may or may not block when
-     * <code>read()</code> is sent. The implementation in StringReader always
-     * returns <code>true</code> even when it has been closed.
+     * Indicates whether this reader is ready to be read without blocking. This
+     * implementation always returns {@code true}.
      * 
-     * @return <code>true</code> if the receiver will not block when
-     *         <code>read()</code> is called, <code>false</code> if unknown
-     *         or blocking will occur.
-     * 
+     * @return always {@code true}.
      * @throws IOException
-     *             If an IO error occurs.
+     *             if this reader is closed.
+     * @see #read()
+     * @see #read(char[], int, int)
      */
     @Override
     public boolean ready() throws IOException {
@@ -183,13 +196,15 @@ public class StringReader extends Reader {
     }
 
     /**
-     * Reset this StringReader's position to the last <code>mark()</code>
-     * location. Invocations of <code>read()/skip()</code> will occur from
-     * this new location. If this Reader was not marked, the StringReader is
-     * reset to the beginning of the String.
+     * Resets this reader's position to the last {@code mark()} location.
+     * Invocations of {@code read()} and {@code skip()} will occur from this new
+     * location. If this reader has not been marked, it is reset to the
+     * beginning of the source string.
      * 
      * @throws IOException
-     *             If this StringReader has already been closed.
+     *             if this reader is closed.
+     * @see #mark(int)
+     * @see #markSupported()
      */
     @Override
     public void reset() throws IOException {
@@ -201,10 +216,19 @@ public class StringReader extends Reader {
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Skips {@code amount} characters in the source string. Subsequent calls of
+     * {@code read} methods will not return these characters unless {@code
+     * reset()} is used.
      * 
-     * @see java.io.Reader#skip(long)
+     * @param ns
+     *            the maximum number of characters to skip.
+     * @return the number of characters actually skipped or 0 if {@code ns < 0}.
+     * @throws IOException
+     *             if this reader is closed.
+     * @see #mark(int)
+     * @see #markSupported()
+     * @see #reset()
      */
     @Override
     public long skip(long ns) throws IOException {

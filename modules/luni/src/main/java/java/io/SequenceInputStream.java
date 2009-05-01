@@ -21,10 +21,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * SequenceInputStream is used for streaming over a sequence of streams
- * concatenated together. Reads are taken from the first stream until it ends,
- * then the next stream is used until the last stream returns end of file.
- * 
+ * Concatenates two or more existing {@link InputStream}s. Reads are taken from
+ * the first stream until it ends, then the next stream is used, until the last
+ * stream returns end of file.
  */
 public class SequenceInputStream extends InputStream {
     /**
@@ -38,14 +37,15 @@ public class SequenceInputStream extends InputStream {
     private InputStream in;
 
     /**
-     * Constructs a new SequenceInputStream using the two streams
-     * <code>s1</code> and <code>s2</code> as the sequence of streams to
-     * read from.
+     * Constructs a new {@code SequenceInputStream} using the two streams
+     * {@code s1} and {@code s2} as the sequence of streams to read from.
      * 
      * @param s1
-     *            the first stream to get bytes from
+     *            the first stream to get bytes from.
      * @param s2
-     *            the second stream to get bytes from
+     *            the second stream to get bytes from.
+     * @throws NullPointerException
+     *             if {@code s1} is {@code null}.
      */
     public SequenceInputStream(InputStream s1, InputStream s2) {
         if (s1 == null) {
@@ -59,11 +59,13 @@ public class SequenceInputStream extends InputStream {
 
     /**
      * Constructs a new SequenceInputStream using the elements returned from
-     * Enumeration <code>e</code> as the stream sequence. The types returned
-     * from nextElement() must be of InputStream.
+     * Enumeration {@code e} as the stream sequence. The instances returned by
+     * {@code e.nextElement()} must be of type {@link InputStream}.
      * 
      * @param e
-     *            the Enumeration of InputStreams to get bytes from
+     *            the enumeration of {@code InputStreams} to get bytes from.
+     * @throws NullPointerException
+     *             if any of the elements in {@code e} is {@code null}.
      */
     public SequenceInputStream(Enumeration<? extends InputStream> e) {
         this.e = e;
@@ -76,13 +78,12 @@ public class SequenceInputStream extends InputStream {
     }
 
     /**
-     * Answers a int representing then number of bytes that are available before
-     * this InputStream will block.
+     * Returns the number of bytes that are available before the current input stream will
+     * block.
      * 
-     * @return the number of bytes available before blocking.
-     * 
+     * @return the number of bytes available in the current input stream before blocking.
      * @throws IOException
-     *             If an error occurs in this InputStream.
+     *             if an I/O error occurs in the current input stream.
      */
     @Override
     public int available() throws IOException {
@@ -93,12 +94,10 @@ public class SequenceInputStream extends InputStream {
     }
 
     /**
-     * Close the SequenceInputStream. All streams in this sequence are closed
-     * before returning from this method. This stream cannot be used for input
-     * once it has been closed.
+     * Closes all streams in this sequence of input stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this FileInputStream.
+     *             if an error occurs while closing any of the input streams.
      */
     @Override
     public void close() throws IOException {
@@ -128,15 +127,18 @@ public class SequenceInputStream extends InputStream {
     }
 
     /**
-     * Reads a single byte from this SequenceInputStream and returns the result
-     * as an int. The low-order byte is returned or -1 of the end of stream was
-     * encountered. The current stream is read from. If it reaches the end of
-     * file, the next stream is read from.
+     * Reads a single byte from this sequence of input streams and returns it as
+     * an integer in the range from 0 to 255. It tries to read from the current
+     * stream first; if the end of this stream has been reached, it reads from
+     * the next one. Blocks until one byte has been read, the end of the last
+     * input stream in the sequence has been reached, or an exception is thrown.
      * 
-     * @return the byte read or -1 if end of stream.
-     * 
+     * @return the byte read or -1 if either the end of the last stream in the
+     *         sequence has been reached or this input stream sequence is
+     *         closed.
      * @throws IOException
-     *             If an error occurs while reading the stream
+     *             if an error occurs while reading the current source input
+     *             stream.
      */
     @Override
     public int read() throws IOException {
@@ -151,21 +153,39 @@ public class SequenceInputStream extends InputStream {
     }
 
     /**
-     * Reads at most <code>count</code> bytes from this SequenceInputStream
-     * and stores them in byte array <code>buffer</code> starting at
-     * <code>offset</code>. Answer the number of bytes actually read or -1 if
-     * no bytes were read and end of stream was encountered.
+     * Reads at most {@code count} bytes from this sequence of input streams and
+     * stores them in the byte array {@code buffer} starting at {@code offset}.
+     * Blocks only until at least 1 byte has been read, the end of the stream
+     * has been reached, or an exception is thrown.
+     * <p>
+     * This SequenceInputStream shows the same behavior as other InputStreams.
+     * To do this it will read only as many bytes as a call to read on the
+     * current substream returns. If that call does not return as many bytes as
+     * requested by {@code count}, it will not retry to read more on its own
+     * because subsequent reads might block. This would violate the rule that
+     * it will only block until at least one byte has been read.
+     * <p>
+     * If a substream has already reached the end when this call is made, it
+     * will close that substream and start with the next one. If there are no
+     * more substreams it will return -1.
      * 
      * @param buffer
-     *            the byte array in which to store the read bytes.
+     *            the array in which to store the bytes read.
      * @param offset
-     *            the offset in <code>buffer</code> to store the read bytes.
+     *            the initial position in {@code buffer} to store the bytes read
+     *            from this stream.
      * @param count
-     *            the maximum number of bytes to store in <code>buffer</code>.
-     * @return the number of bytes actually read or -1 if end of stream.
-     * 
+     *            the maximum number of bytes to store in {@code buffer}.
+     * @return the number of bytes actually read; -1 if this sequence of streams
+     *         is closed or if the end of the last stream in the sequence has
+     *         been reached.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code count < 0}, or if {@code
+     *             offset + count} is greater than the size of {@code buffer}.
      * @throws IOException
-     *             If an error occurs while reading the stream
+     *             if an I/O error occurs.
+     * @throws NullPointerException
+     *             if {@code buffer} is {@code null}.
      */
     @Override
     public int read(byte[] buffer, int offset, int count) throws IOException {

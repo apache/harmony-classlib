@@ -20,31 +20,32 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * PushbackInputStream is a filter class which allows bytes read to be pushed
- * back into the stream so that they can be reread. Parsers may find this
- * useful. There is a progammable limit to the number of bytes which may be
- * pushed back. If the buffer of pushed back bytes is empty, bytes are read from
- * the source input stream.
+ * Wraps an existing {@link InputStream} and adds functionality to "push back"
+ * bytes that have been read, so that they can be read again. Parsers may find
+ * this useful. The number of bytes which may be pushed back can be specified
+ * during construction. If the buffer of pushed back bytes is empty, bytes are
+ * read from the underlying input stream.
  */
 public class PushbackInputStream extends FilterInputStream {
     /**
-     * The <code>byte</code> array containing the bytes to read.
+     * The buffer that contains pushed-back bytes.
      */
     protected byte[] buf;
 
     /**
-     * The current position within the byte array <code>buf</code>. A value
-     * equal to buf.length indicates no bytes available. A value of 0 indicates
-     * the buffer is full.
+     * The current position within {@code buf}. A value equal to
+     * {@code buf.length} indicates that no bytes are available. A value of 0
+     * indicates that the buffer is full.
      */
     protected int pos;
 
     /**
-     * Constructs a new PushbackInputStream on the InputStream <code>in</code>.
-     * The size of the pushback buffer is set to the default, or 1 byte.
+     * Constructs a new {@code PushbackInputStream} with the specified input
+     * stream as source. The size of the pushback buffer is set to the default
+     * value of 1 byte.
      * 
      * @param in
-     *            the InputStream to allow pushback operations on.
+     *            the source input stream.
      */
     public PushbackInputStream(InputStream in) {
         super(in);
@@ -53,13 +54,15 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Constructs a new PushbackInputStream on the InputStream <code>in</code>.
-     * The size of the pushback buffer is set to <code>size</code>.
+     * Constructs a new {@code PushbackInputStream} with {@code in} as source
+     * input stream. The size of the pushback buffer is set to {@code size}.
      * 
      * @param in
-     *            the InputStream to allow pushback operations on.
+     *            the source input stream.
      * @param size
-     *            the size of the pushback buffer (<code>size>=0</code>).
+     *            the size of the pushback buffer.
+     * @throws IllegalArgumentException
+     *             if {@code size} is negative.
      */
     public PushbackInputStream(InputStream in, int size) {
         super(in);
@@ -71,15 +74,14 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Answers a int representing then number of bytes that are available before
-     * this PushbackInputStream will block. This method returns the number of
-     * bytes available in the pushback buffer plus those available in the target
-     * stream.
-     * 
-     * @return int the number of bytes available before blocking.
-     * 
-     * @throws java.io.IOException
-     *             If an error occurs in this stream.
+     * Returns the number of bytes that are available before this stream will
+     * block. This is the sum of the bytes available in the pushback buffer and
+     * those available from the source stream.
+     *
+     * @return the number of bytes available before blocking.
+     * @throws IOException
+     *             if this stream is closed or an I/O error occurs in the source
+     *             stream.
      */
     @Override
     public int available() throws IOException {
@@ -90,11 +92,11 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Close this PushbackInputStream. This implementation closes the target
-     * stream.
-     * 
+     * Closes this stream. This implementation closes the source stream
+     * and releases the pushback buffer.
+     *
      * @throws IOException
-     *             If an error occurs attempting to close this stream.
+     *             if an error occurs while closing this stream.
      */
     @Override
     public void close() throws IOException {
@@ -106,12 +108,13 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Answers a boolean indicating whether or not this PushbackInputStream
-     * supports mark() and reset(). This implementation always answers false
-     * since PushbackInputStreams do not support mark/reset.
+     * Indicates whether this stream supports the {@code mark(int)} and
+     * {@code reset()} methods. {@code PushbackInputStream} does not support
+     * them, so it returns {@code false}.
      * 
-     * @return boolean indicates whether or not mark() and reset() are
-     *         supported.
+     * @return always {@code false}.
+     * @see #mark(int)
+     * @see #reset()
      */
     @Override
     public boolean markSupported() {
@@ -119,15 +122,17 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Reads a single byte from this PushbackInputStream and returns the result
-     * as an int. The low-order byte is returned or -1 of the end of stream was
-     * encountered. If the pushback buffer does not contain any available bytes
-     * then a byte from the target input stream is returned.
-     * 
-     * @return int The byte read or -1 if end of stream.
-     * 
+     * Reads a single byte from this stream and returns it as an integer in the
+     * range from 0 to 255. If the pushback buffer does not contain any
+     * available bytes then a byte from the source input stream is returned.
+     * Blocks until one byte has been read, the end of the source stream is
+     * detected or an exception is thrown.
+     *
+     * @return the byte read or -1 if the end of the source stream has been
+     *         reached.
      * @throws IOException
-     *             If an IOException occurs.
+     *             if this stream is closed or an I/O error occurs while reading
+     *             from this stream.
      */
     @Override
     public int read() throws IOException {
@@ -144,23 +149,30 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Reads at most <code>length</code> bytes from this PushbackInputStream
-     * and stores them in byte array <code>buffer</code> starting at
-     * <code>offset</code>. Answer the number of bytes actually read or -1 if
-     * no bytes were read and end of stream was encountered. This implementation
-     * reads bytes from the pushback buffer first, then the target stream if
-     * more bytes are required to satisfy <code>count</code>.
+     * Reads at most {@code length} bytes from this stream and stores them in
+     * the byte array {@code buffer} starting at {@code offset}. Bytes are read
+     * from the pushback buffer first, then from the source stream if more bytes
+     * are required. Blocks until {@code count} bytes have been read, the end of
+     * the source stream is detected or an exception is thrown.
      * 
      * @param buffer
-     *            the byte array in which to store the read bytes.
+     *            the array in which to store the bytes read from this stream.
      * @param offset
-     *            the offset in <code>buffer</code> to store the read bytes.
+     *            the initial position in {@code buffer} to store the bytes read
+     *            from this stream.
      * @param length
-     *            the maximum number of bytes to store in <code>buffer</code>.
-     * @return the number of bytes actually read or -1 if end of stream.
-     * 
+     *            the maximum number of bytes to store in {@code buffer}.
+     * @return the number of bytes read or -1 if the end of the source stream
+     *         has been reached.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code length < 0}, or if
+     *             {@code offset + length} is greater than the length of
+     *             {@code buffer}.
      * @throws IOException
-     *             If an IOException occurs.
+     *             if this stream is closed or another I/O error occurs while
+     *             reading from this stream.
+     * @throws NullPointerException
+     *             if {@code buffer} is {@code null}.
      */
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
@@ -202,19 +214,14 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Skips <code>count</code> number of bytes in this PushbackInputStream.
-     * Subsequent <code>read()</code>'s will not return these bytes unless
-     * <code>reset()</code> is used. This implementation skips
-     * <code>count</code> number of bytes in the buffer and/or the target
-     * stream.
+     * Skips {@code count} bytes in this stream. This implementation skips bytes
+     * in the pushback buffer first and then in the source stream if necessary.
      * 
      * @param count
      *            the number of bytes to skip.
      * @return the number of bytes actually skipped.
-     * 
      * @throws IOException
-     *             If the stream is already closed or another IOException
-     *             occurs.
+     *             if this stream is closed or another I/O error occurs.
      */
     @Override
     public long skip(long count) throws IOException {
@@ -236,39 +243,50 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Push back all the bytes in <code>buffer</code>. The bytes are pushed
-     * so that they would be read back buffer[0], buffer[1], etc. If the push
-     * back buffer cannot handle the entire contents of <code>buffer</code>,
-     * an IOException will be thrown. Some of the buffer may already be in the
-     * buffer after the exception is thrown.
-     * 
+     * Pushes all the bytes in {@code buffer} back to this stream. The bytes are
+     * pushed back in such a way that the next byte read from this stream is
+     * buffer[0], then buffer[1] and so on.
+     * <p>
+     * If this stream's internal pushback buffer cannot store the entire
+     * contents of {@code buffer}, an {@code IOException} is thrown. Parts of
+     * {@code buffer} may have already been copied to the pushback buffer when
+     * the exception is thrown.
+     *
      * @param buffer
-     *            the byte array containing bytes to push back into the stream.
-     * 
+     *            the buffer containing the bytes to push back to this stream.
      * @throws IOException
-     *             If the pushback buffer becomes, or is, full.
+     *             if the free space in the internal pushback buffer is not
+     *             sufficient to store the contents of {@code buffer}.
      */
     public void unread(byte[] buffer) throws IOException {
         unread(buffer, 0, buffer.length);
     }
 
     /**
-     * Push back <code>length</code> number of bytes in <code>buffer</code>
-     * starting at <code>offset</code>. The bytes are pushed so that they
-     * would be read back buffer[offset], buffer[offset+1], etc. If the push
-     * back buffer cannot handle the bytes copied from <code>buffer</code>,
-     * an IOException will be thrown. Some of the bytes may already be in the
-     * buffer after the exception is thrown.
+     * Pushes a subset of the bytes in {@code buffer} back to this stream. The
+     * subset is defined by the start position {@code offset} within
+     * {@code buffer} and the number of bytes specified by {@code length}. The
+     * bytes are pushed back in such a way that the next byte read from this
+     * stream is {@code buffer[offset]}, then {@code buffer[1]} and so on.
+     * <p>
+     * If this stream's internal pushback buffer cannot store the selected
+     * subset of {@code buffer}, an {@code IOException} is thrown. Parts of
+     * {@code buffer} may have already been copied to the pushback buffer when
+     * the exception is thrown.
      * 
      * @param buffer
-     *            the byte array containing bytes to push back into the stream.
+     *            the buffer containing the bytes to push back to this stream.
      * @param offset
-     *            the location to start taking bytes to push back.
+     *            the index of the first byte in {@code buffer} to push back.
      * @param length
      *            the number of bytes to push back.
-     * 
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code length < 0}, or if
+     *             {@code offset + length} is greater than the length of
+     *             {@code buffer}.
      * @throws IOException
-     *             If the pushback buffer becomes, or is, full.
+     *             if the free space in the internal pushback buffer is not
+     *             sufficient to store the selected contents of {@code buffer}.
      */
     public void unread(byte[] buffer, int offset, int length)
             throws IOException {
@@ -288,15 +306,19 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Push back one <code>byte</code>. Takes the byte <code>oneByte</code>
-     * and puts in in the local buffer of bytes to read back before accessing
-     * the target input stream.
-     * 
+     * Pushes the specified byte {@code oneByte} back to this stream. Only the
+     * least significant byte of the integer {@code oneByte} is pushed back.
+     * This is done in such a way that the next byte read from this stream is
+     * {@code (byte) oneByte}.
+     * <p>
+     * If this stream's internal pushback buffer cannot store the byte, an
+     * {@code IOException} is thrown.
+     *
      * @param oneByte
-     *            the byte to push back into the stream.
-     * 
+     *            the byte to push back to this stream.
      * @throws IOException
-     *             If the pushback buffer is already full.
+     *             if this stream is closed or the internal pushback buffer is
+     *             full.
      */
     public void unread(int oneByte) throws IOException {
         if (buf == null) {
@@ -309,13 +331,12 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Make a mark of the current position in the stream but the mark method
-     * does nothing.
+     * Marks the current position in this stream. Setting a mark is not
+     * supported in this class; this implementation does nothing.
      * 
      * @param readlimit
-     *            the maximum number of bytes that are able to be read before
-     *            the mark becomes invalid
-     * @see FilterInputStream#mark(int)
+     *            the number of bytes that can be read from this stream before
+     *            the mark is invalidated; this parameter is ignored.
      */
     @Override
     public void mark(int readlimit) {
@@ -323,12 +344,12 @@ public class PushbackInputStream extends FilterInputStream {
     }
 
     /**
-     * Reset current position to the mark made previously int the stream, but
-     * the reset method will throw IOException and do nothing else if called.
+     * Resets this stream to the last marked position. Resetting the stream is
+     * not supported in this class; this implementation always throws an
+     * {@code IOException}.
      * 
      * @throws IOException
-     *             If the method is called
-     * @see FilterInputStream#reset()
+     *             if this method is called.
      */
     @Override
     public void reset() throws IOException {

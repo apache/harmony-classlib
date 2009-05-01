@@ -18,8 +18,8 @@
 package java.io;
 
 /**
- * FilenameFilter is an interface which declares methods for filtering file
- * names in the <code>list</code> method of File.
+ * An interface for filtering {@link File} objects based on their names
+ * or the directory they reside in.
  * 
  * @see File
  * @see File#list(FilenameFilter)
@@ -27,14 +27,15 @@ package java.io;
 public interface FilenameFilter {
 
     /**
-     * Answers a boolean if a specific filename matches a filter.
+     * Indicates if a specific filename matches this filter.
      * 
      * @param dir
-     *            the directory in which the <code>filename</code> was found.
+     *            the directory in which the {@code filename} was found.
      * @param filename
-     *            the name of the file in <code>dir</dir> to test.
-     * @return 		boolean		<code>true</code> if the filename matches the filter and can be included
-     *							in the list, <code>false</code> otherwise.
+     *            the name of the file in {@code dir} to test.
+     * @return  {@code true} if the filename matches the filter
+     *            and can be included in the list, {@code false}
+     *            otherwise.
      */
     public abstract boolean accept(File dir, String filename);
 }

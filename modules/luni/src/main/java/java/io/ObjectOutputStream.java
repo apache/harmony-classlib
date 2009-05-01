@@ -28,9 +28,9 @@ import org.apache.harmony.misc.accessors.AccessorFactory;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * An ObjectOutputStream can be used to save Java objects into a stream where
- * the objects can be loaded later with an ObjectInputStream. Primitive data
- * (ints, bytes, chars, etc) can also be saved.
+ * A specialized {@link OutputStream} that is able to write (serialize) Java
+ * objects as well as primitive data types (int, byte, char etc.). The data can
+ * later be loaded using an ObjectInputStream.
  * 
  * @see ObjectInputStream
  * @see ObjectOutput
@@ -121,29 +121,117 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     private final ObjectStreamClass proxyClassDesc = ObjectStreamClass.lookup(Proxy.class); 
   
     /**
-     * Inner class to provide access to serializable fields
+     * PutField is an inner class to provide access to the persistent fields
+     * that are written to the target stream.
      */
     public static abstract class PutField {
+        /**
+         * Puts the value of the boolean field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, boolean value);
 
+        /**
+         * Puts the value of the character field identified by {@code name} to
+         * the persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, char value);
 
+        /**
+         * Puts the value of the byte field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, byte value);
 
+        /**
+         * Puts the value of the short field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, short value);
 
+        /**
+         * Puts the value of the integer field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, int value);
 
+        /**
+         * Puts the value of the long field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, long value);
 
+        /**
+         * Puts the value of the float field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, float value);
 
+        /**
+         * Puts the value of the double field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, double value);
 
+        /**
+         * Puts the value of the Object field identified by {@code name} to the
+         * persistent field.
+         *
+         * @param name
+         *            the name of the field to serialize.
+         * @param value
+         *            the value that is put to the persistent field.
+         */
         public abstract void put(String name, Object value);
 
         /**
-         * @deprecated This method is unsafe and may corrupt the output stream.
+         * Writes the fields to the target stream {@code out}.
+         *
+         * @param out
+         *            the target stream
+         * @throws IOException
+         *             if an error occurs while writing to the target stream.
+         * @deprecated This method is unsafe and may corrupt the target stream.
          *             Use ObjectOutputStream#writeFields() instead.
          */
         @Deprecated
@@ -151,13 +239,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Constructs a new <code>ObjectOutputStream</code>. The representation
-     * and proper initialization is in the hands of subclasses.
+     * Constructs a new {@code ObjectOutputStream}. This default constructor can
+     * be used by subclasses that do not want to use the public constructor if
+     * it allocates unneeded data.
      * 
      * @throws IOException
+     *             if an error occurs when creating this stream.
      * @throws SecurityException
-     *             if subclassing this is not allowed
-     * 
+     *             if a security manager is installed and it denies subclassing
+     *             this class.
      * @see SecurityManager#checkPermission(java.security.Permission)
      */
     protected ObjectOutputStream() throws IOException, SecurityException {
@@ -174,15 +264,18 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Constructs a new ObjectOutputStream on the OutputStream
-     * <code>output</code>. All writes are now filtered through this stream.
+     * Constructs a new ObjectOutputStream that writes to the OutputStream
+     * {@code output}.
      * 
      * @param output
-     *            The non-null OutputStream to filter writes on.
+     *            the non-null OutputStream to filter writes on.
      * 
      * @throws IOException
-     *             If an IO exception happened when writing the object stream
+     *             if an error occurs while writing the object stream
      *             header
+     * @throws SecurityException
+     *             if a security manager is installed and it denies subclassing
+     *             this class.
      */
     public ObjectOutputStream(OutputStream output) throws IOException {
         Class<?> implementationClass = getClass();
@@ -229,35 +322,31 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Writes optional information for class <code>aClass</code> into the
-     * stream represented by the receiver. This optional data can be read when
-     * deserializing the class descriptor (ObjectStreamClass) for this class
-     * from the input stream. By default no extra data is saved.
+     * Writes optional information for class {@code aClass} to the output
+     * stream. This optional data can be read when deserializing the class
+     * descriptor (ObjectStreamClass) for this class from an input stream. By
+     * default, no extra data is saved.
      * 
      * @param aClass
-     *            The class to annotate
-     * 
+     *            the class to annotate.
      * @throws IOException
-     *             If an IO exception happened when annotating the class.
-     * 
-     * @see ObjectInputStream#resolveClass
+     *             if an error occurs while writing to the target stream.
+     * @see ObjectInputStream#resolveClass(ObjectStreamClass)
      */
     protected void annotateClass(Class<?> aClass) throws IOException {
         // By default no extra info is saved. Subclasses can override
     }
 
     /**
-     * Writes optional information for a proxy class into the stream represented
-     * by the receiver. This optional data can be read when deserializing the
-     * proxy class from the input stream. By default no extra data is saved.
+     * Writes optional information for a proxy class to the target stream. This
+     * optional data can be read when deserializing the proxy class from an
+     * input stream. By default, no extra data is saved.
      * 
      * @param aClass
-     *            The proxy class to annotate
-     * 
+     *            the proxy class to annotate.
      * @throws IOException
-     *             If an IO exception happened when annotating the class.
-     * 
-     * @see ObjectInputStream#resolveProxyClass
+     *             if an error occurs while writing to the target stream.
+     * @see ObjectInputStream#resolveProxyClass(String[])
      */
     protected void annotateProxyClass(Class<?> aClass) throws IOException {
         // By default no extra info is saved. Subclasses can override
@@ -277,11 +366,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Close this ObjectOutputStream. Any buffered data is flushed. This
-     * implementation closes the target stream.
+     * Closes this stream. Any buffered data is flushed. This implementation
+     * closes the target stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this stream.
+     *             if an error occurs while closing this stream.
      */
     @Override
     public void close() throws IOException {
@@ -303,12 +392,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Default method to write objects into the receiver. Fields defined in the
-     * object's class and superclasses (which are Serializable) will be saved.
+     * Default method to write objects to this stream. Serializable fields
+     * defined in the object's class and superclasses are written to the output
+     * stream.
      * 
      * @throws IOException
-     *             If an IO error occurs attempting to write the object data
-     * 
+     *             if an error occurs while writing to the target stream.
+     * @throws NotActiveException
+     *             if this method is not called from {@code writeObject()}.
      * @see ObjectInputStream#defaultReadObject
      */
     public void defaultWriteObject() throws IOException {
@@ -320,10 +411,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Flushes buffered primitive data into the receiver.
+     * Writes buffered data to the target stream. This is similar to {@code
+     * flush} but the flush is not propagated to the target stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to drain the data
+     *             if an error occurs while writing to the target stream.
      */
     protected void drain() throws IOException {
         if (primitiveTypes == null || primitiveTypesBuffer == null) {
@@ -356,19 +448,19 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Dumps the parameter <code>obj</code> only if it is <code>null</code>
+     * Dumps the parameter {@code obj} only if it is {@code null}
      * or an object that has already been dumped previously.
      * 
      * @param obj
      *            Object to check if an instance previously dumped by this
      *            stream.
      * @return null if it is an instance which has not been dumped yet (and this
-     *         method does nothing). Integer, if <code>obj</code> is an
+     *         method does nothing). Integer, if {@code obj} is an
      *         instance which has been dumped already. In this case this method
      *         saves the cyclic reference.
      * 
      * @throws IOException
-     *             If an error occurs attempting to save <code>null</code> or
+     *             If an error occurs attempting to save {@code null} or
      *             a cyclic reference.
      */
     private Integer dumpCycle(Object obj) throws IOException {
@@ -382,18 +474,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Enables/disables object replacement for the receiver. By default this is
-     * not enabled. Only trusted subclasses (loaded with system class loader)
-     * can override this behavior.
+     * Enables object replacement for this stream. By default this is not
+     * enabled. Only trusted subclasses (loaded with system class loader) are
+     * allowed to change this status.
      * 
      * @param enable
-     *            if true, enables replacement. If false, disables replacement.
-     * @return boolean the previous configuration (if it was enabled or
-     *         disabled)
-     * 
+     *            {@code true} to enable object replacement; {@code false} to
+     *            disable it.
+     * @return the previous setting.
      * @throws SecurityException
-     *             If the class of the receiver is not trusted
-     * 
+     *             if a security manager is installed and it denies enabling
+     *             object replacement for this stream.
      * @see #replaceObject
      * @see ObjectInputStream#enableResolveObject
      */
@@ -413,12 +504,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Flush this ObjectOutputStream. Any pending writes to the underlying
-     * stream are written out when this method is invoked.
+     * Writes buffered data to the target stream and calls the {@code flush}
+     * method of the target stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to flush this
-     *             ObjectOutputStream.
+     *             if an error occurs while writing to or flushing the output
+     *             stream.
      */
     @Override
     public void flush() throws IOException {
@@ -438,18 +529,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Return the <code>PutField</code> object for the receiver. This allows
-     * users to transfer values from actual object fields in the object being
-     * dumped to the emulated fields represented by the <code>PutField</code>
-     * returned by this method.
+     * Gets this stream's {@code PutField} object. This object provides access
+     * to the persistent fields that are eventually written to the output
+     * stream. It is used to transfer the values from the fields of the object
+     * that is currently being written to the persistent fields.
      * 
-     * @return the PutFieldObject for the receiver
-     * 
+     * @return the PutField object from which persistent fields can be accessed
+     *         by name.
      * @throws IOException
-     *             If an IO error occurs
+     *             if an I/O error occurs.
      * @throws NotActiveException
-     *             If this method is not called from writeObject()
-     * 
+     *             if this method is not called from {@code writeObject()}.
      * @see ObjectInputStream#defaultReadObject
      */
     public PutField putFields() throws IOException {
@@ -464,9 +554,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Assume object <code>obj</code> has not been dumped yet, and assign a
+     * Assume object {@code obj} has not been dumped yet, and assign a
      * handle to it
-     * 
+     *
      * @param obj
      *            Non-null object being dumped.
      * @return the handle that this object is being assigned.
@@ -497,17 +587,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * If <code>enableReplaceObject()</code> was activated, computes the
-     * replacement object for the original object <code>object</code> and
-     * returns the replacement. Otherwise returns <code>object</code>.
-     * 
+     * Allows trusted subclasses to substitute the specified original {@code
+     * object} with a new object. Object substitution has to be activated first
+     * with calling {@code enableReplaceObject(true)}. This implementation just
+     * returns {@code object}.
+     *
      * @param object
-     *            Original object for which a replacement may be defined
-     * @return a possibly new, replacement object for <code>object</code>
-     * 
+     *            the original object for which a replacement may be defined.
+     * @return the replacement object for {@code object}.
      * @throws IOException
-     *             If any IO problem occurred when trying to resolve the object.
-     * 
+     *             if any I/O error occurs while creating the replacement
+     *             object.
      * @see #enableReplaceObject
      * @see ObjectInputStream#enableResolveObject
      * @see ObjectInputStream#resolveObject
@@ -518,13 +608,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Reset the receiver. A marker is written to the stream, so that
-     * deserialization will also perform a rest at the same point. Objects
-     * previously written are no longer remembered, so they will be written
-     * again (instead of a cyclical reference) if found in the object graph.
+     * Resets the state of this stream. A marker is written to the stream, so
+     * that the corresponding input stream will also perform a reset at the same
+     * point. Objects previously written are no longer remembered, so they will
+     * be written again (instead of a cyclical reference) if found in the object
+     * graph.
      * 
      * @throws IOException
-     *             If any IO problem occurred when trying to reset the receiver
+     *             if {@code reset()} is called during the serialization of an
+     *             object.
      */
     public void reset() throws IOException {
         // First we flush what we have
@@ -561,13 +653,18 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Set the receiver to use the given protocol version.
+     * Sets the specified protocol version to be used by this stream.
      * 
      * @param version
-     *            protocol version to be used
-     * 
+     *            the protocol version to be used. Use a {@code
+     *            PROTOCOL_VERSION_x} constant from {@code
+     *            java.io.ObjectStreamConstants}.
+     * @throws IllegalArgumentException
+     *             if an invalid {@code version} is specified.
      * @throws IOException
-     *             If an IO error occurs
+     *             if an I/O error occurs.
+     * @see ObjectStreamConstants#PROTOCOL_VERSION_1
+     * @see ObjectStreamConstants#PROTOCOL_VERSION_2
      */
     public void useProtocolVersion(int version) throws IOException {
         if (!objectsWritten.isEmpty()) {
@@ -583,15 +680,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Writes the entire contents of the byte array <code>buffer</code> to
-     * this ObjectOutputStream.
+     * Writes the entire contents of the byte array {@code buffer} to the output
+     * stream. Blocks until all bytes are written.
      * 
      * @param buffer
-     *            the buffer to be written
-     * 
+     *            the buffer to write.
      * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             ObjectOutputStream.
+     *             if an error occurs while writing to the target stream.
      */
     @Override
     public void write(byte[] buffer) throws IOException {
@@ -600,19 +695,19 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Writes <code>length</code> <code>bytes</code> from the byte array
-     * <code>buffer</code> starting at offset <code>offset</code> to the
-     * ObjectOutputStream.
+     * Writes {@code count} bytes from the byte array {@code buffer} starting at
+     * offset {@code index} to the target stream. Blocks until all bytes are
+     * written.
      * 
      * @param buffer
-     *            the buffer to be written
+     *            the buffer to write.
      * @param offset
-     *            offset in buffer to get bytes
+     *            the index of the first byte in {@code buffer} to write.
      * @param length
-     *            number of bytes in buffer to write
-     * 
+     *            the number of bytes from {@code buffer} to write to the output
+     *            stream.
      * @throws IOException
-     *             If an error occurs attempting to write to this OutputStream.
+     *             if an error occurs while writing to the target stream.
      */
     @Override
     public void write(byte[] buffer, int offset, int length) throws IOException {
@@ -621,14 +716,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write one byte (<code>value</code>) into the receiver's underlying
-     * stream.
+     * Writes a single byte to the target stream. Only the least significant
+     * byte of the integer {@code value} is written to the stream. Blocks until
+     * the byte is actually written.
      * 
      * @param value
-     *            The primitive data to write. Only the lower byte is written.
-     * 
+     *            the byte to write.
      * @throws IOException
-     *             If an IO exception happened when writing the byte.
+     *             if an error occurs while writing to the target stream.
      */
     @Override
     public void write(int value) throws IOException {
@@ -637,14 +732,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type boolean (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a boolean to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the boolean value to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeBoolean(boolean value) throws IOException {
         checkWritePrimitiveTypes();
@@ -652,14 +745,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type byte (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a byte (8 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the byte to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeByte(int value) throws IOException {
         checkWritePrimitiveTypes();
@@ -667,15 +758,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write a String as a sequence of bytes (only lower-order 8 bits of each
-     * char are written), as primitive data (<code>value</code>) into the
-     * receiver's underlying stream.
+     * Writes the string {@code value} as a sequence of bytes to the target
+     * stream. Only the least significant byte of each character in the string
+     * is written.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the string to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeBytes(String value) throws IOException {
         checkWritePrimitiveTypes();
@@ -683,14 +773,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type char (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a character (16 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the character to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeChar(int value) throws IOException {
         checkWritePrimitiveTypes();
@@ -698,14 +786,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write a String as a sequence of char, as primitive data (<code>value</code>)
-     * into the receiver's underlying stream.
+     * Writes the string {@code value} as a sequence of characters to the target
+     * stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the string to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeChars(String value) throws IOException {
         checkWritePrimitiveTypes();
@@ -713,11 +800,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write a class descriptor <code>classDesc</code> (an
-     * <code>ObjectStreamClass</code>) to the stream.
+     * Write a class descriptor {@code classDesc} (an
+     * {@code ObjectStreamClass}) to the stream.
      * 
      * @param classDesc
-     *            The class descriptor (an <code>ObjectStreamClass</code>) to
+     *            The class descriptor (an {@code ObjectStreamClass}) to
      *            be dumped
      * @param unshared
      *            Write the object unshared
@@ -805,14 +892,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type double (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a double (64 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the double to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeDouble(double value) throws IOException {
         checkWritePrimitiveTypes();
@@ -821,11 +906,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     /**
      * Writes a collection of field descriptors (name, type name, etc) for the
-     * class descriptor <code>classDesc</code> (an
-     * <code>ObjectStreamClass</code>)
+     * class descriptor {@code classDesc} (an
+     * {@code ObjectStreamClass})
      * 
      * @param classDesc
-     *            The class descriptor (an <code>ObjectStreamClass</code>)
+     *            The class descriptor (an {@code ObjectStreamClass})
      *            for which to write field information
      * @param externalizable
      *            true if the descriptors are externalizable
@@ -863,14 +948,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write the fields of the object being dumped. The stream will use the
-     * currently active <code>PutField</code> object, allowing users to dump
-     * emulated fields, for cross-loading compatibility when a class definition
-     * changes.
+     * Writes the fields of the object currently being written to the target
+     * stream. The field values are buffered in the currently active {@code
+     * PutField} object, which can be accessed by calling {@code putFields()}.
      * 
      * @throws IOException
-     *             If an IO error occurs
-     * 
+     *             if an error occurs while writing to the target stream.
+     * @throws NotActiveException
+     *             if there are no fields to write to the target stream.
      * @see #putFields
      */
     public void writeFields() throws IOException {
@@ -883,11 +968,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     /**
      * Writes a collection of field values for the emulated fields
-     * <code>emulatedFields</code>
+     * {@code emulatedFields}
      * 
      * @param emulatedFields
-     *            an <code>EmulatedFieldsForDumping</code>, concrete subclass
-     *            of <code>PutField</code>
+     *            an {@code EmulatedFieldsForDumping}, concrete subclass
+     *            of {@code PutField}
      * 
      * @throws IOException
      *             If an IO exception happened when writing the field values.
@@ -940,15 +1025,15 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     /**
      * Writes a collection of field values for the fields described by class
-     * descriptor <code>classDesc</code> (an <code>ObjectStreamClass</code>).
+     * descriptor {@code classDesc} (an {@code ObjectStreamClass}).
      * This is the default mechanism, when emulated fields (an
-     * <code>PutField</code>) are not used. Actual values to dump are fetched
-     * directly from object <code>obj</code>.
+     * {@code PutField}) are not used. Actual values to dump are fetched
+     * directly from object {@code obj}.
      * 
      * @param obj
      *            Instance from which to fetch field values to dump.
      * @param classDesc
-     *            A class descriptor (an <code>ObjectStreamClass</code>)
+     *            A class descriptor (an {@code ObjectStreamClass})
      *            defining which fields should be dumped.
      * 
      * @throws IOException
@@ -1018,14 +1103,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type float (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a float (32 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the float to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeFloat(float value) throws IOException {
         checkWritePrimitiveTypes();
@@ -1034,17 +1117,17 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     /**
      * Walks the hierarchy of classes described by class descriptor
-     * <code>classDesc</code> and writes the field values corresponding to
+     * {@code classDesc} and writes the field values corresponding to
      * fields declared by the corresponding class descriptor. The instance to
-     * fetch field values from is <code>object</code>. If the class
-     * (corresponding to class descriptor <code>classDesc</code>) defines
-     * private instance method <code>writeObject</code> it will be used to
+     * fetch field values from is {@code object}. If the class
+     * (corresponding to class descriptor {@code classDesc}) defines
+     * private instance method {@code writeObject} it will be used to
      * dump field values.
      * 
      * @param object
      *            Instance from which to fetch field values to dump.
      * @param classDesc
-     *            A class descriptor (an <code>ObjectStreamClass</code>)
+     *            A class descriptor (an {@code ObjectStreamClass})
      *            defining which fields should be dumped.
      * 
      * @throws IOException
@@ -1115,14 +1198,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type int (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes an integer (32 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the integer to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeInt(int value) throws IOException {
         checkWritePrimitiveTypes();
@@ -1130,14 +1211,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type long (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a long (64 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the long to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeLong(long value) throws IOException {
         checkWritePrimitiveTypes();
@@ -1145,18 +1224,18 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write array <code>array</code> of class <code>arrayClass</code> with
-     * component type <code>componentType</code> into the receiver. It is
-     * assumed the array has not been dumped yet. Return an <code>Integer</code>
+     * Write array {@code array} of class {@code arrayClass} with
+     * component type {@code componentType} into the receiver. It is
+     * assumed the array has not been dumped yet. Return an {@code Integer}
      * that represents the handle for this object (array) which is dumped here.
      * 
      * @param array
      *            The array object to dump
      * @param arrayClass
-     *            A <code>java.lang.Class</code> representing the class of the
+     *            A {@code java.lang.Class} representing the class of the
      *            array
      * @param componentType
-     *            A <code>java.lang.Class</code> representing the array
+     *            A {@code java.lang.Class} representing the array
      *            component type
      * @return the handle assigned to the array
      * 
@@ -1247,14 +1326,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write class <code>object</code> into the receiver. It is assumed the
+     * Write class {@code object} into the receiver. It is assumed the
      * class has not been dumped yet. Classes are not really dumped, but a class
-     * descriptor (<code>ObjectStreamClass</code>) that corresponds to them.
-     * Return an <code>Integer</code> that represents the handle for this
+     * descriptor ({@code ObjectStreamClass}) that corresponds to them.
+     * Return an {@code Integer} that represents the handle for this
      * object (class) which is dumped here.
      * 
      * @param object
-     *            The <code>java.lang.Class</code> object to dump
+     *            The {@code java.lang.Class} object to dump
      * @return the handle assigned to the class being dumped
      * 
      * @throws IOException
@@ -1289,14 +1368,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write class descriptor <code>classDesc</code> into the receiver. It is
+     * Write class descriptor {@code classDesc} into the receiver. It is
      * assumed the class descriptor has not been dumped yet. The class
      * descriptors for the superclass chain will be dumped as well. Return an
-     * <code>Integer</code> that represents the handle for this object (class
+     * {@code Integer} that represents the handle for this object (class
      * descriptor) which is dumped here.
      * 
      * @param classDesc
-     *            The <code>ObjectStreamClass</code> object to dump
+     *            The {@code ObjectStreamClass} object to dump
      * 
      * @throws IOException
      *             If an IO exception happened when writing the class
@@ -1329,14 +1408,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write class descriptor <code>classDesc</code> into the receiver.
+     * Writes a class descriptor to the target stream.
      * 
      * @param classDesc
-     *            The <code>ObjectStreamClass</code> object to dump
-     * 
+     *            the class descriptor to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the class
-     *             descriptor.
+     *             if an error occurs while writing to the target stream.
      */
     protected void writeClassDescriptor(ObjectStreamClass classDesc)
             throws IOException {
@@ -1344,8 +1421,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write exception <code>ex</code> into the receiver. It is assumed the
-     * exception has not been dumped yet. Return an <code>Integer</code> that
+     * Write exception {@code ex} into the receiver. It is assumed the
+     * exception has not been dumped yet. Return an {@code Integer} that
      * represents the handle for this object (exception) which is dumped here.
      * This is used to dump the exception instance that happened (if any) when
      * dumping the original object graph. The set of seen objects will be reset
@@ -1370,21 +1447,21 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write object <code>object</code> of class <code>theClass</code> into
+     * Write object {@code object} of class {@code theClass} into
      * the receiver. It is assumed the object has not been dumped yet. Return an
-     * <code>Integer</code> that represents the handle for this object which
+     * {@code Integer} that represents the handle for this object which
      * is dumped here.
      * 
-     * If the object implements <code>Externalizable</code> its
-     * <code>writeExternal</code> is called. Otherwise, all fields described
+     * If the object implements {@code Externalizable} its
+     * {@code writeExternal} is called. Otherwise, all fields described
      * by the class hierarchy is dumped. Each class can define how its declared
      * instance fields are dumped by defining a private method
-     * <code>writeObject</code>
+     * {@code writeObject}
      * 
      * @param object
      *            The object to dump
      * @param theClass
-     *            A <code>java.lang.Class</code> representing the class of the
+     *            A {@code java.lang.Class} representing the class of the
      *            object
      * @param unshared
      *            Write the object unshared
@@ -1463,13 +1540,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
     
     /**
-     * Write String <code>object</code> into the receiver. It is assumed the
-     * String has not been dumped yet. Return an <code>Integer</code> that
+     * Write String {@code object} into the receiver. It is assumed the
+     * String has not been dumped yet. Return an {@code Integer} that
      * represents the handle for this object (String) which is dumped here.
-     * Strings are saved in UTF format.
+     * Strings are saved encoded with {@link DataInput modified UTF-8}.
      * 
      * @param object
-     *            The <code>java.lang.String</code> object to dump
+     *            the string to dump.
      * @return the handle assigned to the String being dumped
      * 
      * @throws IOException
@@ -1497,26 +1574,24 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write a special tag that indicates the value <code>null</code> into the
+     * Write a special tag that indicates the value {@code null} into the
      * receiver.
      * 
      * @throws IOException
      *             If an IO exception happened when writing the tag for
-     *             <code>null</code>.
+     *             {@code null}.
      */
     private void writeNull() throws IOException {
         output.writeByte(TC_NULL);
     }
 
     /**
-     * Write object <code>object</code> into the receiver's underlying stream.
+     * Writes an object to the target stream.
      * 
      * @param object
-     *            The object to write
-     * 
+     *            the object to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the object
-     * 
+     *             if an error occurs while writing to the target stream.
      * @see ObjectInputStream#readObject()
      */
     public final void writeObject(Object object) throws IOException {
@@ -1524,16 +1599,16 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write object <code>object</code> into the receiver's underlying stream
-     * unshared with previously written identical objects.
+     * Writes an unshared object to the target stream. This method is identical
+     * to {@code writeObject}, except that it always writes a new object to the
+     * stream versus the use of back-referencing for identical objects by
+     * {@code writeObject}.
      * 
      * @param object
-     *            The object to write
-     * 
+     *            the object to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the object
-     * 
-     * @see ObjectInputStream#readObject()
+     *             if an error occurs while writing to the target stream.
+     * @see ObjectInputStream#readUnshared()
      */
     public void writeUnshared(Object object) throws IOException {
         writeObject(object, true);
@@ -1577,7 +1652,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write object <code>object</code> into the receiver's underlying stream.
+     * Write object {@code object} into the receiver's underlying stream.
      * 
      * @param object
      *            The object to write
@@ -1819,14 +1894,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Method to be overridden by subclasses to write <code>object</code> into
-     * the receiver's underlying stream.
+     * Method to be overridden by subclasses to write {@code object} to the
+     * target stream.
      * 
      * @param object
-     *            the object
-     * 
+     *            the object to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the object
+     *             if an error occurs while writing to the target stream.
      */
     protected void writeObjectOverride(Object object) throws IOException {
         if (!subclassOverridingImplementation) {
@@ -1836,14 +1910,12 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type short (<code>value</code>)into the
-     * receiver's underlying stream.
+     * Writes a short (16 bit) to the target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the short to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeShort(int value) throws IOException {
         checkWritePrimitiveTypes();
@@ -1851,10 +1923,10 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Writes the ObjectOutputStream header into the underlying stream.
+     * Writes the {@link ObjectOutputStream} header to the target stream.
      * 
      * @throws IOException
-     *             If an IO exception happened when writing the stream header.
+     *             if an error occurs while writing to the target stream.
      */
     protected void writeStreamHeader() throws IOException {
         output.writeShort(STREAM_MAGIC);
@@ -1862,14 +1934,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
     }
 
     /**
-     * Write primitive data of type String (<code>value</code>) in UTF
-     * format into the receiver's underlying stream.
+     * Writes a string encoded with {@link DataInput modified UTF-8} to the
+     * target stream.
      * 
      * @param value
-     *            The primitive data to write
-     * 
+     *            the string to write to the target stream.
      * @throws IOException
-     *             If an IO exception happened when writing the primitive data.
+     *             if an error occurs while writing to the target stream.
      */
     public void writeUTF(String value) throws IOException {
         checkWritePrimitiveTypes();
