@@ -19,14 +19,15 @@ package java.lang;
 
 
 /**
- * The runnable interface must be implemented by all classes which want to be
- * run as threads.
- * 
- * @see Thread
+ * Represents a command that can be executed. Often used to run code in a
+ * different {@link Thread}.
  */
 public interface Runnable {
-	/**
-	 * Begin doing the active part of the class' code.
-	 */
-	public void run();
+
+    /**
+     * Starts executing the active part of the class' code. This method is
+     * called when a thread is started that has been created with a class which
+     * implements {@code Runnable}.
+     */
+    public void run();
 }

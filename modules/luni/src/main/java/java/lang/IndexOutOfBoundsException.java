@@ -17,31 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when a program attempts to access a value in
- * an indexable collection using a value which is outside the possible range of
- * indices.
+ * Thrown when a program attempts to access a value in an indexable collection
+ * using a value which is outside of the range of valid indices.
  */
 public class IndexOutOfBoundsException extends RuntimeException {
 
     private static final long serialVersionUID = 234122996006267687L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IndexOutOfBoundsException() {
-		super();
-	}
+     * Constructs a new {@code IndexOutOfBoundsException} that includes the
+     * current stack trace.
+     */
+    public IndexOutOfBoundsException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IndexOutOfBoundsException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IndexOutOfBoundsException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IndexOutOfBoundsException(String detailMessage) {
+        super(detailMessage);
+    }
 }

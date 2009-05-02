@@ -22,9 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that indicates a compiler should suppress any warnings of the
- * type specified in the {@link #value()}.
- * 
+ * Annotation type used to indicate that the compiler should not issue the
+ * specified warnings for the marked program element. Warnings are not only
+ * suppressed for the annotated element but also for all program elements
+ * contained in that element.
+ * <p>
+ * It is recommended that programmers always use this annotation on the most
+ * deeply nested element where it is actually needed.
+ *
  * @since 1.5
  */
 @Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
@@ -34,10 +39,7 @@ import java.lang.annotation.Target;
 public @interface SuppressWarnings {
 
     /**
-     * Answers the array of warnings that compilers should suppress for the
-     * annotated element.
-     * 
-     * @return an array of warning types to suppress.
+     * The list of warnings a compiler should not issue.
      */
     public String[] value();
 }

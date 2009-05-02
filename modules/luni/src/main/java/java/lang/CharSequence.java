@@ -19,48 +19,56 @@ package java.lang;
 
 
 /**
- * The CharSequence interface represents an ordered set of characters and the
- * functions to probe them.
+ * This interface represents an ordered set of characters and defines the
+ * methods to probe them.
  */
 public interface CharSequence {
 
-	/**
-	 * Answers the number of characters in the sequence.
-	 * 
-	 * @return the number of characters in the sequence
-	 */
-	public int length();
+    /**
+     * Returns the number of characters in this sequence.
+     * 
+     * @return the number of characters.
+     */
+    public int length();
 
-	/**
-	 * Answers the character at the specified index (0-based indexing).
-	 * 
-	 * @param index -
-	 *            of the character to return
-	 * @return character indicated by index
-	 * @throws IndexOutOfBoundsException
-	 *             when <code>index &lt 0</code> or
-	 *             <code>index</code> &gt= the length of the <code>CharSequence</code>
-	 */
-	public char charAt(int index);
+    /**
+     * Returns the character at the specified index, with the first character
+     * having index zero.
+     * 
+     * @param index
+     *            the index of the character to return.
+     * @return the requested character.
+     * @throws IndexOutOfBoundsException
+     *             if {@code index < 0} or {@code index} is greater than the
+     *             length of this sequence.
+     */
+    public char charAt(int index);
 
-	/**
-	 * Answers a CharSequence from the <code>start</code> index to the
-	 * <code>end</code> index of this sequence.
-	 *
-	 * @param		start -- index of the start of the sub-sequence to return
-	 * @param		end -- index of the end of the sub-sequence to return
-	 * @return		the sub sequence from start to end
-	 * @throws		IndexOutOfBoundsException when 1. either index is below 0
-	 * 				2. either index >= <code>this.length()</code>
-	 * 				3. <code>start > end </code>
-	 */
-	public CharSequence subSequence(int start, int end);
+    /**
+     * Returns a {@code CharSequence} from the {@code start} index (inclusive)
+     * to the {@code end} index (exclusive) of this sequence.
+     * 
+     * @param start
+     *            the start offset of the sub-sequence. It is inclusive, that
+     *            is, the index of the first character that is included in the
+     *            sub-sequence.
+     * @param end
+     *            the end offset of the sub-sequence. It is exclusive, that is,
+     *            the index of the first character after those that are included
+     *            in the sub-sequence
+     * @return the requested sub-sequence.
+     * @throws IndexOutOfBoundsException
+     *             if {@code start < 0}, {@code end < 0}, {@code start > end},
+     *             or if {@code start} or {@code end} are greater than the
+     *             length of this sequence.
+     */
+    public CharSequence subSequence(int start, int end);
 
-	/**
-	 * Answers a String with the same characters and ordering of this
-	 * CharSequence
-	 * 
-	 * @return a String based on the CharSequence
-	 */
-	public String toString();
+    /**
+     * Returns a string with the same characters in the same order as in this
+     * sequence.
+     * 
+     * @return a string based on this sequence.
+     */
+    public String toString();
 }

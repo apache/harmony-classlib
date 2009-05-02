@@ -18,13 +18,11 @@
 package java.lang.ref;
 
 /**
- * The implementation of this class is provided. The non-public implementation
- * details are documented so the VM vendor can use the implementation.
- * 
- * ReferenceQueue is the container on which reference objects are enqueued when
- * their reachability type is detected for the referent.
- * 
- * @since JDK1.2
+ * The {@code ReferenceQueue} is the container on which reference objects are
+ * enqueued when the garbage collector detects the reachability type specified
+ * for the referent.
+ *
+ * @since 1.2
  */
 public class ReferenceQueue<T> {
     
@@ -55,10 +53,11 @@ public class ReferenceQueue<T> {
     }
 
 	/**
-	 * Returns the next available reference from the queue if one is enqueued,
-	 * null otherwise. Does not wait for a reference to become available.
-	 * 
-	 * @return Reference next available Reference or NULL.
+     * Returns the next available reference from the queue, removing it in the
+     * process. Does not wait for a reference to become available.
+     *
+     * @return the next available reference, or {@code null} if no reference is
+     *         immediately available
 	 */
 	public Reference<? extends T> poll() {
 		Reference<? extends T> ref;
@@ -80,29 +79,33 @@ public class ReferenceQueue<T> {
 	}
 
 	/**
-	 * Return the next available enqueued reference on the queue, blocking
-	 * indefinitely until one is available.
-	 * 
-	 * @return Reference a Reference object if one is available, null otherwise.
-	 * @exception InterruptedException
-	 *                to interrupt the wait.
+     * Returns the next available reference from the queue, removing it in the
+     * process. Waits indefinitely for a reference to become available.
+     *
+     * @return the next available reference
+     *
+     * @throws InterruptedException
+     *             if the blocking call was interrupted for some reason
 	 */
 	public Reference<? extends T> remove() throws InterruptedException {
 		return remove(0L);
 	}
 
 	/**
-	 * Return the next available enqueued reference on the queue, blocking up to
-	 * the time given until one is available. Return null if no reference became
-	 * available.
-	 * 
-	 * @param timeout
-	 *            maximum time spent waiting for a reference object to become
-	 *            available.
-	 * @return Reference a Reference object if one is available, null otherwise.
-	 * @exception IllegalArgumentException
-	 *                if the wait period is negative. InterruptedException to
-	 *                interrupt the wait.
+     * Returns the next available reference from the queue, removing it in the
+     * process. Waits for a reference to become available or the given timeout
+     * period to elapse, whichever happens first.
+     *
+     * @param timeout
+     *            maximum time (in ms) to spend waiting for a reference object
+     *            to become available. A value of zero results in the method
+     *            waiting indefinitely.
+     * @return the next available reference, or {@code null} if no reference
+     *         becomes available within the timeout period
+     * @throws IllegalArgumentException
+     *             if the wait period is negative.
+     * @throws InterruptedException
+     *             if the blocking call was interrupted for some reason
 	 */
 	public Reference<? extends T> remove(long timeout) throws IllegalArgumentException,
 			InterruptedException {
@@ -134,7 +137,7 @@ public class ReferenceQueue<T> {
 
 	/**
 	 * Enqueue the reference object on the receiver.
-	 * 
+	 *
 	 * @param reference
 	 *            reference object to be enqueued.
 	 * @return boolean true if reference is enqueued. false if reference failed

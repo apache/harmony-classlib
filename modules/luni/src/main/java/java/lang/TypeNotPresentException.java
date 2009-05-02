@@ -17,29 +17,27 @@
 package java.lang;
 
 /**
- * <p>
- * Indicates that a class, interface, enum or annotation type cannot be found.
- * This exception is an unchecked alternative to
+ * Thrown when a program tries to access a class, interface, enum or annotation
+ * type through a string that contains the type's name and the type cannot be
+ * found. This exception is an unchecked alternative to
  * {@link java.lang.ClassNotFoundException}.
- * </p>
- * 
+ *
  * @since 1.5
- * @author Nathan Beyer (Harmony)
  */
 public class TypeNotPresentException extends RuntimeException {
-	private static final long serialVersionUID = -5101214195716534496L;
+    private static final long serialVersionUID = -5101214195716534496L;
 
     private String typeName;
 
     /**
-     * <p>
-     * Constructs an instance will a fully qualified type name and an optional
-     * cause.
-     * </p>
+     * Constructs a new {@code TypeNotPresentException} with the current stack
+     * trace, a detail message that includes the name of the type that could not
+     * be found and the {@code Throwable} that caused this exception.
      * 
-     * @param typeName The fully qualified type name.
-     * @param cause The <code>Throwable</code> that caused this exception or
-     *        <code>null</code>.
+     * @param typeName
+     *            the fully qualified name of the type that could not be found.
+     * @param cause
+     *            the optional cause of this exception, may be {@code null}.
      */
     public TypeNotPresentException(String typeName, Throwable cause) {
         super("Type " + typeName + " not present", cause);
@@ -47,11 +45,9 @@ public class TypeNotPresentException extends RuntimeException {
     }
 
     /**
-     * <p>
-     * The fully qualified type name.
-     * </p>
+     * Gets the fully qualified name of the type that could not be found.
      * 
-     * @return A String instance.
+     * @return the name of the type that caused this exception.
      */
     public String typeName() {
         return typeName;

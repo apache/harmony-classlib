@@ -17,32 +17,32 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the VM notices that a an attempt is being made to
- * access a field which is not accessable from where it is referenced.
+ * Thrown when the virtual machine notices that a program tries access a field
+ * which is not accessible from where it is referenced.
  * <p>
- * Note that this can only occur when inconsistant class files are being loaded.
+ * Note that this can only occur when inconsistent class files have been loaded.
  */
 public class IllegalAccessError extends IncompatibleClassChangeError {
 
     private static final long serialVersionUID = -8988904074992417891L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IllegalAccessError() {
-		super();
-	}
+     * Constructs a new {@code IllegalAccessError} that includes the current
+     * stack trace.
+     */
+    public IllegalAccessError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IllegalAccessError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IllegalAccessError} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public IllegalAccessError(String detailMessage) {
+        super(detailMessage);
+    }
 }

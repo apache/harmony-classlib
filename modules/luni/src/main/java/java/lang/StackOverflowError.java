@@ -17,11 +17,10 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the depth of the callstack of the running program
- * excedes some platform or virtual machine specific limit. Typically, this will
- * occur only when a program becomes infinitely recursive, but can occur in
+ * Thrown when the depth of the callstack of the running program excedes some
+ * platform or virtual machine specific limit. Typically, this will occur only
+ * when a program becomes infinitely recursive, but it can also occur in
  * correctly written (but deeply recursive) programs.
  */
 public class StackOverflowError extends java.lang.VirtualMachineError {
@@ -29,20 +28,21 @@ public class StackOverflowError extends java.lang.VirtualMachineError {
     private static final long serialVersionUID = 8609175038441759607L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public StackOverflowError() {
-		super();
-	}
+     * Constructs a new {@code StackOverflowError} that includes the current
+     * stack trace.
+     */
+    public StackOverflowError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public StackOverflowError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code StackOverflowError} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public StackOverflowError(String detailMessage) {
+        super(detailMessage);
+    }
 }

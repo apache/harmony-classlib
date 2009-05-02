@@ -17,32 +17,34 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when an attempt is made to access a field or
- * method of an instance or an element of an array when there is no instance or
- * array to use (i.e. the pointer is null).
+ * Thrown when a program tries to access a field or method of an object or an
+ * element of an array when there is no instance or array to use, that is if the
+ * object or array points to {@code null}. It also occurs in some other, less
+ * obvious circumstances, like a {@code throw e} statement where the {@link
+ * Throwable} reference is {@code null}.
  */
 public class NullPointerException extends RuntimeException {
 
     private static final long serialVersionUID = 5162710183389028792L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public NullPointerException() {
-		super();
-	}
+     * Constructs a new {@code NullPointerException} that includes the current
+     * stack trace.
+     */
+    public NullPointerException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public NullPointerException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code NullPointerException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public NullPointerException(String detailMessage) {
+        super(detailMessage);
+    }
 
 }

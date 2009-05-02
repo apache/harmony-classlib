@@ -17,30 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when an attempt is made to load a class with a format
- * version that is not supported by the VM.
+ * Thrown when an attempt is made to load a class with a format version that is
+ * not supported by the virtual machine.
  */
 public class UnsupportedClassVersionError extends ClassFormatError {
 
     private static final long serialVersionUID = -7123279212883497373L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public UnsupportedClassVersionError() {
-		super();
-	}
+     * Constructs a new {@code UnsupportedClassVersionError} that includes the
+     * current stack trace.
+     */
+    public UnsupportedClassVersionError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public UnsupportedClassVersionError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code UnsupportedClassVersionError} with the current
+     * stack trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public UnsupportedClassVersionError(String detailMessage) {
+        super(detailMessage);
+    }
 }

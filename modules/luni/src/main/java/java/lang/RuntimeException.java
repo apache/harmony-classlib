@@ -17,54 +17,57 @@
 
 package java.lang;
 
-
 /**
- * This class is the superclass of all classes which represent exceptional
- * conditions which occur as a result of the running of the virtual machine.
+ * {@code RuntimeException} is the superclass of all classes that represent
+ * exceptional conditions which occur as a result of executing an application in
+ * the virtual machine. Unlike checked exceptions (exceptions where the type
+ * doesn't extend {@code RuntimeException} or {@link Error}), the compiler does
+ * not require code to handle runtime exceptions.
  */
 public class RuntimeException extends Exception {
-	
-	private static final long serialVersionUID = -7034897190745766939L;
+    
+    private static final long serialVersionUID = -7034897190745766939L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public RuntimeException() {
-		super();
-	}
+    /**
+     * Constructs a new {@code RuntimeException} that includes the current stack
+     * trace.
+     */
+    public RuntimeException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public RuntimeException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code RuntimeException} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public RuntimeException(String detailMessage) {
+        super(detailMessage);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * cause filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param throwable
-	 *            The cause of this Throwable
-	 */
-	public RuntimeException(String detailMessage, Throwable throwable) {
-		super(detailMessage, throwable);
-	}
+   /**
+     * Constructs a new {@code RuntimeException} with the current stack trace,
+     * the specified detail message and the specified cause.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     * @param throwable
+     *            the cause of this exception.
+     */
+    public RuntimeException(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and cause
-	 * filled in.
-	 * 
-	 * @param throwable
-	 *            The cause of this Throwable
-	 */
-	public RuntimeException(Throwable throwable) {
-		super(throwable);
-	}
+    /**
+     * Constructs a new {@code RuntimeException} with the current stack trace
+     * and the specified cause.
+     * 
+     * @param throwable
+     *            the cause of this exception.
+     */
+    public RuntimeException(Throwable throwable) {
+        super(throwable);
+    }
 }

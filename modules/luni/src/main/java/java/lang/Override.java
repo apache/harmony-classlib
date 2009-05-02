@@ -22,10 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation to indicate that a method is intended to override a superclass
- * method. This provides a compile-time assertion that a method actually
- * overrides the superclass method.
- * 
+ * Annotation type used to mark methods that override a method declaration in a
+ * superclass. Compilers produce an error if a method annotated with @Override
+ * does not actually override a method in a superclass.
+ *
  * @since 1.5
  */
 @Target(ElementType.METHOD)

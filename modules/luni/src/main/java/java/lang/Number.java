@@ -19,62 +19,67 @@ package java.lang;
 
 
 /**
- * Number is the abstract superclass of the classes which represent numeric base
- * types (i.e. all but Character, Boolean, and Void).
+ * The abstract superclass of the classes which represent numeric base types
+ * (that is {@link Byte}, {@link Short}, {@link Integer}, {@link Long},
+ * {@link Float}, and {@link Double}. 
  */
 public abstract class Number implements java.io.Serializable {
 
-	private static final long serialVersionUID = -8742448824652078965L;
+    private static final long serialVersionUID = -8742448824652078965L;
 
-	/**
-	 * Number constructor. Included for spec compatability.
-	 */
-	public Number() {
-	}
+    /**
+     * Empty default constructor.
+     */
+    public Number() {
+    }
 
-	/**
-	 * Answers the byte value which the receiver represents
-	 * 
-	 * @return byte the value of the receiver.
-	 */
-	public byte byteValue() {
-		return (byte) intValue();
-	}
+    /**
+     * Returns this object's value as a byte. Might involve rounding and/or
+     * truncating the value, so it fits into a byte.  
+     * 
+     * @return the primitive byte value of this object.
+     */
+    public byte byteValue() {
+        return (byte) intValue();
+    }
 
-	/**
-	 * Answers the double value which the receiver represents
-	 * 
-	 * @return double the value of the receiver.
-	 */
-	public abstract double doubleValue();
+    /**
+     * Returns this object's value as a double. Might involve rounding.
+     * 
+     * @return the primitive double value of this object.
+     */
+    public abstract double doubleValue();
 
-	/**
-	 * Answers the float value which the receiver represents
-	 * 
-	 * @return float the value of the receiver.
-	 */
-	public abstract float floatValue();
+    /**
+     * Returns this object's value as a float. Might involve rounding.
+     * 
+     * @return the primitive float value of this object.
+     */
+    public abstract float floatValue();
 
-	/**
-	 * Answers the int value which the receiver represents
-	 * 
-	 * @return int the value of the receiver.
-	 */
-	public abstract int intValue();
+    /**
+     * Returns this object's value as an int. Might involve rounding and/or
+     * truncating the value, so it fits into an int.
+     * 
+     * @return the primitive int value of this object.
+     */
+    public abstract int intValue();
 
-	/**
-	 * Answers the long value which the receiver represents
-	 * 
-	 * @return long the value of the receiver.
-	 */
-	public abstract long longValue();
+    /**
+     * Returns this object's value as a long. Might involve rounding and/or
+     * truncating the value, so it fits into a long.
+     * 
+     * @return the primitive long value of this object.
+     */
+    public abstract long longValue();
 
-	/**
-	 * Answers the short value which the receiver represents
-	 * 
-	 * @return short the value of the receiver.
-	 */
-	public short shortValue() {
-		return (short) intValue();
-	}
+    /**
+     * Returns this object's value as a short. Might involve rounding and/or
+     * truncating the value, so it fits into a short.
+     * 
+     * @return the primitive short value of this object.
+     */
+    public short shortValue() {
+        return (short) intValue();
+    }
 }

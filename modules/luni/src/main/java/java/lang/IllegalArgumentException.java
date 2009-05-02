@@ -17,37 +17,41 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when a method is invoked with an argument
- * which it can not reasonably deal with.
+ * Thrown when a method is invoked with an argument which it can not reasonably
+ * deal with.
  */
 public class IllegalArgumentException extends RuntimeException {
 
-	private static final long serialVersionUID = -5365630128856068164L;
+    private static final long serialVersionUID = -5365630128856068164L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IllegalArgumentException() {
-		super();
-	}
+    /**
+     * Constructs a new {@code IllegalArgumentException} that includes the
+     * current stack trace.
+     */
+    public IllegalArgumentException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IllegalArgumentException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IllegalArgumentException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IllegalArgumentException(String detailMessage) {
+        super(detailMessage);
+    }
     
     /**
-     * <p>Constructs a new instance with a message and cause.</p>
-     * @param message The message to assign to this exception.
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code IllegalArgumentException} with the current stack
+     * trace, the specified detail message and the specified cause.
+     * 
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public IllegalArgumentException(String message, Throwable cause) {
@@ -55,8 +59,11 @@ public class IllegalArgumentException extends RuntimeException {
     }
     
     /**
-     * <p>Constructs a new instance with a cause.</p>
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code IllegalArgumentException} with the current stack
+     * trace and the specified cause.
+     * 
+     * @param cause
+     *            the cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public IllegalArgumentException(Throwable cause) {

@@ -17,30 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This exception is thrown when a waiting thread is activated before the
- * condition it was waiting on has been satisfied.
+ * Thrown when a waiting thread is activated before the condition it was waiting
+ * for has been satisfied.
  */
 public class InterruptedException extends Exception {
 
     private static final long serialVersionUID = 6700697376100628473L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public InterruptedException() {
-		super();
-	}
+     * Constructs a new {@code InterruptedException} that includes the current
+     * stack trace.
+     */
+    public InterruptedException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public InterruptedException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code InterruptedException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public InterruptedException(String detailMessage) {
+        super(detailMessage);
+    }
 }

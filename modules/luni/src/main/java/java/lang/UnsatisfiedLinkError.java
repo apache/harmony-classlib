@@ -17,30 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when an attempt is made to invoke a native for which an
- * implementation could not be found.
+ * Thrown when an attempt is made to invoke a native for which an implementation
+ * could not be found.
  */
 public class UnsatisfiedLinkError extends LinkageError {
 
     private static final long serialVersionUID = -4019343241616879428L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public UnsatisfiedLinkError() {
-		super();
-	}
+     * Constructs a new {@code UnsatisfiedLinkError} that includes the current
+     * stack trace.
+     */
+    public UnsatisfiedLinkError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public UnsatisfiedLinkError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code UnsatisfiedLinkError} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public UnsatisfiedLinkError(String detailMessage) {
+        super(detailMessage);
+    }
 }

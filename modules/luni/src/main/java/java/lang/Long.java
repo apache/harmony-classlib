@@ -18,17 +18,13 @@
 package java.lang;
 
 /**
+ * The wrapper for the primitive type {@code long}.
  * <p>
- * Long is the wrapper for the primitive type <code>long</code>.
- * </p>
- * 
- * <p>
- * As with the specification, this implementation relied on code laid out in <a
+ * As with the specification, this implementation relies on code laid out in <a
  * href="http://www.hackersdelight.org/">Henry S. Warren, Jr.'s Hacker's
  * Delight, (Addison Wesley, 2002)</a> as well as <a
  * href="http://aggregate.org/MAGIC/">The Aggregate's Magic Algorithms</a>.
- * </p>
- * 
+ *
  * @see java.lang.Number
  * @since 1.0
  */
@@ -42,21 +38,17 @@ public final class Long extends Number implements Comparable<Long> {
     private final long value;
 
     /**
-     * <p>
-     * Constant for the maximum <code>long</code> value, 2<sup>63</sup>-1.
-     * </p>
+     * Constant for the maximum {@code long} value, 2<sup>63</sup>-1.
      */
     public static final long MAX_VALUE = 0x7FFFFFFFFFFFFFFFL;
 
     /**
-     * <p>
-     * Constant for the minimum <code>long</code> value, -2<sup>31</sup>.
-     * </p>
+     * Constant for the minimum {@code long} value, -2<sup>63</sup>.
      */
     public static final long MIN_VALUE = 0x8000000000000000L;
 
     /**
-     * The java.lang.Class that represents this class.
+     * The {@link Class} object that represents the primitive type {@code long}.
      */
     @SuppressWarnings("unchecked")
     public static final Class<Long> TYPE = (Class<Long>) new long[0].getClass()
@@ -66,63 +58,53 @@ public final class Long extends Number implements Comparable<Long> {
     // defined to be "java.lang.Long.TYPE";
 
     /**
-     * <p>
-     * Constant for the number of bits to represent a <code>long</code> in
-     * two's compliment form.
-     * </p>
-     * 
+     * Constant for the number of bits needed to represent a {@code long} in
+     * two's complement form.
+     *
      * @since 1.5
      */
     public static final int SIZE = 64;
 
 
     /**
-     * Constructs a new instance of the receiver which represents the long
-     * valued argument.
+     * Constructs a new {@code Long} with the specified primitive long value.
      * 
      * @param value
-     *            the long to store in the new instance.
+     *            the primitive long value to store in the new instance.
      */
     public Long(long value) {
         this.value = value;
     }
 
     /**
-     * Constructs a new instance of this class given a string.
+     * Constructs a new {@code Long} from the specified string.
      * 
      * @param string
-     *            a string representation of an long quantity.
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as a long quantity.
+     *            the string representation of a long value.
+     * @throws NumberFormatException
+     *             if {@code string} can not be decoded into a long value.
+     * @see #parseLong(String)
      */
     public Long(String string) throws NumberFormatException {
         this(parseLong(string));
     }
 
-    /**
-     * Answers the byte value which the receiver represents
-     * 
-     * @return byte the value of the receiver.
-     */
     @Override
     public byte byteValue() {
         return (byte) value;
     }
 
     /**
-     * <p>
-     * Compares this <code>Long</code> to the <code>Long</code> passed. If
-     * this instance's value is equal to the value of the instance passed, then
-     * 0 is returned. If this instance's value is less than the value of the
-     * instance passed, then a negative value is returned. If this instance's
-     * value is greater than the value of the instance passed, then a positive
-     * value is returned.
-     * </p>
+     * Compares this object to the specified long object to determine their
+     * relative order.
      * 
      * @param object
-     *            The instance to compare to.
-     * @throws NullPointerException
-     *             if <code>object</code> is <code>null</code>.
+     *            the long object to compare this object to.
+     * @return a negative value if the value of this long is less than the value
+     *         of {@code object}; 0 if the value of this long and the value of
+     *         {@code object} are equal; a positive value if the value of this
+     *         long is greater than the value of {@code object}.
+     * @see java.lang.Comparable
      * @since 1.2
      */
     public int compareTo(Long object) {
@@ -130,16 +112,16 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Parses the string argument as if it was a long value and returns the
-     * result. Throws NumberFormatException if the string does not represent a
-     * long quantity. The string may be a hexadecimal ("0x..."), octal ("0..."),
-     * or decimal ("...") representation of a long.
+     * Parses the specified string and returns a {@code Long} instance if the
+     * string can be decoded into a long value. The string may be an optional
+     * minus sign "-" followed by a hexadecimal ("0x..." or "#..."), octal
+     * ("0..."), or decimal ("...") representation of a long.
      * 
      * @param string
-     *            a string representation of an long quantity.
-     * @return Long the value represented by the argument
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as an long quantity.
+     *            a string representation of a long value.
+     * @return a {@code Long} containing the value represented by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} can not be parsed as a long value.
      */
     public static Long decode(String string) throws NumberFormatException {
         int length = string.length(), i = 0;
@@ -181,28 +163,20 @@ public final class Long extends Number implements Comparable<Long> {
         return valueOf(result);
     }
 
-    /**
-     * Answers the double value which the receiver represents
-     * 
-     * @return double the value of the receiver.
-     */
     @Override
     public double doubleValue() {
         return value;
     }
 
     /**
-     * Compares the argument to the receiver, and answers true if they represent
-     * the <em>same</em> object using a class specific comparison.
-     * <p>
-     * In this case, the argument must also be an Long, and the receiver and
-     * argument must represent the same long value.
+     * Compares this instance with the specified object and indicates if they
+     * are equal. In order to be equal, {@code o} must be an instance of
+     * {@code Long} and have the same long value as this object.
      * 
      * @param o
-     *            the object to compare with this object
-     * @return <code>true</code> if the object is the same as this object
-     *         <code>false</code> if it is different from this object
-     * @see #hashCode
+     *            the object to compare this long with.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code Long}; {@code false} otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -210,24 +184,20 @@ public final class Long extends Number implements Comparable<Long> {
                 && (value == ((Long) o).value);
     }
 
-    /**
-     * Answers the float value which the receiver represents
-     * 
-     * @return float the value of the receiver.
-     */
     @Override
     public float floatValue() {
         return value;
     }
 
     /**
-     * Answers a Long representing the long value of the property named by the
-     * argument. If the property could not be found, or its value could not be
-     * parsed as a long, answer null.
+     * Returns the {@code Long} value of the system property identified by
+     * {@code string}. Returns {@code null} if {@code string} is {@code null}
+     * or empty, if the property can not be found or if its value can not be
+     * parsed as a long.
      * 
      * @param string
-     *            The name of the desired integer property.
-     * @return Long A Long representing the value of the property.
+     *            the name of the requested system property.
+     * @return the requested property's value as a {@code Long} or {@code null}.
      */
     public static Long getLong(String string) {
         if (string == null || string.length() == 0) {
@@ -245,13 +215,18 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Answers a Long representing the long value of the property named by the
-     * argument. If the property could not be found, or its value could not be
-     * parsed as a long, answer a Long representing the second argument.
+     * Returns the {@code Long} value of the system property identified by
+     * {@code string}. Returns the specified default value if {@code string} is
+     * {@code null} or empty, if the property can not be found or if its value
+     * can not be parsed as a long.
      * 
      * @param string
-     *            The name of the desired long property.
-     * @return Long An Long representing the value of the property.
+     *            the name of the requested system property.
+     * @param defaultValue
+     *            the default value that is returned if there is no long system
+     *            property with the requested name.
+     * @return the requested property's value as a {@code Long} or the default
+     *         value.
      */
     public static Long getLong(String string, long defaultValue) {
         if (string == null || string.length() == 0) {
@@ -269,13 +244,18 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Answers an Long representing the long value of the property named by the
-     * argument. If the property could not be found, or its value could not be
-     * parsed as an long, answer the second argument.
+     * Returns the {@code Long} value of the system property identified by
+     * {@code string}. Returns the specified default value if {@code string} is
+     * {@code null} or empty, if the property can not be found or if its value
+     * can not be parsed as a long.
      * 
      * @param string
-     *            The name of the desired long property.
-     * @return Long An Long representing the value of the property.
+     *            the name of the requested system property.
+     * @param defaultValue
+     *            the default value that is returned if there is no long system
+     *            property with the requested name.
+     * @return the requested property's value as a {@code Long} or the default
+     *         value.
      */
     public static Long getLong(String string, Long defaultValue) {
         if (string == null || string.length() == 0) {
@@ -292,34 +272,20 @@ public final class Long extends Number implements Comparable<Long> {
         }
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Any two objects which
-     * answer <code>true</code> when passed to <code>equals</code> must
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         return (int) (value ^ (value >>> 32));
     }
 
-    /**
-     * Answers the int value which the receiver represents
-     * 
-     * @return int the value of the receiver.
-     */
     @Override
     public int intValue() {
         return (int) value;
     }
 
     /**
-     * Answers the long value which the receiver represents
+     * Gets the primitive value of this long.
      * 
-     * @return long the value of the receiver.
+     * @return this object's primitive value.
      */
     @Override
     public long longValue() {
@@ -327,33 +293,35 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Parses the string argument as if it was a long value and returns the
-     * result. Throws NumberFormatException if the string does not represent a
-     * long quantity.
+     * Parses the specified string as a signed decimal long value. The ASCII
+     * character \u002d ('-') is recognized as the minus sign.
      * 
      * @param string
-     *            a string representation of a long quantity.
-     * @return long the value represented by the argument
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as a long quantity.
+     *            the string representation of a long value.
+     * @return the primitive long value represented by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a long value.
      */
     public static long parseLong(String string) throws NumberFormatException {
         return parseLong(string, 10);
     }
 
     /**
-     * Parses the string argument as if it was an long value and returns the
-     * result. Throws NumberFormatException if the string does not represent an
-     * long quantity. The second argument specifies the radix to use when
-     * parsing the value.
+     * Parses the specified string as a signed long value using the specified
+     * radix. The ASCII character \u002d ('-') is recognized as the minus sign.
      * 
      * @param string
-     *            a string representation of an long quantity.
+     *            the string representation of a long value.
      * @param radix
-     *            the base to use for conversion.
-     * @return long the value represented by the argument
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as an long quantity.
+     *            the radix to use when parsing.
+     * @return the primitive long value represented by {@code string} using
+     *         {@code radix}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a long value.
      */
     public static long parseLong(String string, int radix)
             throws NumberFormatException {
@@ -400,23 +368,18 @@ public final class Long extends Number implements Comparable<Long> {
         return result;
     }
 
-    /**
-     * Answers the short value which the receiver represents
-     * 
-     * @return short the value of the receiver.
-     */
     @Override
     public short shortValue() {
         return (short) value;
     }
 
     /**
-     * Answers a string containing '0' and '1' characters which describe the
-     * binary representation of the argument.
+     * Converts the specified long value into its binary string representation.
+     * The returned string is a concatenation of '0' and '1' characters.
      * 
      * @param l
-     *            a long to get the binary representation of
-     * @return String the binary representation of the argument
+     *            the long value to convert.
+     * @return the binary string representation of {@code l}.
      */
     public static String toBinaryString(long l) {
         int count = 1;
@@ -439,12 +402,13 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Answers a string containing characters in the range 0..7, a..f which
-     * describe the hexadecimal representation of the argument.
+     * Converts the specified long value into its hexadecimal string
+     * representation. The returned string is a concatenation of characters from
+     * '0' to '9' and 'a' to 'f'.
      * 
      * @param l
-     *            a long to get the hex representation of
-     * @return String the hex representation of the argument
+     *            the long value to convert.
+     * @return the hexadecimal string representation of {@code l}.
      */
     public static String toHexString(long l) {
         int count = 1;
@@ -473,12 +437,12 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Answers a string containing characters in the range 0..7 which describe
-     * the octal representation of the argument.
+     * Converts the specified long value into its octal string representation.
+     * The returned string is a concatenation of characters from '0' to '7'.
      * 
      * @param l
-     *            a long to get the octal representation of
-     * @return String the octal representation of the argument
+     *            the long value to convert.
+     * @return the octal string representation of {@code l}.
      */
     public static String toOctalString(long l) {
         int count = 1;
@@ -500,39 +464,37 @@ public final class Long extends Number implements Comparable<Long> {
         return new String(0, buffer.length, buffer);
     }
 
-    /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
-     * 
-     * @return a printable representation for the receiver.
-     */
     @Override
     public String toString() {
         return Long.toString(value);
     }
 
     /**
-     * Answers a string containing characters in the range 0..9 which describe
-     * the decimal representation of the argument.
+     * Converts the specified long value into its decimal string representation.
+     * The returned string is a concatenation of a minus sign if the number is
+     * negative and characters from '0' to '9'.
      * 
      * @param l
-     *            a long to get the representation of
-     * @return String the representation of the argument
+     *            the long to convert.
+     * @return the decimal string representation of {@code l}.
      */
     public static String toString(long l) {
         return toString(l, 10);
     }
 
     /**
-     * Answers a string containing characters in the range 0..9, a..z (depending
-     * on the radix) which describe the representation of the argument in that
-     * radix.
+     * Converts the specified long value into a string representation based on
+     * the specified radix. The returned string is a concatenation of a minus
+     * sign if the number is negative and characters from '0' to '9' and 'a' to
+     * 'z', depending on the radix. If {@code radix} is not in the interval
+     * defined by {@code Character.MIN_RADIX} and {@code Character.MAX_RADIX}
+     * then 10 is used as the base for the conversion.
      * 
      * @param l
-     *            a long to get the representation of
+     *            the long to convert.
      * @param radix
-     *            the base to use for conversion.
-     * @return String the representation of the argument
+     *            the base to use for the conversion.
+     * @return the string representation of {@code l}.
      */
     public static String toString(long l, int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
@@ -570,33 +532,37 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * Parses the string argument as if it was an long value and returns the
-     * result. Throws NumberFormatException if the string does not represent an
-     * long quantity.
+     * Parses the specified string as a signed decimal long value.
      * 
      * @param string
-     *            a string representation of an long quantity.
-     * @return Long the value represented by the argument
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as an long quantity.
+     *            the string representation of a long value.
+     * @return a {@code Long} instance containing the long value represented by
+     *         {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a long value.
+     * @see #parseLong(String)
      */
     public static Long valueOf(String string) throws NumberFormatException {
         return valueOf(parseLong(string));
     }
 
     /**
-     * Parses the string argument as if it was an long value and returns the
-     * result. Throws NumberFormatException if the string does not represent an
-     * long quantity. The second argument specifies the radix to use when
-     * parsing the value.
+     * Parses the specified string as a signed long value using the specified
+     * radix.
      * 
      * @param string
-     *            a string representation of an long quantity.
+     *            the string representation of a long value.
      * @param radix
-     *            the base to use for conversion.
-     * @return Long the value represented by the argument
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as an long quantity.
+     *            the radix to use when parsing.
+     * @return a {@code Long} instance containing the long value represented by
+     *         {@code string} using {@code radix}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a long value.
+     * @see #parseLong(String, int)
      */
     public static Long valueOf(String string, int radix)
             throws NumberFormatException {
@@ -604,15 +570,14 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Determines the highest (leftmost) bit that is 1 and returns the value
-     * that is the bit mask for that bit. This is sometimes referred to as the
-     * Most Significant 1 Bit.
-     * </p>
+     * Determines the highest (leftmost) bit of the specified long value that is
+     * 1 and returns the bit mask value for that bit. This is also referred to
+     * as the Most Significant 1 Bit. Returns zero if the specified long is
+     * zero.
      * 
      * @param lng
-     *            The <code>long</code> to interrogate.
-     * @return The bit mask indicating the highest 1 bit.
+     *            the long to examine.
+     * @return the bit mask indicating the highest 1 bit in {@code lng}.
      * @since 1.5
      */
     public static long highestOneBit(long lng) {
@@ -626,15 +591,14 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Determines the lowest (rightmost) bit that is 1 and returns the value
-     * that is the bit mask for that bit. This is sometimes referred to as the
-     * Least Significant 1 Bit.
-     * </p>
+     * Determines the lowest (rightmost) bit of the specified long value that is
+     * 1 and returns the bit mask value for that bit. This is also referred to
+     * as the Least Significant 1 Bit. Returns zero if the specified long is
+     * zero.
      * 
      * @param lng
-     *            The <code>long</code> to interrogate.
-     * @return The bit mask indicating the lowest 1 bit.
+     *            the long to examine.
+     * @return the bit mask indicating the lowest 1 bit in {@code lng}.
      * @since 1.5
      */
     public static long lowestOneBit(long lng) {
@@ -642,14 +606,12 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Determines the number of leading zeros in the <code>long</code> passed
-     * prior to the {@link #highestOneBit(long) highest one bit}.
-     * </p>
-     * 
+     * Determines the number of leading zeros in the specified long value prior
+     * to the {@link #highestOneBit(long) highest one bit}.
+     *
      * @param lng
-     *            The <code>long</code> to process.
-     * @return The number of leading zeros.
+     *            the long to examine.
+     * @return the number of leading zeros in {@code lng}.
      * @since 1.5
      */
     public static int numberOfLeadingZeros(long lng) {
@@ -663,14 +625,12 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Determines the number of trailing zeros in the <code>long</code> passed
-     * after the {@link #lowestOneBit(long) lowest one bit}.
-     * </p>
-     * 
+     * Determines the number of trailing zeros in the specified long value after
+     * the {@link #lowestOneBit(long) lowest one bit}.
+     *
      * @param lng
-     *            The <code>long</code> to process.
-     * @return The number of trailing zeros.
+     *            the long to examine.
+     * @return the number of trailing zeros in {@code lng}.
      * @since 1.5
      */
     public static int numberOfTrailingZeros(long lng) {
@@ -678,14 +638,12 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Counts the number of 1 bits in the <code>long</code> value passed; this
-     * is sometimes referred to as a population count.
-     * </p>
-     * 
+     * Counts the number of 1 bits in the specified long value; this is also
+     * referred to as population count.
+     *
      * @param lng
-     *            The <code>long</code> value to process.
-     * @return The number of 1 bits.
+     *            the long to examine.
+     * @return the number of 1 bits in {@code lng}.
      * @since 1.5
      */
     public static int bitCount(long lng) {
@@ -700,16 +658,14 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Rotates the bits of <code>lng</code> to the left by the
-     * <code>distance</code> bits.
-     * </p>
-     * 
+     * Rotates the bits of the specified long value to the left by the specified
+     * number of bits.
+     *
      * @param lng
-     *            The <code>long</code> value to rotate left.
+     *            the long value to rotate left.
      * @param distance
-     *            The number of bits to rotate.
-     * @return The rotated value.
+     *            the number of bits to rotate.
+     * @return the rotated value.
      * @since 1.5
      */
     public static long rotateLeft(long lng, int distance) {
@@ -726,15 +682,14 @@ public final class Long extends Number implements Comparable<Long> {
 
     /**
      * <p>
-     * Rotates the bits of <code>lng</code> to the right by the
-     * <code>distance</code> bits.
-     * </p>
-     * 
+     * Rotates the bits of the specified long value to the right by the
+     * specified number of bits.
+     *
      * @param lng
-     *            The <code>long</code> value to rotate right.
+     *            the long value to rotate right.
      * @param distance
-     *            The number of bits to rotate.
-     * @return The rotated value.
+     *            the number of bits to rotate.
+     * @return the rotated value.
      * @since 1.5
      */
     public static long rotateRight(long lng, int distance) {
@@ -750,13 +705,11 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Reverses the bytes of a <code>long</code>.
-     * </p>
+     * Reverses the order of the bytes of the specified long value.
      * 
      * @param lng
-     *            The <code>long</code> to reverse.
-     * @return The reversed value.
+     *            the long value for which to reverse the byte order.
+     * @return the reversed value.
      * @since 1.5
      */
     public static long reverseBytes(long lng) {
@@ -772,13 +725,11 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * Reverses the bytes of a <code>long</code>.
-     * </p>
+     * Reverses the order of the bits of the specified long value.
      * 
      * @param lng
-     *            The <code>long</code> to reverse.
-     * @return The reversed value.
+     *            the long value for which to reverse the bit order.
+     * @return the reversed value.
      * @since 1.5
      */
     public static long reverse(long lng) {
@@ -793,15 +744,13 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
-     * <p>
-     * The <code>signum</code> function for <code>long</code> values. This
-     * method returns -1 for negative values, 1 for positive values and 0 for
-     * the value 0.
-     * </p>
+     * Returns the value of the {@code signum} function for the specified long
+     * value.
      * 
      * @param lng
-     *            The <code>long</code> value.
-     * @return -1 if negative, 1 if positive otherwise 0.
+     *            the long value to check.
+     * @return -1 if {@code lng} is negative, 1 if {@code lng} is positive, 0 if
+     *         {@code lng} is zero.
      * @since 1.5
      */
     public static int signum(long lng) {
@@ -809,15 +758,15 @@ public final class Long extends Number implements Comparable<Long> {
     }
 
     /**
+     * Returns a {@code Long} instance for the specified long value.
      * <p>
-     * Returns a <code>Long</code> instance for the <code>long</code> value
-     * passed. This method is preferred over the constructor, as this method may
-     * maintain a cache of instances.
-     * </p>
-     * 
+     * If it is not necessary to get a new {@code Long} instance, it is
+     * recommended to use this method instead of the constructor, since it
+     * maintains a cache of instances which may result in better performance.
+     *
      * @param lng
-     *            The long value.
-     * @return A <code>Long</code> instance.
+     *            the long value to store in the instance.
+     * @return a {@code Long} instance containing {@code lng}.
      * @since 1.5
      */
     public static Long valueOf(long lng) {
@@ -831,7 +780,6 @@ public final class Long extends Number implements Comparable<Long> {
         /**
          * <p>
          * A cache of instances used by {@link Long#valueOf(long)} and auto-boxing.
-         * </p>
          */
         static final Long[] CACHE = new Long[256];
 
