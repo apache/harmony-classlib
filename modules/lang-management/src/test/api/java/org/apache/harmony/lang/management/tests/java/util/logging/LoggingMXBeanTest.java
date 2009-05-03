@@ -18,7 +18,7 @@
  * 
  */
 
-package tests.java.util.logging;
+package org.apache.harmony.lang.management.tests.java.util.logging;
 
 import java.util.Enumeration;
 import java.util.List;
