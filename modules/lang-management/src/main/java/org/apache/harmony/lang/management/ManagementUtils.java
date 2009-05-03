@@ -793,12 +793,11 @@ public class ManagementUtils {
                     if (allVals[i] instanceof CompositeData) {
                         continue;
                     }
-                } else {
-                    throw new IllegalArgumentException(
-                            "CompositeData contains an attribute not of expected type. "
-                                    + "Expected " + expectedType + ", found "
-                                    + actualType);
                 }
+                throw new IllegalArgumentException(
+                        "CompositeData contains an attribute not of expected type. "
+                                + "Expected " + expectedType + ", found "
+                                + actualType);
             }
         }// end for
     }
@@ -825,16 +824,16 @@ public class ManagementUtils {
 
     /**
      * Throws an {@link IllegalArgumentException}if the {@link CompositeData}
-     * argument <code>cd</code> does not have the number of attributes
-     * specified in <code>i</code>.
+     * argument <code>cd</code> has less number of attributes specified in
+     * <code>minSize</code>.
      * 
      * @param cd
      *            a <code>CompositeData</code> object
      * @param i
      *            the number of expected attributes in <code>cd</code>
      */
-    public static void verifyFieldNumber(CompositeData cd, int i) {
-        if (cd.values().size() != i) {
+    public static void verifyFieldNumber(CompositeData cd, int minSize) {
+        if (cd.values().size() < minSize) {
             throw new IllegalArgumentException(
                     "CompositeData object does not have the expected number of attributes"); //$NON-NLS-1$
         }
