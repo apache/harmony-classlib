@@ -203,7 +203,7 @@ public class ManagementFactoryTest extends TestCase {
 
         // MXBean name deliberately in wrong format
         try {
-            ClassLoadingMXBean proxy = ManagementFactory
+            ManagementFactory
                     .newPlatformMXBeanProxy(ManagementFactory
                             .getPlatformMBeanServer(),
                             "java,lang:type=ClassLoading",
@@ -214,7 +214,7 @@ public class ManagementFactoryTest extends TestCase {
 
         // MXBean name in correct format but deliberately bogus
         try {
-            ClassLoadingMXBean proxy = ManagementFactory
+            ManagementFactory
                     .newPlatformMXBeanProxy(ManagementFactory
                             .getPlatformMBeanServer(),
                             "java.lang:type=ClassStroking",
@@ -225,7 +225,7 @@ public class ManagementFactoryTest extends TestCase {
 
         // Named MXBean does not implement the supplied MXBean interface
         try {
-            ClassLoadingMXBean proxy = ManagementFactory
+            ManagementFactory
                     .newPlatformMXBeanProxy(ManagementFactory
                             .getPlatformMBeanServer(), "java.lang:type=Memory",
                             ClassLoadingMXBean.class);
@@ -238,7 +238,7 @@ public class ManagementFactoryTest extends TestCase {
                 .getMemoryPoolMXBeans();
         for (MemoryPoolMXBean bean : allMPoolBeans) {
             try {
-                ClassLoadingMXBean proxy = ManagementFactory
+                ManagementFactory
                         .newPlatformMXBeanProxy(ManagementFactory
                                 .getPlatformMBeanServer(), bean.getName(),
                                 ClassLoadingMXBean.class);
@@ -252,7 +252,7 @@ public class ManagementFactoryTest extends TestCase {
                 .getGarbageCollectorMXBeans();
         for (GarbageCollectorMXBean bean : allGCBeans) {
             try {
-                ThreadMXBean proxy = ManagementFactory.newPlatformMXBeanProxy(
+                ManagementFactory.newPlatformMXBeanProxy(
                         ManagementFactory.getPlatformMBeanServer(), bean
                                 .getName(), ThreadMXBean.class);
                 fail("should have thrown IllegalArgumentException");
@@ -265,7 +265,7 @@ public class ManagementFactoryTest extends TestCase {
                 .getMemoryManagerMXBeans();
         for (MemoryManagerMXBean bean : allMMBeans) {
             try {
-                ThreadMXBean proxy = ManagementFactory.newPlatformMXBeanProxy(
+                ManagementFactory.newPlatformMXBeanProxy(
                         ManagementFactory.getPlatformMBeanServer(), bean
                                 .getName(), ThreadMXBean.class);
                 fail("should have thrown IllegalArgumentException");
@@ -341,7 +341,6 @@ public class ManagementFactoryTest extends TestCase {
             String[] poolNames2 = proxy.getMemoryPoolNames();
             assertEquals(poolNames1.length, poolNames2.length);
             for (int i = 0; i < poolNames1.length; i++) {
-                String string = poolNames1[i];
                 assertEquals(poolNames1[i], poolNames2[i]);
             }
         }
@@ -374,7 +373,6 @@ public class ManagementFactoryTest extends TestCase {
                 String[] poolNames2 = proxy.getMemoryPoolNames();
                 assertEquals(poolNames1.length, poolNames2.length);
                 for (int i = 0; i < poolNames1.length; i++) {
-                    String string = poolNames1[i];
                     assertEquals(poolNames1[i], poolNames2[i]);
                 }
             }// end if memory manager is registered with server connection

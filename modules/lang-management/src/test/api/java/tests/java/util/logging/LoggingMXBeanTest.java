@@ -70,6 +70,7 @@ public class LoggingMXBeanTest extends TestCase {
             assertNotNull(level);
             if (level.length() > 0) {
                 Level l = Level.parse(level);
+                assertNotNull(l);
             }// end if not an empty string
         }// end while
     }

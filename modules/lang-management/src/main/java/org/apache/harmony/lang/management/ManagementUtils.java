@@ -1430,9 +1430,9 @@ public class ManagementUtils {
      *             if <code>name</code> does not correspond to any known type
      *             (including primitive types).
      */
-    public static Class getClassMaybePrimitive(String name)
+    public static Class<?> getClassMaybePrimitive(String name)
             throws ClassNotFoundException {
-        Class result = null;
+        Class<?> result = null;
 
         try {
             result = Class.forName(name);
@@ -1479,7 +1479,7 @@ public class ManagementUtils {
      *         <code>false</code>.
      */
     public static boolean isWrapperClass(Class<? extends Object> wrapper,
-            Class primitive) {
+            Class<?> primitive) {
         boolean result = true;
         if (primitive.equals(boolean.class) && !wrapper.equals(Boolean.class)) {
             result = false;

@@ -220,7 +220,7 @@ public class ThreadMXBeanTest extends TestCase {
         // Should throw exception if a Thread id of 0 or less is input
         try {
             long[] input = new long[] { 0 };
-            ThreadInfo[] tmp = mb.getThreadInfo(input);
+            mb.getThreadInfo(input);
             fail("Should have thrown an IllegalArgumentException");
         } catch (IllegalArgumentException ignore) {
         }
@@ -306,7 +306,7 @@ public class ThreadMXBeanTest extends TestCase {
 
                 // Should throw a wobbler if a bad Thread id is passed in.
                 try {
-                    long tmp = mb.getThreadUserTime(-122);
+                    mb.getThreadUserTime(-122);
                     fail("Should have thrown an IllegalArgumentException!");
                 } catch (IllegalArgumentException ignore) {
                 }
