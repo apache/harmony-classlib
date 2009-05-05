@@ -21,8 +21,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.harmony.testframework.serialization.SerializationTest;
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * JUnit Testcase for the java.sql.Timestamp class
@@ -374,6 +375,30 @@ public class TimestampTest extends TestCase {
         assertEquals(80279000,t.getTime());
 
     } // end method testValueOfString
+
+    public void testValueOf_IAE() {
+        try {
+            java.sql.Timestamp.valueOf("2008-12-22 15:00:01.");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            // bug of RI 5, passed on RI 6
+            java.sql.Timestamp.valueOf("178548938-12-22 15:00:01.000000001");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        try {
+            java.sql.Timestamp.valueOf("2008-12-22 15:00:01.0000000011");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
 
     /*
      * Method test for toString

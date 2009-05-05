@@ -17,10 +17,10 @@
 
 package java.sql;
 
-import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.apache.harmony.sql.internal.nls.Messages;
 
@@ -49,6 +49,9 @@ public class Timestamp extends Date {
 
     // The nanoseconds time value of the Timestamp
     private int nanos;
+
+    // The regex pattern of yyyy-mm-dd hh:mm:ss
+    private static final String TIME_FORMAT_REGEX = "[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.*"; //$NON-NLS-1$
 
     /**
      * Returns a {@code Timestamp} corresponding to the time specified by the
@@ -410,6 +413,9 @@ public class Timestamp extends Date {
 
         // omit trailing whitespaces
         s = s.trim();
+        if (!Pattern.matches(TIME_FORMAT_REGEX, s)) {
+            throw new IllegalArgumentException(Messages.getString("sql.2")); //$NON-NLS-1$
+        }
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
         ParsePosition pp = new ParsePosition(0);
