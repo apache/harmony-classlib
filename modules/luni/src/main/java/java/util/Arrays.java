@@ -1530,41 +1530,11 @@ public class Arrays {
     }
 
     private static boolean lessThan(double double1, double double2) {
-        long d1, d2;
-        long NaNbits = Double.doubleToLongBits(Double.NaN);
-        if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
-            return false;
-        }
-        if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
-            return true;
-        }
-        if (double1 == double2) {
-            if (d1 == d2) {
-                return false;
-            }
-            // check for -0
-            return d1 < d2;
-        }
-        return double1 < double2;
+        return Double.compare(double1, double2) < 0;
     }
 
     private static boolean lessThan(float float1, float float2) {
-        int f1, f2;
-        int NaNbits = Float.floatToIntBits(Float.NaN);
-        if ((f1 = Float.floatToIntBits(float1)) == NaNbits) {
-            return false;
-        }
-        if ((f2 = Float.floatToIntBits(float2)) == NaNbits) {
-            return true;
-        }
-        if (float1 == float2) {
-            if (f1 == f2) {
-                return false;
-            }
-            // check for -0
-            return f1 < f2;
-        }
-        return float1 < float2;
+        return Float.compare(float1, float2) < 0;
     }
 
     private static int med3(byte[] array, int a, int b, int c) {

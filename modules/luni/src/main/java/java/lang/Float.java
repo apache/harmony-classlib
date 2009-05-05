@@ -130,25 +130,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.2
      */
     public int compareTo(Float object) {
-        int f1, f2;
-        int NaNbits = Float.floatToIntBits(Float.NaN);
-        if ((f1 = Float.floatToIntBits(value)) == NaNbits) {
-            if (Float.floatToIntBits(object.value) == NaNbits) {
-                return 0;
-            }
-            return 1;
-        }
-        if ((f2 = Float.floatToIntBits(object.value)) == NaNbits) {
-            return -1;
-        }
-        if (value == object.value) {
-            if (f1 == f2) {
-                return 0;
-            }
-            // check for -0
-            return f1 > f2 ? 1 : -1;
-        }
-        return value > object.value ? 1 : -1;
+        return compare(value, object.value); 
     }
 
     @Override
@@ -363,25 +345,35 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.4
      */
     public static int compare(float float1, float float2) {
-        int f1, f2;
-        int NaNbits = Float.floatToIntBits(Float.NaN);
-        if ((f1 = Float.floatToIntBits(float1)) == NaNbits) {
-            if (Float.floatToIntBits(float2) == NaNbits) {
+        // Non-zero, non-NaN checking.
+        if (float1 > float2) {
+            return 1;
+        }
+        if (float2 > float1) {
+            return -1;
+        }
+        if (float1 == float2 && 0.0f != float1) {
+            return 0;
+        }
+
+        // NaNs are equal to other NaNs and larger than any other float
+        if (isNaN(float1)) {
+            if (isNaN(float2)) {
                 return 0;
             }
             return 1;
-        }
-        if ((f2 = Float.floatToIntBits(float2)) == NaNbits) {
+        } else if (isNaN(float2)) {
             return -1;
         }
-        if (float1 == float2) {
-            if (f1 == f2) {
-                return 0;
-            }
-            // check for -0
-            return f1 > f2 ? 1 : -1;
+
+        // Deal with +0.0 and -0.0
+        int f1 = floatToRawIntBits(float1);
+        int f2 = floatToRawIntBits(float2);
+
+        if (f1 == f2) {
+            return 0;
         }
-        return float1 > float2 ? 1 : -1;
+        return (f1 < f2) ? -1 : 1;
     }
 
     /**

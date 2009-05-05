@@ -126,25 +126,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @since 1.2
      */
     public int compareTo(Double object) {
-        long d1, d2;
-        long NaNbits = Double.doubleToLongBits(Double.NaN);
-        if ((d1 = Double.doubleToLongBits(value)) == NaNbits) {
-            if (Double.doubleToLongBits(object.value) == NaNbits) {
-                return 0;
-            }
-            return 1;
-        }
-        if ((d2 = Double.doubleToLongBits(object.value)) == NaNbits) {
-            return -1;
-        }
-        if (value == object.value) {
-            if (d1 == d2) {
-                return 0;
-            }
-            // check for -0
-            return d1 > d2 ? 1 : -1;
-        }
-        return value > object.value ? 1 : -1;
+        return compare(value, object.value);
     }
 
     @Override
@@ -359,25 +341,35 @@ public final class Double extends Number implements Comparable<Double> {
      *         value if {@code double1} is greater than {@code double2}.
      */
     public static int compare(double double1, double double2) {
-        long d1, d2;
-        long NaNbits = Double.doubleToLongBits(Double.NaN);
-        if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
-            if (Double.doubleToLongBits(double2) == NaNbits) {
+        // Non-zero, non-NaN checking.
+        if (double1 > double2) {
+            return 1;
+        }
+        if (double2 > double1) {
+            return -1;
+        }
+        if (double1 == double2 && 0.0d != double1) {
+            return 0;
+        }
+
+        // NaNs are equal to other NaNs and larger than any other float
+        if (isNaN(double1)) {
+            if (isNaN(double2)) {
                 return 0;
             }
             return 1;
-        }
-        if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+        } else if (isNaN(double2)) {
             return -1;
         }
-        if (double1 == double2) {
-            if (d1 == d2) {
-                return 0;
-            }
-            // check for -0
-            return d1 > d2 ? 1 : -1;
+
+        // Deal with +0.0 and -0.0
+        long d1 = doubleToRawLongBits(double1);
+        long d2 = doubleToRawLongBits(double2);
+
+        if (d1 == d2) {
+            return 0;
         }
-        return double1 > double2 ? 1 : -1;
+        return (d1 < d2) ? -1 : 1;
     }
 
     /**
