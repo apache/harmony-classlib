@@ -27,9 +27,9 @@
     <import file="${hy.hdk}/build/ant/properties.xml" />
     <import file="${hy.hdk}/build/ant/depends.xml" />
 
-    <target name="build" depends="check-depends, -copy-jars" />
+    <target name="build" depends="check-depends" />
 
-    <target name="check-depends" depends="-check,-extract" />
+    <target name="check-depends" depends="-check,-extract,-copy-jars" />
 
     <target name="-check">
         <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
