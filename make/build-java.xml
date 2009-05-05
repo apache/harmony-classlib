@@ -291,6 +291,7 @@ ${built.files.list}
     <target name="-prepare-depends">
 
         <ant antfile="make/depends.xml" inheritall="false" target="check"/>
+        <poll-modules target="check-depends" />
 
     </target>
 
