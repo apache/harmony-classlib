@@ -419,7 +419,7 @@ public class Segment {
         int classNum = 0;
         int numberOfFiles = header.getNumberOfFiles();
         String[] fileName = fileBands.getFileName();
-        long[] fileOptions = fileBands.getFileOptions();
+        int[] fileOptions = fileBands.getFileOptions();
         SegmentOptions options = header.getOptions();
 
         classFilesContents = new byte[numberOfFiles][];
@@ -525,7 +525,7 @@ public class Segment {
     public void writeJar(JarOutputStream out) throws IOException,
             Pack200Exception {
         String[] fileName = fileBands.getFileName();
-        long[] fileModtime = fileBands.getFileModtime();
+        int[] fileModtime = fileBands.getFileModtime();
         long[] fileSize = fileBands.getFileSize();
         byte[][] fileBits = fileBands.getFileBits();
 
