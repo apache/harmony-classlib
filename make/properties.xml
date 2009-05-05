@@ -275,14 +275,6 @@
     <property name="build.module" value="*" />
     <property name="exclude.module" value="nothing" />
 
-    <!-- names of exclude lists, used by prepare-exclude-list macro -->
-    <property name="common.exclude.file" value="exclude.common" />
-    <property name="common.exclude.interm" value="exclude.interm" />
-    <property name="platform.exclude.file"
-              value="exclude.${hy.platform}.${hy.test.vm.name}" />
-    <property name="platform.exclude.interm"
-              value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
-
     <!-- flags -->
     <property name="hy.no.thr" value="false" />
     <condition property="hy.skip.thr" value="true">
@@ -578,6 +570,15 @@ properties in preference to these:
        <!-- name of concatenated list, should be an absolute pathname -->
        <attribute name="result"/>
        <sequential>
+            <!-- names of exclude lists, used by prepare-exclude-list macro -->
+            <property name="common.exclude.file" value="exclude.common" />
+            <property name="common.exclude.interm" value="exclude.interm" />
+            <property name="platform.exclude.file"
+                      value="exclude.${hy.platform}.${hy.test.vm.name}" />
+            <property name="platform.exclude.interm"
+                      value="exclude.${hy.platform}.${hy.test.vm.name}.interm"
+            />
+
            <echo message="" file="@{result}"/>
            <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
                <fileset dir="@{dir}">
