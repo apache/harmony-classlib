@@ -265,13 +265,40 @@ public class SimpleDateFormat extends DateFormat {
          * differently than Java." We need to do a trick here to follow Java
          * spec.
          */
-        if (template.equals("y")) {
-            icuFormat.applyPattern("yy");
-            pattern = "y";
-            return;
-        }
+        String templateForICU = patternForICU(template);
         icuFormat.applyPattern(template);
         pattern = template;
+    }
+
+    /**
+     * Converts the Java-spec pattern into an equivalent pattern used by ICU.
+     * 
+     * @param p
+     *            the Java-spec style pattern.
+     * @return the ICU-style pattern.
+     */
+    @SuppressWarnings("nls")
+    private String patternForICU(String p) {
+        String[] subPatterns = p.split("'");
+        boolean quote = false;
+        boolean first = true;
+        StringBuilder result = new StringBuilder();
+        for (String subPattern : subPatterns) {
+            if (!quote) {
+                // replace 'y' with 'yy' for ICU to follow Java spec
+                result.append((first ? "" : "'")
+                        + subPattern.replaceAll("(?<!y)y(?!y)", "yy"));
+                quote = !quote;
+                first = false;
+            } else {
+                result.append("'" + subPattern);
+                quote = !quote;
+            }
+        }
+        if (p.endsWith("'")) {
+            result.append("'");
+        }
+        return result.toString();
     }
 
     /**
