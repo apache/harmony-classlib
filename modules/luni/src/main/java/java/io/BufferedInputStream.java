@@ -416,7 +416,6 @@ public class BufferedInputStream extends FilterInputStream {
                 pos = count;
                 return read;
             }
-            markpos = -1;
         }
         return read + localIn.skip(amount - read);
     }
