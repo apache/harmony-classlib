@@ -172,9 +172,11 @@ public final class Inet6Address extends InetAddress {
     /**
      * Returns {@code true} if one of following cases applies:
      * <p>
-     * <li>1. both addresses are site local</li>
-     * <li>2. both addresses are link local</li>
-     * <li>3. {@code ia} is neither site local nor link local</li>
+     * <ol>
+     *  <li>both addresses are site local</li>
+     *  <li>both addresses are link local</li>
+     *  <li>{@code ia} is neither site local nor link local</li>
+     * </ol>
      */
     private boolean compareLocalType(Inet6Address ia) {
         if (ia.isSiteLocalAddress() && isSiteLocalAddress()) {

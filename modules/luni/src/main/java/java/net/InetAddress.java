@@ -491,7 +491,7 @@ public class InetAddress extends Object implements Serializable {
      * 
      * @param name
      *            the host name to lookup
-     * @param preferIPv6Addresses
+     * @param preferIPv6Address
      *            address preference if underlying platform is V4/V6
      * @return InetAddress the host address
      * @throws UnknownHostException

@@ -41,9 +41,15 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
     private static final float LOADING = 0.75F;
 
     /**
-     * Returns the hostname for the cache element.
+     * Constructs a negative cache for name lookups.
      * 
-     * @return hostName name of the host for which the lookup failed.
+     * @param initialCapacity
+     *            the initial size of the cache.
+     * @param loadFactor
+     *            the load factor of the backing map.
+     * @param accessOrder
+     *            if {@code true} indicates that traversal order should begin
+     *            with most recently accessed element.
      */
     NegativeCache(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);

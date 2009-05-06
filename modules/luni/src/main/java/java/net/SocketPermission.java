@@ -338,10 +338,12 @@ public final class SocketPermission extends Permission implements Serializable {
            portMax = Integer.valueOf(strPortMax).intValue();
            
            if (portMin > portMax) {
-               throw new IllegalArgumentException(Msg.getString("K0049") + " " + port); //$NON-NLS-1$
+               // K0049=MinPort is greater than MaxPort\: {0}
+               throw new IllegalArgumentException(Msg.getString("K0049", port)); //$NON-NLS-1$
            }
        } catch (NumberFormatException e) {
-           throw new IllegalArgumentException(Msg.getString("K004a") + " " + port); //$NON-NLS-1$
+           // K004a=Invalid port number specified\: {0}
+           throw new IllegalArgumentException(Msg.getString("K004a", port)); //$NON-NLS-1$
        }
     }
 
@@ -390,15 +392,20 @@ public final class SocketPermission extends Permission implements Serializable {
     }
 
     /**
-     * Get the host part from the host[:port] one.
-     * The host should be
+     * Get the host part from the host[:port] one. The host should be
+     * 
+     * <pre>
      *      host = (hostname | IPv4address | IPv6reference | IPv6 in full uncompressed form)
-     * The wildcard "*" may be included once in a DNS name host specification. If it is included, 
-     * it must be in the leftmost position
+     * </pre>
+     * 
+     * The wildcard "*" may be included once in a DNS name host specification.
+     * If it is included, it must be in the leftmost position
      * 
      * @param host
-     * @return
-     * @throws IllegalArgumentException   if the host is invalid.
+     *            the {@code host[:port]} string.
+     * @return the host name.
+     * @throws IllegalArgumentException
+     *             if the host is invalid.
      */
     private String getHostString(String host) throws IllegalArgumentException {
         host = host.trim();
@@ -443,21 +450,22 @@ public final class SocketPermission extends Permission implements Serializable {
             if (Inet6Util.isIP6AddressInFullForm(host)) {
                 return host.toLowerCase();
             }
-            throw new IllegalArgumentException(Msg.getString("K004a") + " "
-                    + host);
+            // K004a=Invalid port number specified\: {0}
+            throw new IllegalArgumentException(Msg.getString("K004a", host));
         }
         // forward bracket found
         int bbracketIdx = host.indexOf(']');
         if (-1 == bbracketIdx) {
             // no back bracket found, wrong
-            throw new IllegalArgumentException(Msg.getString("K004a") + " "
-                    + host);
+            // K004a=Invalid port number specified\: {0}
+            throw new IllegalArgumentException(Msg.getString("K004a", host));
         }
         host = host.substring(0, bbracketIdx + 1);
         if (Inet6Util.isValidIP6Address(host)) {
             return host.toLowerCase();
         }
-        throw new IllegalArgumentException(Msg.getString("K004a") + " " + host);
+        // K004a=Invalid port number specified\: {0}
+        throw new IllegalArgumentException(Msg.getString("K004a", host));
     }
 
     /**
