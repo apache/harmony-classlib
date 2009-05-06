@@ -18,15 +18,14 @@
 package java.net;
 
 /**
- * This interface defines a factory for socket implementations. It is used by
- * the classes <code>Socket</code> and <code>ServerSocket</code> to create
- * socket implementations.
+ * This interface defines a factory for socket implementations.
  */
 public interface SocketImplFactory {
+
     /**
-     * Creates a new <code>SocketImpl</code> instance.
+     * Creates a new {@code SocketImpl} instance.
      * 
-     * @return SocketImpl
+     * @return the created {@code SocketImpl} instance.
      */
     SocketImpl createSocketImpl();
 }

@@ -27,28 +27,26 @@ import java.nio.charset.UnsupportedCharsetException;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * This class is used to decode a string which is encoded in the
- * <code>application/x-www-form-urlencoded</code> MIME content type.
+ * This class is used to decode a string which is encoded in the {@code
+ * application/x-www-form-urlencoded} MIME content type.
  */
 public class URLDecoder {
 
     static Charset defaultCharset;
 
     /**
-     * Decodes the string argument which is assumed to be encoded in the
-     * <code>x-www-form-urlencoded</code> MIME content type.
+     * Decodes the argument which is assumed to be encoded in the {@code
+     * x-www-form-urlencoded} MIME content type.
      * <p>
-     * '+' will be converted to space, '%' and two following hex digit
+     *'+' will be converted to space, '%' and two following hex digit
      * characters are converted to the equivalent byte value. All other
-     * characters are passed through unmodified.
-     * <p>
-     * e.g. "A+B+C %24%25" -> "A B C $%"
-     * 
+     * characters are passed through unmodified. For example "A+B+C %24%25" ->
+     * "A B C $%".
+     *
      * @param s
-     *            java.lang.String The encoded string.
-     * @return java.lang.String The decoded version.
-     * 
-     * @deprecated use URLDecoder#decode(String, String) instead
+     *            the encoded string.
+     * @return the decoded clear-text representation of the given string.
+     * @deprecated use {@link #decode(String, String)} instead.
      */
     @Deprecated
     public static String decode(String s) {
@@ -71,22 +69,22 @@ public class URLDecoder {
     }
 
     /**
-     * Decodes the string argument which is assumed to be encoded in the
-     * <code>x-www-form-urlencoded</code> MIME content type using the
-     * specified encoding scheme.
+     * Decodes the argument which is assumed to be encoded in the {@code
+     * x-www-form-urlencoded} MIME content type using the specified encoding
+     * scheme.
      * <p>
-     * '+' will be converted to space, '%' and two following hex digit
+     *'+' will be converted to space, '%' and two following hex digit
      * characters are converted to the equivalent byte value. All other
-     * characters are passed through unmodified.
-     * 
-     * <p>
-     * e.g. "A+B+C %24%25" -> "A B C $%"
-     * 
+     * characters are passed through unmodified. For example "A+B+C %24%25" ->
+     * "A B C $%".
+     *
      * @param s
-     *            java.lang.String The encoded string.
+     *            the encoded string.
      * @param enc
-     *            java.lang.String The encoding scheme to use
-     * @return java.lang.String The decoded version.
+     *            the encoding scheme to be used.
+     * @return the decoded clear-text representation of the given string.
+     * @throws UnsupportedEncodingException
+     *             if the specified encoding scheme is invalid.
      */
     public static String decode(String s, String enc)
             throws UnsupportedEncodingException {

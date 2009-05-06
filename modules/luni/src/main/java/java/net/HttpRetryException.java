@@ -19,7 +19,8 @@ package java.net;
 import java.io.IOException;
 
 /**
- * The exception to be thrown when a request cannot be retried.
+ * If a HTTP request has to be retried, this exception will be thrown if the
+ * request cannot be retried automatically.
  */
 public class HttpRetryException extends IOException {
 
@@ -30,12 +31,13 @@ public class HttpRetryException extends IOException {
     private String location = null;
 
     /**
-     * new a HttpRetryException by given detail message and responseCode
+     * Creates a new {@code HttpRetryException} instance with the specified
+     * response code and the given detail message.
      * 
      * @param detail
-     *            detail for this exception
+     *            the detail message for this exception.
      * @param code
-     *            http response code to return
+     *            the HTTP response code from target host.
      */
     public HttpRetryException(String detail, int code) {
         super(detail);
@@ -43,16 +45,16 @@ public class HttpRetryException extends IOException {
     }
 
     /**
-     * new a HttpRetryException by given detail message, responseCode and the
-     * Location response header
+     * Creates a new {@code HttpRetryException} instance with the specified
+     * response code, the given detail message and the value of the location
+     * field from the response header.
      * 
      * @param detail
-     *            detail for this exception
+     *            the detail message for this exception.
      * @param code
-     *            http response code to return
+     *            the HTTP response code from target host.
      * @param location
-     *            the error resulted from redirection, the Location header can
-     *            be recorded
+     *            the destination URL of the redirection.
      */
     public HttpRetryException(String detail, int code, String location) {
         super(detail);
@@ -61,21 +63,27 @@ public class HttpRetryException extends IOException {
     }
 
     /**
-     * @return the Location header recorded
+     * Gets the location value.
+     *
+     * @return the stored location from the HTTP header.
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * @return the detail reason for this exception
+     * Gets the detail message.
+     *
+     * @return the detail message.
      */
     public String getReason() {
         return getMessage();
     }
 
     /**
-     * @return a http response code
+     * Gets the response code.
+     *
+     * @return the HTTP response code.
      */
     public int responseCode() {
         return responseCode;

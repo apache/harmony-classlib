@@ -41,7 +41,7 @@ public class MalformedURLException extends IOException {
      * filled in.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for this exception instance.
      */
     public MalformedURLException(String detailMessage) {
         super(detailMessage);

@@ -25,9 +25,12 @@ import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * This class models a socket for sending & receiving datagram packets.
+ * This class implements a UDP socket for sending and receiving {@code
+ * DatagramPacket}. A {@code DatagramSocket} object can be used for both
+ * endpoints of a connection for a packet delivery service.
  * 
  * @see DatagramPacket
+ * @see DatagramSocketImplFactory
  */
 public class DatagramSocket {
 
@@ -55,24 +58,25 @@ public class DatagramSocket {
     private Object lock = new Lock();
 
     /**
-     * Constructs a datagram socket, bound to any available port on the
-     * localhost.
+     * Constructs a UDP datagram socket which is bound to any available port on
+     * the localhost.
      * 
      * @throws SocketException
-     *             if a problem occurs creating or binding the socket
+     *             if an error occurs while creating or binding the socket.
      */
     public DatagramSocket() throws SocketException {
         this(0);
     }
 
     /**
-     * Answers a datagram socket, bound to the nominated port on the localhost.
+     * Constructs a UDP datagram socket which is bound to the specific port
+     * {@code aPort} on the localhost. Valid values for {@code aPort} are
+     * between 0 and 65535 inclusive.
      * 
      * @param aPort
-     *            the port to bind on the localhost
-     * 
+     *            the port to bind on the localhost.
      * @throws SocketException
-     *             if a problem occurs creating or binding the socket
+     *             if an error occurs while creating or binding the socket.
      */
     public DatagramSocket(int aPort) throws SocketException {
         super();
@@ -81,15 +85,16 @@ public class DatagramSocket {
     }
 
     /**
-     * Constructs a datagram socket, bound to the nominated localhost/port.
+     * Constructs a UDP datagram socket which is bound to the specific local
+     * address {@code addr} on port {@code aPort}. Valid values for {@code
+     * aPort} are between 0 and 65535 inclusive.
      * 
      * @param aPort
-     *            the port on the localhost to bind
+     *            the port to bind on the localhost.
      * @param addr
-     *            the address on the multihomed localhost to bind
-     * 
+     *            the address to bind on the localhost.
      * @throws SocketException
-     *             if a problem occurs creating or binding the socket
+     *             if an error occurs while creating or binding the socket.
      */
     public DatagramSocket(int aPort, InetAddress addr) throws SocketException {
         super();
@@ -98,12 +103,12 @@ public class DatagramSocket {
     }
 
     /**
-     * Sent prior to attempting to bind the socket, check that the port is
-     * within the valid port range and verify with the security manager that the
-     * port may be bound by the current context.
+     * Sends prior to attempting to bind the socket, checks whether the port is
+     * within the valid port range and verifies with the security manager that
+     * the port may be bound by the current context.
      * 
      * @param aPort
-     *            the port on the localhost that is to be bound
+     *            the port on the localhost that is to be bound.
      */
     void checkListen(int aPort) {
         if (aPort < 0 || aPort > 65535) {
@@ -116,7 +121,7 @@ public class DatagramSocket {
     }
 
     /**
-     * Close the socket.
+     * Closes this UDP datagram socket and all possibly associated channels.
      */
     // In the documentation jdk1.1.7a/guide/net/miscNet.html, this method is
     // noted as not being synchronized.
@@ -126,14 +131,16 @@ public class DatagramSocket {
     }
 
     /**
-     * Connect the datagram socket to a remote host and port. The host and port
-     * are validated, thereafter the only validation on send() and receive() is
-     * that the packet address/port matches the connected target.
+     * Connects this UDP datagram socket to the specific target host with the
+     * address {@code anAdress} on port {@code aPort}. The host and port are
+     * validated, thereafter the only validation on {@code send()} and {@code
+     * receive()} is to check whether the packet address/port matches the
+     * connected target.
      * 
      * @param anAddress
-     *            the target address
+     *            the target address of this socket.
      * @param aPort
-     *            the target port
+     *            the target port of this socket.
      */
     public void connect(InetAddress anAddress, int aPort) {
         if (anAddress == null || aPort < 0 || aPort > 65535) {
@@ -171,8 +178,8 @@ public class DatagramSocket {
     }
 
     /**
-     * 'Disconnect' the datagram socket from a remote host and port. This method
-     * may be called on an unconnected socket.
+     * Disconnects this UDP datagram socket from the remote host. This method
+     * called on an unconnected socket does nothing.
      */
     public void disconnect() {
         if (isClosed() || !isConnected()) {
@@ -199,21 +206,22 @@ public class DatagramSocket {
     }
 
     /**
-     * Returns an {@link InetAddress} instance representing the address this
-     * socket has connected to.
+     * Gets the {@code InetAddress} instance representing the remote address to
+     * which this UDP datagram socket is connected.
      * 
-     * @return if this socket is connected, the address it is connected to. A
-     *         <code>null</code> return signifies no connection has been made.
+     * @return the remote address this socket is connected to or {@code null} if
+     *         this socket is not connected.
      */
     public InetAddress getInetAddress() {
         return address;
     }
 
     /**
-     * Returns an {@link InetAddress} instance representing the <i>local</i>
-     * address this socket is bound to.
+     * Gets the {@code InetAddress} instance representing the bound local
+     * address of this UDP datagram socket.
      * 
-     * @return the local address to which the socket is bound
+     * @return the local address to which this socket is bound to or {@code
+     *         null} if this socket is closed.
      */
     public InetAddress getLocalAddress() {
         if (isClosed()) {
@@ -235,9 +243,10 @@ public class DatagramSocket {
     }
 
     /**
-     * Answer the local port to which the socket is bound.
+     * Gets the local port which this socket is bound to.
      * 
-     * @return int local port to which the socket is bound
+     * @return the local port of this socket or {@code -1} if this socket is
+     *         closed and {@code 0} if it is unbound.
      */
     public int getLocalPort() {
         if (isClosed()) {
@@ -250,23 +259,30 @@ public class DatagramSocket {
     }
 
     /**
-     * Returns the number of the remote port this socket is connected to.
+     * Gets the remote port which this socket is connected to.
      * 
-     * @return int the remote port number that this socket has connected to. A
-     *         return of <code>-1</code> indicates that there is no connection
-     *         in place.
+     * @return the remote port of this socket. The return value {@code -1}
+     *         indicates that this socket is not connected.
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * Answer the socket receive buffer size (SO_RCVBUF).
+     * Indicates whether this socket is multicast or not.
      * 
-     * @return int socket receive buffer size
+     * @return the return value is always {@code false}.
+     */
+    boolean isMulticastSocket() {
+        return false;
+    }
+
+    /**
+     * Gets the socket receive buffer size. ( {@code SocketOptions.SO_RCVBUF} )
      * 
-     * @exception SocketException
-     *                when an error occurs
+     * @return the input buffer size.
+     * @throws SocketException
+     *                if an error occurs while getting the option value.
      */
     public synchronized int getReceiveBufferSize() throws SocketException {
         checkClosedAndBind(false);
@@ -274,12 +290,11 @@ public class DatagramSocket {
     }
 
     /**
-     * Answer the socket send buffer size (SO_SNDBUF).
+     * Gets the socket send buffer size. ( {@code SocketOptions.SO_SNDBUF} )
      * 
-     * @return int socket send buffer size
-     * 
-     * @exception SocketException
-     *                when an error occurs
+     * @return the output buffer size.
+     * @throws SocketException
+     *                if an error occurs while getting the option value.
      */
     public synchronized int getSendBufferSize() throws SocketException {
         checkClosedAndBind(false);
@@ -287,13 +302,13 @@ public class DatagramSocket {
     }
 
     /**
-     * Answer the socket receive timeout (SO_RCVTIMEOUT), in milliseconds. Zero
-     * implies the timeout is disabled.
+     * Gets the socket receive timeout in milliseconds. The return value {@code
+     * 0} implies the timeout is disabled/infinitive. ( {@code
+     * SocketOptions.SO_TIMEOUT} )
      * 
-     * @return int socket receive timeout
-     * 
-     * @exception SocketException
-     *                when an error occurs
+     * @return the socket receive timeout.
+     * @throws SocketException
+     *                if an error occurs while getting the option value.
      */
     public synchronized int getSoTimeout() throws SocketException {
         checkClosedAndBind(false);
@@ -301,20 +316,18 @@ public class DatagramSocket {
     }
 
     /**
-     * Receive on this socket into the packet argument. This method blocks until
-     * a packet is received or, if a timeout has been defined, the timeout
-     * period expires. If this is a connected socket, the packet host/port are
-     * compared to the connection host/port otherwise the security manager if
-     * present is queried whether the packet host/port is acceptable. Any
-     * packets from unacceptable origins will be silently discarded. The packet
-     * fields are set according to the data received. If the received data is
-     * longer than the packet buffer, it is truncated.
+     * Receives a packet from this socket and stores it in the argument {@code
+     * pack}. All fields of {@code pack} must be set according to the data
+     * received. If the received data is longer than the packet buffer size it
+     * is truncated. This method blocks until a packet is received or a timeout
+     * has expired. If a security manager exists, its {@code checkAccept} method
+     * determines whether or not a packet is discarded. Any packets from
+     * unacceptable origins are silently discarded.
      * 
      * @param pack
-     *            the DatagramPacket to receive data into
-     * 
-     * @exception java.io.IOException
-     *                If a receive error occurs.
+     *            the {@code DatagramPacket} to store the received data.
+     * @throws IOException
+     *                if an error occurs while receiving the packet.
      */
     public synchronized void receive(DatagramPacket pack) throws IOException {
         checkClosedAndBind(true);
@@ -403,14 +416,15 @@ public class DatagramSocket {
     }
 
     /**
-     * Send the packet on this socket. The packet must satisfy the security
-     * policy before it may be sent.
+     * Sends a packet over this socket. The packet must satisfy the security
+     * policy before it may be sent. If a security manager is installed, this
+     * method checks whether it is allowed to send this packet to the specified
+     * address.
      * 
      * @param pack
-     *            the DatagramPacket to send
-     * 
-     * @exception java.io.IOException
-     *                If a send error occurs.
+     *            the {@code DatagramPacket} which has to be sent.
+     * @throws IOException
+     *                if an error occurs while sending the packet.
      */
     public void send(DatagramPacket pack) throws IOException {
         checkClosedAndBind(true);
@@ -448,14 +462,15 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the socket send buffer size.
+     * Sets the socket send buffer size. This buffer size determines which the
+     * maximum packet size is that can be sent over this socket. It depends on
+     * the network implementation what will happen if the packet is bigger than
+     * the buffer size. ( {@code SocketOptions.SO_SNDBUF} )
      * 
      * @param size
-     *            the buffer size, in bytes. Must be at least one byte.
-     * 
-     * @exception java.net.SocketException
-     *                If an error occurs while setting the size or the size is
-     *                invalid.
+     *            the buffer size in bytes. The size must be at least one byte.
+     * @throws SocketException
+     *                if an error occurs while setting the option.
      */
     public synchronized void setSendBufferSize(int size) throws SocketException {
         if (size < 1) {
@@ -466,14 +481,15 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the socket receive buffer size.
+     * Sets the socket receive buffer size. This buffer size determines which
+     * the maximum packet size is that can be received over this socket. It
+     * depends on the network implementation what will happen if the packet is
+     * bigger than the buffer size. ( {@code SocketOptions.SO_RCVBUF} )
      * 
      * @param size
-     *            the buffer size, in bytes. Must be at least one byte.
-     * 
-     * @exception java.net.SocketException
-     *                If an error occurs while setting the size or the size is
-     *                invalid.
+     *            the buffer size in bytes. The size must be at least one byte.
+     * @throws SocketException
+     *                if an error occurs while setting the option.
      */
     public synchronized void setReceiveBufferSize(int size)
             throws SocketException {
@@ -485,16 +501,17 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the SO_RCVTIMEOUT to <code>timeout</code>, in milliseconds. The
-     * receive timeout defines the period a socket will block waiting to receive
-     * data, before throwing an InterruptedIOException.
+     * Sets the timeout period in milliseconds for the {@code receive()} method.
+     * This receive timeout defines the period the socket will block waiting to
+     * receive data before throwing an {@code InterruptedIOException}. The value
+     * {@code 0} (default) is used to set an infinite timeout. To have effect
+     * this option must be set before the blocking method was called. ( {@code
+     * SocketOptions.SO_TIMEOUT} )
      * 
      * @param timeout
-     *            the timeout period, in milliseconds
-     * 
-     * @exception java.net.SocketException
-     *                If an error occurs while setting the timeout or the period
-     *                is invalid.
+     *            the timeout period in milliseconds or {@code 0} for infinite.
+     * @throws SocketException
+     *                if an error occurs while setting the option.
      */
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         if (timeout < 0) {
@@ -505,13 +522,18 @@ public class DatagramSocket {
     }
 
     /**
-     * Specifies the application's socket implementation factory. This may only
-     * be invoked once over the lifetime of the application.
+     * Sets the socket implementation factory. This may only be invoked once
+     * over the lifetime of the application. This factory is used to create
+     * a new datagram socket implementation. If a security manager is set its
+     * method {@code checkSetFactory()} is called to check if the operation is
+     * allowed. A {@code SecurityException} is thrown if the operation is not
+     * allowed.
      * 
      * @param fac
-     *            the socket factory to set
-     * @exception IOException
-     *                thrown if the factory has already been set
+     *            the socket factory to use.
+     * @throws IOException
+     *                if the factory has already been set.
+     * @see DatagramSocketImplFactory
      */
     public static synchronized void setDatagramSocketImplFactory(
             DatagramSocketImplFactory fac) throws IOException {
@@ -526,11 +548,12 @@ public class DatagramSocket {
     }
 
     /**
-     * Constructs a DatagramSocket using the specified DatagramSocketImpl. The
-     * DatagramSocket is not bound.
+     * Constructs a new {@code DatagramSocket} using the specific datagram
+     * socket implementation {@code socketImpl}. The created {@code
+     * DatagramSocket} will not be bound.
      * 
      * @param socketImpl
-     *            the DatagramSocketImpl to use
+     *            the DatagramSocketImpl to use.
      */
     protected DatagramSocket(DatagramSocketImpl socketImpl) {
         if (socketImpl == null) {
@@ -540,16 +563,16 @@ public class DatagramSocket {
     }
 
     /**
-     * Constructs a DatagramSocket bound to the host/port specified by the
-     * SocketAddress, or an unbound DatagramSocket if the SocketAddress is null.
+     * Constructs a new {@code DatagramSocket} bound to the host/port specified
+     * by the {@code SocketAddress} {@code localAddr} or an unbound {@code
+     * DatagramSocket} if the {@code SocketAddress} is {@code null}.
      * 
      * @param localAddr
-     *            the local machine address and port to bind to
-     * 
+     *            the local machine address and port to bind to.
      * @throws IllegalArgumentException
      *             if the SocketAddress is not supported
      * @throws SocketException
-     *             if a problem occurs creating or binding the socket
+     *             if a problem occurs creating or binding the socket.
      */
     public DatagramSocket(SocketAddress localAddr) throws SocketException {
         if (localAddr != null) {
@@ -586,16 +609,17 @@ public class DatagramSocket {
     }
 
     /**
-     * Bind the DatagramSocket to the nominated local host/port.
+     * Binds this socket to the local address and port specified by {@code
+     * localAddr}. If this value is {@code null} any free port on a valid local
+     * address is used.
      * 
      * @param localAddr
-     *            the local machine address and port to bind on
-     * 
+     *            the local machine address and port to bind on.
      * @throws IllegalArgumentException
      *             if the SocketAddress is not supported
      * @throws SocketException
-     *             if the socket is already bound, or a problem occurs during
-     *             the bind
+     *             if the socket is already bound or a problem occurs during
+     *             binding.
      */
     public void bind(SocketAddress localAddr) throws SocketException {
         checkClosedAndBind(false);
@@ -620,15 +644,15 @@ public class DatagramSocket {
     }
 
     /**
-     * Connect the datagram socket to a remote host and port. The host and port
-     * are validated, thereafter the only validation on send() and receive() is
-     * that the packet address/port matches the connected target.
+     * Connects this datagram socket to the remote host and port specified by
+     * {@code remoteAddr}. The host and port are validated, thereafter the only
+     * validation on {@code send()} and {@code receive()} is that the packet
+     * address/port matches the connected target.
      * 
      * @param remoteAddr
-     *            the target address and port
-     * 
-     * @exception SocketException
-     *                if a problem occurs during the connect
+     *            the address and port of the target host.
+     * @throws SocketException
+     *                if an error occurs during connecting.
      */
     public void connect(SocketAddress remoteAddr) throws SocketException {
         if (remoteAddr == null) {
@@ -677,30 +701,28 @@ public class DatagramSocket {
     }
 
     /**
-     * Return if the socket is bound to a local address and port.
+     * Determines whether the socket is bound to an address or not.
      * 
-     * @return <code>true</code> if the socket is bound to a local address,
-     *         <code>false</code> otherwise.
+     * @return {@code true} if the socket is bound, {@code false} otherwise.
      */
     public boolean isBound() {
         return isBound;
     }
 
     /**
-     * Return if the socket is connected.
+     * Determines whether the socket is connected to a target host.
      * 
-     * @return <code>true</code> if the socket is connected,
-     *         <code>false</code> otherwise.
+     * @return {@code true} if the socket is connected, {@code false} otherwise.
      */
     public boolean isConnected() {
         return isConnected;
     }
 
     /**
-     * Answer the remote SocketAddress for this socket, or null if the socket is
-     * not connected.
+     * Gets the address and port of the connected remote host. If this socket is
+     * not connected yet, {@code null} is returned.
      * 
-     * @return the remote socket address
+     * @return the remote socket address.
      */
     public SocketAddress getRemoteSocketAddress() {
         if (!isConnected()) {
@@ -710,12 +732,10 @@ public class DatagramSocket {
     }
 
     /**
-     * Answer the local SocketAddress for this socket, or null if the socket is
-     * not bound.
-     * <p>
-     * This is useful on multihomed hosts.
+     * Gets the bound local address and port of this socket. If the socket is
+     * unbound, {@code null} is returned.
      * 
-     * @return the local socket address
+     * @return the local socket address.
      */
     public SocketAddress getLocalSocketAddress() {
         if (!isBound()) {
@@ -725,13 +745,17 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the SO_REUSEADDR socket option.
+     * Sets the socket option {@code SocketOptions.SO_REUSEADDR}. This option
+     * has to be enabled if more than one UDP socket wants to be bound to the
+     * same address. That could be needed for receiving multicast packets.
+     * <p>
+     * There is an undefined behavior if this option is set after the socket is
+     * already bound.
      * 
      * @param reuse
-     *            the socket SO_REUSEADDR option setting
-     * 
+     *            the socket option value to enable or disable this option.
      * @throws SocketException
-     *             if the socket is closed or the option is invalid.
+     *             if the socket is closed or the option could not be set.
      */
     public void setReuseAddress(boolean reuse) throws SocketException {
         checkClosedAndBind(false);
@@ -740,11 +764,9 @@ public class DatagramSocket {
     }
 
     /**
-     * Get the state of the SO_REUSEADDR socket option.
+     * Gets the state of the socket option {@code SocketOptions.SO_REUSEADDR}.
      * 
-     * @return <code>true</code> if the SO_REUSEADDR is enabled,
-     *         <code>false</code> otherwise.
-     * 
+     * @return {@code true} if the option is enabled, {@code false} otherwise.
      * @throws SocketException
      *             if the socket is closed or the option is invalid.
      */
@@ -755,13 +777,13 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the SO_BROADCAST socket option.
+     * Sets the socket option {@code SocketOptions.SO_BROADCAST}. This option
+     * must be enabled to send broadcast messages.
      * 
      * @param broadcast
-     *            the socket SO_BROADCAST option setting
-     * 
+     *            the socket option value to enable or disable this option.
      * @throws SocketException
-     *             if the socket is closed or the option is invalid.
+     *             if the socket is closed or the option could not be set.
      */
     public void setBroadcast(boolean broadcast) throws SocketException {
         checkClosedAndBind(false);
@@ -770,11 +792,9 @@ public class DatagramSocket {
     }
 
     /**
-     * Get the state of the SO_BROADCAST socket option.
+     * Gets the state of the socket option {@code SocketOptions.SO_BROADCAST}.
      * 
-     * @return <code>true</code> if the SO_BROADCAST is enabled,
-     *         <code>false</code> otherwise.
-     * 
+     * @return {@code true} if the option is enabled, {@code false} otherwise.
      * @throws SocketException
      *             if the socket is closed or the option is invalid.
      */
@@ -785,13 +805,18 @@ public class DatagramSocket {
     }
 
     /**
-     * Set the IP_TOS socket option.
-     * 
+     * Sets the socket option {@code SocketOptions.IP_TOS}. This option defines
+     * the value of the type-of-service field of the IP-header for every packet
+     * sent by this socket. The value could be ignored by the underlying network
+     * implementation.
+     * <p>
+     * Values between {@code 0} and {@code 255} inclusive are valid for this
+     * option.
+     *
      * @param value
-     *            the socket IP_TOS setting
-     * 
+     *            the socket option value to be set as type-of-service.
      * @throws SocketException
-     *             if the socket is closed or the option is invalid.
+     *             if the socket is closed or the option could not be set.
      */
     public void setTrafficClass(int value) throws SocketException {
         checkClosedAndBind(false);
@@ -802,12 +827,12 @@ public class DatagramSocket {
     }
 
     /**
-     * Get the IP_TOS socket option.
+     * Gets the value of the type-of-service socket option {@code
+     * SocketOptions.IP_TOS}.
      * 
-     * @return the IP_TOS socket option value
-     * 
+     * @return the type-of-service socket option value.
      * @throws SocketException
-     *             if the option is invalid
+     *             if the socket is closed or the option is invalid.
      */
     public int getTrafficClass() throws SocketException {
         checkClosedAndBind(false);
@@ -815,20 +840,20 @@ public class DatagramSocket {
     }
 
     /**
-     * Return if the socket is closed.
+     * Gets the state of this socket.
      * 
-     * @return <code>true</code> if the socket is closed, <code>false</code>
-     *         otherwise.
+     * @return {@code true} if the socket is closed, {@code false} otherwise.
      */
     public boolean isClosed() {
         return isClosed;
     }
 
     /**
-     * if DatagramSocket is created by a DatagramChannel, returns the related
-     * DatagramChannel
+     * Gets the related DatagramChannel of this socket. This implementation
+     * returns always {@code null}.
      * 
-     * @return the related DatagramChannel if any
+     * @return the related DatagramChannel or {@code null} if this socket was
+     *         not created by a {@code DatagramChannel} object.
      */
     public DatagramChannel getChannel() {
         return null;

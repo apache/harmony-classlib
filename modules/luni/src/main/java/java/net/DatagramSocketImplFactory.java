@@ -19,14 +19,17 @@ package java.net;
 
 /**
  * This interface defines a factory for datagram socket implementations. It is
- * used by the class <code>DatagramSocket</code> to create datagram socket
- * implementations.
+ * used by the class {@code DatagramSocket} to create a new datagram socket
+ * implementation.
+ * 
+ * @see DatagramSocket
  */
 public interface DatagramSocketImplFactory {
+    
     /**
-     * Creates a new <code>SocketImpl</code> instance.
+     * Creates a new {@code DatagramSocketImpl} instance.
      * 
-     * @return SocketImpl
+     * @return the new datagram socket implementation.
      */
     DatagramSocketImpl createDatagramSocketImpl();
 }

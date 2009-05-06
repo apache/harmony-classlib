@@ -23,9 +23,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * SocketPermissionCollection is a class which holds a collection of
- * SocketPermission objects and can answer a boolean indicating whether or not a
- * specific permissions is implied by a SocketPermissionCollection.
+ * This class represents a list of {@code SocketPermission} objects and provides
+ * a method to check whether or not a specific permission is implied by this
+ * {@code SocketPermissionCollection}.
  */
 final class SocketPermissionCollection extends PermissionCollection {
 
@@ -50,15 +50,15 @@ final class SocketPermissionCollection extends PermissionCollection {
         permissions.addElement(permission);
     }
 
-    // Answers an enumeration of the permissions
+    // Returns an enumeration of the permissions
     @Override
     public Enumeration<Permission> elements() {
         return permissions.elements();
     }
 
     /**
-     * Answers if this permission collection implies <code>permission</code>.
-     * Basically it tests if <code>permission</code> is the subset of this
+     * Returns whether this permission collection implies {@code permission}.
+     * Basically it tests whether {@code permission} is the subset of this
      * collection.
      */
     @Override
