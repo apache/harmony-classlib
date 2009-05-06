@@ -451,6 +451,14 @@ public class BufferedInputStreamTest extends TestCase {
     }
 
     /**
+     * @tests java.io.BufferedInputStream#skip(long)
+     */
+    public void test_skip_NullInputStream() throws IOException {
+        BufferedInputStream buf = new BufferedInputStream(null, 5);
+        assertEquals(0, buf.skip(0));
+    }
+
+    /**
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.
      */

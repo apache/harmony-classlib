@@ -383,12 +383,16 @@ public class BufferedInputStream extends FilterInputStream {
         // unsynchronized close()
         byte[] localBuf = buf;
         InputStream localIn = in;
-        if (localBuf == null || localIn == null) {
+        if (localBuf == null) {
             // K0059=Stream is closed
             throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
         if (amount < 1) {
             return 0;
+        }
+        if (localIn == null) {
+            // K0059=Stream is closed
+            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
         }
 
         if (count - pos >= amount) {
