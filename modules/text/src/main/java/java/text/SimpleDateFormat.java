@@ -683,12 +683,77 @@ public class SimpleDateFormat extends DateFormat {
      */
     @Override
     public StringBuffer format(Date date, StringBuffer buffer,
-            FieldPosition field) {
+            FieldPosition fieldPos) {
         icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(calendar
                 .getTimeZone().getID()));
-        return icuFormat.format(date, buffer, field);
+        // As ICU has its own implementation for DateFormat.Field, we need to
+        // pass an ICU instance of DateFormat.Field to the FieldPosition to get
+        // the begin and end index.
+        StringBuffer result = null;
+        Format.Field attribute = fieldPos.getFieldAttribute();
+        if (attribute instanceof DateFormat.Field) {
+            com.ibm.icu.text.DateFormat.Field icuAttribute = toICUField((DateFormat.Field) attribute);
+            int field = fieldPos.getField();
+            FieldPosition icuFieldPos = new FieldPosition(icuAttribute, field);
+            result = icuFormat.format(date, buffer, icuFieldPos);
+            fieldPos.setBeginIndex(icuFieldPos.getBeginIndex());
+            fieldPos.setEndIndex(icuFieldPos.getEndIndex());
+            return result;
+        }
+        return icuFormat.format(date, buffer, fieldPos);
     }
 
+    /**
+     * Maps the Java-spec date format field to the equivalent field in ICU.
+     * 
+     * @param attribute
+     *            the Java-spec definition of a date format field.
+     * @return the ICU definition of the same date format field.
+     */
+    private com.ibm.icu.text.DateFormat.Field toICUField(
+            DateFormat.Field attribute) {
+        com.ibm.icu.text.DateFormat.Field icuAttribute = null;
+
+        if (attribute == DateFormat.Field.ERA) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.ERA;
+        } else if (attribute == DateFormat.Field.YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.YEAR;
+        } else if (attribute == DateFormat.Field.MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MONTH;
+        } else if (attribute == DateFormat.Field.HOUR_OF_DAY0) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR_OF_DAY0;
+        } else if (attribute == DateFormat.Field.HOUR_OF_DAY1) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR_OF_DAY1;
+        } else if (attribute == DateFormat.Field.MINUTE) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MINUTE;
+        } else if (attribute == DateFormat.Field.SECOND) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.SECOND;
+        } else if (attribute == DateFormat.Field.MILLISECOND) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MILLISECOND;
+        } else if (attribute == DateFormat.Field.DAY_OF_WEEK) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_WEEK;
+        } else if (attribute == DateFormat.Field.DAY_OF_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_MONTH;
+        } else if (attribute == DateFormat.Field.DAY_OF_YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_YEAR;
+        } else if (attribute == DateFormat.Field.DAY_OF_WEEK_IN_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_WEEK_IN_MONTH;
+        } else if (attribute == DateFormat.Field.WEEK_OF_YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.WEEK_OF_YEAR;
+        } else if (attribute == DateFormat.Field.WEEK_OF_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.WEEK_OF_MONTH;
+        } else if (attribute == DateFormat.Field.AM_PM) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.AM_PM;
+        } else if (attribute == DateFormat.Field.HOUR0) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR0;
+        } else if (attribute == DateFormat.Field.HOUR1) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR1;
+        } else if (attribute == DateFormat.Field.TIME_ZONE) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.TIME_ZONE;
+        }
+
+        return icuAttribute;
+    }
 
     /**
      * Answers the Date which is the start of the one hundred year period for

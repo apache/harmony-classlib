@@ -59,7 +59,7 @@ public class Support_SimpleDateFormat extends Support_Format {
 				.applyPattern("G GGGG y yy yyyy M MM MMM MMMM d dd ddd k kk kkk H HH HHH h hh hhh m mmm s ss sss S SS SSS EE EEEE D DD DDD F FF w www W WWW a  aaa  K KKK z zzzz Z ZZZZ");
 
 		StringBuffer textbuffer = new StringBuffer(
-				"AD Anno Domini 1999 99 1999 9 09 Sep September 13 13 013 17 17 017 17 17 017 5 05");
+				"AD Anno Domini 99 99 1999 9 09 Sep September 13 13 013 17 17 017 17 17 017 5 05");
 		textbuffer
 				.append(" 005 19 019 1 01 001 0 00 000 Mon Monday 256 256 256 2 02 38 038 3 003 PM");
 		textbuffer.append("  PM  5 005 GMT-05:00 GMT-05:00 -0500 GMT-05:00");
@@ -70,24 +70,24 @@ public class Support_SimpleDateFormat extends Support_Format {
 		// test if field positions are set correctly for these fields occuring
 		// multiple times.
 		t_FormatWithField(0, format, date, null, Field.ERA, 0, 2);
-		t_FormatWithField(1, format, date, null, Field.YEAR, 6, 8);
-		t_FormatWithField(2, format, date, null, Field.MONTH, 17, 18);
-		t_FormatWithField(3, format, date, null, Field.DAY_OF_MONTH, 36, 38);
-		t_FormatWithField(4, format, date, null, Field.HOUR_OF_DAY1, 46, 48);
-		t_FormatWithField(5, format, date, null, Field.HOUR_OF_DAY0, 56, 58);
-		t_FormatWithField(6, format, date, null, Field.HOUR1, 66, 67);
-		t_FormatWithField(7, format, date, null, Field.MINUTE, 75, 77);
-		t_FormatWithField(8, format, date, null, Field.SECOND, 82, 83);
-		t_FormatWithField(9, format, date, null, Field.MILLISECOND, 91, 92);
-		t_FormatWithField(10, format, date, null, Field.DAY_OF_WEEK, 100, 103);
-		t_FormatWithField(11, format, date, null, Field.DAY_OF_YEAR, 111, 114);
+		t_FormatWithField(1, format, date, null, Field.YEAR, 15, 17);
+		t_FormatWithField(2, format, date, null, Field.MONTH, 26, 27);
+		t_FormatWithField(3, format, date, null, Field.DAY_OF_MONTH, 45, 47);
+		t_FormatWithField(4, format, date, null, Field.HOUR_OF_DAY1, 55, 57);
+		t_FormatWithField(5, format, date, null, Field.HOUR_OF_DAY0, 65, 67);
+		t_FormatWithField(6, format, date, null, Field.HOUR1, 75, 76);
+		t_FormatWithField(7, format, date, null, Field.MINUTE, 84, 86);
+		t_FormatWithField(8, format, date, null, Field.SECOND, 91, 92);
+		t_FormatWithField(9, format, date, null, Field.MILLISECOND, 100, 101);
+		t_FormatWithField(10, format, date, null, Field.DAY_OF_WEEK, 109, 112);
+		t_FormatWithField(11, format, date, null, Field.DAY_OF_YEAR, 120, 123);
 		t_FormatWithField(12, format, date, null, Field.DAY_OF_WEEK_IN_MONTH,
-				123, 124);
-		t_FormatWithField(13, format, date, null, Field.WEEK_OF_YEAR, 128, 130);
-		t_FormatWithField(14, format, date, null, Field.WEEK_OF_MONTH, 135, 136);
-		t_FormatWithField(15, format, date, null, Field.AM_PM, 141, 143);
-		t_FormatWithField(16, format, date, null, Field.HOUR0, 149, 150);
-		t_FormatWithField(17, format, date, null, Field.TIME_ZONE, 155, 158);
+				132, 133);
+		t_FormatWithField(13, format, date, null, Field.WEEK_OF_YEAR, 137, 139);
+		t_FormatWithField(14, format, date, null, Field.WEEK_OF_MONTH, 144, 145);
+		t_FormatWithField(15, format, date, null, Field.AM_PM, 150, 152);
+		t_FormatWithField(16, format, date, null, Field.HOUR0, 158, 159);
+		t_FormatWithField(17, format, date, null, Field.TIME_ZONE, 164, 173);
 
 		// test fields that are not included in the formatted text
 		t_FormatWithField(18, format, date, null,
@@ -96,10 +96,10 @@ public class Support_SimpleDateFormat extends Support_Format {
 		// test with simple example
 		format.applyPattern("h:m z");
 
-		super.text = "5:19 EDT";
+		super.text = "5:19 GMT-05:00";
 		t_FormatWithField(21, format, date, null, Field.HOUR1, 0, 1);
 		t_FormatWithField(22, format, date, null, Field.MINUTE, 2, 4);
-		t_FormatWithField(23, format, date, null, Field.TIME_ZONE, 5, 8);
+		t_FormatWithField(23, format, date, null, Field.TIME_ZONE, 5, 14);
 
 		// test fields that are not included in the formatted text
 
@@ -125,7 +125,7 @@ public class Support_SimpleDateFormat extends Support_Format {
 
 		// test with simple example with pattern char Z
 		format.applyPattern("h:m Z z");
-		super.text = "5:19 -0400 EDT";
+		super.text = "5:19 -0500 GMT-05:00";
 		t_FormatWithField(40, format, date, null, Field.HOUR1, 0, 1);
 		t_FormatWithField(41, format, date, null, Field.MINUTE, 2, 4);
 		t_FormatWithField(42, format, date, null, Field.TIME_ZONE, 5, 10);
