@@ -266,7 +266,7 @@ public class SimpleDateFormat extends DateFormat {
          * spec.
          */
         String templateForICU = patternForICU(template);
-        icuFormat.applyPattern(template);
+        icuFormat.applyPattern(templateForICU);
         pattern = template;
     }
 
