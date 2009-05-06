@@ -171,6 +171,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
         if (location < 0 || location > size) {
             throw new IndexOutOfBoundsException();
         }
+        if (this == collection) {
+            collection = (ArrayList)clone();
+        }
         int growSize = collection.size();
         if (0 < location && location < size) {
             if (array.length - size < growSize) {

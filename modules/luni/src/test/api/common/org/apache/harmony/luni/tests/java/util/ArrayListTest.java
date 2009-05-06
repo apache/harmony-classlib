@@ -397,6 +397,30 @@ public class ArrayListTest extends junit.framework.TestCase {
 
     }
 
+        public void test_ArrayList_addAll_scenario1() {
+        ArrayList arrayListA = new ArrayList();
+        arrayListA.add(1);
+        ArrayList arrayListB = new ArrayList();
+        arrayListB.add(1);
+        arrayListA.addAll(1, arrayListB);
+        int size = arrayListA.size();
+        assertEquals(2, size);
+        for (int index = 0; index < size; index++) {
+            assertEquals(1, arrayListA.get(index));
+        }
+    }
+
+    public void test_ArrayList_addAll_scenario2() {
+        ArrayList arrayList = new ArrayList();
+        arrayList.add(1);
+        arrayList.addAll(1, arrayList);
+        int size = arrayList.size();
+        assertEquals(2, size);
+        for (int index = 0; index < size; index++) {
+            assertEquals(1, arrayList.get(index));
+        }
+    }
+        
     // Regression test for HARMONY-5839
     public void testaddAllHarmony5839() {
         Collection coll = Arrays.asList(new String[] { "1", "2" });
