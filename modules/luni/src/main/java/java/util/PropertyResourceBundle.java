@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * PropertyResourceBundle loads resources from an InputStream. All resources are
- * Strings. The resources must be of the form <code>key=value</code>, one
- * resource per line.
+ * {@code PropertyResourceBundle} loads resources from an {@code InputStream}. All resources are
+ * Strings. The resources must be of the form {@code key=value}, one
+ * resource per line (see Properties).
  * 
  * @see ResourceBundle
  * @see Properties
@@ -34,12 +34,14 @@ public class PropertyResourceBundle extends ResourceBundle {
     Properties resources;
 
     /**
-     * Constructs a new instance of PropertyResourceBundle and loads the
-     * properties file from the specified input stream.
+     * Constructs a new instance of {@code PropertyResourceBundle} and loads the
+     * properties file from the specified {@code InputStream}.
      * 
      * @param stream
-     *            the input stream
+     *            the {@code InputStream}.
      * @throws IOException
+     *             if an error occurs during a read operation on the
+     *             {@code InputStream}.
      */
     public PropertyResourceBundle(InputStream stream) throws IOException {
         resources = new Properties();

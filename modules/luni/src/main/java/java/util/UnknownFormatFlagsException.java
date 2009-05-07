@@ -19,7 +19,10 @@ package java.util;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * The unchecked exception will be thrown out if there is an unknown flag.
+ * An {@code UnknownFormatFlagsException} will be thrown if there is
+ * an unknown flag.
+ * 
+ * @see java.lang.RuntimeException
  */
 public class UnknownFormatFlagsException extends IllegalFormatException {
 
@@ -28,10 +31,11 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
     private String flags;
 
     /**
-     * Constructs an UnknownFormatFlagsException with the specified flags.
+     * Constructs a new {@code UnknownFormatFlagsException} with the specified
+     * flags.
      * 
      * @param f
-     *            The specified flags.
+     *           the specified flags.
      */
     public UnknownFormatFlagsException(String f) {
         if (null == f) {
@@ -43,7 +47,7 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
     /**
      * Returns the flags associated with the exception.
      * 
-     * @return The flags associated with the exception.
+     * @return the flags associated with the exception.
      */
     public String getFlags() {
         return flags;
@@ -52,7 +56,7 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
     /**
      * Returns the message associated with the exception.
      * 
-     * @return The message associated with the exception.
+     * @return the message associated with the exception.
      */
     @Override
     public String getMessage() {

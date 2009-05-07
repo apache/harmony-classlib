@@ -17,20 +17,24 @@
 
 package java.util;
 
+
 /**
- * Observer must be implemented by objects which are added to an Observable.
+ * {@code Observer} is the interface to be implemented by objects that 
+ * receive notification of updates on an {@code Observable} object.
+ * 
+ * @see Observable 
  */
 public interface Observer {
 
     /**
-     * When the specified observable object's <code>notifyObservers</code>
-     * method is called and the observable object has changed, this method is
-     * called.
+     * This method is called if the specified {@code Observable} object's
+     * {@code notifyObservers} method is called (because the {@code Observable} 
+     * object has been updated.
      * 
      * @param observable
-     *            the observable object
+     *            the {@link Observable} object.
      * @param data
-     *            the data passed to <code>notifyObservers</code>
+     *            the data passed to {@link Observable#notifyObservers(Object)}.
      */
     void update(Observable observable, Object data);
 }

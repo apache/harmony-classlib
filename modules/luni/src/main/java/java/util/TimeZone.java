@@ -24,22 +24,53 @@ import java.security.PrivilegedAction;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * TimeZone is an abstract class which represents a local time zone and its
- * daylight savings time rules. Subclasses support a particular calendar type,
- * such as the gregorian calendar.
- * 
- * Please note the type returned by factory methods, i.e.
- * <code>getDefault()</code> and <code>getTimeZone(String)</code>, is
- * implementation dependent, so that it may introduce serialization
- * incompatibility issue between different implementations. Harmony returns
- * instance of {@link SimpleTimeZone SimpleTimeZone} so that the bytes
- * serialized by Harmony can be deserialized on other implementation
- * successfully, but the reverse compatibility cannot be guaranteed.
- * 
+ * {@code TimeZone} represents a time zone offset, taking into account
+ * daylight savings.
+ * <p>
+ * Typically, you get a {@code TimeZone} using {@code getDefault}
+ * which creates a {@code TimeZone} based on the time zone where the
+ * program is running. For example, for a program running in Japan,
+ * {@code getDefault} creates a {@code TimeZone} object based on
+ * Japanese Standard Time.
+ * <p>
+ * You can also get a {@code TimeZone} using {@code getTimeZone}
+ * along with a time zone ID. For instance, the time zone ID for the U.S.
+ * Pacific Time zone is "America/Los_Angeles". So, you can get a U.S. Pacific
+ * Time {@code TimeZone} object with the following: <blockquote>
+ *
+ * <pre>
+ * TimeZone tz = TimeZone.getTimeZone(&quot;America/Los_Angeles&quot;);
+ * </pre>
+ *
+ * </blockquote> You can use the {@code getAvailableIDs} method to iterate
+ * through all the supported time zone IDs. You can then choose a supported ID
+ * to get a {@code TimeZone}. If the time zone you want is not
+ * represented by one of the supported IDs, then you can create a custom time
+ * zone ID with the following syntax: <blockquote>
+ *
+ * <pre>
+ * GMT[+|-]hh[[:]mm]
+ * </pre>
+ *
+ * </blockquote> For example, you might specify GMT+14:00 as a custom time zone
+ * ID. The {@code TimeZone} that is returned when you specify a custom
+ * time zone ID does not include daylight savings time.
+ * <p>
+ * For compatibility with JDK 1.1.x, some other three-letter time zone IDs (such
+ * as "PST", "CTT", "AST") are also supported. However, <strong>their use is
+ * deprecated</strong> because the same abbreviation is often used for multiple
+ * time zones (for example, "CST" could be U.S. "Central Standard Time" and
+ * "China Standard Time"), and the Java platform can then only recognize one of
+ * them.
+ * <p>
+ * Please note the type returned by factory methods, i.e. {@code getDefault()}
+ * and {@code getTimeZone(String)}, is implementation dependent, so it may
+ * introduce serialization incompatibility issues between different
+ * implementations.
+ *
  * @see GregorianCalendar
  * @see SimpleTimeZone
  */
-
 public abstract class TimeZone implements Serializable, Cloneable {
     private static final long serialVersionUID = 3581463369166924961L;
 
@@ -93,17 +124,15 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
     /**
      * Constructs a new instance of this class.
-     * 
      */
     public TimeZone() {
     }
 
     /**
-     * Answers a new TimeZone with the same ID, rawOffset and daylight savings
-     * time rules as this TimeZone.
-     * 
-     * @return a shallow copy of this TimeZone
-     * 
+     * Returns a new {@code TimeZone} with the same ID, {@code rawOffset} and daylight savings
+     * time rules as this {@code TimeZone}.
+     *
+     * @return a shallow copy of this {@code TimeZone}.
      * @see java.lang.Cloneable
      */
     @Override
@@ -117,9 +146,10 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the available time zone IDs.
+     * Gets the available time zone IDs. Any one of these IDs can be passed to
+     * {@code get()} to create the corresponding {@code TimeZone} instance.
      * 
-     * @return an array of time zone ID strings
+     * @return an array of time zone ID strings.
      */
     public static synchronized String[] getAvailableIDs() {
         return com.ibm.icu.util.TimeZone.getAvailableIDs();
@@ -127,11 +157,12 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
     /**
      * Gets the available time zone IDs which match the specified offset from
-     * GMT.
+     * GMT. Any one of these IDs can be passed to {@code get()} to create the corresponding
+     * {@code TimeZone} instance.
      * 
      * @param offset
-     *            the offset from GMT in milliseconds
-     * @return an array of time zone ID strings
+     *            the offset from GMT in milliseconds.
+     * @return an array of time zone ID strings.
      */
     public static synchronized String[] getAvailableIDs(int offset) {
         String[] availableIDs = com.ibm.icu.util.TimeZone.getAvailableIDs();
@@ -153,7 +184,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
     /**
      * Gets the default time zone.
      * 
-     * @return the default time zone
+     * @return the default time zone.
      */
     public static synchronized TimeZone getDefault() {
         if (Default == null) {
@@ -163,56 +194,58 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the LONG name for this TimeZone for the default Locale in standard
+     * Gets the LONG name for this {@code TimeZone} for the default {@code Locale} in standard
      * time. If the name is not available, the result is in the format
-     * GMT[+-]hh:mm.
+     * {@code GMT[+-]hh:mm}.
      * 
-     * @return the TimeZone name
+     * @return the {@code TimeZone} name.
      */
     public final String getDisplayName() {
         return getDisplayName(false, LONG, Locale.getDefault());
     }
 
     /**
-     * Gets the LONG name for this TimeZone for the specified Locale in standard
+     * Gets the LONG name for this {@code TimeZone} for the specified {@code Locale} in standard
      * time. If the name is not available, the result is in the format
-     * GMT[+-]hh:mm.
+     * {@code GMT[+-]hh:mm}.
      * 
      * @param locale
-     *            the Locale
-     * @return the TimeZone name
+     *            the {@code Locale}.
+     * @return the {@code TimeZone} name.
      */
     public final String getDisplayName(Locale locale) {
         return getDisplayName(false, LONG, locale);
     }
 
     /**
-     * Gets the specified style of name (LONG or SHORT) for this TimeZone for
-     * the default Locale in either standard or daylight time as specified. If
-     * the name is not available, the result is in the format GMT[+-]hh:mm.
+     * Gets the specified style of name ({@code LONG} or {@code SHORT}) for this {@code TimeZone} for
+     * the default {@code Locale} in either standard or daylight time as specified. If
+     * the name is not available, the result is in the format {@code GMT[+-]hh:mm}.
      * 
      * @param daylightTime
-     *            true for daylight time, false for standard time
+     *            {@code true} for daylight time, {@code false} for standard
+     *            time.
      * @param style
-     *            Either LONG or SHORT
-     * @return the TimeZone name
+     *            either {@code LONG} or {@code SHORT}.
+     * @return the {@code TimeZone} name.
      */
     public final String getDisplayName(boolean daylightTime, int style) {
         return getDisplayName(daylightTime, style, Locale.getDefault());
     }
 
     /**
-     * Gets the specified style of name (LONG or SHORT) for this TimeZone for
-     * the specified Locale in either standard or daylight time as specified. If
-     * the name is not available, the result is in the format GMT[+-]hh:mm.
+     * Gets the specified style of name ({@code LONG} or {@code SHORT}) for this {@code TimeZone} for
+     * the specified {@code Locale} in either standard or daylight time as specified. If
+     * the name is not available, the result is in the format {@code GMT[+-]hh:mm}.
      * 
      * @param daylightTime
-     *            true for daylight time, false for standard time
+     *            {@code true} for daylight time, {@code false} for standard
+     *            time.
      * @param style
-     *            Either LONG or SHORT
+     *            either LONG or SHORT.
      * @param locale
-     *            the Locale
-     * @return the TimeZone name
+     *            either {@code LONG} or {@code SHORT}.
+     * @return the {@code TimeZone} name.
      */
     public String getDisplayName(boolean daylightTime, int style, Locale locale) {
         if(icuTimeZone == null || !ID.equals(icuTimeZone.getID())){
@@ -223,16 +256,16 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the ID of this TimeZone.
+     * Gets the ID of this {@code TimeZone}.
      * 
-     * @return the time zone ID string
+     * @return the time zone ID string.
      */
     public String getID() {
         return ID;
     }
 
     /**
-     * Gets the daylight savings offset in milliseconds for this TimeZone.
+     * Gets the daylight savings offset in milliseconds for this {@code TimeZone}.
      * <p>
      * This implementation returns 3600000 (1 hour), or 0 if the time zone does
      * not observe daylight savings.
@@ -241,9 +274,8 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * hour.
      * <p>
      * 
-     * @return the daylight savings offset in milliseconds if this TimeZone
+     * @return the daylight savings offset in milliseconds if this {@code TimeZone}
      *         observes daylight savings, zero otherwise.
-     * 
      */
     public int getDSTSavings() {
         if (useDaylightTime()) {
@@ -253,13 +285,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the offset from GMT of this TimeZone for the specified date. The
+     * Gets the offset from GMT of this {@code TimeZone} for the specified date. The
      * offset includes daylight savings time if the specified date is within the
      * daylight savings time period.
      * 
      * @param time
      *            the date in milliseconds since January 1, 1970 00:00:00 GMT
-     * @return the offset from GMT in milliseconds
+     * @return the offset from GMT in milliseconds.
      */
     public int getOffset(long time) {
         if (inDaylightTime(new Date(time))) {
@@ -269,42 +301,42 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the offset from GMT of this TimeZone for the specified date and
+     * Gets the offset from GMT of this {@code TimeZone} for the specified date and
      * time. The offset includes daylight savings time if the specified date and
      * time are within the daylight savings time period.
      * 
      * @param era
-     *            the GregorianCalendar era, either GregorianCalendar.BC or
-     *            GregorianCalendar.AD
+     *            the {@code GregorianCalendar} era, either {@code GregorianCalendar.BC} or
+     *            {@code GregorianCalendar.AD}.
      * @param year
-     *            the year
+     *            the year.
      * @param month
-     *            the Calendar month
+     *            the {@code Calendar} month.
      * @param day
-     *            the day of the month
+     *            the day of the month.
      * @param dayOfWeek
-     *            the Calendar day of the week
+     *            the {@code Calendar} day of the week.
      * @param time
-     *            the time of day in milliseconds
-     * @return the offset from GMT in milliseconds
+     *            the time of day in milliseconds.
+     * @return the offset from GMT in milliseconds.
      */
     abstract public int getOffset(int era, int year, int month, int day,
             int dayOfWeek, int time);
 
     /**
-     * Gets the offset for standard time from GMT for this TimeZone.
+     * Gets the offset for standard time from GMT for this {@code TimeZone}.
      * 
-     * @return the offset from GMT in milliseconds
+     * @return the offset from GMT in milliseconds.
      */
     abstract public int getRawOffset();
 
     /**
-     * Gets the time zone with the specified ID.
+     * Gets the {@code TimeZone} with the specified ID.
      * 
      * @param name
-     *            a time zone string ID
-     * @return the time zone with the specified ID or null if a time zone with
-     *         the specified ID does not exist
+     *            a time zone string ID.
+     * @return the {@code TimeZone} with the specified ID or null if no {@code TimeZone} with
+     *         the specified ID exists.
      */
     public static synchronized TimeZone getTimeZone(String name) {
         if (AvailableZones == null) {
@@ -382,12 +414,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Answers if the specified TimeZone has the same raw offset as this
-     * TimeZone.
+     * Returns whether the specified {@code TimeZone} has the same raw offset as this
+     * {@code TimeZone}.
      * 
      * @param zone
-     *            a TimeZone
-     * @return true when the TimeZones have the same raw offset, false otherwise
+     *            a {@code TimeZone}.
+     * @return {@code true} when the {@code TimeZone} have the same raw offset, {@code false}
+     *         otherwise.
      */
     public boolean hasSameRules(TimeZone zone) {
         if (zone == null) {
@@ -397,13 +430,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Answers if the specified Date is in the daylight savings time period for
-     * this TimeZone.
+     * Returns whether the specified {@code Date} is in the daylight savings time period for
+     * this {@code TimeZone}.
      * 
      * @param time
-     *            a Date
-     * @return true when the Date is in the daylight savings time period, false
-     *         otherwise
+     *            a {@code Date}.
+     * @return {@code true} when the {@code Date} is in the daylight savings time period, {@code false}
+     *         otherwise.
      */
     abstract public boolean inDaylightTime(Date time);
 
@@ -419,10 +452,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the default time zone.
+     * Sets the default time zone. If passed {@code null}, then the next
+     * time {@link #getDefault} is called, the default time zone will be
+     * determined. This behavior is slightly different than the canonical
+     * description of this method, but it follows the spirit of it.
      * 
      * @param timezone
-     *            a TimeZone object
+     *            a {@code TimeZone} object.
      */
     public static synchronized void setDefault(TimeZone timezone) {
         if (timezone != null) {
@@ -494,10 +530,10 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the ID of this TimeZone.
+     * Sets the ID of this {@code TimeZone}.
      * 
      * @param name
-     *            a string which is the time zone ID
+     *            a string which is the time zone ID.
      */
     public void setID(String name) {
         if (name == null) {
@@ -507,18 +543,18 @@ public abstract class TimeZone implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the offset for standard time from GMT for this TimeZone.
+     * Sets the offset for standard time from GMT for this {@code TimeZone}.
      * 
      * @param offset
-     *            the offset from GMT in milliseconds
+     *            the offset from GMT in milliseconds.
      */
     abstract public void setRawOffset(int offset);
 
     /**
-     * Answers if this TimeZone has a daylight savings time period.
+     * Returns whether this {@code TimeZone} has a daylight savings time period.
      * 
-     * @return true if this time zone has a daylight savings time period, false
-     *         otherwise
+     * @return {@code true} if this {@code TimeZone} has a daylight savings time period, {@code false}
+     *         otherwise.
      */
     abstract public boolean useDaylightTime();
 

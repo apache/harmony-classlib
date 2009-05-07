@@ -22,6 +22,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 
+/**
+ * An {@code Map} specialized for use with {@code Enum} types as keys.
+ */
 public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         Serializable, Cloneable {
 
@@ -379,44 +382,43 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Constructs an empty EnumMap.
-     * 
+     * Constructs an empty {@code EnumMap} using the given key type.
+     *
      * @param keyType
-     *           the Class that is to be used for the key type for this map
+     *            the class object giving the type of the keys used by this {@code EnumMap}.
      * @throws NullPointerException
-     *             if the keyType is null
+     *             if {@code keyType} is {@code null}.
      */
     public EnumMap(Class<K> keyType) {
         initialization(keyType);
     }
 
     /**
-     * Constructs an EnumMap using the same key type and contents as the given
-     * EnumMap.
-     * 
+     * Constructs an {@code EnumMap} using the same key type as the given {@code EnumMap} and
+     * initially containing the same mappings.
+     *
      * @param map
-     *            the EnumMap from which the initial contents of this EnumMap
-     *            are copied
+     *            the {@code EnumMap} from which this {@code EnumMap} is initialized.
      * @throws NullPointerException
-     *             if the map is null
+     *             if {@code map} is {@code null}.
      */
     public EnumMap(EnumMap<K, ? extends V> map) {
         initialization(map);
     }
 
     /**
-     * Constructs an EnumMap with the same contents as the given Map. If the Map
-     * is an EnumMap, this is equivalent to calling
-     * {@link EnumMap#EnumMap(EnumMap)}}. Otherwise, the given map cannot be
-     * empty so that the key type of this EnumMap can be inferred.
+     * Constructs an {@code EnumMap} initialized from the given map. If the given map
+     * is an {@code EnumMap} instance, this constructor behaves in the exactly the same
+     * way as {@link EnumMap#EnumMap(EnumMap)}}. Otherwise, the given map
+     * should contain at least one mapping.
      * 
      * @param map
-     *            the Map from which the initial contents of this EnumMap are
-     *            copied
+     *            the map from which this {@code EnumMap} is initialized.
      * @throws IllegalArgumentException
-     *             if the map is empty and is not of type <code>EnumMap</code>
+     *             if {@code map} is not an {@code EnumMap} instance and does not contain
+     *             any mappings.
      * @throws NullPointerException
-     *             if the map is null
+     *             if {@code map} is {@code null}.
      */
     @SuppressWarnings("unchecked")
     public EnumMap(Map<K, ? extends V> map) {
@@ -439,7 +441,10 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Clears this map.
+     * Removes all elements from this {@code EnumMap}, leaving it empty.
+     *
+     * @see #isEmpty()
+     * @see #size()
      */
     @Override
     public void clear() {
@@ -449,9 +454,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Clones this map to create a shallow copy.
+     * Returns a shallow copy of this {@code EnumMap}.
      * 
-     * @return a shallow copy of this map
+     * @return a shallow copy of this {@code EnumMap}.
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -466,11 +471,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns true if the given object is present as a key in this map.
+     * Returns whether this {@code EnumMap} contains the specified key.
      * 
      * @param key
-     *            the key to look for
-     * @return true if this map contains the key
+     *            the key to search for.
+     * @return {@code true} if this {@code EnumMap} contains the specified key,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -482,11 +488,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns true if the given object is present as a value in this map.
+     * Returns whether this {@code EnumMap} contains the specified value.
      * 
      * @param value
-     *            the value to look for
-     * @return true if this map contains the value.
+     *            the value to search for.
+     * @return {@code true} if this {@code EnumMap} contains the specified value,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -507,16 +514,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns a Set of <code>Map.Entry</code>s that represent the entries in
-     * this EnumMap. Making changes to this Set will change the original EnumMap
-     * and vice-versa. Entries can be removed from the Set, or their values can
-     * be changed, but new entries cannot be added.
-     * 
-     * The order of the entries in the Set will be the order that the Enum keys
+     * Returns a {@code Set} containing all of the mappings in this {@code EnumMap}. Each mapping is
+     * an instance of {@link Map.Entry}. As the {@code Set} is backed by this {@code EnumMap},
+     * changes in one will be reflected in the other.
+     * <p>
+     * The order of the entries in the set will be the order that the enum keys
      * were declared in.
-     * 
-     * @return a Set of <code>Map.Entry</code>s representing the entries in
-     *         this EnumMap
+     *
+     * @return a {@code Set} of the mappings.
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -527,11 +532,15 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns true if this EnumMap is equal to the given object.
+     * Compares the argument to the receiver, and returns {@code true} if the
+     * specified {@code Object} is an {@code EnumMap} and both {@code EnumMap}s contain the same mappings.
      * 
      * @param object
-     *            the object
-     * @return true if this EnumMap is equal to the given object.
+     *            the {@code Object} to compare with this {@code EnumMap}.
+     * @return boolean {@code true} if {@code object} is the same as this {@code EnumMap},
+     *         {@code false} otherwise.
+     * @see #hashCode()
+     * @see #entrySet()
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -551,12 +560,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns the value stored in this map for the given key in this map, or null
-     * if this map has no entry for that key.
+     * Returns the value of the mapping with the specified key.
      * 
      * @param key
-     *            the key to get the value for.
-     * @return the value for the given key.
+     *            the key.
+     * @return the value of the mapping with the specified key, or {@code null}
+     *         if no mapping for the specified key is found.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -569,14 +578,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns a Set containing the keys for this EnumMap. Making changes to
-     * this Set will change the original EnumMap and vice-versa. Entries can be
-     * removed from the Set, but new entries cannot be added.
-     * 
-     * The order of the Set will be the order that the Enum keys were declared
+     * Returns a set of the keys contained in this {@code EnumMap}. The {@code Set} is backed by
+     * this {@code EnumMap} so changes to one are reflected in the other. The {@code Set} does not
+     * support adding.
+     * <p>
+     * The order of the set will be the order that the enum keys were declared
      * in.
      * 
-     * @return a Set containing the keys for this EnumMap.
+     * @return a {@code Set} of the keys.
      */
     @Override
     public Set<K> keySet() {
@@ -587,17 +596,24 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Stores a value in this map for the given key. If the map already has an
-     * entry for this key the current value will be overwritten.
+     * Maps the specified key to the specified value.
      * 
      * @param key
-     *            the key
+     *            the key.
      * @param value
-     *            the value to store for the given key
-     * @return the value stored for the given key, or null if this map has no
-     *         entry for the key
+     *            the value.
+     * @return the value of any previous mapping with the specified key or
+     *         {@code null} if there was no mapping.
+     * @throws UnsupportedOperationException
+     *                if adding to this map is not supported.
+     * @throws ClassCastException
+     *                if the class of the key or value is inappropriate for this
+     *                map.
+     * @throws IllegalArgumentException
+     *                if the key or value cannot be added to this map.
      * @throws NullPointerException
-     *             if the key is null
+     *                if the key or value is {@code null} and this {@code EnumMap} does not
+     *                support {@code null} keys or values.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -606,12 +622,20 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Add all the entries in the given map to this map
+     * Copies every mapping in the specified {@code Map} to this {@code EnumMap}.
      * 
      * @param map
-     *            the map whose entries to copy
+     *            the {@code Map} to copy mappings from.
+     * @throws UnsupportedOperationException
+     *                if adding to this {@code EnumMap} is not supported.
+     * @throws ClassCastException
+     *                if the class of a key or value is inappropriate for this
+     *                {@code EnumMap}.
+     * @throws IllegalArgumentException
+     *                if a key or value cannot be added to this map.
      * @throws NullPointerException
-     *             if the given map or any of its keys are null
+     *                if a key or value is {@code null} and this {@code EnumMap} does not
+     *                support {@code null} keys or values.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -620,12 +644,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Removes the entry for the given key from this map, if there is one.
+     * Removes a mapping with the specified key from this {@code EnumMap}.
      * 
      * @param key
-     *            the key to remove
-     * @return the value that had been stored for the key, or null if there was
-     *         not one.
+     *            the key of the mapping to remove.
+     * @return the value of the removed mapping or {@code null} if no mapping
+     *         for the specified key was found.
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code EnumMap} is not supported.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -644,9 +670,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns the size of this map
+     * Returns the number of elements in this {@code EnumMap}.
      * 
-     * @return the number of entries in the map
+     * @return the number of elements in this {@code EnumMap}.
      */
     @Override
     public int size() {
@@ -654,15 +680,16 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Returns a Collection containing the values for this EnumMap. Making
-     * changes to this Collection will change the original EnumMap and
-     * vice-versa. Values can be removed from the Collection, but new entries
-     * cannot be added.
+     * Returns a {@code Collection} of the values contained in this {@code EnumMap}. The returned
+     * {@code Collection} complies with the general rule specified in
+     * {@link Map#values()}. The {@code Collection}'s {@code Iterator} will return the values
+     * in the their corresponding keys' natural order (the {@code Enum} constants are
+     * declared in this order).
+     * <p>
+     * The order of the values in the collection will be the order that their
+     * corresponding enum keys were declared in.
      * 
-     * The order of the values in the Collection will be the order that their
-     * corresponding Enum keys were declared in.
-     * 
-     * @return a Collection containing the values for this EnumMap
+     * @return a collection of the values contained in this {@code EnumMap}.
      */
     @Override
     public Collection<V> values() {

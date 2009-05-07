@@ -18,10 +18,12 @@ package java.util;
 import java.io.Serializable;
 
 /**
- * Unchecked Exception that is to be thrown out when a format string that
+ * An {@code IllegalFormatException} is thrown when a format string that
  * contains either an illegal syntax or format specifier is transferred as a
- * parameter. Only a subclass that is inherited explicitly from this exception
- * is allowed to be instantiated.
+ * parameter. Only subclasses inheriting explicitly from this exception are
+ * allowed to be instantiated.
+ * 
+ * @see java.lang.RuntimeException
  */
 public class IllegalFormatException extends IllegalArgumentException implements
         Serializable {

@@ -17,9 +17,11 @@
 package java.util;
 
 /**
- * The unchecked exception will be thrown out when the width is a negative other
- * than -1, or the conversion does not support a width or other cases when the
- * width is not supported.
+ * An {@code IllegalFormatWidthException} will be thrown if the width is a
+ * negative value other than -1 or in other cases where a width is not
+ * supported.
+ * 
+ * @see java.lang.RuntimeException
  */
 public class IllegalFormatWidthException extends IllegalFormatException {
 
@@ -28,10 +30,11 @@ public class IllegalFormatWidthException extends IllegalFormatException {
     private int w;
 
     /**
-     * Constructs a IllegalFormatWidthException with specified width.
+     * Constructs a new {@code IllegalFormatWidthException} with specified
+     * width.
      * 
      * @param w
-     *            The width.
+     *           the width.
      */
     public IllegalFormatWidthException(int w) {
         this.w = w;
@@ -49,7 +52,7 @@ public class IllegalFormatWidthException extends IllegalFormatException {
     /**
      * Returns the message of the exception.
      * 
-     * @return The message of the exception.
+     * @return the message of the exception.
      */
     @Override
     public String getMessage() {

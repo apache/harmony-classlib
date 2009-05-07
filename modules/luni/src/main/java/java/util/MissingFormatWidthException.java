@@ -17,21 +17,22 @@
 package java.util;
 
 /**
- * The unchecked exception will be thrown out if the format width is missing but
- * is required.
+ * A {@code MissingFormatWidthException} will be thrown if the format width is
+ * missing but is required.
+ * 
+ * @see java.lang.RuntimeException
  */
 public class MissingFormatWidthException extends IllegalFormatException {
-
     private static final long serialVersionUID = 15560123L;
 
     private String s;
 
     /**
-     * Constructs a MissingFormatWidthException with the specified format
-     * specifier.
+     * Constructs a new {@code MissingFormatWidthException} with the specified
+     * format specifier.
      * 
      * @param s
-     *            The specified format specifier.
+     *           the specified format specifier.
      */
     public MissingFormatWidthException(String s) {
         if (null == s) {
@@ -43,7 +44,7 @@ public class MissingFormatWidthException extends IllegalFormatException {
     /**
      * Returns the format specifier associated with the exception.
      * 
-     * @return The format specifier associated with the exception.
+     * @return the format specifier associated with the exception.
      */
     public String getFormatSpecifier() {
         return s;
@@ -52,7 +53,7 @@ public class MissingFormatWidthException extends IllegalFormatException {
     /**
      * Returns the message of the exception.
      * 
-     * @return The message of the exception.
+     * @return the message of the exception.
      */
     @Override
     public String getMessage() {

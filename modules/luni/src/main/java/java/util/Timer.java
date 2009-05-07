@@ -20,23 +20,36 @@ package java.util;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * Timers are used to schedule jobs for execution in a background process. A
+ * {@code Timer}s are used to schedule jobs for execution in a background process. A
  * single thread is used for the scheduling and this thread has the option of
- * being a daemon thread. By calling <code>cancel</code> you can terminate a
- * timer and it's associated thread. All tasks which are scheduled to run after
+ * being a daemon thread. By calling {@code cancel} you can terminate a
+ * {@code Timer} and its associated thread. All tasks which are scheduled to run after
  * this point are cancelled. Tasks are executed sequentially but are subject to
  * the delays from other tasks run methods. If a specific task takes an
  * excessive amount of time to run it may impact the time at which subsequent
  * tasks may run.
  * <p>
  *
- * The Timer task does not offer any guarantees about the real-time nature of
- * scheduling tasks as it's underlying implementation relies on the
- * <code>Object.wait(long)</code> method.
+ * The {@code TimerTask} does not offer any guarantees about the real-time nature of
+ * scheduling tasks as its underlying implementation relies on the
+ * {@code Object.wait(long)} method.
  * <p>
- *
- * Multiple threads can share a single Timer without the need for their own
+ * Multiple threads can share a single {@code Timer} without the need for their own
  * synchronization.
+ * <p>
+ * A {@code Timer} can be set to schedule tasks either at a fixed rate or
+ * with a fixed period. Fixed-period execution is the default.
+ * <p>
+ * The difference between fixed-rate and fixed-period execution
+ * is the following:  With fixed-rate execution, the start time of each
+ * successive run of the task is scheduled in absolute terms without regard for when the previous
+ * task run actually took place. This can result in a series of bunched-up runs
+ * (one launched immediately after another) if busy resources or other
+ * system delays prevent the {@code Timer} from firing for an extended time.
+ * With fixed-period execution, each successive run of the
+ * task is scheduled relative to the start time of the previous run of the
+ * task, so two runs of the task are never fired closer together in time than
+ * the specified {@code period}.
  *
  * @see TimerTask
  * @see java.lang.Object#wait(long)
@@ -168,7 +181,7 @@ public class Timer {
 
         /**
          * Vector consists of scheduled events, sorted according to
-         * <code>when</code> field of TaskScheduled object.
+         * {@code when} field of TaskScheduled object.
          */
         private TimerHeap tasks = new TimerHeap();
 
@@ -328,69 +341,61 @@ public class Timer {
     };
 
     /**
-     * Creates a new Timer which may be specified to be run as a Daemon Thread.
+     * Creates a new {@code Timer} which may be specified to be run as a daemon thread.
      *
      * @param isDaemon
-     *            true if Timers thread should be a daemon thread.
+     *            {@code true} if the {@code Timer}'s thread should be a daemon thread.
      */
     public Timer(boolean isDaemon) {
         impl = new TimerImpl(isDaemon);
     }
 
     /**
-     * Creates a new non-daemon Timer.
+     * Creates a new non-daemon {@code Timer}.
      */
     public Timer() {
         impl = new TimerImpl(false);
     }
 
     /**
-     * Create a new timer with the given name and daemon status.
-     *
-     * The name is given the timer's background thread and if the flag is true
-     * the thread is run as a daemon.
+     * Creates a new named {@code Timer} which may be specified to be run as a
+     * daemon thread.
      *
      * @param name
-     *            a name to associate with the timer thread.
+     *            the name of the {@code Timer}.
      * @param isDaemon
-     *            true if the timer thread should be a daemon, or false if it is
-     *            a regular thread that prevents the application terminating.
+     *            true if {@code Timer}'s thread should be a daemon thread.
      */
     public Timer(String name, boolean isDaemon) {
         impl = new TimerImpl(name, isDaemon);
     }
 
     /**
-     * Create a new timer whose thread has the given name.
-     *
-     * The name is given the timer's background thread, that is not run as a
-     * daemon.
+     * Creates a new named {@code Timer} which does not run as a daemon thread.
      *
      * @param name
-     *            a name to associate with the timer thread.
+     *            the name of the Timer.
      */
     public Timer(String name) {
         impl = new TimerImpl(name, false);
     }
 
     /**
-     * Cancels the Timer and removed any scheduled tasks. If there is a
-     * currently running task it is not effected. No more tasks may be scheduled
-     * on this Timer. Subsequent calls do nothing.
+     * Cancels the {@code Timer} and removes any scheduled tasks. If there is a
+     * currently running task it is not affected. No more tasks may be scheduled
+     * on this {@code Timer}. Subsequent calls do nothing.
      */
     public void cancel() {
         impl.cancel();
     }
 
     /**
-     * Purging the timer eagerly removes cancelled tasks.
+     * Removes all canceled tasks from the task queue. If there are no
+     * other references on the tasks, then after this call they are free
+     * to be garbage collected.
      *
-     * When a large number of tasks have been cancelled it may be helpful to
-     * explicitly purge them from the timer rather than let them be removed
-     * during normal expiry processing. This is a housekeeping task that does
-     * not affect the timer's schedule tasks.
-     *
-     * @return the number of tasks that were purged.
+     * @return the number of canceled tasks that were removed from the task
+     *         queue.
      */
     public int purge() {
         synchronized (impl) {
@@ -399,19 +404,18 @@ public class Timer {
     }
 
     /**
-     * Schedule a task for single execution. If when is less than the current
-     * time, it will be scheduled to executed as soon as possible.
+     * Schedule a task for single execution. If {@code when} is less than the
+     * current time, it will be scheduled to be executed as soon as possible.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param when
-     *            Time of execution
-     *
-     * @exception IllegalArgumentException
-     *                if when.getTime() < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            time of execution.
+     * @throws IllegalArgumentException
+     *                if {@code when.getTime() < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void schedule(TimerTask task, Date when) {
         if (when.getTime() < 0) {
@@ -422,18 +426,17 @@ public class Timer {
     }
 
     /**
-     * Schedule a task for single execution after a specific delay.
+     * Schedule a task for single execution after a specified delay.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param delay
-     *            Amount of time before execution
-     *
-     * @exception IllegalArgumentException
-     *                if delay < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            amount of time before execution.
+     * @throws IllegalArgumentException
+     *                if {@code delay < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void schedule(TimerTask task, long delay) {
         if (delay < 0) {
@@ -443,20 +446,19 @@ public class Timer {
     }
 
     /**
-     * Schedule a task for repeated fix-delay execution after a specific delay.
+     * Schedule a task for repeated fixed-delay execution after a specific delay.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param delay
-     *            Amount of time before first execution
+     *            amount of time before first execution.
      * @param period
-     *            Amount of time between subsequent executions
-     *
-     * @exception IllegalArgumentException
-     *                if delay < 0 or period < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            amount of time between subsequent executions.
+     * @throws IllegalArgumentException
+     *                if {@code delay < 0} or {@code period < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void schedule(TimerTask task, long delay, long period) {
         if (delay < 0 || period <= 0) {
@@ -466,21 +468,20 @@ public class Timer {
     }
 
     /**
-     * Schedule a task for repeated fix-delay execution after a specific time
+     * Schedule a task for repeated fixed-delay execution after a specific time
      * has been reached.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param when
-     *            Time of first execution
+     *            time of first execution.
      * @param period
-     *            Amount of time between subsequent executions
-     *
-     * @exception IllegalArgumentException
-     *                if when.getTime() < 0 or period < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            amount of time between subsequent executions.
+     * @throws IllegalArgumentException
+     *                if {@code when.getTime() < 0} or {@code period < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void schedule(TimerTask task, Date when, long period) {
         if (period <= 0 || when.getTime() < 0) {
@@ -492,22 +493,19 @@ public class Timer {
 
     /**
      * Schedule a task for repeated fixed-rate execution after a specific delay
-     * has been happened. The difference of fixed-rate is that it may bunch up
-     * subsequent task runs to try to get the task repeating at it's desired
-     * time.
+     * has passed.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param delay
-     *            Amount of time before first execution
+     *            amount of time before first execution.
      * @param period
-     *            Amount of time between subsequent executions
-     *
-     * @exception IllegalArgumentException
-     *                if delay < 0 or period < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            amount of time between subsequent executions.
+     * @throws IllegalArgumentException
+     *                if {@code delay < 0} or {@code period < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void scheduleAtFixedRate(TimerTask task, long delay, long period) {
         if (delay < 0 || period <= 0) {
@@ -518,22 +516,19 @@ public class Timer {
 
     /**
      * Schedule a task for repeated fixed-rate execution after a specific time
-     * has been reached. The difference of fixed-rate is that it may bunch up
-     * subsequent task runs to try to get the task repeating at it's desired
-     * time.
+     * has been reached.
      *
      * @param task
-     *            The task to schedule
+     *            the task to schedule.
      * @param when
-     *            Time of first execution
+     *            time of first execution.
      * @param period
-     *            Amount of time between subsequent executions
-     *
-     * @exception IllegalArgumentException
-     *                if when.getTime() < 0 or period < 0
-     * @exception IllegalStateException
-     *                if the timer has been cancelled, the task has been
-     *                scheduled or cancelled.
+     *            amount of time between subsequent executions.
+     * @throws IllegalArgumentException
+     *                if {@code when.getTime() < 0} or {@code period < 0}.
+     * @throws IllegalStateException
+     *                if the {@code Timer} has been canceled, or if the task has been
+     *                scheduled or canceled.
      */
     public void scheduleAtFixedRate(TimerTask task, Date when, long period) {
         if (period <= 0 || when.getTime() < 0) {
