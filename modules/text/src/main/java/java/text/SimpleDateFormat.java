@@ -297,7 +297,7 @@ import org.apache.harmony.text.internal.nls.Messages;
  * 
  * @see Calendar
  * @see GregorianCalendar
- * @see TimeZone
+ * @see java.util.TimeZone
  * @see DateFormat
  * @see DateFormatSymbols
  * @see DecimalFormat
@@ -936,7 +936,7 @@ public class SimpleDateFormat extends DateFormat {
      *            the date to format.
      * @param buffer
      *            the target string buffer to append the formatted date/time to.
-     * @param field
+     * @param fieldPos
      *            on input: an optional alignment field; on output: the offsets
      *            of the alignment field in the formatted text.
      * @return the string buffer.
