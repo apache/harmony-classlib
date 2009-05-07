@@ -551,12 +551,11 @@ public class SimpleDateFormat extends DateFormat {
                 // replace 'y' with 'yy' for ICU to follow Java spec
                 result.append((first ? "" : "'")
                         + subPattern.replaceAll("(?<!y)y(?!y)", "yy"));
-                quote = !quote;
                 first = false;
             } else {
                 result.append("'" + subPattern);
-                quote = !quote;
             }
+            quote = !quote;
         }
         if (p.endsWith("'")) {
             result.append("'");
