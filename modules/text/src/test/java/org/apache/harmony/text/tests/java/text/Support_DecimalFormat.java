@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package tests.support;
+package org.apache.harmony.text.tests.java.text;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Vector;
+
 
 public class Support_DecimalFormat extends Support_Format {
 

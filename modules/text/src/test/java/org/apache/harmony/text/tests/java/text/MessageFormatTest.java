@@ -38,7 +38,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
-import tests.support.Support_MessageFormat;
 
 public class MessageFormatTest extends TestCase {
 

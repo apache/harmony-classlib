@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tests.support;
+package org.apache.harmony.text.tests.java.text;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -27,6 +27,9 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
+
+import org.apache.harmony.text.tests.java.text.Support_Format.FieldContainer;
+
 
 public class Support_SimpleDateFormat extends Support_Format {
 

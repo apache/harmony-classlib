@@ -26,6 +26,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.BitSet;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -33,8 +34,6 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
-import tests.support.Support_BitSet;
-import tests.support.Support_DecimalFormat;
 
 public class DecimalFormatTest extends TestCase {
 
@@ -798,7 +797,7 @@ public class DecimalFormatTest extends TestCase {
                 .t_format_with_FieldPosition();
 
         int failCount = 0;
-        Support_BitSet failures = new Support_BitSet();
+        BitSet failures = new BitSet();
 
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
 
@@ -1027,7 +1026,7 @@ public class DecimalFormatTest extends TestCase {
     //FIXME This test fails on Harmony ClassLibrary
     public void test_formatJLjava_lang_StringBufferLjava_text_FieldPosition() {
         int failCount = 0;
-        Support_BitSet failures = new Support_BitSet();
+        BitSet failures = new BitSet();
 
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
 

@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import tests.support.Support_SimpleDateFormat;
 
 public class SimpleDateFormatTest extends junit.framework.TestCase {
 

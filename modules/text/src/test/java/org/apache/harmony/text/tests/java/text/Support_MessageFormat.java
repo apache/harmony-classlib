@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tests.support;
+package org.apache.harmony.text.tests.java.text;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Vector;
+
 
 public class Support_MessageFormat extends Support_Format {
 

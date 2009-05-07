@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tests.support;
+package org.apache.harmony.text.tests.java.text;
 
 import java.text.AttributedCharacterIterator;
 import java.text.FieldPosition;
