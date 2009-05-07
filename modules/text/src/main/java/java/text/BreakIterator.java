@@ -222,11 +222,6 @@ import java.util.Locale;
  */
 public abstract class BreakIterator implements Cloneable {
 
-    /*
-     * -----------------------------------------------------------------------
-     * constants
-     * -----------------------------------------------------------------------
-     */
     /**
      * This constant is returned by iterate methods like {@code previous()} or
      * {@code next()} if they have returned all valid boundaries.
@@ -239,19 +234,9 @@ public abstract class BreakIterator implements Cloneable {
 
     private static final int SHORT_LENGTH = 2;
 
-    /*
-     * -----------------------------------------------------------------------
-     * variables
-     * -----------------------------------------------------------------------
-     */
     // the wrapped ICU implementation
     com.ibm.icu.text.BreakIterator wrapped;
 
-    /*
-     * -----------------------------------------------------------------------
-     * constructors
-     * -----------------------------------------------------------------------
-     */
     /**
      * Default constructor, just for invocation by subclass.
      */
@@ -266,11 +251,6 @@ public abstract class BreakIterator implements Cloneable {
         wrapped = iterator;
     }
 
-    /*
-     * -----------------------------------------------------------------------
-     * methods
-     * -----------------------------------------------------------------------
-     */
     /**
      * Returns all supported locales in an array.
      * 
@@ -437,11 +417,6 @@ public abstract class BreakIterator implements Cloneable {
         wrapped.setText(newText);
     }
 
-    /*
-     * -----------------------------------------------------------------------
-     * abstract methods
-     * -----------------------------------------------------------------------
-     */
     /**
      * Returns this iterator's current position.
      * 
@@ -530,11 +505,6 @@ public abstract class BreakIterator implements Cloneable {
      */
     public abstract void setText(CharacterIterator newText);
 
-    /*
-     * -----------------------------------------------------------------------
-     * methods override Object
-     * -----------------------------------------------------------------------
-     */
     /**
      * Creates a copy of this iterator, all status information including the
      * current position are kept the same.
