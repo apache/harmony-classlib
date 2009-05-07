@@ -17,15 +17,18 @@
 
 package java.util;
 
-
 /**
- * An Iterator is used to sequence over a collection of objects. Conceptual, an
- * iterator is always positioned between two elements of a collection. A fresh
- * iterator is always positioned in front of the first element.
+ * An {@code Iterator} is used to sequence over a collection of objects.
+ * Conceptually, an iterator is always positioned between two elements of a
+ * collection. A fresh iterator is always positioned in front of the first
+ * element.
  * 
  * If a collection has been changed since its creation, methods {@code next} and
  * {@code hasNext()} may throw a {@code ConcurrentModificationException}.
  * Iterators with this behavior are called fail-fast iterators.
+ * 
+ * @param <E>
+ *            the type of object returned by the iterator.
  */
 public interface Iterator<E> {
     /**
