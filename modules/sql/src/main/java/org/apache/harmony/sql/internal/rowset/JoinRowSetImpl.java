@@ -648,7 +648,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
 
         /*
          * Computes the column count of rowSetToAdd, the result rowSet, the
-         * orignal rowSet.
+         * original rowSet.
          */
         int addedColumnCount = rowSetToAdd.getMetaData().getColumnCount();
         int resultColumnCount = this.getMetaData().getColumnCount();
@@ -674,7 +674,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
                 while (rowSetToAdd.next()) {
                     rowToAdd = rowSetToAdd.getCurrentRow();
                     if (comparator.compare(row, rowToAdd) == 0) {
-                        // It match, contruct a new row, add it to list.
+                        // It match, construct a new row, add it to list.
                         newRow = constructNewRow(row, rowToAdd,
                                 matchColumnIndex, matchColumnIndexOfToAdd,
                                 resultColumnCount, originalColumnCount);
@@ -708,7 +708,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
 
         /*
          * Computes the column count of rowSetToAdd, the result rowSet, the
-         * orignal rowSet.
+         * original rowSet.
          */
         int addedColumnCount = rowSetToAdd.getMetaData().getColumnCount();
         int resultColumnCount = this.getMetaData().getColumnCount();
@@ -723,7 +723,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         /*
          * Sort the original rows. Set both the column to compared to the match
          * index of original rows, since the comprasion will happened inside the
-         * orignal rows.
+         * original rows.
          */
         comparator.setFirstIndex(matchColumnIndex);
         comparator.setSecondIndex(matchColumnIndex);
@@ -739,7 +739,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
 
         int position;
         /*
-         * Iterates the rows of rowSetToAdd, find matched row in orignal rows
+         * Iterates the rows of rowSetToAdd, find matched row in original rows
          * using binary search.(It has been sorted).
          */
         rowSetToAdd.beforeFirst();
@@ -768,7 +768,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
              * joined.
              */
             if (getShowDeleted() || !row.isDelete()) {
-                // Contruct a new row, add it to list.
+                // Construct a new row, add it to list.
                 newRow = constructNewRow(row, rowToAdd, matchColumnIndex,
                         matchColumnIndexOfToAdd, resultColumnCount,
                         originalColumnCount);

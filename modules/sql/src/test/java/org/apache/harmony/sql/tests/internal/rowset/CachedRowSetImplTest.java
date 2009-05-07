@@ -810,7 +810,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.updateRow();
         try {
             /*
-             * seems ri doesn't release lock when expception throw from
+             * seems ri doesn't release lock when exception throw from
              * acceptChanges(), which will cause test case block at insertData()
              * when next test case setUp, so we must pass current connection to
              * it, and all resource would be released after connection closed.
