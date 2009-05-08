@@ -316,6 +316,8 @@ public class SimpleDateFormat extends DateFormat {
 
     private Date defaultCenturyStart;
 
+    private transient String tzId;
+
     private transient com.ibm.icu.text.SimpleDateFormat icuFormat;
 
     /**
@@ -325,6 +327,7 @@ public class SimpleDateFormat extends DateFormat {
     public SimpleDateFormat() {
         this(Locale.getDefault());
         icuFormat = new com.ibm.icu.text.SimpleDateFormat();
+        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         pattern = (String)getInternalField("pattern",icuFormat);
         formatData = new DateFormatSymbols(Locale.getDefault());
     }
@@ -443,6 +446,7 @@ public class SimpleDateFormat extends DateFormat {
         this(Locale.getDefault());
         validatePattern(template);
         icuFormat = new com.ibm.icu.text.SimpleDateFormat(template, Locale.getDefault());
+        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         pattern = template;
         formatData = (DateFormatSymbols) value.clone();
     }
@@ -476,6 +480,7 @@ public class SimpleDateFormat extends DateFormat {
         this(locale);
         validatePattern(template);
         icuFormat = new com.ibm.icu.text.SimpleDateFormat(template, locale);
+        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         pattern = template;
         formatData = new DateFormatSymbols(locale);
     }
@@ -483,6 +488,7 @@ public class SimpleDateFormat extends DateFormat {
     SimpleDateFormat(Locale locale, com.ibm.icu.text.SimpleDateFormat icuFormat){
         this(locale);
         this.icuFormat = icuFormat;
+        this.icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         pattern = (String)Format.getInternalField("pattern", icuFormat);
         formatData = new DateFormatSymbols(locale);
     }
@@ -493,6 +499,7 @@ public class SimpleDateFormat extends DateFormat {
         numberFormat.setGroupingUsed(false);
         calendar = new GregorianCalendar(locale);
         calendar.add(Calendar.YEAR, -80);
+        tzId = calendar.getTimeZone().getID();
         creationYear = calendar.get(Calendar.YEAR);
         defaultCenturyStart = calendar.getTime();
     }
@@ -575,6 +582,7 @@ public class SimpleDateFormat extends DateFormat {
         SimpleDateFormat clone = (SimpleDateFormat) super.clone();
         clone.formatData = (DateFormatSymbols) formatData.clone();
         clone.defaultCenturyStart = new Date(defaultCenturyStart.getTime());
+        clone.tzId = tzId;
         return clone;
     }
 
@@ -945,8 +953,11 @@ public class SimpleDateFormat extends DateFormat {
     @Override
     public StringBuffer format(Date date, StringBuffer buffer,
             FieldPosition fieldPos) {
-        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(calendar
-                .getTimeZone().getID()));
+        String id = calendar.getTimeZone().getID();
+        if (!tzId.equals(id)) {
+            tzId = id;
+            icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
+        }
         // As ICU has its own implementation for DateFormat.Field, we need to
         // pass an ICU instance of DateFormat.Field to the FieldPosition to get
         // the begin and end index.
@@ -1065,8 +1076,11 @@ public class SimpleDateFormat extends DateFormat {
      */
     @Override
     public Date parse(String string, ParsePosition position) {
-        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(calendar
-                .getTimeZone().getID()));
+        String id = calendar.getTimeZone().getID();
+        if (!tzId.equals(id)) {
+            tzId = id;
+            icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
+        }
         return icuFormat.parse(string,position);
     }
 
