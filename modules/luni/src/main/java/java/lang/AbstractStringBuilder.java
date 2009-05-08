@@ -258,7 +258,8 @@ abstract class AbstractStringBuilder {
      */
     public void ensureCapacity(int min) {
         if (min > value.length) {
-            enlargeBuffer(min);
+            int twice = (value.length << 1) + 2;
+            enlargeBuffer(twice > min ? twice : min);
         }
     }
 
