@@ -91,8 +91,8 @@ abstract class AbstractStringBuilder {
     }
 
     private void enlargeBuffer(int min) {
-        int twice = (value.length << 1) + 2;
-        char[] newData = new char[min > twice ? min : twice];
+        int newSize = (value.length >> 1 + value.length) + 2;
+        char[] newData = new char[min > newSize ? min : newSize];
         System.arraycopy(value, 0, newData, 0, count);
         value = newData;
         shared = false;
