@@ -1565,7 +1565,10 @@ public class Arrays {
         if (double1 < double2) {
             return true;
         }
-        if (double1 >= double2 && (0.0d != double1 || 0.0d != double2)) {
+        if (double1 > double2) {
+            return false;
+        }
+        if (double1 == double2 && 0.0d != double1) {
             return false;
         }
 
@@ -1589,7 +1592,10 @@ public class Arrays {
         if (float1 < float2) {
             return true;
         }
-        if (float1 >= float2 && (0.0f != float1 || 0.0f != float2)) {
+        if (float1 > float2) {
+            return false;
+        }
+        if (float1 == float2 && 0.0f != float1) {
             return false;
         }
 
