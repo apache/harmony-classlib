@@ -365,11 +365,9 @@ public final class Double extends Number implements Comparable<Double> {
         // Deal with +0.0 and -0.0
         long d1 = doubleToRawLongBits(double1);
         long d2 = doubleToRawLongBits(double2);
-
-        if (d1 == d2) {
-            return 0;
-        }
-        return (d1 < d2) ? -1 : 1;
+        // The below expression is equivalent to:
+        // (d1 == d2) ? 0 : (d1 < d2) ? -1 : 1
+        return (int) ((d1 >> 63) - (d2 >> 63));
     }
 
     /**
