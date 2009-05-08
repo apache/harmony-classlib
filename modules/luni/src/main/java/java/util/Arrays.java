@@ -1558,11 +1558,52 @@ public class Arrays {
     }
 
     private static boolean lessThan(double double1, double double2) {
-        return Double.compare(double1, double2) < 0;
+        // A slightly specialized version of
+        // Double.compare(double1, double2) < 0.
+
+        // Non-zero and non-NaN checking.
+        if (double1 < double2) {
+            return true;
+        }
+        if (double1 >= double2 && (0.0d != double1 || 0.0d != double2)) {
+            return false;
+        }
+
+        // NaNs are equal to other NaNs and larger than any other double.
+        if (Double.isNaN(double1)) {
+            return false;
+        } else if (Double.isNaN(double2)) {
+            return true;
+        }
+
+        // Deal with +0.0 and -0.0.
+        long d1 = Double.doubleToRawLongBits(double1);
+        long d2 = Double.doubleToRawLongBits(double2);
+        return d1 < d2;
     }
 
     private static boolean lessThan(float float1, float float2) {
-        return Float.compare(float1, float2) < 0;
+        // A slightly specialized version of Float.compare(float1, float2) < 0.
+
+        // Non-zero and non-NaN checking.
+        if (float1 < float2) {
+            return true;
+        }
+        if (float1 >= float2 && (0.0f != float1 || 0.0f != float2)) {
+            return false;
+        }
+
+        // NaNs are equal to other NaNs and larger than any other float
+        if (Float.isNaN(float1)) {
+            return false;
+        } else if (Float.isNaN(float2)) {
+            return true;
+        }
+
+        // Deal with +0.0 and -0.0
+        int f1 = Float.floatToRawIntBits(float1);
+        int f2 = Float.floatToRawIntBits(float2);
+        return f1 < f2;
     }
 
     private static int med3(byte[] array, int a, int b, int c) {

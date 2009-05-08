@@ -352,7 +352,7 @@ public final class Double extends Number implements Comparable<Double> {
             return 0;
         }
 
-        // NaNs are equal to other NaNs and larger than any other float
+        // NaNs are equal to other NaNs and larger than any other double
         if (isNaN(double1)) {
             if (isNaN(double2)) {
                 return 0;
