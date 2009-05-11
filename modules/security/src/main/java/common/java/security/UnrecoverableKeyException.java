@@ -15,40 +15,32 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This class represents exceptions if a key cannot be found in the keystore.
+ * {@code UnrecoverableKeyException} indicates, that a key cannot be recovered
+ * from a {@code KeyStore}.
  * 
+ * @see KeyStore
  */
 public class UnrecoverableKeyException extends GeneralSecurityException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 7275063078190151277L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code UnrecoverableKeyException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception
+     */
     public UnrecoverableKeyException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
+    /**
+     * Constructs a new instance of {@code UnrecoverableKeyException}.
+     */
     public UnrecoverableKeyException() {
     }
 }

@@ -17,32 +17,32 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the VM notices that a an attempt is being made to
- * reference a field of a class which does not exist in that class.
+ * Thrown when the virtual machine notices that a program tries to reference,
+ * on a class or object, a field that does not exist.
  * <p>
- * Note that this can only occur when inconsistant class files are being loaded.
+ * Note that this can only occur when inconsistent class files are being loaded.
  */
 public class NoSuchFieldError extends IncompatibleClassChangeError {
 
     private static final long serialVersionUID = -3456430195886129035L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public NoSuchFieldError() {
-		super();
-	}
+     * Constructs a new {@code NoSuchFieldError} that includes the current stack
+     * trace.
+     */
+    public NoSuchFieldError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public NoSuchFieldError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code NoSuchFieldError} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public NoSuchFieldError(String detailMessage) {
+        super(detailMessage);
+    }
 }

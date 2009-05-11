@@ -20,9 +20,8 @@ package java.nio.charset;
 import java.io.IOException;
 
 /**
- * 
- * Type of exception thrown when an encoding or decoding error occurs.
- * 
+ * A {@code CharacterCodingException} is thrown when an encoding or decoding
+ * error occurs.
  */
 public class CharacterCodingException extends IOException {
 
@@ -33,7 +32,7 @@ public class CharacterCodingException extends IOException {
     private static final long serialVersionUID = 8421532232154627783L;
 
     /**
-     * Default constructor.
+     * Constructs a new {@code CharacterCodingException}.
      */
     public CharacterCodingException() {
         super();

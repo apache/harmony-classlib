@@ -326,12 +326,12 @@ public class CompositeName implements Name {
                 buf.append("/"); //$NON-NLS-1$
             }
             if (elem.indexOf('/') < 0 && elem.indexOf('\\') < 0
-                    && elem.indexOf('\'') < 0 && elem.indexOf('"') < 0) {
+                    && elem.indexOf('"') < 0) {
                 buf.append(elem);
             } else {
                 char chars[] = elem.toCharArray();
                 for (char c : chars) {
-                    if (c == '/' || c == '\\' || c == '\'' || c == '"') {
+                    if (c == '/' || c == '\\' || c == '"') {
                         buf.append('\\');
                     }
                     buf.append(c);

@@ -15,22 +15,19 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.interfaces;
 
 import java.math.BigInteger;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The base interface for PKCS#1 RSA public and private keys.
  */
 public interface RSAKey {
+
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the modulus.
+     * 
+     * @return the modulus.
      */
     public BigInteger getModulus();
 }

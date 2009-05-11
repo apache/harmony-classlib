@@ -48,10 +48,12 @@ import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * Properties is a Hashtable where the keys and values must be Strings. Each
- * Properties can have a default Properties which specifies the default values
- * which are used if the key is not in this Properties.
- * 
+ * A {@code Properties} object is a {@code Hashtable} where the keys and values
+ * must be {@code String}s. Each property can have a default
+ * {@code Properties} list which specifies the default
+ * values to be used when a given key is not found in this {@code Properties}
+ * instance.
+ *
  * @see Hashtable
  * @see java.lang.System#getProperties
  */
@@ -71,7 +73,8 @@ public class Properties extends Hashtable<Object, Object> {
             + "    <!ATTLIST entry key CDATA #REQUIRED >";
 
     /**
-     * The default values for this Properties.
+     * The default values for keys not found in this {@code Properties}
+     * instance.
      */
     protected Properties defaults;
 
@@ -79,18 +82,18 @@ public class Properties extends Hashtable<Object, Object> {
             KEY_DONE = 4, IGNORE = 5;
 
     /**
-     * Constructs a new Properties object.
+     * Constructs a new {@code Properties} object.
      */
     public Properties() {
         super();
     }
 
     /**
-     * Constructs a new Properties object using the specified default
-     * properties.
+     * Constructs a new {@code Properties} object using the specified default
+     * {@code Properties}.
      * 
      * @param properties
-     *            the default properties
+     *            the default {@code Properties}.
      */
     public Properties(Properties properties) {
         defaults = properties;
@@ -138,12 +141,12 @@ public class Properties extends Hashtable<Object, Object> {
 
     /**
      * Searches for the property with the specified name. If the property is not
-     * found, look in the default properties. If the property is not found in
-     * the default properties, answer null.
+     * found, the default {@code Properties} are checked. If the property is not
+     * found in the default {@code Properties}, {@code null} is returned.
      * 
      * @param name
-     *            the name of the property to find
-     * @return the named property value
+     *            the name of the property to find.
+     * @return the named property value, or {@code null} if it can't be found.
      */
     public String getProperty(String name) {
         Object result = super.get(name);
@@ -156,14 +159,15 @@ public class Properties extends Hashtable<Object, Object> {
 
     /**
      * Searches for the property with the specified name. If the property is not
-     * found, look in the default properties. If the property is not found in
-     * the default properties, answer the specified default.
+     * found, it looks in the default {@code Properties}. If the property is not
+     * found in the default {@code Properties}, it returns the specified
+     * default.
      * 
      * @param name
-     *            the name of the property to find
+     *            the name of the property to find.
      * @param defaultValue
-     *            the default value
-     * @return the named property value
+     *            the default value.
+     * @return the named property value.
      */
     public String getProperty(String name, String defaultValue) {
         Object result = super.get(name);
@@ -178,11 +182,13 @@ public class Properties extends Hashtable<Object, Object> {
     }
 
     /**
-     * Lists the mappings in this Properties to the specified PrintStream in a
+     * Lists the mappings in this {@code Properties} to the specified
+     * {@code PrintStream} in a
      * human readable form.
      * 
      * @param out
-     *            the PrintStream
+     *            the {@code PrintStream} to write the content to in human readable
+     *            form.
      */
     public void list(PrintStream out) {
         if (out == null) {
@@ -212,11 +218,13 @@ public class Properties extends Hashtable<Object, Object> {
     }
 
     /**
-     * Lists the mappings in this Properties to the specified PrintWriter in a
+     * Lists the mappings in this {@code Properties} to the specified
+     * {@code PrintWriter} in a
      * human readable form.
      * 
      * @param writer
-     *            the PrintWriter
+     *            the {@code PrintWriter} to write the content to in human
+     *            readable form.
      */
     public void list(PrintWriter writer) {
         if (writer == null) {
@@ -246,12 +254,31 @@ public class Properties extends Hashtable<Object, Object> {
     }
 
     /**
-     * Loads properties from the specified InputStream. The properties are of
-     * the form <code>key=value</code>, one property per line.
+     * Loads properties from the specified {@code InputStream}. The encoding is
+     * ISO8859-1. The {@code Properties} file is interpreted according to the
+     * following rules:
+     * <ul>
+     * <li>Empty lines are ignored.</li>
+     * <li>Lines starting with either a "#" or a "!" are comment lines and are
+     * ignored.</li>
+     * <li>A backslash at the end of the line escapes the following newline
+     * character ("\r", "\n", "\r\n"). If there's a whitespace after the
+     * backslash it will just escape that whitespace instead of concatenating
+     * the lines. This does not apply to comment lines.</li>
+     * <li>A property line consists of the key, the space between the key and
+     * the value, and the value. The key goes up to the first whitespace, "=" or
+     * ":" that is not escaped. The space between the key and the value contains
+     * either one whitespace, one "=" or one ":" and any number of additional
+     * whitespaces before and after that character. The value starts with the
+     * first character after the space between the key and the value.</li>
+     * <li>Following escape sequences are recognized: "\ ", "\\", "\r", "\n",
+     * "\!", "\#", "\t", "\b", "\f", and "&#92;uXXXX" (unicode character).</li>
+     * </ul>
      * 
      * @param in
-     *            the input stream
+     *            the {@code InputStream}.
      * @throws IOException
+     *             if error occurs during reading from the {@code InputStream}.
      */
     @SuppressWarnings("fallthrough")
     public synchronized void load(InputStream in) throws IOException {
@@ -421,9 +448,11 @@ public class Properties extends Hashtable<Object, Object> {
     }
 
     /**
-     * Answers all of the property names that this Properties contains.
+     * Returns all of the property names that this {@code Properties} object
+     * contains.
      * 
-     * @return an Enumeration containing the names of all properties
+     * @return an {@code Enumeration} containing the names of all properties
+     *         that this {@code Properties} object contains.
      */
     public Enumeration<?> propertyNames() {
         if (defaults == null) {
@@ -445,19 +474,18 @@ public class Properties extends Hashtable<Object, Object> {
     }
 
     /**
-     * Saves the mappings in this Properties to the specified OutputStream,
-     * putting the specified comment at the beginning. The output from this
-     * method is suitable for being read by the load() method.
+     * Saves the mappings in this {@code Properties} to the specified {@code
+     * OutputStream}, putting the specified comment at the beginning. The output
+     * from this method is suitable for being read by the
+     * {@link #load(InputStream)} method.
      * 
-     * @param out
-     *            the OutputStream
-     * @param comment
-     *            the comment
-     * 
-     * @exception ClassCastException
-     *                when the key or value of a mapping is not a String
-     * 
-     * @deprecated Does not throw an IOException, use store()
+     * @param out the {@code OutputStream} to write to.
+     * @param comment the comment to add at the beginning.
+     * @throws ClassCastException if the key or value of a mapping is not a
+     *                String.
+     * @deprecated This method ignores any {@code IOException} thrown while
+     *             writing -- use {@link #store} instead for better exception
+     *             handling.
      */
     @Deprecated
     public void save(OutputStream out, String comment) {
@@ -469,13 +497,13 @@ public class Properties extends Hashtable<Object, Object> {
 
     /**
      * Maps the specified key to the specified value. If the key already exists,
-     * the old value is replaced. The key and value cannot be null.
+     * the old value is replaced. The key and value cannot be {@code null}.
      * 
      * @param name
-     *            the key
+     *            the key.
      * @param value
-     *            the value
-     * @return the old value mapped to the key, or null
+     *            the value.
+     * @return the old value mapped to the key, or {@code null}.
      */
     public Object setProperty(String name, String value) {
         return put(name, value);
@@ -484,18 +512,17 @@ public class Properties extends Hashtable<Object, Object> {
     private static String lineSeparator;
 
     /**
-     * Stores the mappings in this Properties to the specified OutputStream,
-     * putting the specified comment at the beginning. The output from this
-     * method is suitable for being read by the load() method.
+     * Stores the mappings in this {@code Properties} to the specified {@code
+     * OutputStream}, putting the specified comment at the beginning. The output
+     * from this method is suitable for being read by the
+     * {@link #load(InputStream)} method.
      * 
-     * @param out
-     *            the OutputStream
-     * @param comment
-     *            the comment
-     * @throws IOException
-     * 
-     * @exception ClassCastException
-     *                when the key or value of a mapping is not a String
+     * @param out the {@code OutputStream} to write to.
+     * @param comment the comment to put at the beginning.
+     * @throws IOException if an error occurs during the write to the {@code
+     *             OutputStream}.
+     * @throws ClassCastException if the key or value of a mapping is not a
+     *                {@code String}.
      */
     public synchronized void store(OutputStream out, String comment)
             throws IOException {
@@ -527,6 +554,24 @@ public class Properties extends Hashtable<Object, Object> {
         writer.flush();
     }
 
+    /**
+     * Loads the properties from an {@code InputStream} containing the
+     * properties in XML form. The XML document must begin with (and conform to)
+     * following DOCTYPE:
+     *
+     * <pre>
+     * &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+     * </pre>
+     *
+     * Also the content of the XML data must satisfy the DTD but the xml is not
+     * validated against it. The DTD is not loaded from the SYSTEM ID. After
+     * this method returns the InputStream is not closed.
+     *
+     * @param in the InputStream containing the XML document.
+     * @throws IOException in case an error occurs during a read operation.
+     * @throws InvalidPropertiesFormatException if the XML data is not a valid
+     *             properties file.
+     */
     public synchronized void loadFromXML(InputStream in) throws IOException,
             InvalidPropertiesFormatException {
         if (in == null) {
@@ -599,10 +644,45 @@ public class Properties extends Hashtable<Object, Object> {
         }
     }
 
+    /**
+     * Writes all properties stored in this instance into the {@code
+     * OutputStream} in XML representation. The DOCTYPE is
+     *
+     * <pre>
+     * &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+     * </pre>
+     *
+     * If the comment is null, no comment is added to the output. UTF-8 is used
+     * as the encoding. The {@code OutputStream} is not closed at the end. A
+     * call to this method is the same as a call to {@code storeToXML(os,
+     * comment, "UTF-8")}.
+     *
+     * @param os the {@code OutputStream} to write to.
+     * @param comment the comment to add. If null, no comment is added.
+     * @throws IOException if an error occurs during writing to the output.
+     */
     public void storeToXML(OutputStream os, String comment) throws IOException {
         storeToXML(os, comment, "UTF-8"); //$NON-NLS-1$
     }
 
+    /**
+     * Writes all properties stored in this instance into the {@code
+     * OutputStream} in XML representation. The DOCTYPE is
+     *
+     * <pre>
+     * &lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;
+     * </pre>
+     *
+     * If the comment is null, no comment is added to the output. The parameter
+     * {@code encoding} defines which encoding should be used. The {@code
+     * OutputStream} is not closed at the end.
+     *
+     * @param os the {@code OutputStream} to write to.
+     * @param comment the comment to add. If null, no comment is added.
+     * @param encoding the code identifying the encoding that should be used to
+     *            write into the {@code OutputStream}.
+     * @throws IOException if an error occurs during writing to the output.
+     */
     public synchronized void storeToXML(OutputStream os, String comment,
             String encoding) throws IOException {
 

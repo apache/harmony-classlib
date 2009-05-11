@@ -20,6 +20,11 @@ package javax.net.ssl;
 import java.io.Serializable;
 import java.util.EventObject;
 
+/**
+ * The event sent to an {@code SSLSessionBindingListener} when the listener
+ * object is bound ({@link SSLSession#putValue(String, Object)}) or unbound
+ * ({@link SSLSession#removeValue(String)}) to an {@code SSLSession}.
+ */
 public class SSLSessionBindingEvent extends EventObject implements Serializable {
 
     /**
@@ -33,15 +38,36 @@ public class SSLSessionBindingEvent extends EventObject implements Serializable 
      */
     private final String name;
 
+    /**
+     * Creates a new {@code SSLSessionBindingEvent} for the specified session
+     * indicating a binding event for the specified name.
+     *
+     * @param session
+     *            the session for which the event occurs.
+     * @param name
+     *            the name of the object being (un)bound.
+     */
     public SSLSessionBindingEvent(SSLSession session, String name) {
         super(session);
         this.name = name;
     }
 
+    /**
+     * Returns the name of the binding being added or removed.
+     *
+     * @return the name of the binding.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the session to which the binding is added or from which it is
+     * removed.
+     *
+     * @return the session to which the binding is added or from which it is
+     *         removed.
+     */
     public SSLSession getSession() {
         return (SSLSession) this.source;
     }

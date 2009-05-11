@@ -24,9 +24,9 @@ import java.util.Comparator;
 import org.apache.harmony.misc.accessors.ObjectAccessor;
 
 /**
- * This class represents object fields that are saved to the stream, by
- * serialization. Classes can define the collection of fields to be dumped,
- * which can differ from the actual object's declared fields.
+ * Describes a field for the purpose of serialization. Classes can define the
+ * collection of fields that are serialized, which may be different from the set
+ * of all declared fields.
  * 
  * @see ObjectOutputStream#writeFields()
  * @see ObjectInputStream#readFields()
@@ -68,12 +68,14 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Constructs an ObjectStreamField with the given name and the given type
+     * Constructs an ObjectStreamField with the specified name and type.
      * 
      * @param name
-     *            a String, the name of the field
+     *            the name of the field.
      * @param cl
-     *            A Class object representing the type of the field
+     *            the type of the field.
+     * @throws NullPointerException
+     *             if {@code name} or {@code cl} is {@code null}.
      */
     public ObjectStreamField(String name, Class<?> cl) {
         if (name == null || cl == null) {
@@ -84,14 +86,19 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Constructs an ObjectStreamField with the given name and the given type
+     * Constructs an ObjectStreamField with the specified name, type and the
+     * indication if it is unshared.
      * 
      * @param name
-     *            a String, the name of the field
+     *            the name of the field.
      * @param cl
-     *            A Class object representing the type of the field
+     *            the type of the field.
      * @param unshared
-     *            write and read the field unshared
+     *            {@code true} if the field is written and read unshared;
+     *            {@code false} otherwise.
+     * @throws NullPointerException
+     *             if {@code name} or {@code cl} is {@code null}.
+     * @see ObjectOutputStream#writeUnshared(Object)
      */
     public ObjectStreamField(String name, Class<?> cl, boolean unshared) {
         if (name == null || cl == null) {
@@ -122,15 +129,16 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Comparing the receiver to the parameter, according to the Comparable
-     * interface.
+     * Compares this field descriptor to the specified one. Checks first if one
+     * of the compared fields has a primitive type and the other one not. If so,
+     * the field with the primitive type is considered to be "smaller". If both
+     * fields are equal, their names are compared.
      * 
      * @param o
-     *            The object to compare against
-     * 
-     * @return -1 if the receiver is "smaller" than the parameter. 0 if the
-     *         receiver is "equal" to the parameter. 1 if the receiver is
-     *         "greater" than the parameter.
+     *            the object to compare with.
+     * @return -1 if this field is "smaller" than field {@code o}, 0 if both
+     *         fields are equal; 1 if this field is "greater" than field {@code
+     *         o}.
      */
     public int compareTo(Object o) {
         ObjectStreamField f = (ObjectStreamField) o;
@@ -158,18 +166,18 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Return the name of the field the receiver represents
+     * Gets the name of this field.
      * 
-     * @return a String, the name of the field
+     * @return the field's name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Return the offset of this field in the object
+     * Gets the offset of this field in the object.
      * 
-     * @return an int, the offset
+     * @return this field's offset.
      */
     public int getOffset() {
         return offset;
@@ -189,9 +197,9 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Return the type of the field the receiver represents
+     * Gets the type of this field.
      * 
-     * @return A Class object representing the type of the field
+     * @return a {@code Class} object representing the type of the field.
      */
     public Class<?> getType() {
         Class<?> cl = getTypeInternal();
@@ -202,10 +210,23 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Return the type code that corresponds to the class the receiver
-     * represents
+     * Gets a character code for the type of this field. The following codes are
+     * used:
      * 
-     * @return A char, the typecode of the class
+     * <pre>
+     * B     byte
+     * C     char
+     * D     double
+     * F     float
+     * I     int
+     * J     long
+     * L     class or interface
+     * S     short
+     * Z     boolean
+     * [     array
+     * </pre>
+     *
+     * @return the field's type code.
      */
     public char getTypeCode() {
         Class<?> t = getTypeInternal();
@@ -240,10 +261,11 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Return the type signature used by the VM to represent the type for this
+     * Gets the type signature used by the VM to represent the type of this
      * field.
      * 
-     * @return A String, the signature for the class of this field.
+     * @return the signature of this field's class or {@code null} if this
+     *         field's type is primitive.
      */
     public String getTypeString() {
         if (isPrimitive()) {
@@ -259,11 +281,10 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Return a boolean indicating whether the class of this field is a
-     * primitive type or not
+     * Indicates whether this field's type is a primitive type.
      * 
-     * @return true if the type of this field is a primitive type false if the
-     *         type of this field is a regular class.
+     * @return {@code true} if this field's type is primitive; {@code false} if
+     *         the type of this field is a regular class.
      */
     public boolean isPrimitive() {
         Class<?> t = getTypeInternal();
@@ -271,20 +292,20 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Set the offset this field represents in the object
+     * Sets this field's offset in the object.
      * 
      * @param newValue
-     *            an int, the offset
+     *            the field's new offset.
      */
     protected void setOffset(int newValue) {
         this.offset = newValue;
     }
 
     /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
+     * Returns a string containing a concise, human-readable description of this
+     * field descriptor.
      * 
-     * @return a printable representation for the receiver.
+     * @return a printable representation of this descriptor.
      */
     @Override
     public String toString() {
@@ -355,9 +376,9 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     /**
-     * Answers whether this serialized field is unshared.
+     * Indicats whether this field is unshared.
      * 
-     * @return true if the field is unshared, false otherwise.
+     * @return {@code true} if this field is unshared, {@code false} otherwise.
      */
     public boolean isUnshared() {
         return unshared;

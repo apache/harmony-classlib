@@ -33,11 +33,11 @@ public class FileBands extends BandSet {
 
     private byte[][] fileBits;
 
-    private long[] fileModtime;
+    private int[] fileModtime;
 
     private String[] fileName;
 
-    private long[] fileOptions;
+    private int[] fileOptions;
 
     private long[] fileSize;
 
@@ -67,16 +67,16 @@ public class FileBands extends BandSet {
         fileSize = parseFlags("file_size", in, numberOfFiles, Codec.UNSIGNED5,
                 options.hasFileSizeHi());
         if (options.hasFileModtime()) {
-            fileModtime = decodeBandLong("file_modtime", in, Codec.DELTA5,
+            fileModtime = decodeBandInt("file_modtime", in, Codec.DELTA5,
                     numberOfFiles);
         } else {
-            fileModtime = new long[numberOfFiles];
+            fileModtime = new int[numberOfFiles];
         }
         if (options.hasFileOptions()) {
-            fileOptions = decodeBandLong("file_options", in, Codec.UNSIGNED5,
+            fileOptions = decodeBandInt("file_options", in, Codec.UNSIGNED5,
                     numberOfFiles);
         } else {
-            fileOptions = new long[numberOfFiles];
+            fileOptions = new int[numberOfFiles];
         }
         this.in = in; // store for use by processFileBits(), which is called
         // later
@@ -108,7 +108,7 @@ public class FileBands extends BandSet {
         return fileBits;
     }
 
-    public long[] getFileModtime() {
+    public int[] getFileModtime() {
         return fileModtime;
     }
 
@@ -116,7 +116,7 @@ public class FileBands extends BandSet {
         return fileName;
     }
 
-    public long[] getFileOptions() {
+    public int[] getFileOptions() {
         return fileOptions;
     }
 

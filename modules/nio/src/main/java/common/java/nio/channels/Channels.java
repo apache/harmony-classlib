@@ -43,10 +43,20 @@ public final class Channels {
     }
 
     /**
-     * Answers an input stream on the given channel
+     * Returns an input stream on the given channel. The resulting stream has
+     * the following properties:
+     * <ul>
+     * <li>If the stream is closed, then the underlying channel is closed as
+     * well.</li>
+     * <li>It is thread safe.</li>
+     * <li>It throws an {@link IllegalBlockingModeException} if the channel is
+     * in non-blocking mode and {@code read} is called.</li>
+     * <li>Neither {@code mark} nor {@code reset} is supported.</li>
+     * <li>It is not buffered.</li>
+     * </ul>
      * 
      * @param channel
-     *            The channel to be wrapped in an InputStream.
+     *            the channel to be wrapped by an InputStream.
      * @return an InputStream that takes bytes from the given byte channel.
      */
     public static InputStream newInputStream(ReadableByteChannel channel) {
@@ -54,10 +64,19 @@ public final class Channels {
     }
 
     /**
-     * Answers an output stream on the given channel
+     * Returns an output stream on the given channel. The resulting stream has
+     * the following properties:
+     * <ul>
+     * <li>If the stream is closed, then the underlying channel is closed as
+     * well.</li>
+     * <li>It is thread safe.</li>
+     * <li>It throws an {@link IllegalBlockingModeException} if the channel is
+     * in non-blocking mode and {@code write} is called.</li>
+     * <li>It is not buffered.</li>
+     * </ul>
      * 
      * @param channel
-     *            the channel to be wrapped in an OutputStream.
+     *            the channel to be wrapped by an OutputStream.
      * @return an OutputStream that puts bytes onto the given byte channel.
      */
     public static OutputStream newOutputStream(WritableByteChannel channel) {
@@ -65,10 +84,16 @@ public final class Channels {
     }
 
     /**
-     * Answers a channel on the given input stream
+     * Returns a readable channel on the given input stream. The resulting
+     * channel has the following properties:
+     * <ul>
+     * <li>If the channel is closed, then the underlying stream is closed as
+     * well.</li>
+     * <li>It is not buffered.</li>
+     * </ul>
      * 
      * @param inputStream
-     *            the stream to be wrapped in a byte channel.
+     *            the stream to be wrapped by a byte channel.
      * @return a byte channel that reads bytes from the input stream.
      */
     public static ReadableByteChannel newChannel(InputStream inputStream) {
@@ -76,10 +101,17 @@ public final class Channels {
     }
 
     /**
-     * Answers a channel on the given output stream
+     * Returns a writable channel on the given output stream.
      * 
+     * The resulting channel has following properties:
+     * <ul>
+     * <li>If the channel is closed, then the underlying stream is closed as
+     * well.</li>
+     * <li>It is not buffered.</li>
+     * </ul>
+     *
      * @param outputStream
-     *            the stream to be wrapped in a byte channel.
+     *            the stream to be wrapped by a byte channel.
      * @return a byte channel that writes bytes to the output stream.
      */
     public static WritableByteChannel newChannel(OutputStream outputStream) {
@@ -87,15 +119,16 @@ public final class Channels {
     }
 
     /**
-     * Answers a reader that decodes bytes from a channel.
+     * Returns a reader that decodes bytes from a channel.
      * 
      * @param channel
-     *            Channel to be read.
+     *            the Channel to be read.
      * @param decoder
-     *            Charset decoder to be used.
+     *            the Charset decoder to be used.
      * @param minBufferCapacity
-     *            The minimum size of byte buffer, -1 means to use default size.
-     * @return The reader.
+     *            The minimum size of the byte buffer, -1 means to use the
+     *            default size.
+     * @return the reader.
      */
     public static Reader newReader(ReadableByteChannel channel,
             CharsetDecoder decoder, int minBufferCapacity) {
@@ -104,13 +137,16 @@ public final class Channels {
     }
 
     /**
-     * Answers a reader that decodes bytes from a channel.
+     * Returns a reader that decodes bytes from a channel. This method creates a
+     * reader with a buffer of default size.
      * 
      * @param channel
-     *            Channel to be read.
+     *            the Channel to be read.
      * @param charsetName
-     *            Name of charset.
-     * @return The reader.
+     *            the name of the charset.
+     * @return the reader.
+     * @throws java.nio.charset.UnsupportedCharsetException
+     *             if the given charset name is not supported.
      */
     public static Reader newReader(ReadableByteChannel channel,
             String charsetName) {
@@ -118,16 +154,17 @@ public final class Channels {
     }
 
     /**
-     * Answers a writer that encodes characters by encoder and output bytes to a
-     * channel.
+     * Returns a writer that encodes characters with the specified
+     * {@code encoder} and sends the bytes to the specified channel.
      * 
      * @param channel
-     *            Channel to be written.
+     *            the Channel to write to.
      * @param encoder
-     *            Charset decoder to be used.
+     *            the CharsetEncoder to be used.
      * @param minBufferCapacity
-     *            The minimum size of byte buffer, -1 means to use default size.
-     * @return The writer.
+     *            the minimum size of the byte buffer, -1 means to use the
+     *            default size.
+     * @return the writer.
      */
     public static Writer newWriter(WritableByteChannel channel,
             CharsetEncoder encoder, int minBufferCapacity) {
@@ -136,14 +173,17 @@ public final class Channels {
     }
 
     /**
-     * Answers a writer that encodes characters by encoder and output bytes to a
-     * channel.
+     * Returns a writer that encodes characters with the specified
+     * {@code encoder} and sends the bytes to the specified channel. This method
+     * creates a writer with a buffer of default size.
      * 
      * @param channel
-     *            Channel to be written.
+     *            the Channel to be written to.
      * @param charsetName
-     *            Name of charset.
-     * @return The writer.
+     *            the name of the charset.
+     * @return the writer.
+     * @throws java.nio.charset.UnsupportedCharsetException
+     *             if the given charset name is not supported.
      */
     public static Writer newWriter(WritableByteChannel channel,
             String charsetName) {
@@ -171,9 +211,6 @@ public final class Channels {
             channel = aChannel;
         }
 
-        /**
-         * @see java.io.InputStream#read()
-         */
         @Override
         public synchronized int read() throws IOException {
             byte[] oneByte = new byte[1];
@@ -185,9 +222,6 @@ public final class Channels {
             return -1;
         }
 
-        /**
-         * @see java.io.InputStream#close()
-         */
         @Override
         public synchronized void close() throws IOException {
             channel.close();
@@ -204,9 +238,6 @@ public final class Channels {
             super(aChannel);
         }
 
-        /**
-         * @see java.io.InputStream#read(byte[], int, int)
-         */
         @Override
         public synchronized int read(byte[] target, int offset, int length)
                 throws IOException {
@@ -237,9 +268,6 @@ public final class Channels {
             super(aChannel);
         }
 
-        /**
-         * @see java.io.InputStream#read(byte[], int, int)
-         */
         @Override
         public synchronized int read(byte[] target, int offset, int length)
                 throws IOException {
@@ -267,9 +295,6 @@ public final class Channels {
             channel = aChannel;
         }
 
-        /**
-         * @see java.io.OutputStream#write(int)
-         */
         @Override
         public synchronized void write(int oneByte) throws IOException {
             byte[] wrappedByte = new byte[1];
@@ -277,9 +302,6 @@ public final class Channels {
             write(wrappedByte);
         }
 
-        /**
-         * @see java.io.OutputStream#write(byte[], int, int)
-         */
         @Override
         public synchronized void write(byte[] source, int offset, int length)
                 throws IOException {
@@ -299,9 +321,6 @@ public final class Channels {
             channel.write(buffer);
         }
 
-        /**
-         * @see java.io.OutputStream#close()
-         */
         @Override
         public synchronized void close() throws IOException {
             channel.close();
@@ -320,9 +339,6 @@ public final class Channels {
             inputStream = aInputStream;
         }
 
-        /**
-         * @see java.nio.channels.ReadableByteChannel#read(java.nio.ByteBuffer)
-         */
         public synchronized int read(ByteBuffer target) throws IOException {
             if (!isOpen()) {
                 throw new ClosedChannelException();
@@ -342,9 +358,6 @@ public final class Channels {
             return readCount;
         }
 
-        /**
-         * @see java.nio.channels.spi.AbstractInterruptibleChannel#implCloseChannel()
-         */
         @Override
         protected void implCloseChannel() throws IOException {
             inputStream.close();
@@ -363,9 +376,6 @@ public final class Channels {
             outputStream = aOutputStream;
         }
 
-        /**
-         * @see java.nio.channels.WritableByteChannel#write(java.nio.ByteBuffer)
-         */
         public synchronized int write(ByteBuffer source) throws IOException {
             if (!isOpen()) {
                 throw new ClosedChannelException();
@@ -385,9 +395,6 @@ public final class Channels {
             return bytesRemain;
         }
 
-        /**
-         * @see java.nio.channels.spi.AbstractInterruptibleChannel#implCloseChannel()
-         */
         @Override
         protected void implCloseChannel() throws IOException {
             outputStream.close();
@@ -422,9 +429,6 @@ public final class Channels {
             chars.limit(0);
         }
 
-        /**
-         * @see java.io.Reader#close()
-         */
         @Override
         public void close() throws IOException {
             synchronized (lock) {
@@ -436,9 +440,6 @@ public final class Channels {
             }
         }
 
-        /**
-         * @see java.io.Reader#ready()
-         */
         @Override
         public boolean ready() {
             synchronized (lock) {
@@ -454,18 +455,12 @@ public final class Channels {
             }
         }
 
-        /**
-         * @see java.io.Reader#read()
-         */
         @Override
         public int read() throws IOException {
             return IOUtil.readInputStreamReader(inputStream, bytes, chars,
                     decoder, lock);
         }
 
-        /**
-         * @see java.io.Reader#read(char[], int, int)
-         */
         @Override
         public int read(char[] buf, int offset, int length) throws IOException {
             return IOUtil.readInputStreamReader(buf, offset, length,
@@ -496,9 +491,6 @@ public final class Channels {
             encoder = aEncoder;
         }
 
-        /**
-         * @see java.io.Writer#close()
-         */
         @Override
         public void close() throws IOException {
             synchronized (lock) {
@@ -512,9 +504,6 @@ public final class Channels {
             }
         }
 
-        /**
-         * @see java.io.Writer#flush()
-         */
         @Override
         public void flush() throws IOException {
             IOUtil
@@ -522,27 +511,18 @@ public final class Channels {
                             lock);
         }
 
-        /**
-         * @see java.io.Writer#write(char[], int, int)
-         */
         @Override
         public void write(char[] buf, int offset, int count) throws IOException {
             IOUtil.writeOutputStreamWriter(buf, offset, count, outputStream,
                     byteBuf, encoder, lock);
         }
 
-        /**
-         * @see java.io.Writer#write(int)
-         */
         @Override
         public void write(int oneChar) throws IOException {
             IOUtil.writeOutputStreamWriter(oneChar, outputStream, byteBuf,
                     encoder, lock);
         }
 
-        /**
-         * @see java.io.Writer#write(java.lang.String, int, int)
-         */
         @Override
         public void write(String str, int offset, int count) throws IOException {
             IOUtil.writeOutputStreamWriter(str, offset, count, outputStream,

@@ -23,11 +23,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * HashMap is the hash table based implementation of the Map interface.
- * 
- * This implementation provides all of the optional map operations, and permits
- * null values and the null key. (The HashMap class is roughly equivalent to
- * Hashtable, except that it is unsynchronized and permits nulls.)
+ * HashMap is an implementation of Map. All optional operations (adding and
+ * removing) are supported. Keys and values can be any objects.
  */
 public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Cloneable, Serializable {
@@ -272,21 +269,19 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new empty instance of HashMap.
-     *
+     * Constructs a new empty {@code HashMap} instance.
      */
     public HashMap() {
         this(DEFAULT_SIZE);
     }
 
     /**
-     * Constructs a new instance of HashMap with the specified capacity.
+     * Constructs a new {@code HashMap} instance with the specified capacity.
      *
      * @param capacity
-     *            the initial capacity of this HashMap
-     *
-     * @exception IllegalArgumentException
-     *                when the capacity is less than zero
+     *            the initial capacity of this hash map.
+     * @throws IllegalArgumentException
+     *                when the capacity is less than zero.
      */
     public HashMap(int capacity) {
         this(capacity, 0.75f);  // default load factor of 0.75
@@ -317,18 +312,16 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new instance of HashMap with the specified capacity and load
-     * factor.
-     *
+     * Constructs a new {@code HashMap} instance with the specified capacity and
+     * load factor.
      *
      * @param capacity
-     *            the initial capacity
+     *            the initial capacity of this hash map.
      * @param loadFactor
-     *            the initial load factor
-     *
-     * @exception IllegalArgumentException
+     *            the initial load factor.
+     * @throws IllegalArgumentException
      *                when the capacity is less than zero or the load factor is
-     *                less or equal to zero
+     *                less or equal to zero.
      */
     public HashMap(int capacity, float loadFactor) {
         if (capacity >= 0 && loadFactor > 0) {
@@ -343,11 +336,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new instance of HashMap containing the mappings from the
-     * specified Map.
+     * Constructs a new {@code HashMap} instance containing the mappings from
+     * the specified map.
      *
      * @param map
-     *            the mappings to add
+     *            the mappings to add.
      */
     public HashMap(Map<? extends K, ? extends V> map) {
         this(calculateCapacity(map.size()));
@@ -355,7 +348,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Removes all mappings from this HashMap, leaving it empty.
+     * Removes all mappings from this hash map, leaving it empty.
      *
      * @see #isEmpty
      * @see #size
@@ -370,11 +363,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a new HashMap with the same mappings and size as this HashMap.
+     * Returns a shallow copy of this map.
      *
-     * @return a shallow copy of this HashMap
-     *
-     * @see java.lang.Cloneable
+     * @return a shallow copy of this map.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -399,12 +390,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Searches this HashMap for the specified key.
+     * Returns whether this map contains the specified key.
      *
      * @param key
-     *            the object to search for
-     * @return true if <code>key</code> is a key of this HashMap, false
-     *         otherwise
+     *            the key to search for.
+     * @return {@code true} if this map contains the specified key,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -413,12 +404,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Searches this HashMap for the specified value.
+     * Returns whether this map contains the specified value.
      *
      * @param value
-     *            the object to search for
-     * @return true if <code>value</code> is a value of this HashMap, false
-     *         otherwise
+     *            the value to search for.
+     * @return {@code true} if this map contains the specified value,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -447,11 +438,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Set of the mappings contained in this HashMap. Each element in
-     * the set is a Map.Entry. The set is backed by this HashMap so changes to
-     * one are reflected by the other. The set does not support adding.
+     * Returns a set containing all of the mappings in this map. Each mapping is
+     * an instance of {@link Map.Entry}. As the set is backed by this map,
+     * changes in one will be reflected in the other.
      *
-     * @return a Set of the mappings
+     * @return a set of the mappings.
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -459,11 +450,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers the value of the mapping with the specified key.
+     * Returns the value of the mapping with the specified key.
      *
      * @param key
-     *            the key
-     * @return the value of the mapping with the specified key
+     *            the key.
+     * @return the value of the mapping with the specified key, or {@code null}
+     *         if no mapping for the specified key is found.
      */
     @Override
     public V get(Object key) {
@@ -502,11 +494,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers if this HashMap has no elements, a size of zero.
+     * Returns whether this map is empty.
      *
-     * @return true if this HashMap has no elements, false otherwise
-     *
-     * @see #size
+     * @return {@code true} if this map has no elements, {@code false}
+     *         otherwise.
+     * @see #size()
      */
     @Override
     public boolean isEmpty() {
@@ -514,11 +506,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Set of the keys contained in this HashMap. The set is backed by
-     * this HashMap so changes to one are reflected by the other. The set does
-     * not support adding.
+     * Returns a set of the keys contained in this map. The set is backed by
+     * this map so changes to one are reflected by the other. The set does not
+     * support adding.
      *
-     * @return a Set of the keys
+     * @return a set of the keys.
      */
     @Override
     public Set<K> keySet() {
@@ -558,11 +550,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * Maps the specified key to the specified value.
      *
      * @param key
-     *            the key
+     *            the key.
      * @param value
-     *            the value
-     * @return the value of any previous mapping with the specified key or null
-     *         if there was no mapping
+     *            the value.
+     * @return the value of any previous mapping with the specified key or
+     *         {@code null} if there was no such mapping.
      */
     @Override
     public V put(K key, V value) {
@@ -614,14 +606,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Copies all the mappings in the given map to this map. These mappings will
-     * replace all mappings that this map had for any of the keys currently in
-     * the given map.
+     * Copies all the mappings in the specified map to this map. These mappings
+     * will replace all mappings that this map had for any of the keys currently
+     * in the given map.
      *
      * @param map
-     *            the Map to copy mappings from
+     *            the map to copy mappings from.
      * @throws NullPointerException
-     *             if the given map is null
+     *             if {@code map} is {@code null}.
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
@@ -663,12 +655,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Removes a mapping with the specified key from this HashMap.
+     * Removes the mapping with the specified key from this map.
      *
      * @param key
-     *            the key of the mapping to remove
-     * @return the value of the removed mapping or null if key is not a key in
-     *         this HashMap
+     *            the key of the mapping to remove.
+     * @return the value of the removed mapping or {@code null} if no mapping
+     *         for the specified key was found.
      */
     @Override
     public V remove(Object key) {
@@ -732,9 +724,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers the number of mappings in this HashMap.
+     * Returns the number of elements in this map.
      *
-     * @return the number of mappings in this HashMap
+     * @return the number of elements in this map.
      */
     @Override
     public int size() {
@@ -742,11 +734,23 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Collection of the values contained in this HashMap. The
-     * collection is backed by this HashMap so changes to one are reflected by
-     * the other. The collection does not support adding.
+     * Returns a collection of the values contained in this map. The collection
+     * is backed by this map so changes to one are reflected by the other. The
+     * collection supports remove, removeAll, retainAll and clear operations,
+     * and it does not support add or addAll operations.
+     * <p>
+     * This method returns a collection which is the subclass of
+     * AbstractCollection. The iterator method of this subclass returns a
+     * "wrapper object" over the iterator of map's entrySet(). The {@code size}
+     * method wraps the map's size method and the {@code contains} method wraps
+     * the map's containsValue method.
+     * <p>
+     * The collection is created when this method is called for the first time
+     * and returned in response to all subsequent calls. This method may return
+     * different collections when multiple concurrent calls occur, since no
+     * synchronization is performed.
      *
-     * @return a Collection of the values
+     * @return a collection of the values contained in this map.
      */
     @Override
     public Collection<V> values() {

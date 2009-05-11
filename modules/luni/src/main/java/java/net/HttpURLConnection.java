@@ -22,8 +22,8 @@ import java.io.IOException;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * This abstract subclass of <code>URLConnection</code> defines method for
- * managing HTTP connection according to the description given by RFC 2068
+ * This abstract subclass of {@code URLConnection} defines methods for managing
+ * HTTP connection according to the description given by RFC 2068.
  * 
  * @see ContentHandler
  * @see URL
@@ -35,21 +35,49 @@ public abstract class HttpURLConnection extends URLConnection {
     private String methodTokens[] = { "GET", "DELETE", "HEAD", "OPTIONS",
             "POST", "PUT", "TRACE" };
 
-    // Request method, DEFAULT: "GET"
+   /**
+     * The HTTP request method of this {@code HttpURLConnection}. The default
+     * value is {@code "GET"}.
+     */
     protected String method = "GET"; //$NON-NLS-1$
 
-    // Response code obtained from the request
+    /**
+     * The status code of the response obtained from the HTTP request. The
+     * default value is {@code -1}.
+     * <p>
+     * <li>1xx: Informational</li>
+     * <li>2xx: Success</li>
+     * <li>3xx: Relocation/Redirection</li>
+     * <li>4xx: Client Error</li>
+     * <li>5xx: Server Error</li>
+     */
     protected int responseCode = -1;
 
-    // Response message, corresponds to the response code
+    /**
+     * The HTTP response message which corresponds to the response code.
+     */
     protected String responseMessage;
 
+    /**
+     * Flag to define whether the protocol will automatically follow redirects
+     * or not. The default value is {@code true}.
+     */
     protected boolean instanceFollowRedirects = followRedirects;
 
     private static boolean followRedirects = true;
 
+    /**
+     * If the HTTP chunked encoding is enabled this parameter defines the
+     * chunk-length. Default value is {@code -1} that means the chunked encoding
+     * mode is disabled.
+     */
     protected int chunkLength = -1;
 
+    /**
+     * If using HTTP fixed-length streaming mode this parameter defines the
+     * fixed length of content. Default value is {@code -1} that means the
+     * fixed-length streaming mode is disabled.
+     */
     protected int fixedContentLength = -1;
 
     private final static int DEFAULT_CHUNK_LENGTH = 1024;
@@ -209,7 +237,9 @@ public abstract class HttpURLConnection extends URLConnection {
     public final static int HTTP_SEE_OTHER = 303;
 
     /**
-     * @deprecated Use HTTP_INTERNAL_ERROR
+     * Numeric status code, 500: Internal error
+     *
+     * @deprecated Use {@link #HTTP_INTERNAL_ERROR}
      */
     @Deprecated
     public final static int HTTP_SERVER_ERROR = 500;
@@ -240,12 +270,11 @@ public abstract class HttpURLConnection extends URLConnection {
     public final static int HTTP_VERSION = 505;
 
     /**
-     * Constructs a <code>HttpURLConnection</code> pointing to the resource
-     * specified by the <code>URL</code>.
+     * Constructs a new {@code HttpURLConnection} instance pointing to the
+     * resource specified by the {@code url}.
      * 
      * @param url
-     *            the URL of this connection
-     * 
+     *            the URL of this connection.
      * @see URL
      * @see URLConnection
      */
@@ -254,7 +283,7 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Closes the connection with the HTTP server
+     * Closes the connection to the HTTP server.
      * 
      * @see URLConnection#connect()
      * @see URLConnection#connected
@@ -262,11 +291,9 @@ public abstract class HttpURLConnection extends URLConnection {
     public abstract void disconnect();
 
     /**
-     * Answers a input stream from the server in the case of error such as the
-     * requested file (txt, htm, html) is not found on the remote server.
-     * <p>
-     * If the content type is not what stated above,
-     * <code>FileNotFoundException</code> is thrown.
+     * Returns an input stream from the server in the case of an error such as
+     * the requested file has not been found on the remote server. This stream
+     * can be used to read the data the server will send back.
      * 
      * @return the error input stream returned by the server.
      */
@@ -275,12 +302,11 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the value of <code>followRedirects</code> which indicates if
-     * this connection will follows a different URL redirected by the server. It
-     * is enabled by default.
+     * Returns the value of {@code followRedirects} which indicates if this
+     * connection follows a different URL redirected by the server. It is
+     * enabled by default.
      * 
-     * @return The value of the flag
-     * 
+     * @return the value of the flag.
      * @see #setFollowRedirects
      */
     public static boolean getFollowRedirects() {
@@ -288,12 +314,12 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the permission object (in this case, SocketPermission) with the
-     * host and the port number as the target name and "resolve, connect" as the
-     * action list.
+     * Returns the permission object (in this case {@code SocketPermission})
+     * with the host and the port number as the target name and {@code
+     * "resolve, connect"} as the action list. If the port number of this URL
+     * instance is lower than {@code 0} the port will be set to {@code 80}.
      * 
-     * @return the permission object required for this connection
-     * 
+     * @return the permission object required for this connection.
      * @throws IOException
      *             if an IO exception occurs during the creation of the
      *             permission object.
@@ -309,12 +335,11 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the request method which will be used to make the request to the
+     * Returns the request method which will be used to make the request to the
      * remote HTTP server. All possible methods of this HTTP implementation is
      * listed in the class definition.
      * 
-     * @return the request method string
-     * 
+     * @return the request method string.
      * @see #method
      * @see #setRequestMethod
      */
@@ -323,13 +348,11 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the response code returned by the remote HTTP server
+     * Returns the response code returned by the remote HTTP server.
      * 
-     * @return the response code, -1 if no valid response code
-     * 
+     * @return the response code, -1 if no valid response code.
      * @throws IOException
      *             if there is an IO error during the retrieval.
-     * 
      * @see #getResponseMessage
      */
     public int getResponseCode() throws IOException {
@@ -357,15 +380,12 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the response message returned the remote HTTP server
+     * Returns the response message returned by the remote HTTP server.
      * 
-     * @return the response message. <code>null</code> if such response exists
-     * 
+     * @return the response message. {@code null} if no such response exists.
      * @throws IOException
-     *             if there is an IO error during the retrieval.
-     * 
+     *             if there is an error during the retrieval.
      * @see #getResponseCode()
-     * @see IOException
      */
     public String getResponseMessage() throws IOException {
         if (responseMessage != null) {
@@ -378,12 +398,11 @@ public abstract class HttpURLConnection extends URLConnection {
     /**
      * Sets the flag of whether this connection will follow redirects returned
      * by the remote server. This method can only be called with the permission
-     * from the security manager
+     * from the security manager.
      * 
      * @param auto
-     *            The value to set
-     * 
-     * @see java.lang.SecurityManager#checkSetFactory()
+     *            the value to enable or disable this option.
+     * @see SecurityManager#checkSetFactory()
      */
     public static void setFollowRedirects(boolean auto) {
         SecurityManager security = System.getSecurityManager();
@@ -398,12 +417,10 @@ public abstract class HttpURLConnection extends URLConnection {
      * This method can only be called before the connection is made.
      * 
      * @param method
-     *            The <code>non-null</code> string representing the method
-     * 
+     *            the string representing the method to be used.
      * @throws ProtocolException
-     *             Thrown when this is called after connected, or the method is
-     *             not supported by this HTTP implementation.
-     * 
+     *             if this is called after connected, or the method is not
+     *             supported by this HTTP implementation.
      * @see #getRequestMethod()
      * @see #method
      */
@@ -424,26 +441,28 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers if this connection uses proxy.
+     * Returns whether this connection uses a proxy server or not.
      * 
-     * @return true if this connection supports proxy, false otherwise.
+     * @return {@code true} if this connection passes a proxy server, false
+     *         otherwise.
      */
     public abstract boolean usingProxy();
 
     /**
-     * Answers if this connection follows redirects.
+     * Returns whether this connection follows redirects.
      * 
-     * @return true if this connection follows redirects, false otherwise.
+     * @return {@code true} if this connection follows redirects, false
+     *         otherwise.
      */
     public boolean getInstanceFollowRedirects() {
         return instanceFollowRedirects;
     }
 
     /**
-     * Sets if this connection follows redirects.
+     * Sets whether this connection follows redirects.
      * 
      * @param followRedirects
-     *            true if this connection should follows redirects, false
+     *            {@code true} if this connection will follows redirects, false
      *            otherwise.
      */
     public void setInstanceFollowRedirects(boolean followRedirects) {
@@ -451,16 +470,17 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * Answers the date value in the form of milliseconds since epoch
-     * corresponding to the field <code>field</code>. Answers
-     * <code>defaultValue</code> if no such field can be found in the response
-     * header.
+     * Returns the date value in milliseconds since {@code 01.01.1970, 00:00h}
+     * corresponding to the header field {@code field}. The {@code defaultValue}
+     * will be returned if no such field can be found in the response header.
      * 
      * @param field
-     *            the field in question
+     *            the header field name.
      * @param defaultValue
-     *            the default value if no field is found
-     * @return milliseconds since epoch
+     *            the default value to use if the specified header field wont be
+     *            found.
+     * @return the header field represented in milliseconds since January 1,
+     *         1970 GMT.
      */
     @Override
     public long getHeaderFieldDate(String field, long defaultValue) {
@@ -468,17 +488,17 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * If length of a HTTP request body is known ahead, sets fixed length to
+     * If the length of a HTTP request body is known ahead, sets fixed length to
      * enable streaming without buffering. Sets after connection will cause an
      * exception.
      * 
-     * @see <code>setChunkedStreamingMode</code>
+     * @see #setChunkedStreamingMode
      * @param contentLength
-     *            the fixed length of the HTTP request body
+     *            the fixed length of the HTTP request body.
      * @throws IllegalStateException
-     *             if already connected or other mode already set
+     *             if already connected or an other mode already set.
      * @throws IllegalArgumentException
-     *             if contentLength is less than zero
+     *             if {@code contentLength} is less than zero.
      */
     public void setFixedLengthStreamingMode(int contentLength) {
         if (super.connected) {
@@ -494,16 +514,16 @@ public abstract class HttpURLConnection extends URLConnection {
     }
 
     /**
-     * If length of a HTTP request body is NOT known ahead, enable chunked
-     * transfer encoding to enable streaming without buffering. Notice that not
-     * all http servers support this mode. Sets after connection will cause an
+     * If the length of a HTTP request body is NOT known ahead, enable chunked
+     * transfer encoding to enable streaming with buffering. Notice that not all
+     * http servers support this mode. Sets after connection will cause an
      * exception.
      * 
-     * @see <code>setFixedLengthStreamingMode</code>
+     * @see #setFixedLengthStreamingMode
      * @param chunklen
-     *            the length of a chunk
+     *            the length of a chunk.
      * @throws IllegalStateException
-     *             if already connected or other mode already set
+     *             if already connected or an other mode already set.
      */
     public void setChunkedStreamingMode(int chunklen) {
         if (super.connected) {

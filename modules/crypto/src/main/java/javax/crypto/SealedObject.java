@@ -52,10 +52,6 @@ import org.apache.harmony.crypto.internal.nls.Messages;
  */
 public class SealedObject implements Serializable {
 
-    // the value of this field was derived by using serialver utility
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 4482838265551344752L;
 
     /**

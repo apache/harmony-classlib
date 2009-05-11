@@ -27,20 +27,16 @@ import java.security.SecureRandom;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * <p>
  * UUID is an immutable representation of a 128-bit universally unique
  * identifier (UUID).
- * </p>
  * <p>
  * There are multiple, variant layouts of UUIDs, but this class is based upon
  * variant 2 of <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>, the
  * Leach-Salz variant. This class can be used to model alternate variants, but
  * most of the methods will be unsupported in those cases; see each method for
  * details.
- * </p>
- * 
+ *
  * @since 1.5
- * @author Nathan Beyer (Harmony)
  */
 public final class UUID implements Serializable, Comparable<UUID> {
 
@@ -61,8 +57,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * Constructs an instance with the specified bits.
-     * </p>
-     * 
+     *
      * @param mostSigBits
      *            The 64 most significant bits of the UUID.
      * @param leastSigBits
@@ -78,8 +73,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * Sets up the transient fields of this instance based on the current values
-     * of the <code>mostSigBits</code> and <code>leastSigBits</code> fields.
-     * </p>
+     * of the {@code mostSigBits} and {@code leastSigBits} fields.
      */
     private void init() {
         // setup hash field
@@ -123,9 +117,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * Generates a variant 2, version 4 (randomly generated number) UUID as per
      * <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
-     * @return A UUID instance.
+     *
+     * @return an UUID instance.
      */
     public static UUID randomUUID() {
         byte[] data;
@@ -162,9 +155,10 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * Generates a variant 2, version 3 (name-based, MD5-hashed) UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
-     * @return A UUID instance.
+     *
+     * @param name
+     *            the name used as byte array to create an UUID.
+     * @return an UUID instance.
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
         if (name == null) {
@@ -204,15 +198,14 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * Parses a UUID string with the format defined by {@link #toString()}.
-     * </p>
-     * 
+     *
      * @param uuid
-     *            The UUID string to parse.
-     * @return A UUID instance.
+     *            the UUID string to parse.
+     * @return an UUID instance.
      * @throws NullPointerException
-     *             if <code>uuid</code> is <code>null</code>.
+     *             if {@code uuid} is {@code null}.
      * @throws IllegalArgumentException
-     *             if <code>uuid</code> is not formatted correctly.
+     *             if {@code uuid} is not formatted correctly.
      */
     public static UUID fromString(String uuid) {
         if (uuid == null) {
@@ -254,9 +247,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * The 64 least significant bits of the UUID.
-     * </p>
-     * 
-     * @return A long value.
+     *
+     * @return the 64 least significant bits.
      */
     public long getLeastSignificantBits() {
         return leastSigBits;
@@ -265,9 +257,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * The 64 most significant bits of the UUID.
-     * </p>
-     * 
-     * @return A long value.
+     *
+     * @return the 64 most significant bits.
      */
     public long getMostSignificantBits() {
         return mostSigBits;
@@ -278,7 +269,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * The version of the variant 2 UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>. If the variant
      * is not 2, then the version will be 0.
-     * </p>
      * <ul>
      * <li>1 - Time-based UUID</li>
      * <li>2 - DCE Security UUID</li>
@@ -287,7 +277,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <li>5 - Name-based with SHA-1 hashing UUID</li>
      * </ul>
      * 
-     * @return An int value.
+     * @return an {@code int} value.
      */
     public int version() {
         return version;
@@ -297,7 +287,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * The variant of the UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
      * <ul>
      * <li>0 - Reserved for NCS compatibility</li>
      * <li>2 - RFC 4122/Leach-Salz</li>
@@ -305,7 +294,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <li>7 - Reserved for future use</li>
      * </ul>
      * 
-     * @return An int value.
+     * @return an {@code int} value.
      */
     public int variant() {
         return variant;
@@ -315,9 +304,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * The timestamp value of the version 1, variant 2 UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
-     * @return A long value.
+     *
+     * @return a {@code long} value.
      * @throws UnsupportedOperationException
      *             if {@link #version()} is not 1.
      */
@@ -332,9 +320,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * The clock sequence value of the version 1, variant 2 UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
-     * @return A long value.
+     *
+     * @return a {@code long} value.
      * @throws UnsupportedOperationException
      *             if {@link #version()} is not 1.
      */
@@ -349,9 +336,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * The node value of the version 1, variant 2 UUID as per <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
-     * @return A long value.
+     *
+     * @return a {@code long} value.
      * @throws UnsupportedOperationException
      *             if {@link #version()} is not 1.
      */
@@ -367,12 +353,11 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * Compares this UUID to the specified UUID. The natural ordering of UUIDs
      * is based upon the value of the bits from most significant to least
      * significant.
-     * </p>
-     * 
+     *
      * @param uuid
-     *            The UUID to compare to.
-     * @return A value of -1, 0 or 1 if this UUID is less than, equal to or
-     *         greater than <code>uuid</code>.
+     *            the UUID to compare to.
+     * @return a value of -1, 0 or 1 if this UUID is less than, equal to or
+     *         greater than {@code uuid}.
      */
     public int compareTo(UUID uuid) {
         if (uuid == this) {
@@ -396,15 +381,14 @@ public final class UUID implements Serializable, Comparable<UUID> {
 
     /**
      * <p>
-     * Compares this UUID to another object for equality. If <code>object</code>
-     * is not <code>null</code>, a UUID instance and all bits are equals,
-     * then <code>true</code> is returned.
-     * </p>
-     * 
+     * Compares this UUID to another object for equality. If {@code object}
+     * is not {@code null}, is a UUID instance, and all bits are equal, then
+     * {@code true} is returned.
+     *
      * @param object
-     *            The Object to compare to.
-     * @return A <code>true</code> if this UUID is equal to
-     *         <code>object</code> or <code>false</code> if not.
+     *            the {@code Object} to compare to.
+     * @return {@code true} if this UUID is equal to {@code object}
+     *         or {@code false} if not.
      */
     @Override
     public boolean equals(Object object) {
@@ -430,9 +414,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * Returns a hash value for this UUID that is consistent with the
      * {@link #equals(Object)} method.
-     * </p>
-     * 
-     * @return An int value.
+     *
+     * @return an {@code int} value.
      */
     @Override
     public int hashCode() {
@@ -443,8 +426,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * <p>
      * Returns a string representation of this UUID in the following format, as
      * per <a href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-     * </p>
-     * 
+     *
      * <pre>
      *            UUID                   = time-low &quot;-&quot; time-mid &quot;-&quot;
      *                                     time-high-and-version &quot;-&quot;
@@ -463,7 +445,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      *                &quot;A&quot; / &quot;B&quot; / &quot;C&quot; / &quot;D&quot; / &quot;E&quot; / &quot;F&quot;
      * </pre>
      * 
-     * @return A String instance.
+     * @return a String instance.
      */
     @Override
     public String toString() {
@@ -494,14 +476,13 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * <p>
      * Resets the transient fields to match the behavior of the constructor.
-     * </p>
      * 
      * @param in
-     *            The InputStream to read from.
+     *            the {@code InputStream} to read from.
      * @throws IOException
-     *             if <code>in</code> throws it.
+     *             if {@code in} throws it.
      * @throws ClassNotFoundException
-     *             if <code>in</code> throws it.
+     *             if {@code in} throws it.
      */
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {

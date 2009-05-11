@@ -15,21 +15,18 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The marker interface specifying the parameters used to initialize a {@code
+ * CertStore} instance.
  */
 public interface CertStoreParameters extends Cloneable {
 
     /**
-     * @com.intel.drl.spec_ref
+     * Clones this {@code CertStoreParameters} instance.
+     * 
+     * @return the cloned instance.
      */
     public Object clone();
 }

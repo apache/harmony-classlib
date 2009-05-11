@@ -18,11 +18,9 @@
 package java.net;
 
 /**
- * An attempt to connect to a socket of the wrong type (stream or nonstream)
- * will trigger this exception. An invalid operation applied on the protocol
- * that doesn't support it will also throw this exception.
- * 
- * @see URL
+ * Signals that either a connection attempt to a socket of the wrong type, the
+ * application of an unsupported operation or that a general error in the
+ * underlying protocol has occurred.
  */
 public class ProtocolException extends java.io.IOException {
 
@@ -40,7 +38,7 @@ public class ProtocolException extends java.io.IOException {
      * filled in.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for this exception.
      */
     public ProtocolException(String detailMessage) {
         super(detailMessage);

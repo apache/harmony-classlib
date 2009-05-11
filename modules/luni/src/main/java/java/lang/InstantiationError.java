@@ -17,46 +17,44 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the VM notices that a an attempt is being made to
- * create a new instance of a class which has no visible constructors from the
- * location where new is invoked.
+ * Thrown when the virtual machine notices that a program tries to create a new
+ * instance of a class which has no visible constructors from the location where
+ * {@code new} is invoked.
  * <p>
  * Note that this can only occur when inconsistent class files are being loaded.
- * 
  */
 public class InstantiationError extends IncompatibleClassChangeError {
-	private static final long serialVersionUID = -4885810657349421204L;
+    private static final long serialVersionUID = -4885810657349421204L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
-	public InstantiationError() {
-		super();
-	}
+    /**
+     * Constructs a new {@code InstantiationError} that includes the current
+     * stack trace.
+     */
+    public InstantiationError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public InstantiationError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code InstantiationError} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public InstantiationError(String detailMessage) {
+        super(detailMessage);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param clazz
-	 *            Class The class which cannot be instantiated.
-	 */
-	InstantiationError(Class<?> clazz) {
-		super(clazz.getName());
-	}
+    /**
+     * Constructs a new {@code InstantiationError} with the current stack trace
+     * and the class that caused this error.
+     * 
+     * @param clazz
+     *            the class that can not be instantiated.
+     */
+    InstantiationError(Class<?> clazz) {
+        super(clazz.getName());
+    }
 
 }

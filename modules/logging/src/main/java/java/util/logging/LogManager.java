@@ -159,7 +159,7 @@ public class LogManager {
             ObjectName loggingMXBeanName = new ObjectName(LOGGING_MXBEAN_NAME);
             MBeanServer platformBeanServer = ManagementFactory
                     .getPlatformMBeanServer();
-            Set loggingMXBeanSet = platformBeanServer.queryMBeans(
+            Set<?> loggingMXBeanSet = platformBeanServer.queryMBeans(
                     loggingMXBeanName, null);
 
             if (loggingMXBeanSet.size() != 1) {
@@ -167,10 +167,10 @@ public class LogManager {
                 throw new AssertionError(Messages.getString("logging.21")); //$NON-NLS-1$
             }
 
-            Iterator i = loggingMXBeanSet.iterator();
+            Iterator<?> i = loggingMXBeanSet.iterator();
             ObjectInstance loggingMXBeanOI = (ObjectInstance) i.next();
             String lmxbcn = loggingMXBeanOI.getClassName();
-            Class lmxbc = Class.forName(lmxbcn);
+            Class<?> lmxbc = Class.forName(lmxbcn);
             Method giMethod = lmxbc.getDeclaredMethod("getInstance"); //$NON-NLS-1$
             giMethod.setAccessible(true);
             LoggingMXBean lmxb = (LoggingMXBean) giMethod.invoke(null,

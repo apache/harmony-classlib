@@ -54,7 +54,7 @@ public class CompilationMXBeanTest extends TestCase {
             assertTrue(mb.getTotalCompilationTime() > -1);
         } else {
             try {
-                long tmp = mb.getTotalCompilationTime();
+                mb.getTotalCompilationTime();
                 fail("Should have thrown unsupported operation exception!");
             } catch (UnsupportedOperationException e) {
                 // ignore

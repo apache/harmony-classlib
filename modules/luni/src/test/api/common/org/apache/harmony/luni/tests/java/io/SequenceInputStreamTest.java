@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
 public class SequenceInputStreamTest extends junit.framework.TestCase {
@@ -45,7 +46,7 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 	 * @tests SequenceInputStream#SequenceInputStream(java.io.InputStream,
 	 *        java.io.InputStream)
 	 */
-	public void test_Constructor_LInputStreamLInputStream_Null() {		
+	public void test_Constructor_LInputStreamLInputStream_Null() throws UnsupportedEncodingException {		
 		try {
 			si = new SequenceInputStream(null , null);
 			fail("should throw NullPointerException");
@@ -54,7 +55,7 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 		}
 		
 		//will not throw NullPointerException if the first InputStream is not null
-		InputStream is = new ByteArrayInputStream(s1.getBytes()); 
+		InputStream is = new ByteArrayInputStream(s1.getBytes("UTF-8")); 
 		si = new SequenceInputStream(is , null);
 	}
 
@@ -69,9 +70,9 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 
 			int count = 0;
 
-			public StreamEnumerator() {
-				streams[0] = new ByteArrayInputStream(s1.getBytes());
-				streams[1] = new ByteArrayInputStream(s2.getBytes());
+			public StreamEnumerator() throws UnsupportedEncodingException {
+				streams[0] = new ByteArrayInputStream(s1.getBytes("UTF-8"));
+				streams[1] = new ByteArrayInputStream(s2.getBytes("UTF-8"));
 			}
 
 			public boolean hasMoreElements() {
@@ -89,7 +90,7 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 			si.read(buf, 0, s1.length());
 			si.read(buf, s1.length(), s2.length());
 			assertTrue("Read incorrect bytes: " + new String(buf), new String(
-					buf).equals(s1 + s2));
+					buf, "UTF-8").equals(s1 + s2));
 		} catch (IOException e) {
 			fail("IOException during read test : " + e.getMessage());
 		}
@@ -148,7 +149,7 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 			si.read(buf, 0, s1.length());
 			si.read(buf, s1.length(), s2.length());
 			assertTrue("Read incorrect bytes: " + new String(buf), new String(
-					buf).equals(s1 + s2));
+					buf, "UTF-8").equals(s1 + s2));
 		} catch (IOException e) {
 			fail("IOException during read test : " + e.getMessage());
 		}
@@ -178,9 +179,9 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	protected void setUp() {
-		si = new SequenceInputStream(new ByteArrayInputStream(s1.getBytes()),
-				new ByteArrayInputStream(s2.getBytes()));
+	protected void setUp() throws UnsupportedEncodingException {
+		si = new SequenceInputStream(new ByteArrayInputStream(s1.getBytes("UTF-8")),
+				new ByteArrayInputStream(s2.getBytes("UTF-8")));
 	}
 
 	/**

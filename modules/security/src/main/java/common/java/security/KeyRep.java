@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.IOException;
@@ -36,13 +31,11 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * {@code KeyRep} is a standardized representation for serialized {@link Key}
+ * objects.
  */
 public class KeyRep implements Serializable {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = -4757683898830641853L;
     // Key type
     private final Type type;
@@ -54,7 +47,22 @@ public class KeyRep implements Serializable {
     private byte[] encoded;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyRep} with the specified arguments.
+     * The arguments should be obtained from the {@code Key} object that has to
+     * be serialized.
+     *
+     * @param type
+     *            the type of the key.
+     * @param algorithm
+     *            the algorithm (obtained by {@link Key#getAlgorithm()}).
+     * @param format
+     *            the format of the key (obtained by {@link Key#getFormat()}).
+     * @param encoded
+     *            the encoded {@code byte[]} (obtained by
+     *            {@link Key#getEncoded()}).
+     * @throws NullPointerException
+     *             if {@code type, algorithm, format or encoded} is {@code null}
+     *             .
      */
     public KeyRep(Type type,
             String algorithm, String format, byte[] encoded) {
@@ -77,7 +85,25 @@ public class KeyRep implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Resolves and returns the {@code Key} object. Three {@link Type}|format
+     * combinations are supported:
+     * <ul>
+     * <li> {@code Type.PRIVATE} | "PKCS#8" : returns a {@link PrivateKey}
+     * instance, generated from a key factory (suitable for the algorithm) that
+     * is initialized with a {@link PKCS8EncodedKeySpec} using the encoded key
+     * bytes.
+     * <li> {@code Type.SECRET} | "RAW" : returns a {@link SecretKeySpec}
+     * instance, created with the encoded key bytes and the algorithm.
+     * <li> {@code Type.PUBLIC} | "X.509": returns a {@link PublicKey} instance,
+     * generated from a key factory (suitable for the algorithm) that is
+     * initialized with a {@link X509EncodedKeySpec} using the encoded key
+     * bytes.
+     * </ul>
+     *
+     * @return the resolved {@code Key} object.
+     * @throws ObjectStreamException
+     *             if the {@code Type}|format combination is not recognized, or
+     *             the resolution of any key parameter fails.
      */
     protected Object readResolve() throws ObjectStreamException {
         switch (type) {
@@ -138,11 +164,21 @@ public class KeyRep implements Serializable {
     }
 
     /**
-     * Supported key types
+     * {@code Type} enumerates the supported key types.
      */
     public static enum Type {
+
+        /**
+         * Type for secret keys.
+         */
         SECRET,
+        /**
+         * Type for public keys.
+         */
         PUBLIC,
+        /**
+         * Type for private keys.
+         */
         PRIVATE
     }
 }

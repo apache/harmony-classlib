@@ -20,32 +20,39 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * BufferedOutputStream is a class which takes an output stream and
- * <em>buffers</em> the writes to that stream. In this way, costly interaction
- * with the original output stream can be minimized by writing buffered amounts
- * of data infrequently. The drawback is that extra space is required to hold
- * the buffer and copying takes place when writing that buffer.
+ * Wraps an existing {@link OutputStream} and <em>buffers</em> the output.
+ * Expensive interaction with the underlying input stream is minimized, since
+ * most (smaller) requests can be satisfied by accessing the buffer alone. The
+ * drawback is that some extra space is required to hold the buffer and that
+ * copying takes place when flushing that buffer, but this is usually outweighed
+ * by the performance benefits.
  * 
+ * <p/>A typical application pattern for the class looks like this:<p/>
+ *
+ * <pre>
+ * BufferedOutputStream buf = new BufferedOutputStream(new FileOutputStream(&quot;file.java&quot;));
+ * </pre>
+ *
  * @see BufferedInputStream
  */
 public class BufferedOutputStream extends FilterOutputStream {
     /**
-     * The buffer containing the bytes to be written to the target OutputStream.
+     * The buffer containing the bytes to be written to the target stream.
      */
     protected byte[] buf;
 
     /**
-     * The total number of bytes inside the byte array <code>buf</code>.
+     * The total number of bytes inside the byte array {@code buf}.
      */
     protected int count;
 
     /**
-     * Constructs a new BufferedOutputStream on the OutputStream
-     * <code>out</code>. The default buffer size (8Kb) is allocated and all
-     * writes are now filtered through this stream.
+     * Constructs a new {@code BufferedOutputStream} on the {@link OutputStream}
+     * {@code out}. The buffer size is set to the default value of 8 KB.
      * 
      * @param out
-     *            the OutputStream to buffer writes on.
+     *            the {@code OutputStream} for which write operations are
+     *            buffered.
      */
     public BufferedOutputStream(OutputStream out) {
         super(out);
@@ -53,16 +60,15 @@ public class BufferedOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Constructs a new BufferedOutputStream on the OutputStream
-     * <code>out</code>. The buffer size is set to <code>size</code> and
-     * all writes are now filtered through this stream.
+     * Constructs a new {@code BufferedOutputStream} on the {@link OutputStream}
+     * {@code out}. The buffer size is set to {@code size}.
      * 
      * @param out
-     *            the OutputStream to buffer writes on.
+     *            the output stream for which write operations are buffered.
      * @param size
      *            the size of the buffer in bytes.
      * @throws IllegalArgumentException
-     *             the size is <= 0
+     *             if {@code size <= 0}.
      */
     public BufferedOutputStream(OutputStream out, int size) {
         super(out);
@@ -74,13 +80,11 @@ public class BufferedOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Flush this BufferedOutputStream to ensure all pending data is written out
-     * to the target OutputStream. In addition, the target stream is also
-     * flushed.
+     * Flushes this stream to ensure all pending data is written out to the
+     * target stream. In addition, the target stream is flushed.
      * 
      * @throws IOException
-     *             If an error occurs attempting to flush this
-     *             BufferedOutputStream.
+     *             if an error occurs attempting to flush this stream.
      */
     @Override
     public synchronized void flush() throws IOException {
@@ -89,25 +93,27 @@ public class BufferedOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes <code>count</code> <code>bytes</code> from the byte array
-     * <code>buffer</code> starting at <code>offset</code> to this
-     * BufferedOutputStream. If there is room in the buffer to hold the bytes,
-     * they are copied in. If not, the buffered bytes plus the bytes in
-     * <code>buffer</code> are written to the target stream, the target is
-     * flushed, and the buffer is cleared.
+     * Writes {@code count} bytes from the byte array {@code buffer} starting at
+     * {@code offset} to this stream. If there is room in the buffer to hold the
+     * bytes, they are copied in. If not, the buffered bytes plus the bytes in
+     * {@code buffer} are written to the target stream, the target is flushed,
+     * and the buffer is cleared.
      * 
      * @param buffer
-     *            the buffer to be written
+     *            the buffer to be written.
      * @param offset
-     *            offset in buffer to get bytes
+     *            the start position in {@code buffer} from where to get bytes.
      * @param length
-     *            number of bytes in buffer to write
-     * 
+     *            the number of bytes from {@code buffer} to write to this
+     *            stream.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code length < 0}, or if
+     *             {@code offset + length} is greater than the size of
+     *             {@code buffer}.
      * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             BufferedOutputStream.
+     *             if an error occurs attempting to write to this stream.
      * @throws NullPointerException
-     *             If buffer is null.
+     *             if {@code buffer} is {@code null}.
      * @throws ArrayIndexOutOfBoundsException
      *             If offset or count is outside of bounds.
      */
@@ -141,19 +147,16 @@ public class BufferedOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes the specified byte <code>oneByte</code> to this
-     * BufferedOutputStream. Only the low order byte of <code>oneByte</code>
-     * is written. If there is room in the buffer, the byte is copied in and the
-     * count incremented. Otherwise, the buffer plus <code>oneByte</code> are
-     * written to the target stream, the target is flushed, and the buffer is
-     * reset.
+     * Writes one byte to this stream. Only the low order byte of the integer
+     * {@code oneByte} is written. If there is room in the buffer, the byte is
+     * copied into the buffer and the count incremented. Otherwise, the buffer
+     * plus {@code oneByte} are written to the target stream, the target is
+     * flushed, and the buffer is reset.
      * 
      * @param oneByte
-     *            the byte to be written
-     * 
+     *            the byte to be written.
      * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             BufferedOutputStream.
+     *             if an error occurs attempting to write to this stream.
      */
     @Override
     public synchronized void write(int oneByte) throws IOException {

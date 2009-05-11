@@ -17,35 +17,43 @@
 package java.lang.reflect;
 
 /**
- * Represents a type variable.
- * 
+ * This interface represents a type variables such as {@code 'T'} in {@code
+ * 'public interface Comparable&lt;T&gt;'}, the bounded {@code 'T'} in {@code
+ * 'public interface A&lt;T extends Number&gt;'} or the multiple bounded {@code
+ * 'T'} in {@code 'public interface B&lt;T extends Number & Cloneable&gt;'}.
+ *
+ * @param <D>
+ *            the generic declaration that declares this type variable
  * @since 1.5
  */
 public interface TypeVariable<D extends GenericDeclaration> extends Type {
 
     /**
-     * Answers the upper bounds of the type variable.
-     * 
-     * @return array of type variable's upper bounds.
+     * Returns the upper bounds of this type variable. {@code Object} is the
+     * implicit upper bound if no other bounds are declared.
+     *
+     * @return the upper bounds of this type variable
+     *
      * @throws TypeNotPresentException
-     *             if the component type points to a missing type.
+     *             if any of the bounds points to a missing type
      * @throws MalformedParameterizedTypeException
-     *             if the component type points to a type that can't be
-     *             instantiated for some reason.
+     *             if any of the bounds points to a type that cannot be
+     *             instantiated for some reason
      */
     Type[] getBounds();
 
     /**
-     * Answers a GenericDeclaration object for this type variable.
-     * 
-     * @return the generic declaration spec
+     * Returns the language construct that declares this type variable.
+     *
+     * @return the generic declaration
      */
     D getGenericDeclaration();
 
     /**
-     * Answers the type variable's name from source.
-     * 
-     * @return the variable's name from the source code.
+     * Returns the name of this type variable as it is specified in source
+     * code.
+     *
+     * @return the name of this type variable
      */
     String getName();
 }

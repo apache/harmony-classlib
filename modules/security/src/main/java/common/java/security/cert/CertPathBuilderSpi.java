@@ -15,29 +15,33 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 import java.security.InvalidAlgorithmParameterException;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The <i>Service Provider Interface</i> (<b>SPI</b>) for the {@code
+ * CertPathBuilder} class to be implemented by security providers.
  */
-
 public abstract class CertPathBuilderSpi {
+
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CertPathBuilderSpi} instance.
      */
     public CertPathBuilderSpi() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Builds a certification path with the specified algorithm parameters.
+     * 
+     * @param params
+     *            the algorithm parameters.
+     * @return a result of the build.
+     * @throws CertPathBuilderException
+     *             if the build fails.
+     * @throws InvalidAlgorithmParameterException
+     *             if the specified parameters cannot be used to build the path
+     *             with this builder.
      */
     public abstract CertPathBuilderResult engineBuild(CertPathParameters params)
             throws CertPathBuilderException, InvalidAlgorithmParameterException;

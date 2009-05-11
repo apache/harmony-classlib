@@ -15,16 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 /**
- * This class represents Certificate Revocation Lists (CRLs). They are used to
- * indicate that a given Certificate has expired already.
+ * This class represents Certificate Revocation Lists (CRLs) maintained by a
+ * certificate authority. They are used to indicate that a given Certificate has
+ * expired and consequently has become invalid.
  * 
  * @see CertificateFactory
  */
@@ -33,37 +29,38 @@ public abstract class CRL {
     private final String type;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new certificate revocation list of the specified type.
+     *
+     * @param type
+     *            the type for the CRL.
      */
     protected CRL(String type) {
         this.type = type;
     }
 
-	/**
-	 * Answers the type of this CRL.
-	 * 
-	 * @return String the type of this CRL.
-	 */
+    /**
+     * Returns the type of this CRL.
+     *
+     * @return the type of this CRL.
+     */
     public final String getType() {
         return type;
     }
 
-	/**
-	 * Answers if a given Certificate has been revoked or not.
-	 * 
-	 * @param cert
-	 *            Certificate The Certificate to test
-	 * 
-	 * @return true if the certificate has been revoked false if the certificate
-	 *         has not been revoked yet
-	 */
+    /**
+     * Returns whether the specified certificate is revoked by this CRL.
+     *
+     * @param cert
+     *            the certificate to check.
+     * @return {@code true} if the certificate is revoked by this CRL, otherwise
+     *         {@code false}.
+     */
     public abstract boolean isRevoked(Certificate cert);
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * @return a printable representation for the receiver.
-	 */
+    /**
+     * Returns the string representation of this instance.
+     *
+     * @return the string representation of this instance.
+     */
     public abstract String toString();
 }

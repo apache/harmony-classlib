@@ -225,10 +225,8 @@ Generating snapshot tar
 </echo>
         <tar destfile="${deploy.tar}" compression="gzip">
             <tarfileset dir="${basedir}" prefix="Harmony">
-                <include name="COPYRIGHT" />
                 <include name="LICENSE" />
                 <include name="NOTICE" />
-                <include name="THIRD_PARTY_NOTICES.txt" />
                 <include name="deploy/build/**" />
                 <include name="deploy/include/**" />
                 <include name="deploy/jdk/**" />
@@ -258,10 +256,8 @@ Generating snapshot zip
 </echo>
         <zip destfile="${deploy.zip}">
             <zipfileset dir="${basedir}" prefix="Harmony">
-                <include name="COPYRIGHT" />
                 <include name="LICENSE" />
                 <include name="NOTICE" />
-                <include name="THIRD_PARTY_NOTICES.txt" />
                 <include name="deploy/build/**" />
                 <include name="deploy/include/**" />
                 <include name="deploy/jdk/**" />
@@ -277,14 +273,16 @@ Generating snapshot zip
         <chksum file="${deploy.zip}" type="sha" />
     </target>
 
-    <target name="check-depends"
+    <target name="check-depends" depends="-init-hdk"
             description="Report on whether the dependencies are met">
         <ant antfile="make/depends.xml" inheritall="false" target="check" />
+        <poll-modules target="check-depends" />
     </target>
 
-    <target name="fetch-depends"
+    <target name="fetch-depends" depends="-init-hdk"
         description="Fetches dependencies. Note: Some of Harmony's dependencies are licensed under terms other than the Apache License v2.">
         <ant antfile="make/depends.xml" inheritall="false" target="download" />
+        <poll-modules target="fetch-depends" />
     </target>
 
     <target name="properties" depends="echo"
@@ -334,6 +332,14 @@ Generating snapshot zip
             </copy>
             <copy file="make/make.xml"
                   tofile="${hy.hdk}/build/ant/make.xml"
+                  outputencoding="UTF-8" >
+            </copy>
+            <copy file="make/depends-common.xml"
+                  tofile="${hy.hdk}/build/ant/depends.xml"
+                  outputencoding="UTF-8" >
+            </copy>
+            <copy file="make/depends.properties"
+                  tofile="${hy.hdk}/build/ant/depends.properties"
                   outputencoding="UTF-8" >
             </copy>
         </sequential>

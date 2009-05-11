@@ -24,11 +24,261 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 
 /**
- * Calendar is an abstract class which provides the conversion between Dates and
- * integer calendar fields, such as the month, year or minute. Subclasses of
- * this class implement a specific calendar type, such as the gregorian
- * calendar.
+ * {@code Calendar} is an abstract base class for converting between a
+ * {@code Date} object and a set of integer fields such as
+ * {@code YEAR}, {@code MONTH}, {@code DAY},
+ * {@code HOUR}, and so on. (A {@code Date} object represents a
+ * specific instant in time with millisecond precision. See {@link Date} for
+ * information about the {@code Date} class.)
  * 
+ * <p>
+ * Subclasses of {@code Calendar} interpret a {@code Date}
+ * according to the rules of a specific calendar system.
+ *
+ * <p>
+ * Like other locale-sensitive classes, {@code Calendar} provides a class
+ * method, {@code getInstance}, for getting a default instance of
+ * this class for general use. {@code Calendar}'s {@code getInstance} method
+ * returns a calendar whose locale is based on system settings and whose time fields
+ * have been initialized with the current date and time: <blockquote>
+ *
+ * <pre>Calendar rightNow = Calendar.getInstance()</pre>
+ *
+ * </blockquote>
+ *
+ * <p>
+ * A {@code Calendar} object can produce all the time field values needed
+ * to implement the date-time formatting for a particular language and calendar
+ * style (for example, Japanese-Gregorian, Japanese-Traditional).
+ * {@code Calendar} defines the range of values returned by certain
+ * fields, as well as their meaning. For example, the first month of the year
+ * has value {@code MONTH} == {@code JANUARY} for all calendars.
+ * Other values are defined by the concrete subclass, such as {@code ERA}
+ * and {@code YEAR}. See individual field documentation and subclass
+ * documentation for details.
+ *
+ * <p>
+ * When a {@code Calendar} is <em>lenient</em>, it accepts a wider
+ * range of field values than it produces. For example, a lenient
+ * {@code GregorianCalendar} interprets {@code MONTH} ==
+ * {@code JANUARY}, {@code DAY_OF_MONTH} == 32 as February 1. A
+ * non-lenient {@code GregorianCalendar} throws an exception when given
+ * out-of-range field settings. When calendars recompute field values for return
+ * by {@code get()}, they normalize them. For example, a
+ * {@code GregorianCalendar} always produces {@code DAY_OF_MONTH}
+ * values between 1 and the length of the month.
+ *
+ * <p>
+ * {@code Calendar} defines a locale-specific seven day week using two
+ * parameters: the first day of the week and the minimal days in first week
+ * (from 1 to 7). These numbers are taken from the locale resource data when a
+ * {@code Calendar} is constructed. They may also be specified explicitly
+ * through the API.
+ *
+ * <p>
+ * When setting or getting the {@code WEEK_OF_MONTH} or
+ * {@code WEEK_OF_YEAR} fields, {@code Calendar} must determine
+ * the first week of the month or year as a reference point. The first week of a
+ * month or year is defined as the earliest seven day period beginning on
+ * {@code getFirstDayOfWeek()} and containing at least
+ * {@code getMinimalDaysInFirstWeek()} days of that month or year. Weeks
+ * numbered ..., -1, 0 precede the first week; weeks numbered 2, 3,... follow
+ * it. Note that the normalized numbering returned by {@code get()} may
+ * be different. For example, a specific {@code Calendar} subclass may
+ * designate the week before week 1 of a year as week <em>n</em> of the
+ * previous year.
+ *
+ * <p>
+ * When computing a {@code Date} from time fields, two special
+ * circumstances may arise: there may be insufficient information to compute the
+ * {@code Date} (such as only year and month but no day in the month), or
+ * there may be inconsistent information (such as "Tuesday, July 15, 1996" --
+ * July 15, 1996 is actually a Monday).
+ *
+ * <p>
+ * <strong>Insufficient information.</strong> The calendar will use default
+ * information to specify the missing fields. This may vary by calendar; for the
+ * Gregorian calendar, the default for a field is the same as that of the start
+ * of the epoch: i.e., YEAR = 1970, MONTH = JANUARY, DATE = 1, etc.
+ *
+ * <p>
+ * <strong>Inconsistent information.</strong> If fields conflict, the calendar
+ * will give preference to fields set more recently. For example, when
+ * determining the day, the calendar will look for one of the following
+ * combinations of fields. The most recent combination, as determined by the
+ * most recently set single field, will be used.
+ *
+ * <blockquote>
+ *
+ * <pre>
+ * MONTH + DAY_OF_MONTH
+ * MONTH + WEEK_OF_MONTH + DAY_OF_WEEK
+ * MONTH + DAY_OF_WEEK_IN_MONTH + DAY_OF_WEEK
+ * DAY_OF_YEAR
+ * DAY_OF_WEEK + WEEK_OF_YEAR</pre>
+ *
+ * </blockquote>
+ *
+ * For the time of day:
+ *
+ * <blockquote>
+ *
+ * <pre>
+ * HOUR_OF_DAY
+ * AM_PM + HOUR</pre>
+ *
+ * </blockquote>
+ *
+ * <p>
+ * <strong>Note:</strong> There are certain possible ambiguities in
+ * interpretation of certain singular times, which are resolved in the following
+ * ways:
+ * <ol>
+ * <li> 24:00:00 "belongs" to the following day. That is, 23:59 on Dec 31, 1969
+ * &lt; 24:00 on Jan 1, 1970 &lt; 24:01:00 on Jan 1, 1970 form a sequence of
+ * three consecutive minutes in time.
+ *
+ * <li> Although historically not precise, midnight also belongs to "am", and
+ * noon belongs to "pm", so on the same day, we have 12:00 am (midnight) &lt; 12:01 am,
+ * and 12:00 pm (noon) &lt; 12:01 pm
+ * </ol>
+ *
+ * <p>
+ * The date or time format strings are not part of the definition of a calendar,
+ * as those must be modifiable or overridable by the user at runtime. Use
+ * {@link java.text.DateFormat} to format dates.
+ *
+ * <p>
+ * <strong>Field manipulation methods</strong>
+ *
+ * <p>
+ * {@code Calendar} fields can be changed using three methods:
+ * {@code set()}, {@code add()}, and {@code roll()}.
+ *
+ * <p>
+ * <strong>{@code set(f, value)}</strong> changes field {@code f}
+ * to {@code value}. In addition, it sets an internal member variable to
+ * indicate that field {@code f} has been changed. Although field
+ * {@code f} is changed immediately, the calendar's milliseconds is not
+ * recomputed until the next call to {@code get()},
+ * {@code getTime()}, or {@code getTimeInMillis()} is made. Thus,
+ * multiple calls to {@code set()} do not trigger multiple, unnecessary
+ * computations. As a result of changing a field using {@code set()},
+ * other fields may also change, depending on the field, the field value, and
+ * the calendar system. In addition, {@code get(f)} will not necessarily
+ * return {@code value} after the fields have been recomputed. The
+ * specifics are determined by the concrete calendar class.
+ *
+ * <p>
+ * <em>Example</em>: Consider a {@code GregorianCalendar} originally
+ * set to August 31, 1999. Calling <code>set(Calendar.MONTH,
+ * Calendar.SEPTEMBER)</code>
+ * sets the calendar to September 31, 1999. This is a temporary internal
+ * representation that resolves to October 1, 1999 if {@code getTime()}is
+ * then called. However, a call to {@code set(Calendar.DAY_OF_MONTH, 30)}
+ * before the call to {@code getTime()} sets the calendar to September
+ * 30, 1999, since no recomputation occurs after {@code set()} itself.
+ *
+ * <p>
+ * <strong>{@code add(f, delta)}</strong> adds {@code delta} to
+ * field {@code f}. This is equivalent to calling <code>set(f,
+ * get(f) + delta)</code>
+ * with two adjustments:
+ *
+ * <blockquote>
+ * <p>
+ * <strong>Add rule 1</strong>. The value of field {@code f} after the
+ * call minus the value of field {@code f} before the call is
+ * {@code delta}, modulo any overflow that has occurred in field
+ * {@code f}. Overflow occurs when a field value exceeds its range and,
+ * as a result, the next larger field is incremented or decremented and the
+ * field value is adjusted back into its range.
+ *
+ * <p>
+ * <strong>Add rule 2</strong>. If a smaller field is expected to be invariant,
+ * but &nbsp; it is impossible for it to be equal to its prior value because of
+ * changes in its minimum or maximum after field {@code f} is changed,
+ * then its value is adjusted to be as close as possible to its expected value.
+ * A smaller field represents a smaller unit of time. {@code HOUR} is a
+ * smaller field than {@code DAY_OF_MONTH}. No adjustment is made to
+ * smaller fields that are not expected to be invariant. The calendar system
+ * determines what fields are expected to be invariant.
+ * </blockquote>
+ *
+ * <p>
+ * In addition, unlike {@code set()}, {@code add()} forces an
+ * immediate recomputation of the calendar's milliseconds and all fields.
+ *
+ * <p>
+ * <em>Example</em>: Consider a {@code GregorianCalendar} originally
+ * set to August 31, 1999. Calling {@code add(Calendar.MONTH, 13)} sets
+ * the calendar to September 30, 2000. <strong>Add rule 1</strong> sets the
+ * {@code MONTH} field to September, since adding 13 months to August
+ * gives September of the next year. Since {@code DAY_OF_MONTH} cannot be
+ * 31 in September in a {@code GregorianCalendar}, <strong>add rule 2</strong>
+ * sets the {@code DAY_OF_MONTH} to 30, the closest possible value.
+ * Although it is a smaller field, {@code DAY_OF_WEEK} is not adjusted by
+ * rule 2, since it is expected to change when the month changes in a
+ * {@code GregorianCalendar}.
+ *
+ * <p>
+ * <strong>{@code roll(f, delta)}</strong> adds {@code delta} to
+ * field {@code f} without changing larger fields. This is equivalent to
+ * calling {@code add(f, delta)} with the following adjustment:
+ *
+ * <blockquote>
+ * <p>
+ * <strong>Roll rule</strong>. Larger fields are unchanged after the call. A
+ * larger field represents a larger unit of time. {@code DAY_OF_MONTH} is
+ * a larger field than {@code HOUR}.
+ * </blockquote>
+ *
+ * <p>
+ * <em>Example</em>: Consider a {@code GregorianCalendar} originally
+ * set to August 31, 1999. Calling <code>roll(Calendar.MONTH,
+ * 8)</code> sets
+ * the calendar to April 30, <strong>1999</strong>. Add rule 1 sets the
+ * {@code MONTH} field to April. Using a {@code GregorianCalendar},
+ * the {@code DAY_OF_MONTH} cannot be 31 in the month April. Add rule 2
+ * sets it to the closest possible value, 30. Finally, the <strong>roll rule</strong>
+ * maintains the {@code YEAR} field value of 1999.
+ *
+ * <p>
+ * <em>Example</em>: Consider a {@code GregorianCalendar} originally
+ * set to Sunday June 6, 1999. Calling
+ * {@code roll(Calendar.WEEK_OF_MONTH, -1)} sets the calendar to Tuesday
+ * June 1, 1999, whereas calling {@code add(Calendar.WEEK_OF_MONTH, -1)}
+ * sets the calendar to Sunday May 30, 1999. This is because the roll rule
+ * imposes an additional constraint: The {@code MONTH} must not change
+ * when the {@code WEEK_OF_MONTH} is rolled. Taken together with add rule
+ * 1, the resultant date must be between Tuesday June 1 and Saturday June 5.
+ * According to add rule 2, the {@code DAY_OF_WEEK}, an invariant when
+ * changing the {@code WEEK_OF_MONTH}, is set to Tuesday, the closest
+ * possible value to Sunday (where Sunday is the first day of the week).
+ *
+ * <p>
+ * <strong>Usage model</strong>. To motivate the behavior of {@code add()}
+ * and {@code roll()}, consider a user interface component with
+ * increment and decrement buttons for the month, day, and year, and an
+ * underlying {@code GregorianCalendar}. If the interface reads January
+ * 31, 1999 and the user presses the month increment button, what should it
+ * read? If the underlying implementation uses {@code set()}, it might
+ * read March 3, 1999. A better result would be February 28, 1999. Furthermore,
+ * if the user presses the month increment button again, it should read March
+ * 31, 1999, not March 28, 1999. By saving the original date and using either
+ * {@code add()} or {@code roll()}, depending on whether larger
+ * fields should be affected, the user interface can behave as most users will
+ * intuitively expect.
+ *
+ * <p>
+ * <b>Note:</b> You should always use {@code roll} and {@code add} rather than
+ * attempting to perform arithmetic operations directly on the fields of a
+ * <tt>Calendar</tt>. It is quite possible for <tt>Calendar</tt> subclasses
+ * to have fields with non-linear behavior, for example missing months or days
+ * during non-leap years. The subclasses' <tt>add</tt> and <tt>roll</tt>
+ * methods will take this into account, while simple arithmetic manipulations
+ * may give invalid results.
+ *
  * @see Date
  * @see GregorianCalendar
  * @see TimeZone
@@ -39,24 +289,24 @@ public abstract class Calendar implements Serializable, Cloneable,
     private static final long serialVersionUID = -1807547505821590642L;
 
     /**
-     * Set to true when the calendar fields have been set from the time, set to
-     * false when a field is changed and the fields must be recomputed.
+     * Set to {@code true} when the calendar fields have been set from the time, set to
+     * {@code false} when a field is changed and the fields must be recomputed.
      */
     protected boolean areFieldsSet;
 
     /**
-     * An integer array of calendar fields.
+     * An integer array of calendar fields. The length is {@code FIELD_COUNT}.
      */
     protected int[] fields;
 
-    /*
+    /**
      * A boolean array. Each element indicates if the corresponding field has
-     * been set.
+     * been set. The length is {@code FIELD_COUNT}.
      */
     protected boolean[] isSet;
 
     /**
-     * Set to true when the time has been set, set to false when a field is
+     * Set to {@code true} when the time has been set, set to {@code false} when a field is
      * changed and the time must be recomputed.
      */
     protected boolean isTimeSet;
@@ -78,23 +328,331 @@ public abstract class Calendar implements Serializable, Cloneable,
 
     private TimeZone zone;
 
-    public static final int JANUARY = 0, FEBRUARY = 1, MARCH = 2, APRIL = 3,
-            MAY = 4, JUNE = 5, JULY = 6, AUGUST = 7, SEPTEMBER = 8,
-            OCTOBER = 9, NOVEMBER = 10, DECEMBER = 11, UNDECIMBER = 12,
+    /**
+     * Value of the {@code MONTH} field indicating the first month of the
+     * year.
+     */
+    public static final int JANUARY = 0;
 
-            SUNDAY = 1, MONDAY = 2, TUESDAY = 3, WEDNESDAY = 4, THURSDAY = 5,
-            FRIDAY = 6, SATURDAY = 7;
+    /**
+     * Value of the {@code MONTH} field indicating the second month of
+     * the year.
+     */
+    public static final int FEBRUARY = 1;
 
-    public static final int ERA = 0, YEAR = 1, MONTH = 2, WEEK_OF_YEAR = 3,
-            WEEK_OF_MONTH = 4, DATE = 5, DAY_OF_MONTH = 5, DAY_OF_YEAR = 6,
-            DAY_OF_WEEK = 7, DAY_OF_WEEK_IN_MONTH = 8,
+    /**
+     * Value of the {@code MONTH} field indicating the third month of the
+     * year.
+     */
+    public static final int MARCH = 2;
 
-            AM_PM = 9, HOUR = 10, HOUR_OF_DAY = 11, MINUTE = 12, SECOND = 13,
-            MILLISECOND = 14, ZONE_OFFSET = 15, DST_OFFSET = 16,
+    /**
+     * Value of the {@code MONTH} field indicating the fourth month of
+     * the year.
+     */
+    public static final int APRIL = 3;
 
-            FIELD_COUNT = 17,
+    /**
+     * Value of the {@code MONTH} field indicating the fifth month of the
+     * year.
+     */
+    public static final int MAY = 4;
 
-            AM = 0, PM = 1;
+    /**
+     * Value of the {@code MONTH} field indicating the sixth month of the
+     * year.
+     */
+    public static final int JUNE = 5;
+
+    /**
+     * Value of the {@code MONTH} field indicating the seventh month of
+     * the year.
+     */
+    public static final int JULY = 6;
+
+    /**
+     * Value of the {@code MONTH} field indicating the eighth month of
+     * the year.
+     */
+    public static final int AUGUST = 7;
+
+    /**
+     * Value of the {@code MONTH} field indicating the ninth month of the
+     * year.
+     */
+    public static final int SEPTEMBER = 8;
+
+    /**
+     * Value of the {@code MONTH} field indicating the tenth month of the
+     * year.
+     */
+    public static final int OCTOBER = 9;
+
+    /**
+     * Value of the {@code MONTH} field indicating the eleventh month of
+     * the year.
+     */
+    public static final int NOVEMBER = 10;
+
+    /**
+     * Value of the {@code MONTH} field indicating the twelfth month of
+     * the year.
+     */
+    public static final int DECEMBER = 11;
+
+    /**
+     * Value of the {@code MONTH} field indicating the thirteenth month
+     * of the year. Although {@code GregorianCalendar} does not use this
+     * value, lunar calendars do.
+     */
+    public static final int UNDECIMBER = 12;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Sunday.
+     */
+    public static final int SUNDAY = 1;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Monday.
+     */
+    public static final int MONDAY = 2;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Tuesday.
+     */
+    public static final int TUESDAY = 3;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Wednesday.
+     */
+    public static final int WEDNESDAY = 4;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Thursday.
+     */
+    public static final int THURSDAY = 5;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Friday.
+     */
+    public static final int FRIDAY = 6;
+
+    /**
+     * Value of the {@code DAY_OF_WEEK} field indicating Saturday.
+     */
+    public static final int SATURDAY = 7;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * era, e.g., AD or BC in the Julian calendar. This is a calendar-specific
+     * value; see subclass documentation.
+     *
+     * @see GregorianCalendar#AD
+     * @see GregorianCalendar#BC
+     */
+    public static final int ERA = 0;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * year. This is a calendar-specific value; see subclass documentation.
+     */
+    public static final int YEAR = 1;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * month. This is a calendar-specific value. The first month of the year is
+     * {@code JANUARY}; the last depends on the number of months in a
+     * year.
+     *
+     * @see #JANUARY
+     * @see #FEBRUARY
+     * @see #MARCH
+     * @see #APRIL
+     * @see #MAY
+     * @see #JUNE
+     * @see #JULY
+     * @see #AUGUST
+     * @see #SEPTEMBER
+     * @see #OCTOBER
+     * @see #NOVEMBER
+     * @see #DECEMBER
+     * @see #UNDECIMBER
+     */
+    public static final int MONTH = 2;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * week number within the current year. The first week of the year, as
+     * defined by {@code getFirstDayOfWeek()} and
+     * {@code getMinimalDaysInFirstWeek()}, has value 1. Subclasses
+     * define the value of {@code WEEK_OF_YEAR} for days before the first
+     * week of the year.
+     *
+     * @see #getFirstDayOfWeek
+     * @see #getMinimalDaysInFirstWeek
+     */
+    public static final int WEEK_OF_YEAR = 3;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * week number within the current month. The first week of the month, as
+     * defined by {@code getFirstDayOfWeek()} and
+     * {@code getMinimalDaysInFirstWeek()}, has value 1. Subclasses
+     * define the value of {@code WEEK_OF_MONTH} for days before the
+     * first week of the month.
+     *
+     * @see #getFirstDayOfWeek
+     * @see #getMinimalDaysInFirstWeek
+     */
+    public static final int WEEK_OF_MONTH = 4;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * day of the month. This is a synonym for {@code DAY_OF_MONTH}. The
+     * first day of the month has value 1.
+     *
+     * @see #DAY_OF_MONTH
+     */
+    public static final int DATE = 5;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * day of the month. This is a synonym for {@code DATE}. The first
+     * day of the month has value 1.
+     *
+     * @see #DATE
+     */
+    public static final int DAY_OF_MONTH = 5;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * day number within the current year. The first day of the year has value
+     * 1.
+     */
+    public static final int DAY_OF_YEAR = 6;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * day of the week. This field takes values {@code SUNDAY},
+     * {@code MONDAY}, {@code TUESDAY}, {@code WEDNESDAY},
+     * {@code THURSDAY}, {@code FRIDAY}, and
+     * {@code SATURDAY}.
+     *
+     * @see #SUNDAY
+     * @see #MONDAY
+     * @see #TUESDAY
+     * @see #WEDNESDAY
+     * @see #THURSDAY
+     * @see #FRIDAY
+     * @see #SATURDAY
+     */
+    public static final int DAY_OF_WEEK = 7;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * ordinal number of the day of the week within the current month. Together
+     * with the {@code DAY_OF_WEEK} field, this uniquely specifies a day
+     * within a month. Unlike {@code WEEK_OF_MONTH} and
+     * {@code WEEK_OF_YEAR}, this field's value does <em>not</em>
+     * depend on {@code getFirstDayOfWeek()} or
+     * {@code getMinimalDaysInFirstWeek()}. {@code DAY_OF_MONTH 1}
+     * through {@code 7} always correspond to <code>DAY_OF_WEEK_IN_MONTH
+     * 1</code>;
+     * {@code 8} through {@code 15} correspond to
+     * {@code DAY_OF_WEEK_IN_MONTH 2}, and so on.
+     * {@code DAY_OF_WEEK_IN_MONTH 0} indicates the week before
+     * {@code DAY_OF_WEEK_IN_MONTH 1}. Negative values count back from
+     * the end of the month, so the last Sunday of a month is specified as
+     * {@code DAY_OF_WEEK = SUNDAY, DAY_OF_WEEK_IN_MONTH = -1}. Because
+     * negative values count backward they will usually be aligned differently
+     * within the month than positive values. For example, if a month has 31
+     * days, {@code DAY_OF_WEEK_IN_MONTH -1} will overlap
+     * {@code DAY_OF_WEEK_IN_MONTH 5} and the end of {@code 4}.
+     *
+     * @see #DAY_OF_WEEK
+     * @see #WEEK_OF_MONTH
+     */
+    public static final int DAY_OF_WEEK_IN_MONTH = 8;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating
+     * whether the {@code HOUR} is before or after noon. E.g., at
+     * 10:04:15.250 PM the {@code AM_PM} is {@code PM}.
+     *
+     * @see #AM
+     * @see #PM
+     * @see #HOUR
+     */
+    public static final int AM_PM = 9;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * hour of the morning or afternoon. {@code HOUR} is used for the
+     * 12-hour clock. E.g., at 10:04:15.250 PM the {@code HOUR} is 10.
+     *
+     * @see #AM_PM
+     * @see #HOUR_OF_DAY
+     */
+    public static final int HOUR = 10;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * hour of the day. {@code HOUR_OF_DAY} is used for the 24-hour
+     * clock. E.g., at 10:04:15.250 PM the {@code HOUR_OF_DAY} is 22.
+     *
+     * @see #HOUR
+     */
+    public static final int HOUR_OF_DAY = 11;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * minute within the hour. E.g., at 10:04:15.250 PM the {@code MINUTE}
+     * is 4.
+     */
+    public static final int MINUTE = 12;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * second within the minute. E.g., at 10:04:15.250 PM the
+     * {@code SECOND} is 15.
+     */
+    public static final int SECOND = 13;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * millisecond within the second. E.g., at 10:04:15.250 PM the
+     * {@code MILLISECOND} is 250.
+     */
+    public static final int MILLISECOND = 14;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * raw offset from GMT in milliseconds.
+     */
+    public static final int ZONE_OFFSET = 15;
+
+    /**
+     * Field number for {@code get} and {@code set} indicating the
+     * daylight savings offset in milliseconds.
+     */
+    public static final int DST_OFFSET = 16;
+
+    /**
+     * This is the total number of fields in this calendar.
+     */
+    public static final int FIELD_COUNT = 17;
+
+    /**
+     * Value of the {@code AM_PM} field indicating the period of the day
+     * from midnight to just before noon.
+     */
+    public static final int AM = 0;
+
+    /**
+     * Value of the {@code AM_PM} field indicating the period of the day
+     * from noon to just before midnight.
+     */
+    public static final int PM = 1;
 
     private static String[] fieldNames = { "ERA=", "YEAR=", "MONTH=", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "WEEK_OF_YEAR=", "WEEK_OF_MONTH=", "DAY_OF_MONTH=", "DAY_OF_YEAR=", //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -103,8 +661,7 @@ public abstract class Calendar implements Serializable, Cloneable,
             "ZONE_OFFSET=", "DST_OFFSET=" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
-     * Initializes this Calendar instance using the default TimeZone and Locale.
-     * 
+     * Constructs a {@code Calendar} instance using the default {@code TimeZone} and {@code Locale}.
      */
     protected Calendar() {
         this(TimeZone.getDefault(), Locale.getDefault());
@@ -118,16 +675,15 @@ public abstract class Calendar implements Serializable, Cloneable,
         setTimeZone(timezone);
     }
 
-	/**
-	 * Initializes this Calendar instance using the specified TimeZone and
-	 * Locale.
-	 * 
-	 * @param timezone
-	 *            the timezone
-	 * @param locale
-	 *            the locale
-	 */
-	protected Calendar(TimeZone timezone, Locale locale) {
+    /**
+     * Constructs a {@code Calendar} instance using the specified {@code TimeZone} and {@code Locale}.
+     *
+     * @param timezone
+     *            the timezone.
+     * @param locale
+     *            the locale.
+     */
+    protected Calendar(TimeZone timezone, Locale locale) {
         this(timezone);
         com.ibm.icu.util.Calendar icuCalendar = com.ibm.icu.util.Calendar
                 .getInstance(com.ibm.icu.util.SimpleTimeZone
@@ -138,30 +694,29 @@ public abstract class Calendar implements Serializable, Cloneable,
 
 
     /**
-     * Adds the specified amount to a Calendar field.
+     * Adds the specified amount to a {@code Calendar} field.
      * 
      * @param field
-     *            the Calendar field to modify
+     *            the {@code Calendar} field to modify.
      * @param value
-     *            the amount to add to the field
-     * 
-     * @exception IllegalArgumentException
-     *                when the specified field is DST_OFFSET or ZONE_OFFSET.
+     *            the amount to add to the field.
+     * @throws IllegalArgumentException
+     *                if {@code field} is {@code DST_OFFSET} or {@code
+     *                ZONE_OFFSET}.
      */
     abstract public void add(int field, int value);
 
     /**
-     * Answers if the Date specified by this Calendar instance is after the Date
+     * Returns whether the {@code Date} specified by this {@code Calendar} instance is after the {@code Date}
      * specified by the parameter. The comparison is not dependent on the time
-     * zones of the Calendars.
+     * zones of the {@code Calendar}.
      * 
      * @param calendar
-     *            the Calendar instance to compare
-     * @return true when this Calendar is after calendar, false otherwise
-     * 
-     * @exception IllegalArgumentException
-     *                when the time is not set and the time cannot be computed
-     *                from the current field values
+     *            the {@code Calendar} instance to compare.
+     * @return {@code true} when this Calendar is after calendar, {@code false} otherwise.
+     * @throws IllegalArgumentException
+     *                if the time is not set and the time cannot be computed
+     *                from the current field values.
      */
     public boolean after(Object calendar) {
         if (!(calendar instanceof Calendar)) {
@@ -171,17 +726,16 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Answers if the Date specified by this Calendar instance is before the
-     * Date specified by the parameter. The comparison is not dependent on the
-     * time zones of the Calendars.
+     * Returns whether the {@code Date} specified by this {@code Calendar} instance is before the
+     * {@code Date} specified by the parameter. The comparison is not dependent on the
+     * time zones of the {@code Calendar}.
      * 
      * @param calendar
-     *            the Calendar instance to compare
-     * @return true when this Calendar is before calendar, false otherwise
-     * 
-     * @exception IllegalArgumentException
-     *                when the time is not set and the time cannot be computed
-     *                from the current field values
+     *            the {@code Calendar} instance to compare.
+     * @return {@code true} when this Calendar is before calendar, {@code false} otherwise.
+     * @throws IllegalArgumentException
+     *                if the time is not set and the time cannot be computed
+     *                from the current field values.
      */
     public boolean before(Object calendar) {
         if (!(calendar instanceof Calendar)) {
@@ -191,9 +745,8 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Clears all of the fields of this Calendar. All fields are initialized to
+     * Clears all of the fields of this {@code Calendar}. All fields are initialized to
      * zero.
-     * 
      */
     public final void clear() {
         for (int i = 0; i < FIELD_COUNT; i++) {
@@ -204,10 +757,10 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Clears the specified field to zero.
+     * Clears the specified field to zero and sets the isSet flag to {@code false}.
      * 
      * @param field
-     *            the field to clear
+     *            the field to clear.
      */
     public final void clear(int field) {
         fields[field] = 0;
@@ -216,9 +769,9 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Answers a new Calendar with the same properties.
+     * Returns a new {@code Calendar} with the same properties.
      * 
-     * @return a shallow copy of this Calendar
+     * @return a shallow copy of this {@code Calendar}.
      * 
      * @see java.lang.Cloneable
      */
@@ -239,9 +792,9 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Computes the time from the fields if the time has not already been set.
      * Computes the fields from the time if the fields are not already set.
      * 
-     * @exception IllegalArgumentException
-     *                when the time is not set and the time cannot be computed
-     *                from the current field values
+     * @throws IllegalArgumentException
+     *                if the time is not set and the time cannot be computed
+     *                from the current field values.
      */
     protected void complete() {
         if (!isTimeSet) {
@@ -255,29 +808,28 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Computes the Calendar fields from the time.
-     * 
+     * Computes the {@code Calendar} fields from {@code time}.
      */
     protected abstract void computeFields();
 
     /**
-     * Computes the time from the Calendar fields.
+     * Computes {@code time} from the Calendar fields.
      * 
-     * @exception IllegalArgumentException
-     *                when the time cannot be computed from the current field
-     *                values
+     * @throws IllegalArgumentException
+     *                if the time cannot be computed from the current field
+     *                values.
      */
     protected abstract void computeTime();
 
     /**
-     * Compares the specified object to this Calendar and answer if they are
-     * equal. The object must be an instance of Calendar and have the same
+     * Compares the specified object to this {@code Calendar} and returns whether they are
+     * equal. The object must be an instance of {@code Calendar} and have the same
      * properties.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this Calendar, false
-     *         otherwise
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this {@code Calendar}, {@code false}
+     *         otherwise.
      */
     @Override
     public boolean equals(Object object) {
@@ -297,16 +849,19 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Gets the value of the specified field after computing the field values
-     * from the time if required.
+     * Gets the value of the specified field after computing the field values by
+     * calling {@code complete()} first.
      * 
      * @param field
-     *            the field
-     * @return the value of the specified field
+     *            the field to get.
+     * @return the value of the specified field.
      * 
-     * @exception IllegalArgumentException
-     *                when the fields are not set, the time is not set, and the
-     *                time cannot be computed from the current field values
+     * @throws IllegalArgumentException
+     *                if the fields are not set, the time is not set, and the
+     *                time cannot be computed from the current field values.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if the field is not inside the range of possible fields.
+     *                The range is starting at 0 up to {@code FIELD_COUNT}.
      */
     public int get(int field) {
         complete();
@@ -317,8 +872,8 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Gets the maximum value of the specified field for the current date.
      * 
      * @param field
-     *            the field
-     * @return the maximum value of the specified field
+     *            the field.
+     * @return the maximum value of the specified field.
      */
     public int getActualMaximum(int field) {
         int value, next;
@@ -342,8 +897,8 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Gets the minimum value of the specified field for the current date.
      * 
      * @param field
-     *            the field
-     * @return the minimum value of the specified field
+     *            the field.
+     * @return the minimum value of the specified field.
      */
     public int getActualMinimum(int field) {
         int value, next;
@@ -364,78 +919,80 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Gets the list of installed Locales which support Calendar.
+     * Gets the list of installed {@code Locale}s which support {@code Calendar}.
      * 
-     * @return an array of Locale
+     * @return an array of {@code Locale}.
      */
     public static synchronized Locale[] getAvailableLocales() {
         return Locale.getAvailableLocales();
     }
 
     /**
-     * Gets the first day of the week for this Calendar.
+     * Gets the first day of the week for this {@code Calendar}.
      * 
-     * @return a Calendar day of the week
+     * @return the first day of the week.
      */
     public int getFirstDayOfWeek() {
         return firstDayOfWeek;
     }
 
     /**
-     * Gets the greatest minimum value of the specified field.
+     * Gets the greatest minimum value of the specified field. This is the
+     * biggest value that {@code getActualMinimum} can return for any possible
+     * time.
      * 
      * @param field
-     *            the field
-     * @return the greatest minimum value of the specified field
+     *            the field.
+     * @return the greatest minimum value of the specified field.
      */
     abstract public int getGreatestMinimum(int field);
 
     /**
-     * Constructs a new instance of the Calendar subclass appropriate for the
-     * default Locale.
+     * Constructs a new instance of the {@code Calendar} subclass appropriate for the
+     * default {@code Locale}.
      * 
-     * @return a Calendar subclass instance set to the current date and time in
-     *         the default timezone
+     * @return a {@code Calendar} subclass instance set to the current date and time in
+     *         the default {@code Timezone}.
      */
     public static synchronized Calendar getInstance() {
         return new GregorianCalendar();
     }
 
     /**
-     * Constructs a new instance of the Calendar subclass appropriate for the
-     * specified Locale.
+     * Constructs a new instance of the {@code Calendar} subclass appropriate for the
+     * specified {@code Locale}.
      * 
      * @param locale
-     *            the locale to use
-     * @return a Calendar subclass instance set to the current date and time
+     *            the locale to use.
+     * @return a {@code Calendar} subclass instance set to the current date and time.
      */
     public static synchronized Calendar getInstance(Locale locale) {
         return new GregorianCalendar(locale);
     }
 
     /**
-     * Constructs a new instance of the Calendar subclass appropriate for the
-     * default Locale, using the specified TimeZone.
+     * Constructs a new instance of the {@code Calendar} subclass appropriate for the
+     * default {@code Locale}, using the specified {@code TimeZone}.
      * 
      * @param timezone
-     *            the timezone to use
-     * @return a Calendar subclass instance set to the current date and time in
-     *         the specified timezone
+     *            the {@code TimeZone} to use.
+     * @return a {@code Calendar} subclass instance set to the current date and time in
+     *         the specified timezone.
      */
     public static synchronized Calendar getInstance(TimeZone timezone) {
         return new GregorianCalendar(timezone);
     }
 
     /**
-     * Constructs a new instance of the Calendar subclass appropriate for the
-     * specified Locale.
-     * 
+     * Constructs a new instance of the {@code Calendar} subclass appropriate for the
+     * specified {@code Locale}.
+     *
      * @param timezone
-     *            the timezone to use
+     *            the {@code TimeZone} to use.
      * @param locale
-     *            the locale to use
-     * @return a Calendar subclass instance set to the current date and time in
-     *         the specified timezone
+     *            the {@code Locale} to use.
+     * @return a {@code Calendar} subclass instance set to the current date and time in
+     *         the specified timezone.
      */
     public static synchronized Calendar getInstance(TimeZone timezone,
             Locale locale) {
@@ -443,62 +1000,66 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Gets the smallest maximum value of the specified field.
+     * Gets the smallest maximum value of the specified field. This is the
+     * smallest value that {@code getActualMaximum()} can return for any
+     * possible time.
      * 
      * @param field
-     *            the field
-     * @return the smallest maximum value of the specified field
+     *            the field number.
+     * @return the smallest maximum value of the specified field.
      */
     abstract public int getLeastMaximum(int field);
 
     /**
-     * Gets the greatest maximum value of the specified field.
+     * Gets the greatest maximum value of the specified field. This returns the
+     * biggest value that {@code get} can return for the specified field.
      * 
      * @param field
-     *            the field
-     * @return the greatest maximum value of the specified field
+     *            the field.
+     * @return the greatest maximum value of the specified field.
      */
     abstract public int getMaximum(int field);
 
     /**
      * Gets the minimal days in the first week of the year.
      * 
-     * @return the minimal days in the first week of the year
+     * @return the minimal days in the first week of the year.
      */
     public int getMinimalDaysInFirstWeek() {
         return minimalDaysInFirstWeek;
     }
 
     /**
-     * Gets the smallest minimum value of the specified field.
+     * Gets the smallest minimum value of the specified field. this returns the
+     * smallest value thet {@code get} can return for the specified field.
      * 
      * @param field
-     *            the field
-     * @return the smallest minimum value of the specified field
+     *            the field number.
+     * @return the smallest minimum value of the specified field.
      */
     abstract public int getMinimum(int field);
 
     /**
-     * Gets the time of this Calendar as a Date object.
+     * Gets the time of this {@code Calendar} as a {@code Date} object.
      * 
-     * @return a new Date initialized to the time of this Calendar
+     * @return a new {@code Date} initialized to the time of this {@code Calendar}.
      * 
-     * @exception IllegalArgumentException
-     *                when the time is not set and the time cannot be computed
-     *                from the current field values
+     * @throws IllegalArgumentException
+     *                if the time is not set and the time cannot be computed
+     *                from the current field values.
      */
     public final Date getTime() {
         return new Date(getTimeInMillis());
     }
 
     /**
-     * Computes the time from the fields if required and answers the time.
+     * Computes the time from the fields if required and returns the time.
      * 
-     * @return the time of this Calendar
+     * @return the time of this {@code Calendar}.
      * 
-     * @exception IllegalArgumentException
-     *                when the time is not set and the time cannot be computed
-     *                from the current field values
+     * @throws IllegalArgumentException
+     *                if the time is not set and the time cannot be computed
+     *                from the current field values.
      */
     public long getTimeInMillis() {
         if (!isTimeSet) {
@@ -509,19 +1070,19 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Gets the timezone of this Calendar.
+     * Gets the timezone of this {@code Calendar}.
      * 
-     * @return the timezone used by this Calendar
+     * @return the {@code TimeZone} used by this {@code Calendar}.
      */
     public TimeZone getTimeZone() {
         return zone;
     }
 
     /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
+     * Returns an integer hash code for the receiver. Objects which are equal
+     * return the same value for this method.
      * 
-     * @return the receiver's hash
+     * @return the receiver's hash.
      * 
      * @see #equals
      */
@@ -535,44 +1096,44 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Gets the value of the specified field without recomputing.
      * 
      * @param field
-     *            the field
-     * @return the value of the specified field
+     *            the field.
+     * @return the value of the specified field.
      */
     protected final int internalGet(int field) {
         return fields[field];
     }
 
     /**
-     * Answers if this Calendar accepts field values which are outside the valid
+     * Returns if this {@code Calendar} accepts field values which are outside the valid
      * range for the field.
      * 
-     * @return true if this Calendar is lenient, false otherwise
+     * @return {@code true} if this {@code Calendar} is lenient, {@code false} otherwise.
      */
     public boolean isLenient() {
         return lenient;
     }
 
     /**
-     * Answers if the specified field is set.
+     * Returns whether the specified field is set.
      * 
      * @param field
-     *            a calendar field
-     * @return true if the specified field is set, false otherwise
+     *            a {@code Calendar} field number.
+     * @return {@code true} if the specified field is set, {@code false} otherwise.
      */
     public final boolean isSet(int field) {
         return isSet[field];
     }
 
     /**
-     * Adds the specified amount the specified field and wrap the value of the
-     * field when it goes beyond the maximum or minimum value for the current
-     * date. Other fields will be adjusted as required to maintain a consistent
-     * date.
+     * Adds the specified amount to the specified field and wraps the value of
+     * the field when it goes beyond the maximum or minimum value for the
+     * current date. Other fields will be adjusted as required to maintain a
+     * consistent date.
      * 
      * @param field
-     *            the field to roll
+     *            the field to roll.
      * @param value
-     *            the amount to add
+     *            the amount to add.
      */
     public void roll(int field, int value) {
         boolean increment = value >= 0;
@@ -589,9 +1150,9 @@ public abstract class Calendar implements Serializable, Cloneable,
      * date.
      * 
      * @param field
-     *            the field to roll
+     *            the number indicating the field to roll.
      * @param increment
-     *            true to increment the field, false to decrement
+     *            {@code true} to increment the field, {@code false} to decrement.
      */
     abstract public void roll(int field, boolean increment);
 
@@ -599,9 +1160,9 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Sets a field to the specified value.
      * 
      * @param field
-     *            the Calendar field to modify
+     *            the code indicating the {@code Calendar} field to modify.
      * @param value
-     *            the value
+     *            the value.
      */
     public void set(int field, int value) {
         fields[field] = value;
@@ -619,14 +1180,15 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Sets the year, month and day of the month fields.
+     * Sets the year, month and day of the month fields. Other fields are not
+     * changed.
      * 
      * @param year
-     *            the year
+     *            the year.
      * @param month
-     *            the month
+     *            the month.
      * @param day
-     *            the day of the month
+     *            the day of the month.
      */
     public final void set(int year, int month, int day) {
         set(YEAR, year);
@@ -636,17 +1198,18 @@ public abstract class Calendar implements Serializable, Cloneable,
 
     /**
      * Sets the year, month, day of the month, hour of day and minute fields.
-     * 
+     * Other fields are not changed.
+     *
      * @param year
-     *            the year
+     *            the year.
      * @param month
-     *            the month
+     *            the month.
      * @param day
-     *            the day of the month
+     *            the day of the month.
      * @param hourOfDay
-     *            the hour of day
+     *            the hour of day.
      * @param minute
-     *            the minute
+     *            the minute.
      */
     public final void set(int year, int month, int day, int hourOfDay,
             int minute) {
@@ -657,20 +1220,20 @@ public abstract class Calendar implements Serializable, Cloneable,
 
     /**
      * Sets the year, month, day of the month, hour of day, minute and second
-     * fields.
+     * fields. Other fields are not changed.
      * 
      * @param year
-     *            the year
+     *            the year.
      * @param month
-     *            the month
+     *            the month.
      * @param day
-     *            the day of the month
+     *            the day of the month.
      * @param hourOfDay
-     *            the hour of day
+     *            the hour of day.
      * @param minute
-     *            the minute
+     *            the minute.
      * @param second
-     *            the second
+     *            the second.
      */
     public final void set(int year, int month, int day, int hourOfDay,
             int minute, int second) {
@@ -679,21 +1242,21 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Sets the first day of the week for this Calendar.
+     * Sets the first day of the week for this {@code Calendar}.
      * 
      * @param value
-     *            a Calendar day of the week
+     *            a {@code Calendar} day of the week.
      */
     public void setFirstDayOfWeek(int value) {
         firstDayOfWeek = value;
     }
 
     /**
-     * Sets this Calendar to accept field values which are outside the valid
+     * Sets this {@code Calendar} to accept field values which are outside the valid
      * range for the field.
      * 
      * @param value
-     *            a boolean value
+     *            a boolean value.
      */
     public void setLenient(boolean value) {
         lenient = value;
@@ -703,27 +1266,27 @@ public abstract class Calendar implements Serializable, Cloneable,
      * Sets the minimal days in the first week of the year.
      * 
      * @param value
-     *            the minimal days in the first week of the year
+     *            the minimal days in the first week of the year.
      */
     public void setMinimalDaysInFirstWeek(int value) {
         minimalDaysInFirstWeek = value;
     }
 
     /**
-     * Sets the time of this Calendar.
+     * Sets the time of this {@code Calendar}.
      * 
      * @param date
-     *            a Date object
+     *            a {@code Date} object.
      */
     public final void setTime(Date date) {
         setTimeInMillis(date.getTime());
     }
 
     /**
-     * Sets the time of this Calendar.
+     * Sets the time of this {@code Calendar}.
      * 
      * @param milliseconds
-     *            the time as the number of milliseconds since Jan. 1, 1970
+     *            the time as the number of milliseconds since Jan. 1, 1970.
      */
     public void setTimeInMillis(long milliseconds) {
         if (!isTimeSet || !areFieldsSet || time != milliseconds) {
@@ -735,10 +1298,10 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Sets the timezone used by this Calendar.
+     * Sets the {@code TimeZone} used by this Calendar.
      * 
      * @param timezone
-     *            a TimeZone
+     *            a {@code TimeZone}.
      */
     public void setTimeZone(TimeZone timezone) {
         zone = timezone;
@@ -746,9 +1309,9 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Answers the string representation of this Calendar.
+     * Returns the string representation of this {@code Calendar}.
      * 
-     * @return the string representation of this Calendar
+     * @return the string representation of this {@code Calendar}.
      */
     @Override
     @SuppressWarnings("nls")
@@ -776,18 +1339,18 @@ public abstract class Calendar implements Serializable, Cloneable,
     }
 
     /**
-     * Compares the times of the two Calendars, which represent the milliseconds
+     * Compares the times of the two {@code Calendar}, which represent the milliseconds
      * from the January 1, 1970 00:00:00.000 GMT (Gregorian).
      * 
      * @param anotherCalendar
-     *            another calendar that is compared with.
-     * @return 0 if the times of the two calendar are equal, -1 if the time of
-     *         this calendar is before the other one, 1 if the time of this
-     *         calendar is after the other one.
+     *            another calendar that this one is compared with.
+     * @return 0 if the times of the two {@code Calendar}s are equal, -1 if the time of
+     *         this {@code Calendar} is before the other one, 1 if the time of this
+     *         {@code Calendar} is after the other one.
      * @throws NullPointerException
-     *             if the argument of calendar is null.
+     *             if the argument is null.
      * @throws IllegalArgumentException
-     *             if the argument of the calendar does not include a valid time
+     *             if the argument does not include a valid time
      *             value.
      */
     public int compareTo(Calendar anotherCalendar) {

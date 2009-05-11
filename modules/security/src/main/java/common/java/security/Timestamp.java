@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.Serializable;
@@ -29,14 +24,11 @@ import java.security.cert.CertPath;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref 
+ * {@code Timestamp} represents a signed time stamp. {@code Timestamp} is
+ * immutable.
  */
-
 public final class Timestamp implements Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = -5502683707821851294L;
 
     private Date timestamp;
@@ -47,7 +39,16 @@ public final class Timestamp implements Serializable {
     private transient int hash;
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Constructs a new instance of {@code Timestamp} with the specified {@code
+     * timestamp} and the given certificate path.
+     *
+     * @param timestamp
+     *            date and time.
+     * @param signerCertPath
+     *            the certificate path.
+     * @throws NullPointerException
+     *             if {@code timestamp} is {@code null} or if {@code
+     *             signerCertPath} is {@code null}.
      */
     public Timestamp(Date timestamp, CertPath signerCertPath) {
         if (timestamp == null) {
@@ -62,7 +63,18 @@ public final class Timestamp implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Compares the specified object with this {@code Timestamp} for equality
+     * and returns {@code true} if the specified object is equal, {@code false}
+     * otherwise. The given object is equal to this {@code Timestamp}, if it is
+     * an instance of {@code Timestamp}, the two timestamps have an equal date
+     * and time and their certificate paths are equal.
+     *
+     * @param obj
+     *            object to be compared for equality with this {@code
+     *            Timestamp}.
+     * @return {@code true} if the specified object is equal to this {@code
+     *         Timestamp}, otherwise {@code false}.
+     * @see #hashCode
      */
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -77,21 +89,31 @@ public final class Timestamp implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Returns the certificate path of this {@code Timestamp}.
+     *
+     * @return the certificate path of this {@code Timestamp}.
      */
     public CertPath getSignerCertPath() {
         return signerCertPath;
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Returns the date and time of this {@code Timestamp}.
+     *
+     * @return the date and time of this {@code Timestamp}.
      */
     public Date getTimestamp() {
         return (Date) timestamp.clone();
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Returns the hash code value for this {@code Timestamp}. Returns the same
+     * hash code for {@code Timestamp}s that are equal to each other as
+     * required by the general contract of {@link Object#hashCode}.
+     *
+     * @return the hash code value for this {@code Timestamp}.
+     * @see Object#equals(Object)
+     * @see Timestamp#equals(Object)
      */
     public int hashCode() {
         if (hash == 0) {
@@ -101,7 +123,10 @@ public final class Timestamp implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Returns a string containing a concise, human-readable description of this
+     * {@code Timestamp}.
+     *
+     * @return a printable representation for this {@code Timestamp}.
      */
     public String toString() {
         StringBuffer buf = new StringBuffer(256);

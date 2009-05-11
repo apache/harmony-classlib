@@ -23,9 +23,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * TreeMap is an implementation of SortedMap. All optional operations are
- * supported, adding and removing. The values can be any objects. The keys can
- * be any objects which are comparable to each other either using their natural
+ * TreeMap is an implementation of SortedMap. All optional operations (adding
+ * and removing) are supported. The values can be any objects. The keys can be
+ * any objects which are comparable to each other either using their natural
  * order or a specified Comparator.
  *
  * @since 1.2
@@ -958,38 +958,43 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Constructs a new empty instance of spec.TreeMap.
+     * Constructs a new empty {@code TreeMap} instance.
      */
     public TreeMap() {
     }
 
     /**
-     * Constructs a new empty instance of spec.TreeMap which uses the specified
-     * Comparator.
+     * Constructs a new empty {@code TreeMap} instance with the specified
+     * comparator.
      *
-     * @param comparator the Comparator
+     * @param comparator
+     *            the comparator to compare keys with.
      */
     public TreeMap(Comparator<? super K> comparator) {
         this.comparator = comparator;
     }
 
     /**
-     * Constructs a new instance of spec.TreeMap containing the mappings from the
-     * specified Map and using the natural ordering.
+     * Constructs a new {@code TreeMap} instance containing the mappings from
+     * the specified map and using natural ordering.
      *
-     * @param map the mappings to add
-     * @throws ClassCastException when a key in the Map does not implement the Comparable
-     *                            interface, or they keys in the Map cannot be compared
+     * @param map
+     *            the mappings to add.
+     * @throws ClassCastException
+     *             if a key in the specified map does not implement the
+     *             Comparable interface, or if the keys in the map cannot be
+     *             compared.
      */
     public TreeMap(Map<? extends K, ? extends V> map) {
         putAll(map);
     }
 
     /**
-     * Constructs a new instance of spec.TreeMap containing the mappings from the
-     * specified SortedMap and using the same Comparator.
+     * Constructs a new {@code TreeMap} instance containing the mappings from
+     * the specified SortedMap and using the same comparator.
      *
-     * @param map the mappings to add
+     * @param map
+     *            the mappings to add.
      */
     public TreeMap(SortedMap<K, ? extends V> map) {
         this(map.comparator());
@@ -1019,10 +1024,10 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Removes all mappings from this spec.TreeMap, leaving it empty.
+     * Removes all mappings from this TreeMap, leaving it empty.
      *
-     * @see Map#isEmpty
-     * @see #size
+     * @see Map#isEmpty()
+     * @see #size()
      */
     @Override
     public void clear() {
@@ -1032,10 +1037,10 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a new spec.TreeMap with the same mappings, size and comparator as this
-     * spec.TreeMap.
+     * Returns a new {@code TreeMap} with the same mappings, size and comparator
+     * as this instance.
      *
-     * @return a shallow copy of this spec.TreeMap
+     * @return a shallow copy of this instance.
      * @see java.lang.Cloneable
      */
     @SuppressWarnings("unchecked")
@@ -1077,23 +1082,27 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers the Comparator used to compare elements in this spec.TreeMap.
+     * Returns the comparator used to compare elements in this map.
      *
-     * @return a Comparator or null if the natural ordering is used
+     * @return the comparator or {@code null} if the natural ordering is used.
      */
     public Comparator<? super K> comparator() {
         return comparator;
     }
 
     /**
-     * Searches this spec.TreeMap for the specified key.
+     * Returns whether this map contains the specified key.
      *
-     * @param key the object to search for
-     * @return true if <code>key</code> is a key of this spec.TreeMap, false
-     *         otherwise
-     * @throws ClassCastException   when the key cannot be compared with the keys in this
-     *                              spec.TreeMap
-     * @throws NullPointerException when the key is null and the comparator cannot handle null
+     * @param key
+     *            the key to search for.
+     * @return {@code true} if this map contains the specified key,
+     *         {@code false} otherwise.
+     * @throws ClassCastException
+     *             if the specified key cannot be compared with the keys in this
+     *             map.
+     * @throws NullPointerException
+     *             if the specified key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -1138,11 +1147,12 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Searches this spec.TreeMap for the specified value.
+     * Returns whether this map contains the specified value.
      *
-     * @param value the object to search for
-     * @return true if <code>value</code> is a value of this spec.TreeMap, false
-     *         otherwise
+     * @param value
+     *            the value to search for.
+     * @return {@code true} if this map contains the specified value,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -1177,11 +1187,12 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a Set of the mappings contained in this spec.TreeMap. Each element in
-     * the set is a Map.Entry. The set is backed by this spec.TreeMap so changes to
-     * one are reflected by the other. The set does not support adding.
+     * Returns a set containing all of the mappings in this map. Each mapping is
+     * an instance of {@link Map.Entry}. As the set is backed by this map,
+     * changes in one will be reflected in the other. It does not support adding
+     * operations.
      *
-     * @return a Set of the mappings
+     * @return a set of the mappings.
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -1230,10 +1241,11 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers the first sorted key in this spec.TreeMap.
+     * Returns the first key in this map.
      *
-     * @return the first sorted key
-     * @throws NoSuchElementException when this spec.TreeMap is empty
+     * @return the first key in this map.
+     * @throws NoSuchElementException
+     *                if this map is empty.
      */
     public K firstKey() {
         if (root != null) {
@@ -1245,13 +1257,16 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
 
     /**
-     * Answers the value of the mapping with the specified key.
+     * Returns the value of the mapping with the specified key.
      *
-     * @param key the key
-     * @return the value of the mapping with the specified key
-     * @throws ClassCastException   when the key cannot be compared with the keys in this
-     *                              spec.TreeMap
-     * @throws NullPointerException when the key is null and the comparator cannot handle null
+     * @param key
+     *            the key.
+     * @return the value of the mapping with the specified key.
+     * @throws ClassCastException
+     *             if the key cannot be compared with the keys in this map.
+     * @throws NullPointerException
+     *             if the key is {@code null} and the comparator cannot handle
+     *             {@code null}.
      */
     @Override
     public V get(Object key) {
@@ -1301,16 +1316,25 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a SortedMap of the specified portion of this spec.TreeMap which
-     * contains keys less than the end key. The returned SortedMap is backed by
-     * this spec.TreeMap so changes to one are reflected by the other.
+     * Returns a sorted map over a range of this sorted map with all keys that
+     * are less than the specified {@code endKey}. Changes to the returned
+     * sorted map are reflected in this sorted map and vice versa.
+     * <p>
+     * Note: The returned map will not allow an insertion of a key outside the
+     * specified range.
      *
-     * @param endKey the end key
-     * @return a sub-map where the keys are less than <code>endKey</code>
-     * @throws ClassCastException   when the end key cannot be compared with the keys in this
-     *                              spec.TreeMap
-     * @throws NullPointerException when the end key is null and the comparator cannot handle
-     *                              null
+     * @param endKey
+     *            the high boundary of the range specified.
+     * @return a sorted map where the keys are less than {@code endKey}.
+     * @throws ClassCastException
+     *             if the specified key cannot be compared with the keys in this
+     *             map.
+     * @throws NullPointerException
+     *             if the specified key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
+     * @throws IllegalArgumentException
+     *             if this map is itself a sorted map over a range of another
+     *             map and the specified key is outside of its range.
      */
     public SortedMap<K, V> headMap(K endKey) {
         // Check for errors
@@ -1323,11 +1347,11 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a Set of the keys contained in this spec.TreeMap. The set is backed by
-     * this spec.TreeMap so changes to one are reflected by the other. The set does
-     * not support adding.
+     * Returns a set of the keys contained in this map. The set is backed by
+     * this map so changes to one are reflected by the other. The set does not
+     * support adding.
      *
-     * @return a Set of the keys
+     * @return a set of the keys.
      */
     @Override
     public Set<K> keySet() {
@@ -1367,10 +1391,11 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answer the last sorted key in this spec.TreeMap.
+     * Returns the last key in this map.
      *
-     * @return the last sorted key
-     * @throws NoSuchElementException when this spec.TreeMap is empty
+     * @return the last key in this map.
+     * @throws NoSuchElementException
+     *             if this map is empty.
      */
     public K lastKey() {
         if (root != null) {
@@ -1403,13 +1428,18 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     /**
      * Maps the specified key to the specified value.
      *
-     * @param key   the key
-     * @param value the value
-     * @return the value of any previous mapping with the specified key or null
-     *         if there was no mapping
-     * @throws ClassCastException   when the key cannot be compared with the keys in this
-     *                              spec.TreeMap
-     * @throws NullPointerException when the key is null and the comparator cannot handle null
+     * @param key
+     *            the key.
+     * @param value
+     *            the value.
+     * @return the value of any previous mapping with the specified key or
+     *         {@code null} if there was no mapping.
+     * @throws ClassCastException
+     *             if the specified key cannot be compared with the keys in this
+     *             map.
+     * @throws NullPointerException
+     *             if the specified key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
      */
     @Override
     public V put(K key, V value) {
@@ -1776,13 +1806,18 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
 
     /**
-     * Copies every mapping in the specified Map to this spec.TreeMap.
+     * Copies all the mappings in the given map to this map. These mappings will
+     * replace all mappings that this map had for any of the keys currently in
+     * the given map.
      *
-     * @param map the Map to copy mappings from
-     * @throws ClassCastException   when a key in the Map cannot be compared with the keys in
-     *                              this spec.TreeMap
-     * @throws NullPointerException when a key in the Map is null and the comparator cannot
-     *                              handle null
+     * @param map
+     *            the map to copy mappings from.
+     * @throws ClassCastException
+     *             if a key in the specified map cannot be compared with the
+     *             keys in this map.
+     * @throws NullPointerException
+     *             if a key in the specified map is {@code null} and the
+     *             comparator cannot handle {@code null} keys.
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
@@ -1790,14 +1825,18 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Removes a mapping with the specified key from this spec.TreeMap.
+     * Removes the mapping with the specified key from this map.
      *
-     * @param key the key of the mapping to remove
-     * @return the value of the removed mapping or null if key is not a key in
-     *         this spec.TreeMap
-     * @throws ClassCastException   when the key cannot be compared with the keys in this
-     *                              spec.TreeMap
-     * @throws NullPointerException when the key is null and the comparator cannot handle null
+     * @param key
+     *            the key of the mapping to remove.
+     * @return the value of the removed mapping or {@code null} if no mapping
+     *         for the specified key was found.
+     * @throws ClassCastException
+     *             if the specified key cannot be compared with the keys in this
+     *             map.
+     * @throws NullPointerException
+     *             if the specified key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
      */
     @Override
     public V remove(Object key) {
@@ -2213,9 +2252,9 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
 
     /**
-     * Answers the number of mappings in this spec.TreeMap.
+     * Returns the number of mappings in this map.
      *
-     * @return the number of mappings in this spec.TreeMap
+     * @return the number of mappings in this map.
      */
     @Override
     public int size() {
@@ -2223,19 +2262,29 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a SortedMap of the specified portion of this spec.TreeMap which
-     * contains keys greater or equal to the start key but less than the end
-     * key. The returned SortedMap is backed by this spec.TreeMap so changes to one
-     * are reflected by the other.
+     * Returns a sorted map over a range of this sorted map with all keys
+     * greater than or equal to the specified {@code startKey} and less than the
+     * specified {@code endKey}. Changes to the returned sorted map are
+     * reflected in this sorted map and vice versa.
+     * <p>
+     * Note: The returned map will not allow an insertion of a key outside the
+     * specified range.
      *
-     * @param startKey the start key
-     * @param endKey   the end key
-     * @return a sub-map where the keys are greater or equal to
-     *         <code>startKey</code> and less than <code>endKey</code>
-     * @throws ClassCastException   when the start or end key cannot be compared with the keys
-     *                              in this spec.TreeMap
-     * @throws NullPointerException when the start or end key is null and the comparator
-     *                              cannot handle null
+     * @param startKey
+     *            the low boundary of the range (inclusive).
+     * @param endKey
+     *            the high boundary of the range (exclusive),
+     * @return a sorted map with the key from the specified range.
+     * @throws ClassCastException
+     *             if the start or end key cannot be compared with the keys in
+     *             this map.
+     * @throws NullPointerException
+     *             if the start or end key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
+     * @throws IllegalArgumentException
+     *             if the start key is greater than the end key, or if this map
+     *             is itself a sorted map over a range of another sorted map and
+     *             the specified range is outside of its range.
      */
     public SortedMap<K, V> subMap(K startKey, K endKey) {
         if (comparator == null) {
@@ -2251,17 +2300,26 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a SortedMap of the specified portion of this spec.TreeMap which
-     * contains keys greater or equal to the start key. The returned SortedMap
-     * is backed by this spec.TreeMap so changes to one are reflected by the other.
+     * Returns a sorted map over a range of this sorted map with all keys that
+     * are greater than or equal to the specified {@code startKey}. Changes to
+     * the returned sorted map are reflected in this sorted map and vice versa.
+     * <p>
+     * Note: The returned map will not allow an insertion of a key outside the
+     * specified range.
      *
-     * @param startKey the start key
-     * @return a sub-map where the keys are greater or equal to
-     *         <code>startKey</code>
-     * @throws ClassCastException   when the start key cannot be compared with the keys in
-     *                              this spec.TreeMap
-     * @throws NullPointerException when the start key is null and the comparator cannot
-     *                              handle null
+     * @param startKey
+     *            the low boundary of the range specified.
+     * @return a sorted map where the keys are greater or equal to
+     *         {@code startKey}.
+     * @throws ClassCastException
+     *             if the specified key cannot be compared with the keys in this
+     *             map.
+     * @throws NullPointerException
+     *             if the specified key is {@code null} and the comparator
+     *             cannot handle {@code null} keys.
+     * @throws IllegalArgumentException
+     *             if this map itself a sorted map over a range of another map
+     *             and the specified key is outside of its range.
      */
     public SortedMap<K, V> tailMap(K startKey) {
         // Check for errors
@@ -2274,11 +2332,23 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
     }
 
     /**
-     * Answers a Collection of the values contained in this spec.TreeMap. The
-     * collection is backed by this spec.TreeMap so changes to one are reflected by
-     * the other. The collection does not support adding.
+     * Returns a collection of the values contained in this map. The collection
+     * is backed by this map so changes to one are reflected by the other. The
+     * collection supports remove, removeAll, retainAll and clear operations,
+     * and it does not support add or addAll operations.
+     * <p>
+     * This method returns a collection which is the subclass of
+     * AbstractCollection. The iterator method of this subclass returns a
+     * "wrapper object" over the iterator of map's entrySet(). The {@code size}
+     * method wraps the map's size method and the {@code contains} method wraps
+     * the map's containsValue method.
+     * <p>
+     * The collection is created when this method is called for the first time
+     * and returned in response to all subsequent calls. This method may return
+     * different collections when multiple concurrent calls occur, since no
+     * synchronization is performed.
      *
-     * @return a Collection of the values
+     * @return a collection of the values contained in this map.
      */
     @Override
     public Collection<V> values() {

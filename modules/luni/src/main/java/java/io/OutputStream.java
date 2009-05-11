@@ -20,8 +20,18 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * OutputStream is an abstract class for all byte output streams. It provides
- * basic method implementations for writing bytes to a stream.
+ * The base class for all output streams. An output stream is a means of writing
+ * data to a target in a byte-wise manner. Most output streams expect the
+ * {@link #flush()} method to be called before closing the stream, to ensure all
+ * data is actually written through.
+ * <p>
+ * This abstract class does not provide a fully working implementation, so it
+ * needs to be subclassed, and at least the {@link #write(int)} method needs to
+ * be overridden. Overriding some of the non-abstract methods is also often
+ * advised, since it might result in higher efficiency.
+ * <p>
+ * Many specialized output streams for purposes like writing to a file already
+ * exist in this package.
  * 
  * @see InputStream
  */
@@ -35,58 +45,57 @@ public abstract class OutputStream implements Closeable, Flushable {
     }
 
     /**
-     * Close this OutputStream. Concrete implementations of this class should
-     * free any resources during close. This implementation does nothing.
+     * Closes this stream. Implementations of this method should free any
+     * resources used by the stream. This implementation does nothing.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this OutputStream.
+     *             if an error occurs while closing this stream.
      */
     public void close() throws IOException {
         /* empty */
     }
 
     /**
-     * Flush this OutputStream. Concrete implementations of this class should
-     * ensure any pending writes to the underlying stream are written out when
-     * this method is envoked. This implementation does nothing.
+     * Flushes this stream. Implementations of this method should ensure that
+     * any buffered data is written out. This implementation does nothing.
      * 
      * @throws IOException
-     *             If an error occurs attempting to flush this OutputStream.
+     *             if an error occurs while flushing this stream.
      */
     public void flush() throws IOException {
         /* empty */
     }
 
     /**
-     * Writes the entire contents of the byte array <code>buffer</code> to
-     * this OutputStream.
+     * Writes the entire contents of the byte array {@code buffer} to this
+     * stream.
      * 
      * @param buffer
-     *            the buffer to be written
-     * 
+     *            the buffer to be written.
      * @throws IOException
-     *             If an error occurs attempting to write to this OutputStream.
+     *             if an error occurs while writing to this stream.
      */
     public void write(byte buffer[]) throws IOException {
         write(buffer, 0, buffer.length);
     }
 
     /**
-     * Writes <code>count</code> <code>bytes</code> from the byte array
-     * <code>buffer</code> starting at <code>offset</code> to this
-     * OutputStream.
+     * Writes {@code count} bytes from the byte array {@code buffer} starting at
+     * position {@code offset} to this stream.
      * 
      * @param buffer
-     *            the buffer to be written
+     *            the buffer to be written.
      * @param offset
-     *            offset in buffer to get bytes
+     *            the start position in {@code buffer} from where to get bytes.
      * @param count
-     *            number of bytes in buffer to write
-     * 
+     *            the number of bytes from {@code buffer} to write to this
+     *            stream.
      * @throws IOException
-     *             If an error occurs attempting to write to this OutputStream.
+     *             if an error occurs while writing to this stream.
      * @throws IndexOutOfBoundsException
-     *             If offset or count are outside of bounds.
+     *             if {@code offset < 0} or {@code count < 0}, or if
+     *             {@code offset + count} is bigger than the length of
+     *             {@code buffer}.
      */
     public void write(byte buffer[], int offset, int count) throws IOException {
         // avoid int overflow, check null buffer
@@ -100,14 +109,13 @@ public abstract class OutputStream implements Closeable, Flushable {
     }
 
     /**
-     * Writes the specified byte <code>oneByte</code> to this OutputStream.
-     * Only the low order byte of <code>oneByte</code> is written.
+     * Writes a single byte to this stream. Only the least significant byte of
+     * the integer {@code oneByte} is written to the stream.
      * 
      * @param oneByte
-     *            the byte to be written
-     * 
+     *            the byte to be written.
      * @throws IOException
-     *             If an error occurs attempting to write to this OutputStream.
+     *             if an error occurs while writing to this stream.
      */
     public abstract void write(int oneByte) throws IOException;
 }

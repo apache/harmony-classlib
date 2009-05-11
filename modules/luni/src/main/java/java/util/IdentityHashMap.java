@@ -23,15 +23,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * IdentityHashMap
- * 
- * This is a variant on HashMap which tests equality by reference instead of by
- * value. Basically, keys and values are compared for equality by checking if
- * their references are equal rather than by calling the "equals" function.
- * 
+ * IdentityHashMap is a variant on HashMap which tests equality by reference
+ * instead of equality by value. Basically, keys and values are compared for
+ * equality by checking if their references are equal rather than by calling the
+ * "equals" function.
+ * <p>
+ * <b>Note: This class intentionally violates the general contract of {@code
+ * Map}'s on comparing objects by their {@code equals} method.</b>
+ * <p>
  * IdentityHashMap uses open addressing (linear probing in particular) for
  * collision resolution. This is different from HashMap which uses Chaining.
- * 
+ * <p>
  * Like HashMap, IdentityHashMap is not thread safe, so access by multiple
  * threads must be synchronized by an external mechanism such as
  * Collections.synchronizedMap.
@@ -235,14 +237,14 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Create an IdentityHashMap with default maximum size
+     * Creates an IdentityHashMap with default expected maximum size.
      */
     public IdentityHashMap() {
         this(DEFAULT_MAX_SIZE);
     }
 
     /**
-     * Create an IdentityHashMap with the given maximum size parameter
+     * Creates an IdentityHashMap with the specified maximum size parameter.
      * 
      * @param maxSize
      *            The estimated maximum number of entries that will be put in
@@ -280,10 +282,10 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Create an IdentityHashMap using the given Map as initial values.
+     * Creates an IdentityHashMap using the given map as initial values.
      * 
      * @param map
-     *            A map of (key,value) pairs to copy into the IdentityHashMap
+     *            A map of (key,value) pairs to copy into the IdentityHashMap.
      */
     public IdentityHashMap(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : map.size() * 2);
@@ -296,13 +298,10 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Removes all elements from this Map, leaving it empty.
+     * Removes all elements from this map, leaving it empty.
      * 
-     * @exception UnsupportedOperationException
-     *                when removing from this Map is not supported
-     * 
-     * @see #isEmpty
-     * @see #size
+     * @see #isEmpty()
+     * @see #size()
      */
     @Override
     public void clear() {
@@ -314,11 +313,12 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Searches this Map for the specified key.
+     * Returns whether this map contains the specified key.
      * 
      * @param key
-     *            the object to search for
-     * @return true if <code>key</code> is a key of this Map, false otherwise
+     *            the key to search for.
+     * @return {@code true} if this map contains the specified key,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -331,13 +331,12 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Searches this Map for the specified value.
-     * 
+     * Returns whether this map contains the specified value.
      * 
      * @param value
-     *            the object to search for
-     * @return true if <code>value</code> is a value of this Map, false
-     *         otherwise
+     *            the value to search for.
+     * @return {@code true} if this map contains the specified value,
+     *         {@code false} otherwise.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -354,11 +353,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers the value of the mapping with the specified key.
+     * Returns the value of the mapping with the specified key.
      * 
      * @param key
-     *            the key
-     * @return the value of the mapping with the specified key
+     *            the key.
+     * @return the value of the mapping with the specified key.
      */
     @Override
     public V get(Object key) {
@@ -437,11 +436,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
      * Maps the specified key to the specified value.
      * 
      * @param key
-     *            the key
+     *            the key.
      * @param value
-     *            the value
-     * @return the value of any previous mapping with the specified key or null
-     *         if there was no mapping
+     *            the value.
+     * @return the value of any previous mapping with the specified key or
+     *         {@code null} if there was no such mapping.
      */
     @Override
     public V put(K key, V value) {
@@ -478,14 +477,14 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
     
     /**
-     * Copies all the mappings in the given map to this map. These mappings will
-     * replace all mappings that this map had for any of the keys currently in
-     * the given map.
+     * Copies all the mappings in the specified map to this map. These mappings
+     * will replace all mappings that this map had for any of the keys currently
+     * in the given map.
      * 
      * @param map
-     *            the Map to copy mappings from
+     *            the map to copy mappings from.
      * @throws NullPointerException
-     *             if the given map is null
+     *             if {@code map} is {@code null}.
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> map) {
@@ -516,12 +515,12 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Removes a mapping with the specified key from this IdentityHashMap.
+     * Removes the mapping with the specified key from this map.
      * 
      * @param key
-     *            the key of the mapping to remove
-     * @return the value of the removed mapping, or null if key is not a key in
-     *         this Map
+     *            the key of the mapping to remove.
+     * @return the value of the removed mapping, or {@code null} if no mapping
+     *         for the specified key was found.
      */
     @Override
     public V remove(Object key) {
@@ -576,12 +575,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a Set of the mappings contained in this IdentityHashMap. Each
-     * element in the set is a Map.Entry. The set is backed by this Map so
-     * changes to one are reflected by the other. The set does not support
-     * adding.
+     * Returns a set containing all of the mappings in this map. Each mapping is
+     * an instance of {@link Map.Entry}. As the set is backed by this map,
+     * changes in one will be reflected in the other.
      * 
-     * @return a Set of the mappings
+     * @return a set of the mappings.
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -589,11 +587,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a Set of the keys contained in this IdentityHashMap. The set is
-     * backed by this IdentityHashMap so changes to one are reflected by the
-     * other. The set does not support adding.
+     * Returns a set of the keys contained in this map. The set is backed by
+     * this map so changes to one are reflected by the other. The set does not
+     * support adding.
      * 
-     * @return a Set of the keys
+     * @return a set of the keys.
      */
     @Override
     public Set<K> keySet() {
@@ -638,11 +636,23 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a Collection of the values contained in this IdentityHashMap. The
-     * collection is backed by this IdentityHashMap so changes to one are
-     * reflected by the other. The collection does not support adding.
+     * Returns a collection of the values contained in this map. The collection
+     * is backed by this map so changes to one are reflected by the other. The
+     * collection supports remove, removeAll, retainAll and clear operations,
+     * and it does not support add or addAll operations.
+     * <p>
+     * This method returns a collection which is the subclass of
+     * AbstractCollection. The iterator method of this subclass returns a
+     * "wrapper object" over the iterator of map's entrySet(). The {@code size}
+     * method wraps the map's size method and the {@code contains} method wraps
+     * the map's containsValue method.
+     * <p>
+     * The collection is created when this method is called for the first time
+     * and returned in response to all subsequent calls. This method may return
+     * different collections when multiple concurrent calls occur, since no
+     * synchronization is performed.
      * 
-     * @return a Collection of the values
+     * @return a collection of the values contained in this map.
      */
     @Override
     public Collection<V> values() {
@@ -692,13 +702,14 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     /**
      * Compares this map with other objects. This map is equal to another map is
      * it represents the same set of mappings. With this map, two mappings are
-     * the same if both the key and the value are equal by reference.
-     * 
-     * When compared with a map that is not an IdentityHashMap, the equals
-     * method is not necessarily symmetric (a.equals(b) implies b.equals(a)) nor
+     * the same if both the key and the value are equal by reference. When
+     * compared with a map that is not an IdentityHashMap, the equals method is
+     * neither necessarily symmetric (a.equals(b) implies b.equals(a)) nor
      * transitive (a.equals(b) and b.equals(c) implies a.equals(c)).
      * 
-     * @return whether the argument object is equal to this object
+     * @param object
+     *            the object to compare to.
+     * @return whether the argument object is equal to this object.
      */
     @Override
     public boolean equals(Object object) {
@@ -728,11 +739,10 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a new IdentityHashMap with the same mappings and size as this
+     * Returns a new IdentityHashMap with the same mappings and size as this
      * one.
      * 
-     * @return a shallow copy of this IdentityHashMap
-     * 
+     * @return a shallow copy of this IdentityHashMap.
      * @see java.lang.Cloneable
      */
     @Override
@@ -745,11 +755,11 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers if this IdentityHashMap has no elements, a size of zero.
+     * Returns whether this IdentityHashMap has no elements.
      * 
-     * @return true if this IdentityHashMap has no elements, false otherwise
-     * 
-     * @see #size
+     * @return {@code true} if this IdentityHashMap has no elements,
+     *         {@code false} otherwise.
+     * @see #size()
      */
     @Override
     public boolean isEmpty() {
@@ -757,9 +767,9 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers the number of mappings in this IdentityHashMap.
+     * Returns the number of mappings in this IdentityHashMap.
      * 
-     * @return the number of mappings in this IdentityHashMap
+     * @return the number of mappings in this IdentityHashMap.
      */
     @Override
     public int size() {

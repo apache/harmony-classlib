@@ -18,26 +18,27 @@
 package java.lang;
 
 /**
- * This runtime exception is thrown when a "string to number" conversion routine
- * is passed an invalid value.
+ * Thrown when an invalid value is passed to a string-to-number conversion
+ * method.
  */
-public class NumberFormatException extends IllegalArgumentException {
+public class NumberFormatException extends java.lang.IllegalArgumentException {
 
     private static final long serialVersionUID = -2848938806368998894L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * Constructs a new {@code NumberFormatException} that includes the current
+     * stack trace.
      */
     public NumberFormatException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
+     * Constructs a new {@code NumberFormatException} with the current stack
+     * trace and the specified detail message.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for this exception.
      */
     public NumberFormatException(String detailMessage) {
         super(detailMessage);

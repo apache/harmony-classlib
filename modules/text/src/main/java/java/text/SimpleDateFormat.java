@@ -30,12 +30,277 @@ import java.util.Vector;
 import org.apache.harmony.text.internal.nls.Messages;
 
 /**
- * SimpleDateFormat is used to format and parse Gregorian calendar dates and
- * times based on a pattern of date and time fields. Each date and time field is
- * specified in the pattern by a specific character. The characters used can be
- * either localized or non-localized. For some fields, which have both numeric
- * and text representations or abbreviated as well as full names, the number of
- * grouped characters specifies how the field is formatted or parsed.
+ * A concrete class for formatting and parsing dates in a locale-sensitive
+ * manner. It allows for formatting (date to text), parsing (text to date) and
+ * normalization.
+ * <p>
+ * {@code SimpleDateFormat} allows you to start by choosing any user-defined
+ * patterns for date-time formatting. However, you are encouraged to create a
+ * date-time formatter with either {@code getTimeInstance}, {@code
+ * getDateInstance}, or {@code getDateTimeInstance} in {@code DateFormat}. Each
+ * of these class methods can return a date/time formatter initialized with a
+ * default format pattern. You may modify the format pattern using the {@code
+ * applyPattern} methods as desired. For more information on using these
+ * methods, see {@link DateFormat}.
+ * <h4>Time Format Syntax</h4>
+ * <p>
+ * To specify the time format, use a <em>time pattern</em> string. In this
+ * pattern, all ASCII letters are reserved as pattern letters, which are defined
+ * as follows:
+ * <table border=0 cellspacing=3 cellpadding=0>
+ * <tr bgcolor="#ccccff">
+ * <th>Symbol</th>
+ * <th>Meaning</th>
+ * <th>Presentation</th>
+ * <th>Example</th>
+ * </tr>
+ * <tr valign=top>
+ * <td>G</td>
+ * <td>era designator</td>
+ * <td>(Text)</td>
+ * <td>AD</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>y</td>
+ * <td>year</td>
+ * <td>(Number)</td>
+ * <td>1996</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>M</td>
+ * <td>month in year</td>
+ * <td>(Text &amp; Number)</td>
+ * <td>July &amp; 07</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>d</td>
+ * <td>day in month</td>
+ * <td>(Number)</td>
+ * <td>10</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>h</td>
+ * <td>hour in am/pm (1&tilde;12)</td>
+ * <td>(Number)</td>
+ * <td>12</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>H</td>
+ * <td>hour in day (0&tilde;23)</td>
+ * <td>(Number)</td>
+ * <td>0</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>m</td>
+ * <td>minute in hour</td>
+ * <td>(Number)</td>
+ * <td>30</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>s</td>
+ * <td>second in minute</td>
+ * <td>(Number)</td>
+ * <td>55</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>S</td>
+ * <td>fractional second</td>
+ * <td>(Number)</td>
+ * <td>978</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>E</td>
+ * <td>day of week</td>
+ * <td>(Text)</td>
+ * <td>Tuesday</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>D</td>
+ * <td>day in year</td>
+ * <td>(Number)</td>
+ * <td>189</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>F</td>
+ * <td>day of week in month</td>
+ * <td>(Number)</td>
+ * <td>2 (2nd Wed in July)</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>w</td>
+ * <td>week in year</td>
+ * <td>(Number)</td>
+ * <td>27</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>W</td>
+ * <td>week in month</td>
+ * <td>(Number)</td>
+ * <td>2</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>a</td>
+ * <td>am/pm marker</td>
+ * <td>(Text)</td>
+ * <td>PM</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>k</td>
+ * <td>hour in day (1&tilde;24)</td>
+ * <td>(Number)</td>
+ * <td>24</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>K</td>
+ * <td>hour in am/pm (0&tilde;11)</td>
+ * <td>(Number)</td>
+ * <td>0</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>z</td>
+ * <td>time zone</td>
+ * <td>(Text)</td>
+ * <td>Pacific Standard Time</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>Z</td>
+ * <td>time zone (RFC 822)</td>
+ * <td>(Number)</td>
+ * <td>-0800</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>v</td>
+ * <td>time zone (generic)</td>
+ * <td>(Text)</td>
+ * <td>Pacific Time</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>V</td>
+ * <td>time zone (location)</td>
+ * <td>(Text)</td>
+ * <td>United States (Los Angeles)</td>
+ * </tr>
+ * <tr valign=top>
+ * <td>'</td>
+ * <td>escape for text</td>
+ * <td>(Delimiter)</td>
+ * <td>'Date='</td>
+ * </tr>
+ * <tr valign=top bgcolor="#eeeeff">
+ * <td>''</td>
+ * <td>single quote</td>
+ * <td>(Literal)</td>
+ * <td>'o''clock'</td>
+ * </tr>
+ * </table>
+ * <p>
+ * The count of pattern letters determines the format:
+ * <p>
+ * <strong>(Text)</strong>: 4 or more pattern letters &rarr; use the full form,
+ * less than 4 pattern letters &rarr; use a short or abbreviated form if one
+ * exists.
+ * <p>
+ * <strong>(Number)</strong>: the minimum number of digits. Shorter numbers are
+ * zero-padded to this amount. Year is handled specially; that is, if the count
+ * of 'y' is 2, the year will be truncated to 2 digits. (if "yyyy" produces
+ * "1997", "yy" produces "97".) Unlike other fields, fractional seconds are
+ * padded on the right with zero.
+ * <p>
+ * <strong>(Text & Number)</strong>: 3 or over, use text, otherwise use number.
+ * <p>
+ * Any characters in the pattern that are not in the ranges of ['a'..'z'] and
+ * ['A'..'Z'] will be treated as quoted text. For instance, characters like ':',
+ * '.', ' ', '#' and '@' will appear in the resulting time text even they are
+ * not embraced within single quotes.
+ * <p>
+ * A pattern containing any invalid pattern letter will result in an exception
+ * thrown during formatting or parsing.
+ * <h4>Examples Using the US Locale</h4> <blockquote>
+ * 
+ * <pre>
+ * Format Pattern                       Result
+ * --------------                       -------
+ * "yyyy.MM.dd G 'at' HH:mm:ss vvvv" &rarr;  1996.07.10 AD at 15:08:56 Pacific Time
+ * "EEE, MMM d, ''yy"                &rarr;  Wed, July 10, '96
+ * "h:mm a"                          &rarr;  12:08 PM
+ * "hh 'o''clock' a, zzzz"           &rarr;  12 o'clock PM, Pacific Daylight Time
+ * "K:mm a, vvv"                     &rarr;  0:00 PM, PT
+ * "yyyyy.MMMMM.dd GGG hh:mm aaa"    &rarr;  01996.July.10 AD 12:08 PM
+ * </pre>
+ * 
+ * </blockquote> <h4>Code Sample:</h4> <blockquote>
+ * 
+ * <pre>
+ * SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000, "PST");
+ * pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+ * pdt.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+ * 
+ * // Format the current time.
+ * SimpleDateFormat formatter = new SimpleDateFormat(
+ *         "yyyy.MM.dd G 'at' hh:mm:ss a zzz");
+ * Date currentTime_1 = new Date();
+ * String dateString = formatter.format(currentTime_1);
+ * 
+ * // Parse the previous string back into a Date.
+ * ParsePosition pos = new ParsePosition(0);
+ * Date currentTime_2 = formatter.parse(dateString, pos);
+ * </pre>
+ * 
+ * </blockquote>
+ * <p>
+ * In the example, the time value {@code currentTime_2} obtained from parsing
+ * will be equal to {@code currentTime_1}. However, they may not be equal if the
+ * am/pm marker 'a' is left out from the format pattern while the
+ * "hour in am/pm" pattern symbol is used. This information loss can happen when
+ * formatting the time in PM.
+ * <p>
+ * When parsing a date string using the abbreviated year pattern ("yy"), {@code
+ * SimpleDateFormat} must interpret the abbreviated year relative to some
+ * century. It does this by adjusting dates to be within 80 years before and 20
+ * years after the time the {@code SimpleDateFormat} instance is created. For
+ * example, using a pattern of "MM/dd/yy" and a {@code SimpleDateFormat}
+ * instance created on Jan 1, 1997, the string "01/11/12" would be interpreted
+ * as Jan 11, 2012 while the string "05/04/64" would be interpreted as May 4,
+ * 1964. During parsing, only strings consisting of exactly two digits, as
+ * defined by {@link java.lang.Character#isDigit(char)}, will be parsed into the
+ * default century. Any other numeric string, such as a one digit string, a
+ * three or more digit string, or a two digit string that isn't all digits (for
+ * example, "-1"), is interpreted literally. So "01/02/3" or "01/02/003" are
+ * parsed, using the same pattern, as Jan 2, 3 AD. Likewise, "01/02/-3" is
+ * parsed as Jan 2, 4 BC.
+ * <p>
+ * If the year pattern does not have exactly two 'y' characters, the year is
+ * interpreted literally, regardless of the number of digits. So using the
+ * pattern "MM/dd/yyyy", "01/11/12" parses to Jan 11, 12 A.D.
+ * <p>
+ * When numeric fields are adjacent directly, with no intervening delimiter
+ * characters, they constitute a run of adjacent numeric fields. Such runs are
+ * parsed specially. For example, the format "HHmmss" parses the input text
+ * "123456" to 12:34:56, parses the input text "12345" to 1:23:45, and fails to
+ * parse "1234". In other words, the leftmost field of the run is flexible,
+ * while the others keep a fixed width. If the parse fails anywhere in the run,
+ * then the leftmost field is shortened by one character, and the entire run is
+ * parsed again. This is repeated until either the parse succeeds or the
+ * leftmost field is one character in length. If the parse still fails at that
+ * point, the parse of the run fails.
+ * <p>
+ * For time zones that have no names, use the strings "GMT+hours:minutes" or
+ * "GMT-hours:minutes".
+ * <p>
+ * The calendar defines the first day of the week, the first week of the year,
+ * whether hours are zero based or not (0 vs. 12 or 24) and the time zone. There
+ * is one common decimal format to handle all the numbers; the digit count is
+ * handled programmatically according to the pattern.
+ * <h4>Synchronization</h4> Date formats are not synchronized. It is recommended
+ * to create separate format instances for each thread. If multiple threads
+ * access a format concurrently, it must be synchronized externally.
+ * 
+ * @see Calendar
+ * @see GregorianCalendar
+ * @see java.util.TimeZone
+ * @see DateFormat
+ * @see DateFormatSymbols
+ * @see DecimalFormat
  */
 public class SimpleDateFormat extends DateFormat {
 
@@ -54,8 +319,8 @@ public class SimpleDateFormat extends DateFormat {
     private transient com.ibm.icu.text.SimpleDateFormat icuFormat;
 
     /**
-     * Constructs a new SimpleDateFormat for formatting and parsing dates and
-     * times in the SHORT style for the default Locale.
+     * Constructs a new {@code SimpleDateFormat} for formatting and parsing
+     * dates and times in the {@code SHORT} style for the default locale.
      */
     public SimpleDateFormat() {
         this(Locale.getDefault());
@@ -65,29 +330,28 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Constructs a new SimpleDateFormat using the specified non-localized
-     * pattern and the DateFormatSymbols and Calendar for the default Locale.
+     * Constructs a new {@code SimpleDateFormat} using the specified
+     * non-localized pattern and the {@code DateFormatSymbols} and {@code
+     * Calendar} for the default locale.
      * 
      * @param pattern
-     *            the pattern
-     * 
-     * @exception NullPointerException
-     *                if a <code>null</code> value of <code>pattern</code>
-     *                is supplied.
-     * @exception IllegalArgumentException
-     *                if <code>pattern</code> is not considered to be useable
-     *                by this formatter.
+     *            the pattern.
+     * @throws NullPointerException
+     *            if the pattern is {@code null}.
+     * @throws IllegalArgumentException
+     *            if {@code pattern} is not considered to be usable by this
+     *            formatter.
      */
     public SimpleDateFormat(String pattern) {
         this(pattern, Locale.getDefault());
     }
     
     /**
-     * Validate the format character.
-     * 
+     * Validates the format character.
+     *
      * @param format
      *            the format character
-     * 
+     *
      * @throws IllegalArgumentException
      *             when the format character is invalid
      */
@@ -101,11 +365,11 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Validate the pattern.
-     * 
+     * Validates the pattern.
+     *
      * @param template
      *            the pattern to validate.
-     * 
+     *
      * @throws NullPointerException
      *             if the pattern is null
      * @throws IllegalArgumentException
@@ -162,18 +426,18 @@ public class SimpleDateFormat extends DateFormat {
     }
     
     /**
-     * Constructs a new SimpleDateFormat using the specified non-localized
-     * pattern and DateFormatSymbols and the Calendar for the default Locale.
-     * 
+     * Constructs a new {@code SimpleDateFormat} using the specified
+     * non-localized pattern and {@code DateFormatSymbols} and the {@code
+     * Calendar} for the default locale.
+     *
      * @param template
-     *            the pattern
+     *            the pattern.
      * @param value
-     *            the DateFormatSymbols
-     * 
-     * @exception NullPointerException
-     *                if the pattern is null
-     * @exception IllegalArgumentException
-     *                if the pattern is invalid
+     *            the DateFormatSymbols.
+     * @throws NullPointerException
+     *            if the pattern is {@code null}.
+     * @throws IllegalArgumentException
+     *            if the pattern is invalid.
      */
     public SimpleDateFormat(String template, DateFormatSymbols value) {
         this(Locale.getDefault());
@@ -195,18 +459,18 @@ public class SimpleDateFormat extends DateFormat {
     }
     
     /**
-     * Constructs a new SimpleDateFormat using the specified non-localized
-     * pattern and the DateFormatSymbols and Calendar for the specified Locale.
+     * Constructs a new {@code SimpleDateFormat} using the specified
+     * non-localized pattern and the {@code DateFormatSymbols} and {@code
+     * Calendar} for the specified locale.
      * 
      * @param template
-     *            the pattern
+     *            the pattern.
      * @param locale
-     *            the Locale
-     * 
-     * @exception NullPointerException
-     *                if the pattern is null
-     * @exception IllegalArgumentException
-     *                if the pattern is invalid
+     *            the locale.
+     * @throws NullPointerException
+     *            if the pattern is {@code null}.
+     * @throws IllegalArgumentException
+     *            if the pattern is invalid.
      */
     public SimpleDateFormat(String template, Locale locale) {
         this(locale);
@@ -234,11 +498,11 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Changes the pattern of this SimpleDateFormat to the specified pattern
+     * Changes the pattern of this simple date format to the specified pattern
      * which uses localized pattern characters.
      * 
      * @param template
-     *            the localized pattern
+     *            the localized pattern.
      */
     public void applyLocalizedPattern(String template) {
         icuFormat.applyLocalizedPattern(template);
@@ -246,29 +510,64 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Changes the pattern of this SimpleDateFormat to the specified pattern
+     * Changes the pattern of this simple date format to the specified pattern
      * which uses non-localized pattern characters.
      * 
      * @param template
-     *            the non-localized pattern
-     * 
-     * @exception NullPointerException
-     *                if the pattern is null
-     * @exception IllegalArgumentException
-     *                if the pattern is invalid
+     *            the non-localized pattern.
+     * @throws NullPointerException
+     *                if the pattern is {@code null}.
+     * @throws IllegalArgumentException
+     *                if the pattern is invalid.
      */
+    @SuppressWarnings("nls")
     public void applyPattern(String template) {
         validatePattern(template);
-        icuFormat.applyPattern(template);
+        /*
+         * ICU spec explicitly mentions that "ICU interprets a single 'y'
+         * differently than Java." We need to do a trick here to follow Java
+         * spec.
+         */
+        String templateForICU = patternForICU(template);
+        icuFormat.applyPattern(templateForICU);
         pattern = template;
     }
 
     /**
-     * Answers a new SimpleDateFormat with the same pattern and properties as
-     * this SimpleDateFormat.
+     * Converts the Java-spec pattern into an equivalent pattern used by ICU.
      * 
-     * @return a shallow copy of this SimpleDateFormat
+     * @param p
+     *            the Java-spec style pattern.
+     * @return the ICU-style pattern.
+     */
+    @SuppressWarnings("nls")
+    private String patternForICU(String p) {
+        String[] subPatterns = p.split("'");
+        boolean quote = false;
+        boolean first = true;
+        StringBuilder result = new StringBuilder();
+        for (String subPattern : subPatterns) {
+            if (!quote) {
+                // replace 'y' with 'yy' for ICU to follow Java spec
+                result.append((first ? "" : "'")
+                        + subPattern.replaceAll("(?<!y)y(?!y)", "yy"));
+                first = false;
+            } else {
+                result.append("'" + subPattern);
+            }
+            quote = !quote;
+        }
+        if (p.endsWith("'")) {
+            result.append("'");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns a new {@code SimpleDateFormat} with the same pattern and
+     * properties as this simple date format.
      * 
+     * @return a shallow copy of this simple date format.
      * @see java.lang.Cloneable
      */
     @Override
@@ -280,16 +579,15 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Compares the specified object to this SimpleDateFormat and answer if they
-     * are equal. The object must be an instance of SimpleDateFormat and have
-     * the same DateFormat properties, pattern, DateFormatSymbols, and creation
-     * year.
+     * Compares the specified object with this simple date format and indicates
+     * if they are equal. In order to be equal, {@code object} must be an
+     * instance of {@code SimpleDateFormat} and have the same {@code DateFormat}
+     * properties, pattern, {@code DateFormatSymbols} and creation year.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this SimpleDateFormat,
-     *         false otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this simple date
+     *         format; {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -306,19 +604,19 @@ public class SimpleDateFormat extends DateFormat {
     }
 
     /**
-     * Formats the specified object using the rules of this SimpleDateFormat and
-     * returns an AttributedCharacterIterator with the formatted Date and
-     * attributes.
+     * Formats the specified object using the rules of this simple date format
+     * and returns an {@code AttributedCharacterIterator} with the formatted
+     * date and attributes.
      * 
      * @param object
-     *            the object to format
-     * @return an AttributedCharacterIterator with the formatted date and
-     *         attributes
-     * 
-     * @exception NullPointerException
-     *                when the object is null
-     * @exception IllegalArgumentException
-     *                when the object cannot be formatted by this Format
+     *            the object to format.
+     * @return an {@code AttributedCharacterIterator} with the formatted date
+     *         and attributes.
+     * @throws NullPointerException
+     *            if the object is {@code null}.
+     * @throws IllegalArgumentException
+     *            if the object cannot be formatted by this simple date
+     *            format.
      */
     @Override
     public AttributedCharacterIterator formatToCharacterIterator(Object object) {
@@ -361,11 +659,11 @@ public class SimpleDateFormat extends DateFormat {
     /**
      * Formats the date.
      * <p>
-     * If the FieldPosition <code>field</code> is not null, and the field
+     * If the FieldPosition {@code field} is not null, and the field
      * specified by this FieldPosition is formatted, set the begin and end index
      * of the formatted field in the FieldPosition.
      * <p>
-     * If the Vector <code>fields</code> is not null, find fields of this
+     * If the Vector {@code fields} is not null, find fields of this
      * date, set FieldPositions with these fields, and add them to the fields
      * vector.
      * 
@@ -379,11 +677,9 @@ public class SimpleDateFormat extends DateFormat {
      * @param fields
      *            Vector used to store the FieldPositions for each field in this
      *            date
-     * 
      * @return the formatted Date
-     * 
-     * @exception IllegalArgumentException
-     *                when the object cannot be formatted by this Format
+     * @throws IllegalArgumentException
+     *            if the object cannot be formatted by this Format.
      */
     private StringBuffer formatImpl(Date date, StringBuffer buffer,
             FieldPosition field, Vector<FieldPosition> fields) {
@@ -450,7 +746,6 @@ public class SimpleDateFormat extends DateFormat {
 
         int beginPosition = buffer.length();
         Field dateFormatField = null;
-System.out.println("index:"+index);
         switch (index) {
             case ERA_FIELD:
                 dateFormatField = Field.ERA;
@@ -628,30 +923,98 @@ System.out.println("index:"+index);
     
 
     /**
-     * Formats the specified Date into the specified StringBuffer using the
-     * pattern of this SimpleDateFormat. If the field specified by the
-     * FieldPosition is formatted, set the begin and end index of the formatted
-     * field in the FieldPosition.
-     * 
+     * Formats the specified date as a string using the pattern of this date
+     * format and appends the string to the specified string buffer.
+     * <p>
+     * If the {@code field} member of {@code field} contains a value specifying
+     * a format field, then its {@code beginIndex} and {@code endIndex} members
+     * will be updated with the position of the first occurrence of this field
+     * in the formatted text.
+     *
      * @param date
-     *            the Date to format
+     *            the date to format.
      * @param buffer
-     *            the StringBuffer
-     * @param field
-     *            the FieldPosition
-     * @return the StringBuffer parameter <code>buffer</code>
-     * 
-     * @exception IllegalArgumentException
-     *                when there are invalid characters in the pattern
+     *            the target string buffer to append the formatted date/time to.
+     * @param fieldPos
+     *            on input: an optional alignment field; on output: the offsets
+     *            of the alignment field in the formatted text.
+     * @return the string buffer.
+     * @throws IllegalArgumentException
+     *             if there are invalid characters in the pattern.
      */
     @Override
     public StringBuffer format(Date date, StringBuffer buffer,
-            FieldPosition field) {
+            FieldPosition fieldPos) {
         icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(calendar
                 .getTimeZone().getID()));
-        return icuFormat.format(date, buffer, field);
+        // As ICU has its own implementation for DateFormat.Field, we need to
+        // pass an ICU instance of DateFormat.Field to the FieldPosition to get
+        // the begin and end index.
+        StringBuffer result = null;
+        Format.Field attribute = fieldPos.getFieldAttribute();
+        if (attribute instanceof DateFormat.Field) {
+            com.ibm.icu.text.DateFormat.Field icuAttribute = toICUField((DateFormat.Field) attribute);
+            int field = fieldPos.getField();
+            FieldPosition icuFieldPos = new FieldPosition(icuAttribute, field);
+            result = icuFormat.format(date, buffer, icuFieldPos);
+            fieldPos.setBeginIndex(icuFieldPos.getBeginIndex());
+            fieldPos.setEndIndex(icuFieldPos.getEndIndex());
+            return result;
+        }
+        return icuFormat.format(date, buffer, fieldPos);
     }
 
+    /**
+     * Maps the Java-spec date format field to the equivalent field in ICU.
+     * 
+     * @param attribute
+     *            the Java-spec definition of a date format field.
+     * @return the ICU definition of the same date format field.
+     */
+    private com.ibm.icu.text.DateFormat.Field toICUField(
+            DateFormat.Field attribute) {
+        com.ibm.icu.text.DateFormat.Field icuAttribute = null;
+
+        if (attribute == DateFormat.Field.ERA) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.ERA;
+        } else if (attribute == DateFormat.Field.YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.YEAR;
+        } else if (attribute == DateFormat.Field.MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MONTH;
+        } else if (attribute == DateFormat.Field.HOUR_OF_DAY0) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR_OF_DAY0;
+        } else if (attribute == DateFormat.Field.HOUR_OF_DAY1) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR_OF_DAY1;
+        } else if (attribute == DateFormat.Field.MINUTE) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MINUTE;
+        } else if (attribute == DateFormat.Field.SECOND) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.SECOND;
+        } else if (attribute == DateFormat.Field.MILLISECOND) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.MILLISECOND;
+        } else if (attribute == DateFormat.Field.DAY_OF_WEEK) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_WEEK;
+        } else if (attribute == DateFormat.Field.DAY_OF_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_MONTH;
+        } else if (attribute == DateFormat.Field.DAY_OF_YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_YEAR;
+        } else if (attribute == DateFormat.Field.DAY_OF_WEEK_IN_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.DAY_OF_WEEK_IN_MONTH;
+        } else if (attribute == DateFormat.Field.WEEK_OF_YEAR) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.WEEK_OF_YEAR;
+        } else if (attribute == DateFormat.Field.WEEK_OF_MONTH) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.WEEK_OF_MONTH;
+        } else if (attribute == DateFormat.Field.AM_PM) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.AM_PM;
+        } else if (attribute == DateFormat.Field.HOUR0) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR0;
+        } else if (attribute == DateFormat.Field.HOUR1) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.HOUR1;
+        } else if (attribute == DateFormat.Field.TIME_ZONE) {
+            icuAttribute = com.ibm.icu.text.DateFormat.Field.TIME_ZONE;
+        }
+
+        return icuAttribute;
+    }
 
     /**
      * Answers the Date which is the start of the one hundred year period for
@@ -664,23 +1027,15 @@ System.out.println("index:"+index);
     }
 
     /**
-     * Answers the DateFormatSymbols used by this SimpleDateFormat.
-     * 
-     * @return a DateFormatSymbols
+     * Returns the {@code DateFormatSymbols} used by this simple date format.
+     *
+     * @return the {@code DateFormatSymbols} object.
      */
     public DateFormatSymbols getDateFormatSymbols() {
         // Return a clone so the arrays in the ResourceBundle are not modified
         return (DateFormatSymbols) formatData.clone();
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         return super.hashCode() + pattern.hashCode() + formatData.hashCode()
@@ -688,21 +1043,25 @@ System.out.println("index:"+index);
     }
 
     /**
-     * Parse a Date from the specified String starting at the index specified by
-     * the ParsePosition. If the string is successfully parsed, the index of the
-     * ParsePosition is updated to the index following the parsed text.
-     * 
+     * Parses a date from the specified string starting at the index specified
+     * by {@code position}. If the string is successfully parsed then the index
+     * of the {@code ParsePosition} is updated to the index following the parsed
+     * text. On error, the index is unchanged and the error index of {@code
+     * ParsePosition} is set to the index where the error occurred.
+     *
      * @param string
-     *            the String to parse according to the pattern of this
-     *            SimpleDateFormat
+     *            the string to parse using the pattern of this simple date
+     *            format.
      * @param position
-     *            the ParsePosition, updated on return with the index following
-     *            the parsed text, or on error the index is unchanged and the
-     *            error index is set to the index where the error occurred
-     * @return the Date resulting from the parse, or null if there is an error
-     * 
-     * @exception IllegalArgumentException
-     *                when there are invalid characters in the pattern
+     *            input/output parameter, specifies the start index in {@code
+     *            string} from where to start parsing. If parsing is successful,
+     *            it is updated with the index following the parsed text; on
+     *            error, the index is unchanged and the error index is set to
+     *            the index where the error occurred.
+     * @return the date resulting from the parse, or {@code null} if there is an
+     *         error.
+     * @throws IllegalArgumentException
+     *             if there are invalid characters in the pattern.
      */
     @Override
     public Date parse(String string, ParsePosition position) {
@@ -712,11 +1071,11 @@ System.out.println("index:"+index);
     }
 
     /**
-     * Sets the Date which is the start of the one hundred year period for two
+     * Sets the date which is the start of the one hundred year period for two
      * digits year values.
      * 
      * @param date
-     *            the Date
+     *            the new date.
      */
     public void set2DigitYearStart(Date date) {
         icuFormat.set2DigitYearStart(date);
@@ -727,10 +1086,10 @@ System.out.println("index:"+index);
     }
 
     /**
-     * Sets the DateFormatSymbols used by this SimpleDateFormat.
+     * Sets the {@code DateFormatSymbols} used by this simple date format.
      * 
      * @param value
-     *            the DateFormatSymbols
+     *            the new {@code DateFormatSymbols} object.
      */
     public void setDateFormatSymbols(DateFormatSymbols value) {
         com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols();
@@ -740,20 +1099,20 @@ System.out.println("index:"+index);
     }
 
     /**
-     * Answers the pattern of this SimpleDateFormat using localized pattern
+     * Returns the pattern of this simple date format using localized pattern
      * characters.
      * 
-     * @return the localized pattern
+     * @return the localized pattern.
      */
     public String toLocalizedPattern() {
         return icuFormat.toLocalizedPattern();
     }
 
     /**
-     * Answers the pattern of this SimpleDateFormat using non-localized pattern
-     * characters.
+     * Returns the pattern of this simple date format using non-localized
+     * pattern characters.
      * 
-     * @return the non-localized pattern
+     * @return the non-localized pattern.
      */
     public String toPattern() {
         return pattern;

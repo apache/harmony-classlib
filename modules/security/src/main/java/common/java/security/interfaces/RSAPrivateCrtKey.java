@@ -15,59 +15,59 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.interfaces;
 
 import java.math.BigInteger;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The interface for a PKCS#1 RSA private key using CRT information values.
  */
 public interface RSAPrivateCrtKey extends RSAPrivateKey {
 
     /**
-     * @com.intel.drl.spec_ref
+     * The serial version identifier.
      */
     public static final long serialVersionUID = -5682214253527700368L;
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the CRT coefficient, {@code q^-1 mod p}.
+     * 
+     * @return the CRT coefficient.
      */
     public BigInteger getCrtCoefficient();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the prime factor {@code p} of {@code n}.
+     * 
+     * @return the prime factor {@code p} of {@code n}.
      */
     public BigInteger getPrimeP();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the prime factor {@code q} of {@code n}.
+     * 
+     * @return the prime factor {@code q} of {@code n}.
      */
     public BigInteger getPrimeQ();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the CRT exponent of the primet {@code p}.
+     * 
+     * @return the CRT exponent of the prime {@code p}.
      */
     public BigInteger getPrimeExponentP();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the CRT exponent of the prime {@code q}.
+     * 
+     * @return the CRT exponent of the prime {@code q}.
      */
     public BigInteger getPrimeExponentQ();
 
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the public exponent {@code e}.
+     * 
+     * @return the public exponent {@code e}.
      */
     public BigInteger getPublicExponent();
 }

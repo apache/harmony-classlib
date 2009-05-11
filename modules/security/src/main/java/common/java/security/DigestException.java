@@ -15,52 +15,51 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This class represents exceptions for message digest computation.
- * 
+ *{@code DigestException} is a general message digest exception.
  */
 public class DigestException extends GeneralSecurityException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 5821450303093652515L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code DigestException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
+     */
     public DigestException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
+    /**
+     * Constructs a new instance of {@code DigestException}.
+     */
     public DigestException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code DigestException} with the
+     * given message and the cause.
+     *
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public DigestException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code DigestException} with the
+     * cause.
+     *
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public DigestException(Throwable cause) {
         super(cause);

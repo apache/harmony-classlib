@@ -15,46 +15,52 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * {@code KeyManagementException} is a general exception, thrown to indicate an
+ * exception during processing an operation concerning key management.
  */
 public class KeyManagementException extends KeyException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 947674216157062695L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyManagementException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
      */
     public KeyManagementException(String msg) {
         super(msg);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyManagementException}.
      */
     public KeyManagementException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyManagementException} with the
+     * given message and the cause.
+     *
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public KeyManagementException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyManagementException} with the
+     * cause.
+     *
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public KeyManagementException(Throwable cause) {
         super(cause);

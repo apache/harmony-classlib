@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
@@ -265,7 +266,8 @@ public class BufferedInputStreamTest extends TestCase {
      * @tests java.io.BufferedInputStream#read()
      */
     public void test_read() throws IOException {
-        int c = is.read();
+        InputStreamReader isr = new InputStreamReader(is);
+        int c = isr.read();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
 
         byte[] bytes = new byte[256];
@@ -427,6 +429,31 @@ public class BufferedInputStreamTest extends TestCase {
     }
 
     /**
+     * @tests java.io.BufferedInputStream#reset()
+     */
+    public void test_reset_scenario1() throws IOException {
+        byte[] input = "12345678900".getBytes();
+        BufferedInputStream buffis = new BufferedInputStream(
+                new ByteArrayInputStream(input));
+        buffis.read();
+        buffis.mark(5);
+        buffis.skip(5);
+        buffis.reset();
+    }
+
+    /**
+     * @tests java.io.BufferedInputStream#reset()
+     */
+    public void test_reset_scenario2() throws IOException {
+        byte[] input = "12345678900".getBytes();
+        BufferedInputStream buffis = new BufferedInputStream(
+                new ByteArrayInputStream(input));
+        buffis.mark(5);
+        buffis.skip(6);
+        buffis.reset();
+    }
+
+    /**
      * @tests java.io.BufferedInputStream#skip(long)
      */
     public void test_skipJ() throws IOException {
@@ -446,6 +473,14 @@ public class BufferedInputStreamTest extends TestCase {
         } catch (IOException e) {
             // Expected
         }
+    }
+
+    /**
+     * @tests java.io.BufferedInputStream#skip(long)
+     */
+    public void test_skip_NullInputStream() throws IOException {
+        BufferedInputStream buf = new BufferedInputStream(null, 5);
+        assertEquals(0, buf.skip(0));
     }
 
     /**

@@ -23,7 +23,10 @@ import java.util.Map;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * This class is used to manage the negative name lookup cache.
+ * This class is used to maintain the negative name lookup cache, which caches
+ * host names which could not be resolved, as a security feature.
+ *
+ * @see NegCacheElement
  */
 class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 
@@ -38,22 +41,28 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
     private static final float LOADING = 0.75F;
 
     /**
-     * Answers the hostname for the cache element
+     * Constructs a negative cache for name lookups.
      * 
-     * @return hostName name of the host on which the lookup failed
+     * @param initialCapacity
+     *            the initial size of the cache.
+     * @param loadFactor
+     *            the load factor of the backing map.
+     * @param accessOrder
+     *            if {@code true} indicates that traversal order should begin
+     *            with most recently accessed element.
      */
     NegativeCache(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
 
     /**
-     * Answers if we should remove the Eldest entry. We remove the eldest entry
-     * if the size has grown beyond the maximum size allowed for the cache. We
-     * create the LinkedHashMap such that this deletes the least recently used
-     * entry
+     * Returns whether the eldest entry should be removed. It is removed if the
+     * size has grown beyond the maximum size allowed for the cache. A {@code
+     * LinkedHashMap} is created such that the least recently used entry is
+     * deleted.
      * 
      * @param eldest
-     *            the map entry which will be deleted if we return true
+     *            the map entry which will be deleted if we return {@code true}.
      */
     @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
@@ -62,12 +71,12 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 
     /**
      * Adds the host name and the corresponding name lookup fail message to the
-     * cache
+     * cache.
      * 
      * @param hostName
-     *            the name of the host for which the lookup failed
+     *            the name of the host for which the lookup failed.
      * @param failedMessage
-     *            the message returned when we failed the lookup
+     *            the message returned when the lookup fails.
      */
     static synchronized void put(String hostName, String failedMessage) {
         checkCacheExists();
@@ -75,13 +84,13 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
     }
 
     /**
-     * Answers the message that occurred when we failed to lookup the host if
-     * such a failure is within the cache and the entry has not yet expired
+     * Returns the message of the negative cache if the entry has not yet
+     * expired.
      * 
      * @param hostName
-     *            the name of the host for which we are looking for an entry
-     * @return the message which was returned when the host failed to be looked
-     *         up if there is still a valid entry within the cache
+     *            the name of the host for which we look up the entry.
+     * @return the message which was returned when the host lookup failed if the
+     *         entry has not yet expired.
      */
     static synchronized String getFailedMessage(String hostName) {
         checkCacheExists();

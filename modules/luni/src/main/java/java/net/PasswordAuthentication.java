@@ -18,7 +18,10 @@
 package java.net;
 
 /**
- * This class is a data structure that contains the username and password.
+ * This immutable class is a data structure that encapsulates username and
+ * password which is used by the {@code Authenticator} class.
+ *
+ * @see Authenticator
  */
 public final class PasswordAuthentication {
 
@@ -27,13 +30,13 @@ public final class PasswordAuthentication {
     private char[] password;
 
     /**
-     * Creates an instance of a password authentication with a username and
-     * password.
+     * Creates an instance of a password authentication with a specified
+     * username and password.
      * 
      * @param userName
-     *            java.lang.String the username
+     *            the username to store.
      * @param password
-     *            char[] the password
+     *            the associated password to store.
      */
     public PasswordAuthentication(String userName, char[] password) {
         this.userName = userName;
@@ -41,18 +44,20 @@ public final class PasswordAuthentication {
     }
 
     /**
-     * Answers the reference of the password of this class.
+     * Gets a clone of the password stored by this instance. The user is
+     * responsible to finalize the returned array if the password clone is no
+     * longer needed.
      * 
-     * @return char[] the reference of the password
+     * @return the copied password.
      */
     public char[] getPassword() {
         return password.clone();
     }
 
     /**
-     * Answers the username of this class.
+     * Gets the username stored by this instance.
      * 
-     * @return java.lang.String the username of this class
+     * @return the stored username.
      */
     public String getUserName() {
         return userName;

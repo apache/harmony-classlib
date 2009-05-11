@@ -15,22 +15,22 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This interface is implemented by objects which wish to control access to
- * other objects.
- * 
+ * {@code Guard} implementors protect access to other objects.
  */
 public interface Guard {
 
-    /** 
-     * @com.intel.drl.spec_ref 
+    /**
+     * Checks whether access to the specified {@code Object} should be granted.
+     * This method returns silently if access is granted, otherwise a {@code
+     * SecurityException} is thrown.
+     *
+     * @param object
+     *            the object to be protected by this {@code Guard}.
+     * @throws SecurityException
+     *             if access is not granted.
      */
     public void checkGuard(Object object) throws SecurityException;
 }

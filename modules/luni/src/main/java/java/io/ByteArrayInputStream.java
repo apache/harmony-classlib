@@ -18,13 +18,13 @@
 package java.io;
 
 /**
- * ByteArrayInputStream is used for streaming over a byte array.
+ * A specialized {@link InputStream } for reading the contents of a byte array.
  * 
  * @see ByteArrayOutputStream
  */
 public class ByteArrayInputStream extends InputStream {
     /**
-     * The <code>byte</code> array containing the bytes to stream over.
+     * The {@code byte} array containing the bytes to stream over.
      */
     protected byte[] buf;
 
@@ -41,15 +41,16 @@ public class ByteArrayInputStream extends InputStream {
 
     /**
      * The total number of bytes initially available in the byte array
-     * <code>buf</code>.
+     * {@code buf}.
      */
     protected int count;
 
     /**
-     * Constructs a new ByteArrayInputStream on the byte array <code>buf</code>.
+     * Constructs a new {@code ByteArrayInputStream} on the byte array
+     * {@code buf}.
      * 
      * @param buf
-     *            the byte array to stream over
+     *            the byte array to stream over.
      */
     public ByteArrayInputStream(byte buf[]) {
         this.mark = 0;
@@ -58,16 +59,16 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Constructs a new ByteArrayInputStream on the byte array <code>buf</code>
-     * with the position set to <code>offset</code> and the number of bytes
-     * available set to <code>offset</code> + <code>length</code>.
+     * Constructs a new {@code ByteArrayInputStream} on the byte array
+     * {@code buf} with the initial position set to {@code offset} and the
+     * number of bytes available set to {@code offset} + {@code length}.
      * 
      * @param buf
-     *            the byte array to stream over
+     *            the byte array to stream over.
      * @param offset
-     *            the offset in <code>buf</code> to start streaming at
+     *            the initial position in {@code buf} to start streaming from.
      * @param length
-     *            the number of bytes available to stream over.
+     *            the number of bytes available for streaming.
      */
     public ByteArrayInputStream(byte buf[], int offset, int length) {
         this.buf = buf;
@@ -77,9 +78,9 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Answers a int representing then number of bytes that are available before
-     * this ByteArrayInputStream will block. This method returns the number of
-     * bytes yet to be read from the underlying byte array.
+     * Returns the number of bytes that are available before this stream will
+     * block. This method returns the number of bytes yet to be read from the
+     * source byte array.
      * 
      * @return the number of bytes available before blocking.
      */
@@ -89,11 +90,10 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Close the ByteArrayInputStream. This implementation frees up resources
-     * associated with this stream.
+     * Closes this stream and frees resources associated with this stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this InputStream.
+     *             if an I/O error occurs while closing this stream.
      */
     @Override
     public void close() throws IOException {
@@ -101,12 +101,14 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Set a Mark position in this ByteArrayInputStream. The parameter
-     * <code>readLimit</code> is ignored. Sending reset() will reposition the
+     * Sets a mark position in this ByteArrayInputStream. The parameter
+     * {@code readlimit} is ignored. Sending {@code reset()} will reposition the
      * stream back to the marked position.
      * 
      * @param readlimit
      *            ignored.
+     * @see #markSupported()
+     * @see #reset()
      */
     @Override
     public synchronized void mark(int readlimit) {
@@ -114,13 +116,13 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Answers a boolean indicating whether or not this ByteArrayInputStream
-     * supports mark() and reset(). This implementation answers
-     * <code>true</code>.
+     * Indicates whether this stream supports the {@code mark()} and
+     * {@code reset()} methods. Returns {@code true} since this class supports
+     * these methods.
      * 
-     * @return <code>true</code> indicates this stream supports mark/reset,
-     *         <code>false
-     *				<code> otherwise.
+     * @return always {@code true}.
+     * @see #mark(int)
+     * @see #reset()
      */
     @Override
     public boolean markSupported() {
@@ -128,12 +130,11 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Reads a single byte from this ByteArrayInputStream and returns the result
-     * as an int. The low-order byte is returned or -1 of the end of stream was
-     * encountered. This implementation returns the next available byte from the
-     * target byte array.
+     * Reads a single byte from the source byte array and returns it as an
+     * integer in the range from 0 to 255. Returns -1 if the end of the source
+     * array has been reached.
      * 
-     * @return the byte read or -1 if end of stream.
+     * @return the byte read or -1 if the end of this stream has been reached.
      */
     @Override
     public synchronized int read() {
@@ -141,19 +142,25 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Reads at most <code>len</code> bytes from this ByteArrayInputStream and
-     * stores them in byte array <code>b</code> starting at offset
-     * <code>off</code>. Answer the number of bytes actually read or -1 if no
-     * bytes were read and end of stream was encountered. This implementation
-     * reads bytes from the target byte array.
+     * Reads at most {@code len} bytes from this stream and stores
+     * them in byte array {@code b} starting at {@code offset}. This
+     * implementation reads bytes from the source byte array.
      * 
      * @param b
-     *            the byte array in which to store the read bytes.
+     *            the byte array in which to store the bytes read.
      * @param offset
-     *            the offset in <code>b</code> to store the read bytes.
+     *            the initial position in {@code b} to store the bytes read from
+     *            this stream.
      * @param length
-     *            the maximum number of bytes to store in <code>b</code>.
-     * @return the number of bytes actually read or -1 if end of stream.
+     *            the maximum number of bytes to store in {@code b}.
+     * @return the number of bytes actually read or -1 if no bytes were read and
+     *         the end of the stream was encountered.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code length < 0}, or if
+     *             {@code offset + length} is greater than the size of
+     *             {@code b}.
+     * @throws NullPointerException
+     *             if {@code b} is {@code null}.
      */
     @Override
     public synchronized int read(byte b[], int offset, int length) {
@@ -180,10 +187,11 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Reset this ByteArrayInputStream to the last marked location. This
-     * implementation resets the position to either the marked position, the
-     * start position supplied in the constructor or <code>0</code> if neither
-     * is provided.
+     * Resets this stream to the last marked location. This implementation
+     * resets the position to either the marked position, the start position
+     * supplied in the constructor or 0 if neither has been provided.
+     *
+     * @see #mark(int)
      */
     @Override
     public synchronized void reset() {
@@ -191,10 +199,10 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     /**
-     * Skips <code>count</code> number of bytes in this InputStream.
-     * Subsequent <code>read()</code>'s will not return these bytes unless
-     * <code>reset()</code> is used. This implementation skips
-     * <code>count</code> number of bytes in the target stream.
+     * Skips {@code count} number of bytes in this InputStream. Subsequent
+     * {@code read()}s will not return these bytes unless {@code reset()} is
+     * used. This implementation skips {@code count} number of bytes in the
+     * target stream. It does nothing and returns 0 if {@code n} is negative.
      * 
      * @param n
      *            the number of bytes to skip.

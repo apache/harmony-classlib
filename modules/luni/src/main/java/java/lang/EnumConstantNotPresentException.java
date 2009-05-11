@@ -19,13 +19,9 @@ package java.lang;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * <p>
- * Indicates that an <code>enum</code> constant does not exist for a
- * particular name.
- * </p>
- * 
+ * Thrown if an {@code enum} constant does not exist for a particular name.
+ *
  * @since 1.5
- * @author Nathan Beyer (Harmony)
  */
 public class EnumConstantNotPresentException extends RuntimeException {
 
@@ -37,12 +33,14 @@ public class EnumConstantNotPresentException extends RuntimeException {
     private final String constantName;
 
     /**
-     * <p>
-     * Constructs an instance for the passed enum and constant name.
-     * </p>
-     * 
-     * @param enumType The enum type.
-     * @param constantName The missing constant name.
+     * Constructs a new {@code EnumConstantNotPresentException} with the current
+     * stack trace and a detail message based on the specified enum type and
+     * missing constant name.
+     *
+     * @param enumType
+     *            the enum type.
+     * @param constantName
+     *            the missing constant name.
      */
     @SuppressWarnings("unchecked")
     public EnumConstantNotPresentException(Class<? extends Enum> enumType,
@@ -54,11 +52,9 @@ public class EnumConstantNotPresentException extends RuntimeException {
     }
 
     /**
-     * <p>
-     * The enum type from which the constant name is missing.
-     * </p>
-     * 
-     * @return A <code>Class</code> instance.
+     * Gets the enum type for which the constant name is missing.
+     *
+     * @return the enum type for which a constant name has not been found.
      */
     @SuppressWarnings("unchecked")
     public Class<? extends Enum> enumType() {
@@ -66,11 +62,10 @@ public class EnumConstantNotPresentException extends RuntimeException {
     }
 
     /**
-     * <p>
-     * The name of the constant missing.
-     * </p>
+     * Gets the name of the missing constant.
      * 
-     * @return A <code>String</code> instance.
+     * @return the name of the constant that has not been found in the enum
+     *         type.
      */
     public String constantName() {
         return constantName;

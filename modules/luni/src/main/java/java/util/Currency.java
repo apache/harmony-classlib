@@ -39,16 +39,16 @@ public final class Currency implements Serializable {
     }
 
     /**
-     * Returns the Currency instance for this currency code.
+     * Returns the {@code Currency} instance for this currency code.
      * <p>
      * 
      * @param currencyCode
-     *            java.lang.String
-     * @return currency java.util.Currency
+     *            the currency code.
+     * @return the {@code Currency} instance for this currency code.
      * 
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      *             if the currency code is not a supported ISO 4217 currency
-     *             code
+     *             code.
      */
     public static Currency getInstance(String currencyCode) {
         Currency currency = codesToCurrencies.get(currencyCode);
@@ -61,15 +61,15 @@ public final class Currency implements Serializable {
         return currency;
     }
 
-    /***************************************************************************
-     * Returns the Currency instance for the given locale.
+    /**
+     * Returns the {@code Currency} instance for this {@code Locale}'s country.
      * 
      * @param locale
-     *            java.util.Locale
-     * @return currency java.util.Currency
+     *            the {@code Locale} of a country.
+     * @return the {@code Currency} used in the country defined by the locale parameter.
      * 
-     * @throws java.lang.IllegalArgumentException
-     *             if the locale's country is not a supported ISO 3166 Country
+     * @throws IllegalArgumentException
+     *             if the locale's country is not a supported ISO 3166 Country.
      */
     public static Currency getInstance(Locale locale) {
         com.ibm.icu.util.Currency currency = null;
@@ -91,47 +91,47 @@ public final class Currency implements Serializable {
     }
 
     /**
-     * Returns this currency's ISO 4217 currency code.
+     * Returns this {@code Currency}'s ISO 4217 currency code.
      * 
-     * @return this currency's ISO 4217 currency code
+     * @return this {@code Currency}'s ISO 4217 currency code.
      */
     public String getCurrencyCode() {
         return currencyCode;
     }
     
     /**
-     * Returns the currency symbol for the default locale.
+     * Returns the symbol for this currency in the default locale. For instance,
+     * if the default locale is the US, the symbol of the US dollar is "$". For
+     * other locales it may be "US$". If no symbol can be determined, the ISO
+     * 4217 currency code of the US dollar is returned.
      * 
-     * Equivalent to <code>getSymbol(Locale.getDefault())</code>
-     * 
-     * @return the currency symbol for the default locale.
+     * @return the symbol for this {@code Currency} in the default {@code Locale}.
      */
     public String getSymbol() {
         return getSymbol(Locale.getDefault());
     }
 
     /**
-     * Returns the currency symbol for the given locale.
+     * Returns the symbol for this currency in the given {@code Locale}.
      * <p>
-     * 
      * If the locale doesn't have any countries (e.g.
-     * <code>Locale.JAPANESE, new Locale("en","")</code>), currencyCode is
-     * returned.
+     * {@code Locale.JAPANESE, new Locale("en","")}), the the ISO
+     * 4217 currency code is returned.
      * <p>
-     * First the locale bundle is checked, if the locale has the same currency,
+     * First the locale's resource bundle is checked, if the locale has the same currency,
      * the CurrencySymbol in this locale bundle is returned.
      * <p>
      * Then a currency bundle for this locale is searched.
      * <p>
      * If a currency bundle for this locale does not exist, or there is no
-     * symbol for this currency in this bundle, than <code>currencyCode</code>
-     * is returned.
+     * symbol for this currency in this bundle, then the
+     * ISO 4217 currency code is returned.
      * <p>
      * 
      * @param locale
-     *            the locale
-     * @return symbol the representation of this Currency's symbol in this
-     *         locale
+     *            the locale for which the currency symbol should be returned.
+     * @return the representation of this {@code Currency}'s symbol in the specified
+     *         locale.
      */
     public String getSymbol(Locale locale) {
         if (locale.getCountry().equals("")) { //$NON-NLS-1$
@@ -141,11 +141,12 @@ public final class Currency implements Serializable {
     }
 
     /**
-     * Returns the default number of fraction digits for this currency (i.e. the
-     * number of digits after the decimal point). For pseudo currencies this
-     * method returns -1.
+     * Returns the default number of fraction digits for this currency. For
+     * instance, the default number of fraction digits for the US dollar is 2.
+     * For the Japanese Yen the number is 0. In the case of pseudo-currencies,
+     * such as IMF Special Drawing Rights, -1 is returned.
      * 
-     * @return the default number of fraction digits for this currency
+     * @return the default number of fraction digits for this currency.
      */
     public int getDefaultFractionDigits() {
         return com.ibm.icu.util.Currency.getInstance(currencyCode).getDefaultFractionDigits();
@@ -154,7 +155,7 @@ public final class Currency implements Serializable {
     /**
      * Returns this currency's ISO 4217 currency code.
      * 
-     * @return this currency's ISO 4217 currency code
+     * @return this currency's ISO 4217 currency code.
      */
     @Override
     public String toString() {

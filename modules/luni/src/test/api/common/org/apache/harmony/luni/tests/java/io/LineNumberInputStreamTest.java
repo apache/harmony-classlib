@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.LineNumberInputStream;
+import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
@@ -98,11 +99,11 @@ public class LineNumberInputStreamTest extends TestCase {
     /**
      * @tests java.io.LineNumberInputStream#read(byte[], int, int)
      */
-    public void test_read$BII() throws IOException {
+    public void test_read$BII() throws IOException, UnsupportedEncodingException {
         byte[] buf = new byte[100];
         lnis.read(buf, 0, 100);
         assertTrue("Failed to read correct bytes on normal text", new String(
-                buf, 0, 100).equals(text.substring(0, 100)));
+                buf, 0, 100, "UTF-8").equals(text.substring(0, 100)));
     }
 
     /**
@@ -149,7 +150,7 @@ public class LineNumberInputStreamTest extends TestCase {
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.
      */
-    protected void setUp() {
+    protected void setUp() throws UnsupportedEncodingException {
         /*
          * In order for IOException to be thrown in reset(),the inputStream to
          * the constructor cannot be a byteArrayInputstream because the reset()
@@ -158,9 +159,9 @@ public class LineNumberInputStreamTest extends TestCase {
          * than the readlimit in mark inorder for IOException to be thrown
          */
         BufferedInputStream buftemp = new BufferedInputStream(
-                new ByteArrayInputStream(text.getBytes()), 4);
+                new ByteArrayInputStream(text.getBytes("UTF-8")), 4);
         lnis = new LineNumberInputStream(buftemp);
         lnis2 = new LineNumberInputStream(new ByteArrayInputStream(dosText
-                .getBytes()));
+                .getBytes("UTF-8")));
     }
 }

@@ -17,21 +17,23 @@
 package java.util;
 
 /**
- * The unchecked exception will be thrown out when the precision is a negative
- * other than -1, or the conversion does not support a precision or other cases
- * when the precision is not supported.
+ * An {@code IllegalFormatPrecisionException} will be thrown if the precision is
+ * a negative other than -1 or in other cases where precision is not supported.
+ * 
+ * @see java.lang.RuntimeException
  */
-public class IllegalFormatPrecisionException extends IllegalFormatException {
 
+public class IllegalFormatPrecisionException extends IllegalFormatException {
     private static final long serialVersionUID = 18711008L;
 
     private int p;
 
     /**
-     * Constructs a IllegalFormatPrecisionException with specified precision.
+     * Constructs a new {@code IllegalFormatPrecisionException} with specified
+     * precision.
      * 
      * @param p
-     *            The precision.
+     *           the precision.
      */
     public IllegalFormatPrecisionException(int p) {
         this.p = p;
@@ -49,7 +51,7 @@ public class IllegalFormatPrecisionException extends IllegalFormatException {
     /**
      * Returns the message of the exception.
      * 
-     * @return The message of the exception.
+     * @return the message of the exception.
      */
     @Override
     public String getMessage() {

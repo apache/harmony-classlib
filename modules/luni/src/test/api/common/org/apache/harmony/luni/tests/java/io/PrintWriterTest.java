@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Locale;
@@ -586,17 +587,17 @@ public class PrintWriterTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.PrintWriter#write(int)
 	 */
-	public void test_writeI() {
+	public void test_writeI() throws IOException {
 		// Test for method void java.io.PrintWriter.write(int)
 		char[] cab = new char[3];
 		pw.write('a');
 		pw.write('b');
 		pw.write('c');
 		pw.flush();
-		bai = new ByteArrayInputStream(bao.toByteArray());
-		cab[0] = (char) bai.read();
-		cab[1] = (char) bai.read();
-		cab[2] = (char) bai.read();
+		InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(bao.toByteArray()));
+		cab[0] = (char) isr.read();
+		cab[1] = (char) isr.read();
+		cab[2] = (char) isr.read();
 		assertTrue("Wrote incorrect ints", cab[0] == 'a' && cab[1] == 'b'
 				&& cab[2] == 'c');
 

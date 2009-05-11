@@ -15,65 +15,73 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * Instances of this class are used to wrap exceptions which occur within
- * privileged operations.
- * 
+ * {@code PrivilegedActionException} wraps exceptions which are thrown from
+ * within privileged operations.
+ * <p>
+ * Privileged actions which can throw exceptions are of type {@code
+ * PrivilegedExceptionAction} and are thrown by
+ * <ul>
+ * {@code AccessController#doPrivileged(PrivilegedExceptionAction)}<br>
+ * {@code AccessController#doPrivileged(PrivilegedExceptionAction,
+ * AccessControlContext)} </br>
+ * </ul>
+ *
+ * @see PrivilegedExceptionAction
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction)
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction,
+ *      AccessControlContext)
  */
 public class PrivilegedActionException extends Exception {
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private static final long serialVersionUID = 4724086851538908602l;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private Exception exception;
 
-	/**
-	 * Constructs a new instance of this class with its exception filled in.
-	 * @param ex 
-	 */
+    /**
+     * Constructs a new instance of {@code PrivilegedActionException} with the
+     * cause.
+     *
+     * @param ex
+     *            the exception which is the cause for this exception.
+     */
     public PrivilegedActionException(Exception ex) {
         super(ex);
         this.exception = ex;
     }
 
-	/**
-	 * Answers the exception which caused the receiver to be thrown.
-	 * @return exception
-	 */
+    /**
+     * Returns the exception that was thrown by a
+     * {@code PrivilegedExceptionAction}.
+     *
+     * @return the exception that was thrown by a
+     *         {@code PrivilegedExceptionAction}.
+     */
     public Exception getException() {
         return exception; // return ( getCause() instanceof Exception ) ?
         // getCause() : null;
     }
 
-	/**
-	 * Answers the cause of this Throwable, or null if there is no cause.
-	 * 
-	 * 
-	 * @return Throwable The receiver's cause.
-	 */
+    /**
+     * Returns the exception that was thrown by a
+     * {@code PrivilegedExceptionAction}.
+     *
+     * @return the exception that was thrown by a
+     *         {@code PrivilegedExceptionAction}.
+     */
     public Throwable getCause() {
         return exception;
     }
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * 
-	 * @return String a printable representation for the receiver.
-	 */
+    /**
+     * Returns a string containing a concise, human-readable description of this
+     * {@code PrivilegedActionException}.
+     *
+     * @return a printable representation for this {@code
+     *         PrivilegedActionException}.
+     */
     public String toString() {
         String s = getClass().getName();
         return exception == null ? s : s + ": " + exception; //$NON-NLS-1$

@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.IOException;
@@ -38,15 +33,16 @@ import java.util.NoSuchElementException;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * A heterogeneous collection of permissions.
- * 
+ * {@code Permissions} represents a {@code PermissionCollection} where the
+ * contained permissions can be of different types. The permissions are
+ * organized in their appropriate {@code PermissionCollection} obtained by
+ * {@link Permission#newPermissionCollection()}. For permissions which do not
+ * provide a dedicated {@code PermissionCollection}, a default permission
+ * collection, based on a hash table, will be used.
  */
 public final class Permissions extends PermissionCollection implements
     Serializable {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = 4858622370623524688L;
 
     private static final ObjectStreamField[] serialPersistentFields = {
@@ -56,19 +52,21 @@ public final class Permissions extends PermissionCollection implements
     // Hash to store PermissionCollection's
     private transient Map klasses = new HashMap();
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private boolean allEnabled;  // = false;
 
-	/**
-	 * Adds the argument to the collection.
-	 * 
-	 * 
-	 * @param permission
-	 *            java.security.Permission the permission to add to the
-	 *            collection
-	 */
+    /**
+     * Adds the given {@code Permission} to this heterogeneous {@code
+     * PermissionCollection}. The {@code permission} is stored in its
+     * appropriate {@code PermissionCollection}.
+     *
+     * @param permission
+     *            the {@code Permission} to be added.
+     * @throws SecurityException
+     *             if this collection's {@link #isReadOnly()} method returns
+     *             {@code true}.
+     * @throws NullPointerException
+     *             if {@code permission} is {@code null}.
+     */
     public void add(Permission permission) {
         if (isReadOnly()) {
             throw new SecurityException(Messages.getString("security.15")); //$NON-NLS-1$
@@ -102,12 +100,6 @@ public final class Permissions extends PermissionCollection implements
         }
     }
 
-    /**
-     * Answers an enumeration of the permissions in the receiver.
-     * 
-     * 
-     * @return Enumeration the permissions in the receiver.
-     */
     public Enumeration<Permission> elements() {
         return new MetaEnumeration(klasses.values().iterator());
     }
@@ -169,17 +161,6 @@ public final class Permissions extends PermissionCollection implements
         }
     }
 
-	/**
-	 * Indicates whether the argument permission is implied by the permissions
-	 * contained in the receiver.
-	 * 
-	 * 
-	 * @return boolean <code>true</code> if the argument permission is implied
-	 *         by the permissions in the receiver, and <code>false</code> if
-	 *         it is not.
-	 * @param permission
-	 *            java.security.Permission the permission to check
-	 */
     public boolean implies(Permission permission) {
         if (permission == null) {
             // RI compatible

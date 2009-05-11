@@ -15,34 +15,50 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 
 /**
- * Principals are objects which have identities. These can be individuals,
- * groups, corporations, unique program executions, etc.
- * 
+ * {@code Principal}s are objects which have identities. These can be
+ * individuals, groups, corporations, unique program executions, etc.
  */
 public interface Principal {
-    /** 
-     * @com.intel.drl.spec_ref 
+    /**
+     * Compares the specified object with this {@code Principal} for equality
+     * and returns {@code true} if the specified object is equal, {@code false}
+     * otherwise.
+     *
+     * @param obj
+     *            object to be compared for equality with this {@code
+     *            Principal}.
+     * @return {@code true} if the specified object is equal to this {@code
+     *         Principal}, otherwise {@code false}.
      */
     public boolean equals( Object obj );
-    /** 
-     * @com.intel.drl.spec_ref 
+
+    /**
+     * Returns the name of this {@code Principal}.
+     *
+     * @return the name of this {@code Principal}.
      */
     public String getName();
-    /** 
-     * @com.intel.drl.spec_ref 
+
+    /**
+     * Returns the hash code value for this {@code Principal}. Returns the same
+     * hash code for {@code Principal}s that are equal to each other as
+     * required by the general contract of {@link Object#hashCode}.
+     *
+     * @return the hash code value for this {@code Principal}.
+     * @see Object#equals(Object)
+     * @see Principal#equals(Object)
      */
     public int hashCode();
-    /** 
-     * @com.intel.drl.spec_ref 
+
+    /**
+     * Returns a string containing a concise, human-readable description of
+     * this {@code Principal}.
+     *
+     * @return a printable representation for this {@code Principal}.
      */
     public String toString();
 }

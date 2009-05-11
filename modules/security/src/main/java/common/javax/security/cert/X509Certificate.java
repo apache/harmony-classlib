@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander Y. Kleymenov
-* @version $Revision$
-*/
-
 package javax.security.cert;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +40,16 @@ import javax.security.cert.CertificateNotYetValidException;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
+ * Abstract base class for X.509 certificates.
+ * <p>
+ * This represents a standard way for accessing the attributes of X.509 v1
+ * certificates.
+ * <p>
+ * Note: This package is provided only for compatibility reasons.
+ * It contains a simplified version of the java.security.cert package that was
+ * previously used by JSSE (Java SSL package). All applications that do not have
+ * to be compatible with older versions of JSSE (that is before Java SDK 1.5)
+ * should only use java.security.cert.
  */
 public abstract class X509Certificate extends Certificate {
 
@@ -68,14 +72,21 @@ public abstract class X509Certificate extends Certificate {
     }
     
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code X509Certificate}.
      */
     public X509Certificate() {
         super();
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code X509Certificate} and initializes it from the
+     * specified input stream.
+     *
+     * @param inStream
+     *            input stream containing data to initialize the certificate.
+     * @return the certificate initialized from the specified input stream
+     * @throws CertificateException
+     *             if the certificate cannot be created or initialized.
      */
     public static final X509Certificate getInstance(InputStream inStream)
                                              throws CertificateException {
@@ -201,7 +212,14 @@ public abstract class X509Certificate extends Certificate {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code X509Certificate} and initializes it from the
+     * specified byte array.
+     *
+     * @param certData
+     *            byte array containing data to initialize the certificate.
+     * @return the certificate initialized from the specified byte array
+     * @throws CertificateException
+     *             if the certificate cannot be created or initialized.
      */
     public static final X509Certificate getInstance(byte[] certData)
                                              throws CertificateException {
@@ -213,60 +231,165 @@ public abstract class X509Certificate extends Certificate {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Checks whether the certificate is currently valid.
+     * <p>
+     * The validity defined in ASN.1:
+     *
+     * <pre>
+     * validity             Validity
+     *
+     * Validity ::= SEQUENCE {
+     *      notBefore       CertificateValidityDate,
+     *      notAfter        CertificateValidityDate }
+     *
+     * CertificateValidityDate ::= CHOICE {
+     *      utcTime         UTCTime,
+     *      generalTime     GeneralizedTime }
+     * </pre>
+     *
+     * @throws CertificateExpiredException
+     *             if the certificate has expired.
+     * @throws CertificateNotYetValidException
+     *             if the certificate is not yet valid.
      */
     public abstract void checkValidity()
             throws CertificateExpiredException, CertificateNotYetValidException;
 
 
     /**
-     * @com.intel.drl.spec_ref
+     * Checks whether the certificate is valid at the specified date.
+     *
+     * @param date
+     *            the date to check the validity against.
+     * @throws CertificateExpiredException
+     *             if the certificate has expired.
+     * @throws CertificateNotYetValidException
+     *             if the certificate is not yet valid.
+     * @see #checkValidity()
      */
     public abstract void checkValidity(Date date)
             throws CertificateExpiredException, CertificateNotYetValidException;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the certificates {@code version} (version number).
+     * <p>
+     * The version defined is ASN.1:
+     *
+     * <pre>
+     * Version ::=  INTEGER  {  v1(0), v2(1), v3(2)  }
+     * </pre>
+     *
+     * @return the version number.
      */
     public abstract int getVersion();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the {@code serialNumber} of the certificate.
+     * <p>
+     * The ASN.1 definition of {@code serialNumber}:
+     *
+     * <pre>
+     * CertificateSerialNumber  ::=  INTEGER
+     * </pre>
+     *
+     * @return the serial number.
      */
     public abstract BigInteger getSerialNumber();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the {@code issuer} (issuer distinguished name) as an
+     * implementation specific {@code Principal} object.
+     * <p>
+     * The ASN.1 definition of {@code issuer}:
+     *
+     * <pre>
+     *  issuer      Name
+     *
+     *  Name ::= CHOICE {
+     *      RDNSequence }
+     *
+     *    RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
+     *
+     *    RelativeDistinguishedName ::= SET OF AttributeTypeAndValue
+     *
+     *    AttributeTypeAndValue ::= SEQUENCE {
+     *      type     AttributeType,
+     *      value    AttributeValue }
+     *
+     *    AttributeType ::= OBJECT IDENTIFIER
+     *
+     *    AttributeValue ::= ANY DEFINED BY AttributeType
+     * </pre>
+     *
+     * @return the {@code issuer} as an implementation specific {@code
+     *         Principal}.
      */
     public abstract Principal getIssuerDN();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the {@code subject} (subject distinguished name) as an
+     * implementation specific {@code Principal} object.
+     * <p>
+     * The ASN.1 definition of {@code subject}:
+     *
+     * <pre>
+     * subject      Name
+     *
+     *  Name ::= CHOICE {
+     *      RDNSequence }
+     *
+     *    RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
+     *
+     *    RelativeDistinguishedName ::= SET OF AttributeTypeAndValue
+     *
+     *    AttributeTypeAndValue ::= SEQUENCE {
+     *      type     AttributeType,
+     *      value    AttributeValue }
+     *
+     *    AttributeType ::= OBJECT IDENTIFIER
+     *
+     *    AttributeValue ::= ANY DEFINED BY AttributeType
+     * </pre>
+     *
+     * @return the {@code subject} (subject distinguished name).
      */
     public abstract Principal getSubjectDN();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the {@code notBefore} date from the validity period of the
+     * certificate.
+     *
+     * @return the start of the validity period.
      */
     public abstract Date getNotBefore();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the {@code notAfter} date of the validity period of the
+     * certificate.
+     *
+     * @return the end of the validity period.
      */
     public abstract Date getNotAfter();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the name of the algorithm for the certificate signature.
+     *
+     * @return the signature algorithm name.
      */
     public abstract String getSigAlgName();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the OID of the signature algorithm from the certificate.
+     *
+     * @return the OID of the signature algorithm.
      */
     public abstract String getSigAlgOID();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the parameters of the signature algorithm in DER-encoded format.
+     *
+     * @return the parameters of the signature algorithm, or null if none are
+     *         used.
      */
     public abstract byte[] getSigAlgParams();
 }

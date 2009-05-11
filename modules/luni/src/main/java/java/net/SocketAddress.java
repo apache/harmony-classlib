@@ -19,8 +19,16 @@ package java.net;
 
 import java.io.Serializable;
 
+/**
+ * This abstract class represents a protocol-independent base for
+ * socket-endpoint representing classes. The class has to be implemented
+ * according to a specific protocol.
+ */
 public abstract class SocketAddress implements Serializable {
 
+    /**
+     * Creates a new {@code SocketAddress} instance.
+     */
     public SocketAddress() {
         super();
     }

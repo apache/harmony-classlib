@@ -20,14 +20,17 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * CharArrayWriter is used as a character output stream on a character array.
- * The buffer used to store the written characters will grow as needed to
- * accommodate more characters as they are written.
+ * A specialized {@link Writer} for class for writing content to an (internal)
+ * char array. As bytes are written to this writer, the char array may be
+ * expanded to hold more characters. When the writing is considered to be
+ * finished, a copy of the char array can be requested from the class.
+ *
+ * @see CharArrayReader
  */
 public class CharArrayWriter extends Writer {
 
     /**
-     * Buffer for characters
+     * The buffer for characters.
      */
     protected char[] buf;
 
@@ -37,9 +40,9 @@ public class CharArrayWriter extends Writer {
     protected int count;
 
     /**
-     * Constructs a new CharArrayWriter which has a buffer allocated with the
-     * default size of 32 characters. The buffer is also the <code>lock</code>
-     * used to synchronize access to this Writer.
+     * Constructs a new {@code CharArrayWriter} which has a buffer allocated
+     * with the default size of 32 characters. This buffer is also used as the
+     * {@code lock} to synchronize access to this writer.
      */
     public CharArrayWriter() {
         super();
@@ -48,12 +51,14 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Constructs a new CharArrayWriter which has a buffer allocated with the
-     * size of <code>initialSize</code> characters. The buffer is also the
-     * <code>lock</code> used to synchronize access to this Writer.
+     * Constructs a new {@code CharArrayWriter} which has a buffer allocated
+     * with the size of {@code initialSize} characters. The buffer is also used
+     * as the {@code lock} to synchronize access to this writer.
      * 
      * @param initialSize
      *            the initial size of this CharArrayWriters buffer.
+     * @throws IllegalArgumentException
+     *             if {@code initialSize < 0}.
      */
     public CharArrayWriter(int initialSize) {
         super();
@@ -65,8 +70,7 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Close this Writer. This is the concrete implementation required. This
-     * particular implementation does nothing.
+     * Closes this writer. The implementation in {@code CharArrayWriter} does nothing.
      */
     @Override
     public void close() {
@@ -86,8 +90,7 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Flush this Writer. This is the concrete implementation required. This
-     * particular implementation does nothing.
+     * Flushes this writer. The implementation in {@code CharArrayWriter} does nothing.
      */
     @Override
     public void flush() {
@@ -95,9 +98,9 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Reset this Writer. The current write position is reset to the beginning
+     * Resets this writer. The current write position is reset to the beginning
      * of the buffer. All written characters are lost and the size of this
-     * writer is now 0.
+     * writer is set to 0.
      */
     public void reset() {
         synchronized (lock) {
@@ -106,10 +109,11 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Answer the size of this Writer in characters. This number changes if this
-     * Writer is reset or as more characters are written to it.
+     * Returns the size of this writer, that is the number of characters it
+     * stores. This number changes if this writer is reset or when more
+     * characters are written to it.
      * 
-     * @return int this CharArrayWriters current size in characters.
+     * @return this CharArrayWriter's current size in characters.
      */
     public int size() {
         synchronized (lock) {
@@ -118,11 +122,11 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Answer the contents of the receiver as a char array. The array returned
-     * is a copy and any modifications made to this Writer after are not
-     * reflected in the result.
+     * Returns the contents of the receiver as a char array. The array returned
+     * is a copy and any modifications made to this writer after calling this
+     * method are not reflected in the result.
      * 
-     * @return char[] this CharArrayWriters contents as a new char array.
+     * @return this CharArrayWriter's contents as a new char array.
      */
     public char[] toCharArray() {
         synchronized (lock) {
@@ -133,11 +137,11 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Answer the contents of this CharArrayWriter as a String. The String
-     * returned is a copy and any modifications made to this Writer after are
-     * not reflected in the result.
+     * Returns the contents of this {@code CharArrayWriter} as a string. The
+     * string returned is a copy and any modifications made to this writer after
+     * calling this method are not reflected in the result.
      * 
-     * @return String this CharArrayWriters contents as a new String.
+     * @return this CharArrayWriters contents as a new string.
      */
     @Override
     public String toString() {
@@ -147,15 +151,18 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Writes <code>count</code> characters starting at <code>offset</code>
-     * in <code>buf</code> to this CharArrayWriter.
+     * Writes {@code count} characters starting at {@code offset} in {@code c}
+     * to this writer.
      * 
      * @param c
      *            the non-null array containing characters to write.
      * @param offset
-     *            offset in buf to retrieve characters
+     *            the index of the first character in {@code buf} to write.
      * @param len
-     *            maximum number of characters to write
+     *            maximum number of characters to write.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code len < 0}, or if
+     *             {@code offset + len} is bigger than the size of {@code c}.
      */
     @Override
     public void write(char[] c, int offset, int len) {
@@ -172,12 +179,12 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Writes the specified character <code>oneChar</code> to this
-     * CharArrayWriter. This implementation writes the low order two bytes to
-     * the Stream.
+     * Writes the specified character {@code oneChar} to this writer.
+     * This implementation writes the two low order bytes of the integer
+     * {@code oneChar} to the buffer.
      * 
      * @param oneChar
-     *            The character to write
+     *            the character to write.
      */
     @Override
     public void write(int oneChar) {
@@ -188,16 +195,21 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Writes <code>count</code> number of characters starting at
-     * <code>offset</code> from the String <code>str</code> to this
-     * CharArrayWriter.
+     * Writes {@code count} number of characters starting at {@code offset} from
+     * the string {@code str} to this CharArrayWriter.
      * 
      * @param str
-     *            the non-null String containing the characters to write.
+     *            the non-null string containing the characters to write.
      * @param offset
-     *            the starting point to retrieve characters.
+     *            the index of the first character in {@code str} to write.
      * @param len
      *            the number of characters to retrieve and write.
+     * @throws NullPointerException
+     *             if {@code str} is {@code null}.
+     * @throws StringIndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code len < 0}, or if
+     *             {@code offset + len} is bigger than the length of
+     *             {@code str}.
      */
     @Override
     public void write(String str, int offset, int len) {
@@ -217,15 +229,16 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Writes the contents of this CharArrayWriter to another Writer. The output
-     * is all the characters that have been written to the receiver since the
-     * last reset or since the creation.
+     * Writes the contents of this {@code CharArrayWriter} to another {@code
+     * Writer}. The output is all the characters that have been written to the
+     * receiver since the last reset or since it was created.
      * 
      * @param out
-     *            the non-null Writer on which to write the contents.
-     * 
+     *            the non-null {@code Writer} on which to write the contents.
+     * @throws NullPointerException
+     *             if {@code out} is {@code null}.
      * @throws IOException
-     *             If an error occurs attempting to write the contents out.
+     *             if an error occurs attempting to write out the contents.
      */
     public void writeTo(Writer out) throws IOException {
         synchronized (lock) {
@@ -234,14 +247,12 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Append a char <code>c</code>to the CharArrayWriter. The
-     * CharArrayWriter.append(<code>c</code>) works the same way as
-     * CharArrayWriter.write(<code>c</code>).
+     * Appends a char {@code c} to the {@code CharArrayWriter}. The method works
+     * the same way as {@code write(c)}.
      * 
      * @param c
-     *            The character appended to the CharArrayWriter.
-     * @return The CharArrayWriter.
-     * @see Writer#append(char)
+     *            the character appended to the CharArrayWriter.
+     * @return this CharArrayWriter.
      */
     @Override
     public CharArrayWriter append(char c) {
@@ -250,16 +261,14 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Append a CharSequence <code>csq</code> to the CharArrayWriter. The
-     * CharArrayWriter.append(<code>csq</code>) works the same way as
-     * CharArrayWriter.write(<code>csq</code>.toString()). If
-     * <code>csq</code> is null, then then "null" will be substituted for
-     * <code>csq</code>.
+     * Appends a {@code CharSequence} to the {@code CharArrayWriter}. The method
+     * works the same way as {@code write(csq.toString())}. If {@code csq} is
+     * {@code null}, then it will be substituted with the string {@code "null"}.
      * 
      * @param csq
-     *            The CharSequence appended to the CharArrayWriter.
-     * @return The CharArrayWriter
-     * @see Writer#append(CharSequence)
+     *            the {@code CharSequence} appended to the {@code
+     *            CharArrayWriter}, may be {@code null}.
+     * @return this CharArrayWriter.
      */
     @Override
     public CharArrayWriter append(CharSequence csq) {
@@ -272,27 +281,27 @@ public class CharArrayWriter extends Writer {
     }
 
     /**
-     * Append a subsequence of a CharSequence <code>csq</code> to the
-     * CharArrayWriter. The first char and the last char of the subsequnce is
-     * specified by the parameter <code>start</code> and <code>end</code>.
-     * The CharArrayWriter.append(<code>csq</code>) works the same way as
-     * CharArrayWriter.write(<code>csq</code>.subSequence(<code>start</code>,<code>end</code>).toString).
-     * If <code>csq</code> is null, then "null" will be substituted for
-     * <code>csq</code>.
+     * Append a subsequence of a {@code CharSequence} to the {@code
+     * CharArrayWriter}. The first and last characters of the subsequence are
+     * specified by the parameters {@code start} and {@code end}. A call to
+     * {@code CharArrayWriter.append(csq)} works the same way as {@code
+     * CharArrayWriter.write(csq.subSequence(start, end).toString)}. If {@code
+     * csq} is {@code null}, then it will be substituted with the string {@code
+     * "null"}.
      * 
      * @param csq
-     *            The CharSequence appended to the CharArrayWriter.
+     *            the {@code CharSequence} appended to the {@code
+     *            CharArrayWriter}, may be {@code null}.
      * @param start
-     *            The index of the first char in the CharSequence appended to
-     *            the CharArrayWriter.
+     *            the index of the first character in the {@code CharSequence}
+     *            appended to the {@code CharArrayWriter}.
      * @param end
-     *            The index of the char after the last one in the CharSequence
-     *            appended to the CharArrayWriter.
-     * @return The CharArrayWriter.
+     *            the index of the character after the last one in the {@code
+     *            CharSequence} appended to the {@code CharArrayWriter}.
+     * @return this CharArrayWriter.
      * @throws IndexOutOfBoundsException
-     *             If start is less than end, end is greater than the length of
-     *             the CharSequence, or start or end is negative.
-     * @see Writer#append(CharSequence, int, int)
+     *             if {@code start < 0}, {@code end < 0}, {@code start > end},
+     *             or if {@code end} is greater than the length of {@code csq}.
      */
     @Override
     public CharArrayWriter append(CharSequence csq, int start, int end) {

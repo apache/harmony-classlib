@@ -20,37 +20,38 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * FilteredOutputStream is a class which takes an output stream and
- * <em>filters</em> the output in some way. The filtered view may be a
- * buffered output or one which compresses data before actually writing the
- * bytes. FilterOutputStreams are meant for byte streams.
+ * Wraps an existing {@link OutputStream} and performs some transformation on
+ * the output data while it is being written. Transformations can be anything
+ * from a simple byte-wise filtering output data to an on-the-fly compression or
+ * decompression of the underlying stream. Output streams that wrap another
+ * output stream and provide some additional functionality on top of it usually
+ * inherit from this class.
  * 
- * @see FilterInputStream
+ * @see FilterOutputStream
  */
 public class FilterOutputStream extends OutputStream {
 
     /**
-     * The target OutputStream for this filter.
+     * The target output stream for this filter stream.
      */
     protected OutputStream out;
 
     /**
-     * Constructs a new FilterOutputStream on the OutputStream <code>out</code>.
-     * All writes are now filtered through this stream.
+     * Constructs a new {@code FilterOutputStream} with {@code out} as its
+     * target stream.
      * 
      * @param out
-     *            the target OutputStream to filter writes on.
+     *            the target stream that this stream writes to.
      */
     public FilterOutputStream(OutputStream out) {
         this.out = out;
     }
 
     /**
-     * Close this FilterOutputStream. This implementation closes the target
-     * stream.
+     * Closes this stream. This implementation closes the target stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this stream.
+     *             if an error occurs attempting to close this stream.
      */
     @Override
     public void close() throws IOException {
@@ -64,13 +65,11 @@ public class FilterOutputStream extends OutputStream {
     }
 
     /**
-     * Flush this FilterOutputStream to ensure all pending data is sent out to
-     * the target OutputStream. This implementation flushes the target
-     * OutputStream.
+     * Ensures that all pending data is sent out to the target stream. This
+     * implementation flushes the target stream.
      * 
      * @throws IOException
-     *             If an error occurs attempting to flush this
-     *             FilterOutputStream.
+     *             if an error occurs attempting to flush this stream.
      */
     @Override
     public void flush() throws IOException {
@@ -78,16 +77,14 @@ public class FilterOutputStream extends OutputStream {
     }
 
     /**
-     * Writes the entire contents of the byte array <code>buffer</code> to
-     * this FilterOutputStream. This implementation writes the
-     * <code>buffer</code> to the target stream.
+     * Writes the entire contents of the byte array {@code buffer} to this
+     * stream. This implementation writes the {@code buffer} to the target
+     * stream.
      * 
      * @param buffer
-     *            the buffer to be written
-     * 
+     *            the buffer to be written.
      * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             FilterOutputStream.
+     *             if an I/O error occurs while writing to this stream.
      */
     @Override
     public void write(byte buffer[]) throws IOException {
@@ -95,23 +92,21 @@ public class FilterOutputStream extends OutputStream {
     }
 
     /**
-     * Writes <code>count</code> <code>bytes</code> from the byte array
-     * <code>buffer</code> starting at <code>offset</code> to this
-     * FilterOutputStream. This implementation writes the <code>buffer</code>
-     * to the target OutputStream.
+     * Writes {@code count} bytes from the byte array {@code buffer} starting at
+     * {@code offset} to the target stream.
      * 
      * @param buffer
-     *            the buffer to be written
+     *            the buffer to write.
      * @param offset
-     *            offset in buffer to get bytes
+     *            the index of the first byte in {@code buffer} to write.
      * @param count
-     *            number of bytes in buffer to write
-     * 
-     * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             FilterOutputStream.
+     *            the number of bytes in {@code buffer} to write.
      * @throws IndexOutOfBoundsException
-     *             If offset or count are outside of bounds.
+     *             if {@code offset < 0} or {@code count < 0}, or if
+     *             {@code offset + count} is bigger than the length of
+     *             {@code buffer}.
+     * @throws IOException
+     *             if an I/O error occurs while writing to this stream.
      */
     @Override
     public void write(byte buffer[], int offset, int count) throws IOException {
@@ -128,16 +123,13 @@ public class FilterOutputStream extends OutputStream {
     }
 
     /**
-     * Writes the specified byte <code>oneByte</code> to this
-     * FilterOutputStream. Only the low order byte of <code>oneByte</code> is
-     * written. This implementation writes the byte to the target OutputStream.
+     * Writes one byte to the target stream. Only the low order byte of the
+     * integer {@code oneByte} is written.
      * 
      * @param oneByte
-     *            the byte to be written
-     * 
+     *            the byte to be written.
      * @throws IOException
-     *             If an error occurs attempting to write to this
-     *             FilterOutputStream.
+     *             if an I/O error occurs while writing to this stream.
      */
     @Override
     public void write(int oneByte) throws IOException {

@@ -31,6 +31,16 @@ import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Implements a {@link java.util.ArrayList} variant that is thread-safe. All
+ * write operation result in a new copy of the underlying data being created.
+ * Iterators reflect the state of the CopyOnWriteArrayList at the time they were
+ * created. They are not updated to reflect subsequent changes to the list. In
+ * addition, these iterators cannot be used for modifying the underlying
+ * CopyOnWriteArrayList.
+ *
+ * @param <E> the element type
+ */
 public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializable {
 
     private static final long serialVersionUID = 8673264195747942595L;
@@ -42,13 +52,30 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
      */
     private final transient ReentrantLock lock = new ReentrantLock();
 
+    /**
+     * Creates a new, empty instance of CopyOnWriteArrayList.
+     */
     public CopyOnWriteArrayList() {
     }
 
+    /**
+     * Creates a new instance of CopyOnWriteArrayList and fills it with the
+     * contents of a given Collection.
+     *
+     * @param c     the collection the elements of which are to be copied into
+     *              the new instance.
+     */
     public CopyOnWriteArrayList(Collection<? extends E> c) {
         this((E[]) c.toArray());
     }
 
+    /**
+     * Creates a new instance of CopyOnWriteArrayList and fills it with the
+     * contents of a given array.
+     *
+     * @param array the array the elements of which are to be copied into the
+     *              new instance.
+     */
     public CopyOnWriteArrayList(E[] array) {
         int size = array.length;
         E[] data = newElementArray(size);
@@ -140,6 +167,15 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         return true;
     }
 
+    /**
+     * Adds to this CopyOnWriteArrayList all those elements from a given
+     * collection that are not yet part of the list.
+     *
+     * @param c     the collection from which the potential new elements are
+     *              taken.
+     *
+     * @return the number of elements actually added to this list.
+     */
     public int addAllAbsent(Collection<? extends E> c) {
         if (c.size() == 0) {
             return 0;
@@ -166,6 +202,14 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         }
     }
 
+    /**
+     * Adds to this CopyOnWriteArrayList another element, given that this
+     * element is not yet part of the list.
+     *
+     * @param e     the potential new element.
+     *
+     * @return true if the element was added, or false otherwise.
+     */
     public boolean addIfAbsent(E e) {
         lock.lock();
         try {
@@ -258,6 +302,16 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         return hashCode;
     }
 
+    /**
+     * Returns the index of a given element, starting the search from a given
+     * position in the list.
+     *
+     * @param e     the element to search.
+     * @param index the index at which to start the search.
+     *
+     * @return the index of the element or null, if the element has not been
+     * found at or beyond the given start index.
+     */
     public int indexOf(E e, int index) {
         E[] data = getData();
         return indexOf(e, data, index, data.length - index);
@@ -276,6 +330,16 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         return new ListIteratorImpl(getData(), 0);
     }
 
+    /**
+     * Returns the last index of a given element, starting the search from
+     * a given position in the list and going backwards.
+     *
+     * @param e     the element to search.
+     * @param index the index at which to start the search.
+     *
+     * @return the index of the element or null, if the element has not been
+     * found at or before the given start index.
+     */
     public int lastIndexOf(E e, int index) {
         E[] data = getData();
         return lastIndexOf(e, data, 0, index);

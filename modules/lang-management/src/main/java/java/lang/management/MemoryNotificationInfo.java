@@ -19,6 +19,8 @@ package java.lang.management;
 
 import javax.management.openmbean.CompositeData;
 
+import org.apache.harmony.lang.management.ManagementUtils;
+
 /**
  * <p>
  * Memory notification information.
@@ -27,6 +29,13 @@ import javax.management.openmbean.CompositeData;
  * @since 1.5
  */
 public class MemoryNotificationInfo {
+
+    private final String poolName;
+
+    private final MemoryUsage usage;
+
+    private final long count;
+
     public static final String MEMORY_COLLECTION_THRESHOLD_EXCEEDED = "java.management.memory.collection.threshold.exceeded";
 
     public static final String MEMORY_THRESHOLD_EXCEEDED = "java.management.memory.threshold.exceeded";
@@ -45,17 +54,15 @@ public class MemoryNotificationInfo {
         if (cd == null) {
             return null;
         }
-        String poolName = (String) cd.get("poolName");
-        MemoryUsage usage = MemoryUsage.from((CompositeData) cd.get("usage"));
-        long count = ((Long) cd.get("count")).longValue();
-        return new MemoryNotificationInfo(poolName, usage, count);
+        ManagementUtils.verifyFieldNumber(cd, 3);
+        String[] attributeNames = { "poolName", "usage", "count" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ManagementUtils.verifyFieldNames(cd, attributeNames);
+        String[] attributeTypes = { "java.lang.String",
+                "javax.management.openmbean.CompositeData", "java.lang.Long", }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ManagementUtils.verifyFieldTypes(cd, attributeNames, attributeTypes);
+
+        return new MemoryNotificationInfo(cd);
     }
-
-    private final String poolName;
-
-    private final MemoryUsage usage;
-
-    private final long count;
 
     /**
      * <p>
@@ -73,7 +80,6 @@ public class MemoryNotificationInfo {
         if (poolName == null) {
             throw new NullPointerException("pooName is null"); //$NON-NLS-1$
         }
-        
         if (usage == null) {
             throw new NullPointerException("usage is null"); //$NON-NLS-1$
         }
@@ -81,6 +87,17 @@ public class MemoryNotificationInfo {
         this.poolName = poolName;
         this.usage = usage;
         this.count = count;
+    }
+
+    private MemoryNotificationInfo(CompositeData cd) {
+        final Object poolName = cd.get("poolName"); //$NON-NLS-1$
+        if (poolName == null) {
+            throw new IllegalArgumentException(
+                    "Attribute poolName has null value"); //$NON-NLS-1$
+        }
+        this.poolName = (String) poolName;
+        this.usage = MemoryUsage.from((CompositeData) cd.get("usage")); //$NON-NLS-1$
+        this.count = ((Long) cd.get("count")).longValue(); //$NON-NLS-1$
     }
 
     public String getPoolName() {

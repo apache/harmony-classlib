@@ -19,8 +19,8 @@ package java.net;
 
 /**
  * Defines a scheme for mapping a filename type to a MIME content type. Mainly
- * used by <code>URLStreamHandler</code> for determining the right content
- * handler to handle the resource.
+ * used by {@code URLStreamHandler} for determining the right content handler to
+ * handle the resource.
  * 
  * @see ContentHandler
  * @see URLConnection#getFileNameMap()
@@ -30,13 +30,11 @@ package java.net;
 public interface FileNameMap {
 
     /**
-     * Determines the MIME types for a file <code>fileName</code> of a
-     * <code>URL</code>.
+     * Determines the MIME type for a file {@code fileName} of a URL.
      * 
      * @param fileName
      *            the name of the file to consider.
-     * 
-     * @return the mime type
+     * @return the appropriate MIME type of the given file.
      */
     public String getContentTypeFor(String fileName);
 }

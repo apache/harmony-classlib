@@ -15,52 +15,53 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This class represents invalid algorithm parameters to cryptographic services.
- * 
+ * {@code InvalidAlgorithmParameterException} indicates the occurrence of
+ * invalid algorithm parameters.
  */
 public class InvalidAlgorithmParameterException extends
         GeneralSecurityException {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = 2864672297499471472L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code InvalidAlgorithmParameterException}
+     * with the given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
+     */
     public InvalidAlgorithmParameterException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
+    /**
+     * Constructs a new instance of {@code InvalidAlgorithmParameterException}.
+     */
     public InvalidAlgorithmParameterException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code InvalidAlgorithmParameterException} with the
+     * given message and the cause.
+     *
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public InvalidAlgorithmParameterException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code InvalidAlgorithmParameterException}
+     * with the cause.
+     *
+     * @param cause
+     *            the exception which is the cause for this exception.
      */
     public InvalidAlgorithmParameterException(Throwable cause) {
         super(cause);

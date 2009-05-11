@@ -451,7 +451,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 			ois = new ObjectInputStream(loadStream());
 			ois.readFully(buf);
 			ois.close();
-			assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(buf, 0, 10)
+			assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(buf, 0, 10, "UTF-8")
 					);
 		} catch (IOException e) {
 			fail("IOException serializing data : " + e.getMessage());

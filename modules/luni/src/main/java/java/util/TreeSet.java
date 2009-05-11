@@ -23,8 +23,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * TreeSet is an implementation of SortedSet. All optional operations are
- * supported, adding and removing. The elements can be any objects which are
+ * TreeSet is an implementation of SortedSet. All optional operations (adding
+ * and removing) are supported. The elements can be any objects which are
  * comparable to each other either using their natural order or a specified
  * Comparator.
  * 
@@ -42,24 +42,23 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Constructs a new empty instance of TreeSet which uses natural ordering.
-     * 
+     * Constructs a new empty instance of {@code TreeSet} which uses natural
+     * ordering.
      */
     public TreeSet() {
         backingMap = new TreeMap<E, E>();
     }
 
     /**
-     * Constructs a new instance of TreeSet which uses natural ordering and
-     * containing the unique elements in the specified collection.
+     * Constructs a new instance of {@code TreeSet} which uses natural ordering
+     * and containing the unique elements in the specified collection.
      * 
      * @param collection
-     *            the collection of elements to add
-     * 
-     * @exception ClassCastException
-     *                when an element in the Collection does not implement the
-     *                Comparable interface, or the elements in the Collection
-     *                cannot be compared
+     *            the collection of elements to add.
+     * @throws ClassCastException
+     *                when an element in the collection does not implement the
+     *                Comparable interface, or the elements in the collection
+     *                cannot be compared.
      */
     public TreeSet(Collection<? extends E> collection) {
         this();
@@ -67,22 +66,22 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Constructs a new empty instance of TreeSet which uses the specified
-     * Comparator.
+     * Constructs a new empty instance of {@code TreeSet} which uses the
+     * specified comparator.
      * 
      * @param comparator
-     *            the Comparator
+     *            the comparator to use.
      */
     public TreeSet(Comparator<? super E> comparator) {
         backingMap = new TreeMap<E, E>(comparator);
     }
 
     /**
-     * Constructs a new instance of TreeSet containing the elements in the
-     * specified SortedSet and using the same Comparator.
+     * Constructs a new instance of {@code TreeSet} containing the elements of
+     * the specified SortedSet and using the same Comparator.
      * 
      * @param set
-     *            the SortedSet of elements to add
+     *            the SortedSet of elements to add.
      */
     public TreeSet(SortedSet<E> set) {
         this(set.comparator());
@@ -93,19 +92,18 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Adds the specified object to this TreeSet.
+     * Adds the specified object to this {@code TreeSet}.
      * 
      * @param object
-     *            the object to add
-     * @return true when this TreeSet did not already contain the object, false
-     *         otherwise
-     * 
-     * @exception ClassCastException
-     *                when the object cannot be compared with the elements in
-     *                this TreeSet
-     * @exception NullPointerException
-     *                when the object is null and the comparator cannot handle
-     *                null
+     *            the object to add.
+     * @return {@code true} when this {@code TreeSet} did not already contain
+     *         the object, {@code false} otherwise.
+     * @throws ClassCastException
+     *             when the object cannot be compared with the elements in this
+     *             {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the object is null and the comparator cannot handle
+     *             null.
      */
     @Override
     public boolean add(E object) {
@@ -113,18 +111,18 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Adds the objects in the specified Collection to this TreeSet.
+     * Adds the objects in the specified collection to this {@code TreeSet}.
      * 
      * @param collection
-     *            the Collection of objects
-     * @return true if this TreeSet is modified, false otherwise
-     * 
-     * @exception ClassCastException
-     *                when an object in the Collection cannot be compared with
-     *                the elements in this TreeSet
-     * @exception NullPointerException
-     *                when an object in the Collection is null and the
-     *                comparator cannot handle null
+     *            the collection of objects to add.
+     * @return {@code true} if this {@code TreeSet} was modified, {@code false}
+     *         otherwise.
+     * @throws ClassCastException
+     *             when an object in the collection cannot be compared with the
+     *             elements in this {@code TreeSet}.
+     * @throws NullPointerException
+     *             when an object in the collection is null and the comparator
+     *             cannot handle null.
      */
     @Override
     public boolean addAll(Collection<? extends E> collection) {
@@ -132,7 +130,7 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Removes all elements from this TreeSet, leaving it empty.
+     * Removes all elements from this {@code TreeSet}, leaving it empty.
      * 
      * @see #isEmpty
      * @see #size
@@ -143,11 +141,10 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers a new TreeSet with the same elements, size and comparator as this
-     * TreeSet.
+     * Returns a new {@code TreeSet} with the same elements, size and comparator
+     * as this {@code TreeSet}.
      * 
-     * @return a shallow copy of this TreeSet
-     * 
+     * @return a shallow copy of this {@code TreeSet}.
      * @see java.lang.Cloneable
      */
     @SuppressWarnings("unchecked")
@@ -168,7 +165,7 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers the Comparator used to compare elements in this TreeSet.
+     * Returns the comparator used to compare elements in this {@code TreeSet}.
      * 
      * @return a Comparator or null if the natural ordering is used
      */
@@ -177,19 +174,18 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Searches this TreeSet for the specified object.
+     * Searches this {@code TreeSet} for the specified object.
      * 
      * @param object
-     *            the object to search for
-     * @return true if <code>object</code> is an element of this TreeSet,
-     *         false otherwise
-     * 
-     * @exception ClassCastException
-     *                when the object cannot be compared with the elements in
-     *                this TreeSet
-     * @exception NullPointerException
-     *                when the object is null and the comparator cannot handle
-     *                null
+     *            the object to search for.
+     * @return {@code true} if {@code object} is an element of this
+     *         {@code TreeSet}, {@code false} otherwise.
+     * @throws ClassCastException
+     *             when the object cannot be compared with the elements in this
+     *             {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the object is null and the comparator cannot handle
+     *             null.
      */
     @Override
     public boolean contains(Object object) {
@@ -197,32 +193,31 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers the first element in this TreeSet.
+     * Returns the first element in this {@code TreeSet}.
      * 
-     * @return the first element
-     * 
-     * @exception NoSuchElementException
-     *                when this TreeSet is empty
+     * @return the first element.
+     * @throws NoSuchElementException
+     *             when this {@code TreeSet} is empty.
      */
     public E first() {
         return backingMap.firstKey();
     }
 
     /**
-     * Answers a SortedSet of the specified portion of this TreeSet which
-     * contains elements less than the end element. The returned SortedSet is
-     * backed by this TreeSet so changes to one are reflected by the other.
+     * Returns a SortedSet of the specified portion of this {@code TreeSet}
+     * which contains elements which are all less than the end element. The
+     * returned SortedSet is backed by this {@code TreeSet} so changes to one
+     * are reflected by the other.
      * 
      * @param end
-     *            the end element
-     * @return a subset where the elements are less than <code>end</code>
-     * 
-     * @exception ClassCastException
-     *                when the end object cannot be compared with the elements
-     *                in this TreeSet
-     * @exception NullPointerException
-     *                when the end object is null and the comparator cannot
-     *                handle null
+     *            the end element.
+     * @return a subset where the elements are less than {@code end}
+     * @throws ClassCastException
+     *             when the end object cannot be compared with the elements in
+     *             this {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the end object is null and the comparator cannot handle
+     *             null.
      */
     @SuppressWarnings("unchecked")
     public SortedSet<E> headSet(E end) {
@@ -237,10 +232,9 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers if this TreeSet has no elements, a size of zero.
+     * Returns true if this {@code TreeSet} has no element, otherwise false.
      * 
-     * @return true if this TreeSet has no elements, false otherwise
-     * 
+     * @return true if this {@code TreeSet} has no element.
      * @see #size
      */
     @Override
@@ -249,10 +243,9 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers an Iterator on the elements of this TreeSet.
+     * Returns an Iterator on the elements of this {@code TreeSet}.
      * 
-     * @return an Iterator on the elements of this TreeSet
-     * 
+     * @return an Iterator on the elements of this {@code TreeSet}.
      * @see Iterator
      */
     @Override
@@ -261,30 +254,30 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers the last element in this TreeSet.
+     * Returns the last element in this {@code TreeSet}. The last element is
+     * the highest element.
      * 
-     * @return the last element
-     * 
-     * @exception NoSuchElementException
-     *                when this TreeSet is empty
+     * @return the last element.
+     * @throws NoSuchElementException
+     *             when this {@code TreeSet} is empty.
      */
     public E last() {
         return backingMap.lastKey();
     }
 
     /**
-     * Removes an occurrence of the specified object from this TreeSet.
+     * Removes an occurrence of the specified object from this {@code TreeSet}.
      * 
      * @param object
-     *            the object to remove
-     * @return true if this TreeSet is modified, false otherwise
-     * 
-     * @exception ClassCastException
-     *                when the object cannot be compared with the elements in
-     *                this TreeSet
-     * @exception NullPointerException
-     *                when the object is null and the comparator cannot handle
-     *                null
+     *            the object to remove.
+     * @return {@code true} if this {@code TreeSet} was modified, {@code false}
+     *         otherwise.
+     * @throws ClassCastException
+     *             when the object cannot be compared with the elements in this
+     *             {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the object is null and the comparator cannot handle
+     *             null.
      */
     @Override
     public boolean remove(Object object) {
@@ -292,9 +285,9 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers the number of elements in this TreeSet.
+     * Returns the number of elements in this {@code TreeSet}.
      * 
-     * @return the number of elements in this TreeSet
+     * @return the number of elements in this {@code TreeSet}.
      */
     @Override
     public int size() {
@@ -302,24 +295,23 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers a SortedSet of the specified portion of this TreeSet which
-     * contains elements greater or equal to the start element but less than the
-     * end element. The returned SortedSet is backed by this TreeSet so changes
-     * to one are reflected by the other.
+     * Returns a SortedSet of the specified portion of this {@code TreeSet}
+     * which contains elements greater or equal to the start element but less
+     * than the end element. The returned SortedSet is backed by this
+     * {@code TreeSet} so changes to one are reflected by the other.
      * 
      * @param start
-     *            the start element
+     *            the start element.
      * @param end
-     *            the end element
-     * @return a subset where the elements are greater or equal to
-     *         <code>start</code> and less than <code>end</code>
-     * 
-     * @exception ClassCastException
-     *                when the start or end object cannot be compared with the
-     *                elements in this TreeSet
-     * @exception NullPointerException
-     *                when the start or end object is null and the comparator
-     *                cannot handle null
+     *            the end element (exclusive).
+     * @return a subset where the elements are greater or equal to {@code start}
+     *         and less than {@code end}
+     * @throws ClassCastException
+     *             when the start or end object cannot be compared with the
+     *             elements in this {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the start or end object is null and the comparator
+     *             cannot handle null.
      */
     @SuppressWarnings("unchecked")
     public SortedSet<E> subSet(E start, E end) {
@@ -337,22 +329,20 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     }
 
     /**
-     * Answers a SortedSet of the specified portion of this TreeSet which
-     * contains elements greater or equal to the start element. The returned
-     * SortedSet is backed by this TreeSet so changes to one are reflected by
-     * the other.
+     * Returns a SortedSet of the specified portion of this {@code TreeSet}
+     * which contains elements greater or equal to the start element. The
+     * returned SortedSet is backed by this {@code TreeSet} so changes to one
+     * are reflected by the other.
      * 
      * @param start
-     *            the start element
-     * @return a subset where the elements are greater or equal to
-     *         <code>start</code>
-     * 
-     * @exception ClassCastException
-     *                when the start object cannot be compared with the elements
-     *                in this TreeSet
-     * @exception NullPointerException
-     *                when the start object is null and the comparator cannot
-     *                handle null
+     *            the start element.
+     * @return a subset where the elements are greater or equal to {@code start}
+     * @throws ClassCastException
+     *             when the start object cannot be compared with the elements in
+     *             this {@code TreeSet}.
+     * @throws NullPointerException
+     *             when the start object is null and the comparator cannot
+     *             handle null.
      */
     @SuppressWarnings("unchecked")
     public SortedSet<E> tailSet(E start) {

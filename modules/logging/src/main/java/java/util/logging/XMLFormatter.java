@@ -24,11 +24,10 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
- * Format a given <code>LogRecord</code> into string represents XML. The DTD
- * specified in Appendix A to Java Logging APIs specification is used.
- * 
- * <code>XMLFormatter</code> uses given <code>Handler</code>'s encoding if
- * has, otherwise uses default platform encoding instead. However, the UTF-8 is
+ * Formatter to convert a {@link LogRecord} into an XML string. The DTD
+ * specified in Appendix A to the Java Logging APIs specification is used.
+ * {@code XMLFormatter} uses the output handler's encoding if it is specified,
+ * otherwise the default platform encoding is used instead. UTF-8 is the
  * recommended encoding.
  */
 public class XMLFormatter extends Formatter {
@@ -39,18 +38,18 @@ public class XMLFormatter extends Formatter {
     private static final String indent = "    "; //$NON-NLS-1$
 
     /**
-     * Default constructor
+     * Constructs a new {@code XMLFormatter}.
      */
     public XMLFormatter() {
         super();
     }
 
     /**
-     * Format a <code>LogRecord</code> into string which represents XML.
+     * Converts a {@code LogRecord} into an XML string.
      * 
      * @param r
-     *            the given LogRecord instance to be formatted
-     * @return string which represents XML
+     *            the log record to be formatted.
+     * @return the log record formatted as an XML string.
      */
     @SuppressWarnings("nls")
     @Override
@@ -164,12 +163,13 @@ public class XMLFormatter extends Formatter {
     }
 
     /**
-     * Return the header string for XML, use given handler's encoding if has,
-     * otherwise use default platform encoding
+     * Returns the header string for a set of log records formatted as XML
+     * strings, using the output handler's encoding if it is defined, otherwise
+     * using the default platform encoding.
      * 
      * @param h
-     *            the given handler
-     * @return the header string for XML
+     *            the output handler, may be {@code null}.
+     * @return the header string for log records formatted as XML strings.
      */
     @SuppressWarnings("nls")
     @Override
@@ -190,14 +190,14 @@ public class XMLFormatter extends Formatter {
     }
 
     /**
-     * Return the tail string for XML
-     * 
+     * Returns the tail string for a set of log records formatted as XML
+     * strings.
+     *
      * @param h
-     *            the given handler
-     * @return the tail string for XML
+     *            the output handler, may be {@code null}.
+     * @return the tail string for log records formatted as XML strings.
      */
     @Override
-    @SuppressWarnings("unused")
     public String getTail(Handler h) {
         return "</log>"; //$NON-NLS-1$
     }

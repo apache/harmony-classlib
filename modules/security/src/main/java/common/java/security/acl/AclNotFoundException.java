@@ -15,26 +15,18 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security.acl;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The exception, that is thrown when a reference to a non-existent <i>Access
+ * Control List</i> (ACL) is made.
  */
-
 public class AclNotFoundException extends Exception {
-    /**
-     * @com.intel.drl.spec_ref 
-     */
+
     private static final long serialVersionUID = 5684295034092681791L;
 
     /**
-     * @com.intel.drl.spec_ref 
+     * Creates a new {@code AclNotFoundException}.
      */
     public AclNotFoundException() {
 

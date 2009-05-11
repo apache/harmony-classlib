@@ -19,23 +19,28 @@ package java.net;
 
 import java.io.InterruptedIOException;
 
+/**
+ * This exception is thrown when a timeout expired on a socket {@code read} or
+ * {@code accept} operation.
+ */
 public class SocketTimeoutException extends InterruptedIOException {
 
     private static final long serialVersionUID = -8846654841826352300L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * Creates a new {@code SocketTimeoutException} instance with its walkback
+     * filled in.
      */
     public SocketTimeoutException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
+     * Creates a new {@code SocketTimeoutException} instance with its walkback
+     * and message filled in.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message of this exception.
      */
     public SocketTimeoutException(String detailMessage) {
         super(detailMessage);

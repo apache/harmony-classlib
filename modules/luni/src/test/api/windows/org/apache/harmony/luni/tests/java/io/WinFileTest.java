@@ -66,7 +66,6 @@ public class WinFileTest extends TestCase {
                 "12" + File.separator + "34" + File.separator + ".." + File.separator + ".." + File.separator + "dir4",
                 "12" + File.separator + ".." + File.separator + "34" + File.separator + ".." + File.separator + "dir5",
                 ".abcd." + File.separator + ".." + File.separator + "dir6.",
-                ".abcd.." + File.separator + "dir7",
                 ".abcd.." + File.separator + ".." + File.separator + "dir8"
         };
         String []ss2 = {
@@ -76,7 +75,6 @@ public class WinFileTest extends TestCase {
                 "dir4",
                 "dir5",
                 "dir6",
-                ".abcd" + File.separator + "dir7",
                 "dir8"                
         };
         for (int i=0; i<ss1.length; i++)

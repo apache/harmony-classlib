@@ -19,7 +19,14 @@ package java.util;
 
 /**
  * Observable is used to notify a group of Observer objects when a change
- * occurs.
+ * occurs. On creation, the set of observers is empty. After a change occurred,
+ * the application can call the {@link #notifyObservers()} method. This will
+ * cause the invocation of the {@code update()} method of all registered
+ * Observers. The order of invocation is not specified. This implementation will
+ * call the Observers in the order they registered. Subclasses are completely
+ * free in what order they call the update methods.
+ *
+ * @see Observer
  */
 public class Observable {
 
@@ -28,17 +35,18 @@ public class Observable {
     boolean changed = false;
 
     /**
-     * Constructs a new Observable object.
+     * Constructs a new {@code Observable} object.
      */
     public Observable() {
         super();
     }
 
     /**
-     * Adds the specified Observer to the list of observers.
+     * Adds the specified observer to the list of observers. If it is already
+     * registered, it is not added a second time.
      * 
      * @param observer
-     *            the Observer to add
+     *            the Observer to add.
      */
     public void addObserver(Observer observer) {
         if (observer == null) {
@@ -51,70 +59,68 @@ public class Observable {
     }
 
     /**
-     * Clears the changed flag for this Observable. After calling
-     * <code>clearChanged()</code>, <code>hasChanged()</code> will return
-     * false.
+     * Clears the changed flag for this {@code Observable}. After calling
+     * {@code clearChanged()}, {@code hasChanged()} will return {@code false}.
      */
     protected void clearChanged() {
         changed = false;
     }
 
     /**
-     * Answers the number of Observers in the list of observers.
+     * Returns the number of observers registered to this {@code Observable}.
      * 
-     * @return the number of observers
+     * @return the number of observers.
      */
     public int countObservers() {
         return observers.size();
     }
 
     /**
-     * Removes the specified Observer from the list of observers.
+     * Removes the specified observer from the list of observers. Passing null
+     * won't do anything.
      * 
      * @param observer
-     *            the Observer to remove
+     *            the observer to remove.
      */
     public synchronized void deleteObserver(Observer observer) {
         observers.remove(observer);
     }
 
     /**
-     * Removes all Observers from the list of observers.
+     * Removes all observers from the list of observers.
      */
     public synchronized void deleteObservers() {
         observers.clear();
     }
 
     /**
-     * Answers the changed flag for this Observable.
+     * Returns the changed flag for this {@code Observable}.
      * 
-     * @return true when the changed flag for this Observable is set, false
-     *         otherwise
+     * @return {@code true} when the changed flag for this {@code Observable} is
+     *         set, {@code false} otherwise.
      */
     public boolean hasChanged() {
         return changed;
     }
 
     /**
-     * If <code>hasChanged()</code> returns true, calls the
-     * <code>update()</code> method for every Observer in the list of
-     * observers using null as the argument. Afterwards calls
-     * <code>clearChanged()</code>.
-     * 
-     * Equivalent to calling <code>notifyObservers(null)</code>
+     * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
+     * method for every observer in the list of observers using null as the
+     * argument. Afterwards, calls {@code clearChanged()}.
+     * <p>
+     * Equivalent to calling {@code notifyObservers(null)}.
      */
     public void notifyObservers() {
         notifyObservers(null);
     }
 
     /**
-     * If <code>hasChanged()</code> returns true, calls the
-     * <code>update()</code> method for every Observer in the list of
-     * observers using the specified argument. Afterwards calls
-     * <code>clearChanged()</code>.
+     * If {@code hasChanged()} returns {@code true}, calls the {@code update()}
+     * method for every Observer in the list of observers using the specified
+     * argument. Afterwards calls {@code clearChanged()}.
      * 
      * @param data
-     *            the argument passed to update()
+     *            the argument passed to {@code update()}.
      */
     @SuppressWarnings("unchecked")
     public void notifyObservers(Object data) {
@@ -136,9 +142,8 @@ public class Observable {
     }
 
     /**
-     * Sets the changed flag for this Observable. After calling
-     * <code>setChanged()</code>, <code>hasChanged()</code> will return
-     * true.
+     * Sets the changed flag for this {@code Observable}. After calling
+     * {@code setChanged()}, {@code hasChanged()} will return {@code true}.
      */
     protected void setChanged() {
         changed = true;

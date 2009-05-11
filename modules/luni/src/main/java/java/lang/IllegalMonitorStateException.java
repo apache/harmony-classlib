@@ -17,31 +17,31 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when a monitor operation is attempted when
- * the monitor is not in the correct state, for example when a thread attempts
- * to exit a monitor which it did not own.
+ * Thrown when a monitor operation is attempted when the monitor is not in the
+ * correct state, for example when a thread attempts to exit a monitor which it
+ * does not own.
  */
 public class IllegalMonitorStateException extends RuntimeException {
 
     private static final long serialVersionUID = 3713306369498869069L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IllegalMonitorStateException() {
-		super();
-	}
+     * Constructs a new {@code IllegalMonitorStateException} that includes the
+     * current stack trace.
+     */
+    public IllegalMonitorStateException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IllegalMonitorStateException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IllegalArgumentException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IllegalMonitorStateException(String detailMessage) {
+        super(detailMessage);
+    }
 }

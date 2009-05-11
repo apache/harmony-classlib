@@ -877,6 +877,97 @@ public class PropertyDescriptorTest extends TestCase {
         }
     }
 
+    class MockJSplitPane extends javax.swing.JSplitPane {
+
+        private static final long serialVersionUID = 3109235561744543400L;
+
+        public int getDividerLocation(int dividerLocation) {
+            return super.getDividerLocation();
+        }
+
+        public void setDividerLocation(int dividerLocation) {
+            super.setDividerLocation(dividerLocation);
+        }
+    }
+
+    public void test_setReadMethod_MockJSplitPane() throws Exception {
+        Class<?> beanClass = MockJSplitPane.class;
+        String propertyName = "dividerLocation";
+        String getterName = "getDividerLocation";
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, beanClass,
+                getterName, null);
+        assertEquals(propertyName, pd.getName());
+        assertNull(pd.getWriteMethod());
+
+        Method expectedMethod = beanClass.getMethod(getterName, new Class[0]);
+        assertEquals(expectedMethod, pd.getReadMethod());
+
+        getterName = "notFoundGetter";
+        pd = new PropertyDescriptor(propertyName, beanClass, getterName, null);
+        assertEquals(propertyName, pd.getName());
+        assertNull(pd.getWriteMethod());
+        assertEquals(expectedMethod, pd.getReadMethod());
+    }
+
+    public void test_setWriteMethod_MockJSplitPane() throws Exception {
+        Class<?> beanClass = MockJSplitPane.class;
+        String propertyName = "dividerLocation";
+        String setterName = "setDividerLocation";
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, beanClass,
+                null, setterName);
+        assertEquals(propertyName, pd.getName());
+        assertNull(pd.getReadMethod());
+
+        Method expectedMethod = beanClass.getMethod(setterName,
+                new Class[] { int.class });
+        assertEquals(expectedMethod, pd.getWriteMethod());
+
+        setterName = "notFoundSetter";
+        try {
+            new PropertyDescriptor(propertyName, beanClass, null, setterName);
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // Expected
+        }
+    }
+
+    public void test_setRead$WriteMethod_MockJSplitPane() throws Exception {
+        Class<?> beanClass = MockJSplitPane.class;
+        String propertyName = "dividerLocation";
+        String getterName = "getDividerLocation";
+        String setterName = "setDividerLocation";
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, beanClass,
+                getterName, setterName);
+        assertEquals(propertyName, pd.getName());
+        Method expectedGetterMethod = beanClass.getMethod(getterName,
+                new Class[0]);
+        assertEquals(expectedGetterMethod, pd.getReadMethod());
+
+        Method expectedSetterMethod = beanClass.getMethod(setterName,
+                new Class[] { int.class });
+        assertEquals(expectedSetterMethod, pd.getWriteMethod());
+
+        new PropertyDescriptor(propertyName, beanClass, getterName + 1,
+                setterName);
+        assertEquals(expectedGetterMethod, pd.getReadMethod());
+        assertEquals(expectedSetterMethod, pd.getWriteMethod());
+
+        try {
+            new PropertyDescriptor(propertyName, beanClass, getterName,
+                    setterName + 1);
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // Expected
+        }
+        try {
+            new PropertyDescriptor(propertyName, beanClass, getterName + 1,
+                    setterName + 1);
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // Expected
+        }
+    }
+
     public void testSetBound_true() throws SecurityException,
             NoSuchMethodException, IntrospectionException {
         Class<MockJavaBean> beanClass = MockJavaBean.class;

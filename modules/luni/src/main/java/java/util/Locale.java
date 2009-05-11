@@ -32,7 +32,7 @@ import org.apache.harmony.luni.util.PriviAction;
 import com.ibm.icu.util.ULocale;
 
 /**
- * Locale represents a language/country/variant combination. It is an identifier
+ * {@code Locale} represents a language/country/variant combination. It is an identifier
  * which dictates particular conventions for the presentation of information.
  * The language codes are two letter lowercase codes as defined by ISO-639. The
  * country codes are three letter uppercase codes as defined by ISO-3166. The
@@ -185,36 +185,40 @@ public final class Locale implements Cloneable, Serializable {
 	}
 
     /**
-     * Constructs a new Locale using the specified language.
+     * Constructs a new {@code Locale} using the specified language.
      * 
      * @param language
-     * 
+     *            the language this {@code Locale} represents.
      */
     public Locale(String language) {
         this(language, "", ""); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
-     * Constructs a new Locale using the specified language and country codes.
+     * Constructs a new {@code Locale} using the specified language and country codes.
      * 
      * @param language
+     *            the language this {@code Locale} represents.
      * @param country
-     * 
+     *            the country this {@code Locale} represents.
      */
     public Locale(String language, String country) {
         this(language, country, ""); //$NON-NLS-1$
     }
 
     /**
-     * Constructs a new Locale using the specified language, country, and
+     * Constructs a new {@code Locale} using the specified language, country, and
      * variant codes.
      * 
      * @param language
+     *            the language this {@code Locale} represents.
      * @param country
+     *            the country this {@code Locale} represents.
      * @param variant
+     *            the variant this {@code Locale} represents.
      * @throws NullPointerException
-     *             if <code>language</code>, <code>country</code> or
-     *             <code>variant</code> is <code>null</code>.
+     *             if {@code language}, {@code country}, or
+     *             {@code variant} is {@code null}.
      */
     public Locale(String language, String country, String variant) {
         if (language == null || country == null || variant == null) {
@@ -246,11 +250,10 @@ public final class Locale implements Cloneable, Serializable {
     }
 
     /**
-     * Answers a new Locale with the same language, country and variant codes as
-     * this Locale.
+     * Returns a new {@code Locale} with the same language, country and variant codes as
+     * this {@code Locale}.
      * 
-     * @return a shallow copy of this Locale
-     * 
+     * @return a shallow copy of this {@code Locale}.
      * @see java.lang.Cloneable
      */
     @Override
@@ -263,15 +266,14 @@ public final class Locale implements Cloneable, Serializable {
     }
 
     /**
-     * Compares the specified object to this Locale and answer if they are
-     * equal. The object must be an instance of Locale and have the same
+     * Compares the specified object to this {@code Locale} and returns whether they are
+     * equal. The object must be an instance of {@code Locale} and have the same
      * language, country and variant.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this Locale, false
-     *         otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this {@code Locale},
+     *         {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -374,9 +376,10 @@ public final class Locale implements Cloneable, Serializable {
     }
 
 	/**
-	 * Gets the list of installed Locales.
-	 * 
-	 * @return an array of Locale
+     * Gets the list of installed {@code Locale}. At least a {@code Locale} that is equal to
+     * {@code Locale.US} must be contained in this array.
+     *
+     * @return an array of {@code Locale}s.
 	 */
 	public static Locale[] getAvailableLocales() {
 		ULocale[] ulocales =  ULocale.getAvailableLocales();
@@ -388,76 +391,77 @@ public final class Locale implements Cloneable, Serializable {
 	}
 
     /**
-     * Gets the country code for this Locale.
+     * Gets the country code for this {@code Locale} or an empty string of no country
+     * was set.
      * 
-     * @return a country code
+     * @return a country code.
      */
     public String getCountry() {
         return countryCode;
     }
 
     /**
-     * Gets the default Locale.
+     * Gets the default {@code Locale}.
      * 
-     * @return the default Locale
+     * @return the default {@code Locale}.
      */
     public static Locale getDefault() {
         return defaultLocale;
     }
 
     /**
-     * Gets the full country name in the default Locale for the country code of
-     * this Locale. If there is no matching country name, the country code is
+     * Gets the full country name in the default {@code Locale} for the country code of
+     * this {@code Locale}. If there is no matching country name, the country code is
      * returned.
      * 
-     * @return a country name
+     * @return a country name.
      */
     public final String getDisplayCountry() {
         return getDisplayCountry(getDefault());
     }
 
-	/**
-	 * Gets the full country name in the specified Locale for the country code
-	 * of this Locale. If there is no matching country name, the country code is
-	 * returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a country name
-	 */
+    /**
+     * Gets the full country name in the specified {@code Locale} for the country code
+     * of this {@code Locale}. If there is no matching country name, the country code is
+     * returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a country name.
+     */
 	public String getDisplayCountry(Locale locale) {
 		return ULocale.forLocale(this).getDisplayCountry(ULocale.forLocale(locale));
 	}
 
     /**
-     * Gets the full language name in the default Locale for the language code
-     * of this Locale. If there is no matching language name, the language code
+     * Gets the full language name in the default {@code Locale} for the language code
+     * of this {@code Locale}. If there is no matching language name, the language code
      * is returned.
      * 
-     * @return a language name
+     * @return a language name.
      */
     public final String getDisplayLanguage() {
         return getDisplayLanguage(getDefault());
     }
 
-	/**
-	 * Gets the full language name in the specified Locale for the language code
-	 * of this Locale. If there is no matching language name, the language code
-	 * is returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a language name
-	 */
+    /**
+     * Gets the full language name in the specified {@code Locale} for the language code
+     * of this {@code Locale}. If there is no matching language name, the language code
+     * is returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a language name.
+     */
 	public String getDisplayLanguage(Locale locale) {
         return ULocale.forLocale(this).getDisplayLanguage(ULocale.forLocale(locale));
 	}
 
     /**
-     * Gets the full language, country, and variant names in the default Locale
-     * for the codes of this Locale.
+     * Gets the full language, country, and variant names in the default {@code Locale}
+     * for the codes of this {@code Locale}.
      * 
-     * @return a Locale name
+     * @return a {@code Locale} name.
      */
     public final String getDisplayName() {
         return getDisplayName(getDefault());
@@ -465,11 +469,11 @@ public final class Locale implements Cloneable, Serializable {
 
     /**
      * Gets the full language, country, and variant names in the specified
-     * Locale for the codes of this Locale.
+     * Locale for the codes of this {@code Locale}.
      * 
      * @param locale
-     *            the Locale
-     * @return a Locale name
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a {@code Locale} name.
      */
     public String getDisplayName(Locale locale) {
         int count = 0;
@@ -501,99 +505,98 @@ public final class Locale implements Cloneable, Serializable {
     }
 
     /**
-     * Gets the full variant name in the default Locale for the variant code of
-     * this Locale. If there is no matching variant name, the variant code is
+     * Gets the full variant name in the default {@code Locale} for the variant code of
+     * this {@code Locale}. If there is no matching variant name, the variant code is
      * returned.
      * 
-     * @return a variant name
+     * @return a variant name.
      */
     public final String getDisplayVariant() {
         return getDisplayVariant(getDefault());
     }
 
-	/**
-	 * Gets the full variant name in the specified Locale for the variant code
-	 * of this Locale. If there is no matching variant name, the variant code is
-	 * returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a variant name
-	 */
+    /**
+     * Gets the full variant name in the specified {@code Locale} for the variant code
+     * of this {@code Locale}. If there is no matching variant name, the variant code is
+     * returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a variant name.
+     */
 	public String getDisplayVariant(Locale locale) {
         return ULocale.forLocale(this).getDisplayVariant(ULocale.forLocale(locale));
 	}
 
-	/**
-	 * Gets the three letter ISO country code which corresponds to the country
-	 * code for this Locale.
-	 * 
-	 * @return a three letter ISO language code
-	 * 
-	 * @exception MissingResourceException
-	 *                when there is no matching three letter ISO country code
-	 */
+    /**
+     * Gets the three letter ISO country code which corresponds to the country
+     * code for this {@code Locale}.
+     *
+     * @return a three letter ISO language code.
+     * @throws MissingResourceException
+     *                if there is no matching three letter ISO country code.
+     */
 	public String getISO3Country() throws MissingResourceException {
         return ULocale.forLocale(this).getISO3Country();
 	}
 
-	/**
-	 * Gets the three letter ISO language code which corresponds to the language
-	 * code for this Locale.
-	 * 
-	 * @return a three letter ISO language code
-	 * 
-	 * @exception MissingResourceException
-	 *                when there is no matching three letter ISO language code
-	 */
+    /**
+     * Gets the three letter ISO language code which corresponds to the language
+     * code for this {@code Locale}.
+     *
+     * @return a three letter ISO language code.
+     * @throws MissingResourceException
+     *                if there is no matching three letter ISO language code.
+     */
 	public String getISO3Language() throws MissingResourceException {
         return ULocale.forLocale(this).getISO3Language();
 	}
 
     /**
      * Gets the list of two letter ISO country codes which can be used as the
-     * country code for a Locale.
+     * country code for a {@code Locale}.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public static String[] getISOCountries() {
         return ULocale.getISOCountries();
     }
 
-	/**
-	 * Gets the list of two letter ISO language codes which can be used as the
-	 * language code for a Locale.
-	 * 
-	 * @return an array of String
-	 */
+    /**
+     * Gets the list of two letter ISO language codes which can be used as the
+     * language code for a {@code Locale}.
+     *
+     * @return an array of strings.
+     */
 	public static String[] getISOLanguages() {
         return ULocale.getISOLanguages();
 	}
 
     /**
-     * Gets the language code for this Locale.
+     * Gets the language code for this {@code Locale} or the empty string of no language
+     * was set.
      * 
-     * @return a language code
+     * @return a language code.
      */
     public String getLanguage() {
         return languageCode;
     }
 
     /**
-     * Gets the variant code for this Locale.
+     * Gets the variant code for this {@code Locale} or an empty {@code String} of no variant
+     * was set.
      * 
-     * @return a variant code
+     * @return a variant code.
      */
     public String getVariant() {
         return variantCode;
     }
 
     /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
+     * Returns an integer hash code for the receiver. Objects which are equal
+     * return the same value for this method.
      * 
-     * @return the receiver's hash
-     * 
+     * @return the receiver's hash.
      * @see #equals
      */
     @Override
@@ -603,14 +606,13 @@ public final class Locale implements Cloneable, Serializable {
     }
 
     /**
-     * Sets the default Locale to the specified Locale.
+     * Sets the default {@code Locale} to the specified {@code Locale}.
      * 
      * @param locale
-     *            the new default Locale
-     * 
-     * @exception SecurityException
-     *                when there is a security manager which does not allow this
-     *                operation
+     *            the new default {@code Locale}.
+     * @throws SecurityException
+     *                if there is a {@code SecurityManager} in place which does not allow this
+     *                operation.
      */
     public synchronized static void setDefault(Locale locale) {
         if (locale != null) {
@@ -625,9 +627,17 @@ public final class Locale implements Cloneable, Serializable {
     }
 
     /**
-     * Answers the string representation of this Locale.
-     * 
-     * @return the string representation of this Locale
+     * Returns the string representation of this {@code Locale}. It consists of the
+     * language followed by the country and at the end the variant. They are
+     * separated by underscores. If the language is missing the string begins
+     * with an underscore. If the country is missing there are 2 underscores
+     * between the language and the variant. the variant alone canot be defined
+     * without a language and/or a country (in this case this method would
+     * return the empty string).
+     *
+     * Examples: "en", "en_US", "_US", "en__POSIX", "en_US_POSIX"
+     *
+     * @return the string representation of this {@code Locale}.
      */
     @Override
     public final String toString() {

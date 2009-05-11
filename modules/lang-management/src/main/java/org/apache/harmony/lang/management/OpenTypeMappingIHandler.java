@@ -387,10 +387,10 @@ public class OpenTypeMappingIHandler implements InvocationHandler {
      */
     private String[] getOperationSignature(Method method) {
         String[] result = null;
-        Class[] args = method.getParameterTypes();
+        Class<?>[] args = method.getParameterTypes();
         result = new String[args.length];
         for (int i = 0; i < args.length; i++) {
-            Class clazz = args[i];
+            Class<?> clazz = args[i];
             result[i] = clazz.getName();
         }
         return result;

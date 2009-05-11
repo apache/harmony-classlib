@@ -316,6 +316,54 @@ public class ThreadInfoTest extends TestCase {
         assertEquals(getGoodToStringVal(), ti.toString());
     }
 
+    /*
+     * Test method for 'java.lang.management.ThreadInfo.from(CompositeData)'
+     * with more than 13 essential fields
+     */
+    public void test_from_fields() throws Exception {
+        Object stackTraceElementData = createGoodStackTraceCompositeData();
+        CompositeType stackTraceElementType = createGoodStackTraceElementCompositeType();
+        String[] names = { "threadId", "threadName", "threadState",
+                "suspended", "inNative", "blockedCount", "blockedTime",
+                "waitedCount", "waitedTime", "lockName", "lockOwnerId",
+                "lockOwnerName", "stackTrace", "additionalName" };
+        Object[] values = { 1L, "threadName", GOOD_THREAD_STATE.toString(),
+                true, false, 1L, 500L, 1L, 1L, "lock", 2L, "lockOwner",
+                stackTraceElementData, "additionalValue" };
+        OpenType[] types = { SimpleType.LONG, SimpleType.STRING,
+                SimpleType.STRING, SimpleType.BOOLEAN, SimpleType.BOOLEAN,
+                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG, SimpleType.STRING, SimpleType.LONG,
+                SimpleType.STRING, new ArrayType(1, stackTraceElementType),
+                SimpleType.STRING };
+        CompositeType compositeType = new CompositeType(ThreadInfo.class
+                .getName(), ThreadInfo.class.getName(), names, names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        ThreadInfo threadInfo = ThreadInfo.from(data);
+        assertEquals(values[0], threadInfo.getThreadId());
+        assertEquals(values[1], threadInfo.getThreadName());
+        assertEquals(GOOD_THREAD_STATE, threadInfo.getThreadState());
+        assertEquals(values[3], threadInfo.isSuspended());
+        assertEquals(values[4], threadInfo.isInNative());
+        assertEquals(values[5], threadInfo.getBlockedCount());
+        assertEquals(values[6], threadInfo.getBlockedTime());
+        assertEquals(values[7], threadInfo.getWaitedCount());
+        assertEquals(values[8], threadInfo.getWaitedTime());
+        assertEquals(values[9], threadInfo.getLockName());
+        assertEquals(values[10], threadInfo.getLockOwnerId());
+        assertEquals(values[11], threadInfo.getLockOwnerName());
+        StackTraceElement[] stackElements = threadInfo.getStackTrace();
+        assertEquals(GOOD_STACK_SIZE, stackElements.length);
+        for (StackTraceElement element : stackElements) {
+            assertEquals(GOOD_STACK_CLASSNAME, element.getClassName());
+            assertEquals(GOOD_STACK_NATIVEMETHOD, element.isNativeMethod());
+            assertEquals(GOOD_STACK_FILENAME, element.getFileName());
+            assertEquals(GOOD_STACK_LINENUMBER, element.getLineNumber());
+            assertEquals(GOOD_STACK_METHODNAME, element.getMethodName());
+        }
+    }
+
     String getGoodToStringVal() {
         StringBuilder result = new StringBuilder();
         result.append("Thread " + GOOD_THREAD_NAME + " (Id = " + GOOD_THREAD_ID

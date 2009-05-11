@@ -17,15 +17,15 @@
 package java.nio.channels;
 
 /**
- * Thrown when attempting to acquire a lock that overlaps an existing or pending
- * lock held by this process.
+ * An {@code OverlappingFileLockException} is thrown when attempting to acquire
+ * a lock that overlaps an existing or pending lock held by this process.
  */
 public class OverlappingFileLockException extends IllegalStateException {
 
     private static final long serialVersionUID = 2047812138163068433L;
 
     /**
-     * Default constructor.
+     * Constructs a {@code OverlappingFileLockException}.
      */
     public OverlappingFileLockException() {
         super();

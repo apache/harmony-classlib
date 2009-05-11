@@ -27,9 +27,9 @@
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.luni.src.test.api.java.platform"
-	    value="${hy.luni.src.test.api}/${hy.os.family}" />
-	<property name="hy.luni.src.test.impl.java.platform"
-	    value="${hy.luni.src.test.impl}/${hy.os.family}" />
+        value="${hy.luni.src.test.api}/${hy.os.family}" />
+    <property name="hy.luni.src.test.impl.java.platform"
+        value="${hy.luni.src.test.impl}/${hy.os.family}" />
     <fileset id="classes" dir="${hy.build}">
         <or>
             <present targetdir="${hy.luni.src.main.java}" />
@@ -40,6 +40,13 @@
             </present>
         </or>
     </fileset>
+
+    <fileset id="tests.api" dir="${hy.luni.bin.test}/api"/>
+    <fileset id="tests.impl" dir="${hy.luni.bin.test}/impl"/>
+
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/luni" />
+    <property name="tests.resources.hdk.dir" value="${tests.hdk.dir}/resources" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
 
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
@@ -210,7 +217,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, test-jar, run-tests" />
 
     <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
@@ -219,6 +226,7 @@
             <fileset refid="classes" />
         </delete>
         <delete failonerror="false" dir="bin"/>
+        <delete dir="${tests.hdk.dir}" quiet="true" />
     </target>
 
     <target name="clean-native-includes">
@@ -285,6 +293,55 @@
 
             <metainf refid="hy.required.metainf-files"/>
         </jar>
+    </target>
+
+    <target name="test-jar" depends="svn-info">
+        <mkdir dir="${tests.hdk.dir}"/>
+
+        <jar destfile="${tests.hdk.dir}/${hy.luni.packaging.jarname}_tests_api.jar">
+            <fileset refid="tests.api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/>
+            </manifest>
+        </jar>
+
+        <jar destfile="${tests.hdk.dir}/${hy.luni.packaging.jarname}_tests_impl.jar">
+            <fileset refid="tests.impl" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/>
+            </manifest>
+        </jar>
+
+        <copy todir="${tests.hdk.dir}">
+            <fileset dir="${hy.luni.src.test.resources}" >
+                <include name="org/**/*"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${tests.resources.hdk.dir}/config"/>
+        <copy file="../../support/src/test/resources/config/testing.policy"
+              todir="${tests.resources.hdk.dir}/config"/>
+        <copy file="../../support/src/test/resources/config/localhosttest.ini"
+              todir="${tests.resources.hdk.dir}/config"/>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="${hy.luni.src.test.resources}" >
+                <include name="serialization/**/*"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy todir="${tests.hdk.dir}/.." file="${hy.hdk}/build/ant/properties.xml"/>
+
     </target>
 
     <!-- compile both api tests and impl tests-->

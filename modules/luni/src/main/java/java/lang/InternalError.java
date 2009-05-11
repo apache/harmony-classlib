@@ -17,30 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the VM notices that it has gotten into a state
- * which it does not understand.
+ * Thrown when the virtual machine notices that it has gotten into an undefined
+ * state.
  */
 public class InternalError extends VirtualMachineError {
 
     private static final long serialVersionUID = -9062593416125562365L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public InternalError() {
-		super();
-	}
+     * Constructs a new {@code InternalError} that includes the current stack
+     * trace.
+     */
+    public InternalError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public InternalError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code InternalError} with the current stack trace and
+     * the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public InternalError(String detailMessage) {
+        super(detailMessage);
+    }
 }

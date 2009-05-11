@@ -119,11 +119,11 @@ public class LineNumberReaderTest extends TestCase {
         // Regression for HARMONY-4294
         byte[] buffer = new byte[] { '\r', '\n' };
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(
-                new ByteArrayInputStream(buffer)));
+                new ByteArrayInputStream(buffer), "UTF-8"));
         assertEquals('\n', reader.read());
         assertEquals(-1, reader.read());
         reader = new LineNumberReader(new InputStreamReader(
-                new ByteArrayInputStream(buffer)));
+                new ByteArrayInputStream(buffer), "UTF-8"));
         assertNotNull(reader.readLine());
         assertNull(reader.readLine());
     }

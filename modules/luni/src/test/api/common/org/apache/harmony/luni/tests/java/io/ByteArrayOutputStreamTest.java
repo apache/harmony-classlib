@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
@@ -126,12 +127,12 @@ public class ByteArrayOutputStreamTest extends TestCase {
     public void test_toStringLjava_lang_String() throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        bos.write(fileString.getBytes(), 0, fileString.length());
+        bos.write(fileString.getBytes("UTF-8"), 0, fileString.length());
         assertTrue("Returned incorrect 8859-1 String", bos.toString("8859_1")
                 .equals(fileString));
 
         bos = new ByteArrayOutputStream();
-        bos.write(fileString.getBytes(), 0, fileString.length());
+        bos.write(fileString.getBytes("UTF-8"), 0, fileString.length());
         assertTrue("Returned incorrect 8859-2 String", bos.toString("8859_2")
                 .equals(fileString));
     }
@@ -160,12 +161,12 @@ public class ByteArrayOutputStreamTest extends TestCase {
     /**
      * @tests java.io.ByteArrayOutputStream#write(int)
      */
-    public void test_writeI() {
+    public void test_writeI() throws UnsupportedEncodingException {
         bos = new ByteArrayOutputStream();
         bos.write('t');
         byte[] result = bos.toByteArray();
         assertEquals("Wrote incorrect bytes", "t", new String(result, 0,
-                result.length));
+                result.length, "UTF-8"));
     }
 
     /**

@@ -18,62 +18,65 @@
 package java.lang;
 
 /**
- * This error is thrown when an exception occurs during class initialization.
+ * Thrown when an exception occurs during class initialization.
  */
 public class ExceptionInInitializerError extends LinkageError {
 
-	private static final long serialVersionUID = 1521711792217232256L;
+    private static final long serialVersionUID = 1521711792217232256L;
 
-	private Throwable exception;
+    private Throwable exception;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ExceptionInInitializerError() {
-		super();
-		initCause(null);
-	}
+    /**
+     * Constructs a new {@code ExceptionInInitializerError} that includes the
+     * current stack trace.
+     */
+    public ExceptionInInitializerError() {
+        super();
+        initCause(null);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ExceptionInInitializerError(String detailMessage) {
-		super(detailMessage);
-		initCause(null);
-	}
+    /**
+     * Constructs a new {@code ExceptionInInitializerError} with the current
+     * stack trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public ExceptionInInitializerError(String detailMessage) {
+        super(detailMessage);
+        initCause(null);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and exception
-	 * filled in. The exception should be the one which originally occurred in
-	 * the class initialization code.
-	 * 
-	 * @param exception
-	 *            Throwable The exception which caused the problem.
-	 */
-	public ExceptionInInitializerError(Throwable exception) {
-		super();
-		this.exception = exception;
-		initCause(exception);
-	}
+    /**
+     * Constructs a new {@code ExceptionInInitializerError} with the current
+     * stack trace and the specified cause. The exception should be the one
+     * which originally occurred in the class initialization code.
+     * 
+     * @param exception
+     *            the exception that caused this error.
+     */
+    public ExceptionInInitializerError(Throwable exception) {
+        super();
+        this.exception = exception;
+        initCause(exception);
+    }
 
-	/**
-	 * Answers the exception which was passed in when the instance was created.
-	 */
-	public Throwable getException() {
-		return exception;
-	}
+    /**
+     * Returns the exception that is the cause of this error.
+     * 
+     * @return the exception that caused this error.
+     */
+    public Throwable getException() {
+        return exception;
+    }
 
-	/**
-	 * Answers the cause of this Throwable, or null if there is no cause.
-	 * 
-	 * @return Throwable The receiver's cause.
-	 */
-	@Override
+    /**
+     * Returns the cause of this error, or {@code null} if there is no cause.
+     * 
+     * @return the exception that caused this error.
+     */
+    @Override
     public Throwable getCause() {
-		return exception;
-	}
+        return exception;
+    }
 }

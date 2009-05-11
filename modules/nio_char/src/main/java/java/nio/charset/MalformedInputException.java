@@ -20,8 +20,8 @@ package java.nio.charset;
 import org.apache.harmony.niochar.internal.nls.Messages;
 
 /**
- * Thrown when a malformed input is encountered, for example, a byte sequence is
- * illegal for the given charset.
+ * A {@code MalformedInputException} is thrown when a malformed input is
+ * encountered, for example if a byte sequence is illegal for the given charset.
  */
 public class MalformedInputException extends CharacterCodingException {
 
@@ -35,10 +35,10 @@ public class MalformedInputException extends CharacterCodingException {
     private int inputLength;
 
     /**
-     * Constructs an instance of this exception.
+     * Constructs a new {@code MalformedInputException}.
      * 
      * @param length
-     *            the length of the malformed input
+     *            the length of the malformed input.
      */
     public MalformedInputException(int length) {
         this.inputLength = length;
@@ -47,7 +47,7 @@ public class MalformedInputException extends CharacterCodingException {
     /**
      * Gets the length of the malformed input.
      * 
-     * @return the length of the malformed input
+     * @return the length of the malformed input.
      */
     public int getInputLength() {
         return this.inputLength;
@@ -56,7 +56,7 @@ public class MalformedInputException extends CharacterCodingException {
     /**
      * Gets a message describing this exception.
      * 
-     * @return a message describing this exception
+     * @return a message describing this exception.
      */
     @Override
     public String getMessage() {

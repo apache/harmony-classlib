@@ -18,9 +18,7 @@
 package java.lang;
 
 /**
- * <p>
- * Double is the wrapper for the primitive type <code>double</code>.
- * </p>
+ * The wrapper for the primitive type {@code double}.
  * 
  * @see java.lang.Number
  * @since 1.0
@@ -35,49 +33,37 @@ public final class Double extends Number implements Comparable<Double> {
     private final double value;
 
     /**
-     * <p>
-     * Constant for the maximum <code>double</code> value, (2 - 2<sup>-52/sup>) *
+     * Constant for the maximum {@code double} value, (2 - 2<sup>-52</sup>) *
      * 2<sup>1023</sup>.
-     * </p>
      */
     public static final double MAX_VALUE = 1.79769313486231570e+308;
 
     /**
-     * <p>
-     * Constant for the minimum <code>double</code> value, 2<sup>-1074</sup>.
-     * </p>
+     * Constant for the minimum {@code double} value, 2<sup>-1074</sup>.
      */
     public static final double MIN_VALUE = 5e-324;
 
     /* 4.94065645841246544e-324 gets rounded to 9.88131e-324 */
 
     /**
-     * <p>
-     * Constant for the Not-a-Number (NaN) value of the <code>double</code>
-     * type.
-     * </p>
+     * Constant for the Not-a-Number (NaN) value of the {@code double} type.
      */
     public static final double NaN = 0.0 / 0.0;
 
     /**
-     * <p>
-     * Constant for the Positive Infinity value of the <code>double</code>
-     * type.
-     * </p>
+     * Constant for the Positive Infinity value of the {@code double} type.
      */
     public static final double POSITIVE_INFINITY = 1.0 / 0.0;
 
     /**
-     * <p>
-     * Constant for the Negative Infinity value of the <code>double</code>
-     * type.
-     * </p>
+     * Constant for the Negative Infinity value of the {@code double} type.
      */
     public static final double NEGATIVE_INFINITY = -1.0 / 0.0;
 
     /**
-     * The java.lang.Class that represents this class.
-     * 
+     * The {@link Class} object that represents the primitive type {@code
+     * double}.
+     *
      * @since 1.1
      */
     @SuppressWarnings("unchecked")
@@ -88,108 +74,99 @@ public final class Double extends Number implements Comparable<Double> {
     // defined to be "java.lang.Double.TYPE";
 
     /**
-     * <p>
-     * Constant for the number of bits to represent a <code>double</code> in
-     * two's compliment form.
-     * </p>
-     * 
+     * Constant for the number of bits needed to represent a {@code double} in
+     * two's complement form.
+     *
      * @since 1.5
      */
     public static final int SIZE = 64;
 
     /**
-     * Constructs a new instance of the receiver which represents the double
-     * valued argument.
+     * Constructs a new {@code Double} with the specified primitive double
+     * value.
      * 
      * @param value
-     *            the double to store in the new instance.
+     *            the primitive double value to store in the new instance.
      */
     public Double(double value) {
         this.value = value;
     }
 
     /**
-     * Constructs a new instance of this class given a string.
+     * Constructs a new {@code Double} from the specified string.
      * 
      * @param string
-     *            a string representation of a double quantity.
-     * @exception NumberFormatException
-     *                if the argument could not be parsed as a double quantity.
+     *            the string representation of a double value.
+     * @throws NumberFormatException
+     *             if {@code string} can not be decoded into a double value.
+     * @see #parseDouble(String)
      */
     public Double(String string) throws NumberFormatException {
         this(parseDouble(string));
     }
 
     /**
-     * Compares the receiver with the Double parameter. NaN is equal to NaN, and
-     * is greater than other double values. 0d is greater than -0d.
+     * Compares this object to the specified double object to determine their
+     * relative order. There are two special cases:
+     * <ul>
+     * <li>{@code Double.NaN} is equal to {@code Double.NaN} and it is greater
+     * than any other double value, including {@code Double.POSITIVE_INFINITY};</li>
+     * <li>+0.0d is greater than -0.0d</li>
+     * </ul>
      * 
      * @param object
-     *            the Double to compare to the receiver
-     * 
-     * @return Returns greater than zero when this.doubleValue() is greater than
-     *         object.doubleValue(), zero when this.doubleValue() equals
-     *         object.doubleValue(), and less than zero when this.doubleValue()
-     *         is less than object.doubleValue()
-     * 
+     *            the double object to compare this object to.
+     * @return a negative value if the value of this double is less than the
+     *         value of {@code object}; 0 if the value of this double and the
+     *         value of {@code object} are equal; a positive value if the value
+     *         of this double is greater than the value of {@code object}.
      * @throws NullPointerException
-     *             if <code>object</code> is <code>null</code>.
+     *             if {@code object} is {@code null}.
+     * @see java.lang.Comparable
      * @since 1.2
      */
     public int compareTo(Double object) {
-        long d1, d2;
-        long NaNbits = Double.doubleToLongBits(Double.NaN);
-        if ((d1 = Double.doubleToLongBits(value)) == NaNbits) {
-            if (Double.doubleToLongBits(object.value) == NaNbits) {
-                return 0;
-            }
-            return 1;
-        }
-        if ((d2 = Double.doubleToLongBits(object.value)) == NaNbits) {
-            return -1;
-        }
-        if (value == object.value) {
-            if (d1 == d2) {
-                return 0;
-            }
-            // check for -0
-            return d1 > d2 ? 1 : -1;
-        }
-        return value > object.value ? 1 : -1;
+        return compare(value, object.value);
     }
 
-    /**
-     * Answers the byte value which the receiver represents
-     * 
-     * @return byte the value of the receiver.
-     */
     @Override
     public byte byteValue() {
         return (byte) value;
     }
 
     /**
-     * Answers the binary representation of the argument, as a long.
+     * Converts the specified double value to a binary representation conforming
+     * to the IEEE 754 floating-point double precision bit layout. All
+     * <em>Not-a-Number (NaN)</em> values are converted to a single NaN
+     * representation ({@code 0x7ff8000000000000L}).
      * 
      * @param value
-     *            The double value to convert
-     * @return the bits of the double.
+     *            the double value to convert.
+     * @return the IEEE 754 floating-point double precision representation of
+     *         {@code value}.
+     * @see #doubleToRawLongBits(double)
+     * @see #longBitsToDouble(long)
      */
     public static native long doubleToLongBits(double value);
 
     /**
-     * Answers the binary representation of the argument, as a long.
+     * Converts the specified double value to a binary representation conforming
+     * to the IEEE 754 floating-point double precision bit layout.
+     * <em>Not-a-Number (NaN)</em> values are preserved.
      * 
      * @param value
-     *            The double value to convert
-     * @return the bits of the double.
+     *            the double value to convert.
+     * @return the IEEE 754 floating-point double precision representation of
+     *         {@code value}.
+     * @see #doubleToLongBits(double)
+     * @see #longBitsToDouble(long)
      */
     public static native long doubleToRawLongBits(double value);
 
     /**
-     * Answers the receiver's value as a double.
+     * Gets the primitive value of this double.
      * 
-     * @return the receiver's value
+     * @return this object's primitive value.
      */
     @Override
     public double doubleValue() {
@@ -197,16 +174,15 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * Compares the argument to the receiver, and answers true if they represent
-     * the <em>same</em> object using a class specific comparison. For
-     * Doubles, the check verifies that the receiver's value's bit pattern
-     * matches the bit pattern of the argument, which must also be a Double.
+     * Compares this object with the specified object and indicates if they are
+     * equal. In order to be equal, {@code object} must be an instance of
+     * {@code Double} and the bit pattern of its double value is the same as
+     * this object's.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return <code>true</code> if the object is the same as this object
-     *         <code>false</code> if it is different from this object
-     * @see #hashCode
+     *            the object to compare this double with.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code Double}; {@code false} otherwise.
      */
     @Override
     public boolean equals(Object object) {
@@ -215,117 +191,94 @@ public final class Double extends Number implements Comparable<Double> {
                 && (doubleToLongBits(this.value) == doubleToLongBits(((Double) object).value));
     }
 
-    /**
-     * Answers the float value which the receiver represents
-     * 
-     * @return float the value of the receiver.
-     */
     @Override
     public float floatValue() {
         return (float) value;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Any two objects which
-     * answer <code>true</code> when passed to <code>equals</code> must
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         long v = doubleToLongBits(value);
         return (int) (v ^ (v >>> 32));
     }
 
-    /**
-     * Answers the receiver's value as an integer.
-     * 
-     * @return the receiver's value as an integer
-     */
     @Override
     public int intValue() {
         return (int) value;
     }
 
     /**
-     * Answers true if the receiver represents an infinite quantity, and false
-     * otherwise.
+     * Indicates whether this object represents an infinite value.
      * 
-     * @return <code>true</code> if the argument is positive or negative
-     *         infinity <code>false</code> if it is not an infinite value
+     * @return {@code true} if the value of this double is positive or negative
+     *         infinity; {@code false} otherwise.
      */
     public boolean isInfinite() {
         return isInfinite(value);
     }
 
     /**
-     * Answers true if the argument represents an infinite quantity, and false
-     * otherwise.
+     * Indicates whether the specified double represents an infinite value.
      * 
      * @param d
-     *            value to check for infinitness.
-     * @return <code>true</code> if the argument is positive or negative
-     *         infinity <code>false</code> if it is not an infinite value
+     *            the double to check.
+     * @return {@code true} if the value of {@code d} is positive or negative
+     *         infinity; {@code false} otherwise.
      */
     public static boolean isInfinite(double d) {
         return (d == POSITIVE_INFINITY) || (d == NEGATIVE_INFINITY);
     }
 
     /**
-     * Answers true if the receiver does not represent a valid float quantity.
+     * Indicates whether this object is a <em>Not-a-Number (NaN)</em> value.
      * 
-     * @return <code>true</code> if the argument is Not A Number
-     *         <code>false</code> if it is a (potentially infinite) float
-     *         number
+     * @return {@code true} if this double is <em>Not-a-Number</em>;
+     *         {@code false} if it is a (potentially infinite) double number.
      */
     public boolean isNaN() {
         return isNaN(value);
     }
 
     /**
-     * Answers true if the argument does not represent a valid double quantity.
+     * Indicates whether the specified double is a <em>Not-a-Number (NaN)</em>
+     * value.
      * 
      * @param d
-     *            value to check for numberness.
-     * @return <code>true</code> if the argument is Not A Number
-     *         <code>false</code> if it is a (potentially infinite) double
-     *         number
+     *            the double value to check.
+     * @return {@code true} if {@code d} is <em>Not-a-Number</em>;
+     *         {@code false} if it is a (potentially infinite) double number.
      */
     public static boolean isNaN(double d) {
         return d != d;
     }
 
     /**
-     * Answers a double built from the binary representation given in the
-     * argument.
+     * Converts the specified IEEE 754 floating-point double precision bit
+     * pattern to a Java double value.
      * 
      * @param bits
-     *            the bits of the double
-     * @return the double which matches the bits
+     *            the IEEE 754 floating-point double precision representation of
+     *            a double value.
+     * @return the double value converted from {@code bits}.
+     * @see #doubleToLongBits(double)
+     * @see #doubleToRawLongBits(double)
      */
     public static native double longBitsToDouble(long bits);
 
-    /**
-     * Answers the long value which the receiver represents
-     * 
-     * @return long the value of the receiver.
-     */
     @Override
     public long longValue() {
         return (long) value;
     }
 
     /**
-     * Answers the double which matches the passed in string.
-     * NumberFormatException is thrown if the string does not represent a valid
-     * double.
+     * Parses the specified string as a double value.
      * 
      * @param string
-     *            the value to convert
-     * @return a double which would print as the argument
+     *            the string representation of a double value.
+     * @return the primitive double value represented by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a double value.
      */
     public static double parseDouble(String string)
             throws NumberFormatException {
@@ -333,96 +286,98 @@ public final class Double extends Number implements Comparable<Double> {
                 .parseDouble(string);
     }
 
-    /**
-     * Answers the short value which the receiver represents
-     * 
-     * @return short the value of the receiver.
-     */
     @Override
     public short shortValue() {
         return (short) value;
     }
 
-    /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
-     * 
-     * @return a printable representation for the receiver.
-     */
     @Override
     public String toString() {
         return Double.toString(value);
     }
 
     /**
-     * Answers a string containing a printable representation of the argument.
+     * Returns a string containing a concise, human-readable description of the
+     * specified double value.
      * 
      * @param d
-     *            the double to print
-     * @return a printable representation of the argument.
+     *             the double to convert to a string.
+     * @return a printable representation of {@code d}.
      */
     public static String toString(double d) {
         return org.apache.harmony.luni.util.NumberConverter.convert(d);
     }
 
     /**
-     * Answers the double which matches the passed in string.
-     * NumberFormatException is thrown if the string does not represent a valid
-     * double.
+     * Parses the specified string as a double value.
      * 
      * @param string
-     *            the value to convert
-     * @return a double which would print as the argument
+     *            the string representation of a double value.
+     * @return a {@code Double} instance containing the double value represented
+     *         by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a double value.
+     * @see #parseDouble(String)
      */
     public static Double valueOf(String string) throws NumberFormatException {
         return new Double(parseDouble(string));
     }
 
     /**
-     * Compares the two doubles. NaN is equal to NaN, and is greater than other
-     * double values. 0d is greater than -0d.
+     * Compares the two specified double values. There are two special cases:
+     * <ul>
+     * <li>{@code Double.NaN} is equal to {@code Double.NaN} and it is greater
+     * than any other double value, including {@code Double.POSITIVE_INFINITY};</li>
+     * <li>+0.0d is greater than -0.0d</li>
+     * </ul>
      * 
      * @param double1
-     *            the first value to compare
+     *            the first value to compare.
      * @param double2
-     *            the second value to compare
-     * 
-     * @return Returns greater than zero when double1 is greater than double2,
-     *         zero when double1 equals double2, and less than zero when double1
-     *         is less than double2
+     *            the second value to compare.
+     * @return a negative value if {@code double1} is less than {@code double2};
+     *         0 if {@code double1} and {@code double2} are equal; a positive
+     *         value if {@code double1} is greater than {@code double2}.
      */
     public static int compare(double double1, double double2) {
-        long d1, d2;
-        long NaNbits = Double.doubleToLongBits(Double.NaN);
-        if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
-            if (Double.doubleToLongBits(double2) == NaNbits) {
+        // Non-zero, non-NaN checking.
+        if (double1 > double2) {
+            return 1;
+        }
+        if (double2 > double1) {
+            return -1;
+        }
+        if (double1 == double2 && 0.0d != double1) {
+            return 0;
+        }
+
+        // NaNs are equal to other NaNs and larger than any other float
+        if (isNaN(double1)) {
+            if (isNaN(double2)) {
                 return 0;
             }
             return 1;
-        }
-        if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+        } else if (isNaN(double2)) {
             return -1;
         }
-        if (double1 == double2) {
-            if (d1 == d2) {
-                return 0;
-            }
-            // check for -0
-            return d1 > d2 ? 1 : -1;
+
+        // Deal with +0.0 and -0.0
+        long d1 = doubleToRawLongBits(double1);
+        long d2 = doubleToRawLongBits(double2);
+
+        if (d1 == d2) {
+            return 0;
         }
-        return double1 > double2 ? 1 : -1;
+        return (d1 < d2) ? -1 : 1;
     }
 
     /**
-     * <p>
-     * Returns a <code>Double</code> instance for the <code>double</code>
-     * value passed. This method is preferred over the constructor, as this
-     * method may maintain a cache of instances.
-     * </p>
+     * Returns a {@code Double} instance for the specified double value.
      * 
      * @param d
-     *            The double value.
-     * @return A <code>Double</code> instance.
+     *            the double value to store in the instance.
+     * @return a {@code Double} instance containing {@code d}.
      * @since 1.5
      */
     public static Double valueOf(double d) {
@@ -430,14 +385,11 @@ public final class Double extends Number implements Comparable<Double> {
     }
 
     /**
-     * <p>
-     * Converts a <code>double</code> into a hexadecimal string
-     * representation.
-     * </p>
-     * 
+     * Converts the specified double into its hexadecimal string representation.
+     *
      * @param d
-     *            The <code>double</code> to convert.
-     * @return The hexadecimal string representation of <code>f</code>.
+     *            the double to convert.
+     * @return the hexadecimal string representation of {@code d}.
      * @since 1.5
      */
     public static String toHexString(double d) {

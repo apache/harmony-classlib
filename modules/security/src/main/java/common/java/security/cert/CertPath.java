@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 import java.io.ByteArrayInputStream;
@@ -35,49 +30,51 @@ import org.apache.harmony.security.internal.nls.Messages;
 /**
  * An immutable certificate path that can be validated. All certificates in the
  * path are of the same type (i.e., X509).
- * 
- * A <code>CertPath</code> can be represented as a byte array in at least one
- * supported encoding when serialized.
- * 
- * When a <code>List</code> of the certificates is obtained it must be
- * immutable.
- * 
- * A <code>CertPath</code> must be thread-safe without requiring coordinated
- * access.
+ * <p>
+ * A {@code CertPath} can be represented as a byte array in at least one
+ * supported encoding scheme (i.e. PkiPath or PKCS7) when serialized.
+ * <p>
+ * When a {@code List} of the certificates is obtained it must be immutable.
+ * <p>
+ * A {@code CertPath} must be thread-safe without requiring coordinated access.
+ *
+ * @see Certificate
  */
 public abstract class CertPath implements Serializable {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = 6068470306649138683L;
     // Standard name of the type of certificates in this path
     private final String type;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code CertPath} instance for the specified certificate
+     * type.
+     *
+     * @param type
+     *            the certificate type.
      */
     protected CertPath(String type) {
         this.type = type;
     }
 
-	/**
-	 * Returns the type of <code>Certificate</code> in the
-	 * <code>CertPath</code>
-	 * 
-	 * @return <code>Certificate</code> type
-	 */
+    /**
+     * Returns the type of {@code Certificate} in this instance.
+     *
+     * @return the certificate type.
+     */
     public String getType() {
         return type;
     }
 
-	/**
-	 * Returns true if <code>Certificate</code>s in the list are the same
-	 * type and the lists are equal (and by implication the certificates
-	 * contained within are the same).
-	 * 
-	 * @param other
-	 *            <code>CertPath</code> to be compared for equality
-	 */
+    /**
+     * Returns {@code true} if {@code Certificate}s in the list are the same
+     * type and the lists are equal (and by implication the certificates
+     * contained within are the same).
+     *
+     * @param other
+     *            {@code CertPath} to be compared for equality.
+     * @return {@code true} if the object are equal, {@code false} otherwise.
+     */
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -93,27 +90,28 @@ public abstract class CertPath implements Serializable {
         return false;
     }
 
-	/**
-	 * Overrides Object.hashCode() Defined as: hashCode = 31 *
-	 * path.getType().hashCode() + path.getCertificates().hashCode();
-	 * 
-	 * @return hash code for CertPath object
-	 */
+    /**
+     * Overrides {@code Object.hashCode()}. The function is defined as follows:
+     * <pre>
+     * {@code hashCode = 31 * path.getType().hashCode() +
+     * path.getCertificates().hashCode();}
+     * </pre>
+     *
+     * @return the hash code for this instance.
+     */
     public int hashCode() {
         int hash = getType().hashCode();
         hash = hash*31 + getCertificates().hashCode();
         return hash;
     }
 
-	/**
-	 * Returns a <code>String</code> representation of the
-	 * <code>CertPath</code>
-	 * <code>Certificate</code>s. It is the result of
-	 * calling <code>toString</code> on all <code>Certificate</code>s in
-	 * the <code>List</code>. <code>Certificate</code>s
-	 * 
-	 * @return string representation of <code>CertPath</code>
-	 */
+    /**
+     * Returns a {@code String} representation of this {@code CertPath}
+     * instance. It is the result of calling {@code toString} on all {@code
+     * Certificate}s in the {@code List}.
+     *
+     * @return a string representation of this instance.
+     */
     public String toString() {
         StringBuffer sb = new StringBuffer(getType());
         sb.append(" Cert Path, len="); //$NON-NLS-1$
@@ -132,46 +130,49 @@ public abstract class CertPath implements Serializable {
     }
 
     /**
-     * Returns an immutable List of the <code>Certificate</code>s contained
-     * in the <code>CertPath</code>.
+     * Returns an immutable List of the {@code Certificate}s contained
+     * in the {@code CertPath}.
      * 
-     * @return list of <code>Certificate</code>s in the <code>CertPath</code>
+     * @return a list of {@code Certificate}s in the {@code CertPath}.
      */
     public abstract List<? extends Certificate> getCertificates();
 
     /**
-     * Returns an encoding of the <code>CertPath</code> using the default
-     * encoding
+     * Returns an encoding of the {@code CertPath} using the default encoding.
      * 
-     * @return default encoding of the <code>CertPath</code>
+     * @return default encoding of the {@code CertPath}.
      * @throws CertificateEncodingException
+     *             if the encoding fails.
      */
     public abstract byte[] getEncoded()
         throws CertificateEncodingException;
 
     /**
-     * Returns an encoding of the <code>CertPath</code> using the specified
-     * encoding
+     * Returns an encoding of the {@code CertPath} using the specified encoding.
      * 
      * @param encoding
-     *            encoding that should be generated
-     * @return default encoding of the <code>CertPath</code>
+     *            encoding that should be generated.
+     * @return default encoding of the {@code CertPath}.
      * @throws CertificateEncodingException
+     *             if the encoding fails.
      */
     public abstract byte[] getEncoded(String encoding)
         throws CertificateEncodingException;
 
     /**
-     * Return an <code>Iterator</code> over the supported encodings for a
+     * Returns an {@code Iterator} over the supported encodings for a
      * representation of the certificate path.
      * 
-     * @return <code>Iterator</code> over supported encodings (as
-     *         <code>String</code>s)
+     * @return {@code Iterator} over supported encodings (as {@code String}s).
      */
     public abstract Iterator<String> getEncodings();
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns an alternate object to be serialized.
+     *
+     * @return an alternate object to be serialized.
+     * @throws ObjectStreamException
+     *             if the creation of the alternate object fails.
      */
     protected Object writeReplace() throws ObjectStreamException {
         try {
@@ -183,12 +184,11 @@ public abstract class CertPath implements Serializable {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * The alternate {@code Serializable} class to be used for serialization and
+     * deserialization on {@code CertPath} objects.
      */
     protected static class CertPathRep implements Serializable {
-        /**
-         * @com.intel.drl.spec_ref
-         */
+
         private static final long serialVersionUID = 3015633072427920915L;
         // Standard name of the type of certificates in this path
         private final String type;
@@ -203,7 +203,13 @@ public abstract class CertPath implements Serializable {
         };
 
         /**
-         * @com.intel.drl.spec_ref
+         * Creates a new {@code CertPathRep} instance with the specified type
+         * and encoded data.
+         *
+         * @param type
+         *            the certificate type.
+         * @param data
+         *            the encoded data.
          */
         protected CertPathRep(String type, byte[] data) {
             this.type = type;
@@ -211,7 +217,12 @@ public abstract class CertPath implements Serializable {
         }
 
         /**
-         * @com.intel.drl.spec_ref
+         * Deserializes a {@code CertPath} from a serialized {@code CertPathRep}
+         * object.
+         *
+         * @return the deserialized {@code CertPath}.
+         * @throws ObjectStreamException
+         *             if deserialization fails.
          */
         protected Object readResolve() throws ObjectStreamException {
             try {

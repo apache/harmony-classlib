@@ -17,8 +17,8 @@
 package java.util.prefs;
 
 /**
- * Default implementation of <code>PreferencesFactory</code> for Linux 
- * platform, using file system as back end.
+ * The default implementation of <code>PreferencesFactory</code> for the Linux
+ * platform, using the file system as its back end.
  * 
  * @since 1.4
  */

@@ -15,18 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The parameters specifying an Elliptic Curve (EC) public key. 
  */
 public class ECPublicKeySpec implements KeySpec {
     // The public point
@@ -35,7 +29,15 @@ public class ECPublicKeySpec implements KeySpec {
     private final ECParameterSpec params;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code ECPublicKey} with the specified public elliptic
+     * curve point and parameter specification.
+     * 
+     * @param w
+     *            the public elliptic curve point {@code W}.
+     * @param params
+     *            the domain parameter specification.
+     * @throws IllegalArgumentException
+     *             if the specified point {@code W} is at infinity.
      */
     public ECPublicKeySpec(ECPoint w, ECParameterSpec params) {
         this.w = w;
@@ -55,14 +57,18 @@ public class ECPublicKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the domain parameter specification.
+     * 
+     * @return the domain parameter specification.
      */
     public ECParameterSpec getParams() {
         return params;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the public elliptic curve point {@code W}.
+     * 
+     * @return the public elliptic curve point {@code W}.
      */
     public ECPoint getW() {
         return w;

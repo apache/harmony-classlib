@@ -17,37 +17,41 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when an action is attempted at a time when
- * the virtual machine is not in the correct state.
+ * Thrown when an action is attempted at a time when the virtual machine is not
+ * in the correct state.
  */
 public class IllegalStateException extends RuntimeException {
 
-	private static final long serialVersionUID = -1848914673093119416L;
+    private static final long serialVersionUID = -1848914673093119416L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IllegalStateException() {
-		super();
-	}
+    /**
+     * Constructs a new {@code IllegalStateException} that includes the current
+     * stack trace.
+     */
+    public IllegalStateException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IllegalStateException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IllegalStateException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IllegalStateException(String detailMessage) {
+        super(detailMessage);
+    }
     
     /**
-     * <p>Constructs a new instance with a message and cause.</p>
-     * @param message The message to assign to this exception.
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code IllegalStateException} with the current stack
+     * trace, the specified detail message and the specified cause.
+     * 
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the cause of this exception.
      * @since 1.5
      */
     public IllegalStateException(String message, Throwable cause) {
@@ -55,8 +59,11 @@ public class IllegalStateException extends RuntimeException {
     }
     
     /**
-     * <p>Constructs a new instance with a cause.</p>
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code IllegalStateException} with the current stack
+     * trace and the specified cause.
+     * 
+     * @param cause
+     *            the cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public IllegalStateException(Throwable cause) {

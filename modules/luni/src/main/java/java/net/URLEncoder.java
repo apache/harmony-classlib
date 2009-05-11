@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * This class is used to encode a string using the format required by
- * <code>application/x-www-form-urlencoded</code> MIME content type.
+ * {@code application/x-www-form-urlencoded} MIME content type.
  */
 public class URLEncoder {
 
@@ -34,23 +34,18 @@ public class URLEncoder {
     }
 
     /**
-     * This class contains a utility method for converting a string to the
-     * format required by the <code>application/x-www-form-urlencoded</code>
-     * MIME content type.
+     * Encodes a given string {@code s} in a x-www-form-urlencoded string using
+     * the specified encoding scheme {@code enc}.
      * <p>
      * All characters except letters ('a'..'z', 'A'..'Z') and numbers ('0'..'9')
-     * and characters '.', '-', '*', '_' are converted into their hexidecimal
-     * value prepended by '%'.
-     * <p>
-     * For example: '#' -> %23
-     * <p>
-     * In addition, spaces are substituted by '+'
-     * 
-     * @return java.lang.String the string to be converted
+     * and characters '.', '-', '*', '_' are converted into their hexadecimal
+     * value prepended by '%'. For example: '#' -> %23. In addition, spaces are
+     * substituted by '+'
+     *
      * @param s
-     *            java.lang.String the converted string
-     * 
-     * @deprecated use URLEncoder#encode(String, String) instead
+     *            the string to be encoded.
+     * @return the encoded string.
+     * @deprecated use {@link #encode(String, String)} instead.
      */
     @Deprecated
     public static String encode(String s) {
@@ -75,25 +70,21 @@ public class URLEncoder {
     }
 
     /**
-     * This class contains a utility method for converting a string to the
-     * format required by the <code>application/x-www-form-urlencoded</code>
-     * MIME content type.
-     * 
+     * Encodes the given string {@code s} in a x-www-form-urlencoded string
+     * using the specified encoding scheme {@code enc}.
+     * <p>
      * All characters except letters ('a'..'z', 'A'..'Z') and numbers ('0'..'9')
      * and characters '.', '-', '*', '_' are converted into their hexadecimal
-     * value prepended by '%'.
-     * 
-     * For example: '#' -> %23
-     * 
-     * In addition, spaces are substituted by '+'
-     * 
+     * value prepended by '%'. For example: '#' -> %23. In addition, spaces are
+     * substituted by '+'
+     *
      * @param s
-     *            the string to be converted
+     *            the string to be encoded.
      * @param enc
-     *            the name of a charset to use for encoding unsafe chars
-     * @return the converted string
+     *            the encoding scheme to be used.
+     * @return the encoded string.
      * @throws UnsupportedEncodingException
-     *             if the named charset is unsupported
+     *             if the specified encoding scheme is invalid.
      */
     public static String encode(String s, String enc)
             throws UnsupportedEncodingException {

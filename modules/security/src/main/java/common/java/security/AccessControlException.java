@@ -15,60 +15,49 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexander V. Astapchuk
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This runtime exception is thrown when an access control check indicates that
- * access should not be granted.
- * 
+ * {@code AccessControlException} is thrown if the access control infrastructure
+ * denies protected access due to missing permissions.
  */
 public class AccessControlException extends SecurityException {
 
     private static final long serialVersionUID = 5138225684096988535L;
 
-    /**
-     * @com.intel.drl.spec_ref 
-     */
     private Permission perm; // Named as demanded by Serialized Form.
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param message
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code AccessControlException} with the
+     * given message.
+     *
+     * @param message
+     *            the detail message for this exception.
+     */
     public AccessControlException(String message) {
         super(message);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * associated permission all filled in.
-	 * 
-	 * 
-	 * @param message
-	 *            String The detail message for the exception.
-	 * @param perm
-	 *            Permission The failed permission.
-	 */
+    /**
+     * Constructs a new instance of {@code AccessControlException} with the
+     * given message and the requested {@code Permission} which was not granted.
+     *
+     * @param message
+     *            the detail message for the exception.
+     * @param perm
+     *            the requested {@code Permission} which was not granted.
+     */
     public AccessControlException(String message, Permission perm) {
         super(message);
         this.perm = perm;
     }
 
-	/**
-	 * Answers the receiver's permission.
-	 * 
-	 * 
-	 * @return Permission the receiver's permission
-	 */
+    /**
+     * Returns the requested permission that caused this Exception or {@code
+     * null} if there is no corresponding {@code Permission}.
+     *
+     * @return the requested permission that caused this Exception, maybe {@code null}.
+     */
     public Permission getPermission() {
         return perm;
     }

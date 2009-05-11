@@ -15,51 +15,53 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This class represents generic security exceptions.
+ *{@code SignatureException} is a general {@code Signature} exception.
  * 
+ * @see Signature
  */
 public class SignatureException extends GeneralSecurityException {
-    /**
-     * @com.intel.drl.spec_ref
-     */
+
     private static final long serialVersionUID = 7509989324975124438L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code SignatureException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
+     */
     public SignatureException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
+    /**
+     * Constructs a new instance of {@code SignatureException}.
+     */
     public SignatureException() {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code SignatureException} with the
+     * given message and the cause.
+     *
+     * @param message
+     *            the detail message for this exception
+     * @param cause
+     *            the exception which is the cause for this exception
      */
     public SignatureException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code SignatureException} with the
+     * cause.
+     *
+     * @param cause
+     *            the exception which is the cause for this exception
      */
     public SignatureException(Throwable cause) {
         super(cause);

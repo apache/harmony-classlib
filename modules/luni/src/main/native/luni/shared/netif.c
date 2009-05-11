@@ -34,7 +34,7 @@ JNIEXPORT jobjectArray JNICALL
 Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
                                                          jclass clazz)
 {
-  /* variables to store network interfac edata returned by call to port library */
+  /* variables to store network interface data returned by call to port library */
   struct hyNetworkInterfaceArray_struct networkInterfaceArray;
   I_32 result = 0;
 

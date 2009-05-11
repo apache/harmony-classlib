@@ -15,16 +15,10 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The parameters to initialize a LDAP {@code CertStore} instance.
  */
 public class LDAPCertStoreParameters implements CertStoreParameters {
     // Default LDAP server name
@@ -38,7 +32,15 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
     private final int port;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code LDAPCertStoreParameters} instance with the specified
+     * server name and port.
+     *
+     * @param serverName
+     *            the LDAP server name.
+     * @param port
+     *            the port.
+     * @throws NullPointerException
+     *             is {@code serverName} is {@code null}.
      */
     public LDAPCertStoreParameters(String serverName, int port) {
         this.port = port;
@@ -49,7 +51,10 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code LDAPCertStoreParameters} instance with default
+     * parameters.
+     * <p>
+     * The default parameters are server name "localhost" and port 389.
      */
     public LDAPCertStoreParameters() {
         this.serverName = DEFAULT_LDAP_SERVER_NAME;
@@ -57,7 +62,13 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code LDAPCertStoreParameters} instance with the specified
+     * server name and default port 389.
+     *
+     * @param serverName
+     *            the LDAP server name.
+     * @throws NullPointerException
+     *             if {@code serverName} is {@code null}.
      */
     public LDAPCertStoreParameters(String serverName) {
         this.port = DEFAULT_LDAP_PORT;
@@ -68,7 +79,9 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Clones this {@code LDAPCertStoreParameters} instance.
+     *
+     * @return the cloned instance.
      */
     public Object clone() {
     	try {
@@ -79,21 +92,29 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the LDAP server port.
+     *
+     * @return the LDAP server port.
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the LDAP server name.
+     *
+     * @return the LDAP server name.
      */
     public String getServerName() {
         return serverName;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the string representation of this {@code LDAPCertStoreParameters}
+     * instance.
+     *
+     * @return the string representation of this {@code LDAPCertStoreParameters}
+     *         instance.
      */
     public String toString() {
         StringBuffer sb =

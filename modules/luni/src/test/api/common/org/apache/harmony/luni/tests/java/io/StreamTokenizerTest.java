@@ -179,7 +179,7 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 
 		final PipedInputStream pin = new PipedInputStream();
 		PipedOutputStream pout = new PipedOutputStream(pin);
-		pout.write("hello\n\r\r".getBytes());
+		pout.write("hello\n\r\r".getBytes("UTF-8"));
 		StreamTokenizer s = new StreamTokenizer(pin);
 		s.eolIsSignificant(true);
 		assertTrue("Wrong token 1,1",

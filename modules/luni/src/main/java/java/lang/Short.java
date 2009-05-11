@@ -18,9 +18,7 @@
 package java.lang;
 
 /**
- * <p>
- * Short is the wrapper for the primitive type <code>short</code>.
- * </p>
+ * The wrapper for the primitive type {@code short}.
  * 
  * @see java.lang.Number
  * @since 1.1
@@ -29,38 +27,33 @@ public final class Short extends Number implements Comparable<Short> {
 
 	private static final long serialVersionUID = 7515723908773894738L;
 
-	/**
+    /**
      * The value which the receiver represents.
      */
     private final short value;
 
     /**
-     * <p>
-     * Constant for the maximum <code>short</code> value, 2<sup>15</sup>-1.
-     * </p>
+     * Constant for the maximum {@code short} value, 2<sup>15</sup>-1.
      */
     public static final short MAX_VALUE = (short) 0x7FFF;
 
     /**
-     * <p>
-     * Constant for the minimum <code>short</code> value, -2<sup>15</sup>.
-     * </p>
+     * Constant for the minimum {@code short} value, -2<sup>15</sup>.
      */
     public static final short MIN_VALUE = (short) 0x8000;
 
     /**
-     * <p>
-     * Constant for the number of bits to represent a <code>short</code> in
-     * two's compliment form.
-     * </p>
-     * 
+     * Constant for the number of bits needed to represent a {@code short} in
+     * two's complement form.
+     *
      * @since 1.5
      */
     public static final int SIZE = 16;
 
-	/**
-	 * The java.lang.Class that represents this class.
-	 */
+    /**
+     * The {@link Class} object that represents the primitive type {@code
+     * short}.
+     */
     @SuppressWarnings("unchecked")
     public static final Class<Short> TYPE = (Class<Short>) new short[0]
             .getClass().getComponentType();
@@ -69,70 +62,66 @@ public final class Short extends Number implements Comparable<Short> {
 	// defined to be "java.lang.Short.TYPE";
 
     
-	/**
-	 * Constructs a new instance of this class given a string.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Constructs a new {@code Short} from the specified string.
+     *
+     * @param string
+     *            the string representation of a short value.
+     * @throws NumberFormatException
+     *             if {@code string} can not be decoded into a short value.
+     * @see #parseShort(String)
+     */
 	public Short(String string) throws NumberFormatException {
 		this(parseShort(string));
 	}
 
-	/**
-	 * Constructs a new instance of the receiver which represents the short
-	 * valued argument.
-	 * 
-	 * @param value
-	 *            the short to store in the new instance.
-	 */
+    /**
+     * Constructs a new {@code Short} with the specified primitive short value.
+     *
+     * @param value
+     *            the primitive short value to store in the new instance.
+     */
 	public Short(short value) {
 		this.value = value;
 	}
 
-	/**
-	 * Answers the byte value which the receiver represents
-	 * 
-	 * @return byte the value of the receiver.
-	 */
 	@Override
     public byte byteValue() {
 		return (byte) value;
 	}
 
     /**
-     * <p>
-     * Compares this <code>Short</code> to the <code>Short</code>
-     * passed. If this instance's value is equal to the value of the instance
-     * passed, then 0 is returned. If this instance's value is less than the
-     * value of the instance passed, then a negative value is returned. If this
-     * instance's value is greater than the value of the instance passed, then a
-     * positive value is returned.
-     * </p>
+     * Compares this object to the specified short object to determine their
+     * relative order.
      * 
-     * @param object The instance to compare to.
-     * @throws NullPointerException if <code>object</code> is
-     *         <code>null</code>.
+     * @param object
+     *            the short object to compare this object to.
+     * @return a negative value if the value of this short is less than the
+     *         value of {@code object}; 0 if the value of this short and the
+     *         value of {@code object} are equal; a positive value if the value
+     *         of this short is greater than the value of {@code object}.
+     * @throws NullPointerException
+     *             if {@code object} is null.
+     * @see java.lang.Comparable
      * @since 1.2
      */
 	public int compareTo(Short object) {
 		return value > object.value ? 1 : (value < object.value ? -1 : 0);
 	}
 
-	/**
-	 * Parses the string argument as if it was a short value and returns the
-	 * result. Throws NumberFormatException if the string does not represent an
-	 * int quantity. The string may be a hexadecimal ("0x..."), octal ("0..."),
-	 * or decimal ("...") representation of a byte.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @return Short the value represented by the argument
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Parses the specified string and returns a {@code Short} instance if the
+     * string can be decoded into a short value. The string may be an optional
+     * minus sign "-" followed by a hexadecimal ("0x..." or "#..."), octal
+     * ("0..."), or decimal ("...") representation of a short.
+     *
+     * @param string
+     *            a string representation of a short value.
+     * @return a {@code Short} containing the value represented by
+     *         {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} can not be parsed as a short value.
+     */
 	public static Short decode(String string) throws NumberFormatException {
 		int intValue = Integer.decode(string).intValue();
 		short result = (short) intValue;
@@ -142,108 +131,78 @@ public final class Short extends Number implements Comparable<Short> {
 		throw new NumberFormatException();
 	}
 
-	/**
-	 * Answers the double value which the receiver represents
-	 * 
-	 * @return double the value of the receiver.
-	 */
 	@Override
     public double doubleValue() {
 		return value;
 	}
 
-	/**
-	 * Compares the argument to the receiver, and answers true if they represent
-	 * the <em>same</em> object using a class specific comparison.
-	 * <p>
-	 * In this case, the argument must also be a Short, and the receiver and
-	 * argument must represent the same short value.
-	 * 
-	 * @param object
-	 *            the object to compare with this object
-	 * @return <code>true</code> if the object is the same as this object
-	 *         <code>false</code> if it is different from this object
-	 * @see #hashCode
-	 */
+    /**
+     * Compares this instance with the specified object and indicates if they
+     * are equal. In order to be equal, {@code object} must be an instance of
+     * {@code Short} and have the same short value as this object.
+     *
+     * @param object
+     *            the object to compare this short with.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code Short}; {@code false} otherwise.
+     */
 	@Override
     public boolean equals(Object object) {
 		return (object instanceof Short)
 				&& (value == ((Short) object).value);
 	}
 
-	/**
-	 * Answers the float value which the receiver represents
-	 * 
-	 * @return float the value of the receiver.
-	 */
 	@Override
     public float floatValue() {
 		return value;
 	}
 
-	/**
-	 * Answers an integer hash code for the receiver. Any two objects which
-	 * answer <code>true</code> when passed to <code>equals</code> must
-	 * answer the same value for this method.
-	 * 
-	 * @return the receiver's hash
-	 * 
-	 * @see #equals
-	 */
 	@Override
     public int hashCode() {
 		return value;
 	}
 
-	/**
-	 * Answers the int value which the receiver represents
-	 * 
-	 * @return int the value of the receiver.
-	 */
 	@Override
     public int intValue() {
 		return value;
 	}
 
-	/**
-	 * Answers the long value which the receiver represents
-	 * 
-	 * @return long the value of the receiver.
-	 */
 	@Override
     public long longValue() {
 		return value;
 	}
 
-	/**
-	 * Parses the string argument as if it was a short value and returns the
-	 * result. Throws NumberFormatException if the string does not represent an
-	 * short quantity.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @return short the value represented by the argument
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Parses the specified string as a signed decimal short value. The ASCII
+     * character \u002d ('-') is recognized as the minus sign.
+     *
+     * @param string
+     *            the string representation of a short value.
+     * @return the primitive short value represented by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a short value.
+     */
 	public static short parseShort(String string) throws NumberFormatException {
 		return parseShort(string, 10);
 	}
 
-	/**
-	 * Parses the string argument as if it was a short value and returns the
-	 * result. Throws NumberFormatException if the string does not represent a
-	 * single short quantity. The second argument specifies the radix to use
-	 * when parsing the value.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @param radix
-	 *            the radix to use when parsing.
-	 * @return short the value represented by the argument
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Parses the specified string as a signed short value using the specified
+     * radix. The ASCII character \u002d ('-') is recognized as the minus sign.
+     *
+     * @param string
+     *            the string representation of a short value.
+     * @param radix
+     *            the radix to use when parsing.
+     * @return the primitive short value represented by {@code string} using
+     *         {@code radix}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a short value.
+     */
 	public static short parseShort(String string, int radix)
 			throws NumberFormatException {
 		int intValue = Integer.parseInt(string, radix);
@@ -254,80 +213,77 @@ public final class Short extends Number implements Comparable<Short> {
 		throw new NumberFormatException();
 	}
 
-	/**
-	 * Answers the short value which the receiver represents
-	 * 
-	 * @return short the value of the receiver.
-	 */
-	@Override
+    /**
+     * Gets the primitive value of this short.
+     *
+     * @return this object's primitive value.
+     */
+    @Override
     public short shortValue() {
 		return value;
 	}
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * @return a printable representation for the receiver.
-	 */
 	@Override
     public String toString() {
 		return Integer.toString(value);
 	}
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * argument.
-	 * 
-	 * @param value
-	 *            short the short to convert.
-	 * @return String a printable representation for the short.
-	 */
+    /**
+     * Returns a string containing a concise, human-readable description of the
+     * specified short value with radix 10.
+     *
+     * @param value
+     *             the short to convert to a string.
+     * @return a printable representation of {@code value}.
+     */
 	public static String toString(short value) {
 		return Integer.toString(value);
 	}
 
-	/**
-	 * Parses the string argument as if it was a short value and returns a Short
-	 * representing the result. Throws NumberFormatException if the string does
-	 * not represent a single short quantity.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @return Short the value represented by the argument
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Parses the specified string as a signed decimal short value.
+     *
+     * @param string
+     *            the string representation of a short value.
+     * @return a {@code Short} instance containing the short value represented
+     *         by {@code string}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a short value.
+     * @see #parseShort(String)
+     */
 	public static Short valueOf(String string) throws NumberFormatException {
 		return valueOf(parseShort(string));
 	}
 
-	/**
-	 * Parses the string argument as if it was a short value and returns a Short
-	 * representing the result. Throws NumberFormatException if the string does
-	 * not represent a short quantity. The second argument specifies the radix
-	 * to use when parsing the value.
-	 * 
-	 * @param string
-	 *            a string representation of a short quantity.
-	 * @param radix
-	 *            the radix to use when parsing.
-	 * @return Short the value represented by the argument
-	 * @exception NumberFormatException
-	 *                if the argument could not be parsed as a short quantity.
-	 */
+    /**
+     * Parses the specified string as a signed short value using the specified
+     * radix.
+     *
+     * @param string
+     *            the string representation of a short value.
+     * @param radix
+     *            the radix to use when parsing.
+     * @return a {@code Short} instance containing the short value represented
+     *         by {@code string} using {@code radix}.
+     * @throws NumberFormatException
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a short value.
+     * @see #parseShort(String, int)
+     */
 	public static Short valueOf(String string, int radix)
 			throws NumberFormatException {
 		return valueOf(parseShort(string, radix));
 	}
     
     /**
-     * <p>
-     * Reverses the bytes of a <code>short</code>.
-     * </p>
+     * Reverses the bytes of the specified short.
      * 
-     * @param s The <code>short</code> to reverse.
-     * @return The reversed value.
+     * @param s
+     *            the short value for which to reverse bytes.
+     * @return the reversed value.
      * @since 1.5
      */
     public static short reverseBytes(short s) {
@@ -337,14 +293,15 @@ public final class Short extends Number implements Comparable<Short> {
     }
 
     /**
+     * Returns a {@code Short} instance for the specified short value.
      * <p>
-     * Returns a <code>Short</code> instance for the <code>short</code>
-     * value passed. This method is preferred over the constructor, as this
-     * method may maintain a cache of instances.
-     * </p>
-     * 
-     * @param s The short value.
-     * @return A <code>Short</code> instance.
+     * If it is not necessary to get a new {@code Short} instance, it is
+     * recommended to use this method instead of the constructor, since it
+     * maintains a cache of instances which may result in better performance.
+     *
+     * @param s
+     *            the short value to store in the instance.
+     * @return a {@code Short} instance containing {@code s}.
      * @since 1.5
      */
     public static Short valueOf(short s) {
@@ -356,9 +313,7 @@ public final class Short extends Number implements Comparable<Short> {
 
     static class valueOfCache {
         /**
-         * <p>
          * A cache of instances used by {@link Short#valueOf(short)} and auto-boxing.
-         * </p>
          */
         private static final Short[] CACHE = new Short[256];
 

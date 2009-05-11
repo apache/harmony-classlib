@@ -18,8 +18,8 @@
 package java.lang;
 
 /**
- * Indicates that an assertion has failed.
- * 
+ * Thrown when an assertion has failed.
+ *
  * @since 1.4
  */
 public class AssertionError extends Error {
@@ -27,21 +27,21 @@ public class AssertionError extends Error {
     private static final long serialVersionUID = -5013299493970297370L;
 
     /**
-     * Constructs an instance without a message.
+     * Constructs a new {@code AssertionError} with no message.
      */
     public AssertionError() {
         super();
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(Object)} of the object passed. If the object passed
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(Object)} with the specified object. If the object
      * is an instance of {@link Throwable}, then it also becomes the cause of
      * this error.
      * 
      * @param detailMessage
-     *            The value to be converted into the message and optionally the
-     *            cause.
+     *            the object to be converted into the detail message and
+     *            optionally the cause.
      */
     public AssertionError(Object detailMessage) {
         super(String.valueOf(detailMessage),
@@ -50,66 +50,66 @@ public class AssertionError extends Error {
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(boolean)} of the boolean passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(boolean)} with the specified boolean value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(boolean detailMessage) {
         this(String.valueOf(detailMessage));
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(char)} of the char passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(char)} with the specified character value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(char detailMessage) {
         this(String.valueOf(detailMessage));
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(int)} of the int passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(int)} with the specified integer value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(int detailMessage) {
         this(Integer.toString(detailMessage));
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(long)} of the long passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(long)} with the specified long value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(long detailMessage) {
         this(Long.toString(detailMessage));
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(float)} of the float passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(float)} with the specified float value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(float detailMessage) {
         this(Float.toString(detailMessage));
     }
 
     /**
-     * Constructs an instance with a message that is the
-     * {@link String#valueOf(double)} of the double passed.
+     * Constructs a new {@code AssertionError} with a message based on calling
+     * {@link String#valueOf(double)} with the specified double value.
      * 
      * @param detailMessage
-     *            The value to be converted into the message.
+     *            the value to be converted into the message.
      */
     public AssertionError(double detailMessage) {
         this(Double.toString(detailMessage));

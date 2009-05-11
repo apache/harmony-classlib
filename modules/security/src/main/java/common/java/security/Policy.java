@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.util.Enumeration;
@@ -29,8 +24,15 @@ import org.apache.harmony.security.fortress.PolicyUtils;
 
 
 /**
- * Abstract superclass of classes which represent the system security policy.
- * 
+ * {@code Policy} is the common super type of classes which represent a system
+ * security policy. The {@code Policy} specifies which permissions apply to
+ * which code sources.
+ * <p>
+ * The system policy can be changed by setting the {@code 'policy.provider'}
+ * property in the file named {@code JAVA_HOME/lib/security/java.security} to
+ * the fully qualified class name of the desired {@code Policy}.
+ * <p>
+ * Only one instance of a {@code Policy} is active at any time.
  */
 public abstract class Policy {
     
@@ -48,40 +50,43 @@ public abstract class Policy {
     // The policy currently in effect. 
     private static Policy activePolicy;
 
-	/**
-	 * Answers a PermissionCollection describing what permissions are available
-	 * to the given CodeSource based on the current security policy.
-	 * <p>
-	 * Note that this method is <em>not</em> called for classes which are in
-	 * the system domain (i.e. system classes). System classes are
-	 * <em>always</em> given full permissions (i.e. AllPermission). This can
-	 * not be changed by installing a new Policy.
-	 * 
-	 * 
-	 * @param cs
-	 *            CodeSource the code source to compute the permissions for.
-	 * @return PermissionCollection the permissions the code source should have.
-	 */
+    /**
+     * Returns a {@code PermissionCollection} describing what permissions are
+     * allowed for the specified {@code CodeSource} based on the current
+     * security policy.
+     * <p>
+     * Note that this method is not called for classes which are in the system
+     * domain (i.e. system classes). System classes are always given
+     * full permissions (i.e. AllPermission). This can not be changed by
+     * installing a new policy.
+     *
+     * @param cs
+     *            the {@code CodeSource} to compute the permissions for.
+     * @return the permissions that are granted to the specified {@code
+     *         CodeSource}.
+     */
     public abstract PermissionCollection getPermissions(CodeSource cs);
 
-	/**
-	 * Reloads the policy configuration, depending on how the type of source
-	 * location for the policy information.
-	 * 
-	 * 
-	 */
+    /**
+     * Reloads the policy configuration for this {@code Policy} instance.
+     */
     public abstract void refresh();
 
-	/**
-	 * Answers a PermissionCollection describing what permissions are available
-	 * to the given ProtectionDomain (more specifically, its CodeSource) based
-	 * on the current security policy.
-	 * 
-	 * @param domain
-	 *            ProtectionDomain the protection domain to compute the
-	 *            permissions for.
-	 * @return PermissionCollection the permissions the code source should have.
-	 */
+    /**
+     * Returns a {@code PermissionCollection} describing what permissions are
+     * allowed for the specified {@code ProtectionDomain} (more specifically,
+     * its {@code CodeSource}) based on the current security policy.
+     * <p>
+     * Note that this method is not< called for classes which are in the
+     * system domain (i.e. system classes). System classes are always
+     * given full permissions (i.e. AllPermission). This can not be changed by
+     * installing a new policy.
+     *
+     * @param domain
+     *            the {@code ProtectionDomain} to compute the permissions for.
+     * @return the permissions that are granted to the specified {@code
+     *         CodeSource}.
+     */
     public PermissionCollection getPermissions(ProtectionDomain domain) {
         if (domain != null) {
             return getPermissions(domain.getCodeSource());
@@ -89,16 +94,19 @@ public abstract class Policy {
         return new Permissions();
     }
 
-	/**
-	 * Answers whether the Permission is implied by the PermissionCollection of
-	 * the Protection Domain
-	 * 
-	 * @param domain
-	 *            ProtectionDomain for which Permission to be checked
-	 * @param permission
-	 *            Permission for which authorization is to be verified
-	 * @return boolean Permission implied by ProtectionDomain
-	 */
+    /**
+     * Indicates whether the specified {@code Permission} is implied by the
+     * {@code PermissionCollection} of the specified {@code ProtectionDomain}.
+     *
+     * @param domain
+     *            the {@code ProtectionDomain} for which the permission should
+     *            be granted.
+     * @param permission
+     *            the {@code Permission} for which authorization is to be
+     *            verified.
+     * @return {@code true} if the {@code Permission} is implied by the {@code
+     *         ProtectionDomain}, {@code false} otherwise.
+     */
     public boolean implies(ProtectionDomain domain, Permission permission) {
         if (domain != null) {
             PermissionCollection total = getPermissions(domain);
@@ -117,13 +125,20 @@ public abstract class Policy {
         return false;
     }
 
-	/**
-	 * Answers the current system security policy. If no policy has been
-	 * instantiated then this is done using the security property <EM>policy.provider</EM>
-	 * 
-	 * 
-	 * @return Policy the current system security policy.
-	 */
+    /**
+     * Returns the current system security policy. If no policy has been
+     * instantiated then this is done using the security property {@code
+     * "policy.provider"}.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code getPolicy} to be granted, otherwise
+     * a {@code SecurityException} will be thrown.
+     *
+     * @return the current system security policy.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
+     */
     public static Policy getPolicy() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -169,7 +184,7 @@ public abstract class Policy {
     }
     
     /**
-     * Returns true if system policy provider is instantiated.
+     * Returns {@code true} if system policy provider is instantiated.
      */
     static boolean isSet() {
         return activePolicy != null;
@@ -196,13 +211,19 @@ public abstract class Policy {
         return current;
     }
 
-	/**
-	 * Sets the system-wide policy object if it is permitted by the security
-	 * manager.
-	 * 
-	 * @param policy
-	 *            Policy the policy object that needs to be set.
-	 */
+    /**
+     * Sets the system wide policy.
+     * <p>
+     * If a {@code SecurityManager} is installed, code calling this method needs
+     * the {@code SecurityPermission} {@code setPolicy} to be granted, otherwise
+     * a {@code SecurityException} will be thrown.
+     *
+     * @param policy
+     *            the {@code Policy} to set.
+     * @throws SecurityException
+     *             if a {@code SecurityManager} is installed and the caller does
+     *             not have permission to invoke this method.
+     */
     public static void setPolicy(Policy policy) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {

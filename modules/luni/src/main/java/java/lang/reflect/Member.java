@@ -18,7 +18,7 @@
 package java.lang.reflect;
 
 /**
- * Implementors of this interface model a class member.
+ * Common interface providing access to reflective information on class members.
  * 
  * @see Field
  * @see Constructor
@@ -26,32 +26,44 @@ package java.lang.reflect;
  */
 public interface Member {
 
+    /**
+     * Designates all public members of a class or interface (including
+     * inherited members).
+     *
+     * @see java.lang.SecurityManager#checkMemberAccess
+     */
     public static final int PUBLIC = 0;
 
+    /**
+     * Designates all declared members of a class or interface (without
+     * inherited members).
+     *
+     * @see java.lang.SecurityManager#checkMemberAccess
+     */
     public static final int DECLARED = 1;
 
     /**
-     * Return the {@link Class} associated with the class that defined this
-     * member.
-     * 
+     * Returns the class that declares this member.
+     *
      * @return the declaring class
      */
     @SuppressWarnings("unchecked")
     Class getDeclaringClass();
 
     /**
-     * Return the modifiers for the member. The Modifier class should be used to
-     * decode the result.
-     * 
-     * @return the modifiers
-     * @see java.lang.reflect.Modifier
+     * Returns the modifiers for this member. The {@link Modifier} class should
+     * be used to decode the result.
+     *
+     * @return the modifiers for this member
+     *
+     * @see Modifier
      */
     int getModifiers();
 
     /**
-     * Return the name of the member.
-     * 
-     * @return the name
+     * Returns the name of this member.
+     *
+     * @return the name of this member
      */
     String getName();
 
@@ -59,8 +71,7 @@ public interface Member {
      * Indicates whether or not this member is synthetic (artificially
      * introduced by the compiler).
      * 
-     * @return A value of <code>true</code> if synthetic, otherwise
-     *         <code>false</code>.
+     * @return {@code true} if this member is synthetic, {@code false} otherwise
      */
     boolean isSynthetic();
 }

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="Harmony Test" default="test" basedir=".">
+
+    <property file="test.properties" />
+    <property name="build.module" value="all"/>
+    <import file="properties.xml" />
+
+    <!-- These two parameters could be assigned by user -->
+    <property name="target.dir" value="." />
+    <property name="work.dir" value="${target.dir}" />
+    <property name="test.report.dir" value="${work.dir}/report" />
+    <property name="junit.jar" value="${target.dir}/junit.jar" />
+
+    <target name="test" depends="test-jre-vm-info">
+        <echo message="Test Work Dir: ${work.dir}" />
+        <echo message="Test Target Dir: ${target.dir}" />
+        <mkdir dir="${work.dir}" /> 
+        <delete dir="${test.report.dir}" quiet="true"/>
+        <convert-test-as-class from="test.case" to="converted.tc.class" />
+
+        <antcall target="test-module"/>
+
+        <antcall target="generate-report"/>
+        <antcall target="check-test-result"/>
+    </target>
+    
+    <target name="test-module">
+        <antcall target="test-${build.module}"/>
+    </target>
+
+    <target name="test-all">
+        <echo message="Test all modules"/>
+        <!--TODO: will add all modules here -->
+        <antcall target="test-luni"/>
+    </target>
+    
+    <target name="test-luni">
+        <run-tests module="luni" jar="luni_tests_api.jar">
+            <junit-elements>
+                <!-- Required by various tests that set security manager etc -->
+                <jvmarg value="-Djava.security.policy=${target.dir}/luni/resources/config/testing.policy" />
+
+                <!-- Required for running the java.net unit tests -->
+                <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
+            </junit-elements>
+        </run-tests>    
+
+        <run-tests module="luni" jar="luni_tests_impl.jar">
+            <junit-elements>
+                <!-- Required by various tests that set security manager etc -->
+                <jvmarg value="-Djava.security.policy=${target.dir}/luni/resources/config/testing.policy" />
+
+                <!-- Required for running the java.net unit tests -->
+                <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
+            </junit-elements>
+        </run-tests>
+    </target>
+    
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${work.dir}/report/test.failures" append="true">failure${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${work.dir}/report/test.errors" append="true">error${line.separator}</echo>
+    </target>
+
+    <target name="check-test-result">
+        <available property="test.errors" file="${work.dir}/report/test.errors" />
+        <available property="test.failures" file="${work.dir}/report/test.failures" />
+        <fail if="test.errors" message="There were test errors." />
+        <fail if="test.failures" message="There were test failures." />
+    </target>
+
+    <target name="generate-report">
+        <junitreport todir="${test.report.dir}">
+            <fileset dir="${test.report.dir}">
+                <include name="**/TEST*-*.xml" />
+            </fileset>
+            <report format="frames" todir="${test.report.dir}" />
+        </junitreport>
+    </target>
+    
+    <target name="failure">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <macrodef name="run-tests">
+        <attribute name="module" />
+        <attribute name="jar" />
+        <element name="junit-elements" optional="true"/>
+        <element name="excludeorinclude" optional="true"/>
+        <sequential>
+            <echo message="Running @{module} Unit Test from @{jar}" />
+            <echo message="Tested jre: ${test.jre.home}/bin/java" />
+            <property name="test.module.dir" value="${target.dir}/@{module}" />
+            <property name="test.excludes.dir" value="${test.module.dir}/excludes" />
+            <property name="test.resources.dir" value="${test.module.dir}/resources" />
+            <property name="test.exclude.file" value="${work.dir}/@{module}.exclude" />
+            
+            <mkdir dir="${test.report.dir}/@{module}" /> 
+
+            <prepare-exclude-list moduleName="@{module}" dir="${test.excludes.dir}" result="${test.exclude.file}" />
+            <junit fork="yes" 
+                   forkmode="${hy.test.forkmode}" 
+                   timeout="${hy.test.timeout}" 
+                   printsummary="withOutAndErr" 
+                   errorproperty="test.errors" 
+                   failureproperty="test.failures" 
+                   showoutput="on" 
+                   dir="${work.dir}" 
+                   tempdir="${work.dir}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <classpath>
+                    <fileset dir="${target.dir}">
+                        <include name="*.jar" />
+                    </fileset>
+                    <pathelement path="${test.resources.dir}/" />
+                    <pathelement path="${test.module.dir}/" />
+                    <pathelement location="${test.module.dir}/@{jar}" />
+                </classpath>
+
+                <junit-elements />
+
+                <batchtest todir="${test.report.dir}/@{module}" haltonfailure="no">
+                    <zipfileset src="${test.module.dir}/@{jar}">
+                        <exclude name="Test.class" />
+                        <exclude name="**/*$*" />
+
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc.class}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.class" unless="test.case" />
+                        <excludesfile name="${test.exclude.file}" unless="test.case"/>
+                        <excludeorinclude/>
+                    </zipfileset>
+                </batchtest>
+
+                <assertions enableSystemAssertions="true">
+                    <enable />
+                </assertions>
+
+                <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
+                <formatter type="xml" />
+            </junit>
+
+            <antcall target="touch-failures-file" />
+            <antcall target="touch-errors-file" />
+
+        </sequential>
+    </macrodef>
+
+    <!-- To use with -Dtest.case=... option                   -->
+    <!-- if ${test.case} is provided in package+class form    -->
+    <!-- it is converted to dir+filename form                 -->
+    <macrodef name="convert-test-as-class">
+        <attribute name="from" />
+        <attribute name="to" />
+        <sequential>
+            <pathconvert property="@{to}" setonempty="no">
+                <path path="${@{from}}" />
+                <chainedmapper>
+                    <filtermapper>
+                        <replaceregex pattern="\.java$$" />
+                    </filtermapper>
+                    <unpackagemapper from="${basedir}${file.separator}*" to="*.class" />
+                </chainedmapper>
+            </pathconvert>
+        </sequential>
+    </macrodef>
+
+</project>
