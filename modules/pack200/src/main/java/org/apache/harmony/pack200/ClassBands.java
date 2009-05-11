@@ -212,9 +212,7 @@ public class ClassBands extends BandSet {
     public void addField(int flags, String name, String desc, String signature,
             Object value) {
         flags = flags & 0xFFFF;
-        CPMethodOrField field = cpBands.addCPField(class_this[index], name,
-                desc);
-        tempFieldDesc.add(field.getDesc());
+        tempFieldDesc.add(cpBands.getCPNameAndType(name, desc));
         if (signature != null) {
             fieldSignature.add(cpBands.getCPSignature(signature));
             flags |= (1 << 19);
@@ -569,9 +567,8 @@ public class ClassBands extends BandSet {
 
     public void addMethod(int flags, String name, String desc,
             String signature, String[] exceptions) {
-        CPMethodOrField method = cpBands.addCPMethod(class_this[index], name,
-                desc);
-        tempMethodDesc.add(method.getDesc());
+        CPNameAndType nt = cpBands.getCPNameAndType(name, desc);
+        tempMethodDesc.add(nt);
         if (signature != null) {
             methodSignature.add(cpBands.getCPSignature(signature));
             flags |= (1 << 19);
