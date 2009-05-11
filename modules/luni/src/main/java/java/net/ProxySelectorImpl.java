@@ -29,7 +29,7 @@ import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * Default implementation for ProxySelector
+ * Default implementation for {@code ProxySelector}.
  */
 @SuppressWarnings("unchecked")
 class ProxySelectorImpl extends ProxySelector {

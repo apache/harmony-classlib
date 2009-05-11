@@ -29,11 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract class for selectable channels.
- * <p>
- * In this class, there are methods about registering/deregistering a channel,
- * about channel closing. It realize the multi-thread safe.
- * </p>
+ * {@code AbstractSelectableChannel} is the base implementation class for
+ * selectable channels. It declares methods for registering, unregistering and
+ * closing selectable channels. It is thread-safe.
  */
 public abstract class AbstractSelectableChannel extends SelectableChannel {
 
@@ -53,10 +51,10 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     boolean isBlocking = true;
 
     /**
-     * Constructor for this class.
+     * Constructs a new {@code AbstractSelectableChannel}.
      * 
      * @param selectorProvider
-     *            A instance of SelectorProvider
+     *            the selector provider that creates this channel.
      */
     protected AbstractSelectableChannel(SelectorProvider selectorProvider) {
         super();
@@ -64,10 +62,10 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Answer the SelectorProvider of this channel.
+     * Returns the selector provider that has created this channel.
      * 
      * @see java.nio.channels.SelectableChannel#provider()
-     * @return The provider of this channel.
+     * @return this channel's selector provider.
      */
     @Override
     public final SelectorProvider provider() {
@@ -75,7 +73,10 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * @see java.nio.channels.SelectableChannel#isRegistered()
+     * Indicates whether this channel is registered with one or more selectors.
+     *
+     * @return {@code true} if this channel is registered with a selector,
+     *         {@code false} otherwise.
      */
     @Override
     synchronized public final boolean isRegistered() {
@@ -83,7 +84,12 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * @see java.nio.channels.SelectableChannel#keyFor(java.nio.channels.Selector)
+     * Gets this channel's selection key for the specified selector.
+     *
+     * @param selector
+     *            the selector with which this channel has been registered.
+     * @return the selection key for the channel or {@code null} if this channel
+     *         has not been registered with {@code selector}.
      */
     @Override
     synchronized public final SelectionKey keyFor(Selector selector) {
@@ -97,18 +103,31 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Realize the register function.
-     * <p>
-     * It registers current channel to the selector, then answer the selection
-     * key. The channel must be open and the interest op set must be valid. If
-     * the current channel is already registered to the selector, the method
-     * only set the new interest op set; otherwise it will call the
-     * <code>register</code> in <code>selector</code>, and add the relative
-     * key to the key set of the current channel.
-     * </p>
+     * Registers this channel with the specified selector for the specified
+     * interest set. If the channel is already registered with the selector, the
+     * {@link SelectionKey interest set} is updated to {@code interestSet} and
+     * the corresponding selection key is returned. If the channel is not yet
+     * registered, this method calls the {@code register} method of
+     * {@code selector} and adds the selection key to this channel's key set.
      * 
-     * @see java.nio.channels.SelectableChannel#register(java.nio.channels.Selector,
-     *      int, java.lang.Object)
+     * @param selector
+     *            the selector with which to register this channel.
+     * @param interestSet
+     *            this channel's {@link SelectionKey interest set}.
+     * @param attachment
+     *            the object to attach, can be {@code null}.
+     * @return the selection key for this registration.
+     * @throws CancelledKeyException
+     *             if this channel is registered but its key has been canceled.
+     * @throws ClosedChannelException
+     *             if this channel is closed.
+     * @throws IllegalArgumentException
+     *             if {@code interestSet} is not supported by this channel.
+     * @throws IllegalBlockingModeException
+     *             if this channel is in blocking mode.
+     * @throws IllegalSelectorException
+     *             if this channel does not have the same provider as the given
+     *             selector.
      */
     @Override
     public final SelectionKey register(Selector selector, int interestSet,
@@ -149,9 +168,13 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Implement the closing function.
+     * Implements the channel closing behavior. Calls
+     * {@code implCloseSelectableChannel()} first, then loops through the list
+     * of selection keys and cancels them, which unregisters this channel from
+     * all selectors it is registered with.
      * 
-     * @see java.nio.channels.spi.AbstractInterruptibleChannel#implCloseChannel()
+     * @throws IOException
+     *             if a problem occurs while closing the channel.
      */
     @Override
     synchronized protected final void implCloseChannel() throws IOException {
@@ -165,15 +188,19 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Implement the closing function of the SelectableChannel.
+     * Implements the closing function of the SelectableChannel. This method is
+     * called from {@code implCloseChannel()}.
      * 
      * @throws IOException
-     *             If some I/O exception occurred.
+     *             if an I/O exception occurs.
      */
     protected abstract void implCloseSelectableChannel() throws IOException;
 
     /**
-     * @see java.nio.channels.SelectableChannel#isBlocking()
+     * Indicates whether this channel is in blocking mode.
+     *
+     * @return {@code true} if this channel is blocking, {@code false}
+     *         otherwise.
      */
     @Override
     public final boolean isBlocking() {
@@ -183,7 +210,10 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * @see java.nio.channels.SelectableChannel#blockingLock()
+     * Gets the object used for the synchronization of {@code register} and
+     * {@code configureBlocking}.
+     *
+     * @return the synchronization object.
      */
     @Override
     public final Object blockingLock() {
@@ -191,12 +221,23 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Set the blocking mode of this channel.
+     * Sets the blocking mode of this channel. A call to this method blocks if
+     * other calls to this method or to {@code register} are executing. The
+     * actual setting of the mode is done by calling
+     * {@code implConfigureBlocking(boolean)}.
      * 
      * @see java.nio.channels.SelectableChannel#configureBlocking(boolean)
      * @param blockingMode
-     *            <code>true</code> for blocking mode; <code>false</code>
-     *            for non-blocking mode.
+     *            {@code true} for setting this channel's mode to blocking,
+     *            {@code false} to set it to non-blocking.
+     * @return this channel.
+     * @throws ClosedChannelException
+     *             if this channel is closed.
+     * @throws IllegalBlockingModeException
+     *             if {@code block} is {@code true} and this channel has been
+     *             registered with at least one selector.
+     * @throws IOException
+     *             if an I/O error occurs.
      */
     @Override
     public final SelectableChannel configureBlocking(boolean blockingMode)
@@ -218,13 +259,13 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Implement the setting of blocking mode.
+     * Implements the setting of the blocking mode.
      * 
      * @param blockingMode
-     *            <code>true</code> for blocking mode; <code>false</code>
-     *            for non-blocking mode.
+     *            {@code true} for setting this channel's mode to blocking,
+     *            {@code false} to set it to non-blocking.
      * @throws IOException
-     *             If some I/O exception occurred.
+     *             if an I/O error occurs.
      */
     protected abstract void implConfigureBlocking(boolean blockingMode)
             throws IOException;

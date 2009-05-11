@@ -15,20 +15,20 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The key specification for an encoded private key in ASN.1 format as defined
+ * in the PKCS#8 standard.  
  */
 public class PKCS8EncodedKeySpec extends EncodedKeySpec {    
+
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code PKCS8EncodedKeySpec} with the specified encoded key
+     * bytes.
+     * 
+     * @param encodedKey
+     *            the encoded key bytes.
      */
     public PKCS8EncodedKeySpec(byte[] encodedKey) {
         // Super class' ctor makes defensive parameter copy
@@ -36,7 +36,9 @@ public class PKCS8EncodedKeySpec extends EncodedKeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a copy of the encoded key bytes.
+     * 
+     * @return a copy of the encoded key bytes.
      */
     public byte[] getEncoded() {
         // Super class' getEncoded() always returns a new array
@@ -44,7 +46,10 @@ public class PKCS8EncodedKeySpec extends EncodedKeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the name of the encoding format of this encoded key
+     * specification.
+     * 
+     * @return the string "PKCS#8".
      */
     public final String getFormat() {
         return "PKCS#8"; //$NON-NLS-1$

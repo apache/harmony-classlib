@@ -19,18 +19,41 @@ package javax.net.ssl;
 
 import java.io.IOException;
 
+/**
+ * The base class for all SSL related exceptions.
+ */
 public class SSLException extends IOException {
     private static final long serialVersionUID = 4511006460650708967L;
 
+    /**
+     * Creates a new {@code SSLException} with the specified reason.
+     *
+     * @param reason
+     *            the reason for the exception.
+     */
     public SSLException(String reason) {
         super(reason);
     }
 
+    /**
+     * Creates a new {@code SSLException} with the specified message and cause.
+     *
+     * @param message
+     *            the detail message for the exception.
+     * @param cause
+     *            the cause.
+     */
     public SSLException(String message, Throwable cause) {
         super(message);
         super.initCause(cause);
     }
 
+    /**
+     * Creates a new {@code SSLException} with the specified cause.
+     *
+     * @param cause
+     *            the cause
+     */
     public SSLException(Throwable cause) {
         super(cause == null ? null : cause.toString());
         super.initCause(cause);

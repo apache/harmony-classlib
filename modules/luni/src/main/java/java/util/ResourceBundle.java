@@ -30,14 +30,53 @@ import org.apache.harmony.kernel.vm.VM;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * ResourceBundle is an abstract class which is the superclass of classes which
- * provide locale specific resources. A bundle contains a number of named
- * resources, where the names are Strings. A bundle may have a parent bundle,
- * when a resource is not found in a bundle, the parent bundle is searched for
- * the resource.
- * 
+ * {@code ResourceBundle} is an abstract class which is the superclass of classes which
+ * provide {@code Locale}-specific resources. A bundle contains a number of named
+ * resources, where the names are {@code Strings}. A bundle may have a parent bundle,
+ * and when a resource is not found in a bundle, the parent bundle is searched for
+ * the resource. If the fallback mechanism reaches the base bundle and still
+ * can't find the resource it throws a {@code MissingResourceException}.
+ *
+ * <ul>
+ * <li>All bundles for the same group of resources share a common base bundle.
+ * This base bundle acts as the root and is the last fallback in case none of
+ * its children was able to respond to a request.</li>
+ * <li>The first level contains changes between different languages. Only the
+ * differences between a language and the language of the base bundle need to be
+ * handled by a language-specific {@code ResourceBundle}.</li>
+ * <li>The second level contains changes between different countries that use
+ * the same language. Only the differences between a country and the country of
+ * the language bundle need to be handled by a country-specific {@code ResourceBundle}.
+ * </li>
+ * <li>The third level contains changes that don't have a geographic reason
+ * (e.g. changes that where made at some point in time like {@code PREEURO} where the
+ * currency of come countries changed. The country bundle would return the
+ * current currency (Euro) and the {@code PREEURO} variant bundle would return the old
+ * currency (e.g. DM for Germany).</li>
+ * </ul>
+ *
+ * <strong>Examples</strong>
+ * <ul>
+ * <li>BaseName (base bundle)
+ * <li>BaseName_de (german language bundle)
+ * <li>BaseName_fr (french language bundle)
+ * <li>BaseName_de_DE (bundle with Germany specific resources in german)
+ * <li>BaseName_de_CH (bundle with Switzerland specific resources in german)
+ * <li>BaseName_fr_CH (bundle with Switzerland specific resources in french)
+ * <li>BaseName_de_DE_PREEURO (bundle with Germany specific resources in german of
+ * the time before the Euro)
+ * <li>BaseName_fr_FR_PREEURO (bundle with France specific resources in french of
+ * the time before the Euro)
+ * </ul>
+ *
+ * It's also possible to create variants for languages or countries. This can be
+ * done by just skipping the country or language abbreviation:
+ * BaseName_us__POSIX or BaseName__DE_PREEURO. But it's not allowed to
+ * circumvent both language and country: BaseName___VARIANT is illegal.
+ *
  * @see Properties
  * @see PropertyResourceBundle
+ * @see ListResourceBundle
  * @since 1.1
  */
 public abstract class ResourceBundle {
@@ -47,7 +86,8 @@ public abstract class ResourceBundle {
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     /**
-     * The parent of this ResourceBundle.
+     * The parent of this {@code ResourceBundle} that is used if this bundle doesn't
+     * include the requested resource.
      */
     protected ResourceBundle parent;
 
@@ -75,21 +115,20 @@ public abstract class ResourceBundle {
 
     /**
      * Constructs a new instance of this class.
-     * 
      */
     public ResourceBundle() {
         /* empty */
     }
 
     /**
-     * Finds the named resource bundle for the default locale.
+     * Finds the named resource bundle for the default {@code Locale} and the caller's
+     * {@code ClassLoader}.
      * 
      * @param bundleName
-     *            the name of the resource bundle
-     * @return ResourceBundle
-     * 
-     * @exception MissingResourceException
-     *                when the resource bundle cannot be found
+     *            the name of the {@code ResourceBundle}.
+     * @return the requested {@code ResourceBundle}.
+     * @throws MissingResourceException
+     *                if the {@code ResourceBundle} cannot be found.
      */
     public static final ResourceBundle getBundle(String bundleName)
             throws MissingResourceException {
@@ -98,16 +137,16 @@ public abstract class ResourceBundle {
     }
 
     /**
-     * Finds the named resource bundle for the specified locale.
+     * Finds the named {@code ResourceBundle} for the specified {@code Locale} and the caller
+     * {@code ClassLoader}.
      * 
      * @param bundleName
-     *            the name of the resource bundle
+     *            the name of the {@code ResourceBundle}.
      * @param locale
-     *            the locale
-     * @return ResourceBundle
-     * 
-     * @exception MissingResourceException
-     *                when the resource bundle cannot be found
+     *            the {@code Locale}.
+     * @return the requested resource bundle.
+     * @throws MissingResourceException
+     *                if the resource bundle cannot be found.
      */
     public static final ResourceBundle getBundle(String bundleName,
             Locale locale) {
@@ -115,18 +154,53 @@ public abstract class ResourceBundle {
     }
 
     /**
-     * Finds the named resource bundle for the specified locale.
+     * Finds the named resource bundle for the specified {@code Locale} and {@code ClassLoader}.
      * 
+     * The passed base name and {@code Locale} are used to create resource bundle names.
+     * The first name is created by concatenating the base name with the result
+     * of {@link Locale#toString()}. From this name all parent bundle names are
+     * derived. Then the same thing is done for the default {@code Locale}. This results
+     * in a list of possible bundle names.
+     *
+     * <strong>Example</strong> For the basename "BaseName", the {@code Locale} of the
+     * German part of Switzerland (de_CH) and the default {@code Locale} en_US the list
+     * would look something like this:
+     *
+     * <ol>
+     * <li>BaseName_de_CH</li>
+     * <li>BaseName_de</li>
+     * <li>Basename_en_US</li>
+     * <li>Basename_en</li>
+     * <li>BaseName</li>
+     * </ol>
+     *
+     * This list also shows the order in which the bundles will be searched for a requested
+     * resource in the German part of Switzerland (de_CH).
+     *
+     * As a first step, this method tries to instantiate
+     * a {@code ResourceBundle} with the names provided.
+     * If such a class can be instantiated and initialized, it is returned and
+     * all the parent bundles are instantiated too. If no such class can be
+     * found this method tries to load a {@code .properties} file with the names by
+     * replacing dots in the base name with a slash and by appending
+     * "{@code .properties}" at the end of the string. If such a resource can be found
+     * by calling {@link ClassLoader#getResource(String)} it is used to
+     * initialize a {@link PropertyResourceBundle}. If this succeeds, it will
+     * also load the parents of this {@code ResourceBundle}.
+     *
+     * For compatibility with older code, the bundle name isn't required to be
+     * a fully qualified class name. It's also possible to directly pass
+     * the path to a properties file (without a file extension).
+     *
      * @param bundleName
-     *            the name of the resource bundle
+     *            the name of the {@code ResourceBundle}.
      * @param locale
-     *            the locale
+     *            the {@code Locale}.
      * @param loader
-     *            the ClassLoader to use
-     * @return ResourceBundle
-     * 
-     * @exception MissingResourceException
-     *                when the resource bundle cannot be found
+     *            the {@code ClassLoader} to use.
+     * @return the requested {@code ResourceBundle}.
+     * @throws MissingResourceException
+     *                if the {@code ResourceBundle} cannot be found.
      */
     public static ResourceBundle getBundle(String bundleName, Locale locale,
             ClassLoader loader) throws MissingResourceException {
@@ -356,30 +430,34 @@ public abstract class ResourceBundle {
     }
 
     /**
-     * Answers the names of the resources contained in this ResourceBundle.
+     * Returns the names of the resources contained in this {@code ResourceBundle}.
      * 
-     * @return an Enumeration of the resource names
+     * @return an {@code Enumeration} of the resource names.
      */
     public abstract Enumeration<String> getKeys();
 
     /**
-     * Gets the Locale of this ResourceBundle.
+     * Gets the {@code Locale} of this {@code ResourceBundle}. In case a bundle was not
+     * found for the requested {@code Locale}, this will return the actual {@code Locale} of
+     * this resource bundle that was found after doing a fallback.
      * 
-     * @return the Locale of this ResourceBundle
+     * @return the {@code Locale} of this {@code ResourceBundle}.
      */
     public Locale getLocale() {
         return locale;
     }
 
     /**
-     * Answers the named resource from this ResourceBundle.
+     * Returns the named resource from this {@code ResourceBundle}. If the resource
+     * cannot be found in this bundle, it falls back to the parent bundle (if
+     * it's not null) by calling the {@link #handleGetObject} method. If the resource still
+     * can't be found it throws a {@code MissingResourceException}.
      * 
      * @param key
-     *            the name of the resource
-     * @return the resource object
-     * 
-     * @exception MissingResourceException
-     *                when the resource is not found
+     *            the name of the resource.
+     * @return the resource object.
+     * @throws MissingResourceException
+     *                if the resource is not found.
      */
     public final Object getObject(String key) {
         ResourceBundle last, theParent = this;
@@ -395,28 +473,32 @@ public abstract class ResourceBundle {
     }
 
     /**
-     * Answers the named resource from this ResourceBundle.
+     * Returns the named string resource from this {@code ResourceBundle}.
      * 
      * @param key
-     *            the name of the resource
-     * @return the resource string
-     * 
-     * @exception MissingResourceException
-     *                when the resource is not found
+     *            the name of the resource.
+     * @return the resource string.
+     * @throws MissingResourceException
+     *                if the resource is not found.
+     * @throws ClassCastException
+     *                if the resource found is not a string.
+     * @see #getObject(String)
      */
     public final String getString(String key) {
         return (String) getObject(key);
     }
 
     /**
-     * Answers the named resource from this ResourceBundle.
+     * Returns the named resource from this {@code ResourceBundle}.
      * 
      * @param key
-     *            the name of the resource
-     * @return the resource string array
-     * 
-     * @exception MissingResourceException
-     *                when the resource is not found
+     *            the name of the resource.
+     * @return the resource string array.
+     * @throws MissingResourceException
+     *                if the resource is not found.
+     * @throws ClassCastException
+     *                if the resource found is not an array of strings.
+     * @see #getObject(String)
      */
     public final String[] getStringArray(String key) {
         return (String[]) getObject(key);
@@ -516,21 +598,21 @@ public abstract class ResourceBundle {
     }
 
     /**
-     * Answers the named resource from this ResourceBundle, or null if the
+     * Returns the named resource from this {@code ResourceBundle}, or null if the
      * resource is not found.
      * 
      * @param key
-     *            the name of the resource
-     * @return the resource object
+     *            the name of the resource.
+     * @return the resource object.
      */
     protected abstract Object handleGetObject(String key);
 
     /**
-     * Sets the parent resource bundle of this ResourceBundle. The parent is
-     * searched for resources which are not found in this resource bundle.
+     * Sets the parent resource bundle of this {@code ResourceBundle}. The parent is
+     * searched for resources which are not found in this {@code ResourceBundle}.
      * 
      * @param bundle
-     *            the parent resource bundle
+     *            the parent {@code ResourceBundle}.
      */
     protected void setParent(ResourceBundle bundle) {
         parent = bundle;

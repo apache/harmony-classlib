@@ -15,17 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.math.BigInteger;
 
 /**
- * @com.intel.drl.spec_ref
+ * The key specification of a RSA public key.
+ * <p>
+ * Defined in the <a
+ * href="http://www.rsa.com/rsalabs/pubs/PKCS/html/pkcs-1.html">PKCS #1 v2.1</a>
+ * standard.
  */
 public class RSAPublicKeySpec implements KeySpec {
     // Modulus
@@ -34,7 +33,13 @@ public class RSAPublicKeySpec implements KeySpec {
     private final BigInteger publicExponent;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code RSAPublicKeySpec} with the specified modulus and
+     * public exponent.
+     * 
+     * @param modulus
+     *            the modulus {@code n}.
+     * @param publicExponent
+     *            the public exponent {@code d}.
      */
     public RSAPublicKeySpec(BigInteger modulus, BigInteger publicExponent) {
         this.modulus = modulus;
@@ -42,14 +47,18 @@ public class RSAPublicKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the modulus {@code n}.
+     * 
+     * @return the modulus {@code n}.
      */
     public BigInteger getModulus() {
         return modulus;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the public exponent {@code d}.
+     * 
+     * @return the public exponent {@code d}.
      */
     public BigInteger getPublicExponent() {
         return publicExponent;

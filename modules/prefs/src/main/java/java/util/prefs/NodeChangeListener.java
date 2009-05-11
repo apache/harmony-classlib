@@ -20,8 +20,9 @@ import java.util.EventListener;
 import java.util.prefs.NodeChangeEvent;
 
 /**
- * This interface is used to handle preferences node change event. Implementation 
- * of this interface can be installed by <code>Preferences</code> instance.
+ * This interface is used to handle preference node change events. The
+ * implementation of this interface can be installed by the {@code Preferences}
+ * instance.
  * 
  * @see Preferences
  * @see NodeChangeEvent
@@ -30,16 +31,19 @@ import java.util.prefs.NodeChangeEvent;
  */
 public interface NodeChangeListener extends EventListener {
     /**
-     * This method gets called whenever a child is added to a node.
+     * This method gets called whenever a child node is added to another node.
      * 
-     * @param e Node change event.
+     * @param e
+     *            the node change event.
      */
     public void childAdded (NodeChangeEvent e);
 
     /**
-     * This method gets called whenever a child is removed from a node.
+     * This method gets called whenever a child node is removed from another
+     * node.
      * 
-     * @param e Node change event.
+     * @param e
+     *            the node change event.
      */
     public void childRemoved (NodeChangeEvent e);
 }

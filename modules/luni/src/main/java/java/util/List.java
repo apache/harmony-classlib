@@ -17,339 +17,337 @@
 
 package java.util;
 
+
 /**
- * List is a collection which maintains an ordering for its elements. Every
- * element in the list has an index.
+ * A {@code List} is a collection which maintains an ordering for its elements. Every
+ * element in the {@code List} has an index. Each element can thus be accessed by its
+ * index, with the first index being zero. Normally, {@code List}s allow duplicate
+ * elements, as compared to Sets, where elements have to be unique.
  */
 public interface List<E> extends Collection<E> {
-
     /**
-     * Inserts the specified object into this Vector at the specified location.
-     * The object is inserted before any previous element at the specified
-     * location. If the location is equal to the size of this List, the object
-     * is added at the end.
+     * Inserts the specified object into this {@code List} at the specified location.
+     * The object is inserted before the current element at the specified
+     * location. If the location is equal to the size of this {@code List}, the object
+     * is added at the end. If the location is smaller than the size of this
+     * {@code List}, then all elements beyond the specified location are moved by one
+     * position towards the end of the {@code List}.
      * 
      * @param location
-     *            the index at which to insert
+     *            the index at which to insert.
      * @param object
-     *            the object to add
-     * 
-     * @exception UnsupportedOperationException
-     *                when adding to this List is not supported
-     * @exception ClassCastException
-     *                when the class of the object is inappropriate for this
-     *                List
-     * @exception IllegalArgumentException
-     *                when the object cannot be added to this List
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
+     *            the object to add.
+     * @throws UnsupportedOperationException
+     *                if adding to this {@code List} is not supported.
+     * @throws ClassCastException
+     *                if the class of the object is inappropriate for this
+     *                {@code List}.
+     * @throws IllegalArgumentException
+     *                if the object cannot be added to this {@code List}.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || location > size()}
      */
     public void add(int location, E object);
 
     /**
-     * Adds the specified object at the end of this List.
+     * Adds the specified object at the end of this {@code List}.
      * 
      * @param object
-     *            the object to add
-     * @return true
-     * 
-     * @exception UnsupportedOperationException
-     *                when adding to this List is not supported
-     * @exception ClassCastException
-     *                when the class of the object is inappropriate for this
-     *                List
-     * @exception IllegalArgumentException
-     *                when the object cannot be added to this List
+     *            the object to add.
+     * @return always true.
+     * @throws UnsupportedOperationException
+     *                if adding to this {@code List} is not supported.
+     * @throws ClassCastException
+     *                if the class of the object is inappropriate for this
+     *                {@code List}.
+     * @throws IllegalArgumentException
+     *                if the object cannot be added to this {@code List}.
      */
     public boolean add(E object);
 
     /**
-     * Inserts the objects in the specified Collection at the specified location
-     * in this List. The objects are added in the order they are returned from
-     * the Collection iterator.
+     * Inserts the objects in the specified collection at the specified location
+     * in this {@code List}. The objects are added in the order they are returned from
+     * the collection's iterator.
      * 
      * @param location
-     *            the index at which to insert
+     *            the index at which to insert.
      * @param collection
-     *            the Collection of objects
-     * @return true if this List is modified, false otherwise
-     * 
-     * @exception UnsupportedOperationException
-     *                when adding to this List is not supported
-     * @exception ClassCastException
-     *                when the class of an object is inappropriate for this List
-     * @exception IllegalArgumentException
-     *                when an object cannot be added to this List
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
+     *            the collection of objects to be inserted.
+     * @return true if this {@code List} has been modified through the insertion, false
+     *         otherwise (i.e. if the passed collection was empty).
+     * @throws UnsupportedOperationException
+     *                if adding to this {@code List} is not supported.
+     * @throws ClassCastException
+     *                if the class of an object is inappropriate for this
+     *                {@code List}.
+     * @throws IllegalArgumentException
+     *                if an object cannot be added to this {@code List}.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || > size()}
      */
     public boolean addAll(int location, Collection<? extends E> collection);
 
     /**
-     * Adds the objects in the specified Collection to the end of this List. The
-     * objects are added in the order they are returned from the Collection
-     * iterator.
+     * Adds the objects in the specified collection to the end of this {@code List}. The
+     * objects are added in the order in which they are returned from the
+     * collection's iterator.
      * 
      * @param collection
-     *            the Collection of objects
-     * @return true if this List is modified, false otherwise
-     * 
-     * @exception UnsupportedOperationException
-     *                when adding to this List is not supported
-     * @exception ClassCastException
-     *                when the class of an object is inappropriate for this List
-     * @exception IllegalArgumentException
-     *                when an object cannot be added to this List
+     *            the collection of objects.
+     * @return {@code true} if this {@code List} is modified, {@code false} otherwise
+     *         (i.e. if the passed collection was empty).
+     * @throws UnsupportedOperationException
+     *                if adding to this {@code List} is not supported.
+     * @throws ClassCastException
+     *                if the class of an object is inappropriate for this
+     *                {@code List}.
+     * @throws IllegalArgumentException
+     *                if an object cannot be added to this {@code List}.
      */
     public boolean addAll(Collection<? extends E> collection);
 
     /**
-     * Removes all elements from this List, leaving it empty.
+     * Removes all elements from this {@code List}, leaving it empty.
      * 
-     * @exception UnsupportedOperationException
-     *                when removing from this List is not supported
-     * 
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code List} is not supported.
      * @see #isEmpty
      * @see #size
      */
     public void clear();
 
     /**
-     * Searches this List for the specified object.
+     * Tests whether this {@code List} contains the specified object.
      * 
      * @param object
-     *            the object to search for
-     * @return true if object is an element of this List, false otherwise
+     *            the object to search for.
+     * @return {@code true} if object is an element of this {@code List}, {@code false}
+     *         otherwise
      */
     public boolean contains(Object object);
 
     /**
-     * Searches this List for all objects in the specified Collection.
+     * Tests whether this {@code List} contains all objects contained in the
+     * specified collection.
      * 
      * @param collection
-     *            the Collection of objects
-     * @return true if all objects in the specified Collection are elements of
-     *         this List, false otherwise
+     *            the collection of objects
+     * @return {@code true} if all objects in the specified collection are
+     *         elements of this {@code List}, {@code false} otherwise.
      */
     public boolean containsAll(Collection<?> collection);
 
     /**
-     * Compares the argument to the receiver, and answers true if they represent
-     * the <em>same</em> object using a class specific comparison.
+     * Compares the given object with the {@code List}, and returns true if they
+     * represent the <em>same</em> object using a class specific comparison. For
+     * {@code List}s, this means that they contain the same elements in exactly the same
+     * order.
      * 
      * @param object
-     *            Object the object to compare with this object.
-     * @return boolean <code>true</code> if the object is the same as this
-     *         object <code>false</code> if it is different from this object.
+     *            the object to compare with this object.
+     * @return boolean {@code true} if the object is the same as this object,
+     *         and {@code false} if it is different from this object.
      * @see #hashCode
      */
     public boolean equals(Object object);
 
     /**
-     * Answers the element at the specified location in this List.
+     * Returns the element at the specified location in this {@code List}.
      * 
      * @param location
-     *            the index of the element to return
-     * @return the element at the specified location
-     * 
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
+     *            the index of the element to return.
+     * @return the element at the specified location.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || >= size()}
      */
     public E get(int location);
 
     /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
+     * Returns the hash code for this {@code List}. It is calculated by taking each
+     * element' hashcode and its position in the {@code List} into account.
      * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
+     * @return the hash code of the {@code List}.
      */
     public int hashCode();
 
     /**
-     * Searches this List for the specified object and returns the index of the
+     * Searches this {@code List} for the specified object and returns the index of the
      * first occurrence.
      * 
      * @param object
-     *            the object to search for
-     * @return the index of the first occurrence of the object
+     *            the object to search for.
+     * @return the index of the first occurrence of the object or -1 if the
+     *         object was not found.
      */
     public int indexOf(Object object);
 
     /**
-     * Answers if this List has no elements, a size of zero.
+     * Returns whether this {@code List} contains no elements.
      * 
-     * @return true if this List has no elements, false otherwise
-     * 
+     * @return {@code true} if this {@code List} has no elements, {@code false}
+     *         otherwise.
      * @see #size
      */
     public boolean isEmpty();
 
     /**
-     * Answers an Iterator on the elements of this List. The elements are
-     * iterated in the same order that they occur in the List.
+     * Returns an iterator on the elements of this {@code List}. The elements are
+     * iterated in the same order as they occur in the {@code List}.
      * 
-     * @return an Iterator on the elements of this List
-     * 
+     * @return an iterator on the elements of this {@code List}.
      * @see Iterator
      */
     public Iterator<E> iterator();
 
     /**
-     * Searches this List for the specified object and returns the index of the
+     * Searches this {@code List} for the specified object and returns the index of the
      * last occurrence.
      * 
      * @param object
-     *            the object to search for
-     * @return the index of the last occurrence of the object
+     *            the object to search for.
+     * @return the index of the last occurrence of the object, or -1 if the
+     *         object was not found.
      */
     public int lastIndexOf(Object object);
 
     /**
-     * Answers a ListIterator on the elements of this List. The elements are
-     * iterated in the same order that they occur in the List.
+     * Returns a {@code List} iterator on the elements of this {@code List}. The elements are
+     * iterated in the same order that they occur in the {@code List}.
      * 
-     * @return a ListIterator on the elements of this List
+     * @return a {@code List} iterator on the elements of this {@code List}
      * 
      * @see ListIterator
      */
     public ListIterator<E> listIterator();
 
     /**
-     * Answers a ListIterator on the elements of this List. The elements are
-     * iterated in the same order that they occur in the List. The iteration
+     * Returns a list iterator on the elements of this {@code List}. The elements are
+     * iterated in the same order as they occur in the {@code List}. The iteration
      * starts at the specified location.
      * 
      * @param location
-     *            the index at which to start the iteration
-     * @return a ListIterator on the elements of this List
-     * 
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
-     * 
+     *            the index at which to start the iteration.
+     * @return a list iterator on the elements of this {@code List}.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || location > size()}
      * @see ListIterator
      */
     public ListIterator<E> listIterator(int location);
 
     /**
-     * Removes the object at the specified location from this List.
+     * Removes the object at the specified location from this {@code List}.
      * 
      * @param location
-     *            the index of the object to remove
-     * @return the removed object
-     * 
-     * @exception UnsupportedOperationException
-     *                when removing from this List is not supported
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
+     *            the index of the object to remove.
+     * @return the removed object.
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code List} is not supported.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || >= size()}
      */
     public E remove(int location);
 
     /**
-     * Removes the first occurrence of the specified object from this List.
+     * Removes the first occurrence of the specified object from this {@code List}.
      * 
      * @param object
-     *            the object to remove
-     * @return true if this List is modified, false otherwise
-     * 
-     * @exception UnsupportedOperationException
-     *                when removing from this List is not supported
+     *            the object to remove.
+     * @return true if this {@code List} was modified by this operation, false
+     *         otherwise.
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code List} is not supported.
      */
     public boolean remove(Object object);
 
     /**
-     * Removes all occurrences in this List of each object in the specified
-     * Collection.
+     * Removes all occurrences in this {@code List} of each object in the specified
+     * collection.
      * 
      * @param collection
-     *            the Collection of objects to remove
-     * @return true if this List is modified, false otherwise
-     * 
-     * @exception UnsupportedOperationException
-     *                when removing from this List is not supported
+     *            the collection of objects to remove.
+     * @return {@code true} if this {@code List} is modified, {@code false} otherwise.
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code List} is not supported.
      */
     public boolean removeAll(Collection<?> collection);
 
     /**
-     * Removes all objects from this List that are not contained in the
-     * specified Collection.
+     * Removes all objects from this {@code List} that are not contained in the
+     * specified collection.
      * 
      * @param collection
-     *            the Collection of objects to retain
-     * @return true if this List is modified, false otherwise
-     * 
-     * @exception UnsupportedOperationException
-     *                when removing from this List is not supported
+     *            the collection of objects to retain.
+     * @return {@code true} if this {@code List} is modified, {@code false} otherwise.
+     * @throws UnsupportedOperationException
+     *                if removing from this {@code List} is not supported.
      */
     public boolean retainAll(Collection<?> collection);
 
     /**
-     * Replaces the element at the specified location in this List with the
-     * specified object.
+     * Replaces the element at the specified location in this {@code List} with the
+     * specified object. This operation does not change the size of the {@code List}.
      * 
      * @param location
-     *            the index at which to put the specified object
+     *            the index at which to put the specified object.
      * @param object
-     *            the object to add
-     * @return the previous element at the index
-     * 
-     * @exception UnsupportedOperationException
-     *                when replacing elements in this List is not supported
-     * @exception ClassCastException
-     *                when the class of an object is inappropriate for this List
-     * @exception IllegalArgumentException
-     *                when an object cannot be added to this List
-     * @exception IndexOutOfBoundsException
-     *                when <code>location < 0 || >= size()</code>
+     *            the object to insert.
+     * @return the previous element at the index.
+     * @throws UnsupportedOperationException
+     *                if replacing elements in this {@code List} is not supported.
+     * @throws ClassCastException
+     *                if the class of an object is inappropriate for this
+     *                {@code List}.
+     * @throws IllegalArgumentException
+     *                if an object cannot be added to this {@code List}.
+     * @throws IndexOutOfBoundsException
+     *                if {@code location < 0 || >= size()}
      */
     public E set(int location, E object);
 
     /**
-     * Answers the number of elements in this List.
+     * Returns the number of elements in this {@code List}.
      * 
-     * @return the number of elements in this List
+     * @return the number of elements in this {@code List}.
      */
     public int size();
 
     /**
-     * Answers a List of the specified portion of this List from the start index
-     * to one less than the end index. The returned List is backed by this list
-     * so changes to one are reflected by the other.
+     * Returns a {@code List} of the specified portion of this {@code List} from the given start
+     * index to the end index minus one. The returned {@code List} is backed by this
+     * {@code List} so changes to it are reflected by the other.
      * 
      * @param start
-     *            the index at which to start the sublist
+     *            the index at which to start the sublist.
      * @param end
-     *            the index one past the end of the sublist
-     * @return a List of a portion of this List
-     * 
-     * @exception IndexOutOfBoundsException
-     *                when <code>start < 0, start > end</code> or
-     *                <code>end > size()</code>
+     *            the index one past the end of the sublist.
+     * @return a list of a portion of this {@code List}.
+     * @throws IndexOutOfBoundsException
+     *                if {@code start < 0, start > end} or {@code end >
+     *                size()}
      */
     public List<E> subList(int start, int end);
 
     /**
-     * Answers an array containing all elements contained in this List.
+     * Returns an array containing all elements contained in this {@code List}.
      * 
-     * @return an array of the elements from this List
+     * @return an array of the elements from this {@code List}.
      */
     public Object[] toArray();
 
     /**
-     * Answers an array containing all elements contained in this List. If the
+     * Returns an array containing all elements contained in this {@code List}. If the
      * specified array is large enough to hold the elements, the specified array
      * is used, otherwise an array of the same type is created. If the specified
-     * array is used and is larger than this List, the array element following
+     * array is used and is larger than this {@code List}, the array element following
      * the collection elements is set to null.
      * 
      * @param array
-     *            the array
-     * @return an array of the elements from this List
-     * 
-     * @exception ArrayStoreException
-     *                when the type of an element in this List cannot be stored
-     *                in the type of the specified array
+     *            the array.
+     * @return an array of the elements from this {@code List}.
+     * @throws ArrayStoreException
+     *                if the type of an element in this {@code List} cannot be stored
+     *                in the type of the specified array.
      */
     public <T> T[] toArray(T[] array);
 }

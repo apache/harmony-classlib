@@ -188,6 +188,10 @@ public class ThreadInfo {
             int lineNumberVal = ((Integer) attributeVals[3]).intValue();
             boolean nativeMethodVal = ((Boolean) attributeVals[4])
                     .booleanValue();
+            // if native method indicator is true, modify lineNumberVal to magic value
+            if(nativeMethodVal) {
+                lineNumberVal = -2;
+            }
             StackTraceElement element = new StackTraceElement(classNameVal,
                     methodNameVal, fileNameVal, lineNumberVal);
             result[i] = element;

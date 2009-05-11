@@ -19,9 +19,9 @@ package java.security;
 
 
 /**
- * Subclass of Permission whose instances imply all other permissions. Granting
- * this permission is equivalent to disabling security.
- * 
+ * {@code AllPermission} represents the permission to perform any operation.
+ * Since its {@link #implies(Permission)} method always returns {@code true},
+ * granting this permission is equivalent to disabling security.
  */
 public final class AllPermission extends Permission {
 
@@ -36,87 +36,87 @@ public final class AllPermission extends Permission {
     // Actions name
     private static final String ALL_ACTIONS = "<all actions>"; //$NON-NLS-1$
 
-	/**
-	 * Constructs a new instance of this class. The two argument version is
-	 * provided for class <code>Policy</code> so that it has a consistent call
-	 * pattern across all Permissions. The name and action list are both
-	 * ignored.
-	 * 
-	 * @param name
-	 *            java.lang.String ignored.
-	 * @param actions
-	 *            java.lang.String ignored.
-	 */
+    /**
+     * Constructs a new instance of {@code AllPermission}. The two argument
+     * version is provided for class {@code Policy} so that it has a consistent
+     * call pattern across all permissions. The name and action list are both
+     * ignored.
+     *
+     * @param name
+     *            ignored.
+     * @param actions
+     *            ignored.
+     */
     public AllPermission(String name, String actions) {
         super(ALL_PERMISSIONS);
     }
 
-	/**
-	 * Constructs a new instance of this class.
-	 */
+    /**
+     * Constructs a new instance of {@code AllPermission}.
+     */
     public AllPermission() {
         super(ALL_PERMISSIONS);
     }
 
-	/**
-	 * Compares the argument to the receiver, and answers true if they represent
-	 * the <em>same</em> object using a class specific comparison. All
-	 * AllPermissions are equal to each other.
-	 * 
-	 * @param obj
-	 *            the object to compare with this object
-	 * @return <code>true</code> if the object is the same as this object
-	 *         <code>false</code> if it is different from this object
-	 * @see #hashCode
-	 */
+    /**
+     * Compares the specified object with this {@code AllPermission} for
+     * equality and returns {@code true} if the specified object is equal,
+     * {@code false} otherwise. To be equal, the given object needs to be an
+     * instance of {@code AllPermission}.
+     *
+     * @param obj
+     *            object to be compared for equality with this {@code
+     *            AllPermission}.
+     * @return {@code true} if the specified object is equal to this {@code
+     *         AllPermission}, otherwise {@code false}.
+     * @see #hashCode
+     */
     public boolean equals(Object obj) {
         return (obj instanceof AllPermission);
     }
 
-	/**
-	 * Answers an integer hash code for the receiver. Any two objects which
-	 * answer <code>true</code> when passed to <code>equals</code> must
-	 * answer the same value for this method.
-	 * 
-	 * @return the receiver's hash
-	 * 
-	 * @see #equals
-	 */
+    /**
+     * Returns the hash code value for this {@code AllPermission}. Returns the
+     * same hash code for {@code AllPermission}s that are equal to each other as
+     * required by the general contract of {@link Object#hashCode}.
+     *
+     * @return the hash code value for this {@code AllPermission}.
+     * @see Object#equals(Object)
+     * @see AllPermission#equals(Object)
+     */
     public int hashCode() {
         return 1;
     }
 
-	/**
-	 * Answers the actions associated with the receiver. Since AllPermission
-	 * objects allow all actions, answer with the string "<all actions>".
-	 * 
-	 * @return String the actions associated with the receiver.
-	 */
+    /**
+     * Returns the actions associated with this {@code AllPermission}. Since
+     * {@code AllPermission} objects allow all actions, this method returns
+     * always the string "&lt;all actions&gt;".
+     *
+     * @return the actions associated with this {@code AllPermission}.
+     */
     public String getActions() {
         return ALL_ACTIONS;
     }
 
-	/**
-	 * Indicates whether the argument permission is implied by the receiver.
-	 * AllPermission objects imply all other permissions.
-	 * 
-	 * @return boolean <code>true</code> if the argument permission is implied
-	 *         by the receiver, and <code>false</code> if it is not.
-	 * @param permission
-	 *            java.security.Permission the permission to check
-	 */
+    /**
+     * Indicates whether the given permission is implied by this permission.
+     * {@code AllPermission} objects imply all other permissions.
+     *
+     * @return always {@code true}.
+     * @param permission
+     *            the permission to check.
+     */
     public boolean implies(Permission permission) {
         return true;
     }
 
-	/**
-	 * Answers a new PermissionCollection for holding permissions of this class.
-	 * Answer null if any permission collection can be used.
-	 * 
-	 * @return a new PermissionCollection or null
-	 * 
-	 * @see java.security.BasicPermissionCollection
-	 */
+    /**
+     * Returns a new {@code PermissionCollection} for holding permissions of
+     * this class.
+     *
+     * @return a new {@code PermissionCollection}.
+     */
     public PermissionCollection newPermissionCollection() {
         return new AllPermissionCollection();
     }

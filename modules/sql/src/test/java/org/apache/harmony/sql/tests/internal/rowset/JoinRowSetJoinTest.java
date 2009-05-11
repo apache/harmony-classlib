@@ -764,7 +764,7 @@ public class JoinRowSetJoinTest extends JoinRowSetTestCase {
         return rowNum;
     }
     
-    public void testJoin_OrignalShowDeleted() throws SQLException {
+    public void testJoin_OriginalShowDeleted() throws SQLException {
         jrs.addRowSet(crset, 1);
         
         jrs.first();
@@ -781,7 +781,7 @@ public class JoinRowSetJoinTest extends JoinRowSetTestCase {
         assertEquals(3, rowNum);     
     }
     
-    public void testJoin_OrignalShowDeleted2() throws SQLException {
+    public void testJoin_OriginalShowDeleted2() throws SQLException {
         crset.setShowDeleted(true);
         jrs.addRowSet(crset, 1);
         
@@ -826,7 +826,7 @@ public class JoinRowSetJoinTest extends JoinRowSetTestCase {
         assertFalse(jrs.isFirst());
     }
     
-    public void testJoin_OrignalShowDeleted3() throws Exception {
+    public void testJoin_OriginalShowDeleted3() throws Exception {
         CachedRowSet crset2 = newNoInitialInstance();
         rs = st.executeQuery("select * from books");
         crset2.populate(rs);

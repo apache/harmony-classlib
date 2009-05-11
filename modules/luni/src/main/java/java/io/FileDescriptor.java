@@ -18,14 +18,16 @@
 package java.io;
 
 /**
- * FileDescriptor is the lowest level representation of a File, Device, or
- * Socket. You can create any of the IO classes which take a FileDescriptor as
- * an argument by querying an open Socket or File for the FileDescriptor.
+ * The lowest-level representation of a file, device, or
+ * socket. If is often used for wrapping an operating system "handle". Some
+ * I/O classes can be queried for the FileDescriptor they are operating on, and
+ * this descriptor can subsequently be used during the instantiation of another
+ * I/O class, so that the new object will reuse it.
  * <p>
- * The FileDescriptor class also contains static fields representing Standard
- * Input, Output and Error. You can use these directly if desired but it is
- * recommended you go through System.in, System.out, and System.err streams
- * respectively.
+ * The FileDescriptor class also contains static fields representing the
+ * system's standard input, output and error streams. These can be used directly
+ * if desired, but it is recommended to go through System.in, System.out, and
+ * System.err streams respectively.
  * <p>
  * Applications should not create new FileDescriptors.
  * 
@@ -35,13 +37,19 @@ package java.io;
  */
 public final class FileDescriptor {
 
-    /** FileDescriptor representing Standard In */
+    /**
+     * The FileDescriptor representing standard input.
+     */
     public static final FileDescriptor in = new FileDescriptor();
 
-    /** FileDescriptor representing Standard Out */
+    /**
+     * FileDescriptor representing standard out.
+     */
     public static final FileDescriptor out = new FileDescriptor();
 
-    /** FileDescriptor representing Standard Error */
+    /**
+     * FileDescriptor representing standard error.
+     */
     public static final FileDescriptor err = new FileDescriptor();
 
     /**
@@ -63,9 +71,8 @@ public final class FileDescriptor {
     }
 
     /**
-     * Constructs a new FileDescriptor containing an invalid handle. This
-     * constructor does nothing interesting. Provided for signature
-     * compatibility.
+     * Constructs a new FileDescriptor containing an invalid handle. The
+     * contained handle is usually modified by native code at a later point.
      */
     public FileDescriptor() {
         super();
@@ -76,7 +83,7 @@ public final class FileDescriptor {
      * is written out to the appropriate device before returning.
      * 
      * @throws SyncFailedException
-     *             when the operation fails
+     *             when the operation fails.
      */
     public void sync() throws SyncFailedException {
         // if the descriptor is a read-only one, do nothing
@@ -88,10 +95,10 @@ public final class FileDescriptor {
     private native void syncImpl() throws SyncFailedException;
 
     /**
-     * Answers a boolean indicating whether or not this FileDescriptor is valid.
+     * Indicates whether this FileDescriptor is valid.
      * 
-     * @return <code>true</code> if this FileDescriptor is valid,
-     *         <code>false</code> otherwise
+     * @return {@code true} if this FileDescriptor is valid, {@code false}
+     *         otherwise.
      */
     public boolean valid() {
         return descriptor != -1;

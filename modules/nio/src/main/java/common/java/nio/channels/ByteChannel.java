@@ -21,7 +21,9 @@ package java.nio.channels;
  * <p>
  * The methods for the byte channel are precisely those defined by readable and
  * writable byte channels.
- * </p>
+ *
+ * @see ReadableByteChannel
+ * @see WritableByteChannel
  */
 public interface ByteChannel extends ReadableByteChannel, WritableByteChannel {
     // No methods defined.

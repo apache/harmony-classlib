@@ -53,6 +53,8 @@
     </target>
 
     <target name="test-modules" depends="support-jar, test-jre-vm-info">
+        <copy file="${basedir}/make/test.properties" tofile="${hy.hdk}/build/test/test.properties"/>
+        <copy file="${basedir}/make/run-test.xml" tofile="${hy.hdk}/build/test/build.xml"/>
         <poll-modules target="-test-module" />
     </target>
 

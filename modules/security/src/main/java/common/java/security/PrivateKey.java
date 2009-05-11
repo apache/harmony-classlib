@@ -15,20 +15,17 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * @com.intel.drl.spec_ref
+ * {@code PrivateKey} is the common interface for private keys.
  * 
+ * @see PublicKey
  */
 public interface PrivateKey extends Key {
+
     /**
-     * @com.intel.drl.spec_ref
+     * The {@code serialVersionUID} to be compatible with JDK1.1.
      */
     public static final long serialVersionUID = 6034044314589513430L;
 }

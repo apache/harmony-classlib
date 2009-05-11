@@ -15,21 +15,19 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
 
 package java.security.interfaces;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The base interface for Digital Signature Algorithm (DSA) public or private
+ * keys.
  */
 public interface DSAKey {
+
     /**
-     * @com.intel.drl.spec_ref
-     *  
+     * Returns the DSA key parameters.
+     * 
+     * @return the DSA key parameters.
      */
     public DSAParams getParams();
 

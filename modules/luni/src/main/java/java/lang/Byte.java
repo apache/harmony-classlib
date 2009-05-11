@@ -18,8 +18,8 @@
 package java.lang;
 
 /**
- * Byte is the wrapper for the primitive type <code>byte</code>.
- * 
+ * The wrapper for the primitive type {@code byte}.
+ *
  * @since 1.1
  */
 public final class Byte extends Number implements Comparable<Byte> {
@@ -32,25 +32,25 @@ public final class Byte extends Number implements Comparable<Byte> {
     private final byte value;
 
     /**
-     * Constant for the maximum <code>byte</code> value, 2<sup>7</sup>-1.
+     * The maximum {@code Byte} value, 2<sup>7</sup>-1.
      */
     public static final byte MAX_VALUE = (byte) 0x7F;
 
     /**
-     * Constant for the minimum <code>byte</code> value, -2<sup>7</sup>.
+     * The minimum {@code Byte} value, -2<sup>7</sup>.
      */
     public static final byte MIN_VALUE = (byte) 0x80;
 
     /**
-     * Constant for the number of bits to represent a <code>byte</code> in
-     * two's compliment form.
+     * The number of bits needed to represent a {@code Byte} value in two's
+     * complement form.
      * 
      * @since 1.5
      */
     public static final int SIZE = 8;
 
     /**
-     * The java.lang.Class that represents this class.
+     * The {@link Class} object that represents the primitive type {@code byte}.
      */
     @SuppressWarnings("unchecked")
     public static final Class<Byte> TYPE = (Class<Byte>) new byte[0].getClass()
@@ -65,32 +65,32 @@ public final class Byte extends Number implements Comparable<Byte> {
     private static final Byte[] CACHE = new Byte[256];
 
     /**
-     * Constructs a new instance of the receiver which represents the byte
-     * valued argument.
+     * Constructs a new {@code Byte} with the specified primitive byte value.
      * 
      * @param value
-     *            the byte to store in the new instance.
+     *            the primitive byte value to store in the new instance.
      */
     public Byte(byte value) {
         this.value = value;
     }
 
     /**
-     * Constructs a new instance of this class given a string.
+     * Constructs a new {@code Byte} from the specified string.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
+     *            the string representation of a single byte value.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} can not be decoded into a byte value.
+     * @see #parseByte(String)
      */
     public Byte(String string) throws NumberFormatException {
         this(parseByte(string));
     }
 
     /**
-     * Answers the byte value which the receiver represents
+     * Gets the primitive value of this byte.
      * 
-     * @return byte the value of the receiver.
+     * @return this object's primitive value.
      */
     @Override
     public byte byteValue() {
@@ -98,17 +98,16 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * Compares this <code>Byte</code> to the <code>Byte</code> passed. If
-     * this instance's value is equal to the value of the instance passed, then
-     * 0 is returned. If this instance's value is less than the value of the
-     * instance passed, then a negative value is returned. If this instance's
-     * value is greater than the value of the instance passed, then a positive
-     * value is returned.
+     * Compares this object to the specified byte object to determine their
+     * relative order.
      * 
      * @param object
-     *            The instance to compare to.
-     * @throws NullPointerException
-     *             if <code>object</code> is <code>null</code>.
+     *            the byte object to compare this object to.
+     * @return a negative value if the value of this byte is less than the value
+     *         of {@code object}; 0 if the value of this byte and the value of
+     *         {@code object} are equal; a positive value if the value of this
+     *         byte is greater than the value of {@code object}.
+     * @see java.lang.Comparable
      * @since 1.2
      */
     public int compareTo(Byte object) {
@@ -116,16 +115,16 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * Parses the string argument as if it was a byte value and returns the
-     * result. It is an error if the received string does not contain a
-     * representation of a single byte quantity. The string may be a hexadecimal
-     * ("0x..."), octal ("0..."), or decimal ("...") representation of a byte.
+     * Parses the specified string and returns a {@code Byte} instance if the
+     * string can be decoded into a single byte value. The string may be an
+     * optional minus sign "-" followed by a hexadecimal ("0x..." or "#..."),
+     * octal ("0..."), or decimal ("...") representation of a byte.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
-     * @return Byte the value represented by the argument
+     *            a string representation of a single byte value.
+     * @return a {@code Byte} containing the value represented by {@code string}.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} can not be parsed as a byte value.
      */
     public static Byte decode(String string) throws NumberFormatException {
         int intValue = Integer.decode(string).intValue();
@@ -136,29 +135,20 @@ public final class Byte extends Number implements Comparable<Byte> {
         throw new NumberFormatException();
     }
 
-    /**
-     * Answers the double value which the receiver represents
-     * 
-     * @return double the value of the receiver.
-     */
     @Override
     public double doubleValue() {
         return value;
     }
 
     /**
-     * Compares the argument to the receiver, and answers true if they represent
-     * the <em>same</em> object using a class specific comparison.
-     * <p>
-     * In this case, the argument must also be a Byte, and the receiver and
-     * argument must represent the same byte value.
-     * </p>
+     * Compares this object with the specified object and indicates if they are
+     * equal. In order to be equal, {@code object} must be an instance of
+     * {@code Byte} and have the same byte value as this object.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return <code>true</code> if the object is the same as this object
-     *         <code>false</code> if it is different from this object
-     * @see #hashCode
+     *            the object to compare this byte with.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code Byte}; {@code false} otherwise.
      */
     @Override
     public boolean equals(Object object) {
@@ -166,59 +156,36 @@ public final class Byte extends Number implements Comparable<Byte> {
                 && (value == ((Byte) object).value);
     }
 
-    /**
-     * Answers the float value which the receiver represents
-     * 
-     * @return float the value of the receiver.
-     */
     @Override
     public float floatValue() {
         return value;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Any two objects which
-     * answer <code>true</code> when passed to <code>equals</code> must
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         return value;
     }
 
-    /**
-     * Answers the int value which the receiver represents
-     * 
-     * @return int the value of the receiver.
-     */
     @Override
     public int intValue() {
         return value;
     }
 
-    /**
-     * Answers the long value which the receiver represents
-     * 
-     * @return long the value of the receiver.
-     */
     @Override
     public long longValue() {
         return value;
     }
 
     /**
-     * Parses the string argument as if it was a byte value and returns the
-     * result. Throws NumberFormatException if the string does not represent a
-     * single byte quantity.
+     * Parses the specified string as a signed decimal byte value. The ASCII
+     * character \u002d ('-') is recognized as the minus sign.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
-     * @return byte the value represented by the argument
+     *            the string representation of a single byte value.
+     * @return the primitive byte value represented by {@code string}.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a byte value.
      */
     public static byte parseByte(String string) throws NumberFormatException {
         int intValue = Integer.parseInt(string);
@@ -230,18 +197,20 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * Parses the string argument as if it was a byte value and returns the
-     * result. Throws NumberFormatException if the string does not represent a
-     * single byte quantity. The second argument specifies the radix to use when
-     * parsing the value.
+     * Parses the specified string as a signed byte value using the specified
+     * radix. The ASCII character \u002d ('-') is recognized as the minus sign.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
+     *            the string representation of a single byte value.
      * @param radix
      *            the radix to use when parsing.
-     * @return byte the value represented by the argument
+     * @return the primitive byte value represented by {@code string} using
+     *         {@code radix}.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a byte value.
      */
     public static byte parseByte(String string, int radix)
             throws NumberFormatException {
@@ -253,67 +222,60 @@ public final class Byte extends Number implements Comparable<Byte> {
         throw new NumberFormatException();
     }
 
-    /**
-     * Answers the short value which the receiver represents
-     * 
-     * @return short the value of the receiver.
-     */
     @Override
     public short shortValue() {
         return value;
     }
 
-    /**
-     * Answers a string containing a concise, human-readable description of the
-     * receiver.
-     * 
-     * @return a printable representation for the receiver.
-     */
     @Override
     public String toString() {
         return Integer.toString(value);
     }
 
     /**
-     * Answers a string containing a concise, human-readable description of the
-     * argument.
+     * Returns a string containing a concise, human-readable description of the
+     * specified byte value.
      * 
      * @param value
-     *            byte the byte to convert.
-     * @return String a printable representation for the byte.
+     *            the byte to convert to a string.
+     * @return a printable representation of {@code value}.
      */
     public static String toString(byte value) {
         return Integer.toString(value);
     }
 
     /**
-     * Parses the string argument as if it was a byte value and returns a Byte
-     * representing the result. Throws NumberFormatException if the string
-     * cannot be parsed as a byte quantity.
+     * Parses the specified string as a signed decimal byte value.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
-     * @return Byte the value represented by the argument
+     *            the string representation of a single byte value.
+     * @return a {@code Byte} instance containing the byte value represented by
+     *         {@code string}.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} is {@code null}, has a length of zero or
+     *             can not be parsed as a byte value.
+     * @see #parseByte(String)
      */
     public static Byte valueOf(String string) throws NumberFormatException {
         return valueOf(parseByte(string));
     }
 
     /**
-     * Parses the string argument as if it was a byte value and returns a Byte
-     * representing the result. Throws NumberFormatException if the string
-     * cannot be parsed as a byte quantity. The second argument specifies the
-     * radix to use when parsing the value.
+     * Parses the specified string as a signed byte value using the specified
+     * radix.
      * 
      * @param string
-     *            a string representation of a single byte quantity.
+     *            the string representation of a single byte value.
      * @param radix
      *            the radix to use when parsing.
-     * @return Byte the value represented by the argument
+     * @return a {@code Byte} instance containing the byte value represented by
+     *         {@code string} using {@code radix}.
      * @throws NumberFormatException
-     *             if the argument could not be parsed as a byte quantity.
+     *             if {@code string} is {@code null} or has a length of zero,
+     *             {@code radix < Character.MIN_RADIX},
+     *             {@code radix > Character.MAX_RADIX}, or if {@code string}
+     *             can not be parsed as a byte value.
+     * @see #parseByte(String, int)
      */
     public static Byte valueOf(String string, int radix)
             throws NumberFormatException {
@@ -321,13 +283,15 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
-     * Returns a <code>Byte</code> instance for the <code>byte</code> value
-     * passed. This method is preferred over the constructor, as this method may
-     * maintain a cache of instances.
+     * Returns a {@code Byte} instance for the specified byte value.
+     * <p>
+     * If it is not necessary to get a new {@code Byte} instance, it is
+     * recommended to use this method instead of the constructor, since it
+     * maintains a cache of instances which may result in better performance.
      * 
      * @param b
-     *            The byte value.
-     * @return A <code>Byte</code> instance.
+     *            the byte value to store in the instance.
+     * @return a {@code Byte} instance containing {@code b}.
      * @since 1.5
      */
     public static Byte valueOf(byte b) {

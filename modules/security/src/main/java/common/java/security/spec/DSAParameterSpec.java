@@ -15,19 +15,13 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The parameter specification used with the Digital Signature Algorithm (DSA). 
  */
 public class DSAParameterSpec implements AlgorithmParameterSpec, DSAParams {
     // Prime
@@ -38,7 +32,15 @@ public class DSAParameterSpec implements AlgorithmParameterSpec, DSAParams {
     private final BigInteger g;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code DSAParameterSpec} with the specified prime {@code p},
+     * sub-prime {@code q} and the base {@code g}.
+     * 
+     * @param p
+     *            the prime {@code p}.
+     * @param q
+     *            the sub-prime {@code q}.
+     * @param g
+     *            the base {@code g};
      */
     public DSAParameterSpec(BigInteger p, BigInteger q, BigInteger g) {
         this.p = p;
@@ -47,21 +49,27 @@ public class DSAParameterSpec implements AlgorithmParameterSpec, DSAParams {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the base {@code g}.
+     * 
+     * @return the base {@code g}.
      */
     public BigInteger getG() {
         return g;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the prime {@code p}.
+     * 
+     * @return the prime {@code p}.
      */
     public BigInteger getP() {
         return p;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the sub-prime {@code q}.
+     * 
+     * @return the sub-prime {@code q}.
      */
     public BigInteger getQ() {
         return q;

@@ -17,14 +17,15 @@
 package java.nio.channels;
 
 /**
- * Thrown when connecting or binding to an unsupported address type.
+ * An {@code UnsupportedAddressTypeException} is thrown when connecting or
+ * binding to an unsupported address type.
  */
 public class UnsupportedAddressTypeException extends IllegalArgumentException {
 
     private static final long serialVersionUID = -2964323842829700493L;
 
     /**
-     * Default constructor.
+     * Constructs an {@code UnsupportedAddressTypeException}.
      */
     public UnsupportedAddressTypeException() {
         super();

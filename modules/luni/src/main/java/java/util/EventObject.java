@@ -17,16 +17,17 @@
 
 package java.util;
 
+
 import java.io.Serializable;
 
 /**
- * EventObjects represent events. Typically applications subclass this class to
+ * {@code EventObject}s represent events. Typically applications subclass this class to
  * add event specific information.
  * 
  * @see EventListener
  */
 public class EventObject implements Serializable {
-
+    
     private static final long serialVersionUID = 5516075349620653480L;
 
     /**
@@ -38,7 +39,7 @@ public class EventObject implements Serializable {
      * Constructs a new instance of this class.
      * 
      * @param source
-     *            the object which fired the event
+     *            the object which fired the event.
      */
     public EventObject(Object source) {
         if (source != null) {
@@ -49,18 +50,18 @@ public class EventObject implements Serializable {
     }
 
     /**
-     * Answers the event source.
+     * Returns the event source.
      * 
-     * @return the object which fired the event
+     * @return the object which fired the event.
      */
     public Object getSource() {
         return source;
     }
 
     /**
-     * Answers the string representation of this EventObject.
+     * Returns the string representation of this {@code EventObject}.
      * 
-     * @return the string representation of this EventObject
+     * @return the string representation of this {@code EventObject}.
      */
     @Override
     public String toString() {

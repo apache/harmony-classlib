@@ -17,30 +17,30 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when an operation is attempted which is not
- * possible given the state that the executing thread is in.
+ * Thrown when an operation is attempted which is not possible given the state
+ * that the executing thread is in.
  */
 public class IllegalThreadStateException extends IllegalArgumentException {
 
     private static final long serialVersionUID = -7626246362397460174L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IllegalThreadStateException() {
-		super();
-	}
+     * Constructs a new {@code IllegalThreadStateException} that includes the
+     * current stack trace.
+     */
+    public IllegalThreadStateException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IllegalThreadStateException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IllegalThreadStateException} with the current
+     * stack trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public IllegalThreadStateException(String detailMessage) {
+        super(detailMessage);
+    }
 }

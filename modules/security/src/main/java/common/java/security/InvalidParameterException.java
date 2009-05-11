@@ -15,40 +15,30 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security;
 
 /**
- * This exception is thrown when an invalid parameter is passed to a method.
- * 
+ * {@code InvalidParameterException} indicates exceptional conditions, caused by
+ * invalid parameters.
  */
 public class InvalidParameterException extends IllegalArgumentException {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -857968536935667808L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * 
-	 * @param msg
-	 *            String The detail message for the exception.
-	 */
+    /**
+     * Constructs a new instance of {@code InvalidParameterException} with the
+     * given message.
+     *
+     * @param msg
+     *            the detail message for this exception.
+     */
     public InvalidParameterException(String msg) {
         super(msg);
     }
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 * 
-	 */
+    /**
+     * Constructs a new instance of {@code InvalidParameterException}.
+     */
     public InvalidParameterException() {
     }
 }

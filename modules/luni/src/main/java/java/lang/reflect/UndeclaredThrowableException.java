@@ -18,9 +18,9 @@
 package java.lang.reflect;
 
 /**
- * This class provides a wrapper for an unexpected exception thrown by an
- * InvocationHandler
- * 
+ * This class provides a wrapper for an undeclared, checked exception thrown by
+ * an InvocationHandler.
+ *
  * @see java.lang.reflect.InvocationHandler#invoke
  */
 public class UndeclaredThrowableException extends RuntimeException {
@@ -30,11 +30,11 @@ public class UndeclaredThrowableException extends RuntimeException {
     private Throwable undeclaredThrowable;
 
     /**
-     * Constructs a new instance of this class with its walkback and target
-     * exception filled in.
+     * Constructs a new {@code UndeclaredThrowableException} instance with the
+     * undeclared, checked exception that occurred.
      * 
      * @param exception
-     *            The exception which occurred while loading the class.
+     *            the undeclared, checked exception that occurred
      */
     public UndeclaredThrowableException(Throwable exception) {
         super();
@@ -43,14 +43,13 @@ public class UndeclaredThrowableException extends RuntimeException {
     }
 
     /**
-     * Constructs a new instance of this class with its walkback, target
-     * exception and message filled in.
+     * Constructs a new {@code UndeclaredThrowableException} instance with the
+     * undeclared, checked exception that occurred and a message.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            the detail message for the exception
      * @param exception
-     *            Throwable The exception which occurred while loading the
-     *            class.
+     *            the undeclared, checked exception that occurred
      */
     public UndeclaredThrowableException(Throwable exception,
             String detailMessage) {
@@ -60,16 +59,20 @@ public class UndeclaredThrowableException extends RuntimeException {
     }
 
     /**
-     * Answers the exception which caused the receiver to be thrown.
+     * Returns the undeclared, checked exception that occurred, which may be
+     * {@code null}.
+     *
+     * @return the undeclared, checked exception that occurred
      */
     public Throwable getUndeclaredThrowable() {
         return undeclaredThrowable;
     }
 
     /**
-     * Answers the cause of this Throwable, or null if there is no cause.
-     * 
-     * @return Throwable The receiver's cause.
+     * Returns the undeclared, checked exception that occurred, which may be
+     * {@code null}.
+     *
+     * @return the undeclared, checked exception that occurred
      */
     @Override
     public Throwable getCause() {

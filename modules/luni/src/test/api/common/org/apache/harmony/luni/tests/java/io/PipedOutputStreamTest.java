@@ -20,6 +20,7 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.UnsupportedEncodingException;
 
 import junit.framework.TestCase;
 
@@ -62,7 +63,7 @@ public class PipedOutputStreamTest extends TestCase {
             byte[] buf = new byte[nbytes];
             try {
                 reader.read(buf, 0, nbytes);
-                return new String(buf);
+                return new String(buf, "UTF-8");
             } catch (IOException e) {
                 System.out.println("Exception reading info");
                 return "ERROR";
@@ -134,11 +135,11 @@ public class PipedOutputStreamTest extends TestCase {
     /**
      * @tests java.io.PipedOutputStream#flush()
      */
-    public void test_flush() throws IOException {
+    public void test_flush() throws IOException, UnsupportedEncodingException {
         out = new PipedOutputStream();
         rt = new Thread(reader = new PReader(out));
         rt.start();
-        out.write("HelloWorld".getBytes(), 0, 10);
+        out.write("HelloWorld".getBytes("UTF-8"), 0, 10);
         assertTrue("Bytes written before flush", reader.available() != 0);
         out.flush();
         assertEquals("Wrote incorrect bytes", "HelloWorld", reader.read(10));
@@ -147,11 +148,11 @@ public class PipedOutputStreamTest extends TestCase {
     /**
      * @tests java.io.PipedOutputStream#write(byte[], int, int)
      */
-    public void test_write$BII() throws IOException {
+    public void test_write$BII() throws IOException, UnsupportedEncodingException {
         out = new PipedOutputStream();
         rt = new Thread(reader = new PReader(out));
         rt.start();
-        out.write("HelloWorld".getBytes(), 0, 10);
+        out.write("HelloWorld".getBytes("UTF-8"), 0, 10);
         out.flush();
         assertEquals("Wrote incorrect bytes", "HelloWorld", reader.read(10));
     }

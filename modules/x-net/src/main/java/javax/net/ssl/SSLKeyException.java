@@ -17,10 +17,19 @@
 
 package javax.net.ssl;
 
+/**
+ * The exception that is thrown when an invalid SSL key is encountered.
+ */
 public class SSLKeyException extends SSLException {
 
     private static final long serialVersionUID = -8071664081941937874L;
 
+    /**
+     * Creates a new {@code SSLKeyException} with the specified message.
+     *
+     * @param reason
+     *            the detail message for the exception.
+     */
     public SSLKeyException(String reason) {
         super(reason);
     }

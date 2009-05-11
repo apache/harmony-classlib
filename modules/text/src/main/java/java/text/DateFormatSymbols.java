@@ -28,8 +28,41 @@ import java.util.Set;
 import org.apache.harmony.text.LocaleServiceProviderLoader;
 
 /**
- * DateFormatSymbols holds the Strings used in the formating and parsing of
- * dates and times.
+ * Encapsulates localizable date-time formatting data, such as the names of the
+ * months, the names of the days of the week, and the time zone data.
+ * {@code DateFormat} and {@code SimpleDateFormat} both use
+ * {@code DateFormatSymbols} to encapsulate this information.
+ * <p>
+ * Typically you shouldn't use {@code DateFormatSymbols} directly. Rather, you
+ * are encouraged to create a date/time formatter with the {@code DateFormat}
+ * class's factory methods: {@code getTimeInstance}, {@code getDateInstance},
+ * or {@code getDateTimeInstance}. These methods automatically create a
+ * {@code DateFormatSymbols} for the formatter so that you don't have to. After
+ * the formatter is created, you may modify its format pattern using the
+ * {@code setPattern} method. For more information about creating formatters
+ * using {@code DateFormat}'s factory methods, see {@link DateFormat}.
+ * <p>
+ * If you decide to create a date/time formatter with a specific format pattern
+ * for a specific locale, you can do so with:
+ * <blockquote>
+ *
+ * <pre>
+ * new SimpleDateFormat(aPattern, new DateFormatSymbols(aLocale)).
+ * </pre>
+ *
+ * </blockquote>
+ * <p>
+ * {@code DateFormatSymbols} objects can be cloned. When you obtain a
+ * {@code DateFormatSymbols} object, feel free to modify the date/time
+ * formatting data. For instance, you can replace the localized date/time format
+ * pattern characters with the ones that you feel easy to remember or you can
+ * change the representative cities to your favorite ones.
+ * <p>
+ * New {@code DateFormatSymbols} subclasses may be added to support
+ * {@code SimpleDateFormat} for date/time formatting for additional locales.
+ *
+ * @see DateFormat
+ * @see SimpleDateFormat
  */
 public class DateFormatSymbols implements Serializable, Cloneable {
 
@@ -48,19 +81,19 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     private static final String PROVIDER_CONFIGURATION_FILE_NAME = "META-INF/services/java.text.spi.DateFormatSymbolsProvider"; //$NON-NLS-1$
 
     /**
-     * Constructs a new DateFormatSymbols containing the symbols for the default
-     * Locale.
+     * Constructs a new {@code DateFormatSymbols} instance containing the
+     * symbols for the default locale.
      */
     public DateFormatSymbols() {
         this(Locale.getDefault());
     }
 
     /**
-     * Constructs a new DateFormatSymbols containing the symbols for the
-     * specified Locale.
+     * Constructs a new {@code DateFormatSymbols} instance containing the
+     * symbols for the specified locale.
      * 
      * @param locale
-     *            the Locale
+     *            the locale.
      */
     public DateFormatSymbols(Locale locale) {
         com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols(
@@ -167,14 +200,6 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     }
 
-    /**
-     * Answers a new DateFormatSymbols with the same symbols as this
-     * DateFormatSymbols.
-     * 
-     * @return a shallow copy of this DateFormatSymbols
-     * 
-     * @see java.lang.Cloneable
-     */
     @Override
     public Object clone() {
         try {
@@ -196,15 +221,14 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     }
 
     /**
-     * Compares the specified object to this DateFormatSymbols and answer if
-     * they are equal. The object must be an instance of DateFormatSymbols with
-     * the same symbols.
+     * Compares this object with the specified object and indicates if they are
+     * equal.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this DateFormatSymbols,
-     *         false otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if {@code object} is an instance of
+     *         {@code DateFormatSymbols} and has the same symbols as this
+     *         object, {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -255,87 +279,89 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     }
 
     /**
-     * Answers the array of Strings which represent AM and PM. Use the Calendar
-     * constants Calendar.AM and Calendar.PM to index into the array.
+     * Returns the array of strings which represent AM and PM. Use the
+     * {@link java.util.Calendar} constants {@code Calendar.AM} and
+     * {@code Calendar.PM} as indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getAmPmStrings() {
         return ampms.clone();
     }
 
     /**
-     * Answers the array of Strings which represent BC and AD. Use the Calendar
-     * constants GregorianCalendar.BC and GregorianCalendar.AD to index into the
-     * array.
+     * Returns the array of strings which represent BC and AD. Use the
+     * {@link java.util.Calendar} constants {@code GregorianCalendar.BC} and
+     * {@code GregorianCalendar.AD} as indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getEras() {
         return eras.clone();
     }
 
     /**
-     * Answers the pattern characters used by SimpleDateFormat to specify date
-     * and time fields.
+     * Returns the pattern characters used by {@link SimpleDateFormat} to
+     * specify date and time fields.
      * 
-     * @return a String containing the pattern characters
+     * @return a string containing the pattern characters.
      */
     public String getLocalPatternChars() {
         return localPatternChars;
     }
 
     /**
-     * Answers the array of Strings containing the full names of the months. Use
-     * the Calendar constants Calendar.JANUARY, etc. to index into the array.
+     * Returns the array of strings containing the full names of the months. Use
+     * the {@link java.util.Calendar} constants {@code Calendar.JANUARY} etc. as
+     * indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getMonths() {
         return months.clone();
     }
 
     /**
-     * Answers the array of Strings containing the abbreviated names of the
-     * months. Use the Calendar constants Calendar.JANUARY, etc. to index into
-     * the array.
+     * Returns the array of strings containing the abbreviated names of the
+     * months. Use the {@link java.util.Calendar} constants
+     * {@code Calendar.JANUARY} etc. as indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getShortMonths() {
         return shortMonths.clone();
     }
 
     /**
-     * Answers the array of Strings containing the abbreviated names of the days
-     * of the week. Use the Calendar constants Calendar.SUNDAY, etc. to index
-     * into the array.
+     * Returns the array of strings containing the abbreviated names of the days
+     * of the week. Use the {@link java.util.Calendar} constants
+     * {@code Calendar.SUNDAY} etc. as indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getShortWeekdays() {
         return shortWeekdays.clone();
     }
 
     /**
-     * Answers the array of Strings containing the full names of the days of the
-     * week. Use the Calendar constants Calendar.SUNDAY, etc. to index into the
-     * array.
+     * Returns the array of strings containing the full names of the days of the
+     * week. Use the {@link java.util.Calendar} constants
+     * {@code Calendar.SUNDAY} etc. as indices for the array.
      * 
-     * @return an array of String
+     * @return an array of strings.
      */
     public String[] getWeekdays() {
         return weekdays.clone();
     }
 
     /**
-     * Answers the two-dimensional array of Strings containing the names of the
-     * timezones. Each element in the array is an array of five Strings, the
-     * first is a TimeZone ID, and second and third are the full and abbreviated
-     * timezone names for standard time, and the fourth and fifth are the full
+     * Returns the two-dimensional array of strings containing the names of the
+     * time zones. Each element in the array is an array of five strings, the
+     * first is a TimeZone ID, the second and third are the full and abbreviated
+     * time zone names for standard time, and the fourth and fifth are the full
      * and abbreviated names for daylight time.
      * 
-     * @return a two-dimensional array of String
+     * @return a two-dimensional array of strings.
      */
     public String[][] getZoneStrings() {
         String[][] clone = new String[zoneStrings.length][];
@@ -345,14 +371,6 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         return clone;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         int hashCode;
@@ -386,37 +404,37 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the array of Strings which represent AM and PM. Use the Calendar
-     * constants Calendar.AM and Calendar.PM to index into the array.
+     * Sets the array of strings which represent AM and PM. Use the
+     * {@link java.util.Calendar} constants {@code Calendar.AM} and
+     * {@code Calendar.PM} as indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings for AM and PM.
      */
     public void setAmPmStrings(String[] data) {
         ampms = data.clone();
     }
 
     /**
-     * Sets the array of Strings which represent BC and AD. Use the Calendar
-     * constants GregorianCalendar.BC and GregorianCalendar.AD to index into the
-     * array.
+     * Sets the array of Strings which represent BC and AD. Use the
+     * {@link java.util.Calendar} constants {@code GregorianCalendar.BC} and
+     * {@code GregorianCalendar.AD} as indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings for BC and AD.
      */
     public void setEras(String[] data) {
         eras = data.clone();
     }
 
     /**
-     * Sets the pattern characters used by SimpleDateFormat to specify date and
-     * time fields.
+     * Sets the pattern characters used by {@link SimpleDateFormat} to specify
+     * date and time fields.
      * 
      * @param data
-     *            the String containing the pattern characters
-     * 
-     * @exception NullPointerException
-     *                when the data is null
+     *            the string containing the pattern characters.
+     * @throws NullPointerException
+     *            if {@code data} is null
      */
     public void setLocalPatternChars(String data) {
         if (data == null) {
@@ -426,61 +444,62 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the array of Strings containing the full names of the months. Use
-     * the Calendar constants Calendar.JANUARY, etc. to index into the array.
+     * Sets the array of strings containing the full names of the months. Use
+     * the {@link java.util.Calendar} constants {@code Calendar.JANUARY} etc. as
+     * indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings.
      */
     public void setMonths(String[] data) {
         months = data.clone();
     }
 
     /**
-     * Sets the array of Strings containing the abbreviated names of the months.
-     * Use the Calendar constants Calendar.JANUARY, etc. to index into the
-     * array.
+     * Sets the array of strings containing the abbreviated names of the months.
+     * Use the {@link java.util.Calendar} constants {@code Calendar.JANUARY}
+     * etc. as indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings.
      */
     public void setShortMonths(String[] data) {
         shortMonths = data.clone();
     }
 
     /**
-     * Sets the array of Strings containing the abbreviated names of the days of
-     * the week. Use the Calendar constants Calendar.SUNDAY, etc. to index into
-     * the array.
+     * Sets the array of strings containing the abbreviated names of the days of
+     * the week. Use the {@link java.util.Calendar} constants
+     * {@code Calendar.SUNDAY} etc. as indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings.
      */
     public void setShortWeekdays(String[] data) {
         shortWeekdays = data.clone();
     }
 
     /**
-     * Sets the array of Strings containing the full names of the days of the
-     * week. Use the Calendar constants Calendar.SUNDAY, etc. to index into the
-     * array.
+     * Sets the array of strings containing the full names of the days of the
+     * week. Use the {@link java.util.Calendar} constants
+     * {@code Calendar.SUNDAY} etc. as indices for the array.
      * 
      * @param data
-     *            the array of Strings
+     *            the array of strings.
      */
     public void setWeekdays(String[] data) {
         weekdays = data.clone();
     }
 
     /**
-     * Sets the two-dimensional array of Strings containing the names of the
-     * timezones. Each element in the array is an array of five Strings, the
+     * Sets the two-dimensional array of strings containing the names of the
+     * time zones. Each element in the array is an array of five strings, the
      * first is a TimeZone ID, and second and third are the full and abbreviated
-     * timezone names for standard time, and the fourth and fifth are the full
+     * time zone names for standard time, and the fourth and fifth are the full
      * and abbreviated names for daylight time.
      * 
      * @param data
-     *            the two-dimensional array of Strings
+     *            the two-dimensional array of strings.
      */
     public void setZoneStrings(String[][] data) {
         zoneStrings = data.clone();

@@ -18,18 +18,20 @@
 package java.io;
 
 /**
- * FileFilter is an interface for filtering abstract Files
+ * An interface for filtering {@link File} objects based on their names
+ * or other information.
+ *
+ * @see File#listFiles(FileFilter)
  */
 public abstract interface FileFilter {
 
     /**
-     * Answers a boolean indicating whether or not a specific File should be
-     * included in a pathname list.
+     * Indicating whether a specific file should be included in a pathname list.
      * 
      * @param pathname
-     *            the abstract File to check.
-     * @return <code>true</code> if the File should be includes,
-     *         <code>false</code> otherwise.
+     *            the abstract file to check.
+     * @return {@code true} if the file should be included, {@code false}
+     *         otherwise.
      */
     public abstract boolean accept(File pathname);
 }

@@ -222,7 +222,7 @@ public abstract class DynamicMXBeanImpl implements DynamicMBean {
         // collection types).
         // 3. all return null
 
-        Class argType = null;
+        Class<?> argType = null;
 
         // Validate the attribute
         MBeanAttributeInfo attribInfo = getPresentAttribute(
@@ -313,7 +313,7 @@ public abstract class DynamicMXBeanImpl implements DynamicMBean {
         // i.e. they are all simple types.
         Method operationMethod = null;
         try {
-            Class[] argTypes = new Class[localSignature.length];
+            Class<?>[] argTypes = new Class[localSignature.length];
             for (int i = 0; i < localSignature.length; i++) {
                 argTypes[i] = ManagementUtils
                         .getClassMaybePrimitive(localSignature[i]);

@@ -28,8 +28,8 @@ import java.util.Set;
 import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
- * Default implementation of <code>AbstractPreferences</code> for Linux platform,
- * using file system as back end.
+ * The default implementation of <code>AbstractPreferences</code> for the Linux
+ * platform, using the file system as its back end.
  * 
  * TODO some sync mechanism with backend, Performance - check file edit date
  * 

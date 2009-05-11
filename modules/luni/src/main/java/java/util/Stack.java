@@ -18,25 +18,25 @@
 package java.util;
 
 /**
- * <code>Stack</code> is a Last-In/First-Out(LIFO) data structure which
- * represents a stack of objects. It enables users to pop and push onto the
- * stack, including null objects. There is no limit to the size of the stack
+ * {@code Stack} is a Last-In/First-Out(LIFO) data structure which represents a
+ * stack of objects. It enables users to pop to and push from the stack,
+ * including null objects. There is no limit to the size of the stack.
  */
 public class Stack<E> extends Vector<E> {
 
     private static final long serialVersionUID = 1224463164541339165L;
 
     /**
-     * Constructs a stack with the default size of <code>Vector</code>.
+     * Constructs a stack with the default size of {@code Vector}.
      */
     public Stack() {
         super();
     }
 
     /**
-     * Determines if the stack is empty or not.
+     * Returns whether the stack is empty or not.
      * 
-     * @return true if the stack is empty, false otherwise
+     * @return {@code true} if the stack is empty, {@code false} otherwise.
      */
     public boolean empty() {
         return elementCount == 0;
@@ -45,9 +45,9 @@ public class Stack<E> extends Vector<E> {
     /**
      * Returns the element at the top of the stack without removing it.
      * 
-     * @return the element at the top of the Stack
-     * @exception EmptyStackException
-     *                when empty() is true
+     * @return the element at the top of the stack.
+     * @throws EmptyStackException
+     *             if the stack is empty.
      * @see #pop
      */
     @SuppressWarnings("unchecked")
@@ -63,8 +63,8 @@ public class Stack<E> extends Vector<E> {
      * Returns the element at the top of the stack and removes it.
      * 
      * @return the element at the top of the stack.
-     * @exception EmptyStackException
-     *                when empty() is true
+     * @throws EmptyStackException
+     *             if the stack is empty.
      * @see #peek
      * @see #push
      */
@@ -81,13 +81,11 @@ public class Stack<E> extends Vector<E> {
     }
 
     /**
-     * Pushes the object from the parameter onto the top of the stack.
+     * Pushes the specified object onto the top of the stack.
      * 
      * @param object
-     *            The object to be added to the stack
-     * 
-     * @return the object argument
-     * 
+     *            The object to be added on top of the stack.
+     * @return the object argument.
      * @see #peek
      * @see #pop
      */
@@ -97,18 +95,20 @@ public class Stack<E> extends Vector<E> {
     }
 
     /**
-     * Returns the index of the first occurrence of the object.
+     * Returns the index of the first occurrence of the object, starting from
+     * the top of the stack.
      * 
-     * @return the index of the first occurrence of the object
-     * @param object
-     *            the object to be searched
+     * @return the index of the first occurrence of the object, assuming that
+     *         the topmost object on the stack has a distance of one.
+     * @param o
+     *            the object to be searched.
      */
-    public synchronized int search(Object object) {
+    public synchronized int search(Object o) {
         final Object[] dumpArray = elementData;
         final int size = elementCount;
-        if (object != null) {
+        if (o != null) {
             for (int i = size - 1; i >= 0; i--) {
-                if (object.equals(dumpArray[i])) {
+                if (o.equals(dumpArray[i])) {
                     return size - i;
                 }
             }

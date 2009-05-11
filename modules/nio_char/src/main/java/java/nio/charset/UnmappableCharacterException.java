@@ -20,7 +20,8 @@ package java.nio.charset;
 import org.apache.harmony.niochar.internal.nls.Messages;
 
 /**
- * Thrown when an unmappable character for the given charset is encountered.
+ * An {@code UnmappableCharacterException} is thrown when an unmappable
+ * character for the given charset is encountered.
  */
 public class UnmappableCharacterException extends CharacterCodingException {
 
@@ -34,10 +35,10 @@ public class UnmappableCharacterException extends CharacterCodingException {
     private int inputLength;
 
     /**
-     * Constructs an instance of this exception.
+     * Constructs a new {@code UnmappableCharacterException}.
      * 
      * @param length
-     *            the length of the unmappable character
+     *            the length of the unmappable character.
      */
     public UnmappableCharacterException(int length) {
         this.inputLength = length;
@@ -46,7 +47,7 @@ public class UnmappableCharacterException extends CharacterCodingException {
     /**
      * Gets the length of the unmappable character.
      * 
-     * @return the length of the unmappable character
+     * @return the length of the unmappable character.
      */
     public int getInputLength() {
         return this.inputLength;
@@ -55,7 +56,7 @@ public class UnmappableCharacterException extends CharacterCodingException {
     /**
      * Gets a message describing this exception.
      * 
-     * @return a message describing this exception
+     * @return a message describing this exception.
      */
     @Override
     public String getMessage() {

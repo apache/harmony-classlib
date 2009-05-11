@@ -32,12 +32,12 @@ import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * InputStreamReader is class for turning a byte Stream into a character Stream.
- * Data read from the source input stream is converted into characters by either
- * a default or provided character converter. By default, the encoding is
- * assumed to ISO8859_1. The InputStreamReader contains a buffer of bytes read
- * from the source input stream and converts these into characters as needed.
- * The buffer size is 8K.
+ * A class for turning a byte stream into a character stream. Data read from the
+ * source input stream is converted into characters by either a default or a
+ * provided character converter. The default encoding is taken from the
+ * "file.encoding" system property. {@code InputStreamReader} contains a buffer
+ * of bytes read from the source stream and converts these into characters as
+ * needed. The buffer size is 8K.
  * 
  * @see OutputStreamWriter
  */
@@ -53,13 +53,13 @@ public class InputStreamReader extends Reader {
     ByteBuffer bytes = ByteBuffer.allocate(BUFFER_SIZE);
 
     /**
-     * Constructs a new InputStreamReader on the InputStream <code>in</code>.
-     * Now character reading can be filtered through this InputStreamReader.
-     * This constructor assumes the default conversion of ISO8859_1
-     * (ISO-Latin-1).
+     * Constructs a new {@code InputStreamReader} on the {@link InputStream}
+     * {@code in}. This constructor sets the character converter to the encoding
+     * specified in the "file.encoding" property and falls back to ISO 8859_1
+     * (ISO-Latin-1) if the property doesn't exist.
      * 
      * @param in
-     *            the InputStream to convert to characters.
+     *            the input stream from which to read characters.
      */
     public InputStreamReader(InputStream in) {
         super(in);
@@ -74,19 +74,19 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Constructs a new InputStreamReader on the InputStream <code>in</code>.
-     * Now character reading can be filtered through this InputStreamReader.
-     * This constructor takes a String parameter <code>enc</code> which is the
-     * name of an encoding. If the encoding cannot be found, an
+     * Constructs a new InputStreamReader on the InputStream {@code in}. The
+     * character converter that is used to decode bytes into characters is
+     * identified by name by {@code enc}. If the encoding cannot be found, an
      * UnsupportedEncodingException error is thrown.
      * 
      * @param in
-     *            the InputStream to convert to characters.
+     *            the InputStream from which to read characters.
      * @param enc
-     *            a String describing the character converter to use.
-     * 
+     *            identifies the character converter to use.
+     * @throws NullPointerException
+     *             if {@code enc} is {@code null}.
      * @throws UnsupportedEncodingException
-     *             if the encoding cannot be found.
+     *             if the encoding specified by {@code enc} cannot be found.
      */
     public InputStreamReader(InputStream in, final String enc)
             throws UnsupportedEncodingException {
@@ -107,14 +107,13 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Constructs a new InputStreamReader on the InputStream <code>in</code>
-     * and CharsetDecoder <code>dec</code>. Now character reading can be
-     * filtered through this InputStreamReader.
+     * Constructs a new InputStreamReader on the InputStream {@code in} and
+     * CharsetDecoder {@code dec}.
      * 
      * @param in
-     *            the InputStream to convert to characters
+     *            the source InputStream from which to read characters.
      * @param dec
-     *            a CharsetDecoder used by the character conversion
+     *            the CharsetDecoder used by the character conversion.
      */
     public InputStreamReader(InputStream in, CharsetDecoder dec) {
         super(in);
@@ -125,14 +124,13 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Constructs a new InputStreamReader on the InputStream <code>in</code>
-     * and Charset <code>charset</code>. Now character reading can be
-     * filtered through this InputStreamReader.
+     * Constructs a new InputStreamReader on the InputStream {@code in} and
+     * Charset {@code charset}.
      * 
      * @param in
-     *            the InputStream to convert to characters
+     *            the source InputStream from which to read characters.
      * @param charset
-     *            the Charset that specify the character converter
+     *            the Charset that defines the character converter
      */
     public InputStreamReader(InputStream in, Charset charset) {
         super(in);
@@ -144,12 +142,11 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Close this InputStreamReader. This implementation closes the source
-     * InputStream and releases all local storage.
+     * Closes this reader. This implementation closes the source InputStream and
+     * releases all local storage.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this
-     *             InputStreamReader.
+     *             if an error occurs attempting to close this reader.
      */
     @Override
     public void close() throws IOException {
@@ -163,12 +160,11 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Answer the String which identifies the encoding used to convert bytes to
-     * characters. The value <code>null</code> is returned if this Reader has
-     * been closed.
+     * Returns the name of the encoding used to convert bytes into characters.
+     * The value {@code null} is returned if this reader has been closed.
      * 
-     * @return the String describing the converter or null if this Reader is
-     *         closed.
+     * @return the name of the character converter or {@code null} if this
+     *         reader is closed.
      */
     public String getEncoding() {
         if (!isOpen()) {
@@ -178,17 +174,16 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Reads a single character from this InputStreamReader and returns the
-     * result as an int. The 2 higher-order characters are set to 0. If the end
-     * of reader was encountered then return -1. The byte value is either
-     * obtained from converting bytes in this readers buffer or by first filling
-     * the buffer from the source InputStream and then reading from the buffer.
+     * Reads a single character from this reader and returns it as an integer
+     * with the two higher-order bytes set to 0. Returns -1 if the end of the
+     * reader has been reached. The byte value is either obtained from
+     * converting bytes in this reader's buffer or by first filling the buffer
+     * from the source InputStream and then reading from the buffer.
      * 
-     * @return the character read or -1 if end of reader.
-     * 
+     * @return the character read or -1 if the end of the reader has been
+     *         reached.
      * @throws IOException
-     *             If the InputStreamReader is already closed or some other IO
-     *             error occurs.
+     *             if this reader is closed or some other I/O error occurs.
      */
     @Override
     public int read() throws IOException {
@@ -204,24 +199,28 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Reads at most <code>count</code> characters from this Reader and stores
-     * them at <code>offset</code> in the character array <code>buf</code>.
-     * Returns the number of characters actually read or -1 if the end of reader
-     * was encountered. The bytes are either obtained from converting bytes in
-     * this readers buffer or by first filling the buffer from the source
+     * Reads at most {@code length} characters from this reader and stores them
+     * at position {@code offset} in the character array {@code buf}. Returns
+     * the number of characters actually read or -1 if the end of the reader has
+     * been reached. The bytes are either obtained from converting bytes in this
+     * reader's buffer or by first filling the buffer from the source
      * InputStream and then reading from the buffer.
      * 
      * @param buf
-     *            character array to store the read characters
+     *            the array to store the characters read.
      * @param offset
-     *            offset in buf to store the read characters
+     *            the initial position in {@code buf} to store the characters
+     *            read from this reader.
      * @param length
-     *            maximum number of characters to read
-     * @return the number of characters read or -1 if end of reader.
-     * 
+     *            the maximum number of characters to read.
+     * @return the number of characters read or -1 if the end of the reader has
+     *         been reached.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code length < 0}, or if
+     *             {@code offset + length} is greater than the length of
+     *             {@code buf}.
      * @throws IOException
-     *             If the InputStreamReader is already closed or some other IO
-     *             error occurs.
+     *             if this reader is closed or some other I/O error occurs.
      */
     @Override
     public int read(char[] buf, int offset, int length) throws IOException {
@@ -306,21 +305,17 @@ public class InputStreamReader extends Reader {
     }
 
     /**
-     * Answers a <code>boolean</code> indicating whether or not this
-     * InputStreamReader is ready to be read without blocking. If the result is
-     * <code>true</code>, the next <code>read()</code> will not block. If
-     * the result is <code>false</code> this Reader may or may not block when
-     * <code>read()</code> is sent. This implementation answers
-     * <code>true</code> if there are bytes available in the buffer or the
-     * source InputStream has bytes available.
+     * Indicates whether this reader is ready to be read without blocking. If
+     * the result is {@code true}, the next {@code read()} will not block. If
+     * the result is {@code false} then this reader may or may not block when
+     * {@code read()} is called. This implementation returns {@code true} if
+     * there are bytes available in the buffer or the source stream has bytes
+     * available.
      * 
-     * @return <code>true</code> if the receiver will not block when
-     *         <code>read()</code> is called, <code>false</code> if unknown
-     *         or blocking will occur.
-     * 
+     * @return {@code true} if the receiver will not block when {@code read()}
+     *         is called, {@code false} if unknown or blocking will occur.
      * @throws IOException
-     *             If the InputStreamReader is already closed or some other IO
-     *             error occurs.
+     *             if this reader is closed or some other I/O error occurs.
      */
     @Override
     public boolean ready() throws IOException {

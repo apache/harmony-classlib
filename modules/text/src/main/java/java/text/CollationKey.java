@@ -18,10 +18,65 @@
 package java.text;
 
 /**
- * CollationKey represents the collation order of a particular String for a
- * specific Collator. CollationKeys can be compared to determine the relative
- * ordering of their source Strings. This is useful when the Strings must be
- * compared multiple times, as in sorting.
+ * Represents a string under the rules of a specific {@code Collator} object.
+ * Comparing two {@code CollationKey} instances returns the relative order of
+ * the strings they represent.
+ * <p>
+ * Since the rule set of collators can differ, the sort orders of the same
+ * string under two different {@code Collator} instances might differ. Hence
+ * comparing collation keys generated from different {@code Collator} instances
+ * can give incorrect results.
+ * <p>
+ * Both the method {@code CollationKey.compareTo(CollationKey)} and the method
+ * {@code Collator.compare(String, String)} compares two strings and returns
+ * their relative order. The performance characteristics of these two approaches
+ * can differ.
+ * <p>
+ * During the construction of a {@code CollationKey}, the entire source string
+ * is examined and processed into a series of bits terminated by a null, that
+ * are stored in the {@code CollationKey}. When
+ * {@code CollationKey.compareTo(CollationKey)} executes, it performs bitwise
+ * comparison on the bit sequences. This can incur startup cost when creating
+ * the {@code CollationKey}, but once the key is created, binary comparisons
+ * are fast. This approach is recommended when the same strings are to be
+ * compared over and over again.
+ * <p>
+ * On the other hand, implementations of
+ * {@code Collator.compare(String, String)} can examine and process the strings
+ * only until the first characters differ in order. This approach is
+ * recommended if the strings are to be compared only once.
+ * <p>
+ * The following example shows how collation keys can be used to sort a
+ * list of strings:
+ * <blockquote>
+ *
+ * <pre>
+ * // Create an array of CollationKeys for the Strings to be sorted.
+ * Collator myCollator = Collator.getInstance();
+ * CollationKey[] keys = new CollationKey[3];
+ * keys[0] = myCollator.getCollationKey(&quot;Tom&quot;);
+ * keys[1] = myCollator.getCollationKey(&quot;Dick&quot;);
+ * keys[2] = myCollator.getCollationKey(&quot;Harry&quot;);
+ * sort(keys);
+ * <br>
+ * //...
+ * <br>
+ * // Inside body of sort routine, compare keys this way
+ * if( keys[i].compareTo( keys[j] ) &gt; 0 )
+ *    // swap keys[i] and keys[j]
+ * <br>
+ * //...
+ * <br>
+ * // Finally, when we've returned from sort.
+ * System.out.println(keys[0].getSourceString());
+ * System.out.println(keys[1].getSourceString());
+ * System.out.println(keys[2].getSourceString());
+ * </pre>
+ *
+ * </blockquote>
+ *
+ * @see Collator
+ * @see RuleBasedCollator
  */
 public final class CollationKey implements Comparable<CollationKey> {
 
@@ -35,30 +90,29 @@ public final class CollationKey implements Comparable<CollationKey> {
     }
 
     /**
-     * Compare the receiver to the specified CollationKey to determine the
-     * relative ordering.
+     * Compares this object to the specified collation key object to determine
+     * their relative order.
      * 
      * @param value
-     *            a CollationKey
-     * @return an int < 0 if this CollationKey is less than the specified
-     *         CollationKey, 0 if they are equal, and > 0 if this CollationKey
-     *         is greater
+     *            the collation key object to compare this object to.
+     * @return a negative value if this {@code CollationKey} is less than the
+     *         specified {@code CollationKey}, 0 if they are equal and a
+     *         positive value if this {@code CollationKey} is greater.
      */
     public int compareTo(CollationKey value) {
         return icuKey.compareTo(value.icuKey);
     }
 
     /**
-     * Compares the specified object to this CollationKey and answer if they are
-     * equal. The object must be an instance of CollationKey and have the same
-     * source string and collation key. The instances of CollationKey must have
-     * been created by the same Collator.
+     * Compares the specified object to this {@code CollationKey} and indicates
+     * if they are equal. The object must be an instance of {@code CollationKey}
+     * and have the same source string and collation key. Both instances of
+     * {@code CollationKey} must have been created by the same {@code Collator}.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this CollationKey, false
-     *         otherwise
-     * 
+     *            the object to compare to this object.
+     * @return {@code true} if {@code object} is equal to this collation key;
+     *         {@code false} otherwise.
      * @see #hashCode
      */
     @Override

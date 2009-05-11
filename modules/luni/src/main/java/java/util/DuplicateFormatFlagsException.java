@@ -19,6 +19,8 @@ package java.util;
 /**
  * The unchecked exception will be thrown out if there are duplicate flags given
  * out in the format specifier.
+ *
+ * @see java.lang.RuntimeException
  */
 public class DuplicateFormatFlagsException extends IllegalFormatException {
 
@@ -27,10 +29,11 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
     private String flags;
 
     /**
-     * Constructs a DuplicateFormatFlagsException which flags is specified.
+     * Constructs a new {@code DuplicateFormatFlagsException} with the flags
+     * containing duplicates.
      * 
      * @param f
-     *            The format flags that contain a duplicate flag.
+     *           the format flags that contain a duplicate flag.
      */
     public DuplicateFormatFlagsException(String f) {
         if (null == f) {
@@ -42,7 +45,7 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
     /**
      * Returns the format flags that contain a duplicate flag.
      * 
-     * @return The format flags that contain a duplicate flag.
+     * @return the format flags that contain a duplicate flag.
      */
     public String getFlags() {
         return flags;
@@ -51,7 +54,7 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
     /**
      * Returns the message string of the DuplicateFormatFlagsException.
      * 
-     * @return The message string of the DuplicateFormatFlagsException.
+     * @return the message string of the DuplicateFormatFlagsException.
      */
     @Override
     public String getMessage() {

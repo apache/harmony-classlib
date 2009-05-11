@@ -20,9 +20,11 @@ package java.io;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * PipedReader is a class which receives information on a communications pipe.
- * When two threads want to pass data back and forth, one creates a piped writer
- * and the other creates a piped reader.
+ * Receives information on a communications pipe. When two threads want to pass
+ * data back and forth, one creates a piped writer and the other creates a piped
+ * reader.
+ *
+ * @see PipedWriter
  */
 public class PipedReader extends Reader {
 
@@ -38,13 +40,13 @@ public class PipedReader extends Reader {
     private char data[];
 
     /**
-     * The index in <code>buffer</code> where the next character will be
+     * The index in {@code buffer} where the next character will be
      * written.
      */
     private int in = -1;
 
     /**
-     * The index in <code>buffer</code> where the next character will be read.
+     * The index in {@code buffer} where the next character will be read.
      */
     private int out;
 
@@ -59,8 +61,11 @@ public class PipedReader extends Reader {
     private boolean isConnected;
 
     /**
-     * Constructs a new unconnected PipedReader. The resulting Reader must be
-     * connected to a PipedWriter before data may be read from it.
+     * Constructs a new unconnected {@code PipedReader}. The resulting reader
+     * must be connected to a {@code PipedWriter} before data may be read from
+     * it.
+     *
+     * @see PipedWriter
      */
     public PipedReader() {
         data = new char[PIPE_SIZE];
@@ -105,15 +110,14 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Constructs a new PipedReader connected to the PipedWriter
-     * <code>out</code>. Any data written to the writer can be read from the
-     * this reader.
+     * Constructs a new {@code PipedReader} connected to the {@link PipedWriter}
+     * {@code out}. Any data written to the writer can be read from the this
+     * reader.
      * 
      * @param out
-     *            the PipedWriter to connect to.
-     * 
+     *            the {@code PipedWriter} to connect to.
      * @throws IOException
-     *             if this or <code>out</code> are already connected.
+     *             if {@code out} is already connected.
      */
     public PipedReader(PipedWriter out) throws IOException {
         this();
@@ -121,11 +125,11 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Close this PipedReader. This implementation releases the buffer used for
+     * Closes this reader. This implementation releases the buffer used for
      * the pipe and notifies all threads waiting to read or write.
      * 
      * @throws IOException
-     *             If an error occurs attempting to close this reader.
+     *             if an error occurs while closing this reader.
      */
     @Override
     public void close() throws IOException {
@@ -139,14 +143,14 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Connects this PipedReader to a PipedWriter. Any data written to the
-     * Writer becomes available in this Reader.
+     * Connects this {@code PipedReader} to a {@link PipedWriter}. Any data
+     * written to the writer becomes readable in this reader.
      * 
      * @param src
-     *            the source PipedWriter.
-     * 
+     *            the writer to connect to.
      * @throws IOException
-     *             If either Writer or Reader is already connected.
+     *             if this reader is closed or already connected, or if {@code
+     *             src} is already connected.
      */
     public void connect(PipedWriter src) throws IOException {
         synchronized (lock) {
@@ -155,7 +159,7 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Establish the connection to the PipedWriter.
+     * Establishes the connection to the PipedWriter.
      * 
      * @throws IOException
      *             If this Reader is already connected.
@@ -173,17 +177,20 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Reads the next character from this Reader. Answer the character actually
-     * read or -1 if no character was read and end of reader was encountered.
-     * Separate threads should be used for the reader of the PipedReader and the
-     * PipedWriter. There may be undesirable results if more than one Thread
-     * interacts a reader or writer pipe.
-     * 
-     * @return int the character read -1 if end of reader.
-     * 
+     * Reads a single character from this reader and returns it as an integer
+     * with the two higher-order bytes set to 0. Returns -1 if the end of the
+     * reader has been reached. If there is no data in the pipe, this method
+     * blocks until data is available, the end of the reader is detected or an
+     * exception is thrown.
+     * <p>
+     * Separate threads should be used to read from a {@code PipedReader} and to
+     * write to the connected {@link PipedWriter}. If the same thread is used,
+     * a deadlock may occur.
+     *
+     * @return the character read or -1 if the end of the reader has been
+     *         reached.
      * @throws IOException
-     *             If the reader is already closed or another IOException
-     *             occurs.
+     *             if this reader is closed or some other I/O error occurs.
      */
     @Override
     public int read() throws IOException {
@@ -193,28 +200,34 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Reads at most <code>count</code> character from this PipedReader and
-     * stores them in char array <code>buffer</code> starting at
-     * <code>offset</code>. Answer the number of characters actually read or
-     * -1 if no characters were read and end of stream was encountered. Separate
-     * threads should be used for the reader of the PipedReader and the
-     * PipedWriter. There may be undesirable results if more than one Thread
-     * interacts a reader or writer pipe.
+     * Reads at most {@code count} characters from this reader and stores them
+     * in the character array {@code buffer} starting at {@code offset}. If
+     * there is no data in the pipe, this method blocks until at least one byte
+     * has been read, the end of the reader is detected or an exception is
+     * thrown.
+     * <p>
+     * Separate threads should be used to read from a {@code PipedReader} and to
+     * write to the connected {@link PipedWriter}. If the same thread is used, a
+     * deadlock may occur.
      * 
      * @param buffer
-     *            the character array in which to store the read characters.
+     *            the character array in which to store the characters read.
      * @param offset
-     *            the offset in <code>buffer</code> to store the read
-     *            characters.
+     *            the initial position in {@code bytes} to store the characters
+     *            read from this reader.
      * @param count
-     *            the maximum number of characters to store in
-     *            <code>buffer</code>.
-     * @return int the number of characters actually read or -1 if end of
-     *         reader.
-     * 
+     *            the maximum number of characters to store in {@code buffer}.
+     * @return the number of characters read or -1 if the end of the reader has
+     *         been reached.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code count < 0}, or if {@code
+     *             offset + count} is greater than the size of {@code buffer}.
+     * @throws InterruptedIOException
+     *             if the thread reading from this reader is interrupted.
      * @throws IOException
-     *             If the reader is already closed or another IOException
-     *             occurs.
+     *             if this reader is closed or not connected to a writer, or if
+     *             the thread writing to the connected writer is no longer
+     *             alive.
      */
     @Override
     public int read(char[] buffer, int offset, int count) throws IOException {
@@ -299,15 +312,18 @@ public class PipedReader extends Reader {
     }
 
     /**
-     * Answer a boolean indicating whether or not this Reader is ready to be
-     * read. Answers true if the buffer contains characters to be read.
+     * Indicates whether this reader is ready to be read without blocking.
+     * Returns {@code true} if this reader will not block when {@code read} is
+     * called, {@code false} if unknown or blocking will occur. This
+     * implementation returns {@code true} if the internal buffer contains
+     * characters that can be read.
      * 
-     * @return boolean <code>true</code> if there are characters ready,
-     *         <code>false</code> otherwise.
-     * 
+     * @return always {@code false}.
      * @throws IOException
-     *             If the reader is already closed or another IOException
-     *             occurs.
+     *             if this reader is closed or not connected, or if some other
+     *             I/O error occurs.
+     * @see #read()
+     * @see #read(char[], int, int)
      */
     @Override
     public boolean ready() throws IOException {

@@ -18,26 +18,25 @@
 package java.net;
 
 /**
- * This ConnectException is thrown when a connection cannot be established to a
- * remote host/port, because for instance a server was not listening.
+ * A {@code ConnectException} is thrown if a connection cannot be established to
+ * a remote host on a specific port.
  */
 public class ConnectException extends SocketException {
 
     private static final long serialVersionUID = 3831404271622369215L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * This implementation does nothing.
      */
     public ConnectException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
+     * This implementation does nothing.
      * 
      * @param detailMessage
-     *            String The detail message for the exception.
+     *            detail message of the exception.
      */
     public ConnectException(String detailMessage) {
         super(detailMessage);

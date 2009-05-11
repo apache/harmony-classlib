@@ -17,15 +17,15 @@
 package java.nio.channels;
 
 /**
- * Thrown if the socket channel is not connected before an IO operation is
- * invoked.
+ * A {@code NotYetConnectedException} is thrown if the socket channel is not
+ * connected before an I/O operation is invoked.
  */
 public class NotYetConnectedException extends IllegalStateException {
 
     private static final long serialVersionUID = 4697316551909513464L;
 
     /**
-     * Default constructor.
+     * Constructs a {@code NotYetConnectedException}.
      */
     public NotYetConnectedException() {
         super();

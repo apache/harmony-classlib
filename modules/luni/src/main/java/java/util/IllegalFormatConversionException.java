@@ -19,14 +19,15 @@ package java.util;
 import java.io.Serializable;
 
 /**
- * The unchecked exception will be thrown out when the parameter is incompatible
- * with the corresponding format specifier.
+ * An {@code IllegalFormatConversionException} will be thrown when the parameter
+ * is incompatible with the corresponding format specifier.
  * 
+ * @see java.lang.RuntimeException
+ *
  * @since 1.5
  */
 public class IllegalFormatConversionException extends IllegalFormatException
         implements Serializable {
-
     private static final long serialVersionUID = 17000126L;
 
     private char c;
@@ -34,13 +35,13 @@ public class IllegalFormatConversionException extends IllegalFormatException
     private Class<?> arg;
 
     /**
-     * Constructs an IllegalFormatConversionException with the class of the
-     * mismatched conversion and corresponding parameter.
+     * Constructs a new {@code IllegalFormatConversionException} with the class
+     * of the mismatched conversion and corresponding parameter.
      * 
      * @param c
-     *            The class of the mismatched conversion.
+     *           the class of the mismatched conversion.
      * @param arg
-     *            The corresponding parameter.
+     *           the corresponding parameter.
      */
     public IllegalFormatConversionException(char c, Class<?> arg) {
         this.c = c;
@@ -51,27 +52,27 @@ public class IllegalFormatConversionException extends IllegalFormatException
     }
 
     /**
-     * Return the class of the mismatched parameter.
+     * Returns the class of the mismatched parameter.
      * 
-     * @return The class of the mismatched parameter.
+     * @return the class of the mismatched parameter.
      */
     public Class<?> getArgumentClass() {
         return arg;
     }
 
     /**
-     * Return the incompatible conversion.
+     * Returns the incompatible conversion.
      * 
-     * @return The incompatible conversion.
+     * @return the incompatible conversion.
      */
     public char getConversion() {
         return c;
     }
 
     /**
-     * Return the message string of the IllegalFormatConversionException.
+     * Returns the message string of the IllegalFormatConversionException.
      * 
-     * @return The message string of the IllegalFormatConversionException.
+     * @return the message string of the IllegalFormatConversionException.
      */
     @Override
     public String getMessage() {

@@ -25,13 +25,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Abstract class for selectors.
- * <p>
- * This class realizes the interruption of selection by <code>begin</code> and
- * <code>end</code>. It also holds the cancelled and the deletion of the key
+ * {@code AbstractSelector} is the base implementation class for selectors.
+ * It realizes the interruption of selection by {@code begin} and
+ * {@code end}. It also holds the cancellation and the deletion of the key
  * set.
- * </p>
- * 
  */
 public abstract class AbstractSelector extends Selector {
     private final AtomicBoolean isOpen = new AtomicBoolean(true);
@@ -44,19 +41,22 @@ public abstract class AbstractSelector extends Selector {
     private Set<SelectionKey> cancelledKeysSet = new HashSet<SelectionKey>();
 
     /**
-     * Constructor for this class.
+     * Constructs a new {@code AbstractSelector}.
      * 
      * @param selectorProvider
-     *            A instance of SelectorProvider
+     *            the selector provider that creates this selector.
      */
     protected AbstractSelector(SelectorProvider selectorProvider) {
         provider = selectorProvider;
     }
 
     /**
-     * Closes this channel.
+     * Closes this selector. This method does nothing if this selector is
+     * already closed. The actual closing must be implemented by subclasses in
+     * {@code implCloseSelector()}.
      * 
-     * @see java.nio.channels.Selector#close()
+     * @throws IOException
+     *             if an I/O error occurs.
      */
     @Override
     public final void close() throws IOException {
@@ -69,12 +69,15 @@ public abstract class AbstractSelector extends Selector {
      * Implements the closing of this channel.
      * 
      * @throws IOException
-     *             If some I/O exception occurs.
+     *             if an I/O error occurs.
      */
     protected abstract void implCloseSelector() throws IOException;
 
     /**
-     * @see java.nio.channels.Selector#isOpen()
+     * Indicates whether this selector is open.
+     *
+     * @return {@code true} if this selector is not closed, {@code false}
+     *         otherwise.
      */
     @Override
     public final boolean isOpen() {
@@ -82,9 +85,9 @@ public abstract class AbstractSelector extends Selector {
     }
 
     /**
-     * Answers the SelectorProvider of this channel.
+     * Gets this selector's provider.
      * 
-     * @see java.nio.channels.Selector#provider()
+     * @return the provider of this selector.
      */
     @Override
     public final SelectorProvider provider() {
@@ -92,39 +95,44 @@ public abstract class AbstractSelector extends Selector {
     }
 
     /**
-     * Answers the cancelled key set of this channel.
+     * Returns this channel's set of canceled selection keys.
      * 
-     * @return The cancelled key set.
+     * @return the set of canceled selection keys.
      */
     protected final Set<SelectionKey> cancelledKeys() {
         return cancelledKeysSet;
     }
 
     /**
-     * Registers a channel to this selector.
+     * Registers a channel with this selector.
      * 
      * @param channel
-     *            The channel to be registered.
+     *            the channel to be registered.
      * @param operations
-     *            The interest set.
+     *            the {@link SelectionKey interest set} of {@code channel}.
      * @param attachment
-     *            The attachment of the key.
-     * @return The key related with the channel and the selector.
+     *            the attachment for the selection key.
+     * @return the key related to the channel and this selector.
      */
     protected abstract SelectionKey register(AbstractSelectableChannel channel,
             int operations, Object attachment);
 
     /**
-     * Deletes the key from channel's key set.
+     * Deletes the key from the channel's key set.
      * 
      * @param key
-     *            The key.
+     *            the key.
      */
     protected final void deregister(AbstractSelectionKey key) {
         ((AbstractSelectableChannel) key.channel()).deregister(key);
         key.isValid = false;
     }
 
+    /**
+     * Indicates the beginning of a code section that includes an I/O operation
+     * that is potentially blocking. After this operation, the application
+     * should invoke the corresponding {@code end(boolean)} method.
+     */
     protected final void begin() {
         // FIXME: be accommodate before VM actually provides
         // setInterruptAction method
@@ -142,6 +150,10 @@ public abstract class AbstractSelector extends Selector {
         }
     }
 
+    /**
+     * Indicates the end of a code section that has been started with
+     * {@code begin()} and that includes a potentially blocking I/O operation.
+     */
     protected final void end() {
         // FIXME: be accommodate before VM actually provides
         // setInterruptAction method

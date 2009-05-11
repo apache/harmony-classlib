@@ -17,35 +17,39 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when an unsupported operation is attempted.
+ * Thrown when an unsupported operation is attempted.
  */
 public class UnsupportedOperationException extends RuntimeException {
 
-	private static final long serialVersionUID = -1242599979055084673L;
+    private static final long serialVersionUID = -1242599979055084673L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public UnsupportedOperationException() {
-	}
+    /**
+     * Constructs a new {@code UnsupportedOperationException} that includes the
+     * current stack trace.
+     */
+    public UnsupportedOperationException() {
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public UnsupportedOperationException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code UnsupportedOperationException} with the current
+     * stack trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public UnsupportedOperationException(String detailMessage) {
+        super(detailMessage);
+    }
     
     /**
-     * <p>Constructs a new instance with a message and cause.</p>
-     * @param message The message to assign to this exception.
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code UnsupportedOperationException} with the current
+     * stack trace, the specified detail message and the specified cause.
+     * 
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the optional cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public UnsupportedOperationException(String message, Throwable cause) {
@@ -53,8 +57,11 @@ public class UnsupportedOperationException extends RuntimeException {
     }
     
     /**
-     * <p>Constructs a new instance with a cause.</p>
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code UnsupportedOperationException} with the current
+     * stack trace and the specified cause.
+     * 
+     * @param cause
+     *            the optional cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public UnsupportedOperationException(Throwable cause) {

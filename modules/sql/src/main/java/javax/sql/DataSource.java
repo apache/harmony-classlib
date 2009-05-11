@@ -22,55 +22,58 @@ import java.sql.SQLException;
 import java.sql.Wrapper;
 
 /**
- * An interface for the creation of Connection objects which represent a
- * connection to a database. This interface is an alternative to the
- * <code>java.sql.DriverManager</code>.
+ * An interface for the creation of {@code Connection} objects which represent a
+ * connection to a database. This interface is an alternative to the {@code
+ * java.sql.DriverManager}.
  * <p>
- * A class which implements the DataSource interface is typically registered
- * with a JNDI naming service directory and is retrieved from there by name.
+ * A class which implements the {@code DataSource} interface is typically
+ * registered with a JNDI naming service directory and is retrieved from there
+ * by name.
  * <p>
- * The DataSource interface is typically implemented by the writer of a JDBC
- * driver. There are three variants of the DataSource interface, which produce
- * Connections with differing characteristics:
+ * The {@code DataSource} interface is typically implemented by the writer of a
+ * JDBC driver. There are three variants of the {@code DataSource} interface,
+ * which produce connections with different characteristics:
  * <ol>
- * <li>Standard DataSource, which produces standard Connection objects with no
- * special features.</li>
- * <li>Connection Pool DataSource, which produces PooledConnection objects
- * which are able to participate in connection pooling, typically involving a
- * connection pooling manager as an intermediary between applications and the
- * database.</li>
- * <li>Distributed transaction DataSource ("XADataSource"), which produces
- * XAConnection objects which can be used to handle distributed transactions and
- * which typically involve a transaction manager component in the system.
- * XAConnection objects also typically provide connection pooling capabilities
- * as well as distributed transaction capabilities. </li>
+ * <li><i>Standard {@code DataSource}</i>: produces standard {@code Connection}
+ * objects with no special features.</li>
+ * <li><i>Connection Pool {@code DataSource}</i>: produces {@code
+ * PooledConnection} objects which require a connection pool manager as an
+ * intermediary component.</li>
+ * <li><i>Distributed transaction {@code DataSource} ("XADataSource")</i>:
+ * produces {@code XAConnection} objects which can be used to handle distributed
+ * transactions which typically require an intermediary transaction manager
+ * component. {@code XAConnection} objects also provide connection pooling
+ * capabilities as well as distributed transaction capabilities.</li>
  * </ol>
  * <p>
- * Note that a JDBC driver which is accessed via the DataSource interface is
- * loaded via a JNDI lookup process. A driver loaded in this way does not
- * register itself with the <code>DriverManager</code>.
+ * Note that a JDBC driver which is accessed via the {@code DataSource}
+ * interface is loaded via a JNDI lookup process. A driver loaded in this way
+ * does not register itself with the {@code DriverManager}.
  */
 public interface DataSource extends CommonDataSource, Wrapper {
 
     /**
-     * Creates a connection to the database represented by this DataSource.
+     * Creates a connection to the database represented by this {@code
+     * DataSource}.
      * 
-     * @return a Connection object which is a connection to the database.
+     * @return a {@code Connection} object which is a connection to the
+     *         database.
      * @throws SQLException
      *             if there is a problem accessing the database.
      */
     public Connection getConnection() throws SQLException;
 
     /**
-     * Creates a connection to the database represented by this DataSource,
-     * using a supplied Username and Password,.
+     * Creates a connection to the database represented by this {@code
+     * DataSource}, using the supplied user name and password.
      * 
      * @param theUsername
-     *            a String containing a User Name for the database
+     *            the a user name for the database login.
      * @param thePassword
-     *            a String containing the Password for the user identified by
-     *            <code>theUsername</code>
-     * @return a Connection object which is a connection to the database.
+     *            the password associated with the user identified by {@code
+     *            theUsername}.
+     * @return the {@code Connection} object which is the connection to the
+     *         database.
      * @throws SQLException
      *             if there is a problem accessing the database.
      */

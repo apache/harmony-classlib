@@ -20,23 +20,21 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 
 /**
- * Readable marks that the implementing class provides character sequence.
- * Readable gives a reference to character sequence from within itself to caller
- * through a <code>CharBuffer</code> parameter of the <code>read</code>
- * method.
+ * Represents a sequence of characters that can be incrementally read (copied)
+ * into a {@link CharBuffer}.
  */
 public interface Readable {
 
-	/**
-	 * Reads the characters into the given <code>CharBuffer</code>. The
-	 * maximum number of characters read is <code>CharBuffer.remaining()</code>.
-	 * 
-	 * @param cb
-	 *            the buffer to be filled in by the characters read
-	 * @return the number of characters actually read, or -1 if this
-	 *         <code>Readable</code> reaches its end
-	 * @throws IOException
-	 *             if some I/O operations fail
-	 */
-	int read(CharBuffer cb) throws IOException;
+    /**
+     * Reads characters into the specified {@code CharBuffer}. The maximum
+     * number of characters read is {@code CharBuffer.remaining()}.
+     * 
+     * @param cb
+     *            the buffer to be filled with characters read.
+     * @return the number of characters actually read, or -1 if this
+     *         {@code Readable} reaches its end
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    int read(CharBuffer cb) throws IOException;
 }

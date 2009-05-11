@@ -25,6 +25,9 @@ import java.security.Security;
 
 import javax.net.SocketFactory;
 
+/**
+ * The abstract factory implementation to create {@code SSLSocket}s.
+ */
 public abstract class SSLSocketFactory extends SocketFactory {
     // FIXME EXPORT CONTROL
 
@@ -33,6 +36,12 @@ public abstract class SSLSocketFactory extends SocketFactory {
 
     private static String defaultName;
 
+    /**
+     * Returns the default {@code SSLSocketFactory} instance. The default is
+     * defined by the security property {@code 'ssl.SocketFactory.provider'}.
+     *
+     * @return the default ssl socket factory instance.
+     */
     public static synchronized SocketFactory getDefault() {
         if (defaultSocketFactory != null) {
             return defaultSocketFactory;
@@ -71,14 +80,48 @@ public abstract class SSLSocketFactory extends SocketFactory {
         return defaultSocketFactory;
     }
 
+    /**
+     * Creates a new {@code SSLSocketFactory}.
+     */
     public SSLSocketFactory() {
         super();
     }
 
+    /**
+     * Returns the names of the cipher suites that are enabled by default.
+     *
+     * @return the names of the cipher suites that are enabled by default.
+     */
     public abstract String[] getDefaultCipherSuites();
 
+    /**
+     * Returns the names of the cipher suites that are supported and could be
+     * enabled for an SSL connection.
+     *
+     * @return the names of the cipher suites that are supported.
+     */
     public abstract String[] getSupportedCipherSuites();
 
+    /**
+     * Creates an {@code SSLSocket} over the specified socket that is connected
+     * to the specified host at the specified port.
+     *
+     * @param s
+     *            the socket.
+     * @param host
+     *            the host.
+     * @param port
+     *            the port number.
+     * @param autoClose
+     *            {@code true} if socket {@code s} should be closed when the
+     *            created socket is closed, {@code false} if the socket
+     *            {@code s} should be left open.
+     * @return the creates ssl socket.
+     * @throws IOException
+     *             if creating the socket fails.
+     * @throws java.net.UnknownHostException
+     *             if the host is unknown.
+     */
     public abstract Socket createSocket(Socket s, String host, int port, boolean autoClose)
             throws IOException;
 }

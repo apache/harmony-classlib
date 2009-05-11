@@ -70,7 +70,7 @@ public class MemoryPoolMXBeanTest extends TestCase {
                 assertTrue(mb.getCollectionUsageThreshold() > -1);
             } else {
                 try {
-                    long val = mb.getCollectionUsageThreshold();
+                    mb.getCollectionUsageThreshold();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }
@@ -88,7 +88,7 @@ public class MemoryPoolMXBeanTest extends TestCase {
                 assertTrue(mb.getCollectionUsageThresholdCount() > -1);
             } else {
                 try {
-                    long val = mb.getCollectionUsageThresholdCount();
+                    mb.getCollectionUsageThresholdCount();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }
@@ -194,7 +194,7 @@ public class MemoryPoolMXBeanTest extends TestCase {
                 assertTrue(mb.getUsageThreshold() > -1);
             } else {
                 try {
-                    long val = mb.getUsageThreshold();
+                    mb.getUsageThreshold();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }
@@ -212,7 +212,7 @@ public class MemoryPoolMXBeanTest extends TestCase {
                 assertTrue(mb.getUsageThresholdCount() > -1);
             } else {
                 try {
-                    long val = mb.getUsageThresholdCount();
+                    mb.getUsageThresholdCount();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }
@@ -228,10 +228,10 @@ public class MemoryPoolMXBeanTest extends TestCase {
         for (MemoryPoolMXBean mb : allBeans) {
             if (mb.isCollectionUsageThresholdSupported()) {
                 // Not a lot to test here. Maybe it will throw an exception ?
-                boolean val = mb.isCollectionUsageThresholdExceeded();
+                mb.isCollectionUsageThresholdExceeded();
             } else {
                 try {
-                    boolean val = mb.isCollectionUsageThresholdExceeded();
+                    mb.isCollectionUsageThresholdExceeded();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }
@@ -246,10 +246,10 @@ public class MemoryPoolMXBeanTest extends TestCase {
     public void testIsUsageThresholdExceeded() {
         for (MemoryPoolMXBean mb : allBeans) {
             if (mb.isUsageThresholdSupported()) {
-                boolean value = mb.isUsageThresholdExceeded();
+                mb.isUsageThresholdExceeded();
             } else {
                 try {
-                    boolean value = mb.isUsageThresholdExceeded();
+                    mb.isUsageThresholdExceeded();
                     fail("Should have thrown UnsupportedOperationException");
                 } catch (UnsupportedOperationException ignore) {
                 }

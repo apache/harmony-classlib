@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.security.spec.InvalidKeySpecException;
@@ -28,12 +23,12 @@ import java.security.spec.KeySpec;
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.internal.nls.Messages;
 
-
 /**
- * @com.intel.drl.spec_ref
- * 
+ * {@code KeyFactory} is an engine class that can be used to translate between
+ * public and private key objects and convert keys between their external
+ * representation, that can be easily transported and their internal
+ * representation.
  */
-
 public class KeyFactory {
     // The service name.
     private static final String SERVICE = "KeyFactory"; //$NON-NLS-1$
@@ -52,8 +47,15 @@ public class KeyFactory {
     private String algorithm;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of {@code KeyFactory} with the specified
+     * arguments.
      * 
+     * @param keyFacSpi
+     *            the concrete key factory service.
+     * @param provider
+     *            the provider.
+     * @param algorithm
+     *            the algorithm to use.
      */
     protected KeyFactory(KeyFactorySpi keyFacSpi, 
                          Provider provider,
@@ -64,8 +66,15 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a new instance of {@code KeyFactory} that utilizes the specified
+     * algorithm.
      * 
+     * @param algorithm
+     *            the name of the algorithm.
+     * @return a new instance of {@code KeyFactory} that utilizes the specified
+     *         algorithm.
+     * @throws NoSuchAlgorithmException
+     *             if no provider provides the requested algorithm.
      */
     public static KeyFactory getInstance(String algorithm)
                                 throws NoSuchAlgorithmException {
@@ -79,8 +88,21 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a new instance of {@code KeyFactory} that utilizes the specified
+     * algorithm from the specified provider.
      * 
+     * @param algorithm
+     *            the name of the algorithm.
+     * @param provider
+     *            the name of the provider.
+     * @return a new instance of {@code KeyFactory} that utilizes the specified
+     *         algorithm from the specified provider.
+     * @throws NoSuchAlgorithmException
+     *             if the provider does not provide the requested algorithm.
+     * @throws NoSuchProviderException
+     *             if the requested provider is not available.
+     * @throws IllegalArgumentException
+     *             if {@code provider} is {@code null} or empty.
      */
     public static KeyFactory getInstance(String algorithm, String provider)
                                 throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -95,8 +117,17 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a new instance of {@code KeyFactory} that utilizes the specified
+     * algorithm from the specified provider.
      * 
+     * @param algorithm
+     *            the name of the algorithm.
+     * @param provider
+     *            the security provider.
+     * @return a new instance of {@code KeyFactory} that utilizes the specified
+     *         algorithm from the specified provider.
+     * @throws NoSuchAlgorithmException
+     *             if the provider does not provide the requested algorithm.
      */
     public static KeyFactory getInstance(String algorithm, Provider provider)
                                  throws NoSuchAlgorithmException {
@@ -113,24 +144,34 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the provider associated with this {@code KeyFactory}.
      * 
+     * @return the provider associated with this {@code KeyFactory}.
      */
     public final Provider getProvider() {
         return provider;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the name of the algorithm associated with this {@code
+     * KeyFactory}.
      * 
+     * @return the name of the algorithm associated with this {@code
+     *         KeyFactory}.
      */
     public final String getAlgorithm() {
         return algorithm;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a instance of {@code PublicKey} from the given key
+     * specification.
      * 
+     * @param keySpec
+     *            the specification of the public key
+     * @return the public key
+     * @throws InvalidKeySpecException
+     *             if the specified {@code keySpec} is invalid
      */
     public final PublicKey generatePublic(KeySpec keySpec)
                                 throws InvalidKeySpecException {
@@ -138,8 +179,14 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Generates a instance of {@code PrivateKey} from the given key
+     * specification.
      * 
+     * @param keySpec
+     *            the specification of the private key.
+     * @return the private key.
+     * @throws InvalidKeySpecException
+     *             if the specified {@code keySpec} is invalid.
      */
     public final PrivateKey generatePrivate(KeySpec keySpec)
                                 throws InvalidKeySpecException {
@@ -147,8 +194,16 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the key specification for the specified key.
      * 
+     * @param key
+     *            the key from which the specification is requested.
+     * @param keySpec
+     *            the type of the requested {@code KeySpec}.
+     * @return the key specification for the specified key.
+     * @throws InvalidKeySpecException
+     *             if the key can not be processed, or the requested requested
+     *             {@code KeySpec} is inappropriate for the given key.
      */
     public final <T extends KeySpec> T getKeySpec(Key key,
                                     Class<T> keySpec)
@@ -157,8 +212,14 @@ public class KeyFactory {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Translates the given key into a key from this key factory.
      * 
+     * @param key
+     *            the key to translate.
+     * @return the translated key.
+     * @throws InvalidKeyException
+     *             if the specified key can not be translated by this key
+     *             factory.
      */
     public final Key translateKey(Key key)
                         throws InvalidKeyException {

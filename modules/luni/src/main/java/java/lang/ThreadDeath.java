@@ -17,7 +17,6 @@
 
 package java.lang;
 
-
 /**
  * ThreadDeath is thrown when a thread stops executing. It is used to aid in the
  * orderly unrolling of the thread's stack (eg. cleanup of monitors).
@@ -27,10 +26,10 @@ public class ThreadDeath extends Error {
     private static final long serialVersionUID = -4417128565033088268L;
 
     /**
-	 * Constructs a new instance of this class. Note that in the case of
-	 * ThreadDeath, the walkback may <em>not</em> be filled in a way which
-	 * allows a stack trace to be printed.
-	 */
-	public ThreadDeath() {
-	}
+     * Constructs a new instance of this class. Note that in the case of
+     * ThreadDeath, the stacktrace may <em>not</em> be filled in a way which
+     * allows a stack trace to be printed.
+     */
+    public ThreadDeath() {
+    }
 }

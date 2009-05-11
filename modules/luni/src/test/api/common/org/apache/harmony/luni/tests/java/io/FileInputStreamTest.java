@@ -19,6 +19,7 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.FileOutputStream;
 import java.io.FilePermission;
 import java.io.IOException;
@@ -109,9 +110,9 @@ public class FileInputStreamTest extends TestCase {
      * @tests java.io.FileInputStream#read()
      */
     public void test_read() throws IOException {
-        is = new FileInputStream(fileName);
-        int c = is.read();
-        is.close();
+        InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName));
+        int c = isr.read();
+        isr.close();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
     }
 

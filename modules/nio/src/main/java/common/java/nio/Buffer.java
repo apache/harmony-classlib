@@ -19,32 +19,30 @@ package java.nio;
 /**
  * A buffer is a list of elements of a specific primitive type.
  * <p>
- * A buffer can be described by following properties:
+ * A buffer can be described by the following properties:
  * <ul>
- * <li>Capacity, is the number of elements a buffer can hold. Capacity is no
- * less than zero and never changes.</li>
- * <li>Position, is a cursor of this buffer. Elements are read or write at the
- * position if you do not specify an index explicitly. Position is no less than
- * zero and no greater than the limit.</li>
- * <li>Limit controls the scope of accessible elements. You can only read or
+ * <li>Capacity: the number of elements a buffer can hold. Capacity may not be
+ * negative and never changes.</li>
+ * <li>Position: a cursor of this buffer. Elements are read or written at the
+ * position if you do not specify an index explicitly. Position may not be
+ * negative and not greater than the limit.</li>
+ * <li>Limit: controls the scope of accessible elements. You can only read or
  * write elements from index zero to <code>limit - 1</code>. Accessing
- * elements out of the scope will cause exception. Limit is no less than zero
- * and no greater than capacity.</li>
- * <li>Mark, is used to remember the current position, so that you can reset
- * the position later. Mark is no less than zero and no greater than position.</li>
- * <li>A buffer can be readonly or read-write. Trying to modify the elements of
- * a readonly buffer will cause <code>ReadOnlyBufferException</code>, while
- * changing the position, limit and mark of a readonly buffer is OK.</li>
+ * elements out of the scope will cause an exception. Limit may not be negative
+ * and not greater than capacity.</li>
+ * <li>Mark: used to remember the current position, so that you can reset the
+ * position later. Mark may not be negative and no greater than position.</li>
+ * <li>A buffer can be read-only or read-write. Trying to modify the elements
+ * of a read-only buffer will cause a <code>ReadOnlyBufferException</code>,
+ * while changing the position, limit and mark of a read-only buffer is OK.</li>
  * <li>A buffer can be direct or indirect. A direct buffer will try its best to
- * take advantage of native memory APIs and it may not stay in java heap, thus
- * not affected by GC.</li>
+ * take advantage of native memory APIs and it may not stay in the Java heap,
+ * thus it is not affected by garbage collection.</li>
  * </ul>
- * </p>
  * <p>
  * Buffers are not thread-safe. If concurrent access to a buffer instance is
  * required, then the callers are responsible to take care of the
  * synchronization issues.
- * </p>
  */
 public abstract class Buffer {
 
@@ -59,13 +57,13 @@ public abstract class Buffer {
     final int capacity;
 
     /**
-     * <code>limit - 1</code> is the last element that can be read or write.
+     * <code>limit - 1</code> is the last element that can be read or written.
      * Limit must be no less than zero and no greater than <code>capacity</code>.
      */
     int limit;
 
     /**
-     * Mark is the position will be set when <code>reset()</code> is called.
+     * Mark is where position will be set when <code>reset()</code> is called.
      * Mark is not set by default. Mark is always no less than zero and no
      * greater than <code>position</code>.
      */
@@ -141,7 +139,7 @@ public abstract class Buffer {
     /**
      * Returns the capacity of this buffer.
      * 
-     * @return The number of elements that are contained in this buffer.
+     * @return the number of elements that are contained in this buffer.
      */
     public final int capacity() {
         return capacity;
@@ -150,13 +148,12 @@ public abstract class Buffer {
     /**
      * Clears this buffer.
      * <p>
-     * While the content of this buffer is not changed the following internal
-     * changes take place : the current position is reset back to the start of
+     * While the content of this buffer is not changed, the following internal
+     * changes take place: the current position is reset back to the start of
      * the buffer, the value of the buffer limit is made equal to the capacity
-     * and mark is unset.
-     * </p>
-     * 
-     * @return This buffer
+     * and mark is cleared.
+     *
+     * @return this buffer.
      */
     public final Buffer clear() {
         position = 0;
@@ -170,12 +167,10 @@ public abstract class Buffer {
      * <p>
      * The limit is set to the current position, then the position is set to
      * zero, and the mark is cleared.
-     * </p>
      * <p>
      * The content of this buffer is not changed.
-     * </p>
-     * 
-     * @return This buffer
+     *
+     * @return this buffer.
      */
     public final Buffer flip() {
         limit = position;
@@ -200,12 +195,11 @@ public abstract class Buffer {
 	public abstract boolean hasArray();
 
     /**
-     * Returns true if there are remaining element(s) in this buffer.
-     * <p>
-     * Or more precisely, returns <code>position &lt; limit</code>.
-     * </p>
+     * Indicates if there are elements remaining in this buffer, that is if
+     * {@code position < limit}.
      * 
-     * @return True if there are remaining element(s) in this buffer.
+     * @return {@code true} if there are elements remaining in this buffer,
+     *         {@code false} otherwise.
      */
     public final boolean hasRemaining() {
         return position < limit;
@@ -221,16 +215,17 @@ public abstract class Buffer {
 	public abstract boolean isDirect();
 
     /**
-     * Returns whether this buffer is readonly or not.
+     * Indicates whether this buffer is read-only.
      * 
-     * @return Whether this buffer is readonly or not.
+     * @return {@code true} if this buffer is read-only, {@code false}
+     *         otherwise.
      */
     public abstract boolean isReadOnly();
 
     /**
      * Returns the limit of this buffer.
      * 
-     * @return The limit of this buffer.
+     * @return the limit of this buffer.
      */
     public final int limit() {
         return limit;
@@ -243,14 +238,13 @@ public abstract class Buffer {
      * <code>newLimit</code> then, on returning from this call, it will have
      * been adjusted to be equivalent to <code>newLimit</code>. If the mark
      * is set and is greater than the new limit, then it is cleared.
-     * </p>
-     * 
+     *
      * @param newLimit
-     *            The new limit, must be no less than zero and no greater than
-     *            capacity
-     * @return This buffer
+     *            the new limit, must not be negative and not greater than
+     *            capacity.
+     * @return this buffer.
      * @exception IllegalArgumentException
-     *                If <code>newLimit</code> is invalid.
+     *                if <code>newLimit</code> is invalid.
      */
     public final Buffer limit(int newLimit) {
         if (newLimit < 0 || newLimit > capacity) {
@@ -268,10 +262,10 @@ public abstract class Buffer {
     }
 
     /**
-     * Mark the current position, so that the position may return to this point
+     * Marks the current position, so that the position may return to this point
      * later by calling <code>reset()</code>.
      * 
-     * @return This buffer
+     * @return this buffer.
      */
     public final Buffer mark() {
         mark = position;
@@ -281,7 +275,7 @@ public abstract class Buffer {
     /**
      * Returns the position of this buffer.
      * 
-     * @return The value of this buffer's current position.
+     * @return the value of this buffer's current position.
      */
     public final int position() {
         return position;
@@ -290,16 +284,15 @@ public abstract class Buffer {
     /**
      * Sets the position of this buffer.
      * <p>
-     * If the mark is set and is greater than the new position, then it is
+     * If the mark is set and it is greater than the new position, then it is
      * cleared.
-     * </p>
-     * 
+     *
      * @param newPosition
-     *            The new position, must be no less than zero and no greater
-     *            than limit
-     * @return This buffer
+     *            the new position, must be not negative and not greater than
+     *            limit.
+     * @return this buffer.
      * @exception IllegalArgumentException
-     *                If <code>newPosition</code> is invalid
+     *                if <code>newPosition</code> is invalid.
      */
     public final Buffer position(int newPosition) {
         if (newPosition < 0 || newPosition > limit) {
@@ -314,23 +307,21 @@ public abstract class Buffer {
     }
 
     /**
-     * Returns the number of remaining elements in this buffer.
-     * <p>
-     * Or more precisely, returns <code>limit - position</code>.
-     * </p>
+     * Returns the number of remaining elements in this buffer, that is
+     * {@code limit - position}.
      * 
-     * @return The number of remaining elements in this buffer.
+     * @return the number of remaining elements in this buffer.
      */
     public final int remaining() {
         return limit - position;
     }
 
     /**
-     * Reset the position of this buffer to the <code>mark</code>.
+     * Resets the position of this buffer to the <code>mark</code>.
      * 
-     * @return This buffer
+     * @return this buffer.
      * @exception InvalidMarkException
-     *                If the mark is not set
+     *                if the mark is not set.
      */
     public final Buffer reset() {
         if (mark == UNSET_MARK) {
@@ -343,13 +334,10 @@ public abstract class Buffer {
     /**
      * Rewinds this buffer.
      * <p>
-     * The position is set to zero, and the mark is cleared.
-     * </p>
-     * <p>
-     * The content of this buffer is not changed.
-     * </p>
-     * 
-     * @return This buffer
+     * The position is set to zero, and the mark is cleared. The content of this
+     * buffer is not changed.
+     *
+     * @return this buffer.
      */
     public final Buffer rewind() {
         position = 0;

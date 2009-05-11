@@ -17,22 +17,30 @@
 
 package java.util;
 
+
 /**
- * This abstract class provides a simple wrapper to types of EventListener.
- * 
+ * This abstract class provides a simple wrapper for objects of type {@code EventListener}.
  */
 public abstract class EventListenerProxy implements EventListener {
 
     private final EventListener listener;
 
     /**
+     * Creates a new {@code EventListener} proxy instance.
+     * 
      * @param listener
+     *            the listener wrapped by this proxy.
      */
     public EventListenerProxy(EventListener listener) {
         super();
         this.listener = listener;
     }
 
+    /**
+     * Returns the wrapped {@code EventListener}.
+     * 
+     * @return the wrapped {@code EventListener}.
+     */
     public EventListener getListener() {
         return listener;
     }

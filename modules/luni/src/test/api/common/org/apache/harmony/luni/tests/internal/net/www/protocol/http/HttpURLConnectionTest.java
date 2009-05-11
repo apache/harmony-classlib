@@ -147,7 +147,7 @@ public class HttpURLConnectionTest extends TestCase {
                             buff[num++] = (byte) bytik;
                         }
                         // int num = is.read(buff);
-                        String message = new String(buff, 0, num);
+                        String message = new String(buff, 0, num, "UTF-8");
                         if (DEBUG) {
                             System.out
                                     .println("---- Server got request: ----\n"
@@ -164,7 +164,7 @@ public class HttpURLConnectionTest extends TestCase {
                                         .println("---- Server read client's data: ----");
                             }
                             num = is.read(buff);
-                            message = new String(buff, 0, num);
+                            message = new String(buff, 0, num, "UTF-8");
                             if (DEBUG) {
                                 System.out.println("'" + message + "'");
                                 System.out
@@ -181,7 +181,7 @@ public class HttpURLConnectionTest extends TestCase {
                                                 + "Content-type: text/html\n"
                                                 + "Content-length: "
                                                 + response.length() + "\n\n" + response)
-                                                .getBytes());
+                                                .getBytes("UTF-8"));
 
                         if (responseCode != OK_CODE) {
                             // wait while test case check closed connection
@@ -231,7 +231,7 @@ public class HttpURLConnectionTest extends TestCase {
                         .write(
                                 ("HTTP/1.0 407 Proxy authentication required\n"
                                         + "Proxy-authenticate: Basic realm=\"remotehost\"\n\n")
-                                        .getBytes());
+                                        .getBytes("UTF-8"));
                 num = socket.getInputStream().read(buff);
                 if (num == -1) {
                     // this connection was closed, create new one:
@@ -239,12 +239,12 @@ public class HttpURLConnectionTest extends TestCase {
                     socket.setSoTimeout(5000);
                     num = socket.getInputStream().read(buff);
                 }
-                String request = new String(buff, 0, num);
+                String request = new String(buff, 0, num, "UTF-8");
                 acceptedAuthorizedRequest = request.toLowerCase().indexOf(
                         "proxy-authorization:") > 0;
                 if (acceptedAuthorizedRequest) {
                     socket.getOutputStream().write(
-                            ("HTTP/1.1 200 OK\n\n").getBytes());
+                            ("HTTP/1.1 200 OK\n\n").getBytes("UTF-8"));
                 }
             } catch (IOException e) {
             }
@@ -568,7 +568,7 @@ public class HttpURLConnectionTest extends TestCase {
         while ((bytesRead = is.read(buffer)) > 0) {
             if (DEBUG) {
                 System.out.println("Client got response: '"
-                        + new String(buffer, 0, bytesRead) + "'");
+                        + new String(buffer, 0, bytesRead, "UTF-8") + "'");
             }
             totalBytes += bytesRead;
         }
@@ -585,7 +585,7 @@ public class HttpURLConnectionTest extends TestCase {
         while ((bytesRead = is.read(buffer)) > 0) {
             if (DEBUG) {
                 System.out.println("Client got response: '"
-                        + new String(buffer, 0, bytesRead) + "'");
+                        + new String(buffer, 0, bytesRead, "UTF-8") + "'");
                 totalBytes += bytesRead;
             }
         }
@@ -664,7 +664,7 @@ public class HttpURLConnectionTest extends TestCase {
         c.setDoOutput(true);
         c.setConnectTimeout(5000);
         c.setReadTimeout(5000);
-        c.getOutputStream().write(httpServer.clientPost.getBytes());
+        c.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
 
         InputStream is = c.getInputStream();
         int bytes2Read = httpServer.response.length();
@@ -732,7 +732,7 @@ public class HttpURLConnectionTest extends TestCase {
         c2.setDoInput(true);
         c2.setConnectTimeout(5000);
         c2.setReadTimeout(5000);
-        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        c2.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
         is = c2.getInputStream();
         buffer = new byte[httpServer.response.length()];
         bytes2Read = httpServer.response.length();
@@ -766,7 +766,7 @@ public class HttpURLConnectionTest extends TestCase {
         c.setDoInput(true);
         c.setConnectTimeout(5000);
         c.setReadTimeout(5000);
-        c.getOutputStream().write(httpServer.clientPost.getBytes());
+        c.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
         InputStream is = c.getInputStream();
         int bytes2Read = httpServer.response.length();
         byte[] buffer = new byte[httpServer.response.length()];
@@ -783,7 +783,7 @@ public class HttpURLConnectionTest extends TestCase {
         c2.setDoInput(true);
         c2.setConnectTimeout(5000);
         c2.setReadTimeout(5000);
-        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        c2.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
         is = c2.getInputStream();
         buffer = new byte[httpServer.response.length()];
         bytes2Read = httpServer.response.length();
@@ -820,7 +820,7 @@ public class HttpURLConnectionTest extends TestCase {
         c.setDoInput(true);
         c.setConnectTimeout(5000);
         c.setReadTimeout(5000);
-        c.getOutputStream().write(httpServer.clientPost.getBytes());
+        c.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
         InputStream is = c.getInputStream();
         int bytes2Read = httpServer.response.length();
         byte[] buffer = new byte[httpServer.response.length()];
@@ -837,7 +837,7 @@ public class HttpURLConnectionTest extends TestCase {
         c2.setDoInput(true);
         c2.setConnectTimeout(5000);
         c2.setReadTimeout(5000);
-        c2.getOutputStream().write(httpServer.clientPost.getBytes());
+        c2.getOutputStream().write(httpServer.clientPost.getBytes("UTF-8"));
         is = c2.getInputStream();
         buffer = new byte[httpServer.response.length()];
         bytes2Read = httpServer.response.length();

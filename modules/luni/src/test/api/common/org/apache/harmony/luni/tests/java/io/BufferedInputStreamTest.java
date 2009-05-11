@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
@@ -141,6 +142,52 @@ public class BufferedInputStreamTest extends TestCase {
         // regression for HARMONY-667
         BufferedInputStream buf = new BufferedInputStream(null, 5);
         buf.close();
+
+        InputStream in = new InputStream() {
+            Object lock = new Object();
+
+            @Override
+            public int read() {
+                return 1;
+            }
+
+            @Override
+            public int read(byte[] buf, int offset, int length) {
+                synchronized (lock) {
+                    try {
+                        lock.wait(3000);
+                    } catch (InterruptedException e) {
+                        // Ignore
+                    }
+                }
+                return 1;
+            }
+
+            @Override
+            public void close() {
+                synchronized (lock) {
+                    lock.notifyAll();
+                }
+            }
+        };
+        final BufferedInputStream bufin = new BufferedInputStream(in);
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    bufin.close();
+                } catch (Exception e) {
+                    // Ignored
+                }
+            }
+        });
+        thread.start();
+        try {
+            bufin.read(new byte[100], 0, 99);
+            fail("Should throw IOException");
+        } catch (IOException e) {
+            // Expected
+        }
     }
 
     /**
@@ -219,7 +266,8 @@ public class BufferedInputStreamTest extends TestCase {
      * @tests java.io.BufferedInputStream#read()
      */
     public void test_read() throws IOException {
-        int c = is.read();
+        InputStreamReader isr = new InputStreamReader(is);
+        int c = isr.read();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
 
         byte[] bytes = new byte[256];
@@ -381,6 +429,31 @@ public class BufferedInputStreamTest extends TestCase {
     }
 
     /**
+     * @tests java.io.BufferedInputStream#reset()
+     */
+    public void test_reset_scenario1() throws IOException {
+        byte[] input = "12345678900".getBytes();
+        BufferedInputStream buffis = new BufferedInputStream(
+                new ByteArrayInputStream(input));
+        buffis.read();
+        buffis.mark(5);
+        buffis.skip(5);
+        buffis.reset();
+    }
+
+    /**
+     * @tests java.io.BufferedInputStream#reset()
+     */
+    public void test_reset_scenario2() throws IOException {
+        byte[] input = "12345678900".getBytes();
+        BufferedInputStream buffis = new BufferedInputStream(
+                new ByteArrayInputStream(input));
+        buffis.mark(5);
+        buffis.skip(6);
+        buffis.reset();
+    }
+
+    /**
      * @tests java.io.BufferedInputStream#skip(long)
      */
     public void test_skipJ() throws IOException {
@@ -400,6 +473,14 @@ public class BufferedInputStreamTest extends TestCase {
         } catch (IOException e) {
             // Expected
         }
+    }
+
+    /**
+     * @tests java.io.BufferedInputStream#skip(long)
+     */
+    public void test_skip_NullInputStream() throws IOException {
+        BufferedInputStream buf = new BufferedInputStream(null, 5);
+        assertEquals(0, buf.skip(0));
     }
 
     /**

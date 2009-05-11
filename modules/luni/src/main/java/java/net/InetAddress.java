@@ -37,9 +37,10 @@ import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * The Internet Protocol (IP) address class. This class encapsulates an IP
- * address and provides name and reverse name resolution functions. The address
- * is stored in network order, but as a signed (rather than unsigned) integer.
+ * The Internet Protocol (IP) address representation class. This class
+ * encapsulates an IP address and provides name and reverse name resolution
+ * functions. The address is stored in network order, but as a signed (rather
+ * than unsigned) integer.
  */
 public class InetAddress extends Object implements Serializable {
 
@@ -88,11 +89,11 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Constructs an InetAddress, representing the <code>address</code> and
-     * <code>hostName</code>.
-     * 
+     * Constructs an {@code InetAddress}, representing the {@code address} and
+     * {@code hostName}.
+     *
      * @param address
-     *            network address
+     *            the network address.
      */
     InetAddress(byte[] address) {
         super();
@@ -100,11 +101,11 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Constructs an InetAddress, representing the <code>address</code> and
-     * <code>hostName</code>.
+     * Constructs an {@code InetAddress}, representing the {@code address} and
+     * {@code hostName}.
      * 
      * @param address
-     *            network address
+     *            the network address.
      */
     InetAddress(byte[] address, String hostName) {
         super();
@@ -117,11 +118,13 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Compares this <code>InetAddress</code> against the specified object.
+     * Compares this {@code InetAddress} instance against the specified address
+     * in {@code obj}. Two addresses are equal if their address byte arrays have
+     * the same length and if the bytes in the arrays are equal.
      * 
      * @param obj
-     *            the object to be tested for equality
-     * @return boolean true, if the objects are equal
+     *            the object to be tested for equality.
+     * @return {@code true} if both objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(Object obj) {
@@ -143,28 +146,29 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Returns the IP address of this <code>InetAddress</code> as an array.
-     * The elements are in network order (the highest order address byte is in
-     * the zero-th element).
+     * Returns the IP address represented by this {@code InetAddress} instance
+     * as a byte array. The elements are in network order (the highest order
+     * address byte is in the zeroth element).
      * 
-     * @return byte[] the address as a byte array
+     * @return the address in form of a byte array.
      */
     public byte[] getAddress() {
         return ipaddress.clone();
     }
 
     /**
-     * Answer the IP addresses of a named host. The host name may either be a
-     * machine name or a dotted string IP address. If the host name is empty or
-     * null, an UnknownHostException is thrown. If the host name is a dotted IP
-     * string, an array with the corresponding single InetAddress is returned.
+     * Gets all IP addresses associated with the given {@code host} identified
+     * by name or IP address in dot-notation. The IP address is resolved by the
+     * configured name service. If the host name is empty or {@code null} an
+     * {@code UnknownHostException} is thrown. If the host name is a dotted IP
+     * address string an array with the corresponding single {@code InetAddress}
+     * is returned.
      * 
      * @param host
-     *            the hostName to be resolved to an address
-     * 
-     * @return InetAddress[] an array of addresses for the host
+     *            the host's name or IP to be resolved to an address.
+     * @return the array of addresses associated with the specified host.
      * @throws UnknownHostException
-     *             if the address lookup fails
+     *             if the address lookup fails.
      */
     public static InetAddress[] getAllByName(String host)
             throws UnknownHostException {
@@ -231,16 +235,17 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers the address of a host, given a host string name. The host string
-     * may be either a machine name or a dotted string IP address. If the
-     * latter, the hostName field will be determined upon demand.
+     * Returns the address of a host according to the given host string name
+     * {@code host}. The host string may be either a machine name or a dotted
+     * string IP address. If the latter, the {@code hostName} field is
+     * determined upon demand. {@code host} can be {@code null} which means that
+     * an address of the loopback interface is returned.
      * 
      * @param host
-     *            the hostName to be resolved to an address
-     * @return InetAddress the InetAddress representing the host
-     * 
+     *            the hostName to be resolved to an address or {@code null}.
+     * @return the {@code InetAddress} instance representing the host.
      * @throws UnknownHostException
-     *             if the address lookup fails
+     *             if the address lookup fails.
      */
     public static InetAddress getByName(String host)
             throws UnknownHostException {
@@ -263,18 +268,21 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer the dotted string IP address representing this address.
+     * Gets the textual representation of this IP address.
      * 
-     * @return String the corresponding dotted string IP address
+     * @return the textual representation of this host address in form of a
+     *         dotted string.
      */
     public String getHostAddress() {
         return inetNtoaImpl(bytesToInt(ipaddress, 0));
     }
 
     /**
-     * Answer the host name.
+     * Gets the host name of this IP address. If the IP address could not be
+     * resolved, the textual representation in a dotted-quad-notation is
+     * returned.
      * 
-     * @return String the corresponding string name
+     * @return the corresponding string name of this IP address.
      */
     public String getHostName() {
         try {
@@ -309,9 +317,12 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers canonical name for the host associated with the internet address
+     * Gets the fully qualified domain name for the host associated with this IP
+     * address. If a security manager is set, it is checked if the method caller
+     * is allowed to get the hostname. Otherwise, the textual representation in
+     * a dotted-quad-notation is returned.
      * 
-     * @return String string containing the host name
+     * @return the fully qualified domain name of this IP address.
      */
     public String getCanonicalHostName() {
         String canonicalName;
@@ -340,12 +351,13 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer the local host, if allowed by the security policy. Otherwise,
-     * answer the loopback address which allows this machine to be contacted.
-     * 
-     * @return InetAddress the InetAddress representing the local host
+     * Gets the local host address if the security policy allows this.
+     * Otherwise, gets the loopback address which allows this machine to be
+     * contacted.
+     *
+     * @return the {@code InetAddress} representing the local host.
      * @throws UnknownHostException
-     *             if the address lookup fails
+     *             if the address lookup fails.
      */
     public static InetAddress getLocalHost() throws UnknownHostException {
         String host = getHostNameImpl();
@@ -361,9 +373,9 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer a hashcode for this IP address.
+     * Gets the hashcode of the represented IP address.
      * 
-     * @return int the hashcode
+     * @return the appropriate hashcode value.
      */
     @Override
     public int hashCode() {
@@ -371,9 +383,10 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer true if the InetAddress is an IP multicast address.
+     * Returns whether this address is an IP multicast address or not.
      * 
-     * @return boolean true, if the address is in the multicast group
+     * @return {@code true} if this address is in the multicast group, {@code
+     *         false} otherwise.
      */
     public boolean isMulticastAddress() {
         return ((ipaddress[0] & 255) >>> 4) == 0xE;
@@ -447,9 +460,9 @@ public class InetAddress extends Object implements Serializable {
      * Query the IP stack for the host address. The host is in address form.
      * 
      * @param addr
-     *            the host address to lookup
+     *            the host address to lookup.
      * @throws UnknownHostException
-     *             if an error occurs during lookup
+     *             if an error occurs during lookup.
      */
     static native InetAddress getHostByAddrImpl(byte[] addr)
             throws UnknownHostException;
@@ -460,7 +473,7 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Convert a string containing an Ipv4 Internet Protocol dotted address into
+     * Convert a string containing an IPv4 Internet Protocol dotted address into
      * a binary address. Note, the special case of '255.255.255.255' throws an
      * exception, so this value should not be used as an argument. See also
      * inetAddr(String).
@@ -478,10 +491,9 @@ public class InetAddress extends Object implements Serializable {
      * 
      * @param name
      *            the host name to lookup
-     * @param preferIPv6Addresses
+     * @param preferIPv6Address
      *            address preference if underlying platform is V4/V6
      * @return InetAddress the host address
-     * 
      * @throws UnknownHostException
      *             if an error occurs during lookup
      */
@@ -489,9 +501,9 @@ public class InetAddress extends Object implements Serializable {
             boolean preferIPv6Address) throws UnknownHostException;
 
     /**
-     * Query the IP stack for the host machine name.
+     * Gets the host name of the system.
      * 
-     * @return String the host machine name
+     * @return String the system hostname
      */
     static native String getHostNameImpl();
 
@@ -506,10 +518,10 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers a string containing a concise, human-readable description of the
-     * address.
+     * Returns a string containing a concise, human-readable description of this
+     * IP address.
      * 
-     * @return String the description, as host/address
+     * @return the description, as host/address.
      */
     @Override
     public String toString() {
@@ -603,7 +615,7 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer true if the string is a host name, false if it is an IP Address.
+     * Returns true if the string is a host name, false if it is an IP Address.
      */
     private static boolean isHostName(String value) {
         return !(Inet6Util.isValidIPV4Address(value) || Inet6Util
@@ -611,163 +623,186 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answer true if the address is a loop back address. Valid IPv4 loopback
-     * addresses are 127.d.d.d Valid IPv6 loopback address is ::1
+     * Returns whether this address is a loopback address or not. This
+     * implementation returns always {@code false}. Valid IPv4 loopback
+     * addresses are 127.d.d.d The only valid IPv6 loopback address is ::1.
      * 
-     * @return boolean
+     * @return {@code true} if this instance represents a loopback address,
+     *         {@code false} otherwise.
      */
     public boolean isLoopbackAddress() {
         return false;
     }
 
     /**
-     * Answers true if the address is a link local address.
-     * 
-     * Valid IPv6 link local addresses are FE80::0 through to
-     * FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
-     * 
-     * There are no valid IPv4 link local addresses.
-     * 
-     * @return boolean
+     * Returns whether this address is a link-local address or not. This
+     * implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 link-local addresses are FE80::0 through to
+     * FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF.
+     * <p>
+     * There are no valid IPv4 link-local addresses.
+     *
+     * @return {@code true} if this instance represents a link-local address,
+     *         {@code false} otherwise.
      */
     public boolean isLinkLocalAddress() {
         return false;
     }
 
     /**
-     * Answers true if the address is a site local address.
+     * Returns whether this address is a site-local address or not. This
+     * implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 site-local addresses are FEC0::0 through to
+     * FEFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF.
+     * <p>
+     * There are no valid IPv4 site-local addresses.
      * 
-     * Valid IPv6 link local addresses are FEC0::0 through to
-     * FEFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
-     * 
-     * There are no valid IPv4 site local addresses.
-     * 
-     * @return boolean
+     * @return {@code true} if this instance represents a site-local address,
+     *         {@code false} otherwise.
      */
     public boolean isSiteLocalAddress() {
         return false;
     }
 
     /**
-     * Answers true if the address is a global multicast address.
-     * 
-     * Valid IPv6 link global multicast addresses are FFxE:/112 where x is a set
+     * Returns whether this address is a global multicast address or not. This
+     * implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 link-global multicast addresses are FFxE:/112 where x is a set
      * of flags, and the additional 112 bits make up the global multicast
-     * address space
-     * 
+     * address space.
+     * <p>
      * Valid IPv4 global multicast addresses are between: 224.0.1.0 to
-     * 238.255.255.255
-     * 
-     * @return boolean
+     * 238.255.255.255.
+     *
+     * @return {@code true} if this instance represents a global multicast
+     *         address, {@code false} otherwise.
      */
     public boolean isMCGlobal() {
         return false;
     }
 
     /**
-     * Answers true if the address is a node local multicast address.
-     * 
-     * Valid IPv6 node local multicast addresses are FFx1:/112 where x is a set
-     * of flags, and the additional 112 bits make up the node local multicast
-     * address space
-     * 
-     * There are no valid IPv4 node local multicast addresses.
-     * 
-     * @return boolean
+     * Returns whether this address is a node-local multicast address or not.
+     * This implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 node-local multicast addresses are FFx1:/112 where x is a set
+     * of flags, and the additional 112 bits make up the node-local multicast
+     * address space.
+     * <p>
+     * There are no valid IPv4 node-local multicast addresses.
+     *
+     * @return {@code true} if this instance represents a node-local multicast
+     *         address, {@code false} otherwise.
      */
     public boolean isMCNodeLocal() {
         return false;
     }
 
     /**
-     * Answers true if the address is a link local multicast address.
-     * 
-     * Valid IPv6 link local multicast addresses are FFx2:/112 where x is a set
-     * of flags, and the additional 112 bits make up the node local multicast
-     * address space
-     * 
+     * Returns whether this address is a link-local multicast address or not.
+     * This implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 link-local multicast addresses are FFx2:/112 where x is a set
+     * of flags, and the additional 112 bits make up the link-local multicast
+     * address space.
+     * <p>
      * Valid IPv4 link-local addresses are between: 224.0.0.0 to 224.0.0.255
-     * 
-     * @return boolean
+     *
+     * @return {@code true} if this instance represents a link-local multicast
+     *         address, {@code false} otherwise.
      */
     public boolean isMCLinkLocal() {
         return false;
     }
 
     /**
-     * Answers true if the address is a site local multicast address.
-     * 
-     * Valid IPv6 site local multicast addresses are FFx5:/112 where x is a set
-     * of flags, and the additional 112 bits make up the node local multicast
-     * address space
-     * 
+     * Returns whether this address is a site-local multicast address or not.
+     * This implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 site-local multicast addresses are FFx5:/112 where x is a set
+     * of flags, and the additional 112 bits make up the site-local multicast
+     * address space.
+     * <p>
      * Valid IPv4 site-local addresses are between: 239.252.0.0 to
      * 239.255.255.255
-     * 
-     * @return boolean
+     *
+     * @return {@code true} if this instance represents a site-local multicast
+     *         address, {@code false} otherwise.
      */
     public boolean isMCSiteLocal() {
         return false;
     }
 
     /**
-     * Answers true if the address is a organization local multicast address.
-     * 
-     * Valid IPv6 organization local multicast addresses are FFx8:/112 where x
-     * is a set of flags, and the additional 112 bits make up the node local
-     * multicast address space
-     * 
+     * Returns whether this address is a organization-local multicast address or
+     * not. This implementation returns always {@code false}.
+     * <p>
+     * Valid IPv6 organization-local multicast addresses are FFx8:/112 where x
+     * is a set of flags, and the additional 112 bits make up the
+     * organization-local multicast address space.
+     * <p>
      * Valid IPv4 organization-local addresses are between: 239.192.0.0 to
      * 239.251.255.255
-     * 
-     * @return boolean
+     *
+     * @return {@code true} if this instance represents a organization-local
+     *         multicast address, {@code false} otherwise.
      */
     public boolean isMCOrgLocal() {
         return false;
     }
 
     /**
-     * Method isAnyLocalAddress.
+     * Returns whether this is a wildcard address or not. This implementation
+     * returns always {@code false}.
      * 
-     * @return boolean
+     * @return {@code true} if this instance represents a wildcard address,
+     *         {@code false} otherwise.
      */
     public boolean isAnyLocalAddress() {
         return false;
     }
 
     /**
-     * Tries to see if the InetAddress is reachable. This method first tries to
-     * use ICMP(ICMP ECHO REQUEST). When first step fails, the TCP connection on
-     * port 7 (Echo) shall be lauched.
+     * Tries to reach this {@code InetAddress}. This method first tries to use
+     * ICMP <i>(ICMP ECHO REQUEST)</i>. When first step fails, a TCP connection
+     * on port 7 (Echo) of the remote host is established.
      * 
      * @param timeout
-     *            timeout in milliseconds
-     * @return true if address is reachable
+     *            timeout in milliseconds before the test fails if no connection
+     *            could be established.
+     * @return {@code true} if this address is reachable, {@code false}
+     *         otherwise.
      * @throws IOException
-     *             if I/O operation meets error
+     *             if an error occurs during an I/O operation.
      * @throws IllegalArgumentException
-     *             if timeout is less than zero
+     *             if timeout is less than zero.
      */
     public boolean isReachable(int timeout) throws IOException {
         return isReachable(null, 0, timeout);
     }
 
     /**
-     * Tries to see if the InetAddress is reachable. This method first tries to
-     * use ICMP(ICMP ECHO REQUEST). When first step fails, the TCP connection on
-     * port 7 (Echo) shall be lauched.
+     * Tries to reach this {@code InetAddress}. This method first tries to use
+     * ICMP <i>(ICMP ECHO REQUEST)</i>. When first step fails, a TCP connection
+     * on port 7 (Echo) of the remote host is established.
      * 
      * @param netif
-     *            the network interface through which to connect
+     *            the network interface on which to connection should be
+     *            established.
      * @param ttl
-     *            max hops to live
+     *            the maximum count of hops (time-to-live).
      * @param timeout
-     *            timeout in milliseconds
-     * @return true if address is reachable
+     *            timeout in milliseconds before the test fails if no connection
+     *            could be established.
+     * @return {@code true} if this address is reachable, {@code false}
+     *         otherwise.
      * @throws IOException
-     *             if I/O operation meets error
+     *             if an error occurs during an I/O operation.
      * @throws IllegalArgumentException
-     *             if ttl or timeout is less than zero
+     *             if ttl or timeout is less than zero.
      */
     public boolean isReachable(NetworkInterface netif, final int ttl,
             final int timeout) throws IOException {
@@ -934,19 +969,20 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers the InetAddress corresponding to the array of bytes. In the case
-     * of an IPv4 address there must be exactly 4 bytes and for IPv6 exactly 16
-     * bytes. If not, an UnknownHostException is thrown.
-     * 
+     * Returns the {@code InetAddress} corresponding to the array of bytes. In
+     * the case of an IPv4 address there must be exactly 4 bytes and for IPv6
+     * exactly 16 bytes. If not, an {@code UnknownHostException} is thrown.
+     * <p>
      * The IP address is not validated by a name service.
-     * 
-     * The high order byte is <code>ipAddress[0]</code>.
-     * 
+     * <p>
+     * The high order byte is {@code ipAddress[0]}.
+     *
      * @param ipAddress
-     *            either a 4 (IPv4) or 16 (IPv6) byte array
-     * @return the InetAddress
-     * 
+     *            is either a 4 (IPv4) or 16 (IPv6) byte long array.
+     * @return an {@code InetAddress} instance representing the given IP address
+     *         {@code ipAddress}.
      * @throws UnknownHostException
+     *             if the given byte array has no valid length.
      */
     public static InetAddress getByAddress(byte[] ipAddress)
             throws UnknownHostException {
@@ -956,21 +992,18 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers the InetAddress corresponding to the array of bytes. In the case
-     * of an IPv4 address there must be exactly 4 bytes and for IPv6 exactly 16
-     * bytes. If not, an UnknownHostException is thrown.
-     * 
-     * The IP address is not validated by a name service.
-     * 
-     * The high order byte is <code>ipAddress[0]</code>.
+     * Returns the {@code InetAddress} corresponding to the array of bytes. In
+     * the case of an IPv4 address there must be exactly 4 bytes and for IPv6
+     * exactly 16 bytes. If not, an {@code UnknownHostException} is thrown. The
+     * IP address is not validated by a name service. The high order byte is
+     * {@code ipAddress[0]}.
      * 
      * @param ipAddress
-     *            either a 4 (IPv4) or 16 (IPv6) byte array
+     *            either a 4 (IPv4) or 16 (IPv6) byte array.
      * @param scope_id
      *            the scope id for an IPV6 scoped address. If not a scoped
-     *            address just pass in 0
+     *            address just pass in 0.
      * @return the InetAddress
-     * 
      * @throws UnknownHostException
      */
     static InetAddress getByAddress(byte[] ipAddress, int scope_id)
@@ -1021,25 +1054,26 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers the InetAddress corresponding to the array of bytes, and the
-     * given hostname. In the case of an IPv4 address there must be exactly 4
-     * bytes and for IPv6 exactly 16 bytes. If not, an UnknownHostException is
-     * thrown.
-     * 
+     * Returns the {@code InetAddress} corresponding to the array of bytes, and
+     * the given hostname. In the case of an IPv4 address there must be exactly
+     * 4 bytes and for IPv6 exactly 16 bytes. If not, an {@code
+     * UnknownHostException} will be thrown.
+     * <p>
      * The host name and IP address are not validated.
-     * 
+     * <p>
      * The hostname either be a machine alias or a valid IPv6 or IPv4 address
      * format.
-     * 
-     * The high order byte is <code>ipAddress[0]</code>.
-     * 
+     * <p>
+     * The high order byte is {@code ipAddress[0]}.
+     *
      * @param hostName
-     *            string representation of hostname or ip address
+     *            the string representation of hostname or IP address.
      * @param ipAddress
-     *            either a 4 (IPv4) or 16 (IPv6) byte array
-     * @return the InetAddress
-     * 
+     *            either a 4 (IPv4) or 16 (IPv6) byte long array.
+     * @return an {@code InetAddress} instance representing the given IP address
+     *         and hostname.
      * @throws UnknownHostException
+     *             if the given byte array has no valid length.
      */
     public static InetAddress getByAddress(String hostName, byte[] ipAddress)
             throws UnknownHostException {
@@ -1049,27 +1083,21 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Answers the InetAddress corresponding to the array of bytes, and the
-     * given hostname. In the case of an IPv4 address there must be exactly 4
-     * bytes and for IPv6 exactly 16 bytes. If not, an UnknownHostException is
-     * thrown.
-     * 
-     * The host name and IP address are not validated.
-     * 
-     * The hostname either be a machine alias or a valid IPv6 or IPv4 address
-     * format.
-     * 
-     * The high order byte is <code>ipAddress[0]</code>.
+     * Returns the {@code InetAddress} corresponding to the array of bytes, and
+     * the given hostname. In the case of an IPv4 address there must be exactly
+     * 4 bytes and for IPv6 exactly 16 bytes. If not, an {@code
+     * UnknownHostException} is thrown. The host name and IP address are not
+     * validated. The hostname either be a machine alias or a valid IPv6 or IPv4
+     * address format. The high order byte is {@code ipAddress[0]}.
      * 
      * @param hostName
-     *            string representation of hostname or IP address
+     *            string representation of hostname or IP address.
      * @param ipAddress
-     *            either a 4 (IPv4) or 16 (IPv6) byte array
+     *            either a 4 (IPv4) or 16 (IPv6) byte array.
      * @param scope_id
      *            the scope id for a scoped address. If not a scoped address
-     *            just pass in 0
+     *            just pass in 0.
      * @return the InetAddress
-     * 
      * @throws UnknownHostException
      */
     static InetAddress getByAddressInternal(String hostName, byte[] ipAddress,
@@ -1140,8 +1168,8 @@ public class InetAddress extends Object implements Serializable {
     }
 
     /**
-     * Creates an InetAddress based on an ipAddressString. No error handling is
-     * performed here.
+     * Creates an InetAddress based on the {@code ipAddressString}. No error
+     * handling is performed here.
      */
     static InetAddress createHostNameFromIPAddress(String ipAddressString)
             throws UnknownHostException {

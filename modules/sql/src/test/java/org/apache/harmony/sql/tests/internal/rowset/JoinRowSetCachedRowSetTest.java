@@ -282,8 +282,8 @@ public class JoinRowSetCachedRowSetTest extends JoinRowSetTestCase {
         assertEquals("hermit", jrs.getString(2));
 
         /*
-         * Add another CachedRowSet which also can call execute() sucessfully to
-         * JoinRowSet
+         * Add another CachedRowSet which also can call execute()
+         * successfully to JoinRowSet
          */
         noInitialCrset = newNoInitialInstance();
         noInitialCrset.setCommand("select * from BOOKS");
@@ -713,7 +713,7 @@ public class JoinRowSetCachedRowSetTest extends JoinRowSetTestCase {
         }
     }
 
-    public void testAcceptChange_UpdateOrignailRowSet() throws Exception {
+    public void testAcceptChange_UpdateOriginalRowSet() throws Exception {
         jrs.addRowSet(crset, 1);
         crset.absolute(4);
         crset.updateString(2, "Updated");

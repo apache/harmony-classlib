@@ -17,15 +17,16 @@
 package java.nio.channels;
 
 /**
- * Thrown when when operation that requires a specific blocking mode is invoked
- * on a channel that is in a different blocking mode.
+ * An {@code IllegalBlockingModeException} is thrown when an operation that
+ * requires a specific blocking mode is invoked on a channel that is in a
+ * different blocking mode.
  */
 public class IllegalBlockingModeException extends IllegalStateException {
 
     private static final long serialVersionUID = -3335774961855590474L;
 
     /**
-     * Default constructor.
+     * Constructs a {@code IllegalBlockingModeException}.
      */
     public IllegalBlockingModeException() {
         super();

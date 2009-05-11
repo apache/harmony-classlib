@@ -17,7 +17,9 @@
 package java.net;
 
 /**
- * This class is used to hold information about failed name lookups
+ * This class is used to hold information about failed host name lookups.
+ *
+ * @see NegativeCache
  */
 class NegCacheElement {
 
@@ -28,10 +30,11 @@ class NegCacheElement {
     final String hostName;
 
     /**
-     * Constructor used to set the hostname for the failed entry
+     * Constructor used to set the hostname for the entry for which the lookup
+     * failed.
      * 
      * @param hostName
-     *            name of the host on which the lookup failed
+     *            name of the host for which the lookup failed.
      */
     NegCacheElement(String hostName) {
         this.hostName = hostName;

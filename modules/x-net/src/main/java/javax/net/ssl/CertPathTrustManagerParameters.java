@@ -20,8 +20,9 @@ package javax.net.ssl;
 import java.security.cert.CertPathParameters;
 
 /**
- * Container for {@link CertPathParameters}.
- * 
+ * Certification path parameters to provide to certification path
+ * based {@link TrustManager}.
+ *
  * @since 1.5
  */
 public class CertPathTrustManagerParameters implements ManagerFactoryParameters {
@@ -29,20 +30,20 @@ public class CertPathTrustManagerParameters implements ManagerFactoryParameters 
     private final CertPathParameters param;
 
     /**
-     * Constructs an instance by cloning the parameters passed.
+     * Creates a new {@code CertPathTrustManagerParameters} with the specified
+     * certification path parameters.
      * 
-     * @param parameters the parameters to wrap
-     * 
-     * @throws NullPointerException if {@code parameters} is {@code null}
+     * @param parameters
+     *            the certification path parameters.
      */
     public CertPathTrustManagerParameters(CertPathParameters parameters) {
         param = (CertPathParameters) parameters.clone();
     }
 
     /**
-     * The parameters contained within.
+     * Returns a copy of the certification path parameters.
      * 
-     * @return a cloned instance of the parameters
+     * @return a copy of the certification path parameters.
      */
     public CertPathParameters getParameters() {
         return (CertPathParameters) param.clone();

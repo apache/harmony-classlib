@@ -17,15 +17,15 @@
 package java.nio.channels;
 
 /**
- * Thrown if the server socket channel is not bound before an IO operation is
- * made.
+ * A {@code NotYetBoundException} is thrown if the server socket channel is not
+ * bound before an I/O operation is made.
  */
 public class NotYetBoundException extends IllegalStateException {
 
     private static final long serialVersionUID = 4640999303950202242L;
 
     /**
-     * Default constructor.
+     * Constructs a {@code NotYetBoundException}.
      */
     public NotYetBoundException() {
         super();

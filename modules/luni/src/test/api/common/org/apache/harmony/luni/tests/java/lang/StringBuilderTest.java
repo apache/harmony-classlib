@@ -1725,6 +1725,55 @@ public class StringBuilderTest extends TestCase {
 		} catch (IndexOutOfBoundsException e) {
 			// Expected
 		}
+
+        sb = new StringBuilder("abcde");
+        assertEquals("abcde", sb.toString());
+        sb.setLength(1);
+        sb.append('g');
+        assertEquals("ag", sb.toString());
+
+        sb = new StringBuilder("abcde");
+        sb.setLength(3);
+        sb.append('g');
+        assertEquals("abcg", sb.toString());
+
+        sb = new StringBuilder("abcde");
+        sb.setLength(2);
+        try {
+            sb.charAt(3);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // Expected
+        }
+
+        sb = new StringBuilder();
+        sb.append("abcdefg");
+        sb.setLength(2);
+        sb.setLength(5);
+        for (int i = 2; i < 5; i++) {
+            assertEquals(0, sb.charAt(i));
+        }
+
+        sb = new StringBuilder();
+        sb.append("abcdefg");
+        sb.delete(2, 4);
+        sb.setLength(7);
+        assertEquals('a', sb.charAt(0));
+        assertEquals('b', sb.charAt(1));
+        assertEquals('e', sb.charAt(2));
+        assertEquals('f', sb.charAt(3));
+        assertEquals('g', sb.charAt(4));
+        for (int i = 5; i < 7; i++) {
+            assertEquals(0, sb.charAt(i));
+        }
+
+        sb = new StringBuilder();
+        sb.append("abcdefg");
+        sb.replace(2, 5, "z");
+        sb.setLength(7);
+        for (int i = 5; i < 7; i++) {
+            assertEquals(0, sb.charAt(i));
+        }
 	}
 
 	/**
@@ -1843,14 +1892,27 @@ public class StringBuilderTest extends TestCase {
 		}
 	}
 
-	/**
-	 * @tests java.lang.StringBuilder.toString()'
-	 */
-	public void test_toString() {
-		final String fixture = "0123456789";
-		StringBuilder sb = new StringBuilder(fixture);
-		assertEquals(fixture, sb.toString());
-	}
+    /**
+     * @tests java.lang.StringBuilder.toString()'
+     */
+    public void test_toString() throws Exception {
+        final String fixture = "0123456789";
+        StringBuilder sb = new StringBuilder(fixture);
+        assertEquals(fixture, sb.toString());
+
+        sb.setLength(0);
+        sb.append("abcde");
+        assertEquals("abcde", sb.toString());
+        sb.setLength(1000);
+        byte[] bytes = sb.toString().getBytes("GB18030");
+        for (int i = 5; i < bytes.length; i++) {
+            assertEquals(0, bytes[i]);
+        }
+
+        sb.setLength(5);
+        sb.append("fghij");
+        assertEquals("abcdefghij", sb.toString());
+    }
 
 	/**
 	 * @tests java.lang.StringBuilder.trimToSize()'

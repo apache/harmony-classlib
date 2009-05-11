@@ -59,7 +59,11 @@ public class MemoryUsage2Test extends TestCase {
         // negative but not -1
         MemoryUsage memUsage = new MemoryUsage(-1, GOOD_MU_USED_VAL,
                 GOOD_MU_COMMITTED_VAL, -1);
-
+        assertEquals(-1, memUsage.getInit());
+        assertEquals(GOOD_MU_USED_VAL, memUsage.getUsed());
+        assertEquals(GOOD_MU_COMMITTED_VAL, memUsage.getCommitted());
+        assertEquals(-1, memUsage.getMax());
+        
         try {
             memUsage = new MemoryUsage(-2, GOOD_MU_USED_VAL,
                     GOOD_MU_COMMITTED_VAL, -1);

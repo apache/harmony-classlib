@@ -18,26 +18,27 @@
 package java.io;
 
 /**
- * This IO exception is thrown when a program asks for a particular character
- * converter and it is not available.
+ * Thrown when a program asks for a particular character converter that is
+ * unavailable.
  */
 public class UnsupportedEncodingException extends IOException {
 
     private static final long serialVersionUID = -4274276298326136670L;
 
     /**
-     * Constructs a new instance of this class with its walkback filled in.
+     * Constructs a new {@code UnsupportedEncodingException} with its stack
+     * trace filled in.
      */
     public UnsupportedEncodingException() {
         super();
     }
 
     /**
-     * Constructs a new instance of this class with its walkback and message
-     * filled in.
+     * Constructs a new {@code UnsupportedEncodingException} with its stack
+     * trace and detail message filled in.
      * 
      * @param detailMessage
-     *            the detail message for the exception.
+     *            the detail message for this exception.
      */
     public UnsupportedEncodingException(String detailMessage) {
         super(detailMessage);

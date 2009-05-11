@@ -25,8 +25,8 @@ import java.io.Serializable;
 import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
- * Hashtable associates keys with values. Keys and values cannot be null. The
- * size of the Hashtable is the number of key/value pairs it contains. The
+ * Hashtable associates keys with values. Both keys and values cannot be null.
+ * The size of the Hashtable is the number of key/value pairs it contains. The
  * capacity is the number of key/value pairs the Hashtable can hold. The load
  * factor is a float value which determines how full the Hashtable gets before
  * expanding the capacity. If the load factor of the Hashtable is exceeded, the
@@ -228,18 +228,19 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new Hashtable using the default capacity and load factor.
+     * Constructs a new {@code Hashtable} using the default capacity and load
+     * factor.
      */
     public Hashtable() {
         this(11);
     }
 
     /**
-     * Constructs a new Hashtable using the specified capacity and the default
-     * load factor.
+     * Constructs a new {@code Hashtable} using the specified capacity and the
+     * default load factor.
      * 
      * @param capacity
-     *            the initial capacity
+     *            the initial capacity.
      */
     public Hashtable(int capacity) {
         if (capacity >= 0) {
@@ -254,12 +255,13 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new Hashtable using the specified capacity and load factor.
+     * Constructs a new {@code Hashtable} using the specified capacity and load
+     * factor.
      * 
      * @param capacity
-     *            the initial capacity
+     *            the initial capacity.
      * @param loadFactor
-     *            the initial load factor
+     *            the initial load factor.
      */
     public Hashtable(int capacity, float loadFactor) {
         if (capacity >= 0 && loadFactor > 0) {
@@ -274,11 +276,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Constructs a new instance of Hashtable containing the mappings from the
-     * specified Map.
+     * Constructs a new instance of {@code Hashtable} containing the mappings
+     * from the specified map.
      * 
      * @param map
-     *            the mappings to add
+     *            the mappings to add.
      */
     public Hashtable(Map<? extends K, ? extends V> map) {
         this(map.size() < 6 ? 11 : (map.size() * 4 / 3) + 11);
@@ -291,8 +293,8 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Removes all key/value pairs from this Hashtable, leaving the size zero
-     * and the capacity unchanged.
+     * Removes all key/value pairs from this {@code Hashtable}, leaving the
+     * size zero and the capacity unchanged.
      * 
      * @see #isEmpty
      * @see #size
@@ -304,11 +306,10 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a new Hashtable with the same key/value pairs, capacity and load
-     * factor.
+     * Returns a new {@code Hashtable} with the same key/value pairs, capacity
+     * and load factor.
      * 
-     * @return a shallow copy of this Hashtable
-     * 
+     * @return a shallow copy of this {@code Hashtable}.
      * @see java.lang.Cloneable
      */
     @Override
@@ -334,13 +335,13 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers if this Hashtable contains the specified object as the value of
-     * at least one of the key/value pairs.
+     * Returns true if this {@code Hashtable} contains the specified object as
+     * the value of at least one of the key/value pairs.
      * 
      * @param value
-     *            the object to look for as a value in this Hashtable
-     * @return true if object is a value in this Hashtable, false otherwise
-     * 
+     *            the object to look for as a value in this {@code Hashtable}.
+     * @return {@code true} if object is a value in this {@code Hashtable},
+     *         {@code false} otherwise.
      * @see #containsKey
      * @see java.lang.Object#equals
      */
@@ -362,13 +363,13 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers if this Hashtable contains the specified object as a key of one
-     * of the key/value pairs.
+     * Returns true if this {@code Hashtable} contains the specified object as a
+     * key of one of the key/value pairs.
      * 
      * @param key
-     *            the object to look for as a key in this Hashtable
-     * @return true if object is a key in this Hashtable, false otherwise
-     * 
+     *            the object to look for as a key in this {@code Hashtable}.
+     * @return {@code true} if object is a key in this {@code Hashtable},
+     *         {@code false} otherwise.
      * @see #contains
      * @see java.lang.Object#equals
      */
@@ -377,24 +378,23 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Searches this Hashtable for the specified value.
+     * Searches this {@code Hashtable} for the specified value.
      * 
      * @param value
-     *            the object to search for
-     * @return true if <code>value</code> is a value of this Hashtable, false
-     *         otherwise
+     *            the object to search for.
+     * @return {@code true} if {@code value} is a value of this
+     *         {@code Hashtable}, {@code false} otherwise.
      */
     public boolean containsValue(Object value) {
         return contains(value);
     }
 
     /**
-     * Answers an Enumeration on the values of this Hashtable. The results of
-     * the Enumeration may be affected if the contents of this Hashtable are
-     * modified.
+     * Returns an enumeration on the values of this {@code Hashtable}. The
+     * results of the Enumeration may be affected if the contents of this
+     * {@code Hashtable} are modified.
      * 
-     * @return an Enumeration of the values of this Hashtable
-     * 
+     * @return an enumeration of the values of this {@code Hashtable}.
      * @see #keys
      * @see #size
      * @see Enumeration
@@ -413,11 +413,12 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Set of the mappings contained in this Hashtable. Each element
-     * in the set is a Map.Entry. The set is backed by this Hashtable so changes
-     * to one are reflected by the other. The set does not support adding.
+     * Returns a set of the mappings contained in this {@code Hashtable}. Each
+     * element in the set is a {@link Map.Entry}. The set is backed by this
+     * {@code Hashtable} so changes to one are reflected by the other. The set
+     * does not support adding.
      * 
-     * @return a Set of the mappings
+     * @return a set of the mappings.
      */
     public Set<Map.Entry<K, V>> entrySet() {
         return new Collections.SynchronizedSet<Map.Entry<K, V>>(
@@ -465,15 +466,14 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Compares the specified object to this Hashtable and answer if they are
-     * equal. The object must be an instance of Map and contain the same
-     * key/value pairs.
+     * Compares this {@code Hashtable} with the specified object and indicates
+     * if they are equal. In order to be equal, {@code object} must be an
+     * instance of Map and contain the same key/value pairs.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this Map, false
-     *         otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this Map,
+     *         {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -499,13 +499,13 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers the value associated with the specified key in this Hashtable.
+     * Returns the value associated with the specified key in this
+     * {@code Hashtable}.
      * 
      * @param key
-     *            the key of the value returned
-     * @return the value associated with the specified key, null if the
-     *         specified key does not exist
-     * 
+     *            the key of the value returned.
+     * @return the value associated with the specified key, or {@code null} if
+     *         the specified key does not exist.
      * @see #put
      */
     @Override
@@ -535,14 +535,6 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         return null;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public synchronized int hashCode() {
         int result = 0;
@@ -560,10 +552,10 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers if this Hashtable has no key/value pairs, a size of zero.
+     * Returns true if this {@code Hashtable} has no key/value pairs.
      * 
-     * @return true if this Hashtable has no key/value pairs, false otherwise
-     * 
+     * @return {@code true} if this {@code Hashtable} has no key/value pairs,
+     *         {@code false} otherwise.
      * @see #size
      */
     @Override
@@ -572,12 +564,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers an Enumeration on the keys of this Hashtable. The results of the
-     * Enumeration may be affected if the contents of this Hashtable are
-     * modified.
+     * Returns an enumeration on the keys of this {@code Hashtable} instance.
+     * The results of the enumeration may be affected if the contents of this
+     * {@code Hashtable} are modified.
      * 
-     * @return an Enumeration of the keys of this Hashtable
-     * 
+     * @return an enumeration of the keys of this {@code Hashtable}.
      * @see #elements
      * @see #size
      * @see Enumeration
@@ -596,11 +587,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Set of the keys contained in this Hashtable. The set is backed
-     * by this Hashtable so changes to one are reflected by the other. The set
-     * does not support adding.
+     * Returns a set of the keys contained in this {@code Hashtable}. The set
+     * is backed by this {@code Hashtable} so changes to one are reflected by
+     * the other. The set does not support adding.
      * 
-     * @return a Set of the keys
+     * @return a set of the keys.
      */
     public Set<K> keySet() {
         return new Collections.SynchronizedSet<K>(new AbstractSet<K>() {
@@ -721,17 +712,16 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Associate the specified value with the specified key in this Hashtable.
-     * If the key already exists, the old value is replaced. The key and value
-     * cannot be null.
+     * Associate the specified value with the specified key in this
+     * {@code Hashtable}. If the key already exists, the old value is replaced.
+     * The key and value cannot be null.
      * 
      * @param key
-     *            the key to add
+     *            the key to add.
      * @param value
-     *            the value to add
-     * @return the old value associated with the specified key, null if the key
-     *         did not exist
-     * 
+     *            the value to add.
+     * @return the old value associated with the specified key, or {@code null}
+     *         if the key did not exist.
      * @see #elements
      * @see #get
      * @see #keys
@@ -771,10 +761,10 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Copies every mapping in the specified Map to this Hashtable.
+     * Copies every mapping to this {@code Hashtable} from the specified map.
      * 
      * @param map
-     *            the Map to copy mappings from
+     *            the map to copy mappings from.
      */
     public synchronized void putAll(Map<? extends K, ? extends V> map) {
         for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
@@ -783,8 +773,8 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Increases the capacity of this Hashtable. This method is sent when the
-     * size of this Hashtable exceeds the load factor.
+     * Increases the capacity of this {@code Hashtable}. This method is called
+     * when the size of this {@code Hashtable} exceeds the load factor.
      */
     protected void rehash() {
         int length = (elementData.length << 1) + 1;
@@ -817,13 +807,13 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Remove the key/value pair with the specified key from this Hashtable.
+     * Removes the key/value pair with the specified key from this
+     * {@code Hashtable}.
      * 
      * @param key
-     *            the key to remove
-     * @return the value associated with the specified key, null if the
-     *         specified key did not exist
-     * 
+     *            the key to remove.
+     * @return the value associated with the specified key, or {@code null} if
+     *         the specified key did not exist.
      * @see #get
      * @see #put
      */
@@ -853,10 +843,9 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers the number of key/value pairs in this Hashtable.
+     * Returns the number of key/value pairs in this {@code Hashtable}.
      * 
-     * @return the number of key/value pairs in this Hashtable
-     * 
+     * @return the number of key/value pairs in this {@code Hashtable}.
      * @see #elements
      * @see #keys
      */
@@ -866,9 +855,9 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers the string representation of this Hashtable.
+     * Returns the string representation of this {@code Hashtable}.
      * 
-     * @return the string representation of this Hashtable
+     * @return the string representation of this {@code Hashtable}.
      */
     @Override
     public synchronized String toString() {
@@ -907,11 +896,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
     }
 
     /**
-     * Answers a Collection of the values contained in this Hashtable. The
-     * collection is backed by this Hashtable so changes to one are reflected by
-     * the other. The collection does not support adding.
+     * Returns a collection of the values contained in this {@code Hashtable}.
+     * The collection is backed by this {@code Hashtable} so changes to one are
+     * reflected by the other. The collection does not support adding.
      * 
-     * @return a Collection of the values
+     * @return a collection of the values.
      */
     public Collection<V> values() {
         return new Collections.SynchronizedCollection<V>(

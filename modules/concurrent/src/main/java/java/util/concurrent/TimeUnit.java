@@ -36,7 +36,14 @@ package java.util.concurrent;
  * @author Doug Lea
  */
 public enum TimeUnit {
-    NANOSECONDS(0), MICROSECONDS(1), MILLISECONDS(2), SECONDS(3);
+    /** TimeUnit which represents one nanosecond. */
+    NANOSECONDS(0),
+    /** TimeUnit which represents one microsecond. */
+    MICROSECONDS(1),
+    /** TimeUnit which represents one millisecond. */
+    MILLISECONDS(2),
+    /** TimeUnit which represents one second. */
+    SECONDS(3);
 
     /** the index of this unit */
     private final int index;

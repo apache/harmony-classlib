@@ -600,35 +600,62 @@ public class DecimalFormatSymbolsTest extends TestCase {
         assertNotNull(currency);
     }
 
-    // Use RI to write DecimalFormatSymbols out, use Harmony to read
-    // DecimalFormatSymbols in. The read symbol will be equal with those
-    // instantiated inside Harmony.
-
-    // This assertion will not come into existence the other way around. This is
-    // probably caused by different serialization mechanism used by RI and
-    // Harmony.
+    /**
+     * Assert that Harmony can correct read an instance that was created by
+     * the Java 1.5 RI. The actual values may differ on Harmony and other JREs,
+     * so we only assert the values that are known to be in the serialized data.
+     */
     public void test_RIHarmony_compatible() throws Exception {
+        DecimalFormatSymbols dfs;
         ObjectInputStream i = null;
         try {
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(
-                    Locale.FRANCE);
-            i = new ObjectInputStream(
-                    getClass()
-                            .getClassLoader()
-                            .getResourceAsStream(
-                                    "/serialization/java/text/DecimalFormatSymbols.ser"));
-            DecimalFormatSymbols symbolsD = (DecimalFormatSymbols) i
-                    .readObject();
-            assertEquals(symbols, symbolsD);
+            i = new ObjectInputStream(getClass().getClassLoader().getResourceAsStream(
+                    "/serialization/java/text/DecimalFormatSymbols.ser"));
+            dfs = (DecimalFormatSymbols) i.readObject();
         } finally {
             try {
                 if (i != null) {
                     i.close();
                 }
             } catch (Exception e) {
-                // ignore
             }
         }
+        assertDecimalFormatSymbolsRIFrance(dfs);
+    }
+    
+    static void assertDecimalFormatSymbolsRIFrance(DecimalFormatSymbols dfs) {
+        // Values based on Java 1.5 RI DecimalFormatSymbols for Locale.FRANCE
+        /*
+         * currency = [EUR]
+         * currencySymbol = [€][U+20ac]
+         * decimalSeparator = [,][U+002c]
+         * digit = [#][U+0023]
+         * groupingSeparator = [ ][U+00a0]
+         * infinity = [∞][U+221e]
+         * internationalCurrencySymbol = [EUR]
+         * minusSign = [-][U+002d]
+         * monetaryDecimalSeparator = [,][U+002c]
+         * naN = [�][U+fffd]
+         * patternSeparator = [;][U+003b]
+         * perMill = [‰][U+2030]
+         * percent = [%][U+0025]
+         * zeroDigit = [0][U+0030]
+         */
+        assertEquals("EUR", dfs.getCurrency().getCurrencyCode());
+        assertEquals("\u20AC", dfs.getCurrencySymbol());
+        assertEquals(',', dfs.getDecimalSeparator());
+        assertEquals('#', dfs.getDigit());
+        assertEquals('\u00a0', dfs.getGroupingSeparator());
+        assertEquals("\u221e", dfs.getInfinity());
+        assertEquals("EUR", dfs.getInternationalCurrencySymbol());
+        assertEquals('-', dfs.getMinusSign());
+        assertEquals(',', dfs.getMonetaryDecimalSeparator());
+        // RI's default NaN is U+FFFD, Harmony's is based on ICU
+        assertEquals("\uFFFD", dfs.getNaN());
+        assertEquals('\u003b', dfs.getPatternSeparator());
+        assertEquals('\u2030', dfs.getPerMill());
+        assertEquals('%', dfs.getPercent());
+        assertEquals('0', dfs.getZeroDigit());
     }
 
     /**

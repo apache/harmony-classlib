@@ -23,17 +23,52 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 
+/**
+ * The <i>Service Provider Interface</i> (SPI) for the
+ * {@code KeyManagerFactory} class.
+ */
 public abstract class KeyManagerFactorySpi {
     
+    /**
+     * Creates a new {@code KeyManagerFactorySpi} instance.
+     */
     public KeyManagerFactorySpi() {
         super();
     }
 
+    /**
+     * Initializes this instance with the specified key store and password.
+     *
+     * @param ks
+     *            the key store or {@code null} to use the default key store.
+     * @param password
+     *            the key store password.
+     * @throws KeyStoreException
+     *             if initializing this instance fails.
+     * @throws NoSuchAlgorithmException
+     *             if a required algorithm is not available.
+     * @throws UnrecoverableKeyException
+     *             if a key cannot be recovered.
+     */
     protected abstract void engineInit(KeyStore ks, char[] password) throws KeyStoreException,
             NoSuchAlgorithmException, UnrecoverableKeyException;
 
+    /**
+     * Initializes this instance with the specified factory parameters.
+     *
+     * @param spec
+     *            the factory parameters.
+     * @throws InvalidAlgorithmParameterException
+     *             if an error occurs.
+     */
     protected abstract void engineInit(ManagerFactoryParameters spec)
             throws InvalidAlgorithmParameterException;
 
+    /**
+     * Returns a list of key managers, one instance for each type of key in the
+     * key store.
+     *
+     * @return a list of key managers.
+     */
     protected abstract KeyManager[] engineGetKeyManagers();
 }

@@ -28,6 +28,11 @@ import java.security.Security;
 
 import org.apache.harmony.security.fortress.Engine;
 
+
+/**
+ * The public API for secure socket protocol implementations. It acts as factory
+ * for {@code SSLSocketFactory}'s and {@code SSLEngine}s.
+ */
 public class SSLContext {
     // StoreSSLContext service name
     private static final String SERVICE = "SSLContext";
@@ -53,9 +58,16 @@ public class SSLContext {
     }
 
     /**
-     * 
-     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code SSLContext} instance for the specified protocol.
+     *
+     * @param protocol
+     *            the requested protocol to create a context for.
+     * @return the created {@code SSLContext} instance.
+     * @throws NoSuchAlgorithmException
+     *             if no installed provider can provide the requested protocol
+     * @throws NullPointerException
+     *             if {@code protocol} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static SSLContext getInstance(String protocol) throws NoSuchAlgorithmException {
         if (protocol == null) {
@@ -68,9 +80,22 @@ public class SSLContext {
     }
 
     /**
-     * 
-     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code SSLContext} instance for the specified protocol from
+     * the specified provider.
+     *
+     * @param protocol
+     *            the requested protocol to create a context for.
+     * @param provider
+     *            the name of the provider that provides the requested protocol.
+     * @return an {@code SSLContext} for the requested protocol.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provider the requested
+     *             protocol.
+     * @throws NoSuchProviderException
+     *             if the specified provider does not exits.
+     * @throws NullPointerException
+     *             if {@code protocol} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static SSLContext getInstance(String protocol, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
@@ -88,8 +113,20 @@ public class SSLContext {
     }
 
     /**
-     * @throws NullPointerException if protocol is null (instead of NoSuchAlgorithmException as in
-     *             1.4 release)
+     * Creates a new {@code SSLContext} instance for the specified protocol from
+     * the specified provider.
+     *
+     * @param protocol
+     *            the requested protocol to create a context for
+     * @param provider
+     *            the provider that provides the requested protocol.
+     * @return an {@code SSLContext} for the requested protocol.
+     * @throws NoSuchAlgorithmException
+     *             if the specified provider cannot provide the requested
+     *             protocol.
+     * @throws NullPointerException
+     *             if {@code protocol} is {@code null} (instead of
+     *             NoSuchAlgorithmException as in 1.4 release)
      */
     public static SSLContext getInstance(String protocol, Provider provider)
             throws NoSuchAlgorithmException {
@@ -105,39 +142,108 @@ public class SSLContext {
         }
     }
     
+    /**
+     * Returns the name of the secure socket protocol of this instance.
+     *
+     * @return the name of the secure socket protocol of this instance.
+     */
 	public final String getProtocol() {
         return protocol;
     }
 
+    /**
+     * Returns the provider of this {@code SSLContext} instance.
+     *
+     * @return the provider of this {@code SSLContext} instance.
+     */
     public final Provider getProvider() {
         return provider;
     }
 
+    /**
+     * Initializes this {@code SSLContext} instance. All of the arguments are
+     * optional, and the security providers will be searched for the required
+     * implementations of the needed algorithms.
+     *
+     * @param km
+     *            the key sources or {@code null}.
+     * @param tm
+     *            the trust decision sources or {@code null}.
+     * @param sr
+     *            the randomness source or {@code null.}
+     * @throws KeyManagementException
+     *             if initializing this instance fails.
+     */
     public final void init(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
             throws KeyManagementException {
         spiImpl.engineInit(km, tm, sr);
     }
 
+    /**
+     * Returns a socket factory for this instance.
+     *
+     * @return a socket factory for this instance.
+     */
     public final SSLSocketFactory getSocketFactory() {
         return spiImpl.engineGetSocketFactory();
     }
 
+    /**
+     * Returns a server socket factory for this instance.
+     *
+     * @return a server socket factory for this instance.
+     */
     public final SSLServerSocketFactory getServerSocketFactory() {
         return spiImpl.engineGetServerSocketFactory();
     }
 
+    /**
+     * Creates an {@code SSLEngine} instance from this context.
+     *
+     * @return an {@code SSLEngine} instance from this context.
+     * @throws UnsupportedOperationException
+     *             if the provider does not support the operation.
+     */
     public final SSLEngine createSSLEngine() {
         return spiImpl.engineCreateSSLEngine();
     }
 
+    /**
+     * Creates an {@code SSLEngine} instance from this context with the
+     * specified hostname and port.
+     *
+     * @param peerHost
+     *            the name of the host
+     * @param peerPort
+     *            the port
+     * @return an {@code SSLEngine} instance from this context.
+     * @throws UnsupportedOperationException
+     *             if the provider does not support the operation.
+     */
     public final SSLEngine createSSLEngine(String peerHost, int peerPort) {
         return spiImpl.engineCreateSSLEngine(peerHost, peerPort);
     }
 
+    /**
+     * Returns the SSL session context that encapsulates the set of SSL sessions
+     * that can be used for handshake of server-side SSL sockets.
+     *
+     * @return the SSL server session context for this context or {@code null}
+     *         if the underlying provider does not provide an implementation of
+     *         the {@code SSLSessionContext} interface.
+     */
     public final SSLSessionContext getServerSessionContext() {
         return spiImpl.engineGetServerSessionContext();
     }
 
+    /**
+     * Returns the SSL session context that encapsulates the set of SSL sessions
+     * that can be used for handshake of client-side SSL sockets.
+     *
+     * @return the SSL client session context for this context or {@code null}
+     *         if the underlying provider does not provide an implementation of
+     *         the {@code SSLSessionContext} interface.
+     */
     public final SSLSessionContext getClientSessionContext() {
         return spiImpl.engineGetClientSessionContext();
     }

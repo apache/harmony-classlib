@@ -18,6 +18,7 @@
 package org.apache.harmony.luni.tests.java.io;
 
 import java.io.StringBufferInputStream;
+import java.io.UnsupportedEncodingException;
 
 @SuppressWarnings("deprecation")
 public class StringBufferInputStreamTest extends junit.framework.TestCase {
@@ -43,12 +44,12 @@ public class StringBufferInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.StringBufferInputStream#read()
 	 */
-	public void test_read() {
+	public void test_read() throws UnsupportedEncodingException {
 		// Test for method int java.io.StringBufferInputStream.read()
 		byte[] buf = new byte[5];
 		sbis.skip(6);
 		sbis.read(buf, 0, 5);
-		assertEquals("Returned incorrect chars", "World", new String(buf));
+		assertEquals("Returned incorrect chars", "World", new String(buf, "UTF-8"));
 	}
 
 	/**

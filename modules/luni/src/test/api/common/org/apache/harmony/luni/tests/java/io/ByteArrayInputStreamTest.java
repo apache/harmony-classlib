@@ -20,6 +20,7 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 
@@ -113,7 +114,8 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
      * @tests ByteArrayInputStream#read()
      */
     public void test_read() throws IOException {
-        int c = is.read();
+        InputStreamReader isr = new InputStreamReader(is);
+        int c = isr.read();
         is.reset();
         assertTrue("read returned incorrect char", c == fileString.charAt(0));
     }

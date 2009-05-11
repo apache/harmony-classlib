@@ -19,66 +19,138 @@ package java.net;
 
 
 /**
- * Defines the protocol to get & set Socket options.
+ * Defines an interface for socket implementations to get and set socket
+ * options. It is implemented by the classes {@code SocketImpl} and {@code
+ * DatagramSocketImpl}.
+ * 
+ * @see SocketImpl
+ * @see DatagramSocketImpl
  */
 public interface SocketOptions {
 
-	public static final int SO_LINGER = 128;
+    /**
+     * This option specifies the behavior of the {@code close()} method if there
+     * is still some buffered data to be sent while closing the socket. If the
+     * value of this option is set to {@code 0} the method closes the TCP socket
+     * forcefully and returns immediately. Is this value greater than {@code 0}
+     * the method blocks this time in milliseconds. If all data could be sent
+     * during this timeout the socket is closed normally otherwise forcefully.
+     * Valid values for this option are in the range {@code 0 <= SO_LINGER <=
+     * 65535}.
+     */
+    public static final int SO_LINGER = 128;
 
-	public static final int SO_TIMEOUT = 4102;
+    /**
+     * Timeout for blocking operations. The argument value is specified in
+     * milliseconds. An {@code InterruptedIOException} is thrown if this timeout
+     * expires.
+     */
+    public static final int SO_TIMEOUT = 4102;
 
-	public static final int TCP_NODELAY = 1;
+    /**
+     * This option specifies whether data is sent immediately on this socket, as
+     * a side-effect though, this could lead to a low packet efficiency. The
+     * socket implementation uses the Nagle's algorithm to try to reach a higher
+     * packet efficiency if this option is disabled.
+     */
+    public static final int TCP_NODELAY = 1;
 
-	// For 5 and 6 see MulticastSocket
+    // For 5 and 6 see MulticastSocket
 
-	// For 7 see PlainDatagramSocketImpl
-	
-	public static final int IP_MULTICAST_IF = 16;
+    // For 7 see PlainDatagramSocketImpl
+    
+    /**
+     * This option specifies the interface which is used to send multicast
+     * packets. It's only available on a {@code MulticastSocket}.
+     */
+    public static final int IP_MULTICAST_IF = 16;
 
-	public static final int SO_BINDADDR = 15;
+    /**
+     * This option can be used to set one specific interface on a multihomed
+     * host on which incoming connections are accepted. It's only available on
+     * server-side sockets.
+     */
+    public static final int SO_BINDADDR = 15;
 
-	public static final int SO_REUSEADDR = 4;
+    /**
+     * This option specifies whether a reuse of a local address is allowed even
+     * if an other socket is not yet removed by the operating system. It's only
+     * available on a {@code MulticastSocket}.
+     */
+    public static final int SO_REUSEADDR = 4;
 
-	// 10 not currently used
-	
-	public static final int SO_SNDBUF = 4097;
+    // 10 not currently used
+    
+    /**
+     * Buffer size of the outgoing channel.
+     */
+    public static final int SO_SNDBUF = 4097;
 
-	public static final int SO_RCVBUF = 4098;
+    /**
+     * Buffer size of the incoming channel.
+     */
+    public static final int SO_RCVBUF = 4098;
 
-	// For 13, see DatagramSocket
-	
-	public static final int SO_KEEPALIVE = 8;
+    // For 13, see DatagramSocket
+    
+    /**
+     * This option specifies whether socket implementations can send keepalive
+     * messages if no data has been sent for a longer time.
+     */
+    public static final int SO_KEEPALIVE = 8;
+    
+    /**
+     * This option specifies the value for the Type-of-Service (TOS) field of
+     * the IP header.
+     */
+    public static final int IP_TOS = 3;
+    
+    /**
+     * This option specifies whether the local loopback of multicast packets is
+     * enabled or disabled. This option is enabled by default on multicast
+     * sockets.
+     */
+    public static final int IP_MULTICAST_LOOP = 18;
+    
+    /**
+     * This option can be used to enable broadcasting on datagram sockets.
+     */
+    public static final int SO_BROADCAST = 32;
+    
+    /**
+     * This option specifies whether sending TCP urgent data is supported on
+     * this socket or not.
+     */
+    public static final int SO_OOBINLINE = 4099;
+    
+    /**
+     * This option can be used to set one specific interface on a multihomed
+     * host on which incoming connections are accepted. It's only available on
+     * server-side sockets. This option supports setting outgoing interfaces
+     * with either IPv4 or IPv6 addresses.
+     */
+    public static final int IP_MULTICAST_IF2 = 31;
 
-	public static final int IP_TOS = 3;
+    /**
+     * Gets the value for the specified socket option.
+     * 
+     * @return the option value.
+     * @param optID
+     *            the option identifier.
+     * @throws SocketException
+     *             if an error occurs reading the option value.
+     */
+    public Object getOption(int optID) throws SocketException;
 
-	public static final int IP_MULTICAST_LOOP = 18;
-
-	public static final int SO_BROADCAST = 32;
-
-	public static final int SO_OOBINLINE = 4099;
-
-	public static final int IP_MULTICAST_IF2 = 31;
-
-	/**
-	 * Answer the declared socket option.
-	 * 
-	 * @return Object the option value
-	 * @param optID
-	 *            the option identifier
-	 * @exception SocketException
-	 *                thrown if an error occurs getting the option
-	 */
-	public Object getOption(int optID) throws SocketException;
-
-	/**
-	 * Set the declared socket option to the value.
-	 * 
-	 * @param optID
-	 *            the option identifier
-	 * @param val
-	 *            the option value to be set
-	 * @exception SocketException
-	 *                thrown if an error occurs setting the option
-	 */
+    /**
+     * Sets the value of the specified socket option.
+     * 
+     * @param optID
+     *            the option identifier.
+     * @param val
+     *            the value to be set for the option.
+     * @throws SocketException
+     *             if an error occurs setting the option value.
+     */
     public void setOption(int optID, Object val) throws SocketException;
 }

@@ -390,7 +390,7 @@ public class NewAttributeBands extends BandSet {
     private class Integral extends LayoutElement {
 
         private final String tag;
-        private long[] band;
+        private int[] band;
 
         public Integral(String tag) {
             this.tag = tag;
@@ -398,7 +398,7 @@ public class NewAttributeBands extends BandSet {
 
         public void readBands(InputStream in, int count) throws IOException,
                 Pack200Exception {
-            band = decodeBandLong(attributeLayout.getName() + "_" + tag, in,
+            band = decodeBandInt(attributeLayout.getName() + "_" + tag, in,
                     getCodec(tag), count);
         }
 
@@ -522,7 +522,7 @@ public class NewAttributeBands extends BandSet {
         public void readBands(InputStream in, int count) throws IOException,
                 Pack200Exception {
             unionTag.readBands(in, count);
-            long[] values = unionTag.band;
+            int[] values = unionTag.band;
             // Count the band size for each union case then read the bands
             caseCounts = new int[unionCases.size()];
             for (int i = 0; i < caseCounts.length; i++) {
@@ -558,7 +558,7 @@ public class NewAttributeBands extends BandSet {
         public void addToAttribute(int n, NewAttribute attribute) {
             unionTag.addToAttribute(n, attribute);
             int offset = 0;
-            long[] tagBand = unionTag.band;
+            int[] tagBand = unionTag.band;
             long tag = unionTag.getValue(n);
             boolean defaultCase = true;
             for(int i = 0; i < unionCases.size(); i++) {

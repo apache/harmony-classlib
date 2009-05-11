@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.cert;
 
 import java.io.IOException;
@@ -30,8 +25,8 @@ import org.apache.harmony.security.utils.Array;
 
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * This class implements a policy qualifier as defined by the ASN.1
+ * {@code PolicyQualifierInfo} structure.
  */
 public class PolicyQualifierInfo {
     // This PolicyQualifierInfo DER encoding
@@ -44,7 +39,13 @@ public class PolicyQualifierInfo {
     private final byte[] policyQualifier;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code PolicyQualifierInfo} from the specified encoded
+     * form.
+     * 
+     * @param encoded
+     *            the DER encoded policy qualifier.
+     * @throws IOException
+     *             the policy qualifier cannot be decoded.
      */
     public PolicyQualifierInfo(byte[] encoded) throws IOException {
         if (encoded == null) {
@@ -64,7 +65,9 @@ public class PolicyQualifierInfo {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a ASN.1 DER encoded copy of policy qualifier info.
+     * 
+     * @return a ASN.1 DER encoded copy of policy qualifier info.
      */
     public final byte[] getEncoded() {
         byte[] ret = new byte[encoded.length];
@@ -73,14 +76,20 @@ public class PolicyQualifierInfo {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the identifier (an OID) of this policy qualifier info.
+     * 
+     * @return the identifier of this policy qualifier info.
      */
     public final String getPolicyQualifierId() {
         return policyQualifierId;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a ASN.1 DER encoded copy of the qualifier of this policy
+     * qualifier info.
+     * 
+     * @return a ASN.1 DER encoded copy of the qualifier of this policy
+     *         qualifier info.
      */
     public final byte[] getPolicyQualifier() {
         if (policyQualifier == null) {
@@ -92,7 +101,11 @@ public class PolicyQualifierInfo {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns a string representation of this {@code PolicyQualifierInfo}
+     * instance.
+     * 
+     * @return a string representation of this {@code PolicyQualifierInfo}
+     *         instance.
      */
     public String toString() {
         StringBuffer sb =

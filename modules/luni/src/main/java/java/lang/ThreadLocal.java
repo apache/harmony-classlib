@@ -24,23 +24,29 @@ package java.lang;
  */
 
 /**
- * A ThreadLocal is a variable that has a per-thread value. Different Threads
- * may reference the same ThreadLocal object, but the values they observe will
- * not be <code>==</code>. This provides Thread local storage.
- * 
+ * Implements a thread-local storage, that is, a variable for which each thread
+ * has its own value. All threads share the same {@code ThreadLocal} object,
+ * but each sees a different value when accessing it, and changes made by one
+ * thread do not affect the other threads. The implementation supports
+ * {@code null} values.
+ *
  * @see java.lang.Thread
  */
 public class ThreadLocal<T> {
     /**
-     * Constructs a new ThreadLocal object
+     * Creates a new thread-local variable.
      */
     public ThreadLocal() {
         super();
     }
 
     /**
-     * Return the value of this variable under
-     * <code>Thread.currentThread()</code>
+     * Returns the value of this variable for the current thread. If an entry
+     * doesn't yet exist for this variable on this thread, this method will
+     * create an entry, populating the value with the result of
+     * {@link #initialValue()}.
+     *
+     * @return the current value of the variable for the calling thread.
      */
     @SuppressWarnings("unchecked")
     public T get() {
@@ -48,26 +54,32 @@ public class ThreadLocal<T> {
     }
 
     /**
-     * Return the initial value of this variable under
-     * <code>Thread.currentThread()</code>
+     * Provides the initial value of this variable for the current thread.
+     * The default implementation returns {@code null}.
+     *
+     * @return the initial value of the variable.
      */
     protected T initialValue() {
         return null;
     }
 
     /**
-     * Set the value of this variable under <code>Thread.currentThread()</code>
+     * Sets the value of this variable for the current thread. If set to
+     * {@code null}, the value will be set to null and the underlying entry will
+     * still be present.
+     *
+     * @param value the new value of the variable for the caller thread.
      */
     public void set(T value) {
         Thread.currentThread().setThreadLocal(this, value);
     }
 
     /**
-     * <p>
-     * Removes the current value, such that the next call to {@link #get()} will
-     * return the default value, as defined by {@link #initialValue()}.
-     * </p>
-     * 
+     * Removes the entry for this variable in the current thread. If this call
+     * is followed by a {@link #get()} before a {@link #set},
+     * {@code #get()} will call {@link #initialValue()} and create a new
+     * entry with the resulting value.
+     *
      * @since 1.5
      */
     public void remove() {

@@ -421,7 +421,7 @@ public interface Condition {
     void signal();
 
     /**
-     * Wake up all waiting threads.
+     * Wakes up all waiting threads.
      *
      * <p>If any threads are waiting on this condition then they are
      * all woken up. Each thread must re-acquire the lock before it can

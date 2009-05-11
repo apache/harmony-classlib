@@ -15,18 +15,12 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security.spec;
 
 import java.math.BigInteger;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The parameters specifying a DSA private key.
  */
 public class DSAPrivateKeySpec implements KeySpec {
     // Private key
@@ -39,7 +33,17 @@ public class DSAPrivateKeySpec implements KeySpec {
     private final BigInteger g;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Creates a new {@code DSAPrivateKeySpec} with the specified private key,
+     * prime, sub-prime and base.
+     * 
+     * @param x
+     *            the private key {@code x}.
+     * @param p
+     *            the prime {@code p}.
+     * @param q
+     *            the sub-prime {@code q}.
+     * @param g
+     *            the base {@code g}.
      */
     public DSAPrivateKeySpec(BigInteger x, BigInteger p,
             BigInteger q, BigInteger g) {
@@ -50,28 +54,36 @@ public class DSAPrivateKeySpec implements KeySpec {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the base {@code g}.
+     * 
+     * @return the base {@code g}.
      */
     public BigInteger getG() {
         return g;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the prime {@code p}.
+     * 
+     * @return the prime {@code p}.
      */
     public BigInteger getP() {
         return p;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the sub-prime {@code q}.
+     * 
+     * @return the sub-prime {@code q}.
      */
     public BigInteger getQ() {
         return q;
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the private key {@code x}.
+     * 
+     * @return the private key {@code x}.
      */
     public BigInteger getX() {
         return x;

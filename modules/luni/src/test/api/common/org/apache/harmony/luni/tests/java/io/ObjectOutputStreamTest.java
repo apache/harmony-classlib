@@ -861,7 +861,7 @@ public class ObjectOutputStreamTest extends TestCase implements Serializable {
         ois.readFully(buf);
         ois.close();
         assertEquals("Wrote incorrect bytes value", "HelloWorld", new String(
-                buf, 0, 10));
+                buf, 0, 10, "UTF-8"));
     }
 
     /**

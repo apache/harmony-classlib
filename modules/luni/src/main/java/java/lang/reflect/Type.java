@@ -17,8 +17,8 @@
 package java.lang.reflect;
 
 /**
- * Common interface for all Java types.
- * 
+ * Common interface implemented by all Java types.
+ *
  * @since 1.5
  */
 public interface Type {

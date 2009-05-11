@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.util.Enumeration;
@@ -28,59 +23,49 @@ import java.util.Hashtable;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
- * A default PermissionCollection implementation that uses a hashtable. Each
- * hashtable entry stores a Permission object as both the key and the value.
- * <br>
- * This PermissionCollection is intended for storing &quot;neutral&quot;
+ * A default {@code PermissionCollection} implementation that uses a hashtable.
+ * Each hashtable entry stores a Permission object as both the key and the
+ * value.
+ * <p>
+ * This {@code PermissionCollection} is intended for storing &quot;neutral&quot;
  * permissions which do not require special collection.
- * 
  */
 
 final class PermissionsHash extends PermissionCollection {
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private static final long serialVersionUID = -8491988220802933440L;
 
-    /**
-     * @com.intel.drl.spec_ref
-     */
     private final Hashtable perms = new Hashtable();
 
-	/**
-	 * Adds the argument to the collection.
-	 * 
-	 * 
-	 * @param permission
-	 *            java.security.Permission the permission to add to the
-	 *            collection
-	 */
+    /**
+     * Adds the argument to the collection.
+     *
+     * @param permission
+     *            the permission to add to the collection.
+     */
     public void add(Permission permission) {
         perms.put(permission, permission);
     }
 
-	/**
-	 * Answers an enumeration of the permissions in the receiver.
-	 * 
-	 * 
-	 * @return Enumeration the permissions in the receiver.
-	 */
+    /**
+     * Returns an enumeration of the permissions in the receiver.
+     *
+     * @return Enumeration the permissions in the receiver.
+     */
     public Enumeration elements() {
         return perms.elements();
     }
 
-	/**
-	 * Indicates whether the argument permission is implied by the permissions
-	 * contained in the receiver.
-	 * 
-	 * 
-	 * @return boolean <code>true</code> if the argument permission is implied
-	 *         by the permissions in the receiver, and <code>false</code> if
-	 *         it is not.
-	 * @param permission
-	 *            java.security.Permission the permission to check
-	 */
+    /**
+     * Indicates whether the argument permission is implied by the permissions
+     * contained in the receiver.
+     *
+     * @return boolean <code>true</code> if the argument permission is implied
+     *         by the permissions in the receiver, and <code>false</code> if
+     *         it is not.
+     * @param permission
+     *            java.security.Permission the permission to check
+     */
     public boolean implies(Permission permission) {
         for (Enumeration elements = elements(); elements.hasMoreElements();) {
             if (((Permission)elements.nextElement()).implies(permission)) {

@@ -17,36 +17,40 @@
 
 package java.lang;
 
-
 /**
- * This runtime exception is thrown when a security manager check fails.
+ * Thrown when a security manager check fails.
  */
 public class SecurityException extends java.lang.RuntimeException {
 
-	private static final long serialVersionUID = 6878364983674394167L;
+    private static final long serialVersionUID = 6878364983674394167L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public SecurityException() {
-		super();
-	}
+    /**
+     * Constructs a new {@code SecurityException} that includes the current
+     * stack trace.
+     */
+    public SecurityException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public SecurityException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code SecurityException} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public SecurityException(String detailMessage) {
+        super(detailMessage);
+    }
     
     /**
-     * <p>Constructs a new instance with a message and cause.</p>
-     * @param message The message to assign to this exception.
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code SecurityException} with the current stack trace,
+     * the specified detail message and the specified cause.
+     * 
+     * @param message
+     *            the detail message for this exception.
+     * @param cause
+     *            the optional cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public SecurityException(String message, Throwable cause) {
@@ -54,8 +58,11 @@ public class SecurityException extends java.lang.RuntimeException {
     }
     
     /**
-     * <p>Constructs a new instance with a cause.</p>
-     * @param cause The optional cause of this exception; may be <code>null</code>.
+     * Constructs a new {@code SecurityException} with the current stack trace
+     * and the specified cause.
+     * 
+     * @param cause
+     *            the optional cause of this exception, may be {@code null}.
      * @since 1.5
      */
     public SecurityException(Throwable cause) {

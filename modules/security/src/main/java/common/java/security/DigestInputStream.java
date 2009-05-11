@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vladimir N. Molotkov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.io.FilterInputStream;
@@ -27,13 +22,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * {@code DigestInputStream} is a {@code FilterInputStream} which maintains an
+ * associated message digest.
  */
 public class DigestInputStream extends FilterInputStream {
 
     /**
-     * @com.intel.drl.spec_ref
+     * The message digest for this stream.
      */
     protected MessageDigest digest;
 
@@ -41,51 +36,48 @@ public class DigestInputStream extends FilterInputStream {
     private boolean isOn = true;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Constructs a new instance of this {@code DigestInputStream}, using the
+     * given {@code stream} and the {@code digest}.
+     *
+     * @param stream
+     *            the input stream.
+     * @param digest
+     *            the message digest.
      */
     public DigestInputStream(InputStream stream, MessageDigest digest) {
         super(stream);
         this.digest = digest;
     }
 
-	/**
-	 * Answers the MessageDigest which the receiver uses when computing the
-	 * hash.
-	 * 
-	 * 
-	 * @return MessageDigest the digest the receiver uses when computing the
-	 *         hash.
-	 * 
-	 */
+    /**
+     * Returns the message digest for this stream.
+     *
+     * @return the message digest for this stream.
+     */
     public MessageDigest getMessageDigest() {
         return digest;
     }
 
-	/**
-	 * Sets the MessageDigest which the receiver will use when computing the
-	 * hash.
-	 * 
-	 * 
-	 * @param digest
-	 *            MessageDigest the digest to use when computing the hash.
-	 * 
-	 * @see MessageDigest
-	 * @see #on
-	 */
+    /**
+     * Sets the message digest which this stream will use.
+     *
+     * @param digest
+     *            the message digest which this stream will use.
+     */
     public void setMessageDigest(MessageDigest digest) {
         this.digest = digest;
     }
 
-	/**
-	 * Reads the next byte and answers it as an int. Updates the digest for the
-	 * byte if this function is enabled.
-	 * 
-	 * 
-	 * @return int the byte which was read or -1 at end of stream.
-	 * 
-	 * @exception java.io.IOException
-	 *                If reading the source stream causes an IOException.
-	 */
+    /**
+     * Reads the next byte and returns it as an {@code int}. Updates the digest
+     * for the byte if this function is {@link #on(boolean)}.
+     * <p>
+     * This operation is blocking.
+     *
+     * @return the byte which was read or -1 at end of stream.
+     * @throws IOException
+     *             if reading the source stream causes an {@code IOException}.
+     */
     public int read() throws IOException {
         // read the next byte
         int byteRead = in.read();
@@ -100,7 +92,23 @@ public class DigestInputStream extends FilterInputStream {
     }
 
     /**
-     * @com.intel.drl.spec_ref
+     * Reads {@code len} bytes into the specified {@code byte[]}, starting from
+     * the specified offset. Updates the digest if this function is
+     * {@link #on(boolean)}.
+     * <p>
+     * This operation is blocking.
+     *
+     * @param b
+     *            the byte array in which to store the bytes
+     * @param off
+     *            the initial position in {@code b} to store the bytes read from
+     *            this stream
+     * @param len
+     *            the maximum number of bytes to store in {@code b}
+     * @return the number of bytes actually read or -1 if the end of the
+     *         filtered stream has been reached while reading
+     * @throws IOException
+     *             if reading the source stream causes an {@code IOException}
      */
     public int read(byte[] b, int off, int len) throws IOException {
         // read next up to len bytes
@@ -115,27 +123,24 @@ public class DigestInputStream extends FilterInputStream {
         return bytesRead;
     }
 
-	/**
-	 * Enables or disables the digest function (default is on).
-	 * 
-	 * 
-	 * @param on
-	 *            boolean true if the digest should be computed, and false
-	 *            otherwise.
-	 * 
+    /**
+     * Enables or disables the digest function (default is on).
+     *
+     * @param on
+     *            {@code true} if the digest should be computed, {@code false}
+     *            otherwise.
 	 * @see MessageDigest
-	 */
+     */
     public void on(boolean on) {
         isOn = on;
     }
 
-	/**
-	 * Answers a string containing a concise, human-readable description of the
-	 * receiver.
-	 * 
-	 * 
-	 * @return String a printable representation for the receiver.
-	 */
+    /**
+     * Returns a string containing a concise, human-readable description of this
+     * {@code DigestInputStream} including the digest.
+     *
+     * @return a printable representation for this {@code DigestInputStream}.
+     */
     public String toString() {
         return super.toString() + ", " + digest.toString() + //$NON-NLS-1$
             (isOn ? ", is on" : ", is off"); //$NON-NLS-1$ //$NON-NLS-2$

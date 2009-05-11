@@ -18,63 +18,65 @@
 package java.lang;
 
 /**
- * This exception is thrown when a classloader is unable to find a class.
+ * Thrown when a class loader is unable to find a class.
  */
 public class ClassNotFoundException extends Exception {
 
-	private static final long serialVersionUID = 9176873029745254542L;
+    private static final long serialVersionUID = 9176873029745254542L;
 
-	private Throwable ex;
+    private Throwable ex;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ClassNotFoundException() {
-		super((Throwable) null);
-	}
+    /**
+     * Constructs a new {@code ClassNotFoundException} that includes the current
+     * stack trace.
+     */
+    public ClassNotFoundException() {
+        super((Throwable) null);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ClassNotFoundException(String detailMessage) {
-		super(detailMessage, null);
-	}
+    /**
+     * Constructs a new {@code ClassNotFoundException} with the current stack
+     * trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public ClassNotFoundException(String detailMessage) {
+        super(detailMessage, null);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * exception filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param exception
-	 *            Throwable The exception which occurred while loading the
-	 *            class.
-	 */
-	public ClassNotFoundException(String detailMessage, Throwable exception) {
-		super(detailMessage);
-		ex = exception;
-	}
+    /**
+     * Constructs a new {@code ClassNotFoundException} with the current stack
+     * trace, the specified detail message and the exception that occurred when
+     * loading the class.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     * @param exception
+     *            the exception which occurred while loading the class.
+     */
+    public ClassNotFoundException(String detailMessage, Throwable exception) {
+        super(detailMessage);
+        ex = exception;
+    }
 
-	/**
-	 * Answers the exception which occurred when loading the class.
-	 * 
-	 * @return Throwable The exception which occurred while loading the class.
-	 */
-	public Throwable getException() {
-		return ex;
-	}
+    /**
+     * Returns the exception which occurred when loading the class.
+     * 
+     * @return Throwable the exception which occurred while loading the class.
+     */
+    public Throwable getException() {
+        return ex;
+    }
 
-	/**
-	 * Answers the cause of this Throwable, or null if there is no cause.
-	 * 
-	 * @return Throwable The receiver's cause.
-	 */
-	@Override
+    /**
+     * Returns the cause of this Throwable, or {@code null} if there is no
+     * cause.
+     * 
+     * @return Throwable the receiver's cause.
+     */
+    @Override
     public Throwable getCause() {
-		return ex;
-	}
+        return ex;
+    }
 }

@@ -405,16 +405,9 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
 {
     int len;
     int wlen;
-    char *canonicalpath;
-    int srcArrayCount=0;
-    int destArrayCount=0;
-    int slashCount=0; //record how many slashes it met.
-    int dotsCount=0; //record how many dots following a separator.
-    int *slashStack; //record position of every separator.
-    
-    // Buffer to store absolute path name.
-    char absPath[ABS_PATH_BUF_LEN];
- 
+    wchar_t *wPath = 0;
+    wchar_t tmpPath[ABS_PATH_BUF_LEN];
+
     if (!path) {
         *pathW = (void*) 0;
         return;
@@ -428,65 +421,20 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
         return;
     }
 
-    // calculate an absolute path first
-    if (!GetFullPathNameA(path, ABS_PATH_BUF_LEN, absPath, (void*) 0))
-    {
-        // error occurred
-        *pathW = (void*) 0;
-        return;
+    wlen = MultiByteToWideChar(CP_UTF8, 0, path, -1, wPath, 0);
+    wPath = portLibrary->mem_allocate_memory(portLibrary, wlen*sizeof(wchar_t));
+    MultiByteToWideChar(CP_UTF8, 0, path, -1, wPath, wlen);
+
+    if (!GetFullPathNameW(wPath, ABS_PATH_BUF_LEN, tmpPath, (void*)0)) {
+        *pathW = (void*)0;
+    } else {
+        wlen = sizeof(tmpPath) + 5;
+        *pathW = portLibrary->mem_allocate_memory(portLibrary, wlen);
+        wcscpy(*pathW, L"\\\\?\\");
+        wcscat(*pathW, tmpPath);
     }
 
-    len = strlen(absPath);
-
-    slashStack = portLibrary->mem_allocate_memory(portLibrary, len*sizeof(int));
-    canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len+5);
-
-    strcpy(canonicalpath,"\\\\?\\");
-
-    for(srcArrayCount=0,destArrayCount=4;srcArrayCount<len;srcArrayCount++){
-        // we have an absolute path already.
-        if(absPath[srcArrayCount]=='.'){
-            // count the dots following last separator.
-            if(dotsCount>0 || absPath[srcArrayCount-1]=='\\'){
-                dotsCount++;
-                continue;
-            }
-        }
-        // deal with the dots when we meet next separator.
-        if(absPath[srcArrayCount]=='\\'){
-            if(dotsCount == 1){
-                dotsCount = 0;
-                continue;
-            }else if (dotsCount > 1){
-                if(slashCount-2<0){
-                    slashCount=2;
-                }
-                destArrayCount=slashStack[slashCount-2];
-                dotsCount = 0;
-                slashCount--;
-            }else{
-                while(canonicalpath[destArrayCount-1] == '.'){
-                    destArrayCount--;
-                }
-                slashStack[slashCount++]=destArrayCount;
-            }
-        }
-        // for normal character.
-        while(dotsCount >0){
-            canonicalpath[destArrayCount++]='.';
-            dotsCount--;
-        }
-        canonicalpath[destArrayCount++]=absPath[srcArrayCount];
-    }
-    while(canonicalpath[destArrayCount-1] == '.'){
-        destArrayCount--;
-    }        
-    canonicalpath[destArrayCount]='\0';
-    wlen = MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, 0);
-    *pathW = portLibrary->mem_allocate_memory(portLibrary, wlen*sizeof(wchar_t));
-    MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, wlen);
-    portLibrary->mem_free_memory(portLibrary, canonicalpath);
-    portLibrary->mem_free_memory(portLibrary, slashStack);
+    portLibrary->mem_free_memory(portLibrary, wPath);
 }
 
 #undef ABS_PATH_BUF_LEN

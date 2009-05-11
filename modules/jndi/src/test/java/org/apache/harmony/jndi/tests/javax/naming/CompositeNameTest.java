@@ -150,6 +150,9 @@ public class CompositeNameTest extends TestCase {
 		assertEquals(new CompositeName(name.toString()), name);
 		assertNameEquals(name, new String[] { "www.apache.org", "gbank",
 				"", "abc\"abc", "abc/abc", "abc\\abc" });
+
+        assertEquals("test's", new CompositeName("test's").toString());
+        assertEquals("test", new CompositeName("'test'").toString());
 	}
 
 	/**

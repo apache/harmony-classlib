@@ -15,28 +15,25 @@
  *  limitations under the License.
  */
 
-/**
-* @author Vera Y. Petrashkova
-* @version $Revision$
-*/
-
 package java.security.interfaces;
 
 import java.math.BigInteger;
 import java.security.PublicKey;
 
 /**
- * @com.intel.drl.spec_ref
- * 
+ * The interface for a Digital Signature Algorithm (DSA) public key. 
  */
 public interface DSAPublicKey extends DSAKey, PublicKey {
+
     /**
-     * @com.intel.drl.spec_ref
+     * The serial version identifier.
      */
     public static final long serialVersionUID = 1234526332779022332L;
 
     /**
-     * @com.intel.drl.spec_ref
+     * Returns the public key value {@code y}.
+     * 
+     * @return the public key value {@code y}.
      */
     public BigInteger getY();
 

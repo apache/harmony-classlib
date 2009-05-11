@@ -24,19 +24,19 @@ import java.io.Serializable;
 import java.util.EventObject;
 
 /**
- * This is the event class to indicate some preferences has been added, 
- * deleted or updated.
+ * This is the event class to indicate that a preference has been added, deleted
+ * or updated.
  * <p>
- * Please note that this class cannot be serialized actually, so relevant 
- * serialization methods only throw <code>NotSerializableException</code>.
- * </p>
+ * Please note that although the class is marked as {@code Serializable} by
+ * inheritance from {@code EventObject}, this type is not intended to be serialized
+ * so the serialization methods do nothing but throw a {@code NotSerializableException}.
  * 
  * @see java.util.prefs.Preferences
  * @see java.util.prefs.PreferenceChangeListener
  * 
  * @since 1.4
  */
-public class PreferenceChangeEvent extends EventObject implements Serializable {
+public class PreferenceChangeEvent extends EventObject {
 
     private static final long serialVersionUID = 793724513368024975L;
 
@@ -47,13 +47,16 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
     private final String value;
 
     /**
-     * Construct a new <code>PreferenceChangeEvent</code> instance.
+     * Construct a new {@code PreferenceChangeEvent} instance.
      * 
-     * @param p the <code>Preferences</code> instance that this event happened, this object is
-     *            considered as event's source.
-     * @param k the changed preference's key
-     * @param v the new value of the changed preference, this value can be null, which means the
-     *            preference is removed.
+     * @param p
+     *            the {@code Preferences} instance that fired this event; this object is
+     *            considered as the event's source.
+     * @param k
+     *            the changed preference key.
+     * @param v
+     *            the new value of the changed preference, this value can be
+     *            {@code null}, which means the preference has been removed.
      */
     public PreferenceChangeEvent(Preferences p, String k, String v) {
         super(p);
@@ -63,45 +66,45 @@ public class PreferenceChangeEvent extends EventObject implements Serializable {
     }
 
     /**
-     * Get the changed preference's key.
+     * Gets the key of the changed preference.
      * 
-     * @return the changed preference's key
+     * @return the changed preference's key.
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * Get the new value of the changed preference, or null if this preference 
-     * is removed.
+     * Gets the new value of the changed preference or {@code null} if the
+     * preference has been removed.
      * 
-     * @return the new value of the changed preference, or null if this preference 
-     * is removed.
+     * @return the new value of the changed preference or {@code null} if the
+     *         preference has been removed.
      */
     public String getNewValue() {
         return value;
     }
 
     /**
-     * Get the <code>Preferences</code> instance that this event happened.
+     * Gets the {@code Preferences} instance that fired this event.
      * 
-     * @return the <code>Preferences</code> instance that this event happened.
+     * @return the {@code Preferences} instance that fired this event.
      */
     public Preferences getNode() {
         return node;
     }
 
     /**
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
+     * This method always throws a <code>NotSerializableException</code>,
+     * because this object cannot be serialized,
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         throw new NotSerializableException();
     }
 
     /**
-     * This method always throws a <code>NotSerializableException</code>, because 
-     * this object cannot be serialized,  
+     * This method always throws a <code>NotSerializableException</code>,
+     * because this object cannot be serialized,
      */
     private void readObject(ObjectInputStream in) throws IOException{
         throw new NotSerializableException();

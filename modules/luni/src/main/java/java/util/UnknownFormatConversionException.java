@@ -18,44 +18,45 @@ package java.util;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * The unchecked exception will be thrown out if the format conversion is
- * unknown.
+ * An {@code UnknownFormatConversionException} will be thrown if the format
+ * conversion is unknown.
+ * 
+ * @see java.lang.RuntimeException
  */
 public class UnknownFormatConversionException extends IllegalFormatException {
+    private static final long serialVersionUID = 19060418L;
 
-	private static final long serialVersionUID = 19060418L;
+    private String s;
 
-	private String s;
+    /**
+     * Constructs an {@code UnknownFormatConversionException} with the unknown
+     * format conversion.
+     * 
+     * @param s 
+     *           the unknown format conversion.
+     */
+    public UnknownFormatConversionException(String s) {
+        if( null == s ) {
+            throw new NullPointerException();
+        }
+        this.s = s;
+    }
 
-	/**
-	 * Constructs an UnknownFormatConversionException with the unknown format
-	 * conversion.
-	 * 
-	 * @param s
-	 *            The unknown format conversion
-	 */
-	public UnknownFormatConversionException(String s) {
-		if( null == s ) {
-			throw new NullPointerException();
-		}
-		this.s = s;
-	}
+    /**
+     * Returns the conversion associated with the exception.
+     * 
+     * @return the conversion associated with the exception.
+     */
+    public String getConversion() {
+        return s;
+    }
 
-	/**
-	 * Returns the conversion associated with the exception.
-	 * 
-	 * @return The conversion associated with the exception.
-	 */
-	public String getConversion() {
-		return s;
-	}
-
-	/**
-	 * Returns the message of the exception.
-	 * 
-	 * @return The message of the exception.
-	 */
-	@Override
+    /**
+     * Returns the message of the exception.
+     * 
+     * @return the message of the exception.
+     */
+    @Override
     public String getMessage() {
         return Msg.getString("K0349", s);
     }

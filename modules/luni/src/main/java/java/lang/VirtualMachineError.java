@@ -19,7 +19,7 @@ package java.lang;
 
 
 /**
- * This class is the superclass of all classes which represent errors that occur
+ * {@code VirtualMachineError} is the superclass of all error classes that occur
  * during the operation of the virtual machine.
  * 
  * @see Error
@@ -28,21 +28,22 @@ public abstract class VirtualMachineError extends Error {
 
     private static final long serialVersionUID = 4161983926571568670L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public VirtualMachineError() {
-		super();
-	}
+    /**
+     * Constructs a new {@code VirtualMachineError} that includes the current
+     * stack trace.
+     */
+    public VirtualMachineError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public VirtualMachineError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code VirtualMachineError} with the current stack trace
+     * and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public VirtualMachineError(String detailMessage) {
+        super(detailMessage);
+    }
 }

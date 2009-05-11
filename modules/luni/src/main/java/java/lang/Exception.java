@@ -19,8 +19,8 @@ package java.lang;
 
 
 /**
- * This class is the superclass of all classes which represent recoverable
- * exceptions. When Exceptions are thrown, they may be caught by application
+ * {@code Exception} is the superclass of all classes that represent recoverable
+ * exceptions. When exceptions are thrown, they may be caught by application
  * code.
  * 
  * @see Throwable
@@ -28,47 +28,47 @@ package java.lang;
  * @see RuntimeException
  */
 public class Exception extends Throwable {
-	private static final long serialVersionUID = -3387516993124229948L;
+    private static final long serialVersionUID = -3387516993124229948L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public Exception() {
-		super();
-	}
+    /**
+     * Constructs a new {@code Exception} that includes the current stack trace.
+     */
+    public Exception() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public Exception(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code Exception} with the current stack trace and the
+     * specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     */
+    public Exception(String detailMessage) {
+        super(detailMessage);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message and
-	 * cause filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param throwable
-	 *            The cause of this Throwable
-	 */
-	public Exception(String detailMessage, Throwable throwable) {
-		super(detailMessage, throwable);
-	}
+    /**
+     * Constructs a new {@code Exception} with the current stack trace, the
+     * specified detail message and the specified cause.
+     * 
+     * @param detailMessage
+     *            the detail message for this exception.
+     * @param throwable
+     *            the cause of this exception.
+     */
+    public Exception(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and cause
-	 * filled in.
-	 * 
-	 * @param throwable
-	 *            The cause of this Throwable
-	 */
-	public Exception(Throwable throwable) {
-		super(throwable);
-	}
+    /**
+     * Constructs a new {@code Exception} with the current stack trace and the
+     * specified cause.
+     * 
+     * @param throwable
+     *            the cause of this exception.
+     */
+    public Exception(Throwable throwable) {
+        super(throwable);
+    }
 }

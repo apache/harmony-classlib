@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 
 /**
- * Arrays contains static methods which operate on arrays.
+ * {@code Arrays} contains static methods which operate on arrays.
  * 
  * @since 1.2
  */
@@ -151,14 +151,14 @@ public class Arrays {
     }
 
     /**
-     * Answers a List on the objects in the specified array. The size of the
-     * List cannot be modified, i.e. adding and removing are unsupported, but
+     * Returns a {@code List} of the objects in the specified array. The size of the
+     * {@code List} cannot be modified, i.e. adding and removing are unsupported, but
      * the elements can be set. Setting an element modifies the underlying
      * array.
      * 
      * @param array
-     *            the array
-     * @return a List on the specified array
+     *            the array.
+     * @return a {@code List} of the elements of the specified array.
      */
     public static <T> List<T> asList(T... array) {
         return new ArrayList<T>(array);
@@ -166,14 +166,16 @@ public class Arrays {
 
     /**
      * Performs a binary search for the specified element in the specified
-     * sorted array.
+     * ascending sorted array. Searching in an unsorted array has an undefined
+     * result. It's also undefined which element is found if there are multiple
+     * occurrences of the same element.
      * 
      * @param array
-     *            the sorted byte array to search
+     *            the sorted {@code byte} array to search.
      * @param value
-     *            the byte element to find
+     *            the {@code byte} element to find.
      * @return the non-negative index of the element, or a negative index which
-     *         is the -index - 1 where the element would be inserted
+     *         is {@code -index - 1} where the element would be inserted.
      */
     public static int binarySearch(byte[] array, byte value) {
         return binarySearch(array, 0, array.length, value);
@@ -719,12 +721,11 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
-     * 
+     * Fills the specified array with the specified element.
      * @param array
-     *            the byte array to fill
+     *            the {@code byte} array to fill.
      * @param value
-     *            the byte element
+     *            the {@code byte} element.
      */
     public static void fill(byte[] array, byte value) {
         for (int i = 0; i < array.length; i++) {
@@ -733,22 +734,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the byte array to fill
+     *            the {@code byte} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the byte element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code byte} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(byte[] array, int start, int end, byte value) {
         // Check for null first
@@ -765,12 +764,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the short array to fill
+     *            the {@code short} array to fill.
      * @param value
-     *            the short element
+     *            the {@code short} element.
      */
     public static void fill(short[] array, short value) {
         for (int i = 0; i < array.length; i++) {
@@ -779,22 +778,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the short array to fill
+     *            the {@code short} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the short element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code short} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(short[] array, int start, int end, short value) {
         // Check for null first
@@ -811,12 +808,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the char array to fill
+     *            the {@code char} array to fill.
      * @param value
-     *            the char element
+     *            the {@code char} element.
      */
     public static void fill(char[] array, char value) {
         for (int i = 0; i < array.length; i++) {
@@ -825,22 +822,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the char array to fill
+     *            the {@code char} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the char element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code char} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(char[] array, int start, int end, char value) {
         // Check for null first
@@ -857,12 +852,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the int array to fill
+     *            the {@code int} array to fill.
      * @param value
-     *            the int element
+     *            the {@code int} element.
      */
     public static void fill(int[] array, int value) {
         for (int i = 0; i < array.length; i++) {
@@ -871,22 +866,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the int array to fill
+     *            the {@code int} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the int element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code int} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(int[] array, int start, int end, int value) {
         // Check for null first
@@ -903,12 +896,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the long array to fill
+     *            the {@code long} array to fill.
      * @param value
-     *            the long element
+     *            the {@code long} element.
      */
     public static void fill(long[] array, long value) {
         for (int i = 0; i < array.length; i++) {
@@ -917,22 +910,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the long array to fill
+     *            the {@code long} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the long element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code long} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(long[] array, int start, int end, long value) {
         // Check for null first
@@ -949,12 +940,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the float array to fill
+     *            the {@code float} array to fill.
      * @param value
-     *            the float element
+     *            the {@code float} element.
      */
     public static void fill(float[] array, float value) {
         for (int i = 0; i < array.length; i++) {
@@ -963,22 +954,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the float array to fill
+     *            the {@code float} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the float element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code float} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(float[] array, int start, int end, float value) {
         // Check for null first
@@ -995,12 +984,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the float array to fill
+     *            the {@code double} array to fill.
      * @param value
-     *            the float element
+     *            the {@code double} element.
      */
     public static void fill(double[] array, double value) {
         for (int i = 0; i < array.length; i++) {
@@ -1009,22 +998,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the double array to fill
+     *            the {@code double} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the double element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code double} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(double[] array, int start, int end, double value) {
         // Check for null first
@@ -1041,12 +1028,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the boolean array to fill
+     *            the {@code boolean} array to fill.
      * @param value
-     *            the boolean element
+     *            the {@code boolean} element.
      */
     public static void fill(boolean[] array, boolean value) {
         for (int i = 0; i < array.length; i++) {
@@ -1055,22 +1042,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the boolean array to fill
+     *            the {@code boolean} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the boolean element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code boolean} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(boolean[] array, int start, int end, boolean value) {
         // Check for null first
@@ -1087,12 +1072,12 @@ public class Arrays {
     }
 
     /**
-     * Fills the array with the given value.
+     * Fills the specified array with the specified element.
      * 
      * @param array
-     *            the Object array to fill
+     *            the {@code Object} array to fill.
      * @param value
-     *            the Object element
+     *            the {@code Object} element.
      */
     public static void fill(Object[] array, Object value) {
         for (int i = 0; i < array.length; i++) {
@@ -1101,22 +1086,20 @@ public class Arrays {
     }
 
     /**
-     * Fills the section of the array between the given indices with the given value.
+     * Fills the specified range in the array with the specified element.
      * 
      * @param array
-     *            the Object array to fill
+     *            the {@code Object} array to fill.
      * @param start
-     *            the start index
+     *            the first index to fill.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to fill.
      * @param value
-     *            the Object element
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code Object} element.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void fill(Object[] array, int start, int end, Object value) {
         // Check for null first
@@ -1133,21 +1116,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     *  
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code boolean} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Boolean}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(boolean[] array) {
         if (array == null) {
@@ -1162,21 +1144,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     * 
+     * Returns a hash code based on the contents of the given array. For any two
+     * not-null {@code int} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Integer}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(int[] array) {
         if (array == null) {
@@ -1191,21 +1172,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     * 
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code short} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Short}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(short[] array) {
         if (array == null) {
@@ -1220,21 +1200,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     *  
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code char} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Character}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(char[] array) {
         if (array == null) {
@@ -1249,21 +1228,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     *  
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code byte} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Byte}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(byte[] array) {
         if (array == null) {
@@ -1278,21 +1256,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     *  
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code long} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Long}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(long[] array) {
         if (array == null) {
@@ -1311,21 +1288,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     *  
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code float} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Float}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(float[] array) {
         if (array == null) {
@@ -1343,21 +1319,20 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     * 
+     * Returns a hash code based on the contents of the given array. For any two
+     * {@code double} arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Double}} instances representing the
-     * elements of array in the same order. 
-     * 
-     * If the array is null, the return value will be 0.
+     * elements of array in the same order. If the array is {@code null}, the return
+     * value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(double[] array) {
         if (array == null) {
@@ -1377,21 +1352,24 @@ public class Arrays {
     }
 
     /**
-     * Returns the hash code for the given array. If this array contains other
-     * arrays, their contents will not be recursively searched so this method
-     * should be used if the array is likely to contain a reference to itself.
-     * 
-     * If Arrays.equals(...) returns true for two arrays then their hash codes
-     * will also be equal.
-     * 
+     * Returns a hash code based on the contents of the given array. If the
+     * array contains other arrays as its elements, the hash code is based on
+     * their identities not their contents. So it is acceptable to invoke this
+     * method on an array that contains itself as an element, either directly or
+     * indirectly.
+     * <p>
+     * For any two arrays {@code a} and {@code b}, if
+     * {@code Arrays.equals(a, b)} returns {@code true}, it means
+     * that the return value of {@code Arrays.hashCode(a)} equals
+     * {@code Arrays.hashCode(b)}.
+     * <p>
      * The value returned by this method is the same value as the method
-     * Arrays.asList(array).hashCode(). 
-     * 
-     * If the array is null, the return value will be 0.
+     * Arrays.asList(array).hashCode(). If the array is {@code null}, the return value
+     * is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int hashCode(Object[] array) {
         if (array == null) {
@@ -1412,20 +1390,31 @@ public class Arrays {
     }
 
     /**
-     * Returns the 'deep' hash code for the given array. This means that if this
-     * array contains other arrays their contents will also be included in the
-     * hash and so on recursively. This method should not be used if the array
-     * or any arrays contained within it are likely to contain a reference to
-     * itself.
-     * 
-     * If Arrays.deepEquals(...) returns true for two arrays then their deep
-     * hash codes will also be equal.
-     * 
-     * If the array is null the return value will be 0.
+     * Returns a hash code based on the "deep contents" of the given array. If
+     * the array contains other arrays as its elements, the hash code is based
+     * on their contents not their identities. So it is not acceptable to invoke
+     * this method on an array that contains itself as an element, either
+     * directly or indirectly.
+     * <p>
+     * For any two arrays {@code a} and {@code b}, if
+     * {@code Arrays.deepEquals(a, b)} returns {@code true}, it
+     * means that the return value of {@code Arrays.deepHashCode(a)} equals
+     * {@code Arrays.deepHashCode(b)}.
+     * <p>
+     * The computation of the value returned by this method is similar to that
+     * of the value returned by {@link List#hashCode()}} invoked on a
+     * {@link List}} containing a sequence of instances representing the
+     * elements of array in the same order. The difference is: If an element e
+     * of array is itself an array, its hash code is computed by calling the
+     * appropriate overloading of {@code Arrays.hashCode(e)} if e is an array of a
+     * primitive type, or by calling {@code Arrays.deepHashCode(e)} recursively if e is
+     * an array of a reference type. The value returned by this method is the
+     * same value as the method {@code Arrays.asList(array).hashCode()}. If the array is
+     * {@code null}, the return value is 0.
      * 
      * @param array
-     *            the array to return the hash code for
-     * @return the hash code for array
+     *            the array whose hash code to compute.
+     * @return the hash code for {@code array}.
      */
     public static int deepHashCode(Object[] array) {
         if (array == null) {
@@ -1485,11 +1474,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first byte array
+     *            the first {@code byte} array.
      * @param array2
-     *            the second byte array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code byte} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(byte[] array1, byte[] array2) {
         if (array1 == array2) {
@@ -1510,11 +1500,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first short array
+     *            the first {@code short} array.
      * @param array2
-     *            the second short array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code short} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(short[] array1, short[] array2) {
         if (array1 == array2) {
@@ -1535,11 +1526,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first char array
+     *            the first {@code char} array.
      * @param array2
-     *            the second char array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code char} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(char[] array1, char[] array2) {
         if (array1 == array2) {
@@ -1560,11 +1552,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first int array
+     *            the first {@code int} array.
      * @param array2
-     *            the second int array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code int} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(int[] array1, int[] array2) {
         if (array1 == array2) {
@@ -1585,11 +1578,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first long array
+     *            the first {@code long} array.
      * @param array2
-     *            the second long array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code long} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(long[] array1, long[] array2) {
         if (array1 == array2) {
@@ -1608,15 +1602,15 @@ public class Arrays {
 
     /**
      * Compares the two arrays. The values are compared in the same manner as
-     * Float.equals().
+     * {@code Float.equals()}.
      * 
      * @param array1
-     *            the first float array
+     *            the first {@code float} array.
      * @param array2
-     *            the second float array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
-     * 
+     *            the second {@code float} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      * @see Float#equals(Object)
      */
     public static boolean equals(float[] array1, float[] array2) {
@@ -1637,15 +1631,15 @@ public class Arrays {
 
     /**
      * Compares the two arrays. The values are compared in the same manner as
-     * Double.equals().
+     * {@code Double.equals()}.
      * 
      * @param array1
-     *            the first double array
+     *            the first {@code double} array.
      * @param array2
-     *            the second double array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
-     * 
+     *            the second {@code double} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      * @see Double#equals(Object)
      */
     public static boolean equals(double[] array1, double[] array2) {
@@ -1668,11 +1662,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first boolean array
+     *            the first {@code boolean} array.
      * @param array2
-     *            the second boolean array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code boolean} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal, {@code false} otherwise.
      */
     public static boolean equals(boolean[] array1, boolean[] array2) {
         if (array1 == array2) {
@@ -1693,11 +1688,12 @@ public class Arrays {
      * Compares the two arrays.
      * 
      * @param array1
-     *            the first Object array
+     *            the first {@code Object} array.
      * @param array2
-     *            the second Object array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code Object} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal according to {@code equals()}, {@code false} otherwise.
      */
     public static boolean equals(Object[] array1, Object[] array2) {
         if (array1 == array2) {
@@ -1716,23 +1712,40 @@ public class Arrays {
     }
 
     /**
-     * Returns the 'deep' equals for the two given arrays. This means that if
-     * either of the arrays contains other arrays then their contents are also
-     * checked for (deep) equality. If two corresponding elements are arrays of
-     * a primitive type then the appropriate <code>Arrays.equals</code> method
-     * is used to determine their equality. Otherwise for two
-     * <code>Object</code> arrays <code>deepEquals</code> is called
-     * recursively.
-     * 
-     * This method should not be used if either of the arrays, or any arrays
-     * contained within it are likely to contain a reference to itself.
+     * Returns {@code true} if the two given arrays are deeply equal to one another.
+     * Unlike the method {@code equals(Object[] array1, Object[] array2)}, this method
+     * is appropriate for use for nested arrays of arbitrary depth.
+     * <p>
+     * Two array references are considered deeply equal if they are both {@code null},
+     * or if they refer to arrays that have the same length and the elements at
+     * each index in the two arrays are equal.
+     * <p>
+     * Two {@code null} elements {@code element1} and {@code element2} are possibly deeply equal if any
+     * of the following conditions satisfied:
+     * <p>
+     * {@code element1} and {@code element2} are both arrays of object reference types, and
+     * {@code Arrays.deepEquals(element1, element2)} would return {@code true}.
+     * <p>
+     * {@code element1} and {@code element2} are arrays of the same primitive type, and the
+     * appropriate overloading of {@code Arrays.equals(element1, element2)} would return
+     * {@code true}.
+     * <p>
+     * {@code element1 == element2}
+     * <p>
+     * {@code element1.equals(element2)} would return {@code true}.
+     * <p>
+     * Note that this definition permits {@code null} elements at any depth.
+     * <p>
+     * If either of the given arrays contain themselves as elements, the
+     * behavior of this method is uncertain.
      * 
      * @param array1
-     *            the first Object array
+     *            the first {@code Object} array.
      * @param array2
-     *            the second Object array
-     * @return true when the arrays have the same length and the elements at
-     *         each index in the two arrays are equal, false otherwise
+     *            the second {@code Object} array.
+     * @return {@code true} if both arrays are {@code null} or if the arrays have the
+     *         same length and the elements at each index in the two arrays are
+     *         equal according to {@code equals()}, {@code false} otherwise.
      */
     public static boolean deepEquals(Object[] array1, Object[] array2) {
         if (array1 == array2) {
@@ -1885,32 +1898,28 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the byte array to sort
+     *            the {@code byte} array to be sorted.
      */
     public static void sort(byte[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order.
      * 
      * @param array
-     *            the byte array to sort
+     *            the {@code byte} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(byte[] array, int start, int end) {
         if (array == null) {
@@ -2009,32 +2018,28 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the char array to sort
+     *            the {@code char} array to be sorted.
      */
     public static void sort(char[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order.
      * 
      * @param array
-     *            the char array to sort
+     *            the {@code char} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(char[] array, int start, int end) {
         if (array == null) {
@@ -2123,12 +2128,10 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into 
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the double array to sort
-     * 
+     *            the {@code double} array to be sorted.
      * @see #sort(double[], int, int)
      */
     public static void sort(double[] array) {
@@ -2136,22 +2139,19 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order. The
+     * values are sorted according to the order imposed by {@code Double.compareTo()}.
      * 
      * @param array
-     *            the double array to sort
+     *            the {@code double} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
-     * 
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      * @see Double#compareTo(Double)
      */
     public static void sort(double[] array, int start, int end) {
@@ -2241,12 +2241,10 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the float array to sort
-     * 
+     *            the {@code float} array to be sorted.
      * @see #sort(float[], int, int)
      */
     public static void sort(float[] array) {
@@ -2254,22 +2252,19 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order. The
+     * values are sorted according to the order imposed by {@code Float.compareTo()}.
      * 
      * @param array
-     *            the float array to sort
+     *            the {@code float} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
-     * 
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      * @see Float#compareTo(Float)
      */
     public static void sort(float[] array, int start, int end) {
@@ -2359,32 +2354,28 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the int array to sort
+     *            the {@code int} array to be sorted.
      */
     public static void sort(int[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order.
      * 
      * @param array
-     *            the int array to sort
+     *            the {@code int} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(int[] array, int start, int end) {
         if (array == null) {
@@ -2473,32 +2464,28 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the long array to sort
+     *            the {@code long} array to be sorted.
      */
     public static void sort(long[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending numerical order.
      * 
      * @param array
-     *            the long array to sort
+     *            the {@code long} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(long[] array, int start, int end) {
         if (array == null) {
@@ -2587,39 +2574,38 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending natural order.
      * 
      * @param array
-     *            the Object array to sort
-     * 
-     * @exception ClassCastException
-     *                when an element in the array does not implement Comparable
-     *                or elements cannot be compared to each other
+     *            the {@code Object} array to be sorted.
+     * @throws ClassCastException
+     *                if an element in the array does not implement {@code Comparable}
+     *                or if some elements cannot be compared to each other.
+     * @see #sort(Object[], int, int)
      */
     public static void sort(Object[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order.
+     * Sorts the specified range in the array in ascending natural order. All
+     * elements must implement the {@code Comparable} interface and must be
+     * comparable to each other without a {@code ClassCastException} being
+     * thrown.
      * 
      * @param array
-     *            the Object array to sort
+     *            the {@code Object} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception ClassCastException
-     *                when an element in the array does not implement <code>Comparable</code>
-     *                or elements cannot be compared to each other
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws ClassCastException
+     *                if an element in the array does not implement {@code Comparable}
+     *                or some elements cannot be compared to each other.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(Object[] array, int start, int end) {
         if (array == null) {
@@ -3104,27 +3090,25 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the section of the array between the given indices.
-     * Elements will be re-ordered into ascending order according to the given
-     * Comparator.
-     * 
+     * Sorts the specified range in the array using the specified {@code Comparator}.
+     * All elements must be comparable to each other without a
+     * {@code ClassCastException} being thrown.
+     *
      * @param array
-     *            the Object array to sort
+     *            the {@code Object} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
+     *            the last + 1 index to sort.
      * @param comparator
-     *            the Comparator
-     * 
-     * @exception ClassCastException
-     *                when elements in the array cannot be compared to each
-     *                other using the Comparator
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the {@code Comparator}.
+     * @throws ClassCastException
+     *                if elements in the array cannot be compared to each other
+     *                using the {@code Comparator}.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static <T> void sort(T[] array, int start, int end,
             Comparator<? super T> comparator) {
@@ -3148,49 +3132,44 @@ public class Arrays {
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order according to the given Comparator.
+     * Sorts the specified array using the specified {@code Comparator}. All elements
+     * must be comparable to each other without a {@code ClassCastException} being thrown.
      * 
      * @param array
-     *            the Object array to sort
+     *            the {@code Object} array to be sorted.
      * @param comparator
-     *            the Comparator
-     * 
-     * @exception ClassCastException
-     *                when elements in the array cannot be compared to each
-     *                other using the Comparator
+     *            the {@code Comparator}.
+     * @throws ClassCastException
+     *                if elements in the array cannot be compared to each other
+     *                using the {@code Comparator}.
      */
     public static <T> void sort(T[] array, Comparator<? super T> comparator) {
         sort(0, array.length, array, comparator);
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified array in ascending numerical order.
      * 
      * @param array
-     *            the short array to sort
+     *            the {@code short} array to be sorted.
      */
     public static void sort(short[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Performs a sort on the given array. Elements will be re-ordered into
-     * ascending order.
+     * Sorts the specified range in the array in ascending numerical order.
      * 
      * @param array
-     *            the short array to sort
+     *            the {@code short} array to be sorted.
      * @param start
-     *            the start index
+     *            the start index to sort.
      * @param end
-     *            the end index + 1
-     * 
-     * @exception IllegalArgumentException
-     *                when <code>start > end</code>
-     * @exception ArrayIndexOutOfBoundsException
-     *                when <code>start < 0</code> or
-     *                <code>end > array.size()</code>
+     *            the last + 1 index to sort.
+     * @throws IllegalArgumentException
+     *                if {@code start > end}.
+     * @throws ArrayIndexOutOfBoundsException
+     *                if {@code start < 0} or {@code end > array.length}.
      */
     public static void sort(short[] array, int start, int end) {
         if (array == null) {
@@ -3279,18 +3258,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the
-     * <code>boolean[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(boolean)} and separated by
-     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
-     * then <code>&quot;null&quot;</code> is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code boolean[]} passed.
+     * The result is surrounded by brackets ({@code &quot;[]&quot;}), each
+     * element is converted to a {@code String} via the
+     * {@link String#valueOf(boolean)} and separated by {@code &quot;, &quot;}.
+     * If the array is {@code null}, then {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>boolean</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code boolean} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(boolean[] array) {
@@ -3312,18 +3288,15 @@ public class Arrays {
     }
 
     /**
-     * Creates a <code>String</code> representation of the <code>byte[]</code>
-     * passed.
-     * 
-     * The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(int)} and separated by <code>&quot;, &quot;</code>.
-     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
-     * is returned.
-     * 
+     * Creates a {@code String} representation of the {@code byte[]} passed. The
+     * result is surrounded by brackets ({@code &quot;[]&quot;}), each element
+     * is converted to a {@code String} via the {@link String#valueOf(int)} and
+     * separated by {@code &quot;, &quot;}. If the array is {@code null}, then
+     * {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>byte</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code byte} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(byte[] array) {
@@ -3345,18 +3318,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the <code>char[]</code>
-     * passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(char)} and separated by <code>&quot;, &quot;</code>.
-     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
-     * is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code char[]} passed. The
+     * result is surrounded by brackets ({@code &quot;[]&quot;}), each element
+     * is converted to a {@code String} via the {@link String#valueOf(char)} and
+     * separated by {@code &quot;, &quot;}. If the array is {@code null}, then
+     * {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>char</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code char} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(char[] array) {
@@ -3378,18 +3348,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the
-     * <code>double[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(double)} and separated by
-     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
-     * then <code>&quot;null&quot;</code> is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code double[]} passed.
+     * The result is surrounded by brackets ({@code &quot;[]&quot;}), each
+     * element is converted to a {@code String} via the
+     * {@link String#valueOf(double)} and separated by {@code &quot;, &quot;}.
+     * If the array is {@code null}, then {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>double</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code double} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(double[] array) {
@@ -3411,18 +3378,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the
-     * <code>float[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(float)} and separated by
-     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
-     * then <code>&quot;null&quot;</code> is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code float[]} passed.
+     * The result is surrounded by brackets ({@code &quot;[]&quot;}), each
+     * element is converted to a {@code String} via the
+     * {@link String#valueOf(float)} and separated by {@code &quot;, &quot;}.
+     * If the array is {@code null}, then {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>float</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code float} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(float[] array) {
@@ -3444,18 +3408,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the <code>int[]</code>
-     * passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(int)} and separated by <code>&quot;, &quot;</code>.
-     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
-     * is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code int[]} passed. The
+     * result is surrounded by brackets ({@code &quot;[]&quot;}), each element
+     * is converted to a {@code String} via the {@link String#valueOf(int)} and
+     * separated by {@code &quot;, &quot;}. If the array is {@code null}, then
+     * {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>int</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code int} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(int[] array) {
@@ -3477,18 +3438,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the <code>long[]</code>
-     * passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(long)} and separated by <code>&quot;, &quot;</code>.
-     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
-     * is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code long[]} passed. The
+     * result is surrounded by brackets ({@code &quot;[]&quot;}), each element
+     * is converted to a {@code String} via the {@link String#valueOf(long)} and
+     * separated by {@code &quot;, &quot;}. If the array is {@code null}, then
+     * {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>long</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code long} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(long[] array) {
@@ -3510,18 +3468,15 @@ public class Arrays {
     }
 
     /**
-     * Creates a <code>String</code> representation of the
-     * <code>short[]</code> passed.
-     * 
-     * The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(int)} and separated by <code>&quot;, &quot;</code>.
-     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
-     * is returned.
-     * 
+     * Creates a {@code String} representation of the {@code short[]} passed.
+     * The result is surrounded by brackets ({@code &quot;[]&quot;}), each
+     * element is converted to a {@code String} via the
+     * {@link String#valueOf(int)} and separated by {@code &quot;, &quot;}. If
+     * the array is {@code null}, then {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>short</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code short} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(short[] array) {
@@ -3543,18 +3498,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <code>String</code> representation of the
-     * <code>Object[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
-     * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(Object)} and separated by
-     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
-     * then <code>&quot;null&quot;</code> is returned.
-     * </p>
-     * 
+     * Creates a {@code String} representation of the {@code Object[]} passed.
+     * The result is surrounded by brackets ({@code &quot;[]&quot;}), each
+     * element is converted to a {@code String} via the
+     * {@link String#valueOf(Object)} and separated by {@code &quot;, &quot;}.
+     * If the array is {@code null}, then {@code &quot;null&quot;} is returned.
+     *
      * @param array
-     *            The <code>Object</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code Object} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String toString(Object[] array) {
@@ -3576,25 +3528,20 @@ public class Arrays {
     }
 
     /**
-     * <p>
-     * Creates a <i>"deep"</i> <code>String</code> representation of the
-     * <code>Object[]</code> passed, such that if the array contains other
-     * arrays, the <code>String</code> representation of those arrays is
-     * generated as well.
-     * </p>
+     * Creates a <i>"deep"</i> {@code String} representation of the
+     * {@code Object[]} passed, such that if the array contains other arrays,
+     * the {@code String} representation of those arrays is generated as well.
      * <p>
      * If any of the elements are primitive arrays, the generation is delegated
-     * to the other <code>toString</code> methods in this class. If any
-     * element contains a reference to the original array, then it will be
-     * represented as <code>"[...]"</code>. If an element is an
-     * <code>Object[]</code>, then its representation is generated by a
-     * recursive call to this method. All other elements are converted via the
-     * {@link String#valueOf(Object)} method.
-     * </p>
-     * 
+     * to the other {@code toString} methods in this class. If any element
+     * contains a reference to the original array, then it will be represented
+     * as {@code "[...]"}. If an element is an {@code Object[]}, then its
+     * representation is generated by a recursive call to this method. All other
+     * elements are converted via the {@link String#valueOf(Object)} method.
+     *
      * @param array
-     *            The <code>Object</code> array to convert.
-     * @return The <code>String</code> representation of <code>array</code>.
+     *            the {@code Object} array to convert.
+     * @return the {@code String} representation of {@code array}.
      * @since 1.5
      */
     public static String deepToString(Object[] array) {
@@ -3603,19 +3550,17 @@ public class Arrays {
     }
 
     /**
-     * <p>
      * Implementation method used by {@link #deepToString(Object[])}.
-     * </p>
-     * 
+     *
      * @param array
-     *            The <code>Object[]</code> to dive into.
-     * @param original
-     *            The original <code>Object[]</code>; used to test for self
+     *            the {@code Object[]} to dive into.
+     * @param origArrays
+     *            the original {@code Object[]}; used to test for self
      *            references.
      * @param sb
-     *            The <code>StringBuilder</code> instance to append to or
-     *            <code>null</code> one hasn't been created yet.
-     * @return The result.
+     *            the {@code StringBuilder} instance to append to or
+     *            {@code null} one hasn't been created yet.
+     * @return the result.
      * @see #deepToString(Object[])
      */
     private static String deepToStringImpl(Object[] array, Object[] origArrays,
@@ -3696,17 +3641,15 @@ public class Arrays {
     }
 
     /**
-     * <p>
      * Utility method used to assist the implementation of
      * {@link #deepToString(Object[])}.
-     * </p>
-     * 
+     *
      * @param origArrays
      *            An array of Object[] references.
      * @param array
-     *            An Object[] reference to look for in <code>origArrays</code>.
-     * @return A value of <code>true</code> if <code>array</code> is an
-     *         element in <code>origArrays</code>.
+     *            An Object[] reference to look for in {@code origArrays}.
+     * @return A value of {@code true} if {@code array} is an
+     *         element in {@code origArrays}.
      */
     private static boolean deepToStringImplContains(Object[] origArrays,
             Object array) {

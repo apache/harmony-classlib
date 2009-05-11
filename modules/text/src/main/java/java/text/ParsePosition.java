@@ -18,32 +18,34 @@
 package java.text;
 
 /**
- * ParsePosition is used to track the current position in a String being parsed.
+ * Tracks the current position in a parsed string. In case of an error the error
+ * index can be set to the position where the error occurred without having to
+ * change the parse position.
  */
 public class ParsePosition {
 
     private int currentPosition, errorIndex = -1;
 
     /**
-     * Constructs a new ParsePosition at the specified index.
+     * Constructs a new {@code ParsePosition} with the specified index.
      * 
      * @param index
-     *            the index to begin parsing
+     *            the index to begin parsing.
      */
     public ParsePosition(int index) {
         currentPosition = index;
     }
 
     /**
-     * Compares the specified object to this ParsePosition and answer if they
-     * are equal. The object must be an instance of ParsePosition and have the
-     * same index and error index.
+     * Compares the specified object to this {@code ParsePosition} and indicates
+     * if they are equal. In order to be equal, {@code object} must be an
+     * instance of {@code ParsePosition} and it must have the same index and
+     * error index.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this ParsePosition,
-     *         false otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code ParsePosition}; {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -57,31 +59,23 @@ public class ParsePosition {
     }
 
     /**
-     * Answers the index at which the parse could not continue.
+     * Returns the index at which the parse could not continue.
      * 
-     * @return the index of the parse error, or -1 if there is no error
+     * @return the index of the parse error or -1 if there is no error.
      */
     public int getErrorIndex() {
         return errorIndex;
     }
 
     /**
-     * Answers the current parse position.
+     * Returns the current parse position.
      * 
-     * @return the current position
+     * @return the current position.
      */
     public int getIndex() {
         return currentPosition;
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         return currentPosition + errorIndex;
@@ -91,7 +85,7 @@ public class ParsePosition {
      * Sets the index at which the parse could not continue.
      * 
      * @param index
-     *            the index of the parse error
+     *            the index of the parse error.
      */
     public void setErrorIndex(int index) {
         errorIndex = index;
@@ -101,16 +95,16 @@ public class ParsePosition {
      * Sets the current parse position.
      * 
      * @param index
-     *            the current parse position
+     *            the current parse position.
      */
     public void setIndex(int index) {
         currentPosition = index;
     }
 
     /**
-     * Answers the string representation of this FieldPosition.
+     * Returns the string representation of this parse position.
      * 
-     * @return the string representation of this FieldPosition
+     * @return the string representation of this parse position.
      */
     @Override
     public String toString() {

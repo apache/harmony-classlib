@@ -23,6 +23,9 @@ import java.security.Security;
 
 import javax.net.ServerSocketFactory;
 
+/**
+ * The factory for SSL server sockets.
+ */
 public abstract class SSLServerSocketFactory extends ServerSocketFactory {
     // TODO EXPORT CONTROL
 
@@ -31,6 +34,13 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory {
 
     private static String defaultName;
 
+    /**
+     * Returns the default {@code SSLServerSocketFactory} instance. The default
+     * implementation is defined by the security property
+     * "ssl.ServerSocketFactory.provider".
+     *
+     * @return the default {@code SSLServerSocketFactory} instance.
+     */
     public static synchronized ServerSocketFactory getDefault() {
         if (defaultServerSocketFactory != null) {
             return defaultServerSocketFactory;
@@ -69,11 +79,25 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory {
         return defaultServerSocketFactory;
     }
 
+    /**
+     * Creates a new {@code SSLServerSocketFactory} instance.
+     */
     protected SSLServerSocketFactory() {
         super();
     }
 
+    /**
+     * Returns the names of the cipher suites that are enabled by default.
+     *
+     * @return the names of the cipher suites that are enabled by default
+     */
     public abstract String[] getDefaultCipherSuites();
 
+    /**
+     * Returns the list of supported cipher suites that could be enabled for an
+     * SSL connection created by this factory.
+     *
+     * @return the list of supported cipher suites
+     */
     public abstract String[] getSupportedCipherSuites();
 }

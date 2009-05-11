@@ -348,7 +348,7 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_METHOD);
         int count1 = SegmentUtils.countMatches(methodFlags,
                 methodSignatureLayout);
-        long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
+        int[] methodSignatureRS = decodeBandInt("method_signature_RS", in,
                 Codec.UNSIGNED5, count1);
 
         AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(

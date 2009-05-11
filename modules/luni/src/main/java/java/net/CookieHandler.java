@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is ready for managing a stateful cookie with HTTP protocol
+ * This class provides a way to manage cookies with a HTTP protocol handler.
  */
 public abstract class CookieHandler {
 
@@ -34,9 +34,9 @@ public abstract class CookieHandler {
             "setCookieHandler"); //$NON-NLS-1$
 
     /**
-     * Returns a system-wide cookie handler, or null if not set
+     * Returns the system-wide cookie handler or {@code null} if not set.
      * 
-     * @return a cookie handler
+     * @return the system-wide cookie handler.
      */
     public static CookieHandler getDefault() {
         SecurityManager sm = System.getSecurityManager();
@@ -47,10 +47,10 @@ public abstract class CookieHandler {
     }
 
     /**
-     * sets a system-wide cookie handler
+     * Sets the system-wide cookie handler.
      * 
      * @param cHandler
-     *            the cookie handler to set
+     *            a cookie handler to set as the system-wide default handler.
      */
     public static void setDefault(CookieHandler cHandler) {
         SecurityManager sm = System.getSecurityManager();
@@ -61,29 +61,29 @@ public abstract class CookieHandler {
     }
 
     /**
-     * Searchs and gets all cookies in the cache by the specified uri in the
-     * request header.
+     * Gets all cookies for a specific URI from the cookie cache.
      * 
      * @param uri
-     *            the specified uri to search for
+     *            a URI to search for applicable cookies.
      * @param requestHeaders
-     *            a list of request headers
-     * @return a map that record all such cookies, the map is unchangeable
+     *            a list of request headers.
+     * @return an unchangeable map of all appropriate cookies.
      * @throws IOException
-     *             if some error of I/O operation occurs
+     *             if an error occurs during the I/O operation.
      */
     public abstract Map<String, List<String>> get(URI uri,
             Map<String, List<String>> requestHeaders) throws IOException;
 
     /**
-     * Sets cookies according to uri and responseHeaders
+     * Sets all cookies of a specific URI in the {@code responseHeaders} into
+     * the cookie cache.
      * 
      * @param uri
-     *            the specified uri
+     *            the origin URI of the cookies.
      * @param responseHeaders
-     *            a list of request headers
+     *            a list of request headers.
      * @throws IOException
-     *             if some error of I/O operation occurs
+     *             if an error occurs during the I/O operation.
      */
     public abstract void put(URI uri, Map<String, List<String>> responseHeaders)
             throws IOException;

@@ -34,8 +34,15 @@ import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.text.LocaleServiceProviderLoader;
 
 /**
- * DecimalFormatSymbols holds the symbols used in the formating and parsing of
- * numbers.
+ * Encapsulates the set of symbols (such as the decimal separator, the grouping
+ * separator, and so on) needed by {@code DecimalFormat} to format numbers.
+ * {@code DecimalFormat} internally creates an instance of
+ * {@code DecimalFormatSymbols} from its locale data. If you need to change any
+ * of these symbols, you can get the {@code DecimalFormatSymbols} object from
+ * your {@code DecimalFormat} and modify it.
+ *
+ * @see java.util.Locale
+ * @see DecimalFormat
  */
 public class DecimalFormatSymbols implements Cloneable, Serializable {
 
@@ -61,8 +68,10 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     private String infinity, NaN, currencySymbol, intlCurrencySymbol, exponentialSeparator;
 
     /**
-     * Constructs a new DecimalFormatSymbols containing the symbols for the
-     * default Locale.
+     * Constructs a new {@code DecimalFormatSymbols} containing the symbols for
+     * the default locale. Best practice is to create a {@code DecimalFormat}
+     * and then to get the {@code DecimalFormatSymbols} from that object by
+     * calling {@link DecimalFormat#getDecimalFormatSymbols()}.
      */
     public DecimalFormatSymbols() {
         this(Locale.getDefault());
@@ -70,10 +79,12 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     /**
      * Constructs a new DecimalFormatSymbols containing the symbols for the
-     * specified Locale.
+     * specified Locale. Best practice is to create a {@code DecimalFormat}
+     * and then to get the {@code DecimalFormatSymbols} from that object by
+     * calling {@link DecimalFormat#getDecimalFormatSymbols()}.
      * 
      * @param locale
-     *            the Locale
+     *            the locale.
      */
     public DecimalFormatSymbols(Locale locale) {
         com.ibm.icu.text.DecimalFormatSymbols icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(
@@ -194,10 +205,10 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Answers a new DecimalFormatSymbols with the same symbols as this
-     * DecimalFormatSymbols.
+     * Returns a new {@code DecimalFormatSymbols} with the same symbols as this
+     * {@code DecimalFormatSymbols}.
      * 
-     * @return a shallow copy of this DecimalFormatSymbols
+     * @return a shallow copy of this {@code DecimalFormatSymbols}.
      * 
      * @see java.lang.Cloneable
      */
@@ -213,15 +224,14 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Compares the specified object to this DecimalFormatSymbols and answer if
-     * they are equal. The object must be an instance of DecimalFormatSymbols
-     * with the same symbols.
+     * Compares the specified object to this {@code DecimalFormatSymbols} and
+     * indicates if they are equal. In order to be equal, {@code object} must be
+     * an instance of {@code DecimalFormatSymbols} and contain the same symbols.
      * 
      * @param object
-     *            the object to compare with this object
-     * @return true if the specified object is equal to this
-     *         DecimalFormatSymbols, false otherwise
-     * 
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this
+     *         {@code DecimalFormatSymbols}; {@code false} otherwise.
      * @see #hashCode
      */
     @Override
@@ -241,16 +251,16 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Answers the currency.
+     * Returns the currency.
      * <p>
-     * <code>null<code> is returned
-     * if <code>setInternationalCurrencySymbol()</code> has been previously called
-     * with a value that is not a valid ISO 4217 currency code.
+     * {@code null} is returned if {@code setInternationalCurrencySymbol()} has
+     * been previously called with a value that is not a valid ISO 4217 currency
+     * code.
      * <p>
      *
-     * @return		the currency that was set in the constructor, <code>setCurrency()</code>,
-     * 				or <code>setInternationalCurrencySymbol()</code>, or </code>null</code>
-     * 
+     * @return the currency that was set in the constructor or by calling
+     *         {@code setCurrency()} or {@code setInternationalCurrencySymbol()},
+     *         or {@code null} if an invalid currency was set.
      * @see #setCurrency(Currency)
      * @see #setInternationalCurrencySymbol(String)
      */
@@ -259,37 +269,37 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Answers the international currency symbol.
+     * Returns the international currency symbol.
      * 
-     * @return a String
+     * @return the international currency symbol as string.
      */
     public String getInternationalCurrencySymbol() {
         return intlCurrencySymbol;
     }
 
     /**
-     * Answers the currency symbol.
+     * Returns the currency symbol.
      * 
-     * @return a String
+     * @return the currency symbol as string.
      */
     public String getCurrencySymbol() {
         return currencySymbol;
     }
 
     /**
-     * Answers the character which represents the decimal point in a number.
+     * Returns the character which represents the decimal point in a number.
      * 
-     * @return a char
+     * @return the decimal separator character.
      */
     public char getDecimalSeparator() {
         return patternChars[DecimalSeparator];
     }
 
     /**
-     * Answers the character which represents a single digit in a format
+     * Returns the character which represents a single digit in a format
      * pattern.
      * 
-     * @return a char
+     * @return the digit pattern character.
      */
     public char getDigit() {
         return patternChars[Digit];
@@ -305,18 +315,18 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Answers the character used as the thousands separator in a number.
+     * Returns the character used as the thousands separator in a number.
      * 
-     * @return a char
+     * @return the thousands separator character.
      */
     public char getGroupingSeparator() {
         return patternChars[GroupingSeparator];
     }
 
     /**
-     * Answers the String which represents infinity.
+     * Returns the string which represents infinity.
      * 
-     * @return a String
+     * @return the infinity symbol as a string.
      */
     public String getInfinity() {
         return infinity;
@@ -328,65 +338,65 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
-     * Answers the minus sign character.
+     * Returns the minus sign character.
      * 
-     * @return a char
+     * @return the minus sign as a character.
      */
     public char getMinusSign() {
         return patternChars[MinusSign];
     }
 
     /**
-     * Answers the character which represents the decimal point in a monetary
+     * Returns the character which represents the decimal point in a monetary
      * value.
      * 
-     * @return a char
+     * @return the monetary decimal point as a character.
      */
     public char getMonetaryDecimalSeparator() {
         return patternChars[MonetaryDecimalSeparator];
     }
 
     /**
-     * Answers the String which represents NaN.
+     * Returns the string which represents NaN.
      * 
-     * @return a String
+     * @return the symbol NaN as a string.
      */
     public String getNaN() {
         return NaN;
     }
 
     /**
-     * Answers the character which separates the positive and negative patterns
+     * Returns the character which separates the positive and negative patterns
      * in a format pattern.
      * 
-     * @return a char
+     * @return the pattern separator character.
      */
     public char getPatternSeparator() {
         return patternChars[PatternSeparator];
     }
 
     /**
-     * Answers the percent character.
+     * Returns the percent character.
      * 
-     * @return a char
+     * @return the percent character.
      */
     public char getPercent() {
         return patternChars[Percent];
     }
 
     /**
-     * Answers the mille percent sign character.
+     * Returns the per mill sign character.
      * 
-     * @return a char
+     * @return the per mill sign character.
      */
     public char getPerMill() {
         return patternChars[PerMill];
     }
 
     /**
-     * Answers the character which represents zero.
+     * Returns the character which represents zero.
      * 
-     * @return a char
+     * @return the zero character.
      */
     public char getZeroDigit() {
         return patternChars[ZeroDigit];
@@ -396,14 +406,6 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         return patternChars[Exponent];
     }
 
-    /**
-     * Answers an integer hash code for the receiver. Objects which are equal
-     * answer the same value for this method.
-     * 
-     * @return the receiver's hash
-     * 
-     * @see #equals
-     */
     @Override
     public int hashCode() {
         return new String(patternChars).hashCode() + infinity.hashCode()
@@ -414,15 +416,14 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     /**
      * Sets the currency.
      * <p>
-     * The international currency symbol and currency symbol are updated, but
-     * the min and max number of fraction digits stay the same.
+     * The international currency symbol and the currency symbol are updated,
+     * but the min and max number of fraction digits stays the same.
      * <p>
      * 
      * @param currency
-     *            the new currency
-     * 
-     * @throws java.lang.NullPointerException
-     *             if currency is null
+     *            the new currency.
+     * @throws NullPointerException
+     *             if {@code currency} is {@code null}.
      */
     public void setCurrency(Currency currency) {
         if (currency == null) {
@@ -439,13 +440,13 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     /**
      * Sets the international currency symbol.
      * <p>
-     * currency and currency symbol also are updated, if <code>value</code> is
-     * a valid ISO4217 currency code.
+     * The currency and currency symbol are also updated if {@code value} is a
+     * valid ISO4217 currency code.
      * <p>
      * The min and max number of fraction digits stay the same.
      * 
      * @param value
-     *            currency code
+     *            the currency code.
      */
     public void setInternationalCurrencySymbol(String value) {
         if (value == null) {
@@ -471,7 +472,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the currency symbol.
      * 
      * @param value
-     *            a String
+     *            the currency symbol.
      */
     public void setCurrencySymbol(String value) {
         currencySymbol = value;
@@ -481,7 +482,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the character which represents the decimal point in a number.
      * 
      * @param value
-     *            the decimal separator character
+     *            the decimal separator character.
      */
     public void setDecimalSeparator(char value) {
         patternChars[DecimalSeparator] = value;
@@ -491,7 +492,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the character which represents a single digit in a format pattern.
      * 
      * @param value
-     *            the digit character
+     *            the digit character.
      */
     public void setDigit(char value) {
         patternChars[Digit] = value;
@@ -514,17 +515,17 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the character used as the thousands separator in a number.
      * 
      * @param value
-     *            the grouping separator character
+     *            the grouping separator character.
      */
     public void setGroupingSeparator(char value) {
         patternChars[GroupingSeparator] = value;
     }
 
     /**
-     * Sets the String which represents infinity.
+     * Sets the string which represents infinity.
      * 
      * @param value
-     *            the String
+     *            the string representing infinity.
      */
     public void setInfinity(String value) {
         infinity = value;
@@ -534,7 +535,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the minus sign character.
      * 
      * @param value
-     *            the minus sign character
+     *            the minus sign character.
      */
     public void setMinusSign(char value) {
         patternChars[MinusSign] = value;
@@ -545,17 +546,17 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * value.
      * 
      * @param value
-     *            the monetary decimal separator character
+     *            the monetary decimal separator character.
      */
     public void setMonetaryDecimalSeparator(char value) {
         patternChars[MonetaryDecimalSeparator] = value;
     }
 
     /**
-     * Sets the String which represents NaN.
+     * Sets the string which represents NaN.
      * 
      * @param value
-     *            the String
+     *            the string representing NaN.
      */
     public void setNaN(String value) {
         NaN = value;
@@ -566,7 +567,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * a format pattern.
      * 
      * @param value
-     *            the pattern separator character
+     *            the pattern separator character.
      */
     public void setPatternSeparator(char value) {
         patternChars[PatternSeparator] = value;
@@ -576,17 +577,17 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the percent character.
      * 
      * @param value
-     *            the percent character
+     *            the percent character.
      */
     public void setPercent(char value) {
         patternChars[Percent] = value;
     }
 
     /**
-     * Sets the mille percent sign character.
+     * Sets the per mill sign character.
      * 
      * @param value
-     *            the mille percent character
+     *            the per mill character.
      */
     public void setPerMill(char value) {
         patternChars[PerMill] = value;
@@ -596,7 +597,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * Sets the character which represents zero.
      * 
      * @param value
-     *            the zero digit character
+     *            the zero digit character.
      */
     public void setZeroDigit(char value) {
         patternChars[ZeroDigit] = value;

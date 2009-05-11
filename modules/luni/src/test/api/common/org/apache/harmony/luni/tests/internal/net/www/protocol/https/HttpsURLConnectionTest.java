@@ -1254,7 +1254,7 @@ public class HttpsURLConnectionTest extends TestCase {
                     }
 
                     num = is.read(buff);
-                    String message = new String(buff, 0, num);
+                    String message = new String(buff, 0, num, "UTF-8");
                     log("Got request:\n" + message);
                     log("------------------");
 
@@ -1264,7 +1264,7 @@ public class HttpsURLConnectionTest extends TestCase {
                             // client connection sent some data
                             log("try to read client data");
                             num = is.read(buff);
-                            message = new String(buff, 0, num);
+                            message = new String(buff, 0, num, "UTF-8");
                             log("client's data: '" + message + "'");
                             // check the received data
                             assertEquals(clientsData, message);
@@ -1272,7 +1272,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         // just send the response
                         os
                                 .write(("HTTP/1.1 " + responseCode + "\n" + httpsResponseTail)
-                                        .getBytes());
+                                        .getBytes("UTF-8"));
                         log("Simple NON-Proxy work is DONE");
                         continue;
                     }
@@ -1281,7 +1281,7 @@ public class HttpsURLConnectionTest extends TestCase {
                     if (needProxyAuthentication) {
                         log("Authentication required ...");
                         // send Authentication Request
-                        os.write(respAuthenticationRequired.getBytes());
+                        os.write(respAuthenticationRequired.getBytes("UTF-8"));
                         // read response
                         num = is.read(buff);
                         if (num == -1) {
@@ -1295,7 +1295,7 @@ public class HttpsURLConnectionTest extends TestCase {
                             os = peerSocket.getOutputStream();
                             num = is.read(buff);
                         }
-                        message = new String(buff, 0, num);
+                        message = new String(buff, 0, num, "UTF-8");
                         log("Got authenticated request:\n" + message);
                         log("------------------");
                         // check provided authorization credentials
@@ -1310,7 +1310,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         // over persistent connection
                         os
                                 .write(("HTTP/1.1 " + OK_CODE + "\n" + httpsResponseTail)
-                                        .getBytes());
+                                        .getBytes("UTF-8"));
                         log("Sent OK RESPONSE over SSL");
                     } else {
                         // The content of this response will reach proxied
@@ -1320,7 +1320,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         // will just indicate that connection with remote
                         // host has been done
                         // (i.e. SSL tunnel has been established).
-                        os.write(plainResponse.getBytes());
+                        os.write(plainResponse.getBytes("UTF-8"));
                         log("Sent OK RESPONSE");
                     }
 
@@ -1344,7 +1344,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         // read the HTTP request sent by secure connection
                         // (HTTPS request)
                         num = is.read(buff);
-                        message = new String(buff, 0, num);
+                        message = new String(buff, 0, num, "UTF-8");
                         log("[Remote Server] Request from SSL tunnel:\n"
                                 + message);
                         log("------------------");
@@ -1353,7 +1353,7 @@ public class HttpsURLConnectionTest extends TestCase {
                             // client connection sent some data
                             log("[Remote Server] try to read client data");
                             num = is.read(buff);
-                            message = new String(buff, 0, num);
+                            message = new String(buff, 0, num, "UTF-8");
                             log("[Remote Server] client's data: '" + message
                                     + "'");
                             // check the received data
@@ -1364,7 +1364,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         // send the response with specified response code
                         os
                                 .write(("HTTP/1.1 " + responseCode + "\n" + httpsResponseTail)
-                                        .getBytes());
+                                        .getBytes("UTF-8"));
                     }
                     log("Work is DONE");
                 }
@@ -1417,7 +1417,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         + connection.usingProxy());
                 if (connection.getDoOutput()) {
                     // connection configured to post data, do so
-                    connection.getOutputStream().write(clientsData.getBytes());
+                    connection.getOutputStream().write(clientsData.getBytes("UTF-8"));
                 }
                 // read the content of HTTP(s) response
                 InputStream is = connection.getInputStream();
@@ -1429,7 +1429,7 @@ public class HttpsURLConnectionTest extends TestCase {
                         && ((byt = is.read()) != -1)) {
                     buff[num++] = (byte) byt;
                 }
-                String message = new String(buff, 0, num);
+                String message = new String(buff, 0, num, "UTF-8");
                 log("Got content:\n" + message);
                 log("------------------");
                 log("Response code: " + connection.getResponseCode());

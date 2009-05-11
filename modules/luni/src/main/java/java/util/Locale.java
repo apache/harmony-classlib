@@ -32,7 +32,7 @@ import org.apache.harmony.luni.util.PriviAction;
 import com.ibm.icu.util.ULocale;
 
 /**
- * Locale represents a language/country/variant combination. It is an identifier
+ * {@code Locale} represents a language/country/variant combination. It is an identifier
  * which dictates particular conventions for the presentation of information.
  * The language codes are two letter lowercase codes as defined by ISO-639. The
  * country codes are three letter uppercase codes as defined by ISO-3166. The
@@ -41,119 +41,119 @@ import com.ibm.icu.util.ULocale;
  * @see ResourceBundle
  */
 public final class Locale implements Cloneable, Serializable {
-	
-	private static final long serialVersionUID = 9149081749638150636L;
 
-	private static volatile Locale[] availableLocales;
+    private static final long serialVersionUID = 9149081749638150636L;
 
-	// Initialize a default which is used during static
-	// initialization of the default for the platform.
-	private static Locale defaultLocale = new Locale();
+    private static volatile Locale[] availableLocales;
 
-	/**
-	 * Locale constant for en_CA.
-	 */
-	public static final Locale CANADA = new Locale("en", "CA"); //$NON-NLS-1$ //$NON-NLS-2$
+    // Initialize a default which is used during static
+    // initialization of the default for the platform.
+    private static Locale defaultLocale = new Locale();
 
-	/**
-	 * Locale constant for fr_CA.
-	 */
-	public static final Locale CANADA_FRENCH = new Locale("fr", "CA"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for en_CA.
+     */
+    public static final Locale CANADA = new Locale("en", "CA"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh_CN.
-	 */
-	public static final Locale CHINA = new Locale("zh", "CN"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for fr_CA.
+     */
+    public static final Locale CANADA_FRENCH = new Locale("fr", "CA"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh.
-	 */
-	public static final Locale CHINESE = new Locale("zh", "");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for zh_CN.
+     */
+    public static final Locale CHINA = new Locale("zh", "CN"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for en.
-	 */
-	public static final Locale ENGLISH = new Locale("en", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for zh.
+     */
+    public static final Locale CHINESE = new Locale("zh", ""); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for fr_FR.
-	 */
-	public static final Locale FRANCE = new Locale("fr", "FR");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for en.
+     */
+    public static final Locale ENGLISH = new Locale("en", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for fr.
-	 */
-	public static final Locale FRENCH = new Locale("fr", "");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for fr_FR.
+     */
+    public static final Locale FRANCE = new Locale("fr", "FR"); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for de.
-	 */
-	public static final Locale GERMAN = new Locale("de", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for fr.
+     */
+    public static final Locale FRENCH = new Locale("fr", ""); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for de_DE.
-	 */
-	public static final Locale GERMANY = new Locale("de", "DE"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for de.
+     */
+    public static final Locale GERMAN = new Locale("de", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for it.
-	 */
-	public static final Locale ITALIAN = new Locale("it", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for de_DE.
+     */
+    public static final Locale GERMANY = new Locale("de", "DE"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for it_IT.
-	 */
-	public static final Locale ITALY = new Locale("it", "IT"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for it.
+     */
+    public static final Locale ITALIAN = new Locale("it", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for ja_JP.
-	 */
-	public static final Locale JAPAN = new Locale("ja", "JP");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for it_IT.
+     */
+    public static final Locale ITALY = new Locale("it", "IT"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for ja.
-	 */
-	public static final Locale JAPANESE = new Locale("ja", "");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for ja_JP.
+     */
+    public static final Locale JAPAN = new Locale("ja", "JP"); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for ko_KR.
-	 */
-	public static final Locale KOREA = new Locale("ko", "KR");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for ja.
+     */
+    public static final Locale JAPANESE = new Locale("ja", ""); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for ko.
-	 */
-	public static final Locale KOREAN = new Locale("ko", "");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for ko_KR.
+     */
+    public static final Locale KOREA = new Locale("ko", "KR"); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh_CN.
-	 */
-	public static final Locale PRC = new Locale("zh", "CN");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for ko.
+     */
+    public static final Locale KOREAN = new Locale("ko", ""); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh_CN.
-	 */
-	public static final Locale SIMPLIFIED_CHINESE = new Locale("zh", "CN");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for zh_CN.
+     */
+    public static final Locale PRC = new Locale("zh", "CN"); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh_TW.
-	 */
-	public static final Locale TAIWAN = new Locale("zh", "TW"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for zh_CN.
+     */
+    public static final Locale SIMPLIFIED_CHINESE = new Locale("zh", "CN"); //$NON-NLS-1$//$NON-NLS-2$
 
-	/**
-	 * Locale constant for zh_TW.
-	 */
-	public static final Locale TRADITIONAL_CHINESE = new Locale("zh", "TW"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for zh_TW.
+     */
+    public static final Locale TAIWAN = new Locale("zh", "TW"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for en_GB.
-	 */
-	public static final Locale UK = new Locale("en", "GB"); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Locale constant for zh_TW.
+     */
+    public static final Locale TRADITIONAL_CHINESE = new Locale("zh", "TW"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	/**
-	 * Locale constant for en_US.
-	 */
-	public static final Locale US = new Locale("en", "US");  //$NON-NLS-1$//$NON-NLS-2$
+    /**
+     * Locale constant for en_GB.
+     */
+    public static final Locale UK = new Locale("en", "GB"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    /**
+     * Locale constant for en_US.
+     */
+    public static final Locale US = new Locale("en", "US"); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
      * the locale whose language, country, and variant are empty ("") strings.
@@ -161,19 +161,19 @@ public final class Locale implements Cloneable, Serializable {
      */
     public static final Locale ROOT = new Locale("","","");//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
-	private static final PropertyPermission setLocalePermission = new PropertyPermission(
-			"user.language", "write");  //$NON-NLS-1$//$NON-NLS-2$
+    private static final PropertyPermission setLocalePermission = new PropertyPermission(
+            "user.language", "write"); //$NON-NLS-1$//$NON-NLS-2$
 
-	static {
-		String language = AccessController
-				.doPrivileged(new PriviAction<String>("user.language", "en")); //$NON-NLS-1$ //$NON-NLS-2$
-		String region = AccessController.doPrivileged(new PriviAction<String>(
-				"user.country", "US")); //$NON-NLS-1$ //$NON-NLS-2$
+    static {
+        String language = AccessController
+                .doPrivileged(new PriviAction<String>("user.language", "en")); //$NON-NLS-1$ //$NON-NLS-2$
+        String region = AccessController.doPrivileged(new PriviAction<String>(
+                "user.country", "US")); //$NON-NLS-1$ //$NON-NLS-2$
         String variant = AccessController.doPrivileged(new PriviAction<String>(
                 "user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
-		defaultLocale = new Locale(language, region, variant);
-	}
-    
+        defaultLocale = new Locale(language, region, variant);
+    }
+
     private transient String countryCode;
     private transient String languageCode;
     private transient String variantCode;
@@ -190,37 +190,41 @@ public final class Locale implements Cloneable, Serializable {
 		variantCode = ""; //$NON-NLS-1$
 	}
 
-	/**
-	 * Constructs a new Locale using the specified language.
+    /**
+     * Constructs a new {@code Locale} using the specified language.
      * 
-	 * @param language 
-	 * 
-	 */
-	public Locale(String language) {
-		this(language, "", "");  //$NON-NLS-1$//$NON-NLS-2$
-	}
+     * @param language
+     *            the language this {@code Locale} represents.
+     */
+    public Locale(String language) {
+        this(language, "", ""); //$NON-NLS-1$//$NON-NLS-2$
+    }
 
-	/**
-	 * Constructs a new Locale using the specified language and country codes.
+    /**
+     * Constructs a new {@code Locale} using the specified language and country codes.
      * 
-	 * @param language 
-	 * @param country 
-	 * 
-	 */
-	public Locale(String language, String country) {
-		this(language, country, ""); //$NON-NLS-1$
-	}
+     * @param language
+     *            the language this {@code Locale} represents.
+     * @param country
+     *            the country this {@code Locale} represents.
+     */
+    public Locale(String language, String country) {
+        this(language, country, ""); //$NON-NLS-1$
+    }
 
-	/**
-     * Constructs a new Locale using the specified language, country, and
+    /**
+     * Constructs a new {@code Locale} using the specified language, country, and
      * variant codes.
      * 
      * @param language
+     *            the language this {@code Locale} represents.
      * @param country
+     *            the country this {@code Locale} represents.
      * @param variant
+     *            the variant this {@code Locale} represents.
      * @throws NullPointerException
-     *             if <code>language</code>, <code>country</code> or
-     *             <code>variant</code> is <code>null</code>.
+     *             if {@code language}, {@code country}, or
+     *             {@code variant} is {@code null}.
      */
     public Locale(String language, String country, String variant) {
         if (language == null || country == null || variant == null) {
@@ -251,66 +255,64 @@ public final class Locale implements Cloneable, Serializable {
         variantCode = variant;
     }
 
-	/**
-	 * Answers a new Locale with the same language, country and variant codes as
-	 * this Locale.
-	 * 
-	 * @return a shallow copy of this Locale
-	 * 
-	 * @see java.lang.Cloneable
-	 */
-	@Override
+    /**
+     * Returns a new {@code Locale} with the same language, country and variant codes as
+     * this {@code Locale}.
+     * 
+     * @return a shallow copy of this {@code Locale}.
+     * @see java.lang.Cloneable
+     */
+    @Override
     public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
-	}
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
 
-	/**
-	 * Compares the specified object to this Locale and answer if they are
-	 * equal. The object must be an instance of Locale and have the same
-	 * language, country and variant.
-	 * 
-	 * @param object
-	 *            the object to compare with this object
-	 * @return true if the specified object is equal to this Locale, false
-	 *         otherwise
-	 * 
-	 * @see #hashCode
-	 */
-	@Override
+    /**
+     * Compares the specified object to this {@code Locale} and returns whether they are
+     * equal. The object must be an instance of {@code Locale} and have the same
+     * language, country and variant.
+     * 
+     * @param object
+     *            the object to compare with this object.
+     * @return {@code true} if the specified object is equal to this {@code Locale},
+     *         {@code false} otherwise.
+     * @see #hashCode
+     */
+    @Override
     public boolean equals(Object object) {
-		if (object == this) {
+        if (object == this) {
             return true;
         }
-		if (object instanceof Locale) {
-			Locale o = (Locale) object;
-			return languageCode.equals(o.languageCode)
-					&& countryCode.equals(o.countryCode)
-					&& variantCode.equals(o.variantCode);
-		}
-		return false;
-	}
+        if (object instanceof Locale) {
+            Locale o = (Locale) object;
+            return languageCode.equals(o.languageCode)
+                    && countryCode.equals(o.countryCode)
+                    && variantCode.equals(o.variantCode);
+        }
+        return false;
+    }
 
-	static Locale[] find(String prefix) {
-		int last = prefix.lastIndexOf('/');
-		final String thePackage = prefix.substring(0, last + 1);
-		int length = prefix.length();
+    static Locale[] find(String prefix) {
+        int last = prefix.lastIndexOf('/');
+        final String thePackage = prefix.substring(0, last + 1);
+        int length = prefix.length();
         final String classPrefix = prefix.substring(last + 1, length);
-		Set<String> result = new HashSet<String>();
-		StringTokenizer paths = new StringTokenizer(System.getProperty(
-				"org.apache.harmony.boot.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
-				"path.separator", ";"));  //$NON-NLS-1$//$NON-NLS-2$
-		while (paths.hasMoreTokens()) {
-			String nextToken = paths.nextToken();
-			File directory = new File(nextToken);
-			if (directory.exists()) {
-				if (directory.isDirectory()) {
+        Set<String> result = new HashSet<String>();
+        StringTokenizer paths = new StringTokenizer(System.getProperty(
+                "org.apache.harmony.boot.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
+                "path.separator", ";")); //$NON-NLS-1$//$NON-NLS-2$
+        while (paths.hasMoreTokens()) {
+            String nextToken = paths.nextToken();
+            File directory = new File(nextToken);
+            if (directory.exists()) {
+                if (directory.isDirectory()) {
                     String path;
                     try {
-						path = directory.getCanonicalPath();
+                        path = directory.getCanonicalPath();
                     } catch (IOException e) {
                         continue;
                     }
@@ -333,347 +335,355 @@ public final class Locale implements Cloneable, Serializable {
                             }
                         }
                     }
-					
-				} else {
-					// Handle ZIP/JAR files.
-					try {
-						ZipFile zip = new ZipFile(directory);
-						Enumeration<? extends ZipEntry> entries = zip.entries();
-						while (entries.hasMoreElements()) {
+
+                } else {
+                    // Handle ZIP/JAR files.
+                    try {
+                        ZipFile zip = new ZipFile(directory);
+                        Enumeration<? extends ZipEntry> entries = zip.entries();
+                        while (entries.hasMoreElements()) {
                             ZipEntry e = entries.nextElement();
-							String name = e.getName();
-							if (name.startsWith(prefix)
+                            String name = e.getName();
+                            if (name.startsWith(prefix)
                                     && name.endsWith(".class")) {//$NON-NLS-1$
                                 result.add(name.substring(last + 1, name
                                         .length() - 6));
                             }
-						}
-						zip.close();
-					} catch (IOException e) {
-                       // Empty
-					}
-				}
-			}
-		}
-		Locale[] locales = new Locale[result.size()];
+                        }
+                        zip.close();
+                    } catch (IOException e) {
+                        // Empty
+                    }
+                }
+            }
+        }
+        Locale[] locales = new Locale[result.size()];
         int i = 0;
-		for (String name: result) {
-			int index = name.indexOf('_');
-			int nextIndex = name.indexOf('_', index + 1);
-			if (nextIndex == -1) {
+        for (String name : result) {
+            int index = name.indexOf('_');
+            int nextIndex = name.indexOf('_', index + 1);
+            if (nextIndex == -1) {
                 locales[i++] = new Locale(name.substring(index + 1, name
                         .length()), ""); //$NON-NLS-1$
-			}else{
-    			String language = name.substring(index + 1, nextIndex);
-    			String variant;
-    			if ((index = name.indexOf('_', nextIndex + 1)) == -1) {
-    				variant = ""; //$NON-NLS-1$
-    				index = name.length();
-    			} else {
+            } else {
+                String language = name.substring(index + 1, nextIndex);
+                String variant;
+                if ((index = name.indexOf('_', nextIndex + 1)) == -1) {
+                    variant = ""; //$NON-NLS-1$
+                    index = name.length();
+                } else {
                     variant = name.substring(index + 1, name.length());
                 }
-    			String country = name.substring(nextIndex + 1, index);
+                String country = name.substring(nextIndex + 1, index);
                 locales[i++] = new Locale(language, country, variant);
             }
-		}
-		return locales;
-	}
+        }
+        return locales;
+    }
 
 	/**
-	 * Gets the list of installed Locales.
-	 * 
-	 * @return an array of Locale
+     * Gets the list of installed {@code Locale}. At least a {@code Locale} that is equal to
+     * {@code Locale.US} must be contained in this array.
+     *
+     * @return an array of {@code Locale}s.
 	 */
 	public static Locale[] getAvailableLocales() {
 		ULocale[] ulocales =  ULocale.getAvailableLocales();
         Locale[] locales = new Locale[ulocales.length];
         for (int i = 0; i < locales.length; i++) {
             locales[i] = ulocales[i].toLocale();
-                        }
-        return locales;
         }
-
-	/**
-	 * Gets the country code for this Locale.
-	 * 
-	 * @return a country code
-	 */
-	public String getCountry() {
-		return countryCode;
+        return locales;
 	}
 
-	/**
-	 * Gets the default Locale.
-	 * 
-	 * @return the default Locale
-	 */
-	public static Locale getDefault() {
-		return defaultLocale;
-	}
+    /**
+     * Gets the country code for this {@code Locale} or an empty string of no country
+     * was set.
+     * 
+     * @return a country code.
+     */
+    public String getCountry() {
+        return countryCode;
+    }
 
-	/**
-	 * Gets the full country name in the default Locale for the country code of
-	 * this Locale. If there is no matching country name, the country code is
-	 * returned.
-	 * 
-	 * @return a country name
-	 */
-	public final String getDisplayCountry() {
-		return getDisplayCountry(getDefault());
-	}
+    /**
+     * Gets the default {@code Locale}.
+     * 
+     * @return the default {@code Locale}.
+     */
+    public static Locale getDefault() {
+        return defaultLocale;
+    }
 
-	/**
-	 * Gets the full country name in the specified Locale for the country code
-	 * of this Locale. If there is no matching country name, the country code is
-	 * returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a country name
-	 */
+    /**
+     * Gets the full country name in the default {@code Locale} for the country code of
+     * this {@code Locale}. If there is no matching country name, the country code is
+     * returned.
+     * 
+     * @return a country name.
+     */
+    public final String getDisplayCountry() {
+        return getDisplayCountry(getDefault());
+    }
+
+    /**
+     * Gets the full country name in the specified {@code Locale} for the country code
+     * of this {@code Locale}. If there is no matching country name, the country code is
+     * returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a country name.
+     */
 	public String getDisplayCountry(Locale locale) {
 		return ULocale.forLocale(this).getDisplayCountry(ULocale.forLocale(locale));
-        }
-
-	/**
-	 * Gets the full language name in the default Locale for the language code
-	 * of this Locale. If there is no matching language name, the language code
-	 * is returned.
-	 * 
-	 * @return a language name
-	 */
-	public final String getDisplayLanguage() {
-		return getDisplayLanguage(getDefault());
 	}
 
-	/**
-	 * Gets the full language name in the specified Locale for the language code
-	 * of this Locale. If there is no matching language name, the language code
-	 * is returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a language name
-	 */
+    /**
+     * Gets the full language name in the default {@code Locale} for the language code
+     * of this {@code Locale}. If there is no matching language name, the language code
+     * is returned.
+     * 
+     * @return a language name.
+     */
+    public final String getDisplayLanguage() {
+        return getDisplayLanguage(getDefault());
+    }
+
+    /**
+     * Gets the full language name in the specified {@code Locale} for the language code
+     * of this {@code Locale}. If there is no matching language name, the language code
+     * is returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a language name.
+     */
 	public String getDisplayLanguage(Locale locale) {
         return ULocale.forLocale(this).getDisplayLanguage(ULocale.forLocale(locale));
-        }
-
-	/**
-	 * Gets the full language, country, and variant names in the default Locale
-	 * for the codes of this Locale.
-	 * 
-	 * @return a Locale name
-	 */
-	public final String getDisplayName() {
-		return getDisplayName(getDefault());
 	}
 
-	/**
-	 * Gets the full language, country, and variant names in the specified
-	 * Locale for the codes of this Locale.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a Locale name
-	 */
-	public String getDisplayName(Locale locale) {
-		int count = 0;
-		StringBuffer buffer = new StringBuffer();
-		if (languageCode.length() > 0) {
-			buffer.append(getDisplayLanguage(locale));
-			count++;
-		}
-		if (countryCode.length() > 0) {
-			if (count == 1) {
+    /**
+     * Gets the full language, country, and variant names in the default {@code Locale}
+     * for the codes of this {@code Locale}.
+     * 
+     * @return a {@code Locale} name.
+     */
+    public final String getDisplayName() {
+        return getDisplayName(getDefault());
+    }
+
+    /**
+     * Gets the full language, country, and variant names in the specified
+     * Locale for the codes of this {@code Locale}.
+     * 
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a {@code Locale} name.
+     */
+    public String getDisplayName(Locale locale) {
+        int count = 0;
+        StringBuffer buffer = new StringBuffer();
+        if (languageCode.length() > 0) {
+            buffer.append(getDisplayLanguage(locale));
+            count++;
+        }
+        if (countryCode.length() > 0) {
+            if (count == 1) {
                 buffer.append(" ("); //$NON-NLS-1$
             }
-			buffer.append(getDisplayCountry(locale));
-			count++;
-		}
-		if (variantCode.length() > 0) {
-			if (count == 1) {
+            buffer.append(getDisplayCountry(locale));
+            count++;
+        }
+        if (variantCode.length() > 0) {
+            if (count == 1) {
                 buffer.append(" ("); //$NON-NLS-1$
             } else if (count == 2) {
                 buffer.append(","); //$NON-NLS-1$
             }
-			buffer.append(getDisplayVariant(locale));
-			count++;
-		}
-		if (count > 1) {
+            buffer.append(getDisplayVariant(locale));
+            count++;
+        }
+        if (count > 1) {
             buffer.append(")"); //$NON-NLS-1$
         }
-		return buffer.toString();
-	}
+        return buffer.toString();
+    }
 
-	/**
-	 * Gets the full variant name in the default Locale for the variant code of
-	 * this Locale. If there is no matching variant name, the variant code is
-	 * returned.
-	 * 
-	 * @return a variant name
-	 */
-	public final String getDisplayVariant() {
-		return getDisplayVariant(getDefault());
-	}
+    /**
+     * Gets the full variant name in the default {@code Locale} for the variant code of
+     * this {@code Locale}. If there is no matching variant name, the variant code is
+     * returned.
+     * 
+     * @return a variant name.
+     */
+    public final String getDisplayVariant() {
+        return getDisplayVariant(getDefault());
+    }
 
-	/**
-	 * Gets the full variant name in the specified Locale for the variant code
-	 * of this Locale. If there is no matching variant name, the variant code is
-	 * returned.
-	 * 
-	 * @param locale
-	 *            the Locale
-	 * @return a variant name
-	 */
+    /**
+     * Gets the full variant name in the specified {@code Locale} for the variant code
+     * of this {@code Locale}. If there is no matching variant name, the variant code is
+     * returned.
+     *
+     * @param locale
+     *            the {@code Locale} for which the display name is retrieved.
+     * @return a variant name.
+     */
 	public String getDisplayVariant(Locale locale) {
         return ULocale.forLocale(this).getDisplayVariant(ULocale.forLocale(locale));
-        }
+	}
 
-	/**
-	 * Gets the three letter ISO country code which corresponds to the country
-	 * code for this Locale.
-	 * 
-	 * @return a three letter ISO language code
-	 * 
-	 * @exception MissingResourceException
-	 *                when there is no matching three letter ISO country code
-	 */
+    /**
+     * Gets the three letter ISO country code which corresponds to the country
+     * code for this {@code Locale}.
+     *
+     * @return a three letter ISO language code.
+     * @throws MissingResourceException
+     *                if there is no matching three letter ISO country code.
+     */
 	public String getISO3Country() throws MissingResourceException {
         return ULocale.forLocale(this).getISO3Country();
-        }
+	}
 
-	/**
-	 * Gets the three letter ISO language code which corresponds to the language
-	 * code for this Locale.
-	 * 
-	 * @return a three letter ISO language code
-	 * 
-	 * @exception MissingResourceException
-	 *                when there is no matching three letter ISO language code
-	 */
+    /**
+     * Gets the three letter ISO language code which corresponds to the language
+     * code for this {@code Locale}.
+     *
+     * @return a three letter ISO language code.
+     * @throws MissingResourceException
+     *                if there is no matching three letter ISO language code.
+     */
 	public String getISO3Language() throws MissingResourceException {
         return ULocale.forLocale(this).getISO3Language();
-        }
+	}
 
-	/**
-	 * Gets the list of two letter ISO country codes which can be used as the
-	 * country code for a Locale.
-	 * 
-	 * @return an array of String
-	 */
-	public static String[] getISOCountries() {
+    /**
+     * Gets the list of two letter ISO country codes which can be used as the
+     * country code for a {@code Locale}.
+     * 
+     * @return an array of strings.
+     */
+    public static String[] getISOCountries() {
         return ULocale.getISOCountries();
-        }
+    }
 
-	/**
-	 * Gets the list of two letter ISO language codes which can be used as the
-	 * language code for a Locale.
-	 * 
-	 * @return an array of String
-	 */
+    /**
+     * Gets the list of two letter ISO language codes which can be used as the
+     * language code for a {@code Locale}.
+     *
+     * @return an array of strings.
+     */
 	public static String[] getISOLanguages() {
         return ULocale.getISOLanguages();
-        }
-
-	/**
-	 * Gets the language code for this Locale.
-	 * 
-	 * @return a language code
-	 */
-	public String getLanguage() {
-		return languageCode;
 	}
 
-	/**
-	 * Gets the variant code for this Locale.
-	 * 
-	 * @return a variant code
-	 */
-	public String getVariant() {
-		return variantCode;
-	}
+    /**
+     * Gets the language code for this {@code Locale} or the empty string of no language
+     * was set.
+     * 
+     * @return a language code.
+     */
+    public String getLanguage() {
+        return languageCode;
+    }
 
-	/**
-	 * Answers an integer hash code for the receiver. Objects which are equal
-	 * answer the same value for this method.
-	 * 
-	 * @return the receiver's hash
-	 * 
-	 * @see #equals
-	 */
-	@Override
+    /**
+     * Gets the variant code for this {@code Locale} or an empty {@code String} of no variant
+     * was set.
+     * 
+     * @return a variant code.
+     */
+    public String getVariant() {
+        return variantCode;
+    }
+
+    /**
+     * Returns an integer hash code for the receiver. Objects which are equal
+     * return the same value for this method.
+     * 
+     * @return the receiver's hash.
+     * @see #equals
+     */
+    @Override
     public synchronized int hashCode() {
-		return countryCode.hashCode() + languageCode.hashCode()
-				+ variantCode.hashCode();
-	}
+        return countryCode.hashCode() + languageCode.hashCode()
+                + variantCode.hashCode();
+    }
 
-	/**
-	 * Sets the default Locale to the specified Locale.
-	 * 
-	 * @param locale
-	 *            the new default Locale
-	 * 
-	 * @exception SecurityException
-	 *                when there is a security manager which does not allow this
-	 *                operation
-	 */
-	public synchronized static void setDefault(Locale locale) {
-		if (locale != null) {
-			SecurityManager security = System.getSecurityManager();
-			if (security != null) {
+    /**
+     * Sets the default {@code Locale} to the specified {@code Locale}.
+     * 
+     * @param locale
+     *            the new default {@code Locale}.
+     * @throws SecurityException
+     *                if there is a {@code SecurityManager} in place which does not allow this
+     *                operation.
+     */
+    public synchronized static void setDefault(Locale locale) {
+        if (locale != null) {
+            SecurityManager security = System.getSecurityManager();
+            if (security != null) {
                 security.checkPermission(setLocalePermission);
             }
-			defaultLocale = locale;
-		} else {
+            defaultLocale = locale;
+        } else {
             throw new NullPointerException();
         }
-	}
+    }
 
-	/**
-	 * Answers the string representation of this Locale.
-	 * 
-	 * @return the string representation of this Locale
-	 */
-	@Override
+    /**
+     * Returns the string representation of this {@code Locale}. It consists of the
+     * language followed by the country and at the end the variant. They are
+     * separated by underscores. If the language is missing the string begins
+     * with an underscore. If the country is missing there are 2 underscores
+     * between the language and the variant. the variant alone canot be defined
+     * without a language and/or a country (in this case this method would
+     * return the empty string).
+     *
+     * Examples: "en", "en_US", "_US", "en__POSIX", "en_US_POSIX"
+     *
+     * @return the string representation of this {@code Locale}.
+     */
+    @Override
     public final String toString() {
-		StringBuilder result = new StringBuilder();
-		result.append(languageCode);
-		if (countryCode.length() > 0) {
-			result.append('_');
-			result.append(countryCode);
-		}
-		if (variantCode.length() > 0 && result.length() > 0 ) {
-			if (0 == countryCode.length()) {
+        StringBuilder result = new StringBuilder();
+        result.append(languageCode);
+        if (countryCode.length() > 0) {
+            result.append('_');
+            result.append(countryCode);
+        }
+        if (variantCode.length() > 0 && result.length() > 0) {
+            if (0 == countryCode.length()) {
                 result.append("__"); //$NON-NLS-1$
             } else {
                 result.append('_');
             }
-			result.append(variantCode);
-		}
-		return result.toString();
-	}
+            result.append(variantCode);
+        }
+        return result.toString();
+    }
 
-	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("country", String.class), //$NON-NLS-1$
-			new ObjectStreamField("hashcode", Integer.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("language", String.class), //$NON-NLS-1$
-			new ObjectStreamField("variant", String.class) }; //$NON-NLS-1$
+    private static final ObjectStreamField[] serialPersistentFields = {
+            new ObjectStreamField("country", String.class), //$NON-NLS-1$
+            new ObjectStreamField("hashcode", Integer.TYPE), //$NON-NLS-1$
+            new ObjectStreamField("language", String.class), //$NON-NLS-1$
+            new ObjectStreamField("variant", String.class) }; //$NON-NLS-1$
 
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		ObjectOutputStream.PutField fields = stream.putFields();
-		fields.put("country", countryCode); //$NON-NLS-1$
-		fields.put("hashcode", -1); //$NON-NLS-1$
-		fields.put("language", languageCode); //$NON-NLS-1$
-		fields.put("variant", variantCode); //$NON-NLS-1$
-		stream.writeFields();
-	}
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        ObjectOutputStream.PutField fields = stream.putFields();
+        fields.put("country", countryCode); //$NON-NLS-1$
+        fields.put("hashcode", -1); //$NON-NLS-1$
+        fields.put("language", languageCode); //$NON-NLS-1$
+        fields.put("variant", variantCode); //$NON-NLS-1$
+        stream.writeFields();
+    }
 
-	private void readObject(ObjectInputStream stream) throws IOException,
-			ClassNotFoundException {
-		ObjectInputStream.GetField fields = stream.readFields();
-		countryCode = (String) fields.get("country", "");  //$NON-NLS-1$//$NON-NLS-2$
-		languageCode = (String) fields.get("language", "");  //$NON-NLS-1$//$NON-NLS-2$
-		variantCode = (String) fields.get("variant", "");  //$NON-NLS-1$//$NON-NLS-2$
-	}
+    private void readObject(ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
+        ObjectInputStream.GetField fields = stream.readFields();
+        countryCode = (String) fields.get("country", ""); //$NON-NLS-1$//$NON-NLS-2$
+        languageCode = (String) fields.get("language", ""); //$NON-NLS-1$//$NON-NLS-2$
+        variantCode = (String) fields.get("variant", ""); //$NON-NLS-1$//$NON-NLS-2$
+    }
 }

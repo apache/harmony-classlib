@@ -21,10 +21,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * <p>
- * An annotation for marking an element as deprecated.
- * </p>
- * 
+ * Annotation type used to mark program elements that should no longer be used
+ * by programmers. Compilers produce a warning if a deprecated program element
+ * is used.
+ *
  * @since 1.5
  */
 @Documented

@@ -20,37 +20,38 @@ package javax.sql;
 import java.sql.SQLException;
 
 /**
- * An interface for the creation of PooledConnection objects. Used internally
- * within the package.
+ * An interface for the creation of {@code ConnectionPoolDataSource} objects.
+ * Used internally within the package.
  * <p>
- * A class which implements the ConnectionPoolDataSource interface is typically
- * registered with a JNDI naming service directory and is retrieved from there
- * by name.
+ * A class which implements the {@code ConnectionPoolDataSource} interface is
+ * typically registered with a JNDI naming service directory and is retrieved
+ * from there by name.
  */
 public interface ConnectionPoolDataSource extends CommonDataSource {
 
     /**
-     * Create a connection to a database which can then be used as a pooled
+    /**
+     * Creates a connection to a database which can then be used as a pooled
      * connection.
      * 
-     * @return a PooledConnection which represents the connection to the
-     *         database
+     * @return a {@code PooledConnection} which represents the connection to the
+     *         database.
      * @throws SQLException
      *             if there is a problem accessing the database.
      */
     public PooledConnection getPooledConnection() throws SQLException;
 
     /**
-     * Create a connection to a database, using a supplied Username and
-     * Password, which can then be used as a pooled connection.
+     * Creates a connection to a database, using the supplied user name and
+     * password, which can then be used as a pooled connection.
      * 
      * @param theUser
-     *            a String containing a User Name for the database
+     *            the a user name for the database login.
      * @param thePassword
-     *            a String containing the Password for the user identified by
-     *            <code>theUser</code>
-     * @return a PooledConnection which represents the connection to the
-     *         database
+     *            the password associated with the user identified by {@code
+     *            theUser}.
+     * @return a {@code PooledConnection} object which represents the connection
+     *         to the database.
      * @throws SQLException
      *             if there is a problem accessing the database.
      */

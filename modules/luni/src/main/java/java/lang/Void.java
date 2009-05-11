@@ -20,14 +20,14 @@ package java.lang;
 import java.lang.reflect.Method;
 
 /**
- * This class is a placeholder class for the Java keyword <code>void</code>
+ * Placeholder class for the Java keyword {@code void}.
+ *
  * @since 1.1
  */
 public final class Void extends Object {
     
-	/**
-     * The {@link Class} instance that represents primitive type
-     * <code>void</code>.
+    /**
+     * The {@link Class} object that represents the primitive type {@code void}.
      */
     public static final Class<Void> TYPE = lookupType();
 

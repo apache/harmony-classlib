@@ -19,8 +19,9 @@ package java.lang;
 
 
 /**
- * This class is the superclass of all classes which represent errors which
- * occur when inconsistant class files are loaded into the same running image.
+ * {@code IncompatibleClassChangeError} is the superclass of all classes which
+ * represent errors that occur when inconsistent class files are loaded into
+ * the same running image.
  * 
  * @see Error
  */
@@ -29,20 +30,21 @@ public class IncompatibleClassChangeError extends LinkageError {
     private static final long serialVersionUID = -4914975503642802119L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public IncompatibleClassChangeError() {
-		super();
-	}
+     * Constructs a new {@code IncompatibleClassChangeError} that includes the
+     * current stack trace.
+     */
+    public IncompatibleClassChangeError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public IncompatibleClassChangeError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new {@code IncompatibleClassChangeError} with the current
+     * stack trace and the specified detail message.
+     * 
+     * @param detailMessage
+     *            the detail message for this error.
+     */
+    public IncompatibleClassChangeError(String detailMessage) {
+        super(detailMessage);
+    }
 }
