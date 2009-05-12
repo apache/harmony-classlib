@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
@@ -84,7 +85,11 @@ public class Segment implements ClassVisitor {
             Pack200ClassReader classReader = (Pack200ClassReader) iterator
                     .next();
             currentClassReader = classReader;
-            classReader.accept(this, 0);
+            int flags = ClassReader.SKIP_FRAMES;
+            if(stripDebug) {
+                flags |= ClassReader.SKIP_DEBUG;
+            }
+            classReader.accept(this, flags);
         }
     }
 
