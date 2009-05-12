@@ -59,19 +59,21 @@ public class FileChannelTest extends TestCase {
 
     private static final byte[] TEST_BYTES;
 
+    private static final byte[] CONTENT_AS_BYTES;
+
+    private static final int CONTENT_AS_BYTES_LENGTH;
+
     static {
         try {
             TEST_BYTES = "test".getBytes("iso8859-1");
+            CONTENT_AS_BYTES = CONTENT.getBytes("iso8859-1");
+            CONTENT_AS_BYTES_LENGTH = CONTENT_AS_BYTES.length;
         } catch (UnsupportedEncodingException e) {
             throw new Error(e);
         }
     }
 
     private static final int CONTENT_LENGTH = CONTENT.length();
-
-    private static final byte[] CONTENT_AS_BYTES = CONTENT.getBytes();
-
-    private static final int CONTENT_AS_BYTES_LENGTH = CONTENT_AS_BYTES.length;
 
     private FileChannel readOnlyFileChannel;
 
