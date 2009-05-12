@@ -181,7 +181,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readv
     vectors[i].iov_len = lengths[i];
     i++;
   }
-  totalRead = readv(fd, vectors, size);
+  totalRead = readv(fd-FD_BIAS, vectors, size);
   if(bufsCopied){
     (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
   }
@@ -223,7 +223,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
     vectors[i].iov_len = lengths[i];
     i++;
   }
-  totalWritten = writev(fd, vectors, size);
+  totalWritten = writev(fd-FD_BIAS, vectors, size);
   if(bufsCopied){
     (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
   }
@@ -255,7 +255,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
 #if defined(AIX) || defined(ZOS)
   {
     struct sf_parms parms;
-    parms.file_descriptor = (int)fd;
+    parms.file_descriptor = (int)fd-FD_BIAS;
     parms.file_offset = (off64_t)offset;
     parms.file_bytes = count;
     parms.header_data = 0;
@@ -270,9 +270,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
    */
   off_t off = offset;
 #if !defined(FREEBSD)
-  return sendfile(socket,(int)fd,(off_t *)&off,(size_t)count);	
+  return sendfile(socket,(int)fd-FD_BIAS,(off_t *)&off,(size_t)count);	
 #else
-  return sendfile(fd, socket, off, (size_t)count, NULL, NULL, 0);
+  return sendfile(fd-FD_BIAS, socket, off, (size_t)count, NULL, NULL, 0);
 #endif
 #endif
 }

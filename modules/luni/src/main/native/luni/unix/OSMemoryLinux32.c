@@ -30,6 +30,12 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 /* z/OS mman.h does not define MAP_FAILED - it should always be ((void*)-1) */
 #ifndef MAP_FAILED
 #define MAP_FAILED      ((void *) -1)
@@ -171,7 +177,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
         return -1;
     }
 
-  mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags,fd,(off_t)(alignment&0x7fffffff));
+  mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags, fd-FD_BIAS, (off_t)(alignment&0x7fffffff));
   if (mapAddress == MAP_FAILED)
     {
       return -1;
