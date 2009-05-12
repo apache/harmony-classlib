@@ -106,6 +106,12 @@ public class HashtableTest extends junit.framework.TestCase {
 				ht.get("Ooga") == secondVal);
 	}
 
+    public void test_HashTable_Constructor() {
+        Hashtable hashTable = new Hashtable();
+        hashTable.put(hashTable, hashTable.keySet());
+        new Hashtable(hashTable);
+    }
+
 	/**
 	 * @tests java.util.Hashtable#clear()
 	 */
@@ -578,6 +584,28 @@ public class HashtableTest extends junit.framework.TestCase {
 		Object k = h.remove("FKey 0");
 		assertTrue("Remove failed", !h.containsKey("FKey 0") || k == null);
 	}
+
+    public void test_HashTable_remove_scenario1() {
+        Hashtable hashTable = new Hashtable();
+        Set keySet = hashTable.keySet();
+        hashTable.put(hashTable, keySet);
+        hashTable.remove(hashTable);
+    }
+
+    public void test_HashTable_remove_scenario2() {
+        Hashtable hashTable = new Hashtable();
+        Set keySet = hashTable.keySet();
+        hashTable.put(hashTable, hashTable);
+        hashTable.remove(hashTable);
+    }
+
+    public void test_HashTable_remove_scenario3() {
+        Hashtable hashTable = new Hashtable();
+        Hashtable keyHashTable = new Hashtable();
+        keyHashTable.put(hashTable, keyHashTable);
+        hashTable.put(keyHashTable, hashTable);
+        hashTable.remove(keyHashTable);
+    }
 
 	/**
 	 * @tests java.util.Hashtable#size()
