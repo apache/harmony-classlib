@@ -215,11 +215,6 @@ ${built.files.list}
             <fileset file="${bcprov.jar}" />
         </copy>
 
-        <!-- Copy across the jdk/lib dependency jars -->
-        <copy todir="${hy.jdk}/lib" flatten="yes">
-            <fileset file="${ecj.jar}" />
-        </copy>
-
         <!-- Copy across the support files -->
         <copy todir="${hy.jdk}/jre/lib">
             <fileset dir="${depends.files}">
