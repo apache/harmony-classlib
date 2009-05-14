@@ -748,7 +748,12 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     @Override
     public Object clone() {
         try {
-            return super.clone();
+            IdentityHashMap<K, V> cloneHashMap = (IdentityHashMap<K, V>) super
+                    .clone();
+            cloneHashMap.elementData = newElementArray(elementData.length);
+            System.arraycopy(elementData, 0, cloneHashMap.elementData, 0,
+                    elementData.length);
+            return cloneHashMap;
         } catch (CloneNotSupportedException e) {
             return null;
         }
