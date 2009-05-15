@@ -256,8 +256,11 @@ public class PropertyChangeSupport implements Serializable {
         }
 
         // Collect up the global listeners
-        PropertyChangeListener[] gListeners = globalListeners
-                .toArray(new PropertyChangeListener[0]);
+        PropertyChangeListener[] gListeners;
+        synchronized(this) {
+            gListeners = globalListeners.toArray(new PropertyChangeListener[0]);
+        }
+
         // Fire the events for global listeners
         for (int i = 0; i < gListeners.length; i++) {
             gListeners[i].propertyChange(event);
