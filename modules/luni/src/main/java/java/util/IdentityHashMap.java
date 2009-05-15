@@ -267,7 +267,10 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
     }
 
     private int computeElementArraySize() {
-        return (int) (((long) threshold * 10000) / loadFactor) * 2;
+        int arraySize = (int) (((long) threshold * 10000) / loadFactor) * 2;
+        // ensure arraySize is positive, the above cast from long to int type
+        // leads to overflow and negative arraySize if threshold is too big
+        return arraySize < 0 ? -arraySize : arraySize;
     }
 
     /**
