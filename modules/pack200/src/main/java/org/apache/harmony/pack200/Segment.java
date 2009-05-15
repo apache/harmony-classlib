@@ -95,7 +95,7 @@ public class Segment implements ClassVisitor {
 
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
-        bcBands.setCurrentClass(name);
+        bcBands.setCurrentClass(name, superName);
         segmentHeader.addMajorVersion(version);
         classBands.addClass(version, access, name, signature, superName,
                 interfaces);
