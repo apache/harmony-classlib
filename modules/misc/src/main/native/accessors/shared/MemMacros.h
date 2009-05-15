@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-#ifdef __linux__
+#if  defined(__linux__) || defined(MACOSX)
     #include <stdint.h>
 #else
     #include <stddef.h>
@@ -81,7 +81,7 @@
 #endif /* ifdef __i386__ */
 
 /* windows section */
-#else 
+#else
 
 #define get_unaligned(type, ptr) ( *((type *)((uintptr_t)(ptr))) )
 #define set_unaligned(type, ptr, val) ( (void) (*((type *)((uintptr_t)(ptr))) = val) )
