@@ -369,21 +369,21 @@ public class BcBands extends BandSet {
                 opcode += 24; // change to invokevirtual_this,
                 // invokespecial_this etc.
 
-//                if(name.equals("<init>") && opcode == 207) {
-//                    opcode = 230; // invokespecial_this_init
-//                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-//                } else {
+                if(name.equals("<init>") && opcode == 207) {
+                    opcode = 230; // invokespecial_this_init
+                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+                } else {
                     bcThisMethod.add(cpBands.getCPMethod(owner, name, desc));
-//                }
+                }
             } else if (owner.equals(superClass)) { // TODO
                 opcode += 38; // change to invokevirtual_super,
                 // invokespecial_super etc.
-//                if(name.equals("<init>") && opcode == 221) {
-//                    opcode = 231; // invokespecial_super_init
-//                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-//                } else {
+                if(name.equals("<init>") && opcode == 221) {
+                    opcode = 231; // invokespecial_super_init
+                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+                } else {
                     bcSuperMethod.add(cpBands.getCPMethod(owner, name, desc));
-//                }
+                }
             } else {
                 if (aload_0) {
                     opcode -= 7;
@@ -392,12 +392,12 @@ public class BcBands extends BandSet {
                     // special rewrite in this
                     // case.
                 }
-//                if(name.equals("<init>") && opcode == 183 && owner.equals(currentNewClass)) {
-//                    opcode = 232; // invokespecial_new_init
-//                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-//                } else {
+                if(name.equals("<init>") && opcode == 183 && owner.equals(currentNewClass)) {
+                    opcode = 232; // invokespecial_new_init
+                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+                } else {
                     bcMethodRef.add(cpBands.getCPMethod(owner, name, desc));
-//                }
+                }
             }
             bcCodes.add(opcode);
             break;
