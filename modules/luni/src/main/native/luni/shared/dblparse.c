@@ -22,7 +22,7 @@
 #include "harmonyglob.h"
 #include "exceptions.h"
 
-#if defined(LINUX) || defined(FREEBSD) || defined(ZOS)
+#if defined(LINUX) || defined(FREEBSD) || defined(ZOS) || defined(MACOSX)
 #define USE_LL
 #endif
 
@@ -673,7 +673,7 @@ Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl (JNIEnv * env
  *           1.234123412431233E107
  *           1.2341234124312331E107
  *           1.2341234124312331E107
- * 
+ *
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_luni_util_NumberConverter_bigIntDigitGeneratorInstImpl (JNIEnv *

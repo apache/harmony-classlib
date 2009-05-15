@@ -101,7 +101,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
   	  jboolean result = 0;
   	  IDATA m_addr = (IDATA)addr;
 	  int page_size = getPageSize();
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
 #define HY_VEC_T char
 #else
 #define HY_VEC_T unsigned char
@@ -143,7 +143,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size)
 {
-    munmap((void *)((IDATA)addr), (size_t)size); 
+    munmap((void *)((IDATA)addr), (size_t)size);
 }
 
 /*
@@ -157,7 +157,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   //PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
-		  
+
   // Convert from Java mapping mode to port library mapping mode.
   switch (mmode)
     {
