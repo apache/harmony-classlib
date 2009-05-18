@@ -468,13 +468,6 @@ public abstract class Toolkit {
             }
             staticLockAWT();
             try {
-                String className = org.apache.harmony.awt.Utils.getSystemProperty("awt.toolkit"); //$NON-NLS-1$
-            	if (null != className) {
-                    try {
-                        defToolkit = (Toolkit) Class.forName(className).newInstance();
-                    } catch (Exception e) {}
-            	}
-            	if (null == defToolkit)
                 defToolkit = GraphicsEnvironment.isHeadless() ?
                         new HeadlessToolkit() : new ToolkitImpl();
                 ContextStorage.setDefaultToolkit(defToolkit);
@@ -482,6 +475,9 @@ public abstract class Toolkit {
             } finally {
                 staticUnlockAWT();
             }
+            //TODO: read system property named awt.toolkit
+            //and create an instance of the specified class,
+            //by default use ToolkitImpl
         }
     }
 
@@ -500,16 +496,13 @@ public abstract class Toolkit {
     private static String getWTKClassName() {
         String osName = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
         String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        String className = org.apache.harmony.awt.Utils.getSystemProperty("awt.wtk"); //$NON-NLS-1$
-
-        if (className == null) {
         if (osName.startsWith(lin)) {
-                className = packageBase + "." + lin + ".LinuxWTK"; //$NON-NLS-1$ //$NON-NLS-2$
-            } else if (osName.startsWith(win)) {
-                className = packageBase + "." + win + ".WinWTK"; //$NON-NLS-1$ //$NON-NLS-2$
+            return packageBase + "." + lin + ".LinuxWTK"; //$NON-NLS-1$ //$NON-NLS-2$
         }
+        if (osName.startsWith(win)) {
+            return packageBase + "." + win + ".WinWTK"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return className;
+        return null;
     }
 
     Component getComponentById(long id) {
