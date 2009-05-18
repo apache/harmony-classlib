@@ -597,4 +597,9 @@ public class CpBands extends BandSet {
         return getCPIMethod(getCPClass(owner), name, desc);
     }
 
+    public boolean existsCpClass(String className) {
+        CPClass cpClass = (CPClass) stringsToCpClass.get(className);
+        return cpClass != null;
+    }
+
 }
