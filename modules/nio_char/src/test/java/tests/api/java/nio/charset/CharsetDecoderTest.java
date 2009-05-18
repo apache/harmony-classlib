@@ -795,7 +795,12 @@ public class CharsetDecoderTest extends TestCase {
             int inPosition = in.position();
             byte[] input = new byte[in.remaining()];
             in.get(input);
-            String result = new String(input);
+            String result;
+            try {
+                result = new String(input, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new AssertionError(e);
+            }
             if (result.startsWith("malform")) {
                 // reset the cursor to the error position
                 in.position(inPosition);
