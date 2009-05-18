@@ -239,7 +239,10 @@ class OSFileSystem implements IFileSystem {
                     try {
                         throw new FileNotFoundException(new String(fileName, "UTF-8"));
                     } catch (java.io.UnsupportedEncodingException e) {
-                        throw new FileNotFoundException(new String(fileName));
+                        // UTF-8 should always be supported, so throw an assertion
+                        FileNotFoundException fnfe = new FileNotFoundException(new String(fileName));
+                        e.initCause(fnfe);
+                        throw new AssertionError(e);
                     }
 		}
 		return handler;
