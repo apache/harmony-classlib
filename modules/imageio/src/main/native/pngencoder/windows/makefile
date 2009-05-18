@@ -35,6 +35,6 @@ MDLLIBFILES = $(MDLLIBFILES) \
   $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) $(PNG_DIR)libpng$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
-COMMENT=/comment:"PNGENCODER native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"PNGENCODER native code. (c) Copyright 2005, 2009 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

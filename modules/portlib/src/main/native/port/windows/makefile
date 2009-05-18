@@ -44,6 +44,6 @@ SYSLIBFILES = \
 	ws2_32.lib Iphlpapi.lib shell32.lib
 
 DLLBASE=0x11100000
-COMMENT=/comment:"Platform port library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"Platform port library. (c) Copyright 1993, 2009 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>
