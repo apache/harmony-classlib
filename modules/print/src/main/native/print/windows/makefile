@@ -42,7 +42,7 @@ MDLLIBFILES = #\
 #  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
 
 DLLBASE=0x13300000
-COMMENT=/comment:"Print native code. (c) Copyright 2005, 2009 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"Print native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>
 

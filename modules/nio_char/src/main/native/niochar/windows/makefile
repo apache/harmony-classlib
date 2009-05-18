@@ -121,6 +121,6 @@ VIRTFILES = hynio_char.res
 
   
 DLLBASE=0x13200000
-COMMENT=/comment:"nio_char component native code. (c) Copyright 1991, 2009 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"nio_char component native code. (c) Copyright 1991, 2008 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

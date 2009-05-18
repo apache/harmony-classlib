@@ -36,6 +36,6 @@ MDLLIBFILES = $(MDLLIBFILES) \
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
 	$(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x1300000
-COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2009 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>
