@@ -115,7 +115,7 @@ JNIEXPORT jobjectArray JNICALL
         for (j = 0; j < numFamilies; j++) {
 
 #ifdef DEBUG
-            font = FcNameUnparse (fs->fonts[j]);
+            FcChar8* font = FcNameUnparse (fs->fonts[j]);
             printf ("%s\n", font);
             free (font);
 #endif /* DEBUG */
@@ -910,9 +910,11 @@ JNIEXPORT jobjectArray JNICALL
             }
 
 #ifdef DEBUG
-            font = FcNameUnparse (fs->fonts[j]);
-            printf ("%s\n", font);
-            free(font);
+            {
+             FcChar8* font = FcNameUnparse (fs->fonts[j]);
+             printf ("%s\n", font);
+             free(font);
+            }
 #endif /* DEBUG */
 
             if (XftPatternGetString (fs->fonts[j], XFT_STYLE, 0, &style) != XftResultMatch) {
