@@ -155,6 +155,8 @@
             </fileset>
             <fileset file="${support.dir}/src/test/resources/hyts_Foo.c"/>
         </copy>
+        <copy file="${support.dir}/src/test/resources/config/testing.policy" 
+              todir="${hy.hdk}/build/test" outputencoding="UTF-8" />
     </target>
 
     <target name="check-support-jars"
@@ -182,7 +184,7 @@
             
 
             <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+            <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
             <!-- Required for running the java.net unit tests -->
             <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
@@ -223,7 +225,7 @@
             <!-- required to be unset on Linux -->
 
             <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+            <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
             <!-- Required for running the java.net unit tests -->
             <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />

@@ -55,7 +55,7 @@
         <run-tests module="luni" jar="luni_tests_api.jar">
             <junit-elements>
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=${target.dir}/luni/resources/config/testing.policy" />
+                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
                 <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
@@ -65,7 +65,7 @@
         <run-tests module="luni" jar="luni_tests_impl.jar">
             <junit-elements>
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=${target.dir}/luni/resources/config/testing.policy" />
+                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
                 <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
