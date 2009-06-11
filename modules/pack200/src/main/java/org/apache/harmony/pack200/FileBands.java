@@ -18,44 +18,58 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.harmony.pack200.Archive.File;
+import org.objectweb.asm.ClassReader;
 
 public class FileBands extends BandSet {
 
     private final CPUTF8[] fileName;
     private int[] file_name;
-    private final long[] file_modtime;
+    private final int[] file_modtime;
     private final long[] file_size;
     private final int[] file_options;
     private final byte[][] file_bits;
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
-            List files, int effort) {
+            List files, List classes, int effort) {
         super(effort, segmentHeader);
         int size =  files.size();
         fileName = new CPUTF8[size];
-        file_modtime = new long[size];
+        file_modtime = new int[size];
         file_size = new long[size];
         file_options = new int[size];
-        CPUTF8 emptyString = cpBands.getCPUtf8("");
         int totalSize = 0;
         file_bits = new byte[files.size()][];
-         for (int i = 0; i < files.size(); i++) {
+        int archiveModtime = segmentHeader.getArchive_modtime();
+
+        Set classNames = new HashSet();
+        for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
+            ClassReader reader = (ClassReader) iterator.next();
+            classNames.add(reader.getClassName());
+        }
+        CPUTF8 emptyString = cpBands.getCPUtf8("");
+        for (int i = 0; i < files.size(); i++) {
              File file = (File)files.get(i);
              String name = file.getName();
-             fileName[i] = cpBands.getCPUtf8(name); // TODO: sometimes this can be the empty string
              if(name.endsWith(".class")) {
-//                 fileName[i] = emptyString;
                  file_options[i] |= (1 << 1);
-//             } else {
-//                 fileName[i] = cpBands.getCPUtf8(name);
+                 if(classNames.contains(name.substring(0, name.length() - 6))) {
+                     fileName[i] = emptyString;
+                 } else {
+                     fileName[i] = cpBands.getCPUtf8(name);
+                 }
+             } else {
+                 fileName[i] = cpBands.getCPUtf8(name);
              }
              byte[] bytes = file.getContents();
              file_size[i] = bytes.length;
              totalSize += file_size[i];
-             file_modtime[i] = file.getModtime();
+             file_modtime[i] = (int)(file.getModtime() - archiveModtime);
              file_bits[i] = file.getContents();
          }
     }
@@ -72,7 +86,7 @@ public class FileBands extends BandSet {
         out.write(encodeFlags("file_size", file_size, Codec.UNSIGNED5,
                 Codec.UNSIGNED5, segmentHeader.have_file_size_hi()));
         if (segmentHeader.have_file_modtime()) {
-            out.write(encodeBandInt("file_modtime", file_name, Codec.DELTA5));
+            out.write(encodeBandInt("file_modtime", file_modtime, Codec.DELTA5));
         }
         if (segmentHeader.have_file_options()) {
             out.write(encodeBandInt("file_options", file_options,

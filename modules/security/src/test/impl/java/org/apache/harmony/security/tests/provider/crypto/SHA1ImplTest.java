@@ -19,6 +19,8 @@
 package org.apache.harmony.security.tests.provider.crypto;
 
 
+import java.io.UnsupportedEncodingException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -99,13 +101,13 @@ public class SHA1ImplTest extends TestCase {
      * The test checks out that SHA1Impl computes correct value
      * if data supplied takes exactly fourteen words of sixteen word buffer.
      */
-    public final void testMultiBlockMessage() {
+    public final void testMultiBlockMessage() throws UnsupportedEncodingException {
 
         // values defined in examples in Secure Hash Standard
         int[] hash  = {0x84983e44, 0x1c3bd26e, 0xbaae4aa1, 0xf95129e5, 0xe54670f1 };
 
         // string defined in examples in Secure Hash Standard
-        md.update("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq".getBytes());
+        md.update("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq".getBytes("UTF-8"));
         byte[] dgst = md.digest();
 
         for ( int k = 0; k < 5; k++ ) {

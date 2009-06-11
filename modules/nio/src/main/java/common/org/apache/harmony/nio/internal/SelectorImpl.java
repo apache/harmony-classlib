@@ -153,7 +153,7 @@ final class SelectorImpl extends AbstractSelector {
         }
     }
 
-    private void ensureCapacity(int c) {
+    private void ensureCommonCapacity(int c) {
         // TODO: rewrite array handling as some internal class
         if (c >= keys.length) {
             SelectionKey[] newKeys = new SelectionKey[(keys.length + 1) << 1];
@@ -175,13 +175,6 @@ final class SelectorImpl extends AbstractSelector {
             keysToWritableFDs = newKeysToWritableFDs;
         }
 
-        if (readableKeysCount >= readableFDs.length) {
-            FileDescriptor[] newReadableFDs = new FileDescriptor[(readableFDs.length + 1) << 1];
-            System.arraycopy(readableFDs, 0, newReadableFDs, 0,
-                    readableFDs.length);
-            readableFDs = newReadableFDs;
-        }
-
         if (readableKeysCount >= readableFDsToKeys.length) {
             int[] newReadableFDsToKeys = new int[(readableFDsToKeys.length + 1) << 1];
             System.arraycopy(readableFDsToKeys, 0, newReadableFDsToKeys, 0,
@@ -189,18 +182,32 @@ final class SelectorImpl extends AbstractSelector {
             readableFDsToKeys = newReadableFDsToKeys;
         }
 
-        if (writableKeysCount >= writableFDs.length) {
-            FileDescriptor[] newWriteableFDs = new FileDescriptor[(writableFDs.length + 1) << 1];
-            System.arraycopy(writableFDs, 0, newWriteableFDs, 0,
-                    writableFDs.length);
-            writableFDs = newWriteableFDs;
-        }
-
         if (writableKeysCount >= writableFDsToKeys.length) {
             int[] newWritableFDsToKeys = new int[(writableFDsToKeys.length + 1) << 1];
             System.arraycopy(writableFDsToKeys, 0, newWritableFDsToKeys, 0,
                     writableFDsToKeys.length);
             writableFDsToKeys = newWritableFDsToKeys;
+        }
+
+    }
+
+    // prepare the space specified for the READ ops
+    private void ensureReadCapacity(int c) {
+        if (readableKeysCount >= readableFDs.length) {
+            FileDescriptor[] newReadableFDs = new FileDescriptor[(readableFDs.length + 1) << 1];
+            System.arraycopy(readableFDs, 0, newReadableFDs, 0,
+                    readableFDs.length);
+            readableFDs = newReadableFDs;
+        }
+    }
+
+    // prepare the space specified for the WRITE ops
+    private void ensureWriteCapacity(int c) {
+        if (writableKeysCount >= writableFDs.length) {
+            FileDescriptor[] newWriteableFDs = new FileDescriptor[(writableFDs.length + 1) << 1];
+            System.arraycopy(writableFDs, 0, newWriteableFDs, 0,
+                    writableFDs.length);
+            writableFDs = newWriteableFDs;
         }
     }
 
@@ -221,7 +228,7 @@ final class SelectorImpl extends AbstractSelector {
         int c = lastKeyIndex;
 
         // make sure that enough space is available
-        ensureCapacity(c);
+        ensureCommonCapacity(c);
 
         // add to keys storage
         keys[c] = sk;
@@ -236,6 +243,7 @@ final class SelectorImpl extends AbstractSelector {
 
         // if readable operations requested
         if (((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & ops) != 0) {
+            ensureReadCapacity(c);
             // save as readable FD
             readableFDs[readableKeysCount] = fd;
 
@@ -248,6 +256,7 @@ final class SelectorImpl extends AbstractSelector {
 
         // if writable operations requested
         if (((SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE) & ops) != 0) {
+            ensureWriteCapacity(c);
             // save as writable FD
             writableFDs[writableKeysCount] = fd;
 
@@ -363,7 +372,8 @@ final class SelectorImpl extends AbstractSelector {
             synchronized (keysSet) {
                 synchronized (selectedKeys) {
                     delKey(sk);
-                    addKey(sk);
+                    int newIndex = addKey(sk);
+                    ((SelectionKeyImpl)sk).setIndex(newIndex);
                 }
             }
         }

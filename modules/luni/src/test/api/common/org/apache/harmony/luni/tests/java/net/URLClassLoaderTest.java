@@ -18,6 +18,7 @@
 package org.apache.harmony.luni.tests.java.net;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -29,6 +30,10 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
 import junit.framework.TestCase;
 import tests.support.Support_Configuration;
@@ -477,4 +482,35 @@ public class URLClassLoaderTest extends TestCase {
         in = this.getClass().getResourceAsStream("test%25.properties");
         assertNull(in);
     }
+    
+    /**
+     * Regression test for HARMONY-6074
+     */
+    public void test_findClassLjava_lang_String_Jar_Class_Path() throws Exception{
+        File resources = Support_Resources.createTempFolder();
+        String resPath = resources.toString();
+        if (resPath.charAt(0) == '/' || resPath.charAt(0) == '\\') {
+            resPath = resPath.substring(1);
+        }
+        
+        Support_Resources.copyFile(resources, "JarIndex", "hyts_11.jar");
+        Support_Resources.copyFile(resources, "JarIndex", "hyts_13.jar");
+
+        JarFile jarFile = new JarFile(resources.getAbsolutePath() + "/JarIndex/hyts_11.jar");
+        Manifest mf = jarFile.getManifest(); 
+        Attributes attrs = mf.getMainAttributes();
+        attrs.putValue("Class-Path", "file:/" + resPath + "/JarIndex/hyts_13.jar");
+        
+        File mainJar = new File(resources.getAbsolutePath() + "/JarIndex/main.jar");
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(mainJar), mf);
+        jos.flush();
+        jos.close();
+        assertTrue(mainJar.exists());
+
+        URL[] urls = new URL[1];
+        urls[0] = new URL("file:/" + resPath + "/JarIndex/main.jar");
+        ucl = URLClassLoader.newInstance(urls, null);
+        assertNotNull(Class.forName("Main2", true, ucl));
+    }
+
 }

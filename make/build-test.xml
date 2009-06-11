@@ -21,14 +21,15 @@
 
     <description> Tests for classlib package</description>
 
+    <property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
 
     <!-- set global properties for this build. -->
 
     <property name="tests.output" location="build/test_report" />
-    <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <property name="tests.build.output" location="build/tests" />
     <property name="tests.support.output" location="build/test_support" />
@@ -96,6 +97,7 @@
         <jar destfile="${hy.hdk}/build/test/support.jar"
              manifest="support/META-INF/MANIFEST.MF">
             <fileset dir="${tests.support.output}" />
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
         <copy todir="${hy.hdk}/build/test"> 
         <fileset dir="${jetty.dir}">
@@ -155,6 +157,8 @@
             </fileset>
             <fileset file="${support.dir}/src/test/resources/hyts_Foo.c"/>
         </copy>
+        <copy file="${support.dir}/src/test/resources/config/testing.policy" 
+              todir="${hy.hdk}/build/test" outputencoding="UTF-8" />
     </target>
 
     <target name="check-support-jars"
@@ -182,7 +186,7 @@
             
 
             <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+            <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
             <!-- Required for running the java.net unit tests -->
             <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
@@ -223,7 +227,7 @@
             <!-- required to be unset on Linux -->
 
             <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
+            <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
             <!-- Required for running the java.net unit tests -->
             <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />

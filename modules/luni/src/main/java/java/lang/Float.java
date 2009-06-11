@@ -393,11 +393,10 @@ public final class Float extends Number implements Comparable<Float> {
         // Deal with +0.0 and -0.0
         int f1 = floatToRawIntBits(float1);
         int f2 = floatToRawIntBits(float2);
-
-        if (f1 == f2) {
-            return 0;
-        }
-        return (f1 < f2) ? -1 : 1;
+        // The below expression is equivalent to:
+        // (f1 == f2) ? 0 : (f1 < f2) ? -1 : 1
+        // because f1 and f2 are either 0 or Integer.MIN_VALUE
+        return (f1 >> 31) - (f2 >> 31);
     }
 
     /**

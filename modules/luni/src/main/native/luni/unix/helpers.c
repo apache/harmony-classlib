@@ -314,7 +314,7 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
     // tmStruct->tm_isdst is set to 1 if DST is in effect
     strcpy(tzInfo, "GMT");
     tzInfo[3] = timezone > 0 ? '-' : '+';
-#if defined (FREEBSD)
+#if defined (FREEBSD) || defined(MACOSX)
     h = labs(tmStruct->tm_gmtoff) / 3600;
 #else /* !FREEBSD */
     h = labs(timezone) / 3600;
@@ -326,7 +326,7 @@ getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
             h++;
         }
     }
-#if defined (FREEBSD)
+#if defined (FREEBSD) || defined(MACOSX)
     m = (labs(tmStruct->tm_isdst) % 3600) / 60;
 #else /* !FREEBSD */
     m = (labs(timezone) % 3600) / 60;

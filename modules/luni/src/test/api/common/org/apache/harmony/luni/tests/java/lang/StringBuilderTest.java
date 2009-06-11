@@ -572,6 +572,15 @@ public class StringBuilderTest extends TestCase {
 		} catch (StringIndexOutOfBoundsException e) {
 			// Expected
 		}
+
+                // HARMONY 6212
+                sb = new StringBuilder();
+                sb.append("abcde");
+                String str = sb.toString();
+                sb.delete(0, sb.length());
+                sb.append("YY");
+                assertEquals("abcde", str);
+                assertEquals("YY", sb.toString());
 	}
 
 	/**

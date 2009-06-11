@@ -18,4 +18,4 @@
 /* A copyright string included in each DLL and executable */
 
 const char hyCopyright[] =
-  "(c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable.";
+  "(c) Copyright 1991, 2009 The Apache Software Foundation or its licensors, as applicable.";

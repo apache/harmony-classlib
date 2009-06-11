@@ -493,7 +493,7 @@ public final class URL implements java.io.Serializable {
      *            the URL this instance has to be compared with.
      * @return {@code true} if both instances represents the same URL, {@code
      *         false} otherwise.
-     * @see #hashCode
+     * @see #hashCode()
      */
     @Override
     public boolean equals(Object o) {

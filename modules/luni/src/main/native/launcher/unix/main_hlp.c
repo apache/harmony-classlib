@@ -40,7 +40,7 @@
 #if defined(LINUX)
 #include <sys/sysinfo.h>
 #endif
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -62,7 +62,7 @@ static IDATA readSymbolicLink (char *linkFilename, char **result);
 static IDATA searchSystemPath (char *filename, char **result);
 
 
-int 
+int
 main_get_executable_name (char *argv0, char **result)
 {
 
@@ -203,7 +203,7 @@ main_mem_allocate_memory (int byteAmount)
 	return pointer;
 }
 
-void 
+void
 main_mem_free_memory (void *memoryPointer)
 {
 	free (memoryPointer);
@@ -229,13 +229,13 @@ isSymbolicLink (char *filename)
 }
 
 /**
- * @internal  Returns the current working directory.  
+ * @internal  Returns the current working directory.
  *
  * @return 0 on success, -1 on failure.
  *
- * @note The buffer to hold this string (including its terminating NUL) is allocated with 
- * main_mem_allocate_memory.  The caller should free this memory with 
- * main_mem_free_memory when it is no longer needed. 
+ * @note The buffer to hold this string (including its terminating NUL) is allocated with
+ * main_mem_allocate_memory.  The caller should free this memory with
+ * main_mem_free_memory when it is no longer needed.
  */
 static IDATA
 cwdname (char **result)
@@ -382,7 +382,7 @@ main_close_port_library (UDATA descriptor)
   return (UDATA) dlclose ((void *)descriptor);
 }
 
-/** 
+/**
  * Opens a shared library .
  *
  * @param[out] descriptor Pointer to memory which is filled in with shared-library handle on success.

@@ -47,7 +47,7 @@ BUILDFILES = \
 # OPT is overriden except on zOS (fpic, for example, is not an option on zOS)
 ifneq ($(HY_OS),zos)
 ifneq ($(HY_OS),aix)
-OPT = -O0 -ffloat-store -fpic
+OPT = -O0 -ffloat-store -fPIC
 endif
 endif
 

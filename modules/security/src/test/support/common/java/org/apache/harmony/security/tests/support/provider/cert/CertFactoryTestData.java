@@ -22,6 +22,8 @@
 
 package org.apache.harmony.security.tests.support.provider.cert;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.harmony.luni.util.Base64;
 
 /**
@@ -293,28 +295,28 @@ public class CertFactoryTestData {
         "-----END X509 CRL-----\n";
 
     
-    public static byte[] getCertPathPKCS7Encoding() {
-        return Base64.decode(certPathPKCS7Base64.getBytes());
+    public static byte[] getCertPathPKCS7Encoding() throws UnsupportedEncodingException {
+        return Base64.decode(certPathPKCS7Base64.getBytes("UTF-8"));
     }
 
-    public static byte[] getCertPathPkiPathEncoding() {
-        return Base64.decode(certPathPkiPathBase64.getBytes());
+    public static byte[] getCertPathPkiPathEncoding() throws UnsupportedEncodingException {
+        return Base64.decode(certPathPkiPathBase64.getBytes("UTF-8"));
     }
 
-    public static byte[] getCertEncoding() {
-        return Base64.decode(certEncodingBase64.getBytes());
+    public static byte[] getCertEncoding() throws UnsupportedEncodingException {
+        return Base64.decode(certEncodingBase64.getBytes("UTF-8"));
     }
 
-    public static byte[] getBase64CertEncoding() {
-        return base64certEncoding.getBytes();
+    public static byte[] getBase64CertEncoding() throws UnsupportedEncodingException {
+        return base64certEncoding.getBytes("UTF-8");
     }
 
-    public static byte[] getBase64CRLEncoding() {
-        return crlEncodingPEM.getBytes();
+    public static byte[] getBase64CRLEncoding() throws UnsupportedEncodingException {
+        return crlEncodingPEM.getBytes("UTF-8");
     }
 
-    public static byte[] getCRLEncoding() {
-        return Base64.decode(crlEncodingBase64.getBytes());
+    public static byte[] getCRLEncoding() throws UnsupportedEncodingException {
+        return Base64.decode(crlEncodingBase64.getBytes("UTF-8"));
     }
 }
 

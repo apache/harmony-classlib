@@ -357,6 +357,59 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 				.equals(newset));
 	}
 
+    public void test_clone_scenario1() {
+        IdentityHashMap hashMap = new IdentityHashMap();
+        assertEquals(0, hashMap.hashCode());
+        Object cloneHashMap = hashMap.clone();
+        ((IdentityHashMap) cloneHashMap).put("key", "value");
+        assertEquals(0, hashMap.hashCode());
+        assertTrue(0 != cloneHashMap.hashCode());
+    }
+
+    public void test_clone_scenario2() {
+        IdentityHashMap hashMap = new IdentityHashMap();
+        assertEquals(0, hashMap.hashCode());
+        Object cloneHashMap = hashMap.clone();
+        hashMap.put("key", "value");
+        assertEquals(1, hashMap.size());
+        assertEquals(0, ((IdentityHashMap) cloneHashMap).size());
+        assertEquals("value", hashMap.get("key"));
+        assertNull(((IdentityHashMap) cloneHashMap).get("key"));
+        assertTrue(0 != hashMap.hashCode());
+        assertEquals(0, cloneHashMap.hashCode());
+    }
+
+    public void test_clone_scenario3() {
+        IdentityHashMap hashMap = new IdentityHashMap();
+        assertEquals(0, hashMap.hashCode());
+        hashMap.put("key", "value");
+        Object cloneHashMap = hashMap.clone();
+        assertEquals(1, hashMap.size());
+        assertEquals(1, ((IdentityHashMap) cloneHashMap).size());
+        assertEquals("value", hashMap.get("key"));
+        assertEquals("value", ((IdentityHashMap) cloneHashMap).get("key"));
+        assertEquals(hashMap.hashCode(), cloneHashMap.hashCode());
+    }
+
+    public void test_clone_scenario4() {
+        IdentityHashMap hashMap = new IdentityHashMap();
+        Object cloneHashMap = hashMap.clone();
+        assertNull(((IdentityHashMap) cloneHashMap).get((Object) null));
+        hashMap.put((Object) null, cloneHashMap);
+        assertNull(((IdentityHashMap) cloneHashMap).get((Object) null));
+        assertEquals(cloneHashMap, hashMap.get((Object) null));
+    }
+
+    public void test_clone_scenario5() throws Exception {
+        IdentityHashMap hashMap = new IdentityHashMap();
+        Object cloneHashMap = hashMap.clone();
+        assertNull(hashMap.remove((Object) null));
+        ((IdentityHashMap) cloneHashMap).put((Object) null, cloneHashMap);
+        assertNull(hashMap.remove((Object) null));
+        assertEquals(cloneHashMap, ((IdentityHashMap) cloneHashMap)
+                .get((Object) null));
+    }
+
     // comparator for IdentityHashMap objects
     private static final SerializableAssert COMPARATOR = new SerializableAssert() {
         public void assertDeserialized(Serializable initial,

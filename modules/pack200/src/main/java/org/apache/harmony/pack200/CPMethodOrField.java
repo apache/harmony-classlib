@@ -20,7 +20,8 @@ public class CPMethodOrField extends ConstantPoolEntry implements Comparable {
 
     private final CPClass className;
     private final CPNameAndType nameAndType;
-    private int indexInClass;
+    private int indexInClass = -1;
+    private int indexInClassForConstructor = -1;
 
     public CPMethodOrField(CPClass className, CPNameAndType nameAndType) {
         this.className = className;
@@ -79,4 +80,13 @@ public class CPMethodOrField extends ConstantPoolEntry implements Comparable {
     public void setIndexInClass(int index) {
         indexInClass = index;
     }
+
+    public int getIndexInClassForConstructor() {
+        return indexInClassForConstructor;
+    }
+
+    public void setIndexInClassForConstructor(int index) {
+        indexInClassForConstructor = index;
+    }
+
 }

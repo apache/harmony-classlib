@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#if defined(FREEBSD) || defined(AIX) || defined(ZOS)
+#if defined(FREEBSD) || defined(AIX) || defined(ZOS) || defined(MACOSX)
 #include <sys/types.h>
 #include <sys/socket.h>
 #else
@@ -42,7 +42,7 @@
 #define FD_BIAS 0
 #endif /* ZOS */
 
-typedef int OSSOCKET;   
+typedef int OSSOCKET;
 typedef struct hysocket_struct
 {
   OSSOCKET sock;
@@ -164,11 +164,11 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readv
   jboolean bufsCopied = JNI_FALSE;
   jboolean offsetsCopied = JNI_FALSE;
   jboolean lengthsCopied = JNI_FALSE;
-  jlong *bufs; 
+  jlong *bufs;
   jint *offsets;
   jint *lengths;
   int i = 0;
-  long totalRead = 0;  
+  long totalRead = 0;
   struct iovec *vectors = (struct iovec *)hymem_allocate_memory(size * sizeof(struct iovec));
   if(vectors == NULL){
     return -1;
@@ -206,11 +206,11 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   jboolean bufsCopied = JNI_FALSE;
   jboolean offsetsCopied = JNI_FALSE;
   jboolean lengthsCopied = JNI_FALSE;
-  jlong *bufs; 
+  jlong *bufs;
   jint *offsets;
   jint *lengths;
   int i = 0;
-  long totalWritten = 0;  
+  long totalWritten = 0;
   struct iovec *vectors = (struct iovec *)hymem_allocate_memory(size * sizeof(struct iovec));
   if(vectors == NULL){
     return -1;
@@ -269,10 +269,12 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
    The conversion here is to guarantee no value lost when converting offset to off_t
    */
   off_t off = offset;
-#if !defined(FREEBSD)
-  return sendfile(socket,(int)fd,(off_t *)&off,(size_t)count);	
+#if defined(FREEBSD)
+  return sendfile(fd-FD_BIAS, socket, off, (size_t)count, NULL, NULL, 0);
+#elif defined(MACOSX)
+  return sendfile((int)fd-FD_BIAS, (int)socket, off, (off_t *)&count, NULL, 0);
 #else
-  return sendfile(fd, socket, off, (size_t)count, NULL, NULL, 0);
+  return sendfile(socket,(int)fd-FD_BIAS,(off_t *)&off,(size_t)count);
 #endif
 #endif
 }
