@@ -125,7 +125,7 @@ public class CpBands extends BandSet {
             cpUtf8Prefix[i - 2] = prefix;
             currentStr = currentStr.substring(prefix);
             char[] suffix = currentStr.toCharArray();
-            if (suffix.length > 100) { // big suffix (100 is arbitrary - can we
+            if (suffix.length > 1000) { // big suffix (1000 is arbitrary - can we
                 // do better?)
                 cpUtf8Suffix[i - 1] = 0;
                 bigSuffix.add(new Integer(suffix.length));
@@ -356,6 +356,7 @@ public class CpBands extends BandSet {
             }
         }
         classNameToIndex.clear();
+        Map classNameToConstructorIndex = new HashMap();
         for (Iterator iterator = cp_Method.iterator(); iterator.hasNext();) {
             CPMethodOrField mOrF = (CPMethodOrField) iterator.next();
             CPClass className = mOrF.getClassName();
@@ -367,6 +368,17 @@ public class CpBands extends BandSet {
                 int theIndex = index.intValue();
                 mOrF.setIndexInClass(theIndex);
                 classNameToIndex.put(className, new Integer(theIndex + 1));
+            }
+            if(mOrF.getDesc().getName().equals("<init>")) {
+                Integer constructorIndex = (Integer) classNameToConstructorIndex.get(className);
+                if (constructorIndex == null) {
+                    classNameToConstructorIndex.put(className, new Integer(1));
+                    mOrF.setIndexInClassForConstructor(0);
+                } else {
+                    int theIndex = constructorIndex.intValue();
+                    mOrF.setIndexInClassForConstructor(theIndex);
+                    classNameToConstructorIndex.put(className, new Integer(theIndex + 1));
+                }
             }
         }
     }
@@ -585,30 +597,9 @@ public class CpBands extends BandSet {
         return getCPIMethod(getCPClass(owner), name, desc);
     }
 
-    public CPMethodOrField addCPMethod(CPClass cpClass, String name, String desc) {
-        String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpM = (CPMethodOrField) stringsToCpMethod
-                .get(key);
-        if (cpM == null) {
-            CPNameAndType nAndT = getCPNameAndType(name, desc);
-            cpM = new CPMethodOrField(cpClass, nAndT);
-            stringsToCpMethod.put(key, cpM);
-            cp_Method.add(cpM);
-        }
-        return cpM;
-    }
-
-    public CPMethodOrField addCPField(CPClass cpClass, String name, String desc) {
-        String key = cpClass.toString() + ":" + name + ":" + desc;
-        CPMethodOrField cpF = (CPMethodOrField) stringsToCpField
-                .get(key);
-        if (cpF == null) {
-            CPNameAndType nAndT = getCPNameAndType(name, desc);
-            cpF = new CPMethodOrField(cpClass, nAndT);
-            stringsToCpField.put(key, cpF);
-            cp_Field.add(cpF);
-        }
-        return cpF;
+    public boolean existsCpClass(String className) {
+        CPClass cpClass = (CPClass) stringsToCpClass.get(className);
+        return cpClass != null;
     }
 
 }

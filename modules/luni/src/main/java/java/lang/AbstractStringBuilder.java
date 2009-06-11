@@ -91,8 +91,8 @@ abstract class AbstractStringBuilder {
     }
 
     private void enlargeBuffer(int min) {
-        int twice = (value.length << 1) + 2;
-        char[] newData = new char[min > twice ? min : twice];
+        int newSize = (value.length >> 1 + value.length) + 2;
+        char[] newData = new char[min > newSize ? min : newSize];
         System.arraycopy(value, 0, newData, 0, count);
         value = newData;
         shared = false;
@@ -205,7 +205,7 @@ abstract class AbstractStringBuilder {
             }
             if (end > start) {
                 int length = count - end;
-                if (length > 0) {
+                if (length >= 0) {
                     if (!shared) {
                         System.arraycopy(value, end, value, start, length);
                     } else {
@@ -258,7 +258,8 @@ abstract class AbstractStringBuilder {
      */
     public void ensureCapacity(int min) {
         if (min > value.length) {
-            enlargeBuffer(min);
+            int twice = (value.length << 1) + 2;
+            enlargeBuffer(twice > min ? twice : min);
         }
     }
 

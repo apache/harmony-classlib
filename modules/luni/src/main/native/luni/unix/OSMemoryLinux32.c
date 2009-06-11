@@ -30,6 +30,12 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 /* z/OS mman.h does not define MAP_FAILED - it should always be ((void*)-1) */
 #ifndef MAP_FAILED
 #define MAP_FAILED      ((void *) -1)
@@ -95,7 +101,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
   	  jboolean result = 0;
   	  IDATA m_addr = (IDATA)addr;
 	  int page_size = getPageSize();
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
 #define HY_VEC_T char
 #else
 #define HY_VEC_T unsigned char
@@ -137,7 +143,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size)
 {
-    munmap((void *)((IDATA)addr), (size_t)size); 
+    munmap((void *)((IDATA)addr), (size_t)size);
 }
 
 /*
@@ -151,7 +157,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   //PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
-		  
+
   // Convert from Java mapping mode to port library mapping mode.
   switch (mmode)
     {
@@ -171,7 +177,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
         return -1;
     }
 
-  mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags,fd,(off_t)(alignment&0x7fffffff));
+  mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags, fd-FD_BIAS, (off_t)(alignment&0x7fffffff));
   if (mapAddress == MAP_FAILED)
     {
       return -1;

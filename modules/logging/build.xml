@@ -168,6 +168,9 @@
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
+        <copy file="../../support/src/test/resources/config/testing.policy" 
+              todir="${hy.hdk}/build/test" outputencoding="UTF-8" />
+
         <junit fork="yes"
                forkmode="${hy.test.forkmode}"
                timeout="${hy.test.timeout}"
@@ -187,7 +190,7 @@
             <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
 
         	<!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
+            <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
             <jvmarg value="-Xbootclasspath/a:${hy.logging.bin.internal}"/>
 

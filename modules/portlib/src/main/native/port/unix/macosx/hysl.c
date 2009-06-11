@@ -15,7 +15,5 @@
  *  limitations under the License.
  */
 
-/* A copyright string included in each DLL and executable */
-
-const char hyCopyright[] =
-  "(c) Copyright 1991, 2009 The Apache Software Foundation or its licensors, as applicable.";
+/* Include the generic Unix version of this file */
+#include "../hysl.c"

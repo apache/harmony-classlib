@@ -32,7 +32,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 import org.apache.harmony.luni.net.NetUtil;
-import org.apache.harmony.luni.net.PlainSocketImpl;
+import org.apache.harmony.luni.net.PlainServerSocketImpl;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.Platform;
 
@@ -77,7 +77,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         fd = new FileDescriptor();
         Platform.getNetworkSystem().createStreamSocket(fd,
                 NetUtil.preferIPv4Stack());
-        impl = new PlainSocketImpl(fd);
+        impl = new PlainServerSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
     }
     
@@ -87,7 +87,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
         super(SelectorProvider.provider());
         status = SERVER_STATUS_OPEN;
         fd = new FileDescriptor();
-        impl = new PlainSocketImpl(fd);
+        impl = new PlainServerSocketImpl(fd);
         socket = new ServerSocketAdapter(impl, this);
         isBound = false;
     }

@@ -320,7 +320,7 @@
 
         <mkdir dir="${tests.resources.hdk.dir}/config"/>
         <copy file="../../support/src/test/resources/config/testing.policy"
-              todir="${tests.resources.hdk.dir}/config"/>
+              todir="${hy.hdk}/build/test" outputencoding="UTF-8" />
         <copy file="../../support/src/test/resources/config/localhosttest.ini"
               todir="${tests.resources.hdk.dir}/config"/>
 
@@ -535,7 +535,7 @@
                 <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
                 
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
+                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
                 <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />

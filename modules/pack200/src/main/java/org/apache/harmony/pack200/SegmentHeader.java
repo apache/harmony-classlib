@@ -59,7 +59,7 @@ public class SegmentHeader extends BandSet {
     private int file_count;
 
     private boolean deflate_hint;
-    private boolean have_file_modtime;
+    private boolean have_file_modtime = true;
     private boolean have_file_options = true;
     private boolean have_file_size_hi;
     private boolean have_class_flags_hi;
@@ -199,6 +199,10 @@ public class SegmentHeader extends BandSet {
 
     public void setArchive_modtime(int archive_modtime) {
         this.archive_modtime = archive_modtime;
+    }
+
+    public int getArchive_modtime() {
+        return archive_modtime;
     }
 
     public void setFile_count(int file_count) {

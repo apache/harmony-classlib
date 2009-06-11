@@ -59,6 +59,10 @@ public class CPNameAndType extends ConstantPoolEntry implements Comparable {
         return name.getIndex();
     }
 
+    public String getName() {
+        return name.getUnderlyingString();
+    }
+
     public int getTypeIndex() {
         return signature.getIndex();
     }

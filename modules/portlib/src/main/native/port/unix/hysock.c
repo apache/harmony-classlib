@@ -119,9 +119,6 @@ I_32 getNextNetlinkMsg (struct HyPortLibrary *portLibrary,
                         struct netlinkContext_struct *netlinkContext,
                         struct nlmsghdr **nextMessage);
 
-static I_32 copy_hostent (struct HyPortLibrary *portLibrary,
-                          OSHOSTENT * source, PortlibPTBuffers_t * ptBuffers);
-
 I_32 platformSocketLevel (I_32 portableSocketLevel);
 
 static I_32 findError (I_32 errorCode);
@@ -136,13 +133,16 @@ static I_32 findHostError (int herr);
 
 #undef CDEV_CURRENT_FUNCTION
 
+#if NO_R
+static I_32 copy_hostent (struct HyPortLibrary *portLibrary,
+                          OSHOSTENT * source, PortlibPTBuffers_t * ptBuffers);
+
 #define CDEV_CURRENT_FUNCTION copy_hostent
 
 static I_32
 copy_hostent (struct HyPortLibrary *portLibrary, OSHOSTENT * source,
               PortlibPTBuffers_t * ptBuffers)
 {
-#if NO_R
   int h_len = strlen (source->h_name);
   int total = 0;
   int i = 0;
@@ -184,12 +184,11 @@ copy_hostent (struct HyPortLibrary *portLibrary, OSHOSTENT * source,
     }
   dest->h_addr_list[i] = NULL;
 
-#endif
-
   return 0;
 }
 
 #undef CDEV_CURRENT_FUNCTION
+#endif
 
 #define CDEV_CURRENT_FUNCTION findError
 

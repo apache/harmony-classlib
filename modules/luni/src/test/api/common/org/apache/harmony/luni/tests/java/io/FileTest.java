@@ -60,12 +60,14 @@ public class FileTest extends TestCase {
         // Delete all old temporary files
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         File[] files = tempDir.listFiles();
-        for (File file : files) {
-            if (file.getName().startsWith("harmony-test")) {
-                if (file.isDirectory()) {
-                    deleteTempFolder(file);
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().startsWith("harmony-test")) {
+                    if (file.isDirectory()) {
+                        deleteTempFolder(file);
+                    }
+                    file.delete();
                 }
-                file.delete();
             }
         }
     }

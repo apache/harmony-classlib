@@ -782,16 +782,22 @@ public abstract class CharBuffer extends Buffer implements
      *         read from this buffer.
      */
     public int read(CharBuffer target) throws IOException {
+        int remaining = remaining();
         if (target == this) {
+            if (remaining == 0) {
+                return -1;
+            }
             throw new IllegalArgumentException();
         }
-        if (remaining() == 0) {
-            return target.remaining() == 0 ? 0 : -1;
+        if (remaining == 0) {
+            return limit > 0 && target.remaining() == 0 ? 0 : -1;
         }
-        int result = Math.min(target.remaining(), remaining());
-        char[] chars = new char[result];
-        get(chars);
-        target.put(chars);
-        return result;
+        remaining = Math.min(target.remaining(), remaining);
+        if (remaining > 0) {
+            char[] chars = new char[remaining];
+            get(chars);
+            target.put(chars);
+        }
+        return remaining;
     }
 }

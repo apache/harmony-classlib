@@ -115,6 +115,15 @@ public class IdentityHashMap2Test extends junit.framework.TestCase {
         assertEquals("Size should be 0", 0, hm2.size());
 	}
 
+    public void test_IdentityHashMap_Constructor_BigSize() {
+        try {
+            new IdentityHashMap(Integer.MAX_VALUE);
+            fail("should throw OutOfMemoryError");
+        } catch (OutOfMemoryError e) {
+            // Expected
+        }
+    }
+
 	/**
 	 * @tests java.util.IdentityHashMap#clear()
 	 */

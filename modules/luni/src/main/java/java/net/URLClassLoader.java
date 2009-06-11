@@ -1184,9 +1184,9 @@ public class URLClassLoader extends SecureClassLoader {
             String element = tokenizer.nextToken();
             if (!element.equals("")) { //$NON-NLS-1$
                 try {
-                    URL newURL = new URL(protocol, host, port, file + element
-                            + "!/"); //$NON-NLS-1$
-                    addedURLs.add(newURL);
+                    // Take absolute path case into consideration
+                    URL url = new URL(new URL(file), element);
+                    addedURLs.add(createSearchURL(url));
                 } catch (MalformedURLException e) {
                     // Nothing is added
                 }
