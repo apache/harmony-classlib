@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Unpacker;
 
+import org.apache.harmony.pack200.Pack200Adapter;
 import org.apache.harmony.pack200.Pack200Exception;
 
 /**

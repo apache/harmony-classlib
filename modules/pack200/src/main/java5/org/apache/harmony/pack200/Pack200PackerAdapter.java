@@ -14,15 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200;
+package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Pack200.Packer;
-
-import org.apache.harmony.pack200.Pack200Exception;
 
 
 /**
