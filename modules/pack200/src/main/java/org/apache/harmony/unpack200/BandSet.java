@@ -84,6 +84,10 @@ public abstract class BandSet {
     public int[] decodeBandInt(String name, InputStream in, BHSDCodec codec,
             int count) throws IOException, Pack200Exception {
         int[] band;
+        // Useful for debugging
+//        if(count > 0) {
+//            System.out.println("decoding " + name + " " + count);
+//        }
         Codec codecUsed = codec;
         if (codec.getB() == 1 || count == 0) {
             return codec.decodeInts(count, in);

@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Abstract superclass for constant pool entries
+ */
 public abstract class ConstantPoolEntry {
 
     private int index = -1;

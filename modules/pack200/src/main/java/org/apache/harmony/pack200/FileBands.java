@@ -26,6 +26,11 @@ import java.util.Set;
 import org.apache.harmony.pack200.Archive.File;
 import org.objectweb.asm.ClassReader;
 
+/**
+ * Bands containing information about files in the pack200 archive and the file
+ * contents for non-class-files. Corresponds to the <code>file_bands</code> set
+ * of bands described in the specification.
+ */
 public class FileBands extends BandSet {
 
     private final CPUTF8[] fileName;
@@ -74,6 +79,11 @@ public class FileBands extends BandSet {
          }
     }
 
+    /**
+     * All input classes for the segment have now been read in, so this method
+     * is called so that this class can calculate/complete anything it could not
+     * do while classes were being read.
+     */
     public void finaliseBands() {
         file_name = new int[fileName.length];
         for (int i = 0; i < file_name.length; i++) {

@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Constant pool entry for an int.
+ */
 public class CPInt extends CPConstant {
 
     private final int theInt;

@@ -299,6 +299,11 @@ public class CpBands extends BandSet {
                 Codec.UDELTA5));
     }
 
+    /**
+     * All input classes for the segment have now been read in, so this method
+     * is called so that this class can calculate/complete anything it could not
+     * do while classes were being read.
+     */
     public void finaliseBands() {
         addCPUtf8("");
         removeSignaturesFromCpUTF8();

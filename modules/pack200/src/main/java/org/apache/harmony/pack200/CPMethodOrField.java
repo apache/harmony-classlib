@@ -16,6 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
+/**
+ * Constant pool entry for a method or field.
+ */
 public class CPMethodOrField extends ConstantPoolEntry implements Comparable {
 
     private final CPClass className;

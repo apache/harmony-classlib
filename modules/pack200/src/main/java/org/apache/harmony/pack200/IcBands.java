@@ -26,6 +26,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Inner class bands (corresponds to the <code>ic_bands</code> set of bands in
+ * the pack200 specification)
+ */
 public class IcBands extends BandSet {
 
     private final Set innerClasses = new TreeSet();
@@ -39,6 +43,11 @@ public class IcBands extends BandSet {
         this.cpBands = cpBands;
     }
 
+    /**
+     * All input classes for the segment have now been read in, so this method
+     * is called so that this class can calculate/complete anything it could not
+     * do while classes were being read.
+     */
     public void finaliseBands() {
         segmentHeader.setIc_count(innerClasses.size());
     }

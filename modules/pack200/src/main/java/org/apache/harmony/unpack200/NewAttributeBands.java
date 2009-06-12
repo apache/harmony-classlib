@@ -127,9 +127,6 @@ public class NewAttributeBands extends BandSet {
     /**
      * Resolve calls in the attribute layout and returns the number of backwards
      * calls
-     *
-     * @param tokens -
-     *            the attribute layout as a List of AttributeElements
      */
     private void resolveCalls() {
         int backwardsCalls = 0;
@@ -368,7 +365,6 @@ public class NewAttributeBands extends BandSet {
 
         protected int getLength(char uint_type) {
             int length = 0;
-            ;
             switch (uint_type) {
             case 'B':
                 length = 1;
@@ -428,7 +424,7 @@ public class NewAttributeBands extends BandSet {
                 int length = getLength(uint_type);
                 attribute.addBCIndex(length, (int) value);
             } else if (tag.startsWith("OS")) {
-                char uint_type = tag.substring(1).toCharArray()[0];
+                char uint_type = tag.substring(2).toCharArray()[0];
                 int length = getLength(uint_type);
                 if (length == 1) {
                     value = (byte) value;
