@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.pack200.Archive.File;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -32,6 +33,9 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+/**
+ * A Pack200 archive consists of one or more Segments.
+ */
 public class Segment implements ClassVisitor {
 
     private SegmentHeader segmentHeader;
@@ -45,24 +49,43 @@ public class Segment implements ClassVisitor {
     private final SegmentFieldVisitor fieldVisitor = new SegmentFieldVisitor();
     private final SegmentMethodVisitor methodVisitor = new SegmentMethodVisitor();
     private Pack200ClassReader currentClassReader;
+    private PackingOptions options;
     private boolean stripDebug;
-    private int effort;
+    private Attribute[] nonStandardAttributePrototypes;
 
-    public void pack(List classes, List files, OutputStream out, boolean stripDebug, int effort)
+    /**
+     * The main method on Segment. Reads in all the class files, packs them and
+     * then writes the packed segment out to the given OutputStream.
+     *
+     * @param classes
+     *            List of Pack200ClassReaders, one for each class file in the
+     *            segment
+     * @param files
+     *            List of Archive.Files, one for each file in the segment
+     * @param out
+     *            the OutputStream to write the packed Segment to
+     * @param options
+     *            packing options
+     * @throws IOException
+     * @throws Pack200Exception
+     */
+    public void pack(List classes, List files, OutputStream out, PackingOptions options)
             throws IOException, Pack200Exception {
-        this.effort = effort;
-        this.stripDebug = stripDebug;
+        this.options = options;
+        this.stripDebug = options.isStripDebug();
+        int effort = options.getEffort();
+        nonStandardAttributePrototypes = options.getUnknownAttributePrototypes();
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(files.size());
         segmentHeader.setHave_all_code_flags(!stripDebug);
         cpBands = new CpBands(this, effort);
-        attributeDefinitionBands = new AttributeDefinitionBands(this, effort);
+        attributeDefinitionBands = new AttributeDefinitionBands(this, effort, nonStandardAttributePrototypes);
         icBands = new IcBands(segmentHeader, cpBands, effort);
-        classBands = new ClassBands(this, classes.size(), effort);
+        classBands = new ClassBands(this, classes.size(), effort, stripDebug);
         bcBands = new BcBands(cpBands, this, effort);
         fileBands = new FileBands(cpBands, segmentHeader, files, classes, effort);
 
-        processClasses(classes);
+        processClasses(classes, files);
 
         cpBands.finaliseBands();
         attributeDefinitionBands.finaliseBands();
@@ -71,8 +94,10 @@ public class Segment implements ClassVisitor {
         bcBands.finaliseBands();
         fileBands.finaliseBands();
 
-        // Temporary fix because we have to encode the other bands before
-        // segmentHeader, but probably not very good performance
+        // Using a temporary stream because we have to pack the other bands
+        // before segmentHeader because the band_headers band is only created
+        // when the other bands are packed, but comes before them in the packed
+        // file.
         ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
 
         cpBands.pack(tempStream);
@@ -86,17 +111,37 @@ public class Segment implements ClassVisitor {
         tempStream.writeTo(out);
     }
 
-    private void processClasses(List classes) {
+    private void processClasses(List classes, List files) throws Pack200Exception {
         segmentHeader.setClass_count(classes.size());
         for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
             Pack200ClassReader classReader = (Pack200ClassReader) iterator
                     .next();
             currentClassReader = classReader;
-            int flags = ClassReader.SKIP_FRAMES;
+            int flags = 0;
             if(stripDebug) {
                 flags |= ClassReader.SKIP_DEBUG;
             }
-            classReader.accept(this, flags);
+            try {
+                classReader.accept(this, flags);
+            } catch (PassException pe) {
+                // Pass this class through as-is rather than packing it
+                // TODO: probably need to deal with any inner classes
+                classBands.removeCurrentClass();
+                String name = classReader.getFileName();
+                boolean found = false;
+                for (Iterator iterator2 = files.iterator(); iterator2
+                        .hasNext();) {
+                    File file = (File) iterator2.next();
+                    if(file.getName().equals(name)) {
+                        found = true;
+                        file.setContents(classReader.b);
+                        break;
+                    }
+                }
+                if(!found) {
+                    throw new Pack200Exception("Error passing file " + name);
+                }
+            }
         }
     }
 
@@ -124,7 +169,30 @@ public class Segment implements ClassVisitor {
                 desc, visible);
     }
 
-    public void visitAttribute(Attribute arg0) {
+    public void visitAttribute(Attribute attribute) {
+        if(attribute.isUnknown()) {
+            String action = options.getUnknownAttributeAction();
+            if(action.equals(PackingOptions.PASS)) {
+                passCurrentClass();
+            } else if (action.equals(PackingOptions.ERROR)) {
+                throw new Error("Unknown attribute encountered");
+            } // else skip
+        } else {
+            if(attribute instanceof NewAttribute) {
+                NewAttribute newAttribute = (NewAttribute) attribute;
+                if(newAttribute.isUnknown(AttributeDefinitionBands.CONTEXT_CLASS)) {
+                    String action = options.getUnknownClassAttributeAction(newAttribute.type);
+                    if(action.equals(PackingOptions.PASS)) {
+                        passCurrentClass();
+                    } else if (action.equals(PackingOptions.ERROR)) {
+                        throw new Error("Unknown attribute encountered");
+                    } // else skip
+                }
+                classBands.addClassAttribute(newAttribute);
+            } else {
+                throw new RuntimeException("Unexpected attribute encountered: " + attribute.type);
+            }
+        }
     }
 
     public void visitInnerClass(String name, String outerName,
@@ -148,9 +216,12 @@ public class Segment implements ClassVisitor {
         classBands.endOfClass();
     }
 
-    /*
-     * This class delegates to BcBands for bytecode related visits and to
-     * ClassBands for everything else
+    /**
+     * This class implements MethodVisitor to visit the contents and metadata
+     * related to methods in a class file.
+     *
+     * It delegates to BcBands for bytecode related visits and to ClassBands for
+     * everything else.
      */
     public class SegmentMethodVisitor implements MethodVisitor {
 
@@ -163,12 +234,48 @@ public class Segment implements ClassVisitor {
             return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_METHOD);
         }
 
-        public void visitAttribute(Attribute arg0) {
-            classBands.addUnknownMethodAttribute(arg0);
+        public void visitAttribute(Attribute attribute) {
+            if(attribute.isUnknown()) {
+                String action = options.getUnknownAttributeAction();
+                if(action.equals(PackingOptions.PASS)) {
+                    passCurrentClass();
+                } else if (action.equals(PackingOptions.ERROR)) {
+                    throw new Error("Unknown attribute encountered");
+                } // else skip
+            } else {
+                if(attribute instanceof NewAttribute) {
+                    NewAttribute newAttribute = (NewAttribute) attribute;
+                    if (attribute.isCodeAttribute()) {
+                        if (newAttribute.isUnknown(AttributeDefinitionBands.CONTEXT_CODE)) {
+                            String action = options
+                                    .getUnknownCodeAttributeAction(newAttribute.type);
+                            if (action.equals(PackingOptions.PASS)) {
+                                passCurrentClass();
+                            } else if (action.equals(PackingOptions.ERROR)) {
+                                throw new Error("Unknown attribute encountered");
+                            } // else skip
+                        }
+                        classBands.addCodeAttribute(newAttribute);
+                    } else {
+                        if (newAttribute.isUnknown(AttributeDefinitionBands.CONTEXT_METHOD)) {
+                            String action = options
+                                    .getUnknownMethodAttributeAction(newAttribute.type);
+                            if (action.equals(PackingOptions.PASS)) {
+                                passCurrentClass();
+                            } else if (action.equals(PackingOptions.ERROR)) {
+                                throw new Error("Unknown attribute encountered");
+                            } // else skip
+                        }
+                        classBands.addMethodAttribute(newAttribute);
+                    }
+                } else {
+                    throw new RuntimeException("Unexpected attribute encountered: " + attribute.type);
+                }
+            }
         }
 
         public void visitCode() {
-            classBands.addCode(stripDebug);
+            classBands.addCode();
         }
 
         public void visitFrame(int arg0, int arg1, Object[] arg2, int arg3,
@@ -272,6 +379,10 @@ public class Segment implements ClassVisitor {
         return classBands;
     }
 
+    /**
+     * SegmentAnnotationVisitor implements <code>AnnotationVisitor</code> to
+     * visit Annotations found in a class file.
+     */
     public class SegmentAnnotationVisitor implements AnnotationVisitor {
 
         private int context = -1;
@@ -286,7 +397,6 @@ public class Segment implements ClassVisitor {
         private final List nestTypeRS = new ArrayList();
         private final List nestNameRU = new ArrayList();
         private final List nestPairN = new ArrayList();
-
 
         public SegmentAnnotationVisitor(int context, String desc,
                 boolean visible) {
@@ -369,7 +479,6 @@ public class Segment implements ClassVisitor {
                 }
 
                 public void visitEnd() {
-                    throw new RuntimeException("Not yet supported");
                 }
 
                 public void visitEnum(String name, String desc, String value) {
@@ -450,6 +559,10 @@ public class Segment implements ClassVisitor {
         }
     }
 
+    /**
+     * SegmentFieldVisitor implements <code>FieldVisitor</code> to visit the
+     * metadata relating to fields in a class file.
+     */
     public class SegmentFieldVisitor implements FieldVisitor {
 
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -457,8 +570,30 @@ public class Segment implements ClassVisitor {
                     desc, visible);
         }
 
-        public void visitAttribute(Attribute arg0) {
-            classBands.addUnknownFieldAttribute(arg0);
+        public void visitAttribute(Attribute attribute) {
+            if(attribute.isUnknown()) {
+                String action = options.getUnknownAttributeAction();
+                if(action.equals(PackingOptions.PASS)) {
+                    passCurrentClass();
+                } else if (action.equals(PackingOptions.ERROR)) {
+                    throw new Error("Unknown attribute encountered");
+                } // else skip
+            } else {
+                if(attribute instanceof NewAttribute) {
+                    NewAttribute newAttribute = (NewAttribute) attribute;
+                    if(newAttribute.isUnknown(AttributeDefinitionBands.CONTEXT_FIELD)) {
+                        String action = options.getUnknownFieldAttributeAction(newAttribute.type);
+                        if(action.equals(PackingOptions.PASS)) {
+                            passCurrentClass();
+                        } else if (action.equals(PackingOptions.ERROR)) {
+                            throw new Error("Unknown attribute encountered");
+                        } // else skip
+                    }
+                    classBands.addFieldAttribute(newAttribute);
+                } else {
+                    throw new RuntimeException("Unexpected attribute encountered: " + attribute.type);
+                }
+            }
         }
 
         public void visitEnd() {
@@ -487,5 +622,19 @@ public class Segment implements ClassVisitor {
 
     public Pack200ClassReader getCurrentClassReader() {
         return currentClassReader;
+    }
+
+    private void passCurrentClass() {
+        throw new PassException();
+    }
+
+    /**
+     * Exception indicating that the class currently being visited contains an
+     * unknown attribute, which means that by default the class file needs to be
+     * passed through as-is in the file_bands rather than being packed with
+     * pack200.
+     */
+    public class PassException extends RuntimeException {
+
     }
 }

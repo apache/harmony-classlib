@@ -22,7 +22,7 @@ import java.io.InputStream;
 import org.objectweb.asm.ClassReader;
 
 /**
- * Wrapper for ClassReader than enables pack200 to obtain extra class file
+ * Wrapper for ClassReader that enables pack200 to obtain extra class file
  * information
  */
 public class Pack200ClassReader extends ClassReader {
@@ -30,6 +30,7 @@ public class Pack200ClassReader extends ClassReader {
     private boolean lastConstantHadWideIndex;
     private int lastUnsignedShort;
     private boolean anySyntheticAttributes;
+    private String fileName;
 
     /**
      * @param b
@@ -94,6 +95,14 @@ public class Pack200ClassReader extends ClassReader {
 
     public boolean hasSyntheticAttributes() {
         return anySyntheticAttributes;
+    }
+
+    public void setFileName(String name) {
+        this.fileName = name;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
 }

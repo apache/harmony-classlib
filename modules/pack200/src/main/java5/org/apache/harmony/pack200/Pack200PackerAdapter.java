@@ -31,31 +31,72 @@ import java.util.jar.Pack200.Packer;
  */
 public class Pack200PackerAdapter extends Pack200Adapter implements Packer {
 
-	public void pack(JarFile file, OutputStream out) throws IOException {
+    private final PackingOptions options = new PackingOptions();
+
+    public void pack(JarFile file, OutputStream out) throws IOException {
         if (file == null || out == null)
             throw new IllegalArgumentException(
                     "Must specify both input and output streams");
         completed(0);
         try {
-            new org.apache.harmony.pack200.Archive(file, out, true).pack();
+            new org.apache.harmony.pack200.Archive(file, out, options).pack();
         } catch (Pack200Exception e) {
             throw new IOException("Failed to pack Jar:" + String.valueOf(e));
         }
         completed(1);
-	}
+    }
 
-	public void pack(JarInputStream in, OutputStream out) throws IOException {
-	    if (in == null || out == null)
+    public void pack(JarInputStream in, OutputStream out) throws IOException {
+        if (in == null || out == null)
             throw new IllegalArgumentException(
                     "Must specify both input and output streams");
         completed(0);
+        PackingOptions options = new PackingOptions();
+
         try {
-            new org.apache.harmony.pack200.Archive(in, out, true).pack();
+            new org.apache.harmony.pack200.Archive(in, out, options).pack();
         } catch (Pack200Exception e) {
             throw new IOException("Failed to pack Jar:" + String.valueOf(e));
         }
         completed(1);
         in.close();
-	}
+    }
+
+    protected void firePropertyChange(String propertyName, Object oldValue,
+            Object newValue) {
+        super.firePropertyChange(propertyName, oldValue, newValue);
+        if(newValue != null && !newValue.equals(oldValue)) {
+            if (propertyName.startsWith(CLASS_ATTRIBUTE_PFX)) {
+                String attributeName = propertyName.substring(CLASS_ATTRIBUTE_PFX.length());
+                options.addClassAttributeAction(attributeName, (String)newValue);
+            } else if (propertyName.startsWith(CODE_ATTRIBUTE_PFX)) {
+                String attributeName = propertyName.substring(CODE_ATTRIBUTE_PFX.length());
+                options.addCodeAttributeAction(attributeName, (String)newValue);
+            } else if (propertyName.equals(DEFLATE_HINT)) {
+                options.setDeflateHint((String) newValue);
+            } else if (propertyName.equals(EFFORT)) {
+                options.setEffort(Integer.parseInt((String)newValue));
+            } else if (propertyName.startsWith(FIELD_ATTRIBUTE_PFX)) {
+                String attributeName = propertyName.substring(FIELD_ATTRIBUTE_PFX.length());
+                options.addFieldAttributeAction(attributeName, (String)newValue);
+            } else if (propertyName.equals(KEEP_FILE_ORDER)) {
+                options.setKeepFileOrder(Boolean.parseBoolean((String)newValue));
+            } else if (propertyName.startsWith(METHOD_ATTRIBUTE_PFX)) {
+                String attributeName = propertyName.substring(METHOD_ATTRIBUTE_PFX.length());
+                options.addMethodAttributeAction(attributeName, (String)newValue);
+            } else if (propertyName.equals(MODIFICATION_TIME)) {
+                options.setModificationTime((String)newValue);
+            } else if (propertyName.startsWith(PASS_FILE_PFX)) {
+                if(oldValue != null && !oldValue.equals("")) {
+                    options.removePassFile((String)oldValue);
+                }
+                options.addPassFile((String) newValue);
+            } else if (propertyName.equals(SEGMENT_LIMIT)) {
+                options.setSegmentLimit(Long.parseLong((String)newValue));
+            } else if (propertyName.equals(UNKNOWN_ATTRIBUTE)) {
+                options.setUnknownAttributeAction((String)newValue);
+            }
+        }
+    }
 
 }
