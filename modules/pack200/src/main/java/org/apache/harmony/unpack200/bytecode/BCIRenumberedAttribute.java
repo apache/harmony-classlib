@@ -60,6 +60,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
      *
      * @param byteCodeOffsets
      *            List of Integer offsets of the bytecode array
+     * @throws Pack200Exception
      */
     public void renumber(List byteCodeOffsets) throws Pack200Exception {
         if (renumbered) {
