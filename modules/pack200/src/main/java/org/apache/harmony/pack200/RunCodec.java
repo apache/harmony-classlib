@@ -31,7 +31,7 @@ public class RunCodec extends Codec {
     private int k;
     private final Codec aCodec;
     private final Codec bCodec;
-    private long last;
+    private int last;
 
     public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
         if (k <= 0)
@@ -44,14 +44,14 @@ public class RunCodec extends Codec {
         this.bCodec = bCodec;
     }
 
-    public long decode(InputStream in) throws IOException, Pack200Exception {
+    public int decode(InputStream in) throws IOException, Pack200Exception {
         return decode(in, this.last);
     }
 
-    public long decode(InputStream in, long last) throws IOException,
+    public int decode(InputStream in, long last) throws IOException,
             Pack200Exception {
         if (--k >= 0) {
-            long value = aCodec.decode(in, this.last);
+            int value = aCodec.decode(in, this.last);
             this.last = (k == 0 ? 0 : value);
             return normalise(aCodec, value);
         } else {
@@ -60,7 +60,7 @@ public class RunCodec extends Codec {
         }
     }
 
-    private long normalise(Codec codecUsed, long value) {
+    private int normalise(Codec codecUsed, int value) {
         if (codecUsed instanceof BHSDCodec && ((BHSDCodec) codecUsed).isDelta()) {
             BHSDCodec bhsd = (BHSDCodec) codecUsed;
             long cardinality = bhsd.cardinality();
@@ -83,6 +83,7 @@ public class RunCodec extends Codec {
         normalise(bValues, bCodec);
         System.arraycopy(aValues, 0, band, 0, k);
         System.arraycopy(bValues, 0, band, k, n - k);
+        lastBandLength = aCodec.lastBandLength + bCodec.lastBandLength;
         return band;
     }
 
@@ -100,7 +101,7 @@ public class RunCodec extends Codec {
             }
         } else if (codecUsed instanceof PopulationCodec) {
             PopulationCodec popCodec = (PopulationCodec) codecUsed;
-            long[] favoured = (long[]) popCodec.getFavoured().clone();
+            int[] favoured = (int[]) popCodec.getFavoured().clone();
             Arrays.sort(favoured);
             for (int i = 0; i < band.length; i++) {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
@@ -126,12 +127,12 @@ public class RunCodec extends Codec {
                 + "]";
     }
 
-    public byte[] encode(long value, long last) throws Pack200Exception {
+    public byte[] encode(int value, int last) throws Pack200Exception {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public byte[] encode(long value) throws Pack200Exception {
+    public byte[] encode(int value) throws Pack200Exception {
         // TODO Auto-generated method stub
         return null;
     }

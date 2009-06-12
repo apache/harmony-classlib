@@ -93,9 +93,9 @@ public class CpBands extends BandSet {
         writeCpClass(out);
         writeCpSignature(out);
         writeCpDescr(out);
-        writeCpMethodOrField(cp_Field, out);
-        writeCpMethodOrField(cp_Method, out);
-        writeCpMethodOrField(cp_Imethod, out);
+        writeCpMethodOrField(cp_Field, out, "cp_Field");
+        writeCpMethodOrField(cp_Method, out, "cp_Method");
+        writeCpMethodOrField(cp_Imethod, out, "cp_Imethod");
     }
 
     private void writeCpUtf8(OutputStream out) throws IOException,
@@ -175,7 +175,7 @@ public class CpBands extends BandSet {
             cpInt[i] = integer.getInt();
             i++;
         }
-        out.write(encodeBandInt("cpInt", cpInt, Codec.UDELTA5));
+        out.write(encodeBandInt("cp_Int", cpInt, Codec.UDELTA5));
     }
 
     private void writeCpFloat(OutputStream out) throws IOException,
@@ -187,7 +187,7 @@ public class CpBands extends BandSet {
             cpFloat[i] = Float.floatToIntBits(fl.getFloat());
             i++;
         }
-        out.write(encodeBandInt("cpFloat", cpFloat, Codec.UDELTA5));
+        out.write(encodeBandInt("cp_Float", cpFloat, Codec.UDELTA5));
     }
 
     private void writeCpLong(OutputStream out) throws IOException,
@@ -278,11 +278,11 @@ public class CpBands extends BandSet {
             cpDescrType[i] = nameAndType.getTypeIndex();
             i++;
         }
-        out.write(encodeBandInt("cpDescrName", cpDescrName, Codec.DELTA5));
-        out.write(encodeBandInt("cpDescrType", cpDescrType, Codec.UDELTA5));
+        out.write(encodeBandInt("cp_Descr_Name", cpDescrName, Codec.DELTA5));
+        out.write(encodeBandInt("cp_Descr_Type", cpDescrType, Codec.UDELTA5));
     }
 
-    private void writeCpMethodOrField(Set cp, OutputStream out)
+    private void writeCpMethodOrField(Set cp, OutputStream out, String name)
             throws IOException, Pack200Exception {
         int[] cp_methodOrField_class = new int[cp.size()];
         int[] cp_methodOrField_desc = new int[cp.size()];
@@ -293,9 +293,9 @@ public class CpBands extends BandSet {
             cp_methodOrField_desc[i] = mOrF.getDescIndex();
             i++;
         }
-        out.write(encodeBandInt("cp_methodOrField_class",
+        out.write(encodeBandInt(name + "_class",
                 cp_methodOrField_class, Codec.DELTA5));
-        out.write(encodeBandInt("cp_methodOrField_desc", cp_methodOrField_desc,
+        out.write(encodeBandInt(name + "_desc", cp_methodOrField_desc,
                 Codec.UDELTA5));
     }
 

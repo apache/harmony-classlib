@@ -34,7 +34,7 @@ public class CodecEncoding {
      * one of the standard encodings. The following values are defined in the
      * Pack200 specification, and this array cannot be changed.
      */
-    private static final Codec[] canonicalCodec = { null,
+    private static final BHSDCodec[] canonicalCodec = { null,
             new BHSDCodec(1, 256), new BHSDCodec(1, 256, 1),
             new BHSDCodec(1, 256, 0, 1), new BHSDCodec(1, 256, 1, 1),
             new BHSDCodec(2, 256), new BHSDCodec(2, 256, 1),
@@ -292,7 +292,7 @@ public class CodecEncoding {
             int fDef = favouredCodec.equals(defaultForBand) ? 1 : 0;
             int uDef = unfavouredCodec.equals(defaultForBand) ? 1 : 0;
             int tDefL = 0;
-            long[] favoured = populationCodec.getFavoured();
+            int[] favoured = populationCodec.getFavoured();
             if(favoured != null) {
                 int k = favoured.length;
                 if(tokenCodec == Codec.BYTE1) {
@@ -333,5 +333,9 @@ public class CodecEncoding {
         }
 
         return null;
+    }
+
+    public static BHSDCodec getCanonicalCodec(int i) {
+        return canonicalCodec[i];
     }
 }

@@ -103,16 +103,16 @@ public class SegmentHeader {
     public void read(InputStream in) throws IOException, Pack200Exception,
             Error, Pack200Exception {
 
-        long word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
+        int word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
                 magic.length);
         for (int m = 0; m < magic.length; m++)
             if (word[m] != magic[m])
                 throw new Error("Bad header");
-        setArchiveMinorVersion((int) decodeScalar("archive_minver", in,
+        setArchiveMinorVersion(decodeScalar("archive_minver", in,
                 Codec.UNSIGNED5));
-        setArchiveMajorVersion((int) decodeScalar("archive_majver", in,
+        setArchiveMajorVersion(decodeScalar("archive_majver", in,
                 Codec.UNSIGNED5));
-        options = new SegmentOptions((int) decodeScalar("archive_options", in,
+        options = new SegmentOptions(decodeScalar("archive_options", in,
                 Codec.UNSIGNED5));
         parseArchiveFileCounts(in);
         parseArchiveSpecialCounts(in);
@@ -290,7 +290,7 @@ public class SegmentHeader {
                     Codec.UNSIGNED5));
             setArchiveModtime(decodeScalar("archive_modtime", in,
                     Codec.UNSIGNED5));
-            numberOfFiles = (int) decodeScalar("file_count", in,
+            numberOfFiles = decodeScalar("file_count", in,
                     Codec.UNSIGNED5);
         }
     }
@@ -298,7 +298,7 @@ public class SegmentHeader {
     private void parseArchiveSpecialCounts(InputStream in) throws IOException,
             Pack200Exception {
         if (getOptions().hasSpecialFormats()) {
-            bandHeadersSize = (int) decodeScalar("band_headers_size", in,
+            bandHeadersSize = decodeScalar("band_headers_size", in,
                     Codec.UNSIGNED5);
             setAttributeDefinitionCount(decodeScalar("attr_definition_count",
                     in, Codec.UNSIGNED5));
@@ -307,37 +307,37 @@ public class SegmentHeader {
 
     private void parseClassCounts(InputStream in) throws IOException,
             Pack200Exception {
-        innerClassCount = (int) decodeScalar("ic_count", in, Codec.UNSIGNED5);
-        defaultClassMinorVersion = (int) decodeScalar("default_class_minver",
+        innerClassCount = decodeScalar("ic_count", in, Codec.UNSIGNED5);
+        defaultClassMinorVersion = decodeScalar("default_class_minver",
                 in, Codec.UNSIGNED5);
-        defaultClassMajorVersion = (int) decodeScalar("default_class_majver",
+        defaultClassMajorVersion = decodeScalar("default_class_majver",
                 in, Codec.UNSIGNED5);
-        classCount = (int) decodeScalar("class_count", in, Codec.UNSIGNED5);
+        classCount = decodeScalar("class_count", in, Codec.UNSIGNED5);
     }
 
     private void parseCpCounts(InputStream in) throws IOException,
             Pack200Exception {
-        cpUTF8Count = (int) decodeScalar("cp_Utf8_count", in, Codec.UNSIGNED5);
+        cpUTF8Count = decodeScalar("cp_Utf8_count", in, Codec.UNSIGNED5);
         if (getOptions().hasCPNumberCounts()) {
-            cpIntCount = (int) decodeScalar("cp_Int_count", in, Codec.UNSIGNED5);
-            cpFloatCount = (int) decodeScalar("cp_Float_count", in,
+            cpIntCount = decodeScalar("cp_Int_count", in, Codec.UNSIGNED5);
+            cpFloatCount = decodeScalar("cp_Float_count", in,
                     Codec.UNSIGNED5);
-            cpLongCount = (int) decodeScalar("cp_Long_count", in,
+            cpLongCount = decodeScalar("cp_Long_count", in,
                     Codec.UNSIGNED5);
-            cpDoubleCount = (int) decodeScalar("cp_Double_count", in,
+            cpDoubleCount = decodeScalar("cp_Double_count", in,
                     Codec.UNSIGNED5);
         }
-        cpStringCount = (int) decodeScalar("cp_String_count", in,
+        cpStringCount = decodeScalar("cp_String_count", in,
                 Codec.UNSIGNED5);
-        cpClassCount = (int) decodeScalar("cp_Class_count", in, Codec.UNSIGNED5);
-        cpSignatureCount = (int) decodeScalar("cp_Signature_count", in,
+        cpClassCount = decodeScalar("cp_Class_count", in, Codec.UNSIGNED5);
+        cpSignatureCount = decodeScalar("cp_Signature_count", in,
                 Codec.UNSIGNED5);
-        cpDescriptorCount = (int) decodeScalar("cp_Descr_count", in,
+        cpDescriptorCount = decodeScalar("cp_Descr_count", in,
                 Codec.UNSIGNED5);
-        cpFieldCount = (int) decodeScalar("cp_Field_count", in, Codec.UNSIGNED5);
-        cpMethodCount = (int) decodeScalar("cp_Method_count", in,
+        cpFieldCount = decodeScalar("cp_Field_count", in, Codec.UNSIGNED5);
+        cpMethodCount = decodeScalar("cp_Method_count", in,
                 Codec.UNSIGNED5);
-        cpIMethodCount = (int) decodeScalar("cp_Imethod_count", in,
+        cpIMethodCount = decodeScalar("cp_Imethod_count", in,
                 Codec.UNSIGNED5);
     }
 
@@ -360,11 +360,11 @@ public class SegmentHeader {
      *             if there is a problem decoding the value or that the value is
      *             invalid
      */
-    private long[] decodeScalar(String name, InputStream in, BHSDCodec codec,
+    private int[] decodeScalar(String name, InputStream in, BHSDCodec codec,
             int n) throws IOException, Pack200Exception {
         segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed #" + name + " (" + n
                 + ")");
-        return codec.decode(n, in);
+        return codec.decodeInts(n, in);
     }
 
     /**
@@ -386,9 +386,9 @@ public class SegmentHeader {
      *             if there is a problem decoding the value or that the value is
      *             invalid
      */
-    private long decodeScalar(String name, InputStream in, BHSDCodec codec)
+    private int decodeScalar(String name, InputStream in, BHSDCodec codec)
             throws IOException, Pack200Exception {
-        long ret = codec.decode(in);
+        int ret = codec.decode(in);
         segment
                 .log(Segment.LOG_LEVEL_VERBOSE, "Parsed #" + name + " as "
                         + ret);

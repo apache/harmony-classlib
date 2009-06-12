@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 /**
  * A PopulationCodec is a Codec that is well suited to encoding data that shows
- * statistical or repetetive patterns, containign for example a few numbers
+ * statistical or repetitive patterns, containing for example a few numbers
  * which are repeated a lot throughout the set, but not necessarily
  * sequentially.
  */
@@ -32,12 +32,12 @@ public class PopulationCodec extends Codec {
     private Codec tokenCodec;
     private final Codec unvafouredCodec;
     private int l;
-    private long[] favoured;
+    private int[] favoured;
 
-    public PopulationCodec(Codec favouredCodec, Codec tableCodec,
+    public PopulationCodec(Codec favouredCodec, Codec tokenCodec,
             Codec unvafouredCodec) {
         this.favouredCodec = favouredCodec;
-        this.tokenCodec = tableCodec;
+        this.tokenCodec = tokenCodec;
         this.unvafouredCodec = unvafouredCodec;
     }
 
@@ -49,26 +49,27 @@ public class PopulationCodec extends Codec {
         this.unvafouredCodec = unvafouredCodec;
     }
 
-    public long decode(InputStream in) throws IOException, Pack200Exception {
+    public int decode(InputStream in) throws IOException, Pack200Exception {
         throw new Pack200Exception(
                 "Population encoding does not work unless the number of elements are known");
     }
 
-    public long decode(InputStream in, long last) throws IOException,
+    public int decode(InputStream in, long last) throws IOException,
             Pack200Exception {
         throw new Pack200Exception(
                 "Population encoding does not work unless the number of elements are known");
     }
 
-    public long[] decode(int n, InputStream in) throws IOException,
+    public int[] decodeInts(int n, InputStream in) throws IOException,
             Pack200Exception {
-        favoured = new long[n]; // there must be <= n values, but probably a lot
+        lastBandLength = 0;
+        favoured = new int[n]; // there must be <= n values, but probably a lot
         // less
-        long result[];
+        int result[];
         // read table of favorites first
-        long smallest = Long.MAX_VALUE;
-        long last = 0;
-        long value = 0;
+        int smallest = Integer.MAX_VALUE;
+        int last = 0;
+        int value = 0;
         int k = -1;
         while (true) {
             value = favouredCodec.decode(in, last);
@@ -83,6 +84,7 @@ public class PopulationCodec extends Codec {
             }
             last = value;
         }
+        lastBandLength += k;
         // if tokenCodec needs to be derived from the T, L and K values
         if (tokenCodec == null) {
             if (k < 256) {
@@ -102,12 +104,14 @@ public class PopulationCodec extends Codec {
             }
         }
         // read favorites
-        result = tokenCodec.decode(n, in);
+        lastBandLength += n;
+        result = tokenCodec.decodeInts(n, in);
         // read unfavorites
         last = 0;
         for (int i = 0; i < n; i++) {
-            int index = (int) result[i];
+            int index = result[i];
             if (index == 0) {
+                lastBandLength++;
                 result[i] = last = unvafouredCodec.decode(in, last);
             } else {
                 result[i] = favoured[index - 1];
@@ -116,17 +120,7 @@ public class PopulationCodec extends Codec {
         return result;
     }
 
-    public int[] decodeInts(int n, InputStream in) throws IOException,
-            Pack200Exception {
-        long[] result = decode(n, in);
-        int[] intRes = new int[result.length];
-        for (int i = 0; i < intRes.length; i++) {
-            intRes[i] = (int) result[i];
-        }
-        return intRes;
-    }
-
-    public long[] getFavoured() {
+    public int[] getFavoured() {
         return favoured;
     }
 
@@ -138,14 +132,23 @@ public class PopulationCodec extends Codec {
         return unvafouredCodec;
     }
 
-    public byte[] encode(long value, long last) throws Pack200Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public byte[] encode(int value, int last) throws Pack200Exception {
+        throw new Pack200Exception(
+        "Population encoding does not work unless the number of elements are known");
     }
 
-    public byte[] encode(long value) throws Pack200Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public byte[] encode(int value) throws Pack200Exception {
+        throw new Pack200Exception(
+        "Population encoding does not work unless the number of elements are known");
+    }
+
+    public byte[] encode(int[] favoured, int[] tokens, int[] unfavoured) throws Pack200Exception {
+        byte[] favouredEncoded = favouredCodec.encode(favoured);
+        byte[] tokensEncoded = tokenCodec.encode(tokens);
+        byte[] unfavouredEncoded = unvafouredCodec.encode(unfavoured);
+        byte[] band = new byte[favouredEncoded.length + tokensEncoded.length + unfavouredEncoded.length];
+
+        return band;
     }
 
     public Codec getTokenCodec() {

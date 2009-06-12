@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -70,13 +71,19 @@ public class Segment implements ClassVisitor {
         bcBands.finaliseBands();
         fileBands.finaliseBands();
 
+        // Temporary fix because we have to encode the other bands before
+        // segmentHeader, but probably not very good performance
+        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+
+        cpBands.pack(tempStream);
+        attributeDefinitionBands.pack(tempStream);
+        icBands.pack(tempStream);
+        classBands.pack(tempStream);
+        bcBands.pack(tempStream);
+        fileBands.pack(tempStream);
+
         segmentHeader.pack(out);
-        cpBands.pack(out);
-        attributeDefinitionBands.pack(out);
-        icBands.pack(out);
-        classBands.pack(out);
-        bcBands.pack(out);
-        fileBands.pack(out);
+        tempStream.writeTo(out);
     }
 
     private void processClasses(List classes) {
@@ -166,7 +173,7 @@ public class Segment implements ClassVisitor {
 
         public void visitFrame(int arg0, int arg1, Object[] arg2, int arg3,
                 Object[] arg4) {
-            // TODO Auto-generated method stub
+            // TODO: Java 6 - implement support for this
 
         }
 

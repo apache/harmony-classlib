@@ -104,7 +104,7 @@ public class FileBands extends BandSet {
         int index = 0;
         for (int i = 0; i < bytes.length; i++) {
             for (int j = 0; j < bytes[i].length; j++) {
-                band[index++] = bytes[i][j];
+                band[index++] = bytes[i][j] & 0xFF;
             }
         }
         return band;
