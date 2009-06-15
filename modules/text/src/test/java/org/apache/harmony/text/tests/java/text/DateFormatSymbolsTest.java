@@ -16,6 +16,10 @@
  */
 package org.apache.harmony.text.tests.java.text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DateFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
@@ -338,5 +342,28 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      * method is called after a test is executed.
      */
     protected void tearDown() {
+    }
+
+    // Test serialization mechanism of DateFormatSymbols
+    public void test_serialization() throws Exception {
+        DateFormatSymbols symbols = new DateFormatSymbols(Locale.FRANCE);
+        String[][] zoneStrings = symbols.getZoneStrings();
+        assertNotNull(zoneStrings);
+
+        // serialize
+        ByteArrayOutputStream byteOStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOStream = new ObjectOutputStream(byteOStream);
+        objectOStream.writeObject(symbols);
+
+        // and deserialize
+        ObjectInputStream objectIStream = new ObjectInputStream(
+                new ByteArrayInputStream(byteOStream.toByteArray()));
+        DateFormatSymbols symbolsD = (DateFormatSymbols) objectIStream
+                .readObject();
+
+        // The associated currency will not persist
+        String[][] zoneStringsD = symbolsD.getZoneStrings();
+        assertNotNull(zoneStringsD);
+        assertEquals(symbols, symbolsD);
     }
 }
