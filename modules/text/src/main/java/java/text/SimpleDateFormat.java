@@ -1081,6 +1081,7 @@ public class SimpleDateFormat extends DateFormat {
             tzId = id;
             icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         }
+        icuFormat.setLenient(calendar.isLenient());
         return icuFormat.parse(string,position);
     }
 
