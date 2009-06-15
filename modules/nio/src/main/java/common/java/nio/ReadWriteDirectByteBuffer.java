@@ -117,9 +117,6 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
         if (len > remaining()) {
             throw new BufferOverflowException();
         }
-        if (isReadOnly()) {
-            throw new ReadOnlyBufferException();
-        }
         getBaseAddress().setByteArray(offset + position, src, off, len);
         position += len;
         return this;
