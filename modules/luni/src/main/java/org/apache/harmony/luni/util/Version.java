@@ -91,13 +91,13 @@ class Version {
     }
 
     public static void version(String versionOpt) {
-        if (versionOpt.equals("-version")) {
+        if (versionOpt.equals("-version") || versionOpt.equals("-showversion")) {
             displayVMVersion();
-        } else if (versionOpt.equals("-version:extended")) {
+        } else if (versionOpt.equals("-version:extended") || versionOpt.equals("-showversion:extended")) {
             displayVMVersion();
             displayClasslibVersion();
         } else {
-            System.out.println("Option " + versionOpt + " unrecognised - please use -version or -version:extended");
+            System.out.println("Option " + versionOpt + " unrecognised - please use -version, -showversion, -version:extended or -showversion:extended");
         }
     }
 }

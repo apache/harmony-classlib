@@ -139,7 +139,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char defaultDllName[] = "harmonyvm";
   char defaultDirName[] = "default";
   int rc = -1;
-  int showVersion = 0;
   int versionFlag = 0;
   int vmHelp = 0;
   int genericLauncher = 0;
@@ -231,9 +230,9 @@ gpProtectedMain (struct haCmdlineOptions *args)
             /* Display version information */
             versionFlag = i;
 		}
-		if (0 == strcmp ("-showversion", argv[i])) {
+		if (0 == strncmp ("-showversion", argv[i], 12)) {
 			/* We are being asked to print our version and continue */
-			showVersion = 1;
+            if (!versionFlag) versionFlag = i;
 		}
 		if ('-' != argv[i][0]) {
 			/* This is the main class */
@@ -354,15 +353,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
     }
 
 #endif /* ! HY_NO_THR */
-  if (showVersion == 1)
-    {
-      if (!versionWritten)
-        {
-          hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
-          copyrightWritten = 1;
-          versionWritten = 1;
-        }
-    }
     
   /* set up the properties file */
   propertiesFileName = hymem_allocate_memory (strlen (vmiPath) + 12);
@@ -678,6 +668,9 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
       jclass clazz;
       jmethodID mID;
       jstring jStrObject;
+
+      /* First, print the copyright string to stdout */
+      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
         
       jStrObject = (*env)->NewStringUTF (env, argv[versionFlag]);
       if (!jStrObject) return 3;
@@ -690,8 +683,10 @@ invocation (HyPortLibrary * portLibrary, int argc, char **argv, UDATA handle,
       if (!mID) return 3;
         
       (*env)->CallStaticVoidMethod(env, clazz, mID, jStrObject);
-        
-      return 0;
+
+      /* if -version is specified, exit, otherwise continue */
+      if (0 == strncmp ("-version", argv[versionFlag], 8))
+          return 0;
   }
 
   if (mainClass)
@@ -969,7 +964,8 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
        if ( (strcmp (argv[i], "-jar") != 0) 
            && (strncmp (argv[i], "-vmdir:", 7) != 0)
            && (strncmp (argv[i], "-vm:", 4) != 0) 
-           && (strncmp (argv[i], "-version", 8) != 0))
+           && (strncmp (argv[i], "-version", 8) != 0)
+            && (strncmp (argv[i], "-showversion", 12) != 0))
        {
           /* special coding for -classpath and -cp */
           /* they get passed to the vm as -Djava.class.path */
