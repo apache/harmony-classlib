@@ -112,18 +112,10 @@
 	Java_org_apache_harmony_niochar_charset_additional_IBM870_00024Decoder_nDecode            
 	Java_org_apache_harmony_niochar_charset_additional_IBM871_00024Encoder_nEncode            
 	Java_org_apache_harmony_niochar_charset_additional_IBM871_00024Decoder_nDecode            
-	Java_org_apache_harmony_niochar_charset_additional_IBM874_00024Encoder_nEncode            
-	Java_org_apache_harmony_niochar_charset_additional_IBM874_00024Decoder_nDecode            
 	Java_org_apache_harmony_niochar_charset_additional_IBM918_00024Encoder_nEncode            
 	Java_org_apache_harmony_niochar_charset_additional_IBM918_00024Decoder_nDecode            
 	Java_org_apache_harmony_niochar_charset_additional_IBM_1Thai_00024Encoder_nEncode          
 	Java_org_apache_harmony_niochar_charset_additional_IBM_1Thai_00024Decoder_nDecode          
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_110_00024Encoder_nEncode       
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_110_00024Decoder_nDecode       
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_114_00024Encoder_nEncode       
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_114_00024Decoder_nDecode       
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_116_00024Encoder_nEncode       
-	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_116_00024Decoder_nDecode       
 	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_13_00024Encoder_nEncode        
 	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_13_00024Decoder_nDecode       
 	Java_org_apache_harmony_niochar_charset_additional_ISO_18859_16_00024Encoder_nEncode        
@@ -134,8 +126,6 @@
 	Java_org_apache_harmony_niochar_charset_additional_windows_11255_00024Decoder_nDecode      
 	Java_org_apache_harmony_niochar_charset_additional_windows_11256_00024Encoder_nEncode      
 	Java_org_apache_harmony_niochar_charset_additional_windows_11256_00024Decoder_nDecode      
-	Java_org_apache_harmony_niochar_charset_additional_windows_11258_00024Encoder_nEncode      
-	Java_org_apache_harmony_niochar_charset_additional_windows_11258_00024Decoder_nDecode      
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM1006_00024Encoder_nEncode         
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM1006_00024Decoder_nDecode         
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM1025_00024Encoder_nEncode         
@@ -156,6 +146,8 @@
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM737_00024Decoder_nDecode          
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM856_00024Encoder_nEncode          
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM856_00024Decoder_nDecode          
+        Java_org_apache_harmony_niochar_charset_additional_x_1IBM874_00024Encoder_nEncode
+        Java_org_apache_harmony_niochar_charset_additional_x_1IBM874_00024Decoder_nDecode
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM875_00024Encoder_nEncode          
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM875_00024Decoder_nDecode          
 	Java_org_apache_harmony_niochar_charset_additional_x_1IBM922_00024Encoder_nEncode          
