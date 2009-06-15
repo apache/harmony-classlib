@@ -360,7 +360,7 @@ public final class SocketPermission extends Permission implements Serializable {
             return actionNames[SP_RESOLVE]; // If none specified return the
         }
         // implied action resolve
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if ((actionsMask & SP_CONNECT) == SP_CONNECT) {
             sb.append(',');
             sb.append(actionNames[SP_CONNECT]);
