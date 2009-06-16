@@ -18,9 +18,12 @@ package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -109,6 +112,32 @@ public class ZipInputStreamTest extends TestCase {
 	    zentry = zis.getNextEntry();
 	    zis.closeEntry();
 	}
+
+    public void test_closeAfterException() throws Exception {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_manifest.jar");
+        FileInputStream fis = new FileInputStream(new File(resources,
+                "Broken_manifest.jar"));
+
+        ZipInputStream zis1 = new ZipInputStream(fis);
+
+        try {
+            for (int i = 0; i < 6; i++) {
+                zis1.getNextEntry();
+            }
+            fail("ZipException expected");
+        } catch (ZipException ee) {
+            // expected
+        }
+
+        zis1.close();
+        try {
+            zis1.getNextEntry();
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.util.zip.ZipInputStream#getNextEntry()
