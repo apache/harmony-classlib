@@ -198,6 +198,7 @@ public class NewAttributeBands extends BandSet {
 
     private AttributeLayoutElement readNextAttributeElement(StringReader stream)
             throws IOException {
+        stream.mark(1);
         int nextChar = stream.read();
         if (nextChar == -1) {
             return null;
@@ -206,6 +207,7 @@ public class NewAttributeBands extends BandSet {
             List body = readBody(getStreamUpToMatchingBracket(stream));
             return new Callable(body);
         } else {
+            stream.reset();
             return readNextLayoutElement(stream);
         }
     }
