@@ -960,6 +960,23 @@ public class ClassBands extends BandSet {
                 bciRenumbering, labelsToOffsets);
         renumberDoubleOffsetBci(codeHandlerStartP, codeHandlerEndPO, codeHandlerCatchPO,
                 bciRenumbering, labelsToOffsets);
+
+        for (Iterator iterator = classAttributeBands.iterator(); iterator.hasNext();) {
+            NewAttributeBands newAttributeBandSet = (NewAttributeBands) iterator.next();
+            newAttributeBandSet.renumberBci(bciRenumbering, labelsToOffsets);
+        }
+        for (Iterator iterator = methodAttributeBands.iterator(); iterator.hasNext();) {
+            NewAttributeBands newAttributeBandSet = (NewAttributeBands) iterator.next();
+            newAttributeBandSet.renumberBci(bciRenumbering, labelsToOffsets);
+        }
+        for (Iterator iterator = fieldAttributeBands.iterator(); iterator.hasNext();) {
+            NewAttributeBands newAttributeBandSet = (NewAttributeBands) iterator.next();
+            newAttributeBandSet.renumberBci(bciRenumbering, labelsToOffsets);
+        }
+        for (Iterator iterator = codeAttributeBands.iterator(); iterator.hasNext();) {
+            NewAttributeBands newAttributeBandSet = (NewAttributeBands) iterator.next();
+            newAttributeBandSet.renumberBci(bciRenumbering, labelsToOffsets);
+        }
     }
 
     private void renumberBci(List list, IntList bciRenumbering, Map labelsToOffsets) {

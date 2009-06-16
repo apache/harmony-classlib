@@ -137,4 +137,8 @@ public class NewAttribute extends Attribute {
     public byte[] getBytes() {
         return contents;
     }
+
+    public Label getLabel(int index) {
+        return labels[index];
+    }
 }
