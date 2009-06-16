@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -156,6 +157,26 @@ public class ZipInputStreamTest extends TestCase {
 	    new String(rbuf, 0, r);
 	    assertEquals("Failed to read entry", 12, r);
 	}
+
+    public void testReadOneByteAtATime() throws IOException {
+        InputStream in = new FilterInputStream(Support_Resources.getStream("hyts_ZipFile.zip")) {
+            @Override
+            public int read(byte[] buffer, int offset, int count) throws IOException {
+                return super.read(buffer, offset, 1); // one byte at a time
+            }
+
+            @Override
+            public int read(byte[] buffer) throws IOException {
+                return super.read(buffer, 0, 1); // one byte at a time
+            }
+        };
+
+        zis = new ZipInputStream(in);
+        while ((zentry = zis.getNextEntry()) != null) {
+            zentry.getName();
+        }
+        zis.close();
+    }
 
 	/**
 	 * @tests java.util.zip.ZipInputStream#skip(long)
