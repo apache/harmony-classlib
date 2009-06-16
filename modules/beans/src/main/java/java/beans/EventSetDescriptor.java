@@ -177,7 +177,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
             this.listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
 
             for (MethodDescriptor element : listenerMethodDescriptors) {
-                element.getMethod();
                 this.listenerMethodDescriptors.add(element);
             }
         }
