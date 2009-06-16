@@ -866,6 +866,9 @@ public class XMLEncoder extends Encoder {
 	 */
 	@Override
     public void writeExpression(Expression oldExp) {
+        if (null == oldExp) {
+            throw new NullPointerException();
+        }
 	    boolean oldWritingObject = writingObject;
 	    writingObject = true;
 		// get expression value
