@@ -26,7 +26,8 @@ import java.util.Map;
 import org.objectweb.asm.Label;
 
 /**
- * Bytecode bands
+ * Bytecode bands (corresponds to the <code>bc_bands</code> set of bands in the
+ * pack200 specification)
  */
 public class BcBands extends BandSet {
 
@@ -85,6 +86,11 @@ public class BcBands extends BandSet {
         superClass = superName;
     }
 
+    /**
+     * All input classes for the segment have now been read in, so this method
+     * is called so that this class can calculate/complete anything it could not
+     * do while classes were being read.
+     */
     public void finaliseBands() {
         bcThisField = getIndexInClass(bcThisField);
         bcThisMethod = getIndexInClass(bcThisMethod);

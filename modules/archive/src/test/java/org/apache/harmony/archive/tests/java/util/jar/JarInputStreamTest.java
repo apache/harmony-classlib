@@ -18,6 +18,7 @@ package org.apache.harmony.archive.tests.java.util.jar;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 
 import tests.support.resource.Support_Resources;
 
@@ -68,6 +70,61 @@ public class JarInputStreamTest extends junit.framework.TestCase {
                 }
 		assertTrue("The jar input stream does not contain the correct entries",	hasCorrectEntry);
 	}
+
+    public void test_closeAfterException() throws Exception {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_entry.jar");
+        InputStream is = Support_Resources.getStream("Broken_entry.jar");
+        JarInputStream jis = new JarInputStream(is, false);
+        jis.getNextEntry();
+        try {
+            jis.getNextEntry();
+            fail("ZipException expected");
+        } catch (ZipException ee) {
+            // expected
+        }
+        jis.close();
+        try {
+            jis.getNextEntry();
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
+
+    public void test_getNextJarEntry_Ex() throws Exception {
+        final Set<String> desired = new HashSet<String>(Arrays
+                .asList("foo/", "foo/bar/", "foo/bar/A.class", "Blah.txt"));
+        Set<String> actual = new HashSet<String>();
+        InputStream is = new URL(jarName).openConnection().getInputStream();
+        JarInputStream jis = new JarInputStream(is);
+        JarEntry je = jis.getNextJarEntry();
+        while (je != null) {
+            actual.add(je.toString());
+            je = jis.getNextJarEntry();
+        }
+        assertEquals(actual, desired);
+        jis.close();
+
+        try {
+            jis.getNextJarEntry();
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_entry.jar");
+        is = Support_Resources.getStream("Broken_entry.jar");
+        jis = new JarInputStream(is, false);
+        jis.getNextJarEntry();
+        try {
+            jis.getNextJarEntry();
+            fail("ZipException expected");
+        } catch (ZipException ee) {
+            // expected
+        }
+    }
 
 	/**
 	 * @tests java.util.jar.JarInputStream#getManifest()
@@ -153,25 +210,17 @@ public class JarInputStreamTest extends junit.framework.TestCase {
         InputStream is = new URL(modJarName).openConnection()
                 .getInputStream();
         JarInputStream jin = new JarInputStream(is, true);
-        ZipEntry zipEntry = null;
 
-        final int indexofDSA = 2;
-        final int totalEntries = 4;
-        int count = 0;
-        while (count == 0 || zipEntry != null) {
-            count++;
-            try {
-                zipEntry = jin.getNextEntry();
-                if (count == indexofDSA + 1) {
-                    fail("Should throw Security Exception");
-                }
-            } catch (SecurityException e) {
-                if (count != indexofDSA + 1) {
-                    throw e;
-                }
-            }
+        assertEquals("META-INF/TESTROOT.SF", jin.getNextEntry().getName());
+        assertEquals("META-INF/TESTROOT.DSA", jin.getNextEntry().getName());
+        try {
+            jin.getNextEntry();
+            fail();
+        } catch (SecurityException expected) {
         }
-        assertEquals(totalEntries + 2, count);
+        assertEquals("META-INF/", jin.getNextEntry().getName());
+        assertEquals("Test.class", jin.getNextEntry().getName());
+        assertNull(jin.getNextEntry());
         jin.close();
     }
 

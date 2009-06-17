@@ -47,7 +47,7 @@ public class Inflater {
 
     private boolean finished; // Set by the inflateImpl native
 
-    private boolean gotFirstByte = false;
+    private boolean gotFirstHeaderByte;
 
     int inLength;
 
@@ -78,6 +78,7 @@ public class Inflater {
      */
     public Inflater(boolean noHeader) {
         streamHandle = createStream(noHeader);
+        gotFirstHeaderByte = noHeader;
     }
 
     private native long createStream(boolean noHeader1);
@@ -395,9 +396,9 @@ public class Inflater {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        if (!gotFirstByte && nbytes > 0) {
-            pass_magic_number_check = (buf[off] == MAGIC_NUMBER || nbytes > 1);
-            gotFirstByte = true;
+        if (!gotFirstHeaderByte && nbytes > 0) {
+            pass_magic_number_check = (buf[off] == MAGIC_NUMBER);
+            gotFirstHeaderByte = true;
         }
     }
 

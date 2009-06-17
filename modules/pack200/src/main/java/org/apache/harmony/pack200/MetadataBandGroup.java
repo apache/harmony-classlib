@@ -36,9 +36,9 @@ public class MetadataBandGroup extends BandSet {
     private int numBackwardsCalls = 0;
 
     public List param_NB = new ArrayList(); // TODO: Lazy instantiation?
-    public List anno_N = new ArrayList();
+    public IntList anno_N = new IntList();
     public List type_RS = new ArrayList();
-    public List pair_N = new ArrayList();
+    public IntList pair_N = new IntList();
     public List name_RU = new ArrayList();
     public List T = new ArrayList();
     public List caseI_KI = new ArrayList();
@@ -49,9 +49,9 @@ public class MetadataBandGroup extends BandSet {
     public List caseet_RS = new ArrayList();
     public List caseec_RU = new ArrayList();
     public List cases_RU = new ArrayList();
-    public List casearray_N = new ArrayList();
+    public IntList casearray_N = new IntList();
     public List nesttype_RS = new ArrayList();
-    public List nestpair_N = new ArrayList();
+    public IntList nestpair_N = new IntList();
     public List nestname_RU = new ArrayList();
 
     private final CpBands cpBands;
@@ -59,7 +59,18 @@ public class MetadataBandGroup extends BandSet {
 
     /**
      * Constructs a new MetadataBandGroup
-     * @param type - must be either AD, RVA, RIA, RVPA or RIPA.
+     *
+     * @param type
+     *            must be either AD, RVA, RIA, RVPA or RIPA.
+     * @param context
+     *            <code>CONTEXT_CLASS</code>, <code>CONTEXT_METHOD</code> or
+     *            <code>CONTEXT_FIELD</code>
+     * @param cpBands
+     *            constant pool bands
+     * @param segmentHeader
+     *            segment header
+     * @param effort
+     *            packing effort
      */
     public MetadataBandGroup(String type, int context, CpBands cpBands, SegmentHeader segmentHeader, int effort) {
         super(effort, segmentHeader);
@@ -82,9 +93,9 @@ public class MetadataBandGroup extends BandSet {
                 contextStr = "Method";
             }
             if(!type.equals("AD")) {
-                out.write(encodeBandInt(contextStr + "_" + type + " anno_N",  listToArray(anno_N), Codec.UNSIGNED5));
+                out.write(encodeBandInt(contextStr + "_" + type + " anno_N",  anno_N.toArray(), Codec.UNSIGNED5));
                 out.write(encodeBandInt(contextStr + "_" + type + " type_RS",  cpEntryListToArray(type_RS), Codec.UNSIGNED5));
-                out.write(encodeBandInt(contextStr + "_" + type + " pair_N",  listToArray(pair_N), Codec.UNSIGNED5));
+                out.write(encodeBandInt(contextStr + "_" + type + " pair_N",  pair_N.toArray(), Codec.UNSIGNED5));
                 out.write(encodeBandInt(contextStr + "_" + type + " name_RU",  cpEntryListToArray(name_RU), Codec.UNSIGNED5));
             }
             out.write(encodeBandInt(contextStr + "_" + type + " T",  tagListToArray(T), Codec.BYTE1));
@@ -96,9 +107,9 @@ public class MetadataBandGroup extends BandSet {
             out.write(encodeBandInt(contextStr + "_" + type + " caseet_RS",  cpEntryListToArray(caseet_RS), Codec.UNSIGNED5));
             out.write(encodeBandInt(contextStr + "_" + type + " caseec_RU",  cpEntryListToArray(caseec_RU), Codec.UNSIGNED5));
             out.write(encodeBandInt(contextStr + "_" + type + " cases_RU",  cpEntryListToArray(cases_RU), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " casearray_N",  listToArray(casearray_N), Codec.UNSIGNED5));
+            out.write(encodeBandInt(contextStr + "_" + type + " casearray_N",  casearray_N.toArray(), Codec.UNSIGNED5));
             out.write(encodeBandInt(contextStr + "_" + type + " nesttype_RS",  cpEntryListToArray(nesttype_RS), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " nestpair_N",  listToArray(nestpair_N), Codec.UNSIGNED5));
+            out.write(encodeBandInt(contextStr + "_" + type + " nestpair_N",  nestpair_N.toArray(), Codec.UNSIGNED5));
             out.write(encodeBandInt(contextStr + "_" + type + " nestname_RU",  cpEntryListToArray(nestname_RU), Codec.UNSIGNED5));
         }
     }
@@ -111,9 +122,21 @@ public class MetadataBandGroup extends BandSet {
         return ints;
     }
 
+    /**
+     * Add an annotation to this set of bands
+     *
+     * @param desc
+     * @param nameRU
+     * @param t
+     * @param values
+     * @param caseArrayN
+     * @param nestTypeRS
+     * @param nestNameRU
+     * @param nestPairN
+     */
     public void addAnnotation(String desc, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
         type_RS.add(cpBands.getCPSignature(desc));
-        pair_N.add(new Integer(t.size()));
+        pair_N.add(t.size());
 
         for (Iterator iterator = nameRU.iterator(); iterator.hasNext();) {
             String name = (String) iterator.next();
@@ -152,9 +175,9 @@ public class MetadataBandGroup extends BandSet {
             // do nothing here for [ or @ (handled below)
         }
         for (Iterator iterator = caseArrayN.iterator(); iterator.hasNext();) {
-            Integer arraySize = (Integer) iterator.next();
+            int arraySize = ((Integer)iterator.next()).intValue();
             casearray_N.add(arraySize);
-            numBackwardsCalls += arraySize.intValue();
+            numBackwardsCalls += arraySize;
         }
         for (Iterator iterator = nesttype_RS.iterator(); iterator.hasNext();) {
             String type = (String) iterator.next();
@@ -171,6 +194,9 @@ public class MetadataBandGroup extends BandSet {
         }
     }
 
+    /**
+     * Returns true if any annotations have been added to this set of bands
+     */
     public boolean hasContent() {
         return type_RS.size() > 0;
     }
@@ -180,12 +206,62 @@ public class MetadataBandGroup extends BandSet {
     }
 
     public void incrementAnnoN() {
-        Integer latest = (Integer)anno_N.remove(anno_N.size() -1);
-        anno_N.add(new Integer(latest.intValue() + 1));
+        anno_N.increment(anno_N.size() - 1);
     }
 
     public void newEntryInAnnoN() {
-        anno_N.add(new Integer(1));
+        anno_N.add(1);
+    }
+
+    /**
+     * Remove the latest annotation that was added to this group
+     */
+    public void removeLatest() {
+        int latest = anno_N.remove(anno_N.size() -1);
+        for (int i = 0; i < latest; i++) {
+            type_RS.remove(type_RS.size() - 1);
+            int pairs = pair_N.remove(pair_N.size() - 1);
+            for (int j = 0; j < pairs; j++) {
+                removeOnePair();
+            }
+        }
+    }
+
+    /*
+     * Convenience method for removeLatest
+     */
+    private void removeOnePair() {
+        String tag = (String) T.remove(T.size() - 1);
+        if (tag.equals("B") || tag.equals("C") || tag.equals("I")
+                || tag.equals("S") || tag.equals("Z")) {
+            caseI_KI.remove(caseI_KI.size() - 1);
+        } else if (tag.equals("D")) {
+            caseD_KD.remove(caseD_KD.size() - 1);
+        } else if (tag.equals("F")) {
+            caseF_KF.remove(caseF_KF.size() - 1);
+        } else if (tag.equals("J")) {
+            caseJ_KJ.remove(caseJ_KJ.size() - 1);
+        } else if (tag.equals("C")) {
+            casec_RS.remove(casec_RS.size() - 1);
+        } else if (tag.equals("e")) {
+            caseet_RS.remove(caseet_RS.size() - 1);
+            caseec_RU.remove(caseet_RS.size() - 1);
+        } else if (tag.equals("s")) {
+            cases_RU.remove(cases_RU.size() - 1);
+        } else if (tag.equals("[")) {
+            int arraySize = casearray_N.remove(casearray_N.size() - 1);
+            numBackwardsCalls -= arraySize;
+            for (int k = 0; k < arraySize; k++) {
+                removeOnePair();
+            }
+        } else if (tag.equals("@")) {
+            nesttype_RS.remove(nesttype_RS.size() - 1);
+            int numPairs = nestpair_N.remove(nestpair_N.size() - 1);
+            numBackwardsCalls -= numPairs;
+            for (int i = 0; i < numPairs; i++) {
+                removeOnePair();
+            }
+        }
     }
 
 }

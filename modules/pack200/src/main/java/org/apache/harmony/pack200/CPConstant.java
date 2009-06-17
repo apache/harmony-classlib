@@ -16,7 +16,11 @@
  */
 package org.apache.harmony.pack200;
 
-
-public abstract class CPConstant extends ConstantPoolEntry implements Comparable {
+/**
+ * Abstract superclass for constant pool constant entries such as numbers or
+ * Strings
+ */
+public abstract class CPConstant extends ConstantPoolEntry implements
+        Comparable {
 
 }

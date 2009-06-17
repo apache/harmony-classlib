@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.Map;
@@ -200,8 +201,24 @@ public class XMLEncoderTest extends TestCase {
         return str;
     }
 
-    public void testWriteExpression() {
-        // covered by testWriteObject
+    public void testWriteExpression_Scenario1() {
+        XMLEncoder xmlEncoder = new XMLEncoder((OutputStream) null);
+        try {
+            xmlEncoder.writeExpression((Expression) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void testWriteExpression_Scenario2() {
+        XMLEncoder xmlEncoder = new XMLEncoder(new ByteArrayOutputStream());
+        try {
+            xmlEncoder.writeExpression((Expression) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
     }
 
     public void testWriteStatement() {

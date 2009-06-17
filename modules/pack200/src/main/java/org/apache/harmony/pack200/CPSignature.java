@@ -18,6 +18,9 @@ package org.apache.harmony.pack200;
 
 import java.util.List;
 
+/**
+ * Constant pool entry for a signature.
+ */
 public class CPSignature extends ConstantPoolEntry implements Comparable {
 
     private final CPUTF8 signatureForm;

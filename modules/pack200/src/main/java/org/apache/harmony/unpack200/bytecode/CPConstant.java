@@ -29,6 +29,8 @@ public abstract class CPConstant extends ConstantPoolEntry {
      *
      * @param tag
      * @param value
+     * @param globalIndex
+     *            index in CpBands
      * @throws NullPointerException
      *             if value is null
      */

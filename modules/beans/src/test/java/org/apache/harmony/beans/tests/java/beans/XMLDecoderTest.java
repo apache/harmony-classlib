@@ -430,6 +430,25 @@ public class XMLDecoderTest extends TestCase {
         assertEquals(o2, t2.getV());
     }
 
+    public void testReadObject_Repeated() throws Exception {
+        final Vector<Exception> exceptionList = new Vector<Exception>();
+
+        final ExceptionListener exceptionListener = new ExceptionListener() {
+            public void exceptionThrown(Exception e) {
+                exceptionList.addElement(e);
+            }
+        };
+
+        XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(
+                xml123bytes));
+        xmlDecoder.setExceptionListener(exceptionListener);
+        assertEquals(new Integer(1), xmlDecoder.readObject());
+        assertEquals(new Integer(2), xmlDecoder.readObject());
+        assertEquals(new Integer(3), xmlDecoder.readObject());
+        xmlDecoder.close();
+        assertEquals(0, exceptionList.size());
+    }
+
     public void testSetExceptionListener_Called() throws Exception {
         class MockExceptionListener implements ExceptionListener {
 

@@ -343,6 +343,9 @@ public class ByteCode extends ClassFileEntry {
      * after all the bytecodes in the CodeAttribute have been added. (This can't
      * be done beforehand because the CodeAttribute needs to be complete before
      * targets can be assigned.)
+     *
+     * @param codeAttribute
+     *            the code attribute
      */
     public void applyByteCodeTargetFixup(CodeAttribute codeAttribute) {
         getByteCodeForm().fixUpByteCodeTargets(this, codeAttribute);

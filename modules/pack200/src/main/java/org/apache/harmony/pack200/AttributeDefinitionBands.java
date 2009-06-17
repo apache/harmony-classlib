@@ -24,9 +24,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.objectweb.asm.Attribute;
+
 /**
- * Attribute Definition bands define how any unknown attributes should be
- * read by the decompressor.
+ * Attribute Definition bands define how any unknown attributes should be read
+ * by the decompressor.
  */
 public class AttributeDefinitionBands extends BandSet {
 
@@ -35,98 +37,132 @@ public class AttributeDefinitionBands extends BandSet {
     public static final int CONTEXT_FIELD = 1;
     public static final int CONTEXT_METHOD = 2;
 
-    private final Map layouts = new HashMap();
-
-    private final Map classAttributes = new HashMap();
-    private final Map methodAttributes = new HashMap();
-    private final Map fieldAttributes = new HashMap();
-    private final Map codeAttributes = new HashMap();
+    private final List classAttributeLayouts = new ArrayList();
+    private final List methodAttributeLayouts = new ArrayList();
+    private final List fieldAttributeLayouts = new ArrayList();
+    private final List codeAttributeLayouts = new ArrayList();
 
     private final List attributeDefinitions = new ArrayList();
 
     private final CpBands cpBands;
     private final Segment segment;
 
-    public AttributeDefinitionBands(Segment segment, int effort) {
+    public AttributeDefinitionBands(Segment segment, int effort,
+            Attribute[] attributePrototypes) {
         super(effort, segment.getSegmentHeader());
         this.cpBands = segment.getCpBands();
         this.segment = segment;
-    }
+        Map classLayouts = new HashMap();
+        Map methodLayouts = new HashMap();
+        Map fieldLayouts = new HashMap();
+        Map codeLayouts = new HashMap();
 
-    public void finaliseBands() {
-        addSyntheticDefinitions();
-        segmentHeader.setAttribute_definition_count(classAttributes.keySet()
-                .size()
-                + methodAttributes.keySet().size()
-                + fieldAttributes.keySet().size()
-                + codeAttributes.keySet().size()
-                + attributeDefinitions.size());
-        if (classAttributes.keySet().size() > 7) {
+        for (int i = 0; i < attributePrototypes.length; i++) {
+            NewAttribute newAttribute = (NewAttribute) attributePrototypes[i];
+            if (newAttribute.isContextClass()) {
+                classLayouts.put(newAttribute.type, newAttribute.getLayout());
+            }
+            if (newAttribute.isContextMethod()) {
+                methodLayouts.put(newAttribute.type, newAttribute.getLayout());
+            }
+            if (newAttribute.isContextField()) {
+                fieldLayouts.put(newAttribute.type, newAttribute.getLayout());
+            }
+            if (newAttribute.isContextCode()) {
+                codeLayouts.put(newAttribute.type, newAttribute.getLayout());
+            }
+        }
+        if (classLayouts.keySet().size() > 7) {
             segmentHeader.setHave_class_flags_hi(true);
         }
-        if(methodAttributes.keySet().size() > 6) {
+        if (methodLayouts.keySet().size() > 6) {
             segmentHeader.setHave_method_flags_hi(true);
         }
-        if(fieldAttributes.keySet().size() > 10) {
+        if (fieldLayouts.keySet().size() > 10) {
             segmentHeader.setHave_field_flags_hi(true);
         }
-        if(codeAttributes.keySet().size() > 15) {
+        if (codeLayouts.keySet().size() > 15) {
             segmentHeader.setHave_code_flags_hi(true);
         }
+        int[] availableClassIndices = new int[] { 25, 26, 27, 28, 29, 30, 31 };
+        if (classLayouts.size() > 7) {
+            availableClassIndices = addHighIndices(availableClassIndices);
+        }
+        addAttributeDefinitions(classLayouts, availableClassIndices,
+                CONTEXT_CLASS);
+        int[] availableMethodIndices = new int[] { 26, 27, 28, 29, 30, 31 };
+        if (methodAttributeLayouts.size() > 6) {
+            availableMethodIndices = addHighIndices(availableMethodIndices);
+        }
+        addAttributeDefinitions(methodLayouts, availableMethodIndices,
+                CONTEXT_METHOD);
+        int[] availableFieldIndices = new int[] { 18, 23, 24, 25, 26, 27, 28,
+                29, 30, 31 };
+        if (fieldAttributeLayouts.size() > 10) {
+            availableFieldIndices = addHighIndices(availableFieldIndices);
+        }
+        addAttributeDefinitions(fieldLayouts, availableFieldIndices,
+                CONTEXT_FIELD);
+        int[] availableCodeIndices = new int[] { 17, 18, 19, 20, 21, 22, 23,
+                24, 25, 26, 27, 28, 29, 30, 31 };
+        if (codeAttributeLayouts.size() > 15) {
+            availableCodeIndices = addHighIndices(availableCodeIndices);
+        }
+        addAttributeDefinitions(codeLayouts, availableCodeIndices, CONTEXT_CODE);
+    }
+
+    /**
+     * All input classes for the segment have now been read in, so this method
+     * is called so that this class can calculate/complete anything it could not
+     * do while classes were being read.
+     */
+    public void finaliseBands() {
+        addSyntheticDefinitions();
+        segmentHeader.setAttribute_definition_count(attributeDefinitions.size());
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
-        int[] availableClassIndices = new int[] {25, 26, 27, 28, 29, 30, 31};
-        if(classAttributes.size() > 7) {
-            availableClassIndices = addHighIndices(availableClassIndices);
-        }
-        addAttributeDefinitions(classAttributes, availableClassIndices, CONTEXT_CLASS);
-        int[] availableMethodIndices = new int[] {26, 27, 28, 29, 30, 31};
-        if(methodAttributes.size() > 6) {
-            availableMethodIndices = addHighIndices(availableMethodIndices);
-        }
-        addAttributeDefinitions(methodAttributes, availableMethodIndices, CONTEXT_METHOD);
-        int[] availableFieldIndices = new int[] {18, 23, 24, 25, 26, 27, 28, 29, 30, 31};
-        if(fieldAttributes.size() > 10) {
-            availableFieldIndices = addHighIndices(availableFieldIndices);
-        }
-        addAttributeDefinitions(fieldAttributes, availableFieldIndices, CONTEXT_FIELD);
-        int[] availableCodeIndices = new int[] {17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
-        if(codeAttributes.size() > 15) {
-            availableCodeIndices = addHighIndices(availableCodeIndices);
-        }
-        addAttributeDefinitions(codeAttributes, availableCodeIndices, CONTEXT_CODE);
-
         int[] attributeDefinitionHeader = new int[attributeDefinitions.size()];
         int[] attributeDefinitionName = new int[attributeDefinitions.size()];
         int[] attributeDefinitionLayout = new int[attributeDefinitions.size()];
         for (int i = 0; i < attributeDefinitionLayout.length; i++) {
-            AttributeDefinition def = (AttributeDefinition) attributeDefinitions.get(i);
-            attributeDefinitionHeader[i] = def.contextType | (def.index + 1 << 2);
+            AttributeDefinition def = (AttributeDefinition) attributeDefinitions
+                    .get(i);
+            attributeDefinitionHeader[i] = def.contextType
+                    | (def.index + 1 << 2);
             attributeDefinitionName[i] = def.name.getIndex();
             attributeDefinitionLayout[i] = def.layout.getIndex();
         }
 
-        out.write(encodeBandInt("attributeDefinitionHeader", attributeDefinitionHeader, Codec.BYTE1));
-        out.write(encodeBandInt("attributeDefinitionName", attributeDefinitionName, Codec.UNSIGNED5));
-        out.write(encodeBandInt("attributeDefinitionLayout", attributeDefinitionLayout, Codec.UNSIGNED5));
+        out.write(encodeBandInt("attributeDefinitionHeader",
+                attributeDefinitionHeader, Codec.BYTE1));
+        out.write(encodeBandInt("attributeDefinitionName",
+                attributeDefinitionName, Codec.UNSIGNED5));
+        out.write(encodeBandInt("attributeDefinitionLayout",
+                attributeDefinitionLayout, Codec.UNSIGNED5));
     }
 
     private void addSyntheticDefinitions() {
-        boolean anySytheticClasses = segment.getClassBands().isAnySyntheticClasses();
-        boolean anySyntheticMethods = segment.getClassBands().isAnySyntheticMethods();
-        boolean anySyntheticFields = segment.getClassBands().isAnySyntheticFields();
-        if(anySytheticClasses || anySyntheticMethods || anySyntheticFields) {
+        boolean anySytheticClasses = segment.getClassBands()
+                .isAnySyntheticClasses();
+        boolean anySyntheticMethods = segment.getClassBands()
+                .isAnySyntheticMethods();
+        boolean anySyntheticFields = segment.getClassBands()
+                .isAnySyntheticFields();
+        if (anySytheticClasses || anySyntheticMethods || anySyntheticFields) {
             CPUTF8 syntheticUTF = cpBands.getCPUtf8("Synthetic");
             CPUTF8 emptyUTF = cpBands.getCPUtf8("");
-            if(anySytheticClasses) {
-                attributeDefinitions.add(new AttributeDefinition(12, CONTEXT_CLASS, syntheticUTF, emptyUTF));
+            if (anySytheticClasses) {
+                attributeDefinitions.add(new AttributeDefinition(12,
+                        CONTEXT_CLASS, syntheticUTF, emptyUTF));
             }
-            if(anySyntheticMethods) {
-                attributeDefinitions.add(new AttributeDefinition(12, CONTEXT_METHOD, syntheticUTF, emptyUTF));
+            if (anySyntheticMethods) {
+                attributeDefinitions.add(new AttributeDefinition(12,
+                        CONTEXT_METHOD, syntheticUTF, emptyUTF));
             }
-            if(anySyntheticFields) {
-                attributeDefinitions.add(new AttributeDefinition(12, CONTEXT_FIELD, syntheticUTF, emptyUTF));
+            if (anySyntheticFields) {
+                attributeDefinitions.add(new AttributeDefinition(12,
+                        CONTEXT_FIELD, syntheticUTF, emptyUTF));
             }
         }
     }
@@ -137,29 +173,58 @@ public class AttributeDefinitionBands extends BandSet {
             temp[i] = availableIndices[i];
         }
         int j = 32;
-        for (int i = availableIndices.length; i < temp.length ; i++) {
+        for (int i = availableIndices.length; i < temp.length; i++) {
             temp[i] = j;
             j++;
         }
         return temp;
     }
 
-    private void addAttributeDefinitions(Map attributes,
-            int[] availableIndices, int contextType) {
+    private void addAttributeDefinitions(Map layouts, int[] availableIndices,
+            int contextType) {
         int i = 0;
-        for (Iterator iterator = attributes.keySet().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = layouts.keySet().iterator(); iterator
+                .hasNext();) {
             String name = (String) iterator.next();
             String layout = (String) layouts.get(name);
             int index = availableIndices[i];
-            attributeDefinitions.add(new AttributeDefinition(index, contextType, cpBands.getCPUtf8(name), cpBands.getCPUtf8(layout)));
+            AttributeDefinition definition = new AttributeDefinition(index,
+                    contextType, cpBands.getCPUtf8(name), cpBands
+                            .getCPUtf8(layout));
+            attributeDefinitions.add(definition);
+            switch (contextType) {
+            case CONTEXT_CLASS:
+                classAttributeLayouts.add(definition);
+                break;
+            case CONTEXT_METHOD:
+                methodAttributeLayouts.add(definition);
+                break;
+            case CONTEXT_FIELD:
+                fieldAttributeLayouts.add(definition);
+                break;
+            case CONTEXT_CODE:
+                codeAttributeLayouts.add(definition);
+            }
         }
     }
 
-    public void addLayout(String name, String layout) {
-        layouts.put(name, layout);
+    public List getClassAttributeLayouts() {
+        return classAttributeLayouts;
     }
 
-    private static class AttributeDefinition {
+    public List getMethodAttributeLayouts() {
+        return methodAttributeLayouts;
+    }
+
+    public List getFieldAttributeLayouts() {
+        return fieldAttributeLayouts;
+    }
+
+    public List getCodeAttributeLayouts() {
+        return codeAttributeLayouts;
+    }
+
+    public static class AttributeDefinition {
 
         public int index;
         public int contextType;

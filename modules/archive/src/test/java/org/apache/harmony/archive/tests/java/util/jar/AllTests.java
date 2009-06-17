@@ -42,6 +42,7 @@ public class AllTests {
 		suite.addTestSuite(JarInputStreamTest.class);
 		suite.addTestSuite(JarOutputStreamTest.class);
 		suite.addTestSuite(ManifestTest.class);
+        suite.addTestSuite(Pack200Test.class);
 		suite.addTestSuite(ZipExecTest.class);
 		// $JUnit-END$
 		return suite;

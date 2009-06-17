@@ -17,6 +17,7 @@
 
 package org.apache.harmony.lang.management.tests.java.lang.management;
 
+import java.lang.management.MemoryNotificationInfo;
 import java.lang.management.MemoryUsage;
 
 import javax.management.openmbean.CompositeData;
@@ -28,6 +29,9 @@ import javax.management.openmbean.SimpleType;
 import junit.framework.TestCase;
 
 public class MemoryUsageTest extends TestCase {
+
+    private static final String CLASS_NAME = MemoryNotificationInfo.class
+            .getName();
 
     public void testFrom() throws Exception {
         String[] itemNames = { "init", "used", "committed", "max" };
@@ -92,6 +96,138 @@ public class MemoryUsageTest extends TestCase {
 
     public void test_from_NullCompositeData() {
         assertNull(MemoryUsage.from(null));
+    }
+
+    public void test_from_scenario1() throws Exception {
+        String[] names = { "init", "used", "committed", "max", "additionName" };
+        Object[] values = { 1024L, 2048L, 4096L, 8128L, "additionalValue" };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG, SimpleType.STRING };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        MemoryUsage usage = MemoryUsage.from(data);
+        assertEquals(values[0], usage.getInit());
+        assertEquals(values[1], usage.getUsed());
+        assertEquals(values[2], usage.getCommitted());
+        assertEquals(values[3], usage.getMax());
+    }
+
+    public void test_from_scenario2() throws Exception {
+        String[] names = { "init", "used", "committed" };
+        Object[] values = { null, null, null };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario3() throws Exception {
+        String[] names = { "init", "used", "committed", "max" };
+        Object[] values = { null, 2048L, 4096L, 8128L };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario4() throws Exception {
+        String[] names = { "init", "used", "committed", "max" };
+        Object[] values = { 1024L, null, 4096L, 8128L };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario5() throws Exception {
+        String[] names = { "init", "used", "committed", "max" };
+        Object[] values = { 1024L, 2048L, null, 8128L };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario6() throws Exception {
+        String[] names = { "init", "used", "committed", "max" };
+        Object[] values = { 1024L, 2048L, 4096L, null };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario7() throws Exception {
+        String[] names = { "noninit", "used", "committed", "max" };
+        Object[] values = { 1024L, 2048L, 4096L, 8128L };
+        OpenType[] types = { SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
+    public void test_from_scenario8() throws Exception {
+        String[] names = { "init", "used", "committed", "max" };
+        Object[] values = { "initValue", 2048L, 4096L, 8128L };
+        OpenType[] types = { SimpleType.STRING, SimpleType.LONG,
+                SimpleType.LONG, SimpleType.LONG };
+        CompositeType compositeType = getCompositeType(names, types);
+        CompositeData data = new CompositeDataSupport(compositeType, names,
+                values);
+        try {
+            MemoryUsage.from(data);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+    }
+
+    protected CompositeType getCompositeType(String[] typeNames,
+            OpenType[] typeTypes) throws Exception {
+        return new CompositeType(CLASS_NAME, CLASS_NAME, typeNames, typeNames,
+                typeTypes);
     }
 
     public void testConstructor() {

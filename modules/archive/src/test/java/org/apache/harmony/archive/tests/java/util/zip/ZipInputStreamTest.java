@@ -18,9 +18,13 @@ package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -110,6 +114,32 @@ public class ZipInputStreamTest extends TestCase {
 	    zis.closeEntry();
 	}
 
+    public void test_closeAfterException() throws Exception {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_manifest.jar");
+        FileInputStream fis = new FileInputStream(new File(resources,
+                "Broken_manifest.jar"));
+
+        ZipInputStream zis1 = new ZipInputStream(fis);
+
+        try {
+            for (int i = 0; i < 6; i++) {
+                zis1.getNextEntry();
+            }
+            fail("ZipException expected");
+        } catch (ZipException ee) {
+            // expected
+        }
+
+        zis1.close();
+        try {
+            zis1.getNextEntry();
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
+
 	/**
 	 * @tests java.util.zip.ZipInputStream#getNextEntry()
 	 */
@@ -127,6 +157,26 @@ public class ZipInputStreamTest extends TestCase {
 	    new String(rbuf, 0, r);
 	    assertEquals("Failed to read entry", 12, r);
 	}
+
+    public void testReadOneByteAtATime() throws IOException {
+        InputStream in = new FilterInputStream(Support_Resources.getStream("hyts_ZipFile.zip")) {
+            @Override
+            public int read(byte[] buffer, int offset, int count) throws IOException {
+                return super.read(buffer, offset, 1); // one byte at a time
+            }
+
+            @Override
+            public int read(byte[] buffer) throws IOException {
+                return super.read(buffer, 0, 1); // one byte at a time
+            }
+        };
+
+        zis = new ZipInputStream(in);
+        while ((zentry = zis.getNextEntry()) != null) {
+            zentry.getName();
+        }
+        zis.close();
+    }
 
 	/**
 	 * @tests java.util.zip.ZipInputStream#skip(long)

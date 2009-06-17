@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Constant pool entry for a class
+ */
 public class CPClass extends CPConstant implements Comparable {
 
     private final String className;

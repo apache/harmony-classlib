@@ -1277,7 +1277,24 @@ public class EventSetDescriptorTest extends TestCase {
         new EventSetDescriptor(OtherBean.class, "sample",
                 SampleListener.class, "fireSampleEvent");
     }
-    
+
+    public void test_EventSetDescriptor_Constructor() throws Exception {
+        EventSetDescriptor eventSetDescriptor = new EventSetDescriptor(
+                (String) null, (Class<?>) null, new MethodDescriptor[] { null,
+                        null }, (Method) null, (Method) null);
+        assertNull(eventSetDescriptor.getName());
+        assertNull(eventSetDescriptor.getListenerType());
+        assertNull(eventSetDescriptor.getAddListenerMethod());
+        assertNull(eventSetDescriptor.getRemoveListenerMethod());
+
+        try {
+            eventSetDescriptor.getListenerMethods();
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
     //Regression Test
     public void testConstructor_withLackRemoveActionBean() throws Exception {
         try {

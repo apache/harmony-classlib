@@ -459,4 +459,17 @@ public class DateFormatTest extends junit.framework.TestCase {
 			assertNotNull(e.getMessage());
 		}
 	}
+
+    /**
+     * @tests java.text.DateFormat#setLenient(boolean)
+     */
+    public void test_setLenient() {
+	Date d = null;
+	DateFormat output = new SimpleDateFormat("MM/dd/yy");
+	output.setLenient(false);
+	try {
+	    d = output.parse("01/01/-1");
+	    fail("Should throw ParseException here.");
+	} catch (ParseException e) {}
+    }
 }
