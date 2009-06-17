@@ -21,7 +21,10 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
@@ -47,7 +50,25 @@
 
     <property name="pack200.exclude.file" location="${hy.hdk}/build/pack200.exclude" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build"
+            depends="check-depends, compile-java, copy-resources, build-jar" />
+
+    <target name="check-depends">
+        <check-one-file src="${asm.url}" dest="${asm.jar}" />
+        <copy todir="${hy.jdk}/jre/lib/boot">
+            <fileset dir="${depends.jars}">
+                <patternset includes="${asm.ver}/*.jar" />
+            </fileset>
+            <fileset dir="depends/manifests"/>
+        </copy>
+
+    </target>
+
+    <target name="fetch-depends">
+        <mkdir dir="${asm.dir}" />
+        <download-one-file src="${asm.url}" dest="${asm.jar}"
+                           md5="${asm.md5}" />
+    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
