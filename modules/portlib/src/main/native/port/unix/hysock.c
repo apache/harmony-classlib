@@ -640,19 +640,22 @@ hysock_close (struct HyPortLibrary * portLibrary, hysocket_t * sock)
 {
   I_32 rc = 0;
 
-  if ((*sock == INVALID_SOCKET) || (close (SOCKET_CAST (*sock)) < 0))
-    {
-      rc = errno;
-      HYSOCKDEBUG ("<closesocket failed, err=%d>\n", rc);
-      rc =
-        portLibrary->error_set_last_error (portLibrary, rc,
-                                           HYPORT_ERROR_SOCKET_BADSOCKET);
-    }
+  if (*sock == INVALID_SOCKET) {
+    HYSOCKDEBUGPRINT ("<closesocket failed, invalid socket>\n");
+    return portLibrary->error_set_last_error (portLibrary,
+                                              HYPORT_ERROR_SOCKET_UNIX_EBADF,
+                                              HYPORT_ERROR_SOCKET_BADSOCKET);
+  }
 
-  if (*sock != INVALID_SOCKET)
-    {
-      portLibrary->mem_free_memory (portLibrary, *sock);
-    }
+  if (close (SOCKET_CAST (*sock)) < 0) {
+    rc = errno;
+    HYSOCKDEBUG ("<closesocket failed, err=%d>\n", rc);
+    rc =
+      portLibrary->error_set_last_error (portLibrary, rc,
+                                         HYPORT_ERROR_SOCKET_BADSOCKET);
+  }
+
+  portLibrary->mem_free_memory (portLibrary, *sock);
   *sock = INVALID_SOCKET;
   return rc;
 }
