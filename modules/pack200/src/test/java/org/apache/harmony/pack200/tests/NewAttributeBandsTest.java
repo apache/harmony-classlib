@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.pack200.tests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,8 +25,11 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.AttributeDefinitionBands;
 import org.apache.harmony.pack200.CPUTF8;
+import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CpBands;
+import org.apache.harmony.pack200.NewAttribute;
 import org.apache.harmony.pack200.NewAttributeBands;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentHeader;
 import org.apache.harmony.pack200.AttributeDefinitionBands.AttributeDefinition;
 import org.apache.harmony.pack200.NewAttributeBands.Call;
@@ -195,6 +200,51 @@ public class NewAttributeBandsTest extends TestCase {
         Call call = (Call) repBody.get(0);
         assertEquals(1, call.getCallableIndex());
         assertEquals(secondCallable, call.getCallable());
+    }
+
+    public void testAddAttributes() throws IOException, Pack200Exception {
+        CPUTF8 name = new CPUTF8("TestAttribute");
+        CPUTF8 layout = new CPUTF8("B");
+        MockNewAttributeBands newAttributeBands = new MockNewAttributeBands(1,
+                null, null, new AttributeDefinition(35,
+                        AttributeDefinitionBands.CONTEXT_CLASS, name, layout));
+        newAttributeBands.addAttribute(new NewAttribute(null, "TestAttribute", "B", new byte[] {27}, null, 0, null));
+        newAttributeBands.addAttribute(new NewAttribute(null, "TestAttribute", "B", new byte[] {56}, null, 0, null));
+        newAttributeBands.addAttribute(new NewAttribute(null, "TestAttribute", "B", new byte[] {3}, null, 0, null));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        newAttributeBands.pack(out);
+        // BYTE1 is used for B layouts so we don't need to unpack to test the results
+        byte[] bytes = out.toByteArray();
+        assertEquals(3, bytes.length);
+        assertEquals(27, bytes[0]);
+        assertEquals(56, bytes[1]);
+        assertEquals(3, bytes[2]);
+    }
+
+    public void testAddAttributesWithReplicationLayout() throws IOException, Pack200Exception {
+        CPUTF8 name = new CPUTF8("TestAttribute");
+        CPUTF8 layout = new CPUTF8("NB[SH]");
+        MockNewAttributeBands newAttributeBands = new MockNewAttributeBands(1,
+                null, null, new AttributeDefinition(35,
+                        AttributeDefinitionBands.CONTEXT_CLASS, name, layout));
+        newAttributeBands.addAttribute(new NewAttribute(null, "TestAttribute", "B", new byte[] {1, 0, 100}, null, 0, null));
+        short s = -50;
+        byte b1 = (byte)(s>>>8);
+        byte b2 = (byte)s;
+        newAttributeBands.addAttribute(new NewAttribute(null, "TestAttribute", "B", new byte[] {3, 0, 5, 0, 25, b1, b2}, null, 0, null));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        newAttributeBands.pack(out);
+        byte[] bytes = out.toByteArray();
+        assertEquals(1, bytes[0]);
+        assertEquals(3, bytes[1]);
+        byte[] band = new byte[bytes.length - 2];
+        System.arraycopy(bytes, 2, band, 0, band.length);
+        int[] decoded = Codec.SIGNED5.decodeInts(4, new ByteArrayInputStream(band));
+        assertEquals(4, decoded.length);
+        assertEquals(100, decoded[0]);
+        assertEquals(5, decoded[1]);
+        assertEquals(25, decoded[2]);
+        assertEquals(-50, decoded[3]);
     }
 
     private class MockNewAttributeBands extends NewAttributeBands {

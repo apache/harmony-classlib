@@ -499,9 +499,12 @@ public class NewAttributeBands extends BandSet {
         public void addAttributeToBand(NewAttribute attribute,
                 InputStream stream) {
             countElement.addAttributeToBand(attribute, stream);
-            for (Iterator iterator = layoutElements.iterator(); iterator.hasNext();) {
-                AttributeLayoutElement layoutElement = (AttributeLayoutElement) iterator.next();
-                layoutElement.addAttributeToBand(attribute, stream);
+            int count = countElement.latestValue();
+            for (int i = 0; i < count; i++) {
+                for (Iterator iterator = layoutElements.iterator(); iterator.hasNext();) {
+                    AttributeLayoutElement layoutElement = (AttributeLayoutElement) iterator.next();
+                    layoutElement.addAttributeToBand(attribute, stream);
+                }
             }
         }
 
@@ -837,6 +840,9 @@ public class NewAttributeBands extends BandSet {
                 throw new RuntimeException("Error reading unknown attribute");
             }
         }
+        // use casting to preserve sign
+        if(i == 1) result = (byte) result;
+        if(i == 2) result = (short) result;
         return result;
     }
 
