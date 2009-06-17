@@ -53,16 +53,7 @@
                          (((x) & 0x00000000000000ffull) << 56))
 
 
-#ifdef __linux__ /* linux section */
-
-/* linux ia32 section */
-#ifdef      __i386__
-
-#define get_unaligned(type, ptr) ( *((type *)((uintptr_t)(ptr))) )
-#define set_unaligned(type, ptr, val) ( (void) (*((type *)((uintptr_t)(ptr))) = val) )
-
-/* linux ipf section*/
-#else
+#if defined(LINUX_X86_64) || defined(LINUX_IA64)
 
 #include <string.h>
 #define get_unaligned(type, ptr)                                  \
@@ -78,12 +69,9 @@
     (void)0;                                                    \
 })
 
-#endif /* ifdef __i386__ */
-
-/* windows section */
 #else
 
 #define get_unaligned(type, ptr) ( *((type *)((uintptr_t)(ptr))) )
 #define set_unaligned(type, ptr, val) ( (void) (*((type *)((uintptr_t)(ptr))) = val) )
 
-#endif /* ifdef __linux__*/
+#endif 
