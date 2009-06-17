@@ -20,12 +20,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * SegmentHeader is the header band of a {@link Segment}
+ * SegmentHeader is the header band of a {@link Segment}. Corresponds to
+ * <code>segment_header</code> in the pack200 specification.
  */
 public class SegmentHeader extends BandSet {
 
+    /**
+     * Create a new SegmentHeader
+     */
     public SegmentHeader() {
-        super(1, null); // Don't do anything special for the header
+        super(1, null); // Pass 1 for effort because bands in the segment header
+                        // should always use the default encoding
     }
 
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };

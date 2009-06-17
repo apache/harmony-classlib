@@ -85,6 +85,8 @@ public abstract class Codec {
      */
     public static final BHSDCodec UNSIGNED5 = new BHSDCodec(5, 64);
 
+    public int lastBandLength;
+
     /**
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. Note that this method can only be applied for non-delta
@@ -99,7 +101,7 @@ public abstract class Codec {
      * @throws Pack200Exception
      *             if the encoding is a delta encoding
      */
-    public abstract long decode(InputStream in) throws IOException,
+    public abstract int decode(InputStream in) throws IOException,
             Pack200Exception;
 
     /**
@@ -112,7 +114,7 @@ public abstract class Codec {
      * @return the encoded bytes
      * @throws Pack200Exception
      */
-    public abstract byte[] encode(long value, long last)
+    public abstract byte[] encode(int value, int last)
             throws Pack200Exception;
 
     /**
@@ -124,7 +126,7 @@ public abstract class Codec {
      * @return the encoded bytes
      * @throws Pack200Exception
      */
-    public abstract byte[] encode(long value) throws Pack200Exception;
+    public abstract byte[] encode(int value) throws Pack200Exception;
 
     /**
      * Decode a sequence of bytes from the given input stream, returning the
@@ -154,38 +156,8 @@ public abstract class Codec {
      *             if there is a problem decoding the value or that the value is
      *             invalid
      */
-    public abstract long decode(InputStream in, long last) throws IOException,
+    public abstract int decode(InputStream in, long last) throws IOException,
             Pack200Exception;
-
-    /**
-     * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * This should probably be used in most cases, since some codecs (such as
-     *
-     * @{link PopCodec}) only work when the number of values to be read is
-     *        known.
-     *
-     * @param n
-     *            the number of values to decode
-     * @param in
-     *            the input stream to read from
-     * @return an array of <code>long</code> values corresponding to values
-     *         decoded
-     * @throws IOException
-     *             if there is a problem reading from the underlying input
-     *             stream
-     * @throws Pack200Exception
-     *             if there is a problem decoding the value or that the value is
-     *             invalid
-     */
-    public long[] decode(int n, InputStream in) throws IOException,
-            Pack200Exception {
-        long result[] = new long[n];
-        long last = 0;
-        for (int i = 0; i < n; i++) {
-            result[i] = last = decode(in, last);
-        }
-        return result;
-    }
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
@@ -209,38 +181,10 @@ public abstract class Codec {
      */
     public int[] decodeInts(int n, InputStream in) throws IOException,
             Pack200Exception {
+        lastBandLength = 0;
         int result[] = new int[n];
         int last = 0;
         for (int i = 0; i < n; i++) {
-            result[i] = last = (int) decode(in, last);
-        }
-        return result;
-    }
-
-    /**
-     * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     *
-     * @param n
-     *            the number of values to decode
-     * @param in
-     *            the input stream to read from
-     * @param firstValue
-     *            the first value in the band if it has already been read
-     * @return an array of <code>long</code> values corresponding to values
-     *         decoded, with firstValue as the first value in the array.
-     * @throws IOException
-     *             if there is a problem reading from the underlying input
-     *             stream
-     * @throws Pack200Exception
-     *             if there is a problem decoding the value or that the value is
-     *             invalid
-     */
-    public long[] decode(int n, InputStream in, long firstValue)
-            throws IOException, Pack200Exception {
-        long result[] = new long[n + 1];
-        result[0] = firstValue;
-        long last = firstValue;
-        for (int i = 1; i < n + 1; i++) {
             result[i] = last = decode(in, last);
         }
         return result;
@@ -270,7 +214,7 @@ public abstract class Codec {
         result[0] = firstValue;
         int last = firstValue;
         for (int i = 1; i < n + 1; i++) {
-            result[i] = last = (int) decode(in, last);
+            result[i] = last = decode(in, last);
         }
         return result;
     }

@@ -392,8 +392,7 @@ public abstract class FileChannelImpl extends FileChannel {
         if (!src.isOpen()) {
             throw new ClosedChannelException();
         }
-        if (position < 0 || count < 0 || position > Integer.MAX_VALUE
-                || count > Integer.MAX_VALUE) {
+        if (position < 0 || count < 0) {
             throw new IllegalArgumentException();
         }
         if (position > size()) {
@@ -435,8 +434,7 @@ public abstract class FileChannelImpl extends FileChannel {
         if (target instanceof ReadOnlyFileChannel) {
             throw new NonWritableChannelException();
         }
-        if (position < 0 || count < 0 || position > Integer.MAX_VALUE
-                || count > Integer.MAX_VALUE) {
+        if (position < 0 || count < 0) {
             throw new IllegalArgumentException();
         }
 

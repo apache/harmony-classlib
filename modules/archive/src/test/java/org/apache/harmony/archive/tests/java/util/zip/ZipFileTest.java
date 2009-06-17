@@ -185,6 +185,19 @@ public class ZipFileTest extends junit.framework.TestCase {
                              "This is also text", new String(buf, 0, r));
 	}
 
+    public void test_getEntryLjava_lang_String_Ex() throws IOException {
+        java.util.zip.ZipEntry zentry = zfile.getEntry("File1.txt");
+        assertNotNull("Could not obtain ZipEntry", zentry);
+
+        zfile.close();
+        try {
+            zfile.getEntry("File2.txt");
+            fail("IllegalStateException expected");
+        } catch (IllegalStateException ee) {
+            // expected
+        }
+    }
+
 	/**
 	 * @tests java.util.zip.ZipFile#getInputStream(java.util.zip.ZipEntry)
 	 */

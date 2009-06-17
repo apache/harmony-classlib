@@ -879,7 +879,7 @@ public class SimpleDateFormat extends DateFormat {
 
         if (generalTimezone) {
             String id = calendar.getTimeZone().getID();
-            String[][] zones = formatData.zoneStrings;
+            String[][] zones = formatData.getZoneStrings();
             String[] zone = null;
             for (String[] element : zones) {
                 if (id.equals(element[0])) {
@@ -1081,6 +1081,7 @@ public class SimpleDateFormat extends DateFormat {
             tzId = id;
             icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         }
+        icuFormat.setLenient(calendar.isLenient());
         return icuFormat.parse(string,position);
     }
 

@@ -16,10 +16,12 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Constant pool entry for a float.
+ */
 public class CPFloat extends CPConstant {
 
-    private float theFloat;
+    private final float theFloat;
 
     public CPFloat(float theFloat) {
         this.theFloat = theFloat;

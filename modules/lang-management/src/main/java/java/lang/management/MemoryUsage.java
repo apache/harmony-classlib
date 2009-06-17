@@ -19,6 +19,8 @@ package java.lang.management;
 
 import javax.management.openmbean.CompositeData;
 
+import org.apache.harmony.lang.management.ManagementUtils;
+
 /**
  * <p>
  * A memory usage snapshot.
@@ -27,6 +29,14 @@ import javax.management.openmbean.CompositeData;
  * @since 1.5
  */
 public class MemoryUsage {
+
+    private final long init;
+
+    private final long used;
+
+    private final long committed;
+
+    private final long max;
 
     /**
      * <p>
@@ -42,25 +52,20 @@ public class MemoryUsage {
         if (cd == null) {
             return null;
         }
-        try {
-            long init = ((Long) cd.get("init")).longValue();
-            long used = ((Long) cd.get("used")).longValue();
-            long committed = ((Long) cd.get("committed")).longValue();
-            long max = ((Long) cd.get("max")).longValue();
-            return new MemoryUsage(init, used, committed, max);
-        } catch (ClassCastException e) {
-            // if any cast fails, then a type was incorrect
-            throw new IllegalArgumentException(e);
-        }
+        ManagementUtils.verifyFieldNumber(cd, 4);
+        String[] attributeNames = { "init", "used", "committed", "max" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        ManagementUtils.verifyFieldNames(cd, attributeNames);
+        String longClassName = "java.lang.Long"; //$NON-NLS-1$
+        String[] attributeTypes = { longClassName, longClassName,
+                longClassName, longClassName };
+        ManagementUtils.verifyFieldTypes(cd, attributeNames, attributeTypes);
+
+        long init = ((Long) cd.get("init")).longValue();
+        long used = ((Long) cd.get("used")).longValue();
+        long committed = ((Long) cd.get("committed")).longValue();
+        long max = ((Long) cd.get("max")).longValue();
+        return new MemoryUsage(init, used, committed, max);
     }
-
-    private final long init;
-
-    private final long used;
-
-    private final long committed;
-
-    private final long max;
 
     /**
      * <p>

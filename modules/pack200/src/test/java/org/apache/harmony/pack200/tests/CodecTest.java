@@ -23,6 +23,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.BHSDCodec;
+import org.apache.harmony.pack200.CanonicalCodecFamilies;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.RunCodec;
@@ -203,14 +204,33 @@ public class CodecTest extends TestCase {
                 (byte) 255, (byte) 191 }, 51130559, 0);
         decode(Codec.UNSIGNED5, new byte[] { (byte) 192, (byte) 192,
                 (byte) 192, (byte) 192, 0 }, 51130560, 0);
-        decode(Codec.UNSIGNED5, new byte[] { (byte) 255, (byte) 252,
-                (byte) 252, (byte) 252, (byte) 252 }, 0xFFFFFFFFL, 0);
         decodeFail(Codec.UNSIGNED5, new byte[] { (byte) 192 });
         decodeFail(Codec.UNSIGNED5, new byte[] { (byte) 192, (byte) 192 });
         decodeFail(Codec.UNSIGNED5, new byte[] { (byte) 192, (byte) 192,
                 (byte) 192 });
         decodeFail(Codec.UNSIGNED5, new byte[] { (byte) 192, (byte) 192,
                 (byte) 192, (byte) 192 });
+    }
+    public void testCodecFamilies() {
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaUnsignedCodecs1);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaUnsignedCodecs2);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaUnsignedCodecs3);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaUnsignedCodecs4);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaUnsignedCodecs5);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs1);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs2);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs3);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs4);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs5);
+    }
+
+    private void checkAscendingCardinalities(BHSDCodec[] family) {
+        for (int i = 1; i < family.length; i++) {
+            BHSDCodec previous = family[i-1];
+            BHSDCodec codec = family[i];
+            assertTrue(codec.largest() >= previous.largest());
+            assertTrue(codec.smallest() <= previous.smallest());
+        }
     }
 
     private void decodeFail(final Codec codec, final byte[] data)

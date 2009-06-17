@@ -86,6 +86,12 @@ public class ArrayListTest extends junit.framework.TestCase {
 
     }
 
+    public void testConstructorWithConcurrentCollection() {
+        Collection<String> collection = shrinksOnSize("A", "B", "C", "D");
+        ArrayList<String> list = new ArrayList<String>(collection);
+        assertFalse(list.contains(null));
+    }
+
     /**
      * @tests java.util.ArrayList#add(int, java.lang.Object)
      */
@@ -866,6 +872,20 @@ public class ArrayListTest extends junit.framework.TestCase {
         assertEquals(14, list.size());
     }
 
+    public void testAddAllWithConcurrentCollection() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.addAll(shrinksOnSize("A", "B", "C", "D"));
+        assertFalse(list.contains(null));
+    }
+
+    public void testAddAllAtPositionWithConcurrentCollection() {
+        ArrayList<String> list = new ArrayList<String>(
+                Arrays.asList("A", "B", "C", "D"));
+
+        list.addAll(3, shrinksOnSize("E", "F", "G", "H"));
+        assertFalse(list.contains(null));
+    }
+
     public void test_override_size() throws Exception {
         ArrayList testlist = new MockArrayList();
         // though size is overriden, it should passed without exception
@@ -926,5 +946,32 @@ public class ArrayListTest extends junit.framework.TestCase {
         alist = new ArrayList();
         for (int i = 0; i < objArray.length; i++)
             alist.add(objArray[i]);
+    }
+
+    /**
+     * Returns a collection that emulates another thread calling remove() each
+     * time the current thread calls size().
+     */
+    private <T> Collection<T> shrinksOnSize(T... elements) {
+        return new HashSet<T>(Arrays.asList(elements)) {
+            boolean shrink = true;
+
+            @Override
+            public int size() {
+                int result = super.size();
+                if (shrink) {
+                    Iterator<T> i = iterator();
+                    i.next();
+                    i.remove();
+                }
+                return result;
+            }
+
+            @Override
+            public Object[] toArray() {
+                shrink = false;
+                return super.toArray();
+            }
+        };
     }
 }

@@ -34,6 +34,7 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.Archive;
 import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.pack200.PackingOptions;
 import org.apache.harmony.unpack200.Segment;
 
 public class ArchiveTest extends TestCase {
@@ -47,7 +48,7 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/hw.jar").toURI()));
         file = File.createTempFile("helloworld", ".pack.gz");
         out = new FileOutputStream(file);
-        new Archive(in, out, true).pack();
+        new Archive(in, out, null).pack();
         in.close();
         out.close();
 
@@ -97,7 +98,10 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
         file = File.createTempFile("sql", ".pack");
         out = new FileOutputStream(file);
-        new Archive(in, out, false).pack();
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        Archive ar = new Archive(in, out, options);
+        ar.pack();
         in.close();
         out.close();
 
@@ -125,7 +129,9 @@ public class ArchiveTest extends TestCase {
                 .toURI()));
         file = File.createTempFile("largeClass", ".pack");
         out = new FileOutputStream(file);
-        new Archive(in, out, false).pack();
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        new Archive(in, out, options).pack();
         in.close();
         out.close();
 
@@ -152,7 +158,9 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/jndi.jar").toURI()));
         file = File.createTempFile("jndi", ".pack");
         out = new FileOutputStream(file);
-        new Archive(in, out, false).pack();
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        new Archive(in, out, options).pack();
         in.close();
         out.close();
 
@@ -176,8 +184,9 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/hw.jar").toURI()));
         file = File.createTempFile("helloworld", ".pack.gz");
         out = new FileOutputStream(file);
-        Archive archive = new Archive(in, out, true);
-        archive.setSegmentLimit(0);
+        PackingOptions options = new PackingOptions();
+        options.setSegmentLimit(0);
+        Archive archive = new Archive(in, out, options);
         archive.pack();
         in.close();
         out.close();
@@ -186,8 +195,9 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/hw.jar").toURI()));
         file = File.createTempFile("helloworld", ".pack.gz");
         out = new FileOutputStream(file);
-        archive = new Archive(in, out, true);
-        archive.setSegmentLimit(-1);
+        options = new PackingOptions();
+        options.setSegmentLimit(-1);
+        archive = new Archive(in, out, options);
         archive.pack();
         in.close();
         out.close();
@@ -196,8 +206,9 @@ public class ArchiveTest extends TestCase {
                 "/org/apache/harmony/pack200/tests/hw.jar").toURI()));
         file = File.createTempFile("helloworld", ".pack.gz");
         out = new FileOutputStream(file);
-        archive = new Archive(in, out, true);
-        archive.setSegmentLimit(5000);
+        options = new PackingOptions();
+        options.setSegmentLimit(5000);
+        archive = new Archive(in, out, options);
         archive.pack();
         in.close();
         out.close();
@@ -208,8 +219,10 @@ public class ArchiveTest extends TestCase {
                 .getResource("/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
         file = File.createTempFile("sql", ".pack");
         out = new FileOutputStream(file);
-        Archive archive = new Archive(in, out, false);
-        archive.stripDebugAttributes();
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        options.setStripDebug(true);
+        Archive archive = new Archive(in, out, options);
         archive.pack();
         in.close();
         out.close();
@@ -239,7 +252,9 @@ public class ArchiveTest extends TestCase {
                 .toURI()));
         file = File.createTempFile("annotations", ".pack");
         out = new FileOutputStream(file);
-        new Archive(in, out, false).pack();
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        new Archive(in, out, options).pack();
         in.close();
         out.close();
 
@@ -264,8 +279,10 @@ public class ArchiveTest extends TestCase {
         in = new JarFile(f1);
         file = File.createTempFile("jndiE0", ".pack");
         out = new FileOutputStream(file);
-        Archive archive = new Archive(in, out, false);
-        archive.setEffort(0);
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        options.setEffort(0);
+        Archive archive = new Archive(in, out, options);
         archive.pack();
         in.close();
         out.close();
@@ -298,7 +315,7 @@ public class ArchiveTest extends TestCase {
 				file = File.createTempFile("temp", ".pack.gz");
 		        out = new FileOutputStream(file);
 //		        System.out.println("packing " + children[i]);
-		        new Archive(in, out, true).pack();
+		        new Archive(in, out, null).pack();
 		        in.close();
 		        out.close();
 
@@ -319,6 +336,7 @@ public class ArchiveTest extends TestCase {
             String name = entry.getName();
             JarEntry entry2 = jarFile2.getJarEntry(name);
             assertNotNull("Missing Entry: " + name, entry2);
+//            assertEquals(entry.getTime(), entry2.getTime());
             if (!name.equals("META-INF/MANIFEST.MF")) { // Manifests aren't
                                                         // necessarily
                                                         // byte-for-byte

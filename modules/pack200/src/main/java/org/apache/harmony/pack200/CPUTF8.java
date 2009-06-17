@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Constant pool entry for a UTF8 entry, used for storing long Strings.
+ */
 public class CPUTF8 extends ConstantPoolEntry implements Comparable {
 
     private final String string;

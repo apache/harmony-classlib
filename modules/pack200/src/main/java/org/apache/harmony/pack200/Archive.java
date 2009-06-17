@@ -32,34 +32,56 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.GZIPOutputStream;
 
-import org.objectweb.asm.ClassReader;
-
 /**
- *
+ * Archive is the main entry point to pack200 and represents a packed archive.
+ * An archive is constructed with either a JarInputStream and an output stream
+ * or a JarFile as input and an OutputStream. Options can be set, then
+ * <code>pack()</code> is called, to pack the Jar file into a pack200 archive.
  */
 public class Archive {
 
     private final JarInputStream inputStream;
     private final OutputStream outputStream;
     private JarFile jarFile;
-    private long segmentLimit = 1000000;
     private long currentSegmentSize;
-    private boolean stripDebug;
-    private int effort = 5;
+    private final PackingOptions options;
 
+    /**
+     * Creates an Archive with streams for the input and output.
+     *
+     * @param inputStream
+     * @param outputStream
+     * @param options - packing options (if null then defaults are used)
+     * @throws IOException
+     */
     public Archive(JarInputStream inputStream, OutputStream outputStream,
-            boolean gzip) throws IOException {
+            PackingOptions options) throws IOException {
         this.inputStream = inputStream;
-        if (gzip) {
+        if(options == null) { // use all defaults
+            options = new PackingOptions();
+        }
+        this.options = options;
+        if (options.isGzip()) {
             outputStream = new GZIPOutputStream(outputStream);
         }
         this.outputStream = new BufferedOutputStream(outputStream);
     }
 
+    /**
+     * Creates an Archive with the given input file and a stream for the output
+     *
+     * @param jarFile - the input file
+     * @param outputStream
+     * @param options - packing options (if null then defaults are used)
+     * @throws IOException
+     */
     public Archive(JarFile jarFile, OutputStream outputStream,
-            boolean gzip) throws IOException {
-
-        if (gzip) {
+            PackingOptions options) throws IOException {
+        if(options == null) { // use all defaults
+            options = new PackingOptions();
+        }
+        this.options = options;
+        if (options.isGzip()) {
             outputStream = new GZIPOutputStream(outputStream);
         }
         this.outputStream = new BufferedOutputStream(outputStream);
@@ -67,26 +89,21 @@ public class Archive {
         inputStream = null;
     }
 
-    public void setSegmentLimit(int limit) {
-        segmentLimit = limit;
-    }
-
-    public void setEffort(int effort) {
-        this.effort = effort;
-    }
-
-    public void stripDebugAttributes() {
-        stripDebug = true;
-    }
-
+    /**
+     * Pack the archive
+     * @throws Pack200Exception
+     * @throws IOException
+     */
     public void pack() throws Pack200Exception, IOException {
         List classes = new ArrayList();
         List files = new ArrayList();
 
+        int effort = options.getEffort();
+        long segmentLimit = options.getSegmentLimit();
+
         if(effort == 0) {
             doZeroEffortPack();
         } else {
-
             if (inputStream != null) {
                 Manifest manifest = jarFile != null ? jarFile.getManifest()
                         : inputStream.getManifest();
@@ -109,7 +126,7 @@ public class Archive {
                     if (!added) { // not added because segment has reached
                         // maximum size
                         if(classes.size() > 0 || files.size() > 0) {
-                            new Segment().pack(classes, files, outputStream, stripDebug, effort);
+                            new Segment().pack(classes, files, outputStream, options);
                             classes = new ArrayList();
                             files = new ArrayList();
                             currentSegmentSize = 0;
@@ -118,7 +135,7 @@ public class Archive {
                         }
                     } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
                         // create a new segment for each class unless size = 0
-                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
+                        new Segment().pack(classes, files, outputStream, options);
                         classes = new ArrayList();
                         files = new ArrayList();
                     }
@@ -132,7 +149,7 @@ public class Archive {
                             jarFile.getInputStream(jarEntry)), classes, files);
                     if (!added) { // not added because segment has reached maximum
                         // size
-                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
+                        new Segment().pack(classes, files, outputStream, options);
                         classes = new ArrayList();
                         files = new ArrayList();
                         currentSegmentSize = 0;
@@ -141,14 +158,14 @@ public class Archive {
                         currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
                     } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
                         // create a new segment for each class unless size = 0
-                        new Segment().pack(classes, files, outputStream, stripDebug, effort);
+                        new Segment().pack(classes, files, outputStream, options);
                         classes = new ArrayList();
                         files = new ArrayList();
                     }
                 }
             }
             if(classes.size() > 0 || files.size() > 0) {
-                new Segment().pack(classes, files, outputStream, stripDebug, effort);
+                new Segment().pack(classes, files, outputStream, options);
             }
             outputStream.close();
         }
@@ -207,6 +224,7 @@ public class Archive {
 
     private boolean addJarEntry(JarEntry jarEntry, InputStream stream,
             List javaClasses, List files) throws IOException, Pack200Exception {
+        long segmentLimit = options.getSegmentLimit();
         String name = jarEntry.getName();
         long size = jarEntry.getSize();
         if (size > Integer.MAX_VALUE) {
@@ -232,7 +250,8 @@ public class Archive {
             throw new RuntimeException("Error reading from stream");
         }
         if (name.endsWith(".class")) {
-            ClassReader classParser = new Pack200ClassReader(bytes);
+            Pack200ClassReader classParser = new Pack200ClassReader(bytes);
+            classParser.setFileName(name);
             javaClasses.add(classParser);
             bytes = new byte[0];
         }
@@ -257,7 +276,7 @@ public class Archive {
     static class File {
 
         private final String name;
-        private final byte[] contents;
+        private byte[] contents;
         private final long modtime;
 
         public File(String name, byte[] contents, long modtime) {
@@ -280,6 +299,10 @@ public class Archive {
 
         public String toString() {
             return name;
+        }
+
+        public void setContents(byte[] contents) {
+            this.contents = contents;
         }
     }
 

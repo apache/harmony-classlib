@@ -42,9 +42,13 @@ public class BHSDCodecTest extends TestCase {
                 // range of the codec
                 long largest = codec.largest();
                 long smallest = codec.isSigned() ? codec.smallest() : 0;
+                if(smallest < Integer.MIN_VALUE) smallest = Integer.MIN_VALUE;
                 long difference = (largest - smallest) / 4;
                 for (long j = smallest; j <= largest; j += difference) {
-                    byte[] encoded = codec.encode(j, 0);
+                    if(j > Integer.MAX_VALUE) {
+                        break;
+                    }
+                    byte[] encoded = codec.encode((int)j, 0);
                     long decoded = 0;
                     try {
                         decoded = codec.decode(

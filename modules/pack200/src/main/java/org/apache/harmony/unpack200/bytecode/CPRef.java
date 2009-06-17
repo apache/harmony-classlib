@@ -37,6 +37,8 @@ public abstract class CPRef extends ConstantPoolEntry {
      * @param type
      * @param className
      * @param descriptor
+     * @param globalIndex
+     *            index in CpBands
      * @throws NullPointerException
      *             if descriptor or className is null
      */

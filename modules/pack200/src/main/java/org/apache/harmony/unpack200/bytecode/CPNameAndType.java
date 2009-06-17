@@ -39,7 +39,7 @@ public class CPNameAndType extends ConstantPoolEntry {
      *
      * @param name
      * @param descriptor
-     * @param domain
+     * @param globalIndex - index in CpBands
      * @throws NullPointerException
      *             if name or descriptor is null
      */

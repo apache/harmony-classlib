@@ -84,6 +84,10 @@ public abstract class BandSet {
     public int[] decodeBandInt(String name, InputStream in, BHSDCodec codec,
             int count) throws IOException, Pack200Exception {
         int[] band;
+        // Useful for debugging
+//        if(count > 0) {
+//            System.out.println("decoding " + name + " " + count);
+//        }
         Codec codecUsed = codec;
         if (codec.getB() == 1 || count == 0) {
             return codec.decodeInts(count, in);
@@ -108,20 +112,14 @@ public abstract class BandSet {
             // First element should not be discarded
             band = codec.decodeInts(count - 1, in, first);
         }
-        if (codecUsed instanceof BHSDCodec && ((BHSDCodec) codecUsed).isDelta()) {
-            BHSDCodec bhsd = (BHSDCodec) codecUsed;
-            long cardinality = bhsd.cardinality();
-            for (int i = 0; i < band.length; i++) {
-                while (band[i] > bhsd.largest()) {
-                    band[i] -= cardinality;
-                }
-                while (band[i] < bhsd.smallest()) {
-                    band[i] += cardinality;
-                }
-            }
-        } else if (codecUsed instanceof PopulationCodec) {
+        // Useful for debugging -E options:
+        //if(!codecUsed.equals(codec)) {
+        //    int bytes = codecUsed.lastBandLength;
+        //    System.out.println(count + " " + name + " encoded with " + codecUsed + " "  + bytes);
+        //}
+        if (codecUsed instanceof PopulationCodec) {
             PopulationCodec popCodec = (PopulationCodec) codecUsed;
-            long[] favoured = (long[]) popCodec.getFavoured().clone();
+            int[] favoured = (int[]) popCodec.getFavoured().clone();
             Arrays.sort(favoured);
             for (int i = 0; i < band.length; i++) {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;

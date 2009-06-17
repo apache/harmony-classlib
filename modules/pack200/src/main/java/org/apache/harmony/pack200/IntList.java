@@ -19,9 +19,9 @@ package org.apache.harmony.pack200;
 import java.util.Arrays;
 
 /**
- * IntList is based on java.util.ArrayList, but is written specifically for ints
- * in order to reduce boxing and unboxing to Integers and reduce the memory
- * required.
+ * IntList is based on <code>java.util.ArrayList</code>, but is written
+ * specifically for ints in order to reduce boxing and unboxing to Integers,
+ * reduce the memory required and improve performance of pack200.
  */
 public class IntList {
 

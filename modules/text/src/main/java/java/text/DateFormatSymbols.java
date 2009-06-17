@@ -17,6 +17,8 @@
 
 package java.text;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
@@ -68,6 +70,8 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     String[][] zoneStrings;
 
+    transient private com.ibm.icu.text.DateFormatSymbols icuSymbols;
+
     /**
      * Constructs a new {@code DateFormatSymbols} instance containing the
      * symbols for the default locale.
@@ -84,8 +88,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the locale.
      */
     public DateFormatSymbols(Locale locale) {
-        com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
-        
+        icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
         localPatternChars = icuSymbols.getLocalPatternChars();
         ampms = icuSymbols.getAmPmStrings();
         eras = icuSymbols.getEras();
@@ -93,11 +96,20 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         shortMonths = icuSymbols.getShortMonths();
         shortWeekdays = icuSymbols.getShortWeekdays();
         weekdays = icuSymbols.getWeekdays();
-        zoneStrings = icuSymbols.getZoneStrings();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
+        oos.defaultWriteObject();
     }
 
     @Override
     public Object clone() {
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
         try {
             DateFormatSymbols symbols = (DateFormatSymbols) super.clone();
             symbols.ampms = ampms.clone();
@@ -135,7 +147,15 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         if (!(object instanceof DateFormatSymbols)) {
             return false;
         }
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
+
         DateFormatSymbols obj = (DateFormatSymbols) object;
+
+        if (obj.zoneStrings == null) {
+            obj.zoneStrings = obj.icuSymbols.getZoneStrings();
+        }
         if (!localPatternChars.equals(obj.localPatternChars)) {
             return false;
         }
@@ -260,6 +280,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * @return a two-dimensional array of strings.
      */
     public String[][] getZoneStrings() {
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
         String[][] clone = new String[zoneStrings.length][];
         for (int i = zoneStrings.length; --i >= 0;) {
             clone[i] = zoneStrings[i].clone();
@@ -269,6 +292,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     @Override
     public int hashCode() {
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
         int hashCode;
         hashCode = localPatternChars.hashCode();
         for (String element : ampms) {

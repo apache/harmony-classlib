@@ -55,7 +55,7 @@ public class PopulationCodecTest extends TestCase {
             throws IOException, Pack200Exception {
         InputStream in = new ByteArrayInputStream(data);
 
-        long[] result = new PopulationCodec(codec, codec, codec).decode(
+        int[] result = new PopulationCodec(codec, codec, codec).decodeInts(
                 expectedResult.length, in);
         assertEquals(expectedResult.length, result.length);
         for (int i = 0; i < expectedResult.length; i++) {

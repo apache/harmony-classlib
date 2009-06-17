@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200;
+package org.apache.harmony.pack200;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -28,9 +28,9 @@ public abstract class Pack200Adapter {
 
 	protected static final int DEFAULT_BUFFER_SIZE = 8192;
 
-	private PropertyChangeSupport support = new PropertyChangeSupport(this);
+	private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
-	private SortedMap<String, String> properties = new TreeMap<String, String>();
+	private final SortedMap<String, String> properties = new TreeMap<String, String>();
 
 	public SortedMap<String, String> properties() {
 		return properties;

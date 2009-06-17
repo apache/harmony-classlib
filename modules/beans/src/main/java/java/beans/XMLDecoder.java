@@ -529,6 +529,8 @@ public class XMLDecoder {
 
     private int readObjIndex = 0;
 
+    private SAXHandler saxHandler = null;
+
     /**
      * Create a decoder to read from specified input stream.
      * 
@@ -616,11 +618,14 @@ public class XMLDecoder {
      */
     @SuppressWarnings("nls")
     public Object readObject() {
-        try {
-            SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
-                    new SAXHandler());
-        } catch (Exception e) {
-            this.listener.exceptionThrown(e);
+        if (saxHandler == null) {
+            saxHandler = new SAXHandler();
+            try {
+                SAXParserFactory.newInstance().newSAXParser().parse(
+                        inputStream, saxHandler);
+            } catch (Exception e) {
+                this.listener.exceptionThrown(e);
+            }
         }
         
         if (readObjIndex >= readObjs.size()) {

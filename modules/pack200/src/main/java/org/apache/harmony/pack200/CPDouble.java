@@ -16,10 +16,12 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * Constant pool entry for a double.
+ */
 public class CPDouble extends CPConstant {
 
-    private double theDouble;
+    private final double theDouble;
 
     public CPDouble(double theDouble) {
         this.theDouble = theDouble;
