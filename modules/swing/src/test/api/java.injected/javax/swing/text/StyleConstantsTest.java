@@ -434,6 +434,16 @@ public class StyleConstantsTest extends TestCase {
         assertEquals(val, StyleConstants.getComponent(attr));
     }
 
+    public void testGetComponent_Null() {
+        // Regression test for HARMONY-1767
+        try {
+            StyleConstants.getComponent(null);
+            fail("NullPointerException should be thrown");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
     public void testSetComponent() {
         attr.removeAttributes(attr);
         Component val = new JLabel("test component");

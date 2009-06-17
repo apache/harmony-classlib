@@ -182,7 +182,8 @@ public class ComponentView extends View {
     }
 
     protected Component createComponent() {
-        return StyleConstants.getComponent(getAttributes());
+        final AttributeSet attrs = getAttributes();
+        return attrs == null ? null : StyleConstants.getComponent(attrs);
     }
 
     private void isAxisValid(final int axis) {
