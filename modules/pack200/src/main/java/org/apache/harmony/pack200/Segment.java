@@ -83,7 +83,7 @@ public class Segment implements ClassVisitor {
         icBands = new IcBands(segmentHeader, cpBands, effort);
         classBands = new ClassBands(this, classes.size(), effort, stripDebug);
         bcBands = new BcBands(cpBands, this, effort);
-        fileBands = new FileBands(cpBands, segmentHeader, files, classes, effort);
+        fileBands = new FileBands(cpBands, segmentHeader, options, files, classes, effort);
 
         processClasses(classes, files);
 

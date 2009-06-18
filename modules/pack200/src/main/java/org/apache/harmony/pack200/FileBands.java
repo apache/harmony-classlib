@@ -41,7 +41,7 @@ public class FileBands extends BandSet {
     private final byte[][] file_bits;
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
-            List files, List classes, int effort) {
+            PackingOptions options, List files, List classes, int effort) {
         super(effort, segmentHeader);
         int size =  files.size();
         fileName = new CPUTF8[size];
@@ -61,7 +61,7 @@ public class FileBands extends BandSet {
         for (int i = 0; i < files.size(); i++) {
              File file = (File)files.get(i);
              String name = file.getName();
-             if(name.endsWith(".class")) {
+             if(name.endsWith(".class") && !options.isPassFile(name)) {
                  file_options[i] |= (1 << 1);
                  if(classNames.contains(name.substring(0, name.length() - 6))) {
                      fileName[i] = emptyString;

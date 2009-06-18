@@ -167,7 +167,12 @@ public class PackingOptions {
         if(passFiles == null) {
             passFiles = new ArrayList();
         }
-        passFileName.replaceAll(System.getProperty("file.separator"), "/");
+        String fileSeparator = System.getProperty("file.separator");
+        if(fileSeparator.equals("\\")) {
+            // Need to escape backslashes for replaceAll(), which uses regex
+            fileSeparator += "\\";
+        }
+        passFileName.replaceAll(fileSeparator, "/");
         passFiles.add(passFileName);
     }
 
