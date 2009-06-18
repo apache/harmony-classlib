@@ -30,7 +30,7 @@ public class PopulationCodec extends Codec {
 
     private final Codec favouredCodec;
     private Codec tokenCodec;
-    private final Codec unvafouredCodec;
+    private final Codec unfavouredCodec;
     private int l;
     private int[] favoured;
 
@@ -38,7 +38,7 @@ public class PopulationCodec extends Codec {
             Codec unvafouredCodec) {
         this.favouredCodec = favouredCodec;
         this.tokenCodec = tokenCodec;
-        this.unvafouredCodec = unvafouredCodec;
+        this.unfavouredCodec = unvafouredCodec;
     }
 
     public PopulationCodec(Codec favouredCodec, int l, Codec unvafouredCodec) {
@@ -46,7 +46,7 @@ public class PopulationCodec extends Codec {
             throw new IllegalArgumentException("L must be between 1..255");
         this.favouredCodec = favouredCodec;
         this.l = l;
-        this.unvafouredCodec = unvafouredCodec;
+        this.unfavouredCodec = unvafouredCodec;
     }
 
     public int decode(InputStream in) throws IOException, Pack200Exception {
@@ -112,7 +112,7 @@ public class PopulationCodec extends Codec {
             int index = result[i];
             if (index == 0) {
                 lastBandLength++;
-                result[i] = last = unvafouredCodec.decode(in, last);
+                result[i] = last = unfavouredCodec.decode(in, last);
             } else {
                 result[i] = favoured[index - 1];
             }
@@ -129,7 +129,7 @@ public class PopulationCodec extends Codec {
     }
 
     public Codec getUnfavouredCodec() {
-        return unvafouredCodec;
+        return unfavouredCodec;
     }
 
     public byte[] encode(int value, int last) throws Pack200Exception {
@@ -145,7 +145,7 @@ public class PopulationCodec extends Codec {
     public byte[] encode(int[] favoured, int[] tokens, int[] unfavoured) throws Pack200Exception {
         byte[] favouredEncoded = favouredCodec.encode(favoured);
         byte[] tokensEncoded = tokenCodec.encode(tokens);
-        byte[] unfavouredEncoded = unvafouredCodec.encode(unfavoured);
+        byte[] unfavouredEncoded = unfavouredCodec.encode(unfavoured);
         byte[] band = new byte[favouredEncoded.length + tokensEncoded.length + unfavouredEncoded.length];
 
         return band;
