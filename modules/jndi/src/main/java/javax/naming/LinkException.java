@@ -86,7 +86,7 @@ public class LinkException extends NamingException {
     }
 
     private String toStringImpl(boolean b) {
-        StringBuffer sb = new StringBuffer(super.toString());
+        StringBuilder sb = new StringBuilder(super.toString());
         sb
                 .append("; the link remaining name is - '").append(linkRemainingName).append( //$NON-NLS-1$
                         "'"); //$NON-NLS-1$

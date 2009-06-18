@@ -270,7 +270,7 @@ public class IcTuple {
     }
 
     public String toString() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append("IcTuple ");
         result.append('(');
         result.append(simpleClassName());

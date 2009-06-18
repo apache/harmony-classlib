@@ -210,7 +210,7 @@ public class SearchResult extends Binding {
      */
     @Override
     public String toString() {
-        return new StringBuffer(super.toString()).append(":") //$NON-NLS-1$
+        return new StringBuilder(super.toString()).append(":") //$NON-NLS-1$
                 .append(attrs.toString()).toString();
     }
 

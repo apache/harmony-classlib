@@ -202,7 +202,7 @@ public class NameClassPair implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (!isRel) {
             buf.append("(not relative)"); //$NON-NLS-1$
         }

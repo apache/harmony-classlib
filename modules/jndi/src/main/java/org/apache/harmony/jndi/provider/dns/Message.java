@@ -317,7 +317,7 @@ public class Message {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("ID=" + id + "\n");
         if (qr) {

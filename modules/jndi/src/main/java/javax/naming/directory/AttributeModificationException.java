@@ -119,7 +119,7 @@ public class AttributeModificationException extends NamingException {
     }
 
     private String toStringImpl(boolean flag) {
-        StringBuffer sb = new StringBuffer(super.toString(flag));
+        StringBuilder sb = new StringBuilder(super.toString(flag));
         if (null != unexecs && unexecs.length > 0) {
             sb.append(". The unexecuted modification items are: \""); //$NON-NLS-1$
             for (ModificationItem element : unexecs) {

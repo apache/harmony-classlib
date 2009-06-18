@@ -130,7 +130,7 @@ public class QuestionRecord {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String qClassStr, qTypeStr;
 
         if (qType > 0 && qType < 256) {
