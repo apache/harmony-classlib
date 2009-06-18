@@ -249,7 +249,7 @@ public class Archive {
         if (read != size) {
             throw new RuntimeException("Error reading from stream");
         }
-        if (name.endsWith(".class")) {
+        if (name.endsWith(".class") && !options.isPassFile(name)) {
             Pack200ClassReader classParser = new Pack200ClassReader(bytes);
             classParser.setFileName(name);
             javaClasses.add(classParser);

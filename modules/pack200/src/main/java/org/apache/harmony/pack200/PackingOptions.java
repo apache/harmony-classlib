@@ -135,8 +135,25 @@ public class PackingOptions {
         this.modificationTime = modificationTime;
     }
 
-    public List getPassFiles() {
-        return passFiles;
+    public boolean isPassFile(String passFileName) {
+        if (passFiles != null) {
+            for (Iterator iterator = passFiles.iterator(); iterator.hasNext();) {
+                String pass = (String) iterator.next();
+                if (passFileName.equals(pass)) {
+                    return true;
+                } else if (!pass.endsWith(".class")) { // a whole directory is
+                    // passed
+                    if (!pass.endsWith("/")) {
+                        // Make sure we don't get any false positives (e.g.
+                        // exclude "org/apache/harmony/pack" should not match
+                        // files under "org/apache/harmony/pack200/")
+                        pass = pass + "/";
+                    }
+                    return passFileName.startsWith(pass);
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -150,6 +167,7 @@ public class PackingOptions {
         if(passFiles == null) {
             passFiles = new ArrayList();
         }
+        passFileName.replaceAll(System.getProperty("file.separator"), "/");
         passFiles.add(passFileName);
     }
 
