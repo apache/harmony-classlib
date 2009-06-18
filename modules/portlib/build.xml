@@ -23,6 +23,8 @@
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
+    <property name="tests.output" location="../../build/test_report" />
+
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
@@ -197,7 +199,7 @@
     </target>
 
     <target name="-make-report-dir">
-        <mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${tests.output}" />
     </target>
 
     <target name="-compile-native-tests" if="test.portlib">
@@ -238,7 +240,7 @@
         <exec-native test="hyipcmutex" />
         <exec-native test="hymmap" />
 	
-        <move todir="${hy.tests.reports}">
+        <move todir="${tests.output}">
             <fileset dir="${hy.portlib}">
                 <include name="TEST-*.xml"/>
             </fileset>
@@ -279,7 +281,7 @@
     </target>
 
     <target name="touch-errors-file" if="test.errors">
-        <echo file="${hy.tests.reports}/test.errors"
+        <echo file="${tests.output}/test.errors"
             append="true">portlib${line.separator}</echo>
     </target>
 
@@ -311,7 +313,7 @@
                 </not>
             </condition>
             <echo>@{test}: ${@{test}.result}${line.separator}</echo>
-<!--            <echo file="${hy.tests.reports}/TEST-${@{test}.name}.xml"
+<!--            <echo file="${tests.output}/TEST-${@{test}.name}.xml"
                  >&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
 &lt;testsuite tests="1" errors='${@{test}.errorcount}' failures='0'
     name='${@{test}.name}' time='0'&gt;

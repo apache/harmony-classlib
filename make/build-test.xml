@@ -39,8 +39,10 @@
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"
-        depends="clean-test-output, test-modules, process-empty, gen-report, check-test-result">
-    </target>
+            depends="clean-test-output, test-modules, process-test-output" />
+
+    <target name="process-test-output"
+            depends="process-empty, gen-report, check-test-result" />
 
     <target name="clean">
         <delete dir="${tests.output}" />

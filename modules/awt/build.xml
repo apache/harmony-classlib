@@ -23,6 +23,8 @@
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
+    <property name="tests.output" location="../../build/test_report" />
+
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
@@ -384,7 +386,7 @@
     </target>
 
     <target name="run-tests">
-        <mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${tests.output}" />
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <!-- bootclasspath tests -->
@@ -407,7 +409,7 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+            <batchtest todir="${tests.output}" haltonfailure="no">
                 <fileset dir="${hy.awt.src.test.impl.boot}">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Test.java" unless="test.case" />
@@ -442,7 +444,7 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}">
+            <batchtest todir="${tests.output}">
                 <fileset dir="${hy.awt.src.test.api.java}">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Test.java" unless="test.case" />
@@ -479,7 +481,7 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+            <batchtest todir="${tests.output}" haltonfailure="no" >
                 <fileset dir="${hy.awt.src.test.impl.boot}">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Headless*Test.java" unless="test.case" />
@@ -499,12 +501,12 @@
     </target>
 
     <target name="touch-failures-file" if="test.failures">
-        <echo file="${hy.tests.reports}/test.failures"
+        <echo file="${tests.output}/test.failures"
             append="true">awt${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
-        <echo file="${hy.tests.reports}/test.errors"
+        <echo file="${tests.output}/test.errors"
             append="true">awt${line.separator}</echo>
     </target>
 
