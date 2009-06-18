@@ -447,7 +447,7 @@ public final class BHSDCodec extends Codec {
      * zero fields are not shown.
      */
     public String toString() {
-        StringBuilder buffer = new StringBuilder(11);
+        StringBuffer buffer = new StringBuffer(11);
         buffer.append('(');
         buffer.append(b);
         buffer.append(',');

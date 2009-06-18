@@ -814,7 +814,7 @@ public class NewAttributeBands extends BandSet {
      */
     private StringReader getStreamUpToMatchingBracket(StringReader stream)
             throws IOException {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         int foundBracket = -1;
         while (foundBracket != 0) {
             char c = (char) stream.read();
@@ -877,7 +877,7 @@ public class NewAttributeBands extends BandSet {
      */
     private String readUpToMatchingBracket(StringReader stream)
             throws IOException {
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         int foundBracket = -1;
         while (foundBracket != 0) {
             char c = (char) stream.read();
