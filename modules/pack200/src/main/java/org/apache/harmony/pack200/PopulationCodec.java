@@ -41,12 +41,12 @@ public class PopulationCodec extends Codec {
         this.unfavouredCodec = unvafouredCodec;
     }
 
-    public PopulationCodec(Codec favouredCodec, int l, Codec unvafouredCodec) {
+    public PopulationCodec(Codec favouredCodec, int l, Codec unfavouredCodec) {
         if (l >= 256 || l <= 0)
             throw new IllegalArgumentException("L must be between 1..255");
         this.favouredCodec = favouredCodec;
         this.l = l;
-        this.unfavouredCodec = unvafouredCodec;
+        this.unfavouredCodec = unfavouredCodec;
     }
 
     public int decode(InputStream in) throws IOException, Pack200Exception {
