@@ -113,7 +113,7 @@ public abstract class CertPath implements Serializable {
      * @return a string representation of this instance.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(getType());
+        StringBuilder sb = new StringBuilder(getType());
         sb.append(" Cert Path, len="); //$NON-NLS-1$
         sb.append(getCertificates().size());
         sb.append(": [\n"); //$NON-NLS-1$

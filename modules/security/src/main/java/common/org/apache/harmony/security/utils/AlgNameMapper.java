@@ -214,7 +214,7 @@ public class AlgNameMapper {
      * @return Internal maps String representation
      */
     public static String dump() {
-        StringBuffer sb = new StringBuffer("alg2OidMap: "); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder("alg2OidMap: "); //$NON-NLS-1$
         sb.append(alg2OidMap);
         sb.append("\noid2AlgMap: "); //$NON-NLS-1$
         sb.append(oid2AlgMap);

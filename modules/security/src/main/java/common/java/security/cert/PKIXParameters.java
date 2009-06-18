@@ -564,8 +564,8 @@ public class PKIXParameters implements CertPathParameters {
      * @return a string representation of this {@code PKIXParameters} instance.
      */
     public String toString() {
-        StringBuffer sb =
-            new StringBuffer("[\n Trust Anchors: "); //$NON-NLS-1$
+        StringBuilder sb =
+            new StringBuilder("[\n Trust Anchors: "); //$NON-NLS-1$
         sb.append(trustAnchors);
         sb.append("\n Revocation Enabled: "); //$NON-NLS-1$
         sb.append(revocationEnabled);

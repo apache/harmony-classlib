@@ -112,7 +112,7 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
      *         PKIXCertPathValidatorResult} instance.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append(": [\n Trust Anchor: "); //$NON-NLS-1$
         sb.append(trustAnchor.toString());
         sb.append("\n Policy Tree: "); //$NON-NLS-1$

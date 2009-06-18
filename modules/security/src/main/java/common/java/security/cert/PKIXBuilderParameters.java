@@ -123,7 +123,7 @@ public class PKIXBuilderParameters extends PKIXParameters {
      *         instance.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("[\n"); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder("[\n"); //$NON-NLS-1$
         sb.append(super.toString());
         sb.append(" Max Path Length: "); //$NON-NLS-1$
         sb.append(maxPathLength);

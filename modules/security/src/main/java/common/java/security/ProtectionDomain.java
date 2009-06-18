@@ -212,8 +212,7 @@ public class ProtectionDomain {
      * @return a printable representation for this {@code ProtectionDomain}.
      */
     public String toString() {
-        //FIXME: 1.5 use StreamBuilder here
-        StringBuffer buf = new StringBuffer(200);
+        StringBuilder buf = new StringBuilder(200);
         buf.append("ProtectionDomain\n"); //$NON-NLS-1$
         buf.append("CodeSource=").append( //$NON-NLS-1$
                 codeSource == null ? "<null>" : codeSource.toString()).append( //$NON-NLS-1$

@@ -166,7 +166,7 @@ public class Services {
         String key;
         String type;
         String alias;
-        StringBuffer sb = new StringBuffer(128);
+        StringBuilder sb = new StringBuilder(128);
 
         for (Iterator<Provider.Service> it1 = p.getServices().iterator(); it1.hasNext();) {
             serv = it1.next();

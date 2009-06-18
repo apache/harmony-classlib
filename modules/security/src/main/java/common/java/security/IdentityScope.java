@@ -195,7 +195,7 @@ public abstract class IdentityScope extends Identity {
      * @return a printable representation for this {@code IdentityScope}.
      */
     public String toString() {
-        return new StringBuffer(super.toString())
+        return new StringBuilder(super.toString())
                 .append("[").append(size()).append("]").toString(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }
