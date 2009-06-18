@@ -344,7 +344,7 @@ final class ClassStub implements RmicConstants {
      * @return  Stub class declaration statement.
      */
     private String getStubClassDeclaration() {
-        StringBuffer buffer = new StringBuffer("public final class " //$NON-NLS-1$
+        StringBuilder buffer = new StringBuilder("public final class " //$NON-NLS-1$
                 + stubName + " extends java.rmi.server.RemoteStub" + EOLN //$NON-NLS-1$
                 + indenter.tIncrease(2) + "implements "); //$NON-NLS-1$
 
@@ -409,7 +409,7 @@ final class ClassStub implements RmicConstants {
      * @return  <code>operations</code> array declaration statement.
      */
     private String getOperationsArrayDeclaration() {
-        StringBuffer buffer = new StringBuffer(indenter.indent()
+        StringBuilder buffer = new StringBuilder(indenter.indent()
                 + "private static final java.rmi.server.Operation[]" //$NON-NLS-1$
                 + " operations = {"); //$NON-NLS-1$
 
@@ -450,7 +450,7 @@ final class ClassStub implements RmicConstants {
      * @return  <code>dispatch()</code> method declaration statement.
      */
     private String getDispatchMethod() {
-        StringBuffer buffer = new StringBuffer(indenter.indent()
+        StringBuilder buffer = new StringBuilder(indenter.indent()
                 + "public void dispatch(java.rmi.Remote obj, " //$NON-NLS-1$
                 + "java.rmi.server.RemoteCall call, int opnum, long hash) " //$NON-NLS-1$
                 + "throws java.lang.Exception {" + EOLN + indenter.hIncrease()); //$NON-NLS-1$
@@ -512,7 +512,7 @@ final class ClassStub implements RmicConstants {
      * @return  Variables declaration block.
      */
     private String getMethodVariablesDeclaration() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for (Iterator i = methods.iterator(); i.hasNext(); ) {
             buffer.append(((MethodStub) i.next()).getVariableDecl());
@@ -528,7 +528,7 @@ final class ClassStub implements RmicConstants {
      * @return  Static initialization declaration block.
      */
     private String getStaticInitializationBlock() {
-        StringBuffer buffer = new StringBuffer(indenter.indent()
+        StringBuilder buffer = new StringBuilder(indenter.indent()
                 + "static {" + EOLN + indenter.increase() + "try {" + EOLN //$NON-NLS-1$ //$NON-NLS-2$
                 + indenter.hIncrease());
 
@@ -568,7 +568,7 @@ final class ClassStub implements RmicConstants {
      * @return  Stub constructors code.
      */
     private String getStubConstructors() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         if (v11) {
             buffer.append(indenter.indent() + "public " + stubName //$NON-NLS-1$
@@ -591,7 +591,7 @@ final class ClassStub implements RmicConstants {
      * @return  Stub method implementations code.
      */
     private String getMethodImplementations() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for (Iterator i = methods.iterator(); i.hasNext(); ) {
             buffer.append(EOLN + ((MethodStub) i.next()).getStubImpl());
@@ -778,7 +778,7 @@ final class ClassStub implements RmicConstants {
          * @return  <code>dispatch()</code> method case for this method.
          */
         String getDispatchCase() {
-            StringBuffer buffer = new StringBuffer(indenter.indent()
+            StringBuilder buffer = new StringBuilder(indenter.indent()
                     + "case " + number + ": {    // " + shortSign + EOLN + EOLN //$NON-NLS-1$ //$NON-NLS-2$
                     + indenter.hIncrease());
 
@@ -873,7 +873,7 @@ final class ClassStub implements RmicConstants {
          * @return  Method variable initialization.
          */
         String getVariableInit() {
-            StringBuffer buffer = new StringBuffer(indenter.indent()
+            StringBuilder buffer = new StringBuilder(indenter.indent()
                     + varName + " = " + interfaceName + ".class.getMethod(\"" //$NON-NLS-1$ //$NON-NLS-2$
                     + name + "\", new java.lang.Class[] {"); //$NON-NLS-1$
 
@@ -916,7 +916,7 @@ final class ClassStub implements RmicConstants {
          * @return  Stub implementation header for this method.
          */
         private String getStubImplHeader() {
-            StringBuffer buffer = new StringBuffer(indenter.indent()
+            StringBuilder buffer = new StringBuilder(indenter.indent()
                     + "// Implementation of " + shortSign + EOLN //$NON-NLS-1$
                     + indenter.indent() + "public " + retTypeName //$NON-NLS-1$
                     + ' ' + name + '(');
@@ -949,7 +949,7 @@ final class ClassStub implements RmicConstants {
          * @return  Stub implementation code for this method.
          */
         private String getStubImplCodeV11() {
-            StringBuffer buffer = new StringBuffer(indenter.indent()
+            StringBuilder buffer = new StringBuilder(indenter.indent()
                     + "java.rmi.server.RemoteCall call = " //$NON-NLS-1$
                     + "ref.newCall((java.rmi.server.RemoteObject) this, " //$NON-NLS-1$
                     + "operations, " + number + ", " + interfaceHashVarName //$NON-NLS-1$ //$NON-NLS-2$
@@ -1016,7 +1016,7 @@ final class ClassStub implements RmicConstants {
          * @return  Stub implementation code for this method.
          */
         private String getStubImplCodeV12() {
-            StringBuffer buffer = new StringBuffer(indenter.indent());
+            StringBuilder buffer = new StringBuilder(indenter.indent());
 
             if (retType != void.class) {
                 buffer.append("java.lang.Object " + retVarName + " = "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1057,7 +1057,7 @@ final class ClassStub implements RmicConstants {
          * @return  Stub implementation catch block for this method.
          */
         private String getStubImplCatchBlock() {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
 
             for (Iterator i = catches.iterator(); i.hasNext(); ) {
                 buffer.append(indenter.indent() + "} catch (" //$NON-NLS-1$

@@ -430,7 +430,7 @@ public final class Subject implements Serializable {
     @Override
     public String toString() {
 
-        StringBuffer buf = new StringBuffer("Subject:\n"); //$NON-NLS-1$
+        StringBuilder buf = new StringBuilder("Subject:\n"); //$NON-NLS-1$
 
         Iterator<?> it = principals.iterator();
         while (it.hasNext()) {

@@ -1378,7 +1378,7 @@ public final class Pattern implements Serializable {
      * @return the quoted string.
      */
     public static String quote(String s) {
-        StringBuffer sb = new StringBuffer().append("\\Q"); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder().append("\\Q"); //$NON-NLS-1$
         int apos = 0;
         int k;
         while ((k = s.indexOf("\\E", apos)) >= 0) { //$NON-NLS-1$

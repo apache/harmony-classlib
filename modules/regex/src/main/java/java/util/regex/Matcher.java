@@ -109,7 +109,7 @@ public final class Matcher implements MatchResult {
             if (replacementParts == null) {
                 return processedRepl;
             } else {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < replacementParts.size(); i++) {
                     sb.append(replacementParts.get(i));
                 }
@@ -119,7 +119,7 @@ public final class Matcher implements MatchResult {
         } else {
             this.replacement = replacement;
             char[] repl = replacement.toCharArray();
-            StringBuffer res = new StringBuffer();
+            StringBuilder res = new StringBuilder();
             replacementParts = null;
 
             int index = 0;
@@ -455,7 +455,7 @@ public final class Matcher implements MatchResult {
         // first check whether we have smth to quote
         if (s.indexOf('\\') < 0 && s.indexOf('$') < 0)
             return s;
-        StringBuffer res = new StringBuffer(s.length() * 2);
+        StringBuilder res = new StringBuilder(s.length() * 2);
         char ch;
         int len = s.length();
 

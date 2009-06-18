@@ -55,7 +55,7 @@ final class RmicUtil implements RmicConstants {
      * @return  Suitable name for a parameter.
      */
     static String getParameterName(Class cls, int number) {
-        StringBuffer buffer = new StringBuffer(paramPrefix);
+        StringBuilder buffer = new StringBuilder(paramPrefix);
 
         while (cls.isArray()) {
             buffer.append(arrayPrefix);
@@ -209,7 +209,7 @@ final class RmicUtil implements RmicConstants {
         }
 
         // For all other types, create the respective cast statement.
-        StringBuffer buffer = new StringBuffer("(("); //$NON-NLS-1$
+        StringBuilder buffer = new StringBuilder("(("); //$NON-NLS-1$
         buffer.append(RMIUtil.getCanonicalName(RMIUtil.getWrappingClass(cls)));
         buffer.append(") " + varName + ')'); //$NON-NLS-1$
 

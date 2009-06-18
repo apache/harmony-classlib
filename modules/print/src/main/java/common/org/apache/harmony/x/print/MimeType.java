@@ -82,7 +82,7 @@ public class MimeType implements Serializable, Cloneable {
      * returns canonical for MimeType object.
      */
     public String getCanonicalForm() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append(aType);
         s.append("/");
         s.append(aSubtype);

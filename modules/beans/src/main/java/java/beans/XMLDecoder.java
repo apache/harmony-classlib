@@ -438,7 +438,7 @@ public class XMLDecoder {
         }
 
         private String capitalize(String str) {
-            StringBuffer buf = new StringBuffer(str);
+            StringBuilder buf = new StringBuilder(str);
             buf.setCharAt(0, Character.toUpperCase(buf.charAt(0)));
             return buf.toString();
         }
