@@ -686,7 +686,7 @@ public abstract class CharBuffer extends Buffer implements
      */
     @Override
     public String toString() {
-        StringBuffer strbuf = new StringBuffer();
+        StringBuilder strbuf = new StringBuilder();
         for (int i = position; i < limit; i++) {
             strbuf.append(get(i));
         }

@@ -305,7 +305,7 @@ public abstract class URLStreamHandler {
      * @see URL#toExternalForm()
      */
     protected String toExternalForm(URL url) {
-        StringBuffer answer = new StringBuffer(url.getProtocol().length()
+        StringBuilder answer = new StringBuilder(url.getProtocol().length()
                 + url.getFile().length() + 16);
         answer.append(url.getProtocol());
         answer.append(':');

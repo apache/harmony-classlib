@@ -520,7 +520,7 @@ public abstract class IntBuffer extends Buffer implements Comparable<IntBuffer> 
      */
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(getClass().getName());
         buf.append(", status: capacity="); //$NON-NLS-1$
         buf.append(capacity());

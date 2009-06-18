@@ -121,7 +121,7 @@ public final class Util {
 		int year = -1, month = -1, date = -1;
 		int hour = -1, minute = -1, second = -1;
 		final int PAD = 0, LETTERS = 1, NUMBERS = 2;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		while (offset <= length) {
 			char next = offset < length ? string.charAt(offset) : '\r';
@@ -270,7 +270,7 @@ public final class Util {
 	public static String decode(String s, boolean convertPlus) {
 		if (!convertPlus && s.indexOf('%') == -1)
 			return s;
-		StringBuffer result = new StringBuffer(s.length());
+		StringBuilder result = new StringBuilder(s.length());
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		for (int i = 0; i < s.length();) {
 			char c = s.charAt(i);

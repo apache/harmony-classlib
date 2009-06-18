@@ -211,7 +211,7 @@ public final class SocketPermission extends Permission implements Serializable {
         }
         boolean parsing = true;
         String action;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int pos = 0, length = actions.length();
         while (parsing) {
             char c;
