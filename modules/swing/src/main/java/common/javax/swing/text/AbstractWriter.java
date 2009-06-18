@@ -233,7 +233,7 @@ public abstract class AbstractWriter {
     protected void writeAttributes(final AttributeSet attrs)
         throws IOException {
 
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         for (Enumeration keys = attrs.getAttributeNames(); keys.hasMoreElements();) {
             Object key = keys.nextElement();
             content.append(" ");

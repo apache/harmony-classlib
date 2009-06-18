@@ -860,7 +860,7 @@ public class CSS implements Serializable {
         }
 
         private static String getDeclaration(final ColorProperty[] colors) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; i < colors.length; i++) {
                 if (i > 0) {
                     result.append(' ');
@@ -934,7 +934,7 @@ public class CSS implements Serializable {
         }
 
         private static String getDeclaration(final BorderStyleValue[] styles) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; i < styles.length; i++) {
                 if (i > 0) {
                     result.append(' ');
@@ -1323,7 +1323,7 @@ public class CSS implements Serializable {
 
             final String lower = colorName.toLowerCase();
             if (lower.charAt(0) == '#') {
-                final StringBuffer name = new StringBuffer(6);
+                final StringBuilder name = new StringBuilder(6);
                 if (lower.length() == 4) {
                     for (int i = 1; i < 4; i++) {
                         name.append(lower.charAt(i))
@@ -1383,7 +1383,7 @@ public class CSS implements Serializable {
         }
 
         private static String colorToString(final Color color) {
-            final StringBuffer result = new StringBuffer(7);
+            final StringBuilder result = new StringBuilder(7);
             final String hex = Integer.toHexString(color.getRGB() & 0x00FFFFFF);
             result.append('#').append(zeros, 0, 6 - hex.length()).append(hex);
             return result.toString();
@@ -1967,7 +1967,7 @@ public class CSS implements Serializable {
                 return;
             }
 
-            StringBuffer family = new StringBuffer();
+            StringBuilder family = new StringBuilder();
             family.append(parts[i++]);
             for (; i < parts.length; i++) {
                 family.append(' ')
@@ -2676,7 +2676,7 @@ public class CSS implements Serializable {
         }
 
         private String getValue() {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; i < values.length; i++) {
                 if (values[i]) {
                     if (result.length() > 0) {

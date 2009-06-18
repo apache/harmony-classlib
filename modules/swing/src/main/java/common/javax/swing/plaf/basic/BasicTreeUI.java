@@ -603,7 +603,7 @@ public class BasicTreeUI extends TreeUI {
                 return null;
             }
 
-            StringBuffer content = new StringBuffer();
+            StringBuilder content = new StringBuilder();
             TreePath[] selectionPaths = tree.getSelectionPaths();
             for (int i = 0; i < selectionPaths.length; i++) {
                 content.append(selectionPaths[i].getLastPathComponent());

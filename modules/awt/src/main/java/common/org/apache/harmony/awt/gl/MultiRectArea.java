@@ -822,7 +822,7 @@ public class MultiRectArea implements Shape {
     @Override
     public String toString() {
         int cnt = getRectCount();
-        StringBuffer sb = new StringBuffer((cnt << 5) + 128);
+        StringBuilder sb = new StringBuilder((cnt << 5) + 128);
         sb.append(getClass().getName()).append(" ["); //$NON-NLS-1$
         for(int i = 1; i < rect[0]; i += 4) {
             sb.append(i > 1 ? ", [" : "[").append(rect[i]).append(", ").append(rect[i + 1]). //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

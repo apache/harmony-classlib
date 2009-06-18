@@ -34,7 +34,7 @@ final class Selector {
     }
 
     public String toString() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         result.append(simpleSelectors[0]);
         for (int i = 1; i < simpleSelectors.length; i++) {
             result.append(' ').append(simpleSelectors[i]);

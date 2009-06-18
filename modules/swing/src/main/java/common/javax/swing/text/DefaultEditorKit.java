@@ -404,7 +404,7 @@ public class DefaultEditorKit extends EditorKit {
             return str;
         }
         final int length = str.length();
-        final StringBuffer buffer = new StringBuffer(length);
+        final StringBuilder buffer = new StringBuilder(length);
         int prevIndex = 0;
         do {
             buffer.append(str.subSequence(prevIndex, index));
