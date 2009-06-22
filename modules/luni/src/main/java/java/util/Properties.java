@@ -388,7 +388,7 @@ public class Properties extends Hashtable<Object, Object> {
                 case '\r':
                     mode = NONE;
                     firstChar = true;
-                    if (offset > 0) {
+                    if (offset > 0 || (offset == 0 && keyLength == 0)) {
                         if (keyLength == -1) {
                             keyLength = offset;
                         }
