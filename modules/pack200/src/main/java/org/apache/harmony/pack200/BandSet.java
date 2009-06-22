@@ -36,7 +36,7 @@ public abstract class BandSet {
 
     // Minimum size of band for each effort level where we consider alternative codecs
     // Note: these values have been tuned - please test carefully if changing them
-    private final int[] effortThresholds = new int[] {0, 0, 1000, 500, 100, 100, 100, 100, 100, 0};
+    private static final int[] effortThresholds = new int[] {0, 0, 1000, 500, 100, 100, 100, 100, 100, 0};
 
     private long[] canonicalLargest;
     private long[] canonicalSmallest;
