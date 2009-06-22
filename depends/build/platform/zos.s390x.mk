@@ -40,3 +40,13 @@ DLL_LDFLAGS =
 
 # We can't use the -Xlinker options on z/OS
 EXERPATHPREFIX = 
+
+# Different compiler on zOS
+WARNFLAGS =
+
+# z/OS has different debug flags
+HYDEBUGCFLAGS = -g -O0
+
+# On z/OS set DLLPATH to LIBPATH so we link against .x export files in
+# $(HY_HDK)/lib instead of directly against the .so libraries.
+DLLPATH=$(LIBPATH)

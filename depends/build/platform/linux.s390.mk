@@ -18,3 +18,4 @@ OPT += -fpic -m31
 
 ASFLAGS += -m31
 LDFLAGS += -m31
+OSLIBS += -ldl

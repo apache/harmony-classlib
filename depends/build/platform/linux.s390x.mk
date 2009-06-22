@@ -18,3 +18,4 @@ OPT += -fpic -m64
 
 ASFLAGS += -m64
 LDFLAGS += -m64
+OSLIBS += -ldl
