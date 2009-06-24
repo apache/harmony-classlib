@@ -529,11 +529,9 @@ public class String2Test extends junit.framework.TestCase {
             hwHashCode += hw1.charAt(counter) * powerOfThirtyOne;
             powerOfThirtyOne *= 31;
         }
-        assertTrue("String did not hash to correct value--got: "
-                + String.valueOf(hw1.hashCode()) + " but wanted: "
-                + String.valueOf(hwHashCode), hw1.hashCode() == hwHashCode);
-        assertTrue("The empty string \"\" did not hash to zero", 0 == ""
-                .hashCode());
+        assertEquals("String did not hash to correct value", hwHashCode, hw1.hashCode());
+        assertEquals("The empty string \"\" did not hash to zero", 0, "".hashCode());
+        assertEquals("Calculated wrong string hashcode", -1933545242, "Harmony".hashCode());
     }
 
     /**

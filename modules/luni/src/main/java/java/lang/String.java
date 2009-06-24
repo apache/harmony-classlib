@@ -937,11 +937,12 @@ public final class String implements Serializable, Comparable<String>,
     @Override
     public int hashCode() {
         if (hashCode == 0) {
-            int hash = 0, multiplier = 1;
-            for (int i = offset + count - 1; i >= offset; i--) {
-                hash += value[i] * multiplier;
-                int shifted = multiplier << 5;
-                multiplier = shifted - multiplier;
+            if (count == 0) {
+                return 0;
+            }
+            int hash = 0;
+            for (int i = offset; i < count + offset; i++) {
+                hash = value[i] + ((hash << 5) - hash);
             }
             hashCode = hash;
         }
