@@ -1389,7 +1389,7 @@ public class DecimalFormat extends NumberFormat {
             final DecimalFormatSymbols dfs) {
         Currency currency = dfs.getCurrency();
         if (currency == null) {
-            icu.setCurrency(com.ibm.icu.util.Currency.getInstance("XXX"));
+            icu.setCurrency(com.ibm.icu.util.Currency.getInstance("XXX")); //$NON-NLS-1$
         } else {
             icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs
                     .getCurrency().getCurrencyCode()));
