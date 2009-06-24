@@ -505,7 +505,7 @@ public final class Math {
             return Double.NaN;
         }
         /* max(+0.0,-0.0) == +0.0 */
-        if (Double.doubleToRawLongBits(d1) == Double.doubleToRawLongBits(-0.0d)) {
+        if (Double.doubleToRawLongBits(d1) != Double.doubleToRawLongBits(0.0d)) {
             return d2;
         }
         return 0.0d;
@@ -541,7 +541,7 @@ public final class Math {
             return Float.NaN;
         }
         /* max(+0.0,-0.0) == +0.0 */
-        if (Float.floatToRawIntBits(f1) == Float.floatToRawIntBits(-0.0f)) {
+        if (Float.floatToRawIntBits(f1) != Float.floatToRawIntBits(0.0f)) {
             return f2;
         }
         return 0.0f;
@@ -605,7 +605,7 @@ public final class Math {
             return Double.NaN;
         }
         /* min(+0.0,-0.0) == -0.0 */
-        if (Double.doubleToRawLongBits(d1) == Double.doubleToRawLongBits(-0.0d)) {
+        if (Double.doubleToRawLongBits(d1) != Double.doubleToRawLongBits(0.0d)) {
             return -0.0d;
         }
         return d2;
@@ -641,7 +641,7 @@ public final class Math {
             return Float.NaN;
         }
         /* min(+0.0,-0.0) == -0.0 */
-        if (Float.floatToRawIntBits(f1) == Float.floatToRawIntBits(-0.0f)) {
+        if (Float.floatToRawIntBits(f1) != Float.floatToRawIntBits(0.0f)) {
             return -0.0f;
         }
         return f2;
