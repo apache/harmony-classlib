@@ -602,11 +602,22 @@ public class DecimalFormat extends NumberFormat {
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
         symbols = (DecimalFormatSymbols) value.clone();
-        Locale locale = symbols.getLocale(); //$NON-NLS-1$
+        Locale locale = symbols.getLocale();
         icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
         copySymbols(icuSymbols, symbols);
 
         dform = new com.ibm.icu.text.DecimalFormat(pattern, icuSymbols);
+
+        super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
+        super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
+        super.setMinimumFractionDigits(dform.getMinimumFractionDigits());
+        super.setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
+    }
+
+    DecimalFormat(String pattern, DecimalFormatSymbols value, com.ibm.icu.text.DecimalFormat icuFormat) {
+        symbols = value;
+        icuSymbols = value.getIcuSymbols();
+        dform = icuFormat;
 
         super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
         super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
@@ -1424,5 +1435,13 @@ public class DecimalFormat extends NumberFormat {
                         return field;
                     }
                 });
+    }
+
+    com.ibm.icu.text.DecimalFormat getDform() {
+        return dform;
+    }
+
+    com.ibm.icu.text.DecimalFormatSymbols getIcuSymbols() {
+        return icuSymbols;
     }
 }
