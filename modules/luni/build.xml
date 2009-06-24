@@ -297,7 +297,7 @@
         </jar>
     </target>
 
-    <target name="test-jar" depends="svn-info">
+    <target name="test-jar" depends="compile-tests, prepare-exclude">
         <mkdir dir="${tests.hdk.dir}"/>
 
         <jar destfile="${tests.hdk.dir}/${hy.luni.packaging.jarname}_tests_api.jar">
