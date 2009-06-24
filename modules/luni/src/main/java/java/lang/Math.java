@@ -502,10 +502,11 @@ public final class Math {
 		/* if either arg is NaN, return NaN */
 		if (d1 != d2)
 			return Double.NaN;
-		/* max( +0.0,-0.0) == +0.0 */
-		if (d1 == 0.0 && (d1 != -0.0d || d2 != -0.0d))
-			return 0.0;
-		return d1;
+		/* max(+0.0,-0.0) == +0.0 */
+	    if (Double.doubleToRawLongBits(d1) == Double.doubleToRawLongBits(-0.0d)) {
+	        return d2;
+	     }
+	     return 0.0d;
 	}
 
     /**
@@ -534,10 +535,11 @@ public final class Math {
 		/* if either arg is NaN, return NaN */
 		if (f1 != f2)
 			return Float.NaN;
-		/* max( +0.0,-0.0) == +0.0 */
-		if (f1 == 0.0f && (f1 != -0.0f || f2 != -0.0f))
-			return 0.0f;
-		return f1;
+		/* max(+0.0,-0.0) == +0.0 */
+        if (Float.floatToRawIntBits(f1) == Float.floatToRawIntBits(-0.0f)) {
+            return f2;
+         }
+         return 0.0f;
 	}
 
     /**
@@ -594,10 +596,11 @@ public final class Math {
 		/* if either arg is NaN, return NaN */
 		if (d1 != d2)
 			return Double.NaN;
-		/* min( +0.0,-0.0) == -0.0 */
-		if (d1 == 0.0 && (d1 == -0.0d || d2 == -0.0d))
-			return -0.0d;
-		return d1;
+		/* min(+0.0,-0.0) == -0.0 */
+        if (Double.doubleToRawLongBits(d1) == Double.doubleToRawLongBits(-0.0d)) {
+            return -0.0d;
+         }
+         return d2;
 	}
 
     /**
@@ -626,10 +629,11 @@ public final class Math {
 		/* if either arg is NaN, return NaN */
 		if (f1 != f2)
 			return Float.NaN;
-		/* min( +0.0,-0.0) == -0.0 */
-		if (f1 == 0.0f	&& (f1 == -0.0f || f2 == -0.0f)) 
-			return -0.0f;
-		return f1;
+		/* min(+0.0,-0.0) == -0.0 */
+        if (Float.floatToRawIntBits(f1) == Float.floatToRawIntBits(-0.0f)) {
+            return -0.0f;
+         }
+         return f2;
 	}
 
     /**
