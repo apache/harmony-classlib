@@ -17,7 +17,7 @@ DEFINES += -DMACOSX -DMACOSX_X86_64 -DHYX86_64 -DIPv6_FUNCTION_SUPPORT
 
 # Add the default location of the macports.org install to the includes
 INCLUDES += -I/opt/local/include
-OPT += -arch x86_64 -mmacosx-version-min=10.5 -fPIC -fno-common
+PLATFORM = -fPIC -fno-common -arch x86_64 -mmacosx-version-min=10.5
 ASFLAGS += -arch x86_64
 WARNFLAGS += -Wconversion -Wformat -Wshorten-64-to-32
 OSLIBS = -L/opt/local/lib -lc -lm -ldl -liconv

@@ -14,6 +14,4 @@
 #  limitations under the License.
 
 DEFINES += -DLINUX -DLINUX_IA64 -DHYIA64 -DIPv6_FUNCTION_SUPPORT
-
-OPT += -fpic
 OSLIBS += -ldl

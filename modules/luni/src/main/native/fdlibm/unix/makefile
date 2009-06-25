@@ -44,15 +44,16 @@ BUILDFILES = \
 	$(FDLIBM_DIST)w_log.o $(FDLIBM_DIST)w_log10.o $(FDLIBM_DIST)w_pow.o $(FDLIBM_DIST)w_remainder.o \
 	$(FDLIBM_DIST)w_scalb.o $(FDLIBM_DIST)w_sinh.o $(FDLIBM_DIST)w_sqrt.o
 
-# OPT is overriden except on zOS (fpic, for example, is not an option on zOS)
-ifneq ($(HY_OS),zos)
-ifneq ($(HY_OS),aix)
-OPT = -O0 -ffloat-store -fPIC
-endif
-endif
-
 DEFINES += -D_IEEE_LIBM
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a
+
+# OPT is overriden except on zOS (fpic, for example, is not an option on zOS)
+ifneq ($(HY_OS),zos)
+ifneq ($(HY_OS),aix)
+OPT = -O0 -ffloat-store
+endif
+endif
+PLATFORM := $(subst -fpic,-fPIC,$(PLATFORM))
 
 include $(HY_HDK)/build/make/rules.mk

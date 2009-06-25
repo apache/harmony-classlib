@@ -37,6 +37,7 @@ EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
 	-Xlinker
 WARNFLAGS=-Werror
 
+PLATFORM = -fpic
 HYDEBUGCFLAGS = -ggdb -O0
 HYRELEASECFLAGS = -O1 -DNDEBUG
 

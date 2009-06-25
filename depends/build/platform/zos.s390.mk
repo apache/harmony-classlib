@@ -20,12 +20,14 @@ AS = cc
 CXX = cxx
 
 DEFINES += -DZOS -DZOS_S390 -DHYS390 -DHY_ATOE
-OPT += -Wc,xplink,convlit\(ISO8859-1\),FLOAT\(IEEE,FOLD,AFP\) -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL
+PLATFORM = -Wc,xplink,convlit\(ISO8859-1\),FLOAT\(IEEE,FOLD,AFP\) -Wa,goff \
+           -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL
 
 CFLAGS += -Wc,"SSCOMM" -Wc,"langlvl(commonc)" -Wc,gonumber
 CXXFLAGS += -+ -Wc,"langlvl(extended)" -Wc,gonumber
 
-ASFLAGS += -Wc,xplink,convlit\(ISO8859-1\) -Wc,gonumber -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL -c
+ASFLAGS += -Wc,xplink,convlit\(ISO8859-1\) -Wc,gonumber -Wa,goff \
+           -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL -c
 LDFLAGS += -Wl,xplink,dll
 
 # No need for --start-group and --end-group tags here
