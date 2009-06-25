@@ -469,7 +469,7 @@ public abstract class NumberFormat extends Format {
         com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
                 .getNumberInstance(locale);
         String pattern = icuFormat.toPattern();
-        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
+        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale, icuFormat.getDecimalFormatSymbols()), icuFormat);
     }
 
     /**
@@ -494,7 +494,7 @@ public abstract class NumberFormat extends Format {
         com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
                 .getPercentInstance(locale);
         String pattern = icuFormat.toPattern();
-        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale, icuFormat.getDecimalFormatSymbols()), icuFormat);
+        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
     }
 
     @Override

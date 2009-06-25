@@ -1436,12 +1436,4 @@ public class DecimalFormat extends NumberFormat {
                     }
                 });
     }
-
-    com.ibm.icu.text.DecimalFormat getDform() {
-        return dform;
-    }
-
-    com.ibm.icu.text.DecimalFormatSymbols getIcuSymbols() {
-        return icuSymbols;
-    }
 }
