@@ -93,9 +93,6 @@
     <!-- Build the core luni native components -->
     <target name="build-native-core" >
 
-        <!-- Build fdlibm lib -->
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" />
-
         <!-- Build vmi dll -->
         <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" />
 
@@ -122,6 +119,10 @@
         />
 
     <target name="-build-native-secondary" >
+
+        <!-- Build fdlibm lib -->
+        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" />
+
         <!-- Build luni dll -->
         <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">

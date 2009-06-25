@@ -39,7 +39,7 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a
 endif
 
 MDLLIBFILES += $(MDLLIBZLIB) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS) $(XLIBS)
