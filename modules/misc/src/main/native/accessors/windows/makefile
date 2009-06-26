@@ -30,7 +30,7 @@ VIRTFILES = accessors.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Accessors native code. (c) Copyright 2006, 2008 The Apache Software Foundation or its licensors, as applicable."
