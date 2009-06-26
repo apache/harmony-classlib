@@ -787,6 +787,22 @@ hysock_fdset_size (struct HyPortLibrary * portLibrary, hysocket_t handle)
 
 #undef CDEV_CURRENT_FUNCTION
 
+#define CDEV_CURRENT_FUNCTION hysock_fdset_zero
+void VMCALL
+hysock_fdset_zero(struct HyPortLibrary *portLibrary, hyfdset_t fdset) {
+	FD_ZERO(&fdset->handle);
+	return;
+}
+#undef CDEV_CURRENT_FUNCTION
+
+#define CDEV_CURRENT_FUNCTION hysock_fdset_set
+void VMCALL
+hysock_fdset_set(struct HyPortLibrary *portLibrary, hysocket_t socket, hyfdset_t fdset) {
+    FD_SET(SOCKET_CAST(socket), &fdset->handle);
+	return;
+}
+#undef CDEV_CURRENT_FUNCTION
+
 #define CDEV_CURRENT_FUNCTION hysock_freeaddrinfo
 
 /**
@@ -1373,7 +1389,7 @@ hysock_gethostbyaddr (struct HyPortLibrary * portLibrary, char *addr,
  * @return	0, if no errors occurred, otherwise the (negative) error code.
  */
 I_32 VMCALL
-hysock_gethostbyname (struct HyPortLibrary * portLibrary, char *name,
+hysock_gethostbyname (struct HyPortLibrary * portLibrary, const char *name,
                       hyhostent_t handle)
 {
 #if !HOSTENT_DATA_R
@@ -2200,7 +2216,7 @@ hysock_htons (struct HyPortLibrary * portLibrary, U_16 val)
  * @return	0, if no errors occurred, otherwise the (negative) error code.
  */
 I_32 VMCALL
-hysock_inetaddr (struct HyPortLibrary * portLibrary, char *addrStr,
+hysock_inetaddr (struct HyPortLibrary * portLibrary, const char *addrStr,
                  U_32 * addr)
 {
   I_32 rc = 0;
@@ -3293,7 +3309,7 @@ hysock_shutdown_output (struct HyPortLibrary * portLibrary, hysocket_t sock)
  */
 I_32 VMCALL
 hysock_sockaddr (struct HyPortLibrary * portLibrary, hysockaddr_t handle,
-                 char *addrStr, U_16 port)
+                 const char *addrStr, U_16 port)
 {
   I_32 rc = 0;
   U_32 addr = 0;

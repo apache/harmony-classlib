@@ -136,7 +136,7 @@ extern "C"
   extern HY_CFUNC IDATA VMCALL hythread_park
     PROTOTYPE ((I_64 millis, IDATA nanos));
   extern HY_CFUNC IDATA VMCALL hythread_monitor_init_with_name
-    PROTOTYPE ((hythread_monitor_t * handle, UDATA flags, char *name));
+    PROTOTYPE ((hythread_monitor_t * handle, UDATA flags, const char *name));
   extern HY_CFUNC IDATA VMCALL hythread_monitor_try_enter
     PROTOTYPE ((hythread_monitor_t monitor));
   extern HY_CFUNC void VMCALL hythread_jlm_thread_clear
@@ -239,7 +239,7 @@ extern "C"
     PROTOTYPE ((hythread_t thread));
   extern HY_CFUNC void *VMCALL hythread_tls_get
     PROTOTYPE ((hythread_t thread, hythread_tls_key_t key));
-  extern HY_CFUNC char *VMCALL hythread_monitor_get_name
+  extern HY_CFUNC const char *VMCALL hythread_monitor_get_name
     PROTOTYPE ((hythread_monitor_t monitor));
   extern HY_CFUNC hythread_monitor_t VMCALL hythread_monitor_walk
     PROTOTYPE ((hythread_monitor_t monitor));

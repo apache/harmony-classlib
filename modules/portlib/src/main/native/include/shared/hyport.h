@@ -416,7 +416,7 @@ typedef struct HyPortLibrary
                                           BOOLEAN decorate);
   /** see @ref hysl.c::hysl_lookup_name "hysl_lookup_name"*/
   UDATA (PVMCALL sl_lookup_name) (struct HyPortLibrary * portLibrary,
-                                  UDATA descriptor, char *name,
+                                  UDATA descriptor, const char *name,
                                   UDATA * func, const char *argSignature);
   /** see @ref hytty.c::hytty_startup "hytty_startup"*/
   I_32 (PVMCALL tty_startup) (struct HyPortLibrary * portLibrary);
@@ -450,7 +450,7 @@ typedef struct HyPortLibrary
   /** see @ref hymem.c::hymem_allocate_memory_callSite "hymem_allocate_memory_callSite"*/
   void *(PVMCALL mem_allocate_memory_callSite) (struct HyPortLibrary *
                                                 portLibrary, UDATA byteAmount,
-                                                char *callSite);
+                                                const char *callSite);
   /** see @ref hymem.c::hymem_free_memory "hymem_free_memory"*/
   void (PVMCALL mem_free_memory) (struct HyPortLibrary * portLibrary,
                                   void *memoryPointer);
@@ -505,7 +505,7 @@ typedef struct HyPortLibrary
                             I_32 flags);
   /** see @ref hysock.c::hysock_sockaddr "hysock_sockaddr"*/
   I_32 (PVMCALL sock_sockaddr) (struct HyPortLibrary * portLibrary,
-                                hysockaddr_t handle, char *addrStr,
+                                hysockaddr_t handle, const char *addrStr,
                                 U_16 port);
   /** see @ref hysock.c::hysock_read "hysock_read"*/
   I_32 (PVMCALL sock_read) (struct HyPortLibrary * portLibrary,
@@ -523,10 +523,10 @@ typedef struct HyPortLibrary
                               hysocket_t sock, hysockaddr_t addr);
   /** see @ref hysock.c::hysock_inetaddr "hysock_inetaddr"*/
   I_32 (PVMCALL sock_inetaddr) (struct HyPortLibrary * portLibrary,
-                                char *addrStr, U_32 * addr);
+                                const char *addrStr, U_32 * addr);
   /** see @ref hysock.c::hysock_gethostbyname "hysock_gethostbyname"*/
   I_32 (PVMCALL sock_gethostbyname) (struct HyPortLibrary * portLibrary,
-                                    char *name, hyhostent_t handle);
+                                    const char *name, hyhostent_t handle);
   /** see @ref hysock.c::hysock_hostent_addrlist "hysock_hostent_addrlist"*/
   I_32 (PVMCALL sock_hostent_addrlist) (struct HyPortLibrary * portLibrary,
                                         hyhostent_t handle, U_32 index);
@@ -1004,6 +1004,8 @@ typedef struct HyPortLibrary
   /** see @ref hyport.c::hyport_get_thread_library "hyport_get_thread_library" */
   HyThreadLibrary * (PVMCALL port_get_thread_library) (struct HyPortLibrary * portLibrary);
 #endif /* HY_NO_THR */
+  void  (PVMCALL sock_fdset_zero)(struct HyPortLibrary *portLibrary, hyfdset_t fdset) ;
+  void  (PVMCALL sock_fdset_set)(struct HyPortLibrary *portLibrary, hysocket_t aSocket, hyfdset_t fdset) ;
   char _hypadding039C[4];       /* 4 bytes of automatic padding */
 } HyPortLibrary;
 #define HYPORT_SL_FOUND  0
@@ -1439,6 +1441,8 @@ extern HY_CFUNC I_32 VMCALL hyport_isCompatible (struct HyPortLibraryVersion
 #define hymem_allocate_memory(param1) privatePortLibrary->mem_allocate_memory_callSite(privatePortLibrary,param1, HY_GET_CALLSITE())
 #undef hymem_allocate_code_memory
 #define hymem_allocate_code_memory(param1) privatePortLibrary->mem_allocate_code_memory_callSite(privatePortLibrary,param1, HY_GET_CALLSITE())
+#define hysock_fdset_zero(param1) privatePortLibrary->sock_fdset_zero(privatePortLibrary,param1)
+#define hysock_fdset_set(param1,param2) privatePortLibrary->sock_fdset_set(privatePortLibrary,param1,param2)
 #endif /* !HYPORT_LIBRARY_DEFINE */
 /** @} */
 

@@ -50,7 +50,7 @@ extern "C"
     UDATA flags;
     UDATA userData;
     struct HyThreadMonitorTracing *tracing;
-    char *name;
+    const char *name;
     UDATA pinCount;
     UDATA antiDeflationCount;
     UDATA proDeflationCount;

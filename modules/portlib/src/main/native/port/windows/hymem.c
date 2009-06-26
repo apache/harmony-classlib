@@ -191,7 +191,7 @@ hymem_startup (struct HyPortLibrary *portLibrary, UDATA portGlobalSize)
  */
 void *VMCALL
 hymem_allocate_memory_callSite (struct HyPortLibrary *portLibrary,
-				UDATA byteAmount, char *callSite)
+				UDATA byteAmount, const char *callSite)
 {
   void *ptr = NULL;
 
