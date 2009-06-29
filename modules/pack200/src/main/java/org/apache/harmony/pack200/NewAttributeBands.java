@@ -425,7 +425,7 @@ public class NewAttributeBands extends BandSet {
         }
 
         public void pack(OutputStream out) throws IOException, Pack200Exception {
-            out.write(encodeBandInt(tag, listToArray(band), defaultCodec));
+            out.write(encodeBandInt(tag, integerListToArray(band), defaultCodec));
         }
 
         public int latestValue() {

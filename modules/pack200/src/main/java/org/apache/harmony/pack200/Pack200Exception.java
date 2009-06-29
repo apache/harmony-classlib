@@ -24,7 +24,7 @@ public class Pack200Exception extends Exception {
     private static final long serialVersionUID = 5168177401552611803L;
 
     /**
-     * Create a new Pack200 exception with the given message and cause
+     * Create a new Pack200 exception with the given message
      *
      * @param message
      *            the text message to display
@@ -46,7 +46,7 @@ public class Pack200Exception extends Exception {
     }
 
     /**
-     * Create a new Pack200 exception with the given message and cause
+     * Create a new Pack200 exception with the given cause
      *
      * @param cause
      *            the {@link Throwable} that caused this problem

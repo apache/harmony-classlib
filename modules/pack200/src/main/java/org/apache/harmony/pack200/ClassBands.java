@@ -627,11 +627,11 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("codeHandlerCount",
                 codeHandlerCount.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("codeHandlerStartP",
-                listToArray(codeHandlerStartP), Codec.BCI5));
+                integerListToArray(codeHandlerStartP), Codec.BCI5));
         out.write(encodeBandInt("codeHandlerEndPO",
-                listToArray(codeHandlerEndPO), Codec.BRANCH5));
+                integerListToArray(codeHandlerEndPO), Codec.BRANCH5));
         out.write(encodeBandInt("codeHandlerCatchPO",
-                listToArray(codeHandlerCatchPO), Codec.BRANCH5));
+                integerListToArray(codeHandlerCatchPO), Codec.BRANCH5));
         out.write(encodeBandInt("codeHandlerClass",
                 cpEntryOrNullListToArray(codeHandlerClass), Codec.UNSIGNED5));
         writeCodeAttributeBands(out);
@@ -649,15 +649,15 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("code_LineNumberTable_N",
                 codeLineNumberTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LineNumberTable_bci_P",
-                listToArray(codeLineNumberTableBciP), Codec.BCI5));
+                integerListToArray(codeLineNumberTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LineNumberTable_line",
                 codeLineNumberTableLine.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTable_N",
                 codeLocalVariableTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTable_bci_P",
-                listToArray(codeLocalVariableTableBciP), Codec.BCI5));
+                integerListToArray(codeLocalVariableTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LocalVariableTable_span_O",
-                listToArray(codeLocalVariableTableSpanO), Codec.BRANCH5));
+                integerListToArray(codeLocalVariableTableSpanO), Codec.BRANCH5));
         out.write(encodeBandInt("code_LocalVariableTable_name_RU",
                 cpEntryListToArray(codeLocalVariableTableNameRU),
                 Codec.UNSIGNED5));
@@ -669,9 +669,9 @@ public class ClassBands extends BandSet {
         out.write(encodeBandInt("code_LocalVariableTypeTable_N",
                 codeLocalVariableTypeTableN.toArray(), Codec.UNSIGNED5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_bci_P",
-                listToArray(codeLocalVariableTypeTableBciP), Codec.BCI5));
+                integerListToArray(codeLocalVariableTypeTableBciP), Codec.BCI5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_span_O",
-                listToArray(codeLocalVariableTypeTableSpanO), Codec.BRANCH5));
+                integerListToArray(codeLocalVariableTypeTableSpanO), Codec.BRANCH5));
         out.write(encodeBandInt("code_LocalVariableTypeTable_name_RU",
                 cpEntryListToArray(codeLocalVariableTypeTableNameRU),
                 Codec.UNSIGNED5));

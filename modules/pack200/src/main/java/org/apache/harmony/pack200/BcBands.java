@@ -109,7 +109,7 @@ public class BcBands extends BandSet {
         out.write(encodeBandInt("bcLocal", bcLocal.toArray(),
                 Codec.UNSIGNED5));
         out
-                .write(encodeBandInt("bcLabel", listToArray(bcLabel),
+                .write(encodeBandInt("bcLabel", integerListToArray(bcLabel),
                         Codec.BRANCH5));
         out.write(encodeBandInt("bcIntref", cpEntryListToArray(bcIntref),
                 Codec.DELTA5));
@@ -129,15 +129,15 @@ public class BcBands extends BandSet {
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("bcIMethodRef",
                 cpEntryListToArray(bcIMethodRef), Codec.DELTA5));
-        out.write(encodeBandInt("bcThisField", listToArray(bcThisField),
+        out.write(encodeBandInt("bcThisField", integerListToArray(bcThisField),
                 Codec.UNSIGNED5));
-        out.write(encodeBandInt("bcSuperField", listToArray(bcSuperField),
+        out.write(encodeBandInt("bcSuperField", integerListToArray(bcSuperField),
                 Codec.UNSIGNED5));
-        out.write(encodeBandInt("bcThisMethod", listToArray(bcThisMethod),
+        out.write(encodeBandInt("bcThisMethod", integerListToArray(bcThisMethod),
                 Codec.UNSIGNED5));
         out.write(encodeBandInt("bcSuperMethod",
-                listToArray(bcSuperMethod), Codec.UNSIGNED5));
-        out.write(encodeBandInt("bcInitRef", listToArray(bcInitRef),
+                integerListToArray(bcSuperMethod), Codec.UNSIGNED5));
+        out.write(encodeBandInt("bcInitRef", integerListToArray(bcInitRef),
                 Codec.UNSIGNED5));
         // out.write(encodeBandInt(cpEntryListToArray(bcEscRef),
         // Codec.UNSIGNED5));

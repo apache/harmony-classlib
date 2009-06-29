@@ -42,8 +42,9 @@ public class PopulationCodec extends Codec {
     }
 
     public PopulationCodec(Codec favouredCodec, int l, Codec unfavouredCodec) {
-        if (l >= 256 || l <= 0)
+        if (l >= 256 || l <= 0) {
             throw new IllegalArgumentException("L must be between 1..255");
+        }
         this.favouredCodec = favouredCodec;
         this.l = l;
         this.unfavouredCodec = unfavouredCodec;
@@ -67,20 +68,23 @@ public class PopulationCodec extends Codec {
         // less
         int result[];
         // read table of favorites first
-        int smallest = Integer.MAX_VALUE;
+        int smallest = Integer.MAX_VALUE, absoluteSmallest;
         int last = 0;
-        int value = 0;
+        int value = 0, absoluteValue;
         int k = -1;
         while (true) {
             value = favouredCodec.decode(in, last);
-            if (k > -1 && (value == smallest || value == last))
+            if (k > -1 && (value == smallest || value == last)) {
                 break;
+            }
             favoured[++k] = value;
-            if (Math.abs(smallest) > Math.abs(value)) {
+            absoluteSmallest = Math.abs(smallest);
+            absoluteValue = Math.abs(value);
+            if (absoluteSmallest > absoluteValue) {
                 smallest = value;
-            } else if (Math.abs(smallest) == Math.abs(value)) {
+            } else if (absoluteSmallest == absoluteValue) {
                 // ensure that -X and +X -> +X
-                smallest = Math.abs(smallest);
+                smallest = absoluteSmallest;
             }
             last = value;
         }
@@ -92,15 +96,19 @@ public class PopulationCodec extends Codec {
             } else {
                 // if k >= 256, b >= 2
                 int b = 1;
-                while (++b < 5 && tokenCodec == null) {
-                    BHSDCodec codec = new BHSDCodec(b, 256 - l, 0);
-                    if (codec.encodes(k))
+                BHSDCodec codec = null;
+                while (++b < 5) {
+                    codec = new BHSDCodec(b, 256 - l, 0);
+                    if (codec.encodes(k)) {
                         tokenCodec = codec;
+                        break;
+                    }
                 }
-                if (tokenCodec == null)
+                if (tokenCodec == null) {
                     throw new Pack200Exception(
                             "Cannot calculate token codec from " + k + " and "
                                     + l);
+                }
             }
         }
         // read favorites
