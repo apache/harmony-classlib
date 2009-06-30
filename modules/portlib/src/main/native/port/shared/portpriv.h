@@ -1137,6 +1137,14 @@ extern HY_CFUNC HyThreadLibrary * VMCALL
   hyport_get_thread_library
 PROTOTYPE ((HyPortLibrary * portLib));
 #endif /* HY_NO_THR */
+struct HyPortLibrary;
+extern HY_CFUNC void VMCALL
+  hysock_fdset_zero
+PROTOTYPE ((struct HyPortLibrary * portLibrary, hyfdset_t fdset));
+struct HyPortLibrary;
+extern HY_CFUNC void VMCALL
+  hysock_fdset_set
+PROTOTYPE ((struct HyPortLibrary * portLibrary, hysocket_t aSocket, hyfdset_t fdset));
 static HyPortLibrary MasterPortLibraryTable = {
   {HYPORT_MAJOR_VERSION_NUMBER, HYPORT_MINOR_VERSION_NUMBER, 0, HYPORT_CAPABILITY_MASK},        /* portVersion */
   NULL,                         /* portGlobals */
@@ -1376,6 +1384,8 @@ hytty_startup,                /* tty_startup */
 #ifdef HY_NO_THR
   hyport_get_thread_library,    /* port_get_thread_library */
 #endif /* HY_NO_THR */
+  hysock_fdset_zero,
+  hysock_fdset_set,
 };
 #endif
 
