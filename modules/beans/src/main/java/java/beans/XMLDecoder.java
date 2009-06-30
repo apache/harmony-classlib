@@ -570,9 +570,6 @@ public class XMLDecoder {
 
     public XMLDecoder(InputStream inputStream, Object owner,
             ExceptionListener listener, ClassLoader cl) {
-        if (inputStream == null) {
-            throw new IllegalArgumentException("Input stream cannot be null"); //$NON-NLS-1$
-        }
         this.inputStream = inputStream;
         this.owner = owner;
         this.listener = (listener == null) ? new DefaultExceptionListener()
@@ -584,6 +581,9 @@ public class XMLDecoder {
      * Close the input stream of xml data.
      */
     public void close() {
+        if (inputStream == null) {
+            return;
+        }
         try {
             inputStream.close();
         } catch (Exception e) {
@@ -618,6 +618,9 @@ public class XMLDecoder {
      */
     @SuppressWarnings("nls")
     public Object readObject() {
+        if (inputStream == null) {
+            return null;
+        }
         if (saxHandler == null) {
             saxHandler = new SAXHandler();
             try {
