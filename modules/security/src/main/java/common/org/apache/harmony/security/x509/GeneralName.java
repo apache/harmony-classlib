@@ -580,7 +580,8 @@ public class GeneralName {
 
     /**
      * Checks the correctness of the string representation of DNS name.
-     * The correctness is checked as specified in RFC 1034 p. 10.
+     * The correctness is checked as specified in RFC 1034 p. 10, and modified
+     * by RFC 1123 (section 2.1).
      */
     public static void checkDNS(String dns) throws IOException {
         byte[] bytes = dns.toLowerCase().getBytes("UTF-8"); //$NON-NLS-1$
@@ -589,7 +590,11 @@ public class GeneralName {
         for (int i=0; i<bytes.length; i++) {
             byte ch = bytes[i];
             if (first_letter) {
-                if (ch > 'z' || ch < 'a') {
+                if ((bytes.length > 2) && (ch == '*') && (bytes[1] == '.')) {
+                    first_letter = false;
+                    continue;
+                }
+                if ((ch > 'z' || ch < 'a') && (ch < '0' || ch > '9')) {
                     throw new IOException(Messages.getString("security.184", //$NON-NLS-1$
                             (char)ch, dns));
                 }
