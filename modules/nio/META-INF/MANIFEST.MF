@@ -13,7 +13,6 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
- java.lang.ref,
  java.lang.reflect,
  java.net,
  java.nio.charset,
@@ -25,8 +24,7 @@ Import-Package: java.io,
  org.apache.harmony.luni.platform,
  org.apache.harmony.luni.util,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
- tests.support;hy_usage=test;resolution:=optional,
- tests.util;hy_usage=test;resolution:=optional
+ tests.support;hy_usage=test;resolution:=optional
 Export-Package: java.nio,
  java.nio.channels,
  java.nio.channels.spi,
