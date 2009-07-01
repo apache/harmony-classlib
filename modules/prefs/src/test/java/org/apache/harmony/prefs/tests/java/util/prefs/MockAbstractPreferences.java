@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 public class MockAbstractPreferences extends AbstractPreferences {
     static final int NORMAL = 0;
@@ -167,7 +168,15 @@ public class MockAbstractPreferences extends AbstractPreferences {
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         checkException();
-        ((MockAbstractPreferences) parent()).childs.remove(name());
+        Preferences p = parent();
+        if (p instanceof MockAbstractPreferences) {
+            ((MockAbstractPreferences) p).childs.remove(name());
+        } else {
+            String[] children = p.childrenNames();
+            for (String child : children) {
+                p.node(child).removeNode();
+            }
+        }
     }
 
     @Override

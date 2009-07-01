@@ -105,7 +105,9 @@ public class AbstractPreferencesTest extends TestCase {
                 ((MockAbstractPreferences) pref)
                 .setResult(MockAbstractPreferences.NORMAL);
             }
-            pref.removeNode();
+            // make sure remove it successfully
+            parent.node("mock").removeNode();
+
         } catch (Exception e) {
         }
         super.tearDown();

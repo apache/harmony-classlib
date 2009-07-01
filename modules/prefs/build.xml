@@ -188,7 +188,7 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-            forkmode="${hy.test.forkmode}"
+            forkmode="perBatch"
             timeout="${hy.test.timeout}"
             printsummary="withOutAndErr"
             errorproperty="test.errors"
@@ -219,8 +219,18 @@
                     <!-- unless ${test.case} -->
                     <include name="**/*Test.java" unless="test.case" />
                     <excludesfile name="${prefs.exclude.file}" unless="test.case" />
+
+                    <!--  These tests run in a separate jvm below -->
+                    <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.java" unless="test.case" />
                 </fileset>
             </batchtest>
+
+            <batchtest todir="${tests.output}" haltonfailure="no" unless="test.case" >
+                <fileset dir="${hy.prefs.src.test.java}">
+                    <include name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.java" />
+                </fileset>
+            </batchtest>
+
         </junit>
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
