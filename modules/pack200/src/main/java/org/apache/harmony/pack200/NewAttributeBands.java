@@ -425,7 +425,12 @@ public class NewAttributeBands extends BandSet {
         }
 
         public void pack(OutputStream out) throws IOException, Pack200Exception {
-            out.write(encodeBandInt(tag, integerListToArray(band), defaultCodec));
+            PackingUtils.log("Writing new attribute bands...");
+            byte[] encodedBand = encodeBandInt(tag, integerListToArray(band),
+                    defaultCodec);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + tag + "[" + band.size() + "]");
         }
 
         public int latestValue() {
@@ -687,7 +692,10 @@ public class NewAttributeBands extends BandSet {
             } else {
                 ints = cpEntryListToArray(band);
             }
-            out.write(encodeBandInt(tag, ints, Codec.UNSIGNED5));
+            byte[] encodedBand = encodeBandInt(tag, ints, Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + tag + "[" + ints.length + "]");
         }
 
         public void renumberBci(IntList bciRenumbering, Map labelsToOffsets) {

@@ -122,6 +122,7 @@ public class AttributeDefinitionBands extends BandSet {
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
+        PackingUtils.log("Writing attribute definition bands...");
         int[] attributeDefinitionHeader = new int[attributeDefinitions.size()];
         int[] attributeDefinitionName = new int[attributeDefinitions.size()];
         int[] attributeDefinitionLayout = new int[attributeDefinitions.size()];
@@ -134,12 +135,26 @@ public class AttributeDefinitionBands extends BandSet {
             attributeDefinitionLayout[i] = def.layout.getIndex();
         }
 
-        out.write(encodeBandInt("attributeDefinitionHeader",
-                attributeDefinitionHeader, Codec.BYTE1));
-        out.write(encodeBandInt("attributeDefinitionName",
-                attributeDefinitionName, Codec.UNSIGNED5));
-        out.write(encodeBandInt("attributeDefinitionLayout",
-                attributeDefinitionLayout, Codec.UNSIGNED5));
+        byte[] encodedBand = encodeBandInt("attributeDefinitionHeader",
+                attributeDefinitionHeader, Codec.BYTE1);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from attributeDefinitionHeader["
+                + attributeDefinitionHeader.length + "]");
+
+        encodedBand = encodeBandInt("attributeDefinitionName",
+                attributeDefinitionName, Codec.UNSIGNED5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from attributeDefinitionName["
+                + attributeDefinitionName.length + "]");
+
+        encodedBand = encodeBandInt("attributeDefinitionLayout",
+                attributeDefinitionLayout, Codec.UNSIGNED5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from attributeDefinitionLayout["
+                + attributeDefinitionLayout.length + "]");
     }
 
     private void addSyntheticDefinitions() {

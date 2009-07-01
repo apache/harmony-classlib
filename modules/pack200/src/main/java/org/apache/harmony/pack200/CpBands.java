@@ -84,6 +84,7 @@ public class CpBands extends BandSet {
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
+        PackingUtils.log("Writing constant pool bands...");
         writeCpUtf8(out);
         writeCpInt(out);
         writeCpFloat(out);
@@ -100,6 +101,7 @@ public class CpBands extends BandSet {
 
     private void writeCpUtf8(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Utf8.size() + " UTF8 entries...");
         int[] cpUtf8Prefix = new int[cp_Utf8.size() - 2];
         int[] cpUtf8Suffix = new int[cp_Utf8.size() - 1];
         List chars = new ArrayList();
@@ -149,14 +151,35 @@ public class CpBands extends BandSet {
                 cpUtf8BigChars[i][j] = ((Character) bigChars.remove(0)).charValue();
             }
         }
-        out.write(encodeBandInt("cpUtf8Prefix", cpUtf8Prefix, Codec.DELTA5));
-        out.write(encodeBandInt("cpUtf8Suffix", cpUtf8Suffix, Codec.UNSIGNED5));
-        out.write(encodeBandInt("cpUtf8Chars", cpUtf8Chars, Codec.CHAR3));
-        out.write(encodeBandInt("cpUtf8BigSuffix", cpUtf8BigSuffix,
-                Codec.DELTA5));
+        
+        byte[] encodedBand = encodeBandInt("cpUtf8Prefix", cpUtf8Prefix, Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpUtf8Prefix[" + cpUtf8Prefix.length + "]");
+        
+        encodedBand = encodeBandInt("cpUtf8Suffix", cpUtf8Suffix, Codec.UNSIGNED5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpUtf8Suffix[" + cpUtf8Suffix.length + "]");
+        
+        encodedBand = encodeBandInt("cpUtf8Chars", cpUtf8Chars, Codec.CHAR3);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpUtf8Chars[" + cpUtf8Chars.length + "]");
+        
+        encodedBand = encodeBandInt("cpUtf8BigSuffix", cpUtf8BigSuffix,
+                Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpUtf8BigSuffix[" + cpUtf8BigSuffix.length + "]");
+        
         for (int i = 0; i < cpUtf8BigChars.length; i++) {
-            out.write(encodeBandInt("cpUtf8BigChars " + i, cpUtf8BigChars[i],
-                        Codec.DELTA5));
+            encodedBand = encodeBandInt("cpUtf8BigChars " + i,
+                    cpUtf8BigChars[i], Codec.DELTA5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length
+                    + " bytes from cpUtf8BigChars" + i + "["
+                    + cpUtf8BigChars[i].length + "]");
         }
     }
 
@@ -168,6 +191,7 @@ public class CpBands extends BandSet {
 
     private void writeCpInt(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Int.size() + " Integer entries...");
         int[] cpInt = new int[cp_Int.size()];
         int i = 0;
         for (Iterator iterator = cp_Int.iterator(); iterator.hasNext();) {
@@ -175,11 +199,15 @@ public class CpBands extends BandSet {
             cpInt[i] = integer.getInt();
             i++;
         }
-        out.write(encodeBandInt("cp_Int", cpInt, Codec.UDELTA5));
+        byte[] encodedBand = encodeBandInt("cp_Int", cpInt, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Int[" + cpInt.length + "]");
     }
 
     private void writeCpFloat(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Float.size() + " Float entries...");
         int[] cpFloat = new int[cp_Float.size()];
         int i = 0;
         for (Iterator iterator = cp_Float.iterator(); iterator.hasNext();) {
@@ -187,11 +215,15 @@ public class CpBands extends BandSet {
             cpFloat[i] = Float.floatToIntBits(fl.getFloat());
             i++;
         }
-        out.write(encodeBandInt("cp_Float", cpFloat, Codec.UDELTA5));
+        byte[] encodedBand = encodeBandInt("cp_Float", cpFloat, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Float[" + cpFloat.length + "]");
     }
 
     private void writeCpLong(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Long.size() + " Long entries...");
         int[] highBits = new int[cp_Long.size()];
         int[] loBits = new int[cp_Long.size()];
         int i = 0;
@@ -202,12 +234,20 @@ public class CpBands extends BandSet {
             loBits[i] = (int) l;
             i++;
         }
-        out.write(encodeBandInt("cp_Long_hi", highBits, Codec.UDELTA5));
-        out.write(encodeBandInt("cp_Long_lo", loBits, Codec.DELTA5));
+        byte[] encodedBand = encodeBandInt("cp_Long_hi", highBits, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Long_hi[" + highBits.length + "]");
+        
+        encodedBand = encodeBandInt("cp_Long_lo", loBits, Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Long_lo[" + loBits.length + "]");
     }
 
     private void writeCpDouble(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Double.size() + " Double entries...");
         int[] highBits = new int[cp_Double.size()];
         int[] loBits = new int[cp_Double.size()];
         int i = 0;
@@ -218,12 +258,20 @@ public class CpBands extends BandSet {
             loBits[i] = (int) l;
             i++;
         }
-        out.write(encodeBandInt("cp_Double_hi", highBits, Codec.UDELTA5));
-        out.write(encodeBandInt("cp_Double_lo", loBits, Codec.DELTA5));
+        byte[] encodedBand = encodeBandInt("cp_Double_hi", highBits, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Double_hi[" + highBits.length + "]");
+        
+        encodedBand = encodeBandInt("cp_Double_lo", loBits, Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Double_lo[" + loBits.length + "]");
     }
 
     private void writeCpString(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_String.size() + " String entries...");
         int[] cpString = new int[cp_String.size()];
         int i = 0;
         for (Iterator iterator = cp_String.iterator(); iterator.hasNext();) {
@@ -231,11 +279,15 @@ public class CpBands extends BandSet {
             cpString[i] = cpStr.getIndexInCpUtf8();
             i++;
         }
-        out.write(encodeBandInt("cpString", cpString, Codec.UDELTA5));
+        byte[] encodedBand = encodeBandInt("cpString", cpString, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpString[" + cpString.length + "]");
     }
 
     private void writeCpClass(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Class.size() + " Class entries...");
         int[] cpClass = new int[cp_Class.size()];
         int i = 0;
         for (Iterator iterator = cp_Class.iterator(); iterator.hasNext();) {
@@ -243,11 +295,15 @@ public class CpBands extends BandSet {
             cpClass[i] = cpCl.getIndexInCpUtf8();
             i++;
         }
-        out.write(encodeBandInt("cpClass", cpClass, Codec.UDELTA5));
+        byte[] encodedBand = encodeBandInt("cpClass", cpClass, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpClass[" + cpClass.length + "]");
     }
 
     private void writeCpSignature(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Signature.size() + " Signature entries...");
         int[] cpSignatureForm = new int[cp_Signature.size()];
         List classes = new ArrayList();
         int i = 0;
@@ -261,14 +317,24 @@ public class CpBands extends BandSet {
         for (int j = 0; j < cpSignatureClasses.length; j++) {
             cpSignatureClasses[j] = ((CPClass) classes.get(j)).getIndex();
         }
-        out.write(encodeBandInt("cpSignatureForm", cpSignatureForm,
-                Codec.DELTA5));
-        out.write(encodeBandInt("cpSignatureClasses", cpSignatureClasses,
-                Codec.UDELTA5));
+        
+        byte[] encodedBand = encodeBandInt("cpSignatureForm", cpSignatureForm,
+                Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpSignatureForm[" + cpSignatureForm.length + "]");
+        
+        encodedBand = encodeBandInt("cpSignatureClasses", cpSignatureClasses,
+                Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cpSignatureClasses[" + cpSignatureClasses.length + "]");
     }
 
     private void writeCpDescr(OutputStream out) throws IOException,
             Pack200Exception {
+        PackingUtils.log("Writing " + cp_Descr.size()
+                + " Descriptor entries...");
         int[] cpDescrName = new int[cp_Descr.size()];
         int[] cpDescrType = new int[cp_Descr.size()];
         int i = 0;
@@ -278,12 +344,23 @@ public class CpBands extends BandSet {
             cpDescrType[i] = nameAndType.getTypeIndex();
             i++;
         }
-        out.write(encodeBandInt("cp_Descr_Name", cpDescrName, Codec.DELTA5));
-        out.write(encodeBandInt("cp_Descr_Type", cpDescrType, Codec.UDELTA5));
+
+        byte[] encodedBand = encodeBandInt("cp_Descr_Name", cpDescrName,
+                Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Descr_Name[" + cpDescrName.length + "]");
+
+        encodedBand = encodeBandInt("cp_Descr_Type", cpDescrType, Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from cp_Descr_Type[" + cpDescrType.length + "]");
     }
 
     private void writeCpMethodOrField(Set cp, OutputStream out, String name)
             throws IOException, Pack200Exception {
+        PackingUtils.log("Writing " + cp.size()
+                + " Method and Field entries...");
         int[] cp_methodOrField_class = new int[cp.size()];
         int[] cp_methodOrField_desc = new int[cp.size()];
         int i = 0;
@@ -293,10 +370,17 @@ public class CpBands extends BandSet {
             cp_methodOrField_desc[i] = mOrF.getDescIndex();
             i++;
         }
-        out.write(encodeBandInt(name + "_class",
-                cp_methodOrField_class, Codec.DELTA5));
-        out.write(encodeBandInt(name + "_desc", cp_methodOrField_desc,
-                Codec.UDELTA5));
+        byte[] encodedBand = encodeBandInt(name + "_class",
+                cp_methodOrField_class, Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                + name + "_class[" + cp_methodOrField_class.length + "]");
+
+        encodedBand = encodeBandInt(name + "_desc", cp_methodOrField_desc,
+                Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                + name + "_desc[" + cp_methodOrField_desc.length + "]");
     }
 
     /**

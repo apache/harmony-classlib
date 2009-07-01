@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Archive.File;
+import org.apache.harmony.pack200.Archive.SegmentUnit;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -52,7 +53,7 @@ public class Segment implements ClassVisitor {
     private PackingOptions options;
     private boolean stripDebug;
     private Attribute[] nonStandardAttributePrototypes;
-
+    
     /**
      * The main method on Segment. Reads in all the class files, packs them and
      * then writes the packed segment out to the given OutputStream.
@@ -69,23 +70,41 @@ public class Segment implements ClassVisitor {
      * @throws IOException
      * @throws Pack200Exception
      */
-    public void pack(List classes, List files, OutputStream out, PackingOptions options)
+    public void pack(SegmentUnit segmentUnit, OutputStream out, PackingOptions options)
             throws IOException, Pack200Exception {
         this.options = options;
         this.stripDebug = options.isStripDebug();
         int effort = options.getEffort();
         nonStandardAttributePrototypes = options.getUnknownAttributePrototypes();
+        
+        PackingUtils.log("Start to pack a new segment with "
+                + segmentUnit.fileListSize() + " files including "
+                + segmentUnit.classListSize() + " classes");
+        
+        PackingUtils.log("Initialize a header for the segment");
         segmentHeader = new SegmentHeader();
-        segmentHeader.setFile_count(files.size());
+        segmentHeader.setFile_count(segmentUnit.fileListSize());
         segmentHeader.setHave_all_code_flags(!stripDebug);
+        
+        PackingUtils.log("Setup constant pool bands for the segment");
         cpBands = new CpBands(this, effort);
+        
+        PackingUtils.log("Setup attribute definition bands for the segment");
         attributeDefinitionBands = new AttributeDefinitionBands(this, effort, nonStandardAttributePrototypes);
+        
+        PackingUtils.log("Setup internal class bands for the segment");
         icBands = new IcBands(segmentHeader, cpBands, effort);
-        classBands = new ClassBands(this, classes.size(), effort, stripDebug);
+        
+        PackingUtils.log("Setup class bands for the segment");
+        classBands = new ClassBands(this, segmentUnit.classListSize(), effort, stripDebug);
+        
+        PackingUtils.log("Setup byte code bands for the segment");
         bcBands = new BcBands(cpBands, this, effort);
-        fileBands = new FileBands(cpBands, segmentHeader, options, files, classes, effort);
+        
+        PackingUtils.log("Setup file bands for the segment");
+        fileBands = new FileBands(cpBands, segmentHeader, options, segmentUnit, effort);
 
-        processClasses(classes, files);
+        processClasses(segmentUnit);
 
         cpBands.finaliseBands();
         attributeDefinitionBands.finaliseBands();
@@ -98,22 +117,35 @@ public class Segment implements ClassVisitor {
         // before segmentHeader because the band_headers band is only created
         // when the other bands are packed, but comes before them in the packed
         // file.
-        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream bandsOutputStream = new ByteArrayOutputStream();
 
-        cpBands.pack(tempStream);
-        attributeDefinitionBands.pack(tempStream);
-        icBands.pack(tempStream);
-        classBands.pack(tempStream);
-        bcBands.pack(tempStream);
-        fileBands.pack(tempStream);
+        PackingUtils.log("Packing...");
+        cpBands.pack(bandsOutputStream);
+        attributeDefinitionBands.pack(bandsOutputStream);
+        icBands.pack(bandsOutputStream);
+        classBands.pack(bandsOutputStream);
+        bcBands.pack(bandsOutputStream);
+        fileBands.pack(bandsOutputStream);
 
-        segmentHeader.pack(out);
-        tempStream.writeTo(out);
+        ByteArrayOutputStream headerOutputStream = new ByteArrayOutputStream();
+        segmentHeader.pack(headerOutputStream);
+
+        headerOutputStream.writeTo(out);
+        bandsOutputStream.writeTo(out);
+        
+        segmentUnit.addPackedByteAmount(headerOutputStream.size());
+        segmentUnit.addPackedByteAmount(bandsOutputStream.size());
+        
+        PackingUtils.log("Wrote total of " + segmentUnit.getPackedByteAmount()
+                + " bytes");
+        PackingUtils.log("Transmitted " + segmentUnit.fileListSize() + " files of "
+                + segmentUnit.getByteAmount() + " input bytes in a segment of "
+                + segmentUnit.getPackedByteAmount() + " bytes");
     }
 
-    private void processClasses(List classes, List files) throws Pack200Exception {
-        segmentHeader.setClass_count(classes.size());
-        for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
+    private void processClasses(SegmentUnit segmentUnit) throws Pack200Exception {
+        segmentHeader.setClass_count(segmentUnit.classListSize());
+        for (Iterator iterator = segmentUnit.getClassList().iterator(); iterator.hasNext();) {
             Pack200ClassReader classReader = (Pack200ClassReader) iterator
                     .next();
             currentClassReader = classReader;
@@ -129,7 +161,7 @@ public class Segment implements ClassVisitor {
                 classBands.removeCurrentClass();
                 String name = classReader.getFileName();
                 boolean found = false;
-                for (Iterator iterator2 = files.iterator(); iterator2
+                for (Iterator iterator2 = segmentUnit.getFileList().iterator(); iterator2
                         .hasNext();) {
                     File file = (File) iterator2.next();
                     if(file.getName().equals(name)) {

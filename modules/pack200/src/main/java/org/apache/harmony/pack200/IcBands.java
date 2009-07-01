@@ -53,6 +53,7 @@ public class IcBands extends BandSet {
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
+        PackingUtils.log("Writing internal class bands...");
         int[] ic_this_class = new int[innerClasses.size()];
         int[] ic_flags = new int[innerClasses.size()];
         int[] ic_outer_class = new int[bit16Count];
@@ -70,10 +71,27 @@ public class IcBands extends BandSet {
                 index2++;
             }
         }
-        out.write(encodeBandInt("ic_this_class", ic_this_class, Codec.UDELTA5));
-        out.write(encodeBandInt("ic_flags", ic_flags, Codec.UNSIGNED5));
-        out.write(encodeBandInt("ic_outer_class", ic_outer_class, Codec.DELTA5));
-        out.write(encodeBandInt("ic_name", ic_name, Codec.DELTA5));
+        byte[] encodedBand = encodeBandInt("ic_this_class", ic_this_class,
+                Codec.UDELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from ic_this_class[" + ic_this_class.length + "]");
+
+        encodedBand = encodeBandInt("ic_flags", ic_flags, Codec.UNSIGNED5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from ic_flags[" + ic_flags.length + "]");
+
+        encodedBand = encodeBandInt("ic_outer_class", ic_outer_class,
+                Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from ic_outer_class[" + ic_outer_class.length + "]");
+
+        encodedBand = encodeBandInt("ic_name", ic_name, Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from ic_name[" + ic_name.length + "]");
     }
 
     public void addInnerClass(String name, String outerName, String innerName,
