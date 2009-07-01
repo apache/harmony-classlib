@@ -220,7 +220,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, test-jar, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, test-jar, run-tests" />
 
     <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
