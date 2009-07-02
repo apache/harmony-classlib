@@ -315,7 +315,7 @@
             </manifest>
         </jar>
 
-        <copy todir="${tests.hdk.dir}">
+        <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="${hy.luni.src.test.resources}" >
                 <include name="org/**/*"/>
             </fileset>
