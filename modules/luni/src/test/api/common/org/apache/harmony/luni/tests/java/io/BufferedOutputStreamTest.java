@@ -673,7 +673,7 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
     public void test_write_Scenario1() throws IOException {
         ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
         ByteArrayInputStream byteArrayis = null;
-        byte[] buffer = "1234567890".getBytes();
+        byte[] buffer = "1234567890".getBytes("UTF-8");
 
         BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 10);
         buffos.write(buffer, 0, 10);
@@ -722,7 +722,7 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
     public void test_write_Scenario2() throws IOException {
         ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
         ByteArrayInputStream byteArrayis = null;
-        byte[] buffer = "1234567890".getBytes();
+        byte[] buffer = "1234567890".getBytes("UTF-8");
 
         BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 20);
         buffos.write(buffer, 0, 10);
@@ -783,7 +783,7 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
     public void test_write_Scenario3() throws IOException {
         ByteArrayOutputStream byteArrayos = new ByteArrayOutputStream();
         ByteArrayInputStream byteArrayis = null;
-        byte[] buffer = "1234567890".getBytes();
+        byte[] buffer = "1234567890".getBytes("UTF-8");
 
         BufferedOutputStream buffos = new BufferedOutputStream(byteArrayos, 5);
         buffos.write(buffer, 0, 4);
