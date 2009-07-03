@@ -22,8 +22,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
-import org.apache.harmony.pack200.Archive.File;
+import org.apache.harmony.pack200.Archive.PackingFile;
 import org.apache.harmony.pack200.Archive.SegmentUnit;
 import org.objectweb.asm.ClassReader;
 
@@ -45,7 +46,7 @@ public class FileBands extends BandSet {
             PackingOptions options, SegmentUnit segmentUnit, int effort) {
         super(effort, segmentHeader);
         List fileList = segmentUnit.getFileList();
-        int size =  fileList.size();
+        int size = fileList.size();
         fileName = new CPUTF8[size];
         file_modtime = new int[size];
         file_size = new long[size];
@@ -55,30 +56,48 @@ public class FileBands extends BandSet {
         int archiveModtime = segmentHeader.getArchive_modtime();
 
         Set classNames = new HashSet();
-        for (Iterator iterator = segmentUnit.getClassList().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = segmentUnit.getClassList().iterator(); iterator
+                .hasNext();) {
             ClassReader reader = (ClassReader) iterator.next();
             classNames.add(reader.getClassName());
         }
         CPUTF8 emptyString = cpBands.getCPUtf8("");
+        long modtime;
+        int latestModtime = Integer.MIN_VALUE;
+        boolean isLatest = !PackingOptions.KEEP.equals(options
+                .getModificationTime());
         for (int i = 0; i < size; i++) {
-             File file = (File)fileList.get(i);
-             String name = file.getName();
-             if(name.endsWith(".class") && !options.isPassFile(name)) {
-                 file_options[i] |= (1 << 1);
-                 if(classNames.contains(name.substring(0, name.length() - 6))) {
-                     fileName[i] = emptyString;
-                 } else {
-                     fileName[i] = cpBands.getCPUtf8(name);
-                 }
-             } else {
-                 fileName[i] = cpBands.getCPUtf8(name);
-             }
-             byte[] bytes = file.getContents();
-             file_size[i] = bytes.length;
-             totalSize += file_size[i];
-             file_modtime[i] = (int)(file.getModtime() - archiveModtime);
-             file_bits[i] = file.getContents();
-         }
+            PackingFile file = (PackingFile) fileList.get(i);
+            String name = file.getName();
+            if (name.endsWith(".class") && !options.isPassFile(name)) {
+                file_options[i] |= (1 << 1);
+                if (classNames.contains(name.substring(0, name.length() - 6))) {
+                    fileName[i] = emptyString;
+                } else {
+                    fileName[i] = cpBands.getCPUtf8(name);
+                }
+            } else {
+                fileName[i] = cpBands.getCPUtf8(name);
+            }
+            byte[] bytes = file.getContents();
+            file_size[i] = bytes.length;
+            totalSize += file_size[i];
+
+            // update modification time
+            modtime = (file.getModtime() + TimeZone.getDefault().getRawOffset()) / 1000L;
+            file_modtime[i] = (int) (modtime - archiveModtime);
+            if (isLatest && latestModtime < file_modtime[i]) {
+                latestModtime = file_modtime[i];
+            }
+
+            file_bits[i] = file.getContents();
+        }
+
+        if (isLatest) {
+            for (int index = 0; index < size; index++) {
+                file_modtime[index] = latestModtime;
+            }
+        }
     }
 
     /**

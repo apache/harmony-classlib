@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.pack200.Archive.File;
+import org.apache.harmony.pack200.Archive.PackingFile;
 import org.apache.harmony.pack200.Archive.SegmentUnit;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -163,7 +163,7 @@ public class Segment implements ClassVisitor {
                 boolean found = false;
                 for (Iterator iterator2 = segmentUnit.getFileList().iterator(); iterator2
                         .hasNext();) {
-                    File file = (File) iterator2.next();
+                    PackingFile file = (PackingFile) iterator2.next();
                     if(file.getName().equals(name)) {
                         found = true;
                         file.setContents(classReader.b);

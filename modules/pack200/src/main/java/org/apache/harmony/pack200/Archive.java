@@ -113,7 +113,7 @@ public class Archive {
                     PackingUtils.log("Pack META-INF/MANIFEST.MF");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     manifest.write(baos);
-                    files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
+                    files.add(new PackingFile("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
                 }
                 JarEntry jarEntry = inputStream.getNextJarEntry();
                 while (jarEntry != null) {
@@ -274,7 +274,7 @@ public class Archive {
             javaClasses.add(classParser);
             bytes = new byte[0];
         }
-        files.add(new File(name, bytes, jarEntry.getTime()));
+        files.add(new PackingFile(name, bytes, jarEntry.getTime()));
         return true;
     }
 
@@ -313,9 +313,9 @@ public class Archive {
                 byteAmount += classReader.b.length;
             }
 
-            File file;
+            PackingFile file;
             for (Iterator iterator = fileList.iterator(); iterator.hasNext();) {
-                file = (File) iterator.next();
+                file = (PackingFile) iterator.next();
                 byteAmount += file.contents.length;
             }
         }
@@ -349,13 +349,13 @@ public class Archive {
         }
     }
 
-    static class File {
+    static class PackingFile {
 
         private final String name;
         private byte[] contents;
         private final long modtime;
 
-        public File(String name, byte[] contents, long modtime) {
+        public PackingFile(String name, byte[] contents, long modtime) {
             this.name = name;
             this.contents = contents;
             this.modtime = modtime;
