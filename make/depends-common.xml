@@ -25,7 +25,9 @@
     where possible.
     </description>
 
-    <loadproperties srcfile="${basedir}/make/depends.properties">
+    <!-- temporary workaround for Ant bug 47382 - to be removed when that is resolved and released -->
+    <copy file="${basedir}/make/depends.properties" tofile="${basedir}/make/depends.properties.ascii" outputencoding="ISO-8859-1" />
+    <loadproperties srcfile="${basedir}/make/depends.properties.ascii" encoding="ISO-8859-1">
       <filterchain>
         <filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
             <param type="token" name="${hy.arch}" value=""/>
@@ -35,6 +37,7 @@
         </filterreader>
       </filterchain>
     </loadproperties>
+    <delete file="${basedir}/make/depends.properties.ascii" />
 
     <macrodef name="download-one-file">
         <attribute name="src" />

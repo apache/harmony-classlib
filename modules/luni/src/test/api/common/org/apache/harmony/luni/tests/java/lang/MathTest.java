@@ -378,6 +378,20 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect double max value", -2.0, Math.max(-2.0,
 				-1908897.6000089), 0D);
 
+		// Compare toString representations here since -0.0 = +0.0, and
+		// NaN != NaN and we need to distinguish
+        assertEquals("Max failed for NaN",
+                Double.toString(Double.NaN), Double.toString(Math.max(Double.NaN, 42.0d)));
+        assertEquals("Max failed for NaN",
+                Double.toString(Double.NaN), Double.toString(Math.max(42.0d, Double.NaN)));
+        assertEquals("Max failed for 0.0",
+                Double.toString(+0.0d), Double.toString(Math.max(+0.0d, -0.0d)));
+        assertEquals("Max failed for 0.0",
+                Double.toString(+0.0d), Double.toString(Math.max(-0.0d, +0.0d)));
+        assertEquals("Max failed for -0.0d",
+                Double.toString(-0.0d), Double.toString(Math.max(-0.0d, -0.0d)));
+        assertEquals("Max failed for 0.0",
+                Double.toString(+0.0d), Double.toString(Math.max(+0.0d, +0.0d)));
 	}
 
 	/**
@@ -391,6 +405,21 @@ public class MathTest extends junit.framework.TestCase {
 				Math.max(2.0f, 1908897.600f) == 1908897.600f);
 		assertTrue("Incorrect float max value",
 				Math.max(-2.0f, -1908897.600f) == -2.0f);
+		
+	    // Compare toString representations here since -0.0 = +0.0, and
+        // NaN != NaN and we need to distinguish
+        assertEquals("Max failed for NaN",
+                Float.toString(Float.NaN), Float.toString(Math.max(Float.NaN, 42.0f)));
+        assertEquals("Max failed for NaN",
+                Float.toString(Float.NaN), Float.toString(Math.max(42.0f, Float.NaN)));
+        assertEquals("Max failed for 0.0",
+                Float.toString(+0.0f), Float.toString(Math.max(+0.0f, -0.0f)));
+        assertEquals("Max failed for 0.0",
+                Float.toString(+0.0f), Float.toString(Math.max(-0.0f, +0.0f)));
+        assertEquals("Max failed for -0.0f",
+                Float.toString(-0.0f), Float.toString(Math.max(-0.0f, -0.0f)));
+        assertEquals("Max failed for 0.0",
+                Float.toString(+0.0f), Float.toString(Math.max(+0.0f, +0.0f)));
 	}
 
 	/**
@@ -429,6 +458,21 @@ public class MathTest extends junit.framework.TestCase {
 				2.0, Math.min(2.0, 1908897.6000089), 0D);
 		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-2.0,
 				-1908897.6000089), 0D);
+		
+	    // Compare toString representations here since -0.0 = +0.0, and
+        // NaN != NaN and we need to distinguish
+        assertEquals("Min failed for NaN",
+                Double.toString(Double.NaN), Double.toString(Math.min(Double.NaN, 42.0d)));
+        assertEquals("Min failed for NaN",
+                Double.toString(Double.NaN), Double.toString(Math.min(42.0d, Double.NaN)));
+        assertEquals("Min failed for -0.0",
+                Double.toString(-0.0d), Double.toString(Math.min(+0.0d, -0.0d)));
+        assertEquals("Min failed for -0.0",
+                Double.toString(-0.0d), Double.toString(Math.min(-0.0d, +0.0d)));
+        assertEquals("Min failed for -0.0d",
+                Double.toString(-0.0d), Double.toString(Math.min(-0.0d, -0.0d)));
+        assertEquals("Min failed for 0.0",
+                Double.toString(+0.0d), Double.toString(Math.min(+0.0d, +0.0d)));
 	}
 
 	/**
@@ -442,6 +486,21 @@ public class MathTest extends junit.framework.TestCase {
 				Math.min(2.0f, 1908897.600f) == 2.0f);
 		assertTrue("Incorrect float min value",
 				Math.min(-2.0f, -1908897.600f) == -1908897.600f);
+		
+        // Compare toString representations here since -0.0 = +0.0, and
+        // NaN != NaN and we need to distinguish
+        assertEquals("Min failed for NaN",
+                Float.toString(Float.NaN), Float.toString(Math.min(Float.NaN, 42.0f)));
+        assertEquals("Min failed for NaN",
+                Float.toString(Float.NaN), Float.toString(Math.min(42.0f, Float.NaN)));
+        assertEquals("Min failed for -0.0",
+                Float.toString(-0.0f), Float.toString(Math.min(+0.0f, -0.0f)));
+        assertEquals("Min failed for -0.0",
+                Float.toString(-0.0f), Float.toString(Math.min(-0.0f, +0.0f)));
+        assertEquals("Min failed for -0.0f",
+                Float.toString(-0.0f), Float.toString(Math.min(-0.0f, -0.0f)));
+        assertEquals("Min failed for 0.0",
+                Float.toString(+0.0f), Float.toString(Math.min(+0.0f, +0.0f)));
 	}
 
 	/**

@@ -308,7 +308,7 @@ public class Rdn implements Serializable, Comparable<Object> {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Iterator<Attribute> iter = list.iterator(); iter.hasNext();) {
             Attribute element = iter.next();
             NamingEnumeration<?> ne = null;

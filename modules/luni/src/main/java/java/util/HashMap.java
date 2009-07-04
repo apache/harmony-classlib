@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Proxy;
 
 /**
  * HashMap is an implementation of Map. All optional operations (adding and
@@ -480,8 +481,16 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     final Entry<K,V> findNonNullKeyEntry(Object key, int index, int keyHash) {
         Entry<K,V> m = elementData[index];
-        while (m != null && (m.origKeyHash != keyHash || !areEqualKeys(key, m.key))) {
-            m = m.next;
+        // To support proxy instance as keys
+        if (Proxy.isProxyClass(key.getClass())) {
+            while (m != null && (m.origKeyHash != keyHash || key != m.key)) {
+                m = m.next;
+            }
+        } else {
+            while (m != null
+                    && (m.origKeyHash != keyHash || !key.equals(m.key))) {
+                m = m.next;
+            }
         }
         return m;
     }

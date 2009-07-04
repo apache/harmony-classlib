@@ -162,6 +162,9 @@ public final class String implements Serializable, Comparable<String>,
         count = 0;
     }
 
+    /*
+     * Private constructor used for JIT optimization.
+     */
     @SuppressWarnings("unused")
     private String(String s, char c) {
         offset = 0;
@@ -410,6 +413,47 @@ public final class String implements Serializable, Comparable<String>,
         value = string.value;
         offset = string.offset;
         count = string.count;
+    }
+
+    /*
+     * Private constructor useful for JIT optimization.
+     */
+    @SuppressWarnings( { "unused", "nls" })
+    private String(String s1, String s2) {
+        if (s1 == null) {
+            s1 = "null";
+        }
+        if (s2 == null) {
+            s2 = "null";
+        }
+        count = s1.count + s2.count;
+        value = new char[count];
+        offset = 0;
+        System.arraycopy(s1.value, s1.offset, value, 0, s1.count);
+        System.arraycopy(s2.value, s2.offset, value, s1.count, s2.count);
+    }
+
+    /*
+     * Private constructor useful for JIT optimization.
+     */
+    @SuppressWarnings( { "unused", "nls" })
+    private String(String s1, String s2, String s3) {
+        if (s1 == null) {
+            s1 = "null";
+        }
+        if (s2 == null) {
+            s2 = "null";
+        }
+        if (s3 == null) {
+            s3 = "null";
+        }
+        count = s1.count + s2.count + s3.count;
+        value = new char[count];
+        offset = 0;
+        System.arraycopy(s1.value, s1.offset, value, 0, s1.count);
+        System.arraycopy(s2.value, s2.offset, value, s1.count, s2.count);
+        System.arraycopy(s3.value, s3.offset, value, s1.count + s2.count,
+                s3.count);
     }
 
     /**
@@ -893,11 +937,12 @@ public final class String implements Serializable, Comparable<String>,
     @Override
     public int hashCode() {
         if (hashCode == 0) {
-            int hash = 0, multiplier = 1;
-            for (int i = offset + count - 1; i >= offset; i--) {
-                hash += value[i] * multiplier;
-                int shifted = multiplier << 5;
-                multiplier = shifted - multiplier;
+            if (count == 0) {
+                return 0;
+            }
+            int hash = 0;
+            for (int i = offset; i < count + offset; i++) {
+                hash = value[i] + ((hash << 5) - hash);
             }
             hashCode = hash;
         }

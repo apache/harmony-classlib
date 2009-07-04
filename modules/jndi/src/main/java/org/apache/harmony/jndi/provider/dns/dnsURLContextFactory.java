@@ -71,7 +71,7 @@ public class dnsURLContextFactory implements ObjectFactory {
         } else if (obj instanceof String[]) {
             Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment
                     .clone();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String urlArr[] = (String[]) obj;
 
             for (int i = 0; i < urlArr.length; i++) {

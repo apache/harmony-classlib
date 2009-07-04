@@ -26,7 +26,7 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += \
-        $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+        $(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME = ../libhyauth$(HY_SHLIB_SUFFIX)

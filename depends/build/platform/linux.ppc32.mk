@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 DEFINES += -DLINUX -DLINUX_PPC32 -DHYPPC32 -DIPv6_FUNCTION_SUPPORT
-OPT += -fpic -m32
-
+PLATFORM += -m32
 ASFLAGS += -a32
 LDFLAGS += -m32
+OSLIBS += -ldl

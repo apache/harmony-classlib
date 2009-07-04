@@ -66,7 +66,7 @@ final class CascadedStyle implements Style {
     }
 
     public static String getElementTreeSelector(final Element element) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         result.append(getFullName(element));
         Element parent = element.getParentElement();
         while (parent != null) {
@@ -101,7 +101,7 @@ final class CascadedStyle implements Style {
         final String id      = SelectorMatcher.getID(tag, element);
         final String clazz   = SelectorMatcher.getClass(tag, element);
 
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         if (tagName != null) {
             result.append(tagName);
         }

@@ -87,7 +87,7 @@ public class TabStop implements Serializable {
     }
 
     public String toString() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         switch (alignment) {
             case ALIGN_RIGHT:
                 result.append("right ");

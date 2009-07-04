@@ -169,7 +169,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     // handle the lower/upper case pitfall
     private static String encodeWindowsStr(String str) {
         char[] chars = str.toCharArray();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (c == '/') {
@@ -186,7 +186,7 @@ class RegistryPreferencesImpl extends AbstractPreferences {
     }
 
     private static String decodeWindowsStr(String str) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];

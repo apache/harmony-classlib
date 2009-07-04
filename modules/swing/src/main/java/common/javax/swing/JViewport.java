@@ -159,7 +159,7 @@ public class JViewport extends JComponent implements Accessible {
 
     @Override
     protected String paramString() {
-        StringBuffer result = new StringBuffer(super.paramString());
+        StringBuilder result = new StringBuilder(super.paramString());
         result.append(",isViewSizeSet=").append(isViewSizeSet)
               .append(",lastPaintPosition=").append(lastPaintPosition)
               .append(",scrollUnderway=").append(scrollUnderway);

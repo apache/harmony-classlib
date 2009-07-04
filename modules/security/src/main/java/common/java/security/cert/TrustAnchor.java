@@ -239,7 +239,7 @@ public class TrustAnchor {
      * @return a string representation of this {@code TrustAnchor} instance.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("TrustAnchor: [\n"); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder("TrustAnchor: [\n"); //$NON-NLS-1$
         if (trustedCert != null) {
             sb.append("Trusted CA certificate: "); //$NON-NLS-1$
             sb.append(trustedCert);

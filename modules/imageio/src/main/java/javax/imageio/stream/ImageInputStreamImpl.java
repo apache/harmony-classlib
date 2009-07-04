@@ -163,7 +163,7 @@ public abstract class ImageInputStreamImpl implements ImageInputStream {
 	}
 
 	public String readLine() throws IOException {
-		final StringBuffer line = new StringBuffer(80);
+		final StringBuilder line = new StringBuilder(80);
 		boolean isEmpty = true;
 		int c = -1;
 

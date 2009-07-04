@@ -392,7 +392,7 @@ public class AttributedString {
             // text.0A=Invalid substring range
             throw new IllegalArgumentException(Messages.getString("text.0A")); //$NON-NLS-1$
         }
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); i++) {
             buffer.append(iterator.current());
             iterator.next();
@@ -433,7 +433,7 @@ public class AttributedString {
             return;
         }
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         iterator.setIndex(start);
         while (iterator.getIndex() < end) {
             buffer.append(iterator.current());

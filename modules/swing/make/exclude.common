@@ -93,7 +93,6 @@ javax/swing/text/PlainViewTest.java
 javax/swing/text/PlainView_ChangesTest.java
 javax/swing/text/StringContentTest.java
 javax/swing/text/StringContentTest_CommonTest.java
-javax/swing/text/StyleConstantsTest.java
 javax/swing/text/StyleContextTest.java
 javax/swing/text/StyledEditorKitTest.java
 javax/swing/text/TextAction_MultithreadedTest.java

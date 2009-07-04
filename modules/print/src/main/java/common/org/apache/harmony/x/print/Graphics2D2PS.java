@@ -237,7 +237,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
             return;
         }
 
-        StringBuffer sb = new StringBuffer(text.length());
+        StringBuilder sb = new StringBuilder(text.length());
         int lastX = x;
 
         for (int i = 0; i < text.length(); i++) {
@@ -246,7 +246,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
             } else {
                 if (sb.length() > 0) {
                     lastX += drawPSString(sb.toString(), lastX, y);
-                    sb = new StringBuffer(text.length() - i);
+                    sb = new StringBuilder(text.length() - i);
                 }
 
                 lastX += drawStringShape(String.valueOf(text.charAt(i)), lastX,

@@ -59,7 +59,7 @@ public class PKIStatusInfo {
     }
     
     public String toString(){
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         res.append("-- PKIStatusInfo:");
         res.append("\nPKIStatus : ");
         res.append(status);

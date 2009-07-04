@@ -235,6 +235,11 @@ public final class SystemColor extends Color implements Serializable {
         return value = getARGB();
     }
 
+    @Override
+    public int hashCode() {
+        return (index * 37) + value;
+    }
+
     private SystemColor(int index) {
         super(0, 0, 0);
         this.index = index;

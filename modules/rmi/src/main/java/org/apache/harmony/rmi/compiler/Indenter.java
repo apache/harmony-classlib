@@ -203,7 +203,7 @@ final class Indenter {
      * @return  Increased indent string.
      */
     String tIncrease(int steps) {
-        StringBuffer buffer = new StringBuffer(currentIndent);
+        StringBuilder buffer = new StringBuilder(currentIndent);
 
         for (int i = 0; i < steps; i++) {
             buffer.append(stepString);

@@ -446,10 +446,10 @@ public class UIManager implements Serializable {
         List<LookAndFeelInfo> result = new LinkedList<LookAndFeelInfo>();
         for (int i = 0; i < names.length; i++) {
             String token = names[i];
-            String lfNameProperty = new StringBuffer(INSTALLED_LAF).append(".")
+            String lfNameProperty = new StringBuilder(INSTALLED_LAF).append(".")
                 .append(token)
                 .append(".name").toString();
-            String lfClassProperty = new StringBuffer(INSTALLED_LAF).append(".")
+            String lfClassProperty = new StringBuilder(INSTALLED_LAF).append(".")
                 .append(token)
                 .append(".class").toString();
 

@@ -364,7 +364,7 @@ public class X509CRLSelector implements CRLSelector {
      * @return a string representation of this {@code X509CRLSelector} instance.
      */
     public String toString() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append("X509CRLSelector:\n["); //$NON-NLS-1$
         if (issuerNames != null) {
             result.append("\n  IssuerNames:\n  ["); //$NON-NLS-1$

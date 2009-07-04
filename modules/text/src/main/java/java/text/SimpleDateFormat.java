@@ -328,7 +328,7 @@ public class SimpleDateFormat extends DateFormat {
         this(Locale.getDefault());
         icuFormat = new com.ibm.icu.text.SimpleDateFormat();
         icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
-        pattern = (String)getInternalField("pattern",icuFormat);
+        pattern = (String)getInternalField("pattern", icuFormat); //$NON-NLS-1$
         formatData = new DateFormatSymbols(Locale.getDefault());
     }
 
@@ -482,14 +482,14 @@ public class SimpleDateFormat extends DateFormat {
         icuFormat = new com.ibm.icu.text.SimpleDateFormat(template, locale);
         icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
         pattern = template;
-        formatData = new DateFormatSymbols(locale);
+        formatData = new DateFormatSymbols(locale, icuFormat.getDateFormatSymbols());
     }
 
     SimpleDateFormat(Locale locale, com.ibm.icu.text.SimpleDateFormat icuFormat){
         this(locale);
         this.icuFormat = icuFormat;
         this.icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(tzId));
-        pattern = (String)Format.getInternalField("pattern", icuFormat);
+        pattern = (String)Format.getInternalField("pattern", icuFormat); //$NON-NLS-1$
         formatData = new DateFormatSymbols(locale);
     }
     
@@ -527,7 +527,6 @@ public class SimpleDateFormat extends DateFormat {
      * @throws IllegalArgumentException
      *                if the pattern is invalid.
      */
-    @SuppressWarnings("nls")
     public void applyPattern(String template) {
         validatePattern(template);
         /*

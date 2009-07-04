@@ -88,14 +88,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the locale.
      */
     public DateFormatSymbols(Locale locale) {
-        icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
-        localPatternChars = icuSymbols.getLocalPatternChars();
-        ampms = icuSymbols.getAmPmStrings();
-        eras = icuSymbols.getEras();
-        months = icuSymbols.getMonths();
-        shortMonths = icuSymbols.getShortMonths();
-        shortWeekdays = icuSymbols.getShortWeekdays();
-        weekdays = icuSymbols.getWeekdays();
+        this(locale, new com.ibm.icu.text.DateFormatSymbols(locale));
     }
 
     private void writeObject(ObjectOutputStream oos) throws IOException {
@@ -103,6 +96,19 @@ public class DateFormatSymbols implements Serializable, Cloneable {
             zoneStrings = icuSymbols.getZoneStrings();
         }
         oos.defaultWriteObject();
+    }
+
+    DateFormatSymbols(Locale locale,
+            com.ibm.icu.text.DateFormatSymbols icuSymbols) {
+
+        this.icuSymbols = icuSymbols;
+        localPatternChars = icuSymbols.getLocalPatternChars();
+        ampms = icuSymbols.getAmPmStrings();
+        eras = icuSymbols.getEras();
+        months = icuSymbols.getMonths();
+        shortMonths = icuSymbols.getShortMonths();
+        shortWeekdays = icuSymbols.getShortWeekdays();
+        weekdays = icuSymbols.getWeekdays();
     }
 
     @Override

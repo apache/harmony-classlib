@@ -135,8 +135,25 @@ public class PackingOptions {
         this.modificationTime = modificationTime;
     }
 
-    public List getPassFiles() {
-        return passFiles;
+    public boolean isPassFile(String passFileName) {
+        if (passFiles != null) {
+            for (Iterator iterator = passFiles.iterator(); iterator.hasNext();) {
+                String pass = (String) iterator.next();
+                if (passFileName.equals(pass)) {
+                    return true;
+                } else if (!pass.endsWith(".class")) { // a whole directory is
+                    // passed
+                    if (!pass.endsWith("/")) {
+                        // Make sure we don't get any false positives (e.g.
+                        // exclude "org/apache/harmony/pack" should not match
+                        // files under "org/apache/harmony/pack200/")
+                        pass = pass + "/";
+                    }
+                    return passFileName.startsWith(pass);
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -150,6 +167,12 @@ public class PackingOptions {
         if(passFiles == null) {
             passFiles = new ArrayList();
         }
+        String fileSeparator = System.getProperty("file.separator");
+        if(fileSeparator.equals("\\")) {
+            // Need to escape backslashes for replaceAll(), which uses regex
+            fileSeparator += "\\";
+        }
+        passFileName.replaceAll(fileSeparator, "/");
         passFiles.add(passFileName);
     }
 
@@ -167,9 +190,9 @@ public class PackingOptions {
      */
     public void setUnknownAttributeAction(String unknownAttributeAction) {
         this.unknownAttributeAction = unknownAttributeAction;
-        if (!unknownAttributeAction.equals(PASS)
-                && !unknownAttributeAction.equals(ERROR)
-                && !unknownAttributeAction.equals(STRIP)) {
+        if (!PASS.equals(unknownAttributeAction)
+                && !ERROR.equals(unknownAttributeAction)
+                && !STRIP.equals(unknownAttributeAction)) {
             throw new RuntimeException("Incorrect option for -U, "
                     + unknownAttributeAction);
         }
@@ -243,101 +266,59 @@ public class PackingOptions {
         this.logFile = logFile;
     }
 
+    private void addOrUpdateAttributeActions(List prototypes, Map attributeActions,
+            int tag) {
+        if (attributeActions != null) {
+            if (attributeActions.size() > 0) {
+                String name, action;
+                boolean prototypeExists;
+                NewAttribute newAttribute;
+                for (Iterator iteratorI = attributeActions.keySet().iterator(); iteratorI
+                        .hasNext();) {
+                    name = (String) iteratorI.next();
+                    action = (String) attributeActions.get(name);
+                    if (!ERROR.equals(action) && !STRIP.equals(action)
+                            && !PASS.equals(action)) {
+                        prototypeExists = false;
+                        for (Iterator iteratorJ = prototypes.iterator(); iteratorJ
+                                .hasNext();) {
+                            newAttribute = (NewAttribute) iteratorJ.next();
+                            if (newAttribute.type.equals(name)) {
+                                // if the attribute exists, update its context
+                                newAttribute.addContext(tag);
+                                prototypeExists = true;
+                                break;
+                            }
+                            // if no attribute is found, add a new attribute
+                            if (!prototypeExists) {
+                                newAttribute = new NewAttribute(name, action,
+                                        tag);
+                                prototypes.add(newAttribute);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public Attribute[] getUnknownAttributePrototypes() {
-        if(unknownAttributeTypes == null) {
+        if (unknownAttributeTypes == null) {
             List prototypes = new ArrayList();
-            if(classAttributeActions != null) {
-                for (Iterator iterator = classAttributeActions.keySet().iterator(); iterator
-                        .hasNext();) {
-                    String name = (String) iterator.next();
-                    String action = (String) classAttributeActions.get(name);
-                    if(!(action.equals(ERROR)
-                            || action.equals(STRIP)
-                            || action.equals(PASS))) {
-                        NewAttribute prototype = new NewAttribute(name, action, AttributeDefinitionBands.CONTEXT_CLASS);
-                        prototypes.add(prototype);
-                    }
-                }
-            }
-            if(methodAttributeActions != null) {
-                for (Iterator iterator = methodAttributeActions.keySet().iterator(); iterator
-                        .hasNext();) {
-                    String name = (String) iterator.next();
-                    String action = (String) methodAttributeActions.get(name);
-                    if(!(action.equals(ERROR)
-                            || action.equals(STRIP)
-                            || action.equals(PASS))) {
-                        boolean prototypeExists = false;
-                        for (Iterator iterator2 = prototypes.iterator(); iterator2
-                                .hasNext();) {
-                            NewAttribute newAttr = (NewAttribute) iterator2.next();
-                            if(newAttr.type.equals(name)) {
-                                newAttr.addContext(AttributeDefinitionBands.CONTEXT_METHOD);
-                                prototypeExists = true;
-                                break;
-                            }
-                        }
-                        if(!prototypeExists) {
-                            NewAttribute prototype = new NewAttribute(name, action, AttributeDefinitionBands.CONTEXT_METHOD);
-                            prototypes.add(prototype);
-                        }
-                    }
-                }
-            }
-            if(fieldAttributeActions != null) {
-                for (Iterator iterator = fieldAttributeActions.keySet().iterator(); iterator
-                        .hasNext();) {
-                    String name = (String) iterator.next();
-                    String action = (String) fieldAttributeActions.get(name);
-                    if(!(action.equals(ERROR)
-                            || action.equals(STRIP)
-                            || action.equals(PASS))) {
-                        boolean prototypeExists = false;
-                        for (Iterator iterator2 = prototypes.iterator(); iterator2
-                                .hasNext();) {
-                            NewAttribute newAttr = (NewAttribute) iterator2.next();
-                            if(newAttr.type.equals(name)) {
-                                newAttr.addContext(AttributeDefinitionBands.CONTEXT_FIELD);
-                                prototypeExists = true;
-                                break;
-                            }
-                        }
-                        if(!prototypeExists) {
-                            NewAttribute prototype = new NewAttribute(name, action, AttributeDefinitionBands.CONTEXT_FIELD);
-                            prototypes.add(prototype);
-                        }
-                    }
-                }
-            }
-            if(codeAttributeActions != null) {
-                for (Iterator iterator = codeAttributeActions.keySet().iterator(); iterator
-                        .hasNext();) {
-                    String name = (String) iterator.next();
-                    String action = (String) codeAttributeActions.get(name);
-                    if(!(action.equals(ERROR)
-                            || action.equals(STRIP)
-                            || action.equals(PASS))) {
-                        boolean prototypeExists = false;
-                        for (Iterator iterator2 = prototypes.iterator(); iterator2
-                                .hasNext();) {
-                            NewAttribute newAttr = (NewAttribute) iterator2.next();
-                            if(newAttr.type.equals(name)) {
-                                newAttr.addContext(AttributeDefinitionBands.CONTEXT_CODE);
-                                prototypeExists = true;
-                                break;
-                            }
-                        }
-                        if(!prototypeExists) {
-                            NewAttribute prototype = new NewAttribute(name, action, AttributeDefinitionBands.CONTEXT_CODE);
-                            prototypes.add(prototype);
-                        }
-                    }
-                }
-            }
-            unknownAttributeTypes = new Attribute[prototypes.size()];
-            for (int i = 0; i < unknownAttributeTypes.length; i++) {
-                unknownAttributeTypes[i] = (Attribute) prototypes.get(i);
-            }
+            addOrUpdateAttributeActions(prototypes, classAttributeActions,
+                    AttributeDefinitionBands.CONTEXT_CLASS);
+
+            addOrUpdateAttributeActions(prototypes, methodAttributeActions,
+                    AttributeDefinitionBands.CONTEXT_METHOD);
+
+            addOrUpdateAttributeActions(prototypes, fieldAttributeActions,
+                    AttributeDefinitionBands.CONTEXT_FIELD);
+
+            addOrUpdateAttributeActions(prototypes, codeAttributeActions,
+                    AttributeDefinitionBands.CONTEXT_CODE);
+
+            unknownAttributeTypes = (Attribute[]) prototypes
+                    .toArray(new Attribute[0]);
         }
         return unknownAttributeTypes;
     }

@@ -41,7 +41,7 @@ PROTOTYPE ((hythread_monitor_t monitor));
 UDATA VMCALL hythread_get_priority PROTOTYPE ((hythread_t thread));
 void *VMCALL hythread_tls_get
 PROTOTYPE ((hythread_t thread, hythread_tls_key_t key));
-char *VMCALL hythread_monitor_get_name
+const char *VMCALL hythread_monitor_get_name
 PROTOTYPE ((hythread_monitor_t monitor));
 hythread_monitor_t VMCALL hythread_monitor_walk
 PROTOTYPE ((hythread_monitor_t monitor));

@@ -130,6 +130,7 @@ int test_hymmap_map_and_unmap_file(struct HyPortLibrary *hyportLibrary) {
     testFile = hyportLibrary->mem_allocate_memory(hyportLibrary, pathLen + strlen("shared") + 2 + strlen("testFile"));
 
     strncpy(emptyFile, execPath, pathLen);
+    emptyFile[pathLen] = '\0';
     strcat(emptyFile, "shared");
     strcat(emptyFile, DIR_SEPARATOR_STR);
     strcpy(testFile, emptyFile);

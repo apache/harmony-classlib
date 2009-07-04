@@ -327,7 +327,7 @@ public class DefaultPolicyParser {
             if ("self".equals(protocol)) { //$NON-NLS-1$
                 //need expanding to list of principals in grant clause 
                 if (ge.principals != null && ge.principals.size() != 0) {
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     for (Iterator<PrincipalEntry> iter = ge.principals.iterator(); iter
                             .hasNext();) {
                         DefaultPolicyScanner.PrincipalEntry pr = iter
@@ -370,7 +370,7 @@ public class DefaultPolicyParser {
         private String pc2str(Principal pc) {
             String klass = pc.getClass().getName();
             String name = pc.getName();
-            StringBuffer sb = new StringBuffer(klass.length() + name.length()
+            StringBuilder sb = new StringBuilder(klass.length() + name.length()
                     + 5);
             return sb.append(klass).append(" \"").append(name).append("\"") //$NON-NLS-1$ //$NON-NLS-2$
                     .toString();

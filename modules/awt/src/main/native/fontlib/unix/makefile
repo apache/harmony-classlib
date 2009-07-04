@@ -37,7 +37,7 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+	$(LIBPATH)libhypool.a $(LIBPATH)libvmi.so
 
 OSLIBS += $(STDCLIBS)
 

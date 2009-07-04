@@ -108,8 +108,8 @@ public class PolicyQualifierInfo {
      *         instance.
      */
     public String toString() {
-        StringBuffer sb =
-            new StringBuffer("PolicyQualifierInfo: [\npolicyQualifierId: "); //$NON-NLS-1$
+        StringBuilder sb =
+            new StringBuilder("PolicyQualifierInfo: [\npolicyQualifierId: "); //$NON-NLS-1$
         sb.append(policyQualifierId);
         sb.append("\npolicyQualifier: \n"); //$NON-NLS-1$
         sb.append(Array.toString(policyQualifier, " ")); //$NON-NLS-1$

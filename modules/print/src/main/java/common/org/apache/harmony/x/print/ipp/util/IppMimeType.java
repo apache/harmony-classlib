@@ -33,7 +33,7 @@ public class IppMimeType extends MimeType {
      * returns IPP/CUPS specific for MimeType object.
      */
     public String getIppSpecificForm() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append(getType());
         s.append("/");
         s.append(getSubtype());

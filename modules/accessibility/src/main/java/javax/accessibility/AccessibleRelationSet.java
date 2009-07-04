@@ -117,7 +117,7 @@ public class AccessibleRelationSet {
         if (relations == null) {
             return ""; //$NON-NLS-1$
         }
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (Iterator<AccessibleRelation> it = relations.iterator(); it
                 .hasNext();) {
             result.append(it.next());

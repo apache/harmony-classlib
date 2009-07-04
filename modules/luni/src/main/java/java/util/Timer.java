@@ -431,7 +431,7 @@ public class Timer {
      * @param task
      *            the task to schedule.
      * @param delay
-     *            amount of time before execution.
+     *            amount of time in milliseconds before execution.
      * @throws IllegalArgumentException
      *                if {@code delay < 0}.
      * @throws IllegalStateException
@@ -451,9 +451,9 @@ public class Timer {
      * @param task
      *            the task to schedule.
      * @param delay
-     *            amount of time before first execution.
+     *            amount of time in milliseconds before first execution.
      * @param period
-     *            amount of time between subsequent executions.
+     *            amount of time in milliseconds between subsequent executions.
      * @throws IllegalArgumentException
      *                if {@code delay < 0} or {@code period < 0}.
      * @throws IllegalStateException
@@ -476,7 +476,7 @@ public class Timer {
      * @param when
      *            time of first execution.
      * @param period
-     *            amount of time between subsequent executions.
+     *            amount of time in milliseconds between subsequent executions.
      * @throws IllegalArgumentException
      *                if {@code when.getTime() < 0} or {@code period < 0}.
      * @throws IllegalStateException
@@ -498,9 +498,9 @@ public class Timer {
      * @param task
      *            the task to schedule.
      * @param delay
-     *            amount of time before first execution.
+     *            amount of time in milliseconds before first execution.
      * @param period
-     *            amount of time between subsequent executions.
+     *            amount of time in milliseconds between subsequent executions.
      * @throws IllegalArgumentException
      *                if {@code delay < 0} or {@code period < 0}.
      * @throws IllegalStateException
@@ -523,7 +523,7 @@ public class Timer {
      * @param when
      *            time of first execution.
      * @param period
-     *            amount of time between subsequent executions.
+     *            amount of time in milliseconds between subsequent executions.
      * @throws IllegalArgumentException
      *                if {@code when.getTime() < 0} or {@code period < 0}.
      * @throws IllegalStateException

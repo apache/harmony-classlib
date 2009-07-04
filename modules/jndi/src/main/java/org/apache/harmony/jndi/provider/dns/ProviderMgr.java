@@ -482,7 +482,7 @@ public class ProviderMgr {
      *             if given array has the length less than four
      */
     public static String getIpStr(byte[] ip) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         if (ip == null || ip.length < 4) {
             // jndi.61=Given array is null or has the length less than four

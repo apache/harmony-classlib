@@ -192,7 +192,7 @@ hysl_open_shared_library (struct HyPortLibrary * portLibrary, char *name,
  */
 UDATA VMCALL
 hysl_lookup_name (struct HyPortLibrary * portLibrary, UDATA descriptor,
-                  char *name, UDATA * func, const char *argSignature)
+                  const char *name, UDATA * func, const char *argSignature)
 {
   void *address;
   address = dlsym ((void *)descriptor, name);

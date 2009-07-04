@@ -1255,7 +1255,7 @@ public class MessageFormat extends Format {
         int offset = 0;
         int offsetsLength = maxOffset + 1;
         int[] offsets = new int[offsetsLength];
-        StringBuffer pattern = new StringBuffer();
+        StringBuilder pattern = new StringBuilder();
         for (int i = 0; i <= maxOffset; i++) {
             offset += strings[i].length();
             offsets[i] = offset;

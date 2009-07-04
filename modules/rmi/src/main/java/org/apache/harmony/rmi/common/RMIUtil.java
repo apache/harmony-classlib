@@ -268,7 +268,7 @@ public final class RMIUtil {
      * @return  Method descriptor.
      */
     public static String getMethodDescriptor(Method method) {
-        StringBuffer buffer = new StringBuffer().append('(');
+        StringBuilder buffer = new StringBuilder().append('(');
         Class[] parameters = method.getParameterTypes();
 
         for (int i = 0; i < parameters.length; i++) {
@@ -308,7 +308,7 @@ public final class RMIUtil {
      */
     public static String getBasicMethodSignature(Method method) {
         // Start with method name.
-        StringBuffer buffer = new StringBuffer()
+        StringBuilder buffer = new StringBuilder()
                 .append(method.getName()).append('(');
         Class[] parameters = method.getParameterTypes();
 
@@ -336,7 +336,7 @@ public final class RMIUtil {
      *          getLongMethodSignature(java.lang.reflect.Method)"</code>.
      */
     public static String getLongMethodSignature(Method method) {
-        StringBuffer suffix = new StringBuffer();
+        StringBuilder suffix = new StringBuilder();
         Class cls = method.getReturnType();
 
         // Create signature suffix for array types.
@@ -363,7 +363,7 @@ public final class RMIUtil {
      */
     public static String getShortMethodSignature(Method method) {
         // Start with method name.
-        StringBuffer buffer = new StringBuffer(method.getName() + '(');
+        StringBuilder buffer = new StringBuilder(method.getName() + '(');
         Class[] parameters = method.getParameterTypes();
 
         // Append short names of parameter types.

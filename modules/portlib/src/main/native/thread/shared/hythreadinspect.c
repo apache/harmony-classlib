@@ -232,7 +232,7 @@ hythread_get_flags (hythread_t thread, hythread_monitor_t * blocker)
  * @see hythread_monitor_init_with_name
  * 
  */
-char *VMCALL
+const char *VMCALL
 hythread_monitor_get_name (hythread_monitor_t monitor)
 {
   ASSERT (monitor);

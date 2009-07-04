@@ -300,7 +300,7 @@ public class NamingException extends Exception {
 
     @SuppressWarnings("nls")
     private String toStringImpl(boolean flag) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(super.toString());
         if (null != rootException) {
             sb.append(" [Root exception is ").append(rootException.toString())

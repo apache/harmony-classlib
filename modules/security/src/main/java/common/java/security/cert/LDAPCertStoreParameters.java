@@ -117,8 +117,8 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
      *         instance.
      */
     public String toString() {
-        StringBuffer sb =
-            new StringBuffer("LDAPCertStoreParameters: [\n serverName: "); //$NON-NLS-1$
+        StringBuilder sb =
+            new StringBuilder("LDAPCertStoreParameters: [\n serverName: "); //$NON-NLS-1$
         sb.append(getServerName());
         sb.append("\n port: "); //$NON-NLS-1$
         sb.append(getPort());

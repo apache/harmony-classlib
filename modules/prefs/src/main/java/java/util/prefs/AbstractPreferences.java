@@ -819,7 +819,7 @@ public abstract class AbstractPreferences extends Preferences {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(isUserNode() ? "User" : "System"); //$NON-NLS-1$ //$NON-NLS-2$
         sb.append(" Preference Node: "); //$NON-NLS-1$
         sb.append(absolutePath());

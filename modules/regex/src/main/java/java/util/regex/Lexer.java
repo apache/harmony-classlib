@@ -353,7 +353,7 @@ class Lexer {
         int [] decompHangul;
         
         //result of canonical decomposition of input in UTF-16 encoding
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         
         decompTable = HashDecompositions.getHashDecompositions();
         canonClassesTable = CanClasses.getHashCanClasses();
@@ -853,7 +853,7 @@ class Lexer {
      * Parse character classes names and verifies correction of the syntax;
      */
     private String parseCharClassName() {
-        StringBuffer sb = new StringBuffer(10);
+        StringBuilder sb = new StringBuilder(10);
         if (index < pattern.length - 2) {
             // one symbol family
             if (pattern[index] != '{') {
@@ -888,7 +888,7 @@ class Lexer {
      * Process given character in assumption that it's quantifier.
      */
     private Quantifier processQuantifier(int ch) {
-        StringBuffer sb = new StringBuffer(4);
+        StringBuilder sb = new StringBuilder(4);
         int min = -1;
         int max = Integer.MAX_VALUE;
         while (index < pattern.length && (ch = pattern[nextIndex()]) != '}') {
@@ -1007,7 +1007,7 @@ class Lexer {
      * Process hexadecimal integer. 
      */
     private int readHex(String radixName, int max) {
-        StringBuffer st = new StringBuffer(max);
+        StringBuilder st = new StringBuilder(max);
         int length = pattern.length - 2;
         int i;
         for (i = 0; i < max && index < length; i++) {

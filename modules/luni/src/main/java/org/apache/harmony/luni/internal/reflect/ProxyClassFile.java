@@ -101,7 +101,7 @@ public final class ProxyClassFile implements ProxyConstants {
 
     static char[] getConstantPoolName(Constructor<?> method) /* (ILjava/lang/Thread;)V */{
         Class[] parameters = method.getParameterTypes();
-        StringBuffer buffer = new StringBuffer(parameters.length + 1 * 20);
+        StringBuilder buffer = new StringBuilder(parameters.length + 1 * 20);
         buffer.append('(');
         for (Class<?> element : parameters) {
             buffer.append(getConstantPoolName(element));
@@ -113,7 +113,7 @@ public final class ProxyClassFile implements ProxyConstants {
 
     static char[] getConstantPoolName(Method method) /* (ILjava/lang/Thread;)Ljava/lang/Object; */{
         Class[] parameters = method.getParameterTypes();
-        StringBuffer buffer = new StringBuffer(parameters.length + 1 * 20);
+        StringBuilder buffer = new StringBuilder(parameters.length + 1 * 20);
         buffer.append('(');
         for (Class<?> element : parameters) {
             buffer.append(getConstantPoolName(element));

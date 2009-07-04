@@ -534,7 +534,7 @@ class CharClass extends AbstractCharClass {
                 }
 
                 public String toString() {
-                    StringBuffer temp = new StringBuffer();
+                    StringBuilder temp = new StringBuilder();
                     for (int i = bs.nextSetBit(0); i >= 0; i = bs
                             .nextSetBit(i + 1)) {
                         temp.append(Character.toChars(i));
@@ -556,7 +556,7 @@ class CharClass extends AbstractCharClass {
 
     //for debugging purposes only
     public String toString() {
-        StringBuffer temp = new StringBuffer();
+        StringBuilder temp = new StringBuilder();
         for (int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
             temp.append(Character.toChars(i));
             temp.append('|');

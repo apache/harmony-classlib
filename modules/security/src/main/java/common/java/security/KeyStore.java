@@ -1337,7 +1337,7 @@ public class KeyStore {
          * @return a printable representation for this {@code PrivateKeyEntry}.
          */
         public String toString() {
-            StringBuffer sb = new StringBuffer(
+            StringBuilder sb = new StringBuilder(
                     "PrivateKeyEntry: number of elements in certificate chain is "); //$NON-NLS-1$
             sb.append(Integer.toString(chain.length));
             sb.append("\n"); //$NON-NLS-1$
@@ -1391,7 +1391,7 @@ public class KeyStore {
          *         SecretKeyEntry}.
          */
         public String toString() {
-            StringBuffer sb = new StringBuffer("SecretKeyEntry: algorithm - "); //$NON-NLS-1$
+            StringBuilder sb = new StringBuilder("SecretKeyEntry: algorithm - "); //$NON-NLS-1$
             sb.append(secretKey.getAlgorithm());
             return sb.toString();
         }

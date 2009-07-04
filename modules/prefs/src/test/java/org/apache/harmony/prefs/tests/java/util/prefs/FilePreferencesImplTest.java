@@ -39,8 +39,8 @@ public class FilePreferencesImplTest extends TestCase {
         prevFactory = System.getProperty("java.util.prefs.PreferencesFactory");
         System.setProperty("java.util.prefs.PreferencesFactory", "java.util.prefs.FilePreferencesFactoryImpl");
 
-        uroot = Preferences.userRoot();
-        sroot = Preferences.systemRoot();
+        uroot = Preferences.userRoot().node("harmony_test");
+        sroot = Preferences.systemRoot().node("harmony_test");
     }
 
     @Override
@@ -48,6 +48,8 @@ public class FilePreferencesImplTest extends TestCase {
         if (prevFactory != null)
             System.setProperty("java.util.prefs.PreferencesFactory", prevFactory);
 
+        uroot.removeNode();
+        sroot.removeNode();
         uroot = null;
         sroot = null;
     }
@@ -84,31 +86,20 @@ public class FilePreferencesImplTest extends TestCase {
 
         String[] childNames = uroot.childrenNames();
         assertEquals(2, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
 
         childNames = child1.childrenNames();
         assertEquals(1, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
 
         childNames = child2.childrenNames();
         assertEquals(0, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
 
         child1.removeNode();
         childNames = uroot.childrenNames();
         assertEquals(1, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
-        // child2.removeNode();
-        // childNames = uroot.childrenNames();
-        // assertEquals(0, childNames.length);
+
+        child2.removeNode();
+        childNames = uroot.childrenNames();
+        assertEquals(0, childNames.length);
 
         child1 = sroot.node("child1");
         child2 = sroot.node("child2");
@@ -116,22 +107,13 @@ public class FilePreferencesImplTest extends TestCase {
 
         childNames = sroot.childrenNames();
 
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
         assertEquals(2, childNames.length);
 
         childNames = child1.childrenNames();
         assertEquals(1, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
 
         childNames = child2.childrenNames();
         assertEquals(0, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
 
         child1.removeNode();
         assertNotSame(child1, sroot.node("child1"));
@@ -139,9 +121,6 @@ public class FilePreferencesImplTest extends TestCase {
         sroot.node("child1").removeNode();
         childNames = sroot.childrenNames();
         assertEquals(1, childNames.length);
-        for (int i = 0; i < childNames.length; i++) {
-            System.out.println(childNames[i]);
-        }
         child2.removeNode();
         childNames = sroot.childrenNames();
         assertEquals(0, childNames.length);
@@ -219,7 +198,6 @@ public class FilePreferencesImplTest extends TestCase {
         @Override
         public void checkPermission(Permission perm, Object ctx) {
             if (perm instanceof FilePermission) {
-                System.out.println(perm.getActions());
                 throw new SecurityException();
             } else if (dflt != null) {
                 dflt.checkPermission(perm, ctx);

@@ -125,9 +125,10 @@ public class CodecEncoding {
             throws IOException, Pack200Exception {
         // Sanity check to make sure that no-one has changed
         // the canonical codecs, which would really cause havoc
-        if (canonicalCodec.length != 116)
+        if (canonicalCodec.length != 116) {
             throw new Error(
                     "Canonical encodings have been incorrectly modified");
+        }
         if (value < 0) {
             throw new IllegalArgumentException(
                     "Encoding cannot be less than zero");
@@ -137,18 +138,20 @@ public class CodecEncoding {
             return canonicalCodec[value];
         } else if (value == 116) {
             int code = in.read();
-            if (code == -1)
+            if (code == -1) {
                 throw new EOFException(
                         "End of buffer read whilst trying to decode codec");
+            }
             int d = (code & 0x01);
             int s = (code >> 1 & 0x03);
             int b = (code >> 3 & 0x07) + 1; // this might result in an invalid
             // number, but it's checked in the
             // Codec constructor
             code = in.read();
-            if (code == -1)
+            if (code == -1) {
                 throw new EOFException(
                         "End of buffer read whilst trying to decode codec");
+            }
             int h = code + 1;
             // This handles the special cases for invalid combinations of data.
             return new BHSDCodec(b, h, s, d);
@@ -160,9 +163,10 @@ public class CodecEncoding {
             boolean bdef = (offset >> 4 & 1) == 1;
             // If both A and B use the default encoding, what's the point of
             // having a run of default values followed by default values
-            if (adef && bdef)
+            if (adef && bdef) {
                 throw new Pack200Exception(
                         "ADef and BDef should never both be true");
+            }
             int kb = (kbflag ? in.read() : 3);
             int k = (kb + 1) * (int) Math.pow(16, kx);
             Codec aCodec, bCodec;

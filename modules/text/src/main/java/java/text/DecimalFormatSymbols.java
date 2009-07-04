@@ -74,15 +74,21 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      *            the locale.
      */
     public DecimalFormatSymbols(Locale locale) {
-        com.ibm.icu.text.DecimalFormatSymbols icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(
-                locale);
+        this(locale, new com.ibm.icu.text.DecimalFormatSymbols(locale));
+    }
+
+    transient private com.ibm.icu.text.DecimalFormatSymbols icuSymbols;
+
+    DecimalFormatSymbols(Locale locale,
+            com.ibm.icu.text.DecimalFormatSymbols icuSymbols) {
+        this.icuSymbols = icuSymbols;
         infinity = icuSymbols.getInfinity();
         NaN = icuSymbols.getNaN();
         this.locale = locale;
         currencySymbol = icuSymbols.getCurrencySymbol();
         intlCurrencySymbol = icuSymbols.getInternationalCurrencySymbol();
         if (locale.getCountry().length() == 0) {
-            currency = Currency.getInstance("XXX");
+            currency = Currency.getInstance("XXX"); //$NON-NLS-1$
         } else {
             currency = Currency.getInstance(locale);
         }
@@ -95,11 +101,12 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
         patternChars[Percent] = icuSymbols.getPercent();
         patternChars[PerMill] = icuSymbols.getPerMill();
         patternChars[Exponent] = icuSymbols.getExponentSeparator().charAt(0);
-        patternChars[MonetaryDecimalSeparator] = icuSymbols.getMonetaryDecimalSeparator();
+        patternChars[MonetaryDecimalSeparator] = icuSymbols
+                .getMonetaryDecimalSeparator();
         patternChars[MinusSign] = icuSymbols.getMinusSign();
-        
     }
 
+ 
     /**
      * Returns a new {@code DecimalFormatSymbols} with the same symbols as this
      * {@code DecimalFormatSymbols}.
@@ -553,5 +560,9 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
     
     Locale getLocale(){
         return locale;
+    }
+
+    com.ibm.icu.text.DecimalFormatSymbols getIcuSymbols() {
+        return icuSymbols;
     }
 }

@@ -34,11 +34,13 @@ public class RunCodec extends Codec {
     private int last;
 
     public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
-        if (k <= 0)
+        if (k <= 0) {
             throw new Pack200Exception(
                     "Cannot have a RunCodec for a negative number of numbers");
-        if (aCodec == null || bCodec == null)
+        }
+        if (aCodec == null || bCodec == null) {
             throw new Pack200Exception("Must supply both codecs for a RunCodec");
+        }
         this.k = k;
         this.aCodec = aCodec;
         this.bCodec = bCodec;
@@ -53,22 +55,24 @@ public class RunCodec extends Codec {
         if (--k >= 0) {
             int value = aCodec.decode(in, this.last);
             this.last = (k == 0 ? 0 : value);
-            return normalise(aCodec, value);
+            return normalise(value, aCodec);
         } else {
             this.last = bCodec.decode(in, this.last);
-            return normalise(bCodec, this.last);
+            return normalise(this.last, bCodec);
         }
     }
 
-    private int normalise(Codec codecUsed, int value) {
-        if (codecUsed instanceof BHSDCodec && ((BHSDCodec) codecUsed).isDelta()) {
+    private int normalise(int value, Codec codecUsed) {
+        if (codecUsed instanceof BHSDCodec) {
             BHSDCodec bhsd = (BHSDCodec) codecUsed;
-            long cardinality = bhsd.cardinality();
-            while (value > bhsd.largest()) {
-                value -= cardinality;
-            }
-            while (value < bhsd.smallest()) {
-                value += cardinality;
+            if (bhsd.isDelta()) {
+                long cardinality = bhsd.cardinality();
+                while (value > bhsd.largest()) {
+                    value -= cardinality;
+                }
+                while (value < bhsd.smallest()) {
+                    value += cardinality;
+                }
             }
         }
         return value;
@@ -88,15 +92,17 @@ public class RunCodec extends Codec {
     }
 
     private void normalise(int[] band, Codec codecUsed) {
-        if (codecUsed instanceof BHSDCodec && ((BHSDCodec) codecUsed).isDelta()) {
+        if (codecUsed instanceof BHSDCodec) {
             BHSDCodec bhsd = (BHSDCodec) codecUsed;
-            long cardinality = bhsd.cardinality();
-            for (int i = 0; i < band.length; i++) {
-                while (band[i] > bhsd.largest()) {
-                    band[i] -= cardinality;
-                }
-                while (band[i] < bhsd.smallest()) {
-                    band[i] += cardinality;
+            if (bhsd.isDelta()) {
+                long cardinality = bhsd.cardinality();
+                for (int i = 0; i < band.length; i++) {
+                    while (band[i] > bhsd.largest()) {
+                        band[i] -= cardinality;
+                    }
+                    while (band[i] < bhsd.smallest()) {
+                        band[i] += cardinality;
+                    }
                 }
             }
         } else if (codecUsed instanceof PopulationCodec) {
@@ -107,21 +113,22 @@ public class RunCodec extends Codec {
                 boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
                 Codec theCodec = favouredValue ? popCodec.getFavouredCodec()
                         : popCodec.getUnfavouredCodec();
-                if (theCodec instanceof BHSDCodec
-                        && ((BHSDCodec) theCodec).isDelta()) {
+                if (theCodec instanceof BHSDCodec) {
                     BHSDCodec bhsd = (BHSDCodec) theCodec;
-                    long cardinality = bhsd.cardinality();
-                    while (band[i] > bhsd.largest()) {
-                        band[i] -= cardinality;
-                    }
-                    while (band[i] < bhsd.smallest()) {
-                        band[i] += cardinality;
+                    if (bhsd.isDelta()) {
+                        long cardinality = bhsd.cardinality();
+                        while (band[i] > bhsd.largest()) {
+                            band[i] -= cardinality;
+                        }
+                        while (band[i] < bhsd.smallest()) {
+                            band[i] += cardinality;
+                        }
                     }
                 }
             }
         }
     }
-
+    
     public String toString() {
         return "RunCodec[k=" + k + ";aCodec=" + aCodec + "bCodec=" + bCodec
                 + "]";

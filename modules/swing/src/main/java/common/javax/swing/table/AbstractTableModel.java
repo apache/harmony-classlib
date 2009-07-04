@@ -32,7 +32,7 @@ public abstract class AbstractTableModel implements TableModel, Serializable {
     protected EventListenerList listenerList = new EventListenerList();
 
     public String getColumnName(final int column) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int rest = column;
         do {
             int remainder = rest % 26;

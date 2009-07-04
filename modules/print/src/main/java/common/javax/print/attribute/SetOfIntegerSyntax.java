@@ -280,7 +280,7 @@ public abstract class SetOfIntegerSyntax implements Cloneable, Serializable {
 
     @Override
     public String toString() {
-        StringBuffer stringSet = new StringBuffer("");
+        StringBuilder stringSet = new StringBuilder("");
         for (int i = 0; i < canonicalArray.length; i++) {
             if (i > 0) {
                 stringSet.append(",");

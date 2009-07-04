@@ -37,7 +37,7 @@ MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzli
 !ENDIF
 
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000
 COMMENT=/comment:"instrument component native code. (c) Copyright 2006, 2008 The Apache Software Foundation or its licensors, as applicable."

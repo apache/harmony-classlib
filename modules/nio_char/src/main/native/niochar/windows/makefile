@@ -119,6 +119,7 @@ BUILDFILES = \
 
 VIRTFILES = hynio_char.res
 
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
   
 DLLBASE=0x13200000
 COMMENT=/comment:"nio_char component native code. (c) Copyright 1991, 2008 The Apache Software Foundation or its licensors, as applicable."

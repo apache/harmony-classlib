@@ -66,7 +66,7 @@ public class ExtendedListCellRenderer extends DefaultListCellRenderer {
 
 
     private static String createIndentation(final int indentationLevel) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < indentationLevel; i++) {
             result.append(SUB_ELEMENT_INDENT);
         }

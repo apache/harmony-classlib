@@ -243,7 +243,7 @@ public class BasicTableUI extends TableUI {
                 return null;
             }
 
-            StringBuffer content = new StringBuffer();
+            StringBuilder content = new StringBuilder();
             int rowMinSelectionIndex = table.getSelectionModel().getMinSelectionIndex();
             int rowMaxSelectionIndex = table.getSelectionModel().getMaxSelectionIndex();
             int colMinSelectionIndex = table.getColumnModel().getSelectionModel().getMinSelectionIndex();
