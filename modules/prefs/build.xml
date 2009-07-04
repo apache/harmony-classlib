@@ -41,7 +41,9 @@
         </or>
     </fileset>
 
-    <property name="prefs.exclude.file" location="${hy.hdk}/build/prefs.exclude" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/prefs" />
+    <property name="prefs.exclude.file"
+              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 

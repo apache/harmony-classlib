@@ -580,6 +580,9 @@ properties in preference to these:
                       value="exclude.${hy.platform}.${hy.test.vm.name}.interm"
             />
 
+            <dirname file="@{result}" property="@{result}.dir" />
+            <mkdir dir="${@{result}.dir}" />
+
            <echo message="" file="@{result}"/>
            <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
                <fileset dir="@{dir}">

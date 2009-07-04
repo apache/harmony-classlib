@@ -53,7 +53,9 @@
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
-    <property name="luni.exclude.file" location="${hy.hdk}/build/luni.exclude" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/luni" />
+    <property name="luni.exclude.file"
+              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 

@@ -60,7 +60,9 @@
 
     <property file="../../make/depends.properties" />
 
-    <property name="security.exclude.file" location="${hy.hdk}/build/security.exclude" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/security" />
+    <property name="security.exclude.file"
+              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 

@@ -37,7 +37,9 @@
         </or>
     </fileset>
 
-    <property name="lang-management.exclude.file" location="${hy.hdk}/build/lang-management.exclude" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/lang-management" />
+    <property name="lang-management.exclude.file"
+              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build" depends="compile-java, build-jar" />
 

@@ -61,7 +61,9 @@
 
     <property file="../../make/depends.properties" />
 
-    <property name="swing.exclude.file" location="${hy.hdk}/build/swing.exclude" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/swing" />
+    <property name="swing.exclude.file"
+              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
