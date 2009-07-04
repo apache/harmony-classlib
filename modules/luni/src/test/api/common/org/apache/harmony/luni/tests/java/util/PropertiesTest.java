@@ -382,6 +382,25 @@ public class PropertiesTest extends junit.framework.TestCase {
         prop.load(new ByteArrayInputStream("a=\\q".getBytes()));
         assertEquals("Failed to read slash value #3", expected, prop);
     }
+    
+    /**
+     * @tests java.util.Properties#load(java.io.InputStream)
+     */
+    public void test_loadLjava_io_InputStream_Special() throws IOException {
+        // Test for method void java.util.Properties.load(java.io.InputStream)
+        Properties prop = null;
+        prop = new Properties();
+        prop.load(new ByteArrayInputStream("=".getBytes()));
+        assertTrue("Failed to add empty key", prop.get("").equals(""));
+        
+        prop = new Properties();
+        prop.load(new ByteArrayInputStream("=\r\n".getBytes()));
+        assertTrue("Failed to add empty key", prop.get("").equals(""));
+        
+        prop = new Properties();
+        prop.load(new ByteArrayInputStream("=\n\r".getBytes()));
+        assertTrue("Failed to add empty key", prop.get("").equals(""));
+    }
 
     /**
      * @throws IOException

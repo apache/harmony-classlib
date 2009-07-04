@@ -382,7 +382,7 @@ public class ResourceRecord {
                     serial + " " + refresh + " " + retry + " " + expire + " " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     minimum;
         } else if (rrType == ProviderConstants.TXT_TYPE) {
-            StringBuffer sbuf = new StringBuffer();
+            StringBuilder sbuf = new StringBuilder();
             int idx0 = idx;
 
             while (true) {
@@ -438,7 +438,7 @@ public class ResourceRecord {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(name);
         sb.append(" "); //$NON-NLS-1$
         sb.append(ProviderConstants.rrTypeNames[rrType]);

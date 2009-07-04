@@ -98,7 +98,7 @@ public class Engine {
                 throw new NoSuchAlgorithmException(Messages.getString("security.14A", //$NON-NLS-1$
                         serviceName, algorithm));
             }
-            serv = Services.getService(new StringBuffer(128)
+            serv = Services.getService(new StringBuilder(128)
                     .append(serviceName).append(".").append( //$NON-NLS-1$
                             Util.toUpperCase(algorithm)).toString());
             if (serv == null) {

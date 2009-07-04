@@ -389,7 +389,7 @@ public class CSSParser implements CSSParserConstants {
   }
 
   final public String expr() throws ParseException {
-  StringBuffer result = new StringBuffer(); String term; String oper; boolean operSet;
+  StringBuilder result = new StringBuilder(); String term; String oper; boolean operSet;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PLUS:
     case MINUS:

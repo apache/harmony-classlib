@@ -318,7 +318,7 @@ class XMLParser {
     }
 
     private static String htmlEncode(String s) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         char c;
         for (int i = 0; i < s.length(); i++) {
             c = s.charAt(i);

@@ -83,6 +83,7 @@ public class MetadataBandGroup extends BandSet {
      * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
      */
     public void pack(OutputStream out) throws IOException, Pack200Exception {
+        PackingUtils.log("Writing metadata band group...");
         if(hasContent()) {
             String contextStr;
             if(context == CONTEXT_CLASS) {
@@ -92,25 +93,132 @@ public class MetadataBandGroup extends BandSet {
             } else {
                 contextStr = "Method";
             }
+            byte[] encodedBand = null;
             if(!type.equals("AD")) {
-                out.write(encodeBandInt(contextStr + "_" + type + " anno_N",  anno_N.toArray(), Codec.UNSIGNED5));
-                out.write(encodeBandInt(contextStr + "_" + type + " type_RS",  cpEntryListToArray(type_RS), Codec.UNSIGNED5));
-                out.write(encodeBandInt(contextStr + "_" + type + " pair_N",  pair_N.toArray(), Codec.UNSIGNED5));
-                out.write(encodeBandInt(contextStr + "_" + type + " name_RU",  cpEntryListToArray(name_RU), Codec.UNSIGNED5));
+                encodedBand = encodeBandInt(
+                        contextStr + "_" + type + " anno_N", anno_N.toArray(),
+                        Codec.UNSIGNED5);
+                out.write(encodedBand);
+                PackingUtils.log("Wrote " + encodedBand.length
+                        + " bytes from " + contextStr + "_" + type + " anno_N["
+                        + anno_N.size() + "]");
+
+                encodedBand = encodeBandInt(contextStr + "_" + type
+                        + " type_RS", cpEntryListToArray(type_RS),
+                        Codec.UNSIGNED5);
+                out.write(encodedBand);
+                PackingUtils.log("Wrote " + encodedBand.length
+                        + " bytes from " + contextStr + "_" + type
+                        + " type_RS[" + type_RS.size() + "]");
+
+                encodedBand = encodeBandInt(
+                        contextStr + "_" + type + " pair_N", pair_N.toArray(),
+                        Codec.UNSIGNED5);
+                out.write(encodedBand);
+                PackingUtils.log("Wrote " + encodedBand.length
+                        + " bytes from " + contextStr + "_" + type + " pair_N["
+                        + pair_N.size() + "]");
+
+                encodedBand = encodeBandInt(contextStr + "_" + type
+                        + " name_RU", cpEntryListToArray(name_RU),
+                        Codec.UNSIGNED5);
+                out.write(encodedBand);
+                PackingUtils.log("Wrote " + encodedBand.length
+                        + " bytes from " + contextStr + "_" + type
+                        + " name_RU[" + name_RU.size() + "]");
             }
-            out.write(encodeBandInt(contextStr + "_" + type + " T",  tagListToArray(T), Codec.BYTE1));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseI_KI",  cpEntryListToArray(caseI_KI), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseD_KD",  cpEntryListToArray(caseD_KD), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseF_KF",  cpEntryListToArray(caseF_KF), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseJ_KJ",  cpEntryListToArray(caseJ_KJ), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " casec_RS",  cpEntryListToArray(casec_RS), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseet_RS",  cpEntryListToArray(caseet_RS), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " caseec_RU",  cpEntryListToArray(caseec_RU), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " cases_RU",  cpEntryListToArray(cases_RU), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " casearray_N",  casearray_N.toArray(), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " nesttype_RS",  cpEntryListToArray(nesttype_RS), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " nestpair_N",  nestpair_N.toArray(), Codec.UNSIGNED5));
-            out.write(encodeBandInt(contextStr + "_" + type + " nestname_RU",  cpEntryListToArray(nestname_RU), Codec.UNSIGNED5));
+            encodedBand = encodeBandInt(contextStr + "_" + type + " T",
+                    tagListToArray(T), Codec.BYTE1);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " T[" + T.size() + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseI_KI",
+                    cpEntryListToArray(caseI_KI), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseI_KI[" + caseI_KI.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseD_KD",
+                    cpEntryListToArray(caseD_KD), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseD_KD[" + caseD_KD.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseF_KF",
+                    cpEntryListToArray(caseF_KF), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseF_KF[" + caseF_KF.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseJ_KJ",
+                    cpEntryListToArray(caseJ_KJ), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseJ_KJ[" + caseJ_KJ.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " casec_RS",
+                    cpEntryListToArray(casec_RS), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " casec_RS[" + casec_RS.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseet_RS",
+                    cpEntryListToArray(caseet_RS), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseet_RS["
+                    + caseet_RS.size() + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " caseec_RU",
+                    cpEntryListToArray(caseec_RU), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " caseec_RU["
+                    + caseec_RU.size() + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type + " cases_RU",
+                    cpEntryListToArray(cases_RU), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " cases_RU[" + cases_RU.size()
+                    + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type
+                    + " casearray_N", casearray_N.toArray(), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " casearray_N["
+                    + casearray_N.size() + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type
+                    + " nesttype_RS", cpEntryListToArray(nesttype_RS),
+                    Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " nesttype_RS["
+                    + nesttype_RS.size() + "]");
+
+            encodedBand = encodeBandInt(
+                    contextStr + "_" + type + " nestpair_N", nestpair_N
+                            .toArray(), Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " nestpair_N["
+                    + nestpair_N.size() + "]");
+
+            encodedBand = encodeBandInt(contextStr + "_" + type
+                    + " nestname_RU", cpEntryListToArray(nestname_RU),
+                    Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length + " bytes from "
+                    + contextStr + "_" + type + " nestname_RU["
+                    + nestname_RU.size() + "]");
         }
     }
 

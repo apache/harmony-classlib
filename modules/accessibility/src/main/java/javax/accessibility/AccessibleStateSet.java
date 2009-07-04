@@ -91,7 +91,7 @@ public class AccessibleStateSet {
         if (states == null) {
             return null;
         }
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         for (Iterator<AccessibleState> it = states.iterator(); it.hasNext();) {
             str.append(it.next().toString());
             if (it.hasNext()) {

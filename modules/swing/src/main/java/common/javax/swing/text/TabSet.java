@@ -101,7 +101,7 @@ public class TabSet implements Serializable {
     }
 
     public String toString() {
-        StringBuffer result = new StringBuffer("[ ");
+        StringBuilder result = new StringBuilder("[ ");
         for (int i = 0; i < tabs.length; i++) {
             if (i != 0) {
                 result.append(" - ");

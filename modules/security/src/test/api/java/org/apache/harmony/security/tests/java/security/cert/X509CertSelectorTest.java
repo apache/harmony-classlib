@@ -39,7 +39,7 @@ public class X509CertSelectorTest extends TestCase {
             try {
                 new X509CertSelector().addSubjectAlternativeName(types[i],
                         (byte[]) null);
-                fail("No expected NullPointerException for type: " + i);
+                fail("No expected NullPointerException for type: " + types[i]);
             } catch (NullPointerException e) {
             }
         }
@@ -48,15 +48,32 @@ public class X509CertSelectorTest extends TestCase {
     /**
      * @tests java.security.cert.X509CertSelector#addSubjectAlternativeName(int, String)
      */
-    public void test_addSubjectAlternativeNameLintLjava_lang_String() {
+    public void test_addSubjectAlternativeNameLintLjava_lang_String() throws IOException {
         // Regression for HARMONY-727
-        int[] types = { 0, 2, 3, 4, 5, 6, 7, 8 };
+        int[] types = { 0, 3, 4, 5, 6, 7, 8 };
         for (int i = 0; i < types.length; i++) {
             try {
                 new X509CertSelector().addSubjectAlternativeName(types[i],
                         "0xDFRF");
-                fail("IOException expected");
+                fail("IOException expected for type: " + types[i]);
             } catch (IOException e) {
+            }
+        }
+        // Tests for DNSGeneralName
+        // Legal DNS names
+        new X509CertSelector().addSubjectAlternativeName(2, "0xDFRF");
+        new X509CertSelector().addSubjectAlternativeName(2, "");
+        new X509CertSelector().addSubjectAlternativeName(2, "foo.example.com");
+        new X509CertSelector().addSubjectAlternativeName(2, "3g.example.com");
+        new X509CertSelector().addSubjectAlternativeName(2, "*.example.com");
+        // Illegal DNS names
+        String[] names = new String[] {"*", "*.", "%anything"};
+        for (String badName : names) {
+            try {
+                new X509CertSelector().addSubjectAlternativeName(2, badName);
+                fail("IOException expected for DNS name " + badName);
+            } catch (IOException e) {
+                // Expected
             }
         }
     }
@@ -70,7 +87,7 @@ public class X509CertSelectorTest extends TestCase {
         for (int i = 0; i < types.length; i++) {
             try {
                 new X509CertSelector().addPathToName(types[i], (byte[]) null);
-                fail("No expected NullPointerException for type: " + i);
+                fail("No expected NullPointerException for type: " + types[i]);
             } catch (NullPointerException e) {
             }
         }
@@ -84,7 +101,7 @@ public class X509CertSelectorTest extends TestCase {
         for (int type = 0; type <= 8; type++) {
             try {
                 new X509CertSelector().addPathToName(type, (String) null);
-                fail("IOException expected!");
+                fail("IOException expected for type: " + type);
             } catch (IOException ioe) {
                 // expected
             }

@@ -101,7 +101,7 @@ public class SQLOutputImpl implements SQLOutput {
     @SuppressWarnings("unchecked")
     public void writeAsciiStream(InputStream theStream) throws SQLException {
         BufferedReader br = new BufferedReader(new InputStreamReader(theStream));
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         String line;
         try {
             line = br.readLine();
@@ -192,7 +192,7 @@ public class SQLOutputImpl implements SQLOutput {
     @SuppressWarnings("unchecked")
     public void writeCharacterStream(Reader theStream) throws SQLException {
         BufferedReader br = new BufferedReader(theStream);
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         String line;
         try {
             line = br.readLine();

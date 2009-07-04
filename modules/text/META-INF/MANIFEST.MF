@@ -14,7 +14,6 @@ Eclipse-JREBundle: true
 Import-Package: com.ibm.icu.math,
  com.ibm.icu.text,
  com.ibm.icu.util,
- java.awt.font,
  java.io,
  java.lang,
  java.lang.reflect,

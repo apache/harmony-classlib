@@ -36,7 +36,7 @@ public abstract class BandSet {
 
     // Minimum size of band for each effort level where we consider alternative codecs
     // Note: these values have been tuned - please test carefully if changing them
-    private final int[] effortThresholds = new int[] {0, 0, 1000, 500, 100, 100, 100, 100, 100, 0};
+    private static final int[] effortThresholds = new int[] {0, 0, 1000, 500, 100, 100, 100, 100, 100, 0};
 
     private long[] canonicalLargest;
     private long[] canonicalSmallest;
@@ -419,7 +419,7 @@ public abstract class BandSet {
             }
         }
         favoured.add(favoured.get(favoured.size() - 1)); // repeat last value
-        int[] favouredBand = listToArray(favoured);
+        int[] favouredBand = integerListToArray(favoured);
         int[] unfavouredBand = unfavoured.toArray();
 
         // Analyse the three bands to get the best codec
@@ -592,7 +592,7 @@ public abstract class BandSet {
     /**
      * Converts a list of Integers to an int[] array
      */
-    protected int[] listToArray(List integerList) {
+    protected int[] integerListToArray(List integerList) {
         int[] array = new int[integerList.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = ((Integer)integerList.get(i)).intValue();
@@ -646,6 +646,9 @@ public abstract class BandSet {
         return encodeFlags(name, flatten(flags), loCodec, hiCodec, haveHiFlags);
    }
 
+    /*
+     * Flatten a 2-dimension array into a 1-dimension array
+     */
     private long[] flatten(long[][] flags) {
         int totalSize = 0;
         for (int i = 0; i < flags.length; i++) {

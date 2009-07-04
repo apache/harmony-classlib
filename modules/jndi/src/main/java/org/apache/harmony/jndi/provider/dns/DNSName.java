@@ -409,7 +409,7 @@ public class DNSName implements Name, Cloneable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         for (int i = components.size() - 1; i >= 0; i--) {
             String comp = components.elementAt(i);

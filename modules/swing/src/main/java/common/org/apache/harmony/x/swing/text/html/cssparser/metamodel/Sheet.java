@@ -63,7 +63,7 @@ public final class Sheet {
 
 
     public String toString() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append("imports:")
               .append(imports)
               .append("\n")

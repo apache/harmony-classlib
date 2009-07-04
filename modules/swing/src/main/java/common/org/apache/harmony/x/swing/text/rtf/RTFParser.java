@@ -95,7 +95,7 @@ public class RTFParser implements RTFParserConstants {
   byte[] bytes;
   String text;
   ByteArrayOutputStream textBytes = new ByteArrayOutputStream();
-  StringBuffer parsedText = new StringBuffer();
+  StringBuilder parsedText = new StringBuilder();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -220,7 +220,7 @@ public class RTFParser implements RTFParserConstants {
 
   final public String parseUnicodeText() throws ParseException {
   int param;
-  StringBuffer unicodeBuffer = new StringBuffer();
+  StringBuilder unicodeBuffer = new StringBuilder();
     label_3:
     while (true) {
       jj_consume_token(U);

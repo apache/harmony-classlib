@@ -1092,7 +1092,7 @@ public class URLTest extends TestCase {
             System.setSecurityManager(null);
         }
     }
-
+    
     /**
      * @tests java.net.URL#openConnection()
      */
@@ -1235,6 +1235,33 @@ public class URLTest extends TestCase {
         URL url = new URL(new URL(strURL), ref);
         assertEquals("http://a/b/c/?y", url.toExternalForm());
 
+    }
+
+    // Regression test for HARMONY-6254
+
+    // Bogus handler forces file part of URL to be null
+    static class MyHandler2 extends URLStreamHandler {
+
+        @Override
+        protected URLConnection openConnection(URL arg0) throws IOException {
+            return null;
+        }
+
+        @Override
+        protected void setURL(URL u, String protocol, String host, int port,
+                String authority, String userInfo, String file, String query,
+                String ref) {
+            super.setURL(u, protocol, host, port, authority, userInfo,
+                    (String) null, query, ref);
+        }
+    }
+
+    // Test special case of external form with null file part (HARMONY-6254)
+    public void test_toExternalForm_Null() throws IOException {
+        URLStreamHandler myHandler = new MyHandler2();
+        URL url = new URL(null, "foobar://example.com/foobar", myHandler);
+        String s = url.toExternalForm();
+        assertEquals("Got wrong URL external form", "foobar://example.com", s);
     }
 
     static class MockProxySelector extends ProxySelector {

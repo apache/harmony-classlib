@@ -18,6 +18,7 @@
 
 <project name="Harmony Test" default="test" basedir=".">
 
+    <property name="test.jre.home" location="../../jdk/jre" />
     <property file="test.properties" />
     <property name="build.module" value="all"/>
     <import file="properties.xml" />
@@ -95,6 +96,9 @@
             </fileset>
             <report format="frames" todir="${test.report.dir}" />
         </junitreport>
+        <property name="display-location"
+                  location="${test.report.dir}/index.html"/>
+        <echo message="The test report is in ${display-location}"/>
     </target>
     
     <target name="failure">

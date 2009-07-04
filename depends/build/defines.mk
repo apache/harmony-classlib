@@ -21,6 +21,7 @@ CXX = $(CC)
 CPP = $(CC) -E
 AS = as
 AR = ar
+RANLIB=echo
 ARFLAGS = rcv
 DLL_LD = $(CC)
 DLL_LDFLAGS = -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE)
@@ -34,46 +35,25 @@ EXELDFLAGS = $(LDFLAGS)
 EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
 	-Xlinker \$$ORIGIN/ -Xlinker -rpath-link \
 	-Xlinker
-ifneq ($(HY_OS),zos)
 WARNFLAGS=-Werror
-else
-WARNFLAGS=
-endif
 
-include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
-
-ifeq ($(RANLIB),)
-RANLIB=echo
-endif
-
-ifneq ($(HY_OS),freebsd)
-ifneq ($(HY_OS),zos)
-OSLIBS += -ldl
-endif
-endif
+PLATFORM = -fpic
+HYDEBUGCFLAGS = -ggdb -O0
+HYRELEASECFLAGS = -O1 -DNDEBUG
 
 EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
-
-ifneq ($(HY_OS),zos)
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
-else
-# On z/OS set DLLPATH to LIBPATH so we link against .x export files in
-# $(HY_HDK)/lib instead of directly against the .so libraries.
-DLLPATH=$(LIBPATH)
-endif
 SHAREDSUB=../shared/
-
-DEFINES += -D_REENTRANT
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
 ifndef HYDEBUGCFLAGS
 HYDEBUGCFLAGS = -ggdb -O0
 endif
 
-ifndef HYRELEASECFLAGS  
-HYRELEASECFLAGS = -O1 -DNDEBUG
-endif
+include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
+
+DEFINES += -D_REENTRANT
 
 ifeq ($(HY_CFG),release)
 OPT += $(HYRELEASECFLAGS)

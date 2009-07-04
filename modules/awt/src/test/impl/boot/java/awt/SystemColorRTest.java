@@ -20,6 +20,8 @@
  */
 package java.awt;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 
 public class SystemColorRTest extends TestCase {
@@ -39,4 +41,17 @@ public class SystemColorRTest extends TestCase {
         assertEquals(color.getGreen(), g);
         assertEquals(color.getBlue(), b);
     }
+
+    public void testHashCode() {
+        // Regression test for HARMONY-6244
+        assertTrue(SystemColor.activeCaption.hashCode() != SystemColor.textHighlight
+                .hashCode());
+        HashMap<Object, String> hashMap = new HashMap<Object, String>();
+        hashMap.put(SystemColor.activeCaption, "activeCaption");
+        hashMap.put(SystemColor.textHighlight, "textHighlight");
+        assertEquals(2, hashMap.size());
+        assertEquals("activeCaption", hashMap.get(SystemColor.activeCaption));
+        assertEquals("textHighlight", hashMap.get(SystemColor.textHighlight));
+    }
+
 }

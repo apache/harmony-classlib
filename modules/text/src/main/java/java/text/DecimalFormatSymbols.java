@@ -87,8 +87,14 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      *            the locale.
      */
     public DecimalFormatSymbols(Locale locale) {
-        com.ibm.icu.text.DecimalFormatSymbols icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(
-                locale);
+        this(locale, new com.ibm.icu.text.DecimalFormatSymbols(locale));
+    }
+
+    transient private com.ibm.icu.text.DecimalFormatSymbols icuSymbols;
+
+    DecimalFormatSymbols(Locale locale,
+            com.ibm.icu.text.DecimalFormatSymbols icuSymbols) {
+        this.icuSymbols = icuSymbols;
         infinity = icuSymbols.getInfinity();
         NaN = icuSymbols.getNaN();
         this.locale = locale;
@@ -96,7 +102,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         intlCurrencySymbol = icuSymbols.getInternationalCurrencySymbol();
         exponentialSeparator = icuSymbols.getExponentSeparator();
         if (locale.getCountry().length() == 0) {
-            currency = Currency.getInstance("XXX");
+            currency = Currency.getInstance("XXX"); //$NON-NLS-1$
         } else {
             currency = Currency.getInstance(locale);
         }
@@ -115,6 +121,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     }
 
+ 
     /**
      * Get all locales which <code>getInstance(Locale)</code> method support
      * to return localize instance. The returned array locales include Java
@@ -690,5 +697,9 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     Locale getLocale() {
         return locale;
+    }
+
+    com.ibm.icu.text.DecimalFormatSymbols getIcuSymbols() {
+        return icuSymbols;
     }
 }

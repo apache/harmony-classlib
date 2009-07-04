@@ -245,6 +245,78 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    public void testPassFiles() throws IOException, URISyntaxException, Pack200Exception {
+        // Don't pass any
+        in = new JarFile(new File(Archive.class
+                .getResource("/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        File file0 = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file0);
+        PackingOptions options = new PackingOptions();
+        options.setGzip(false);
+        Archive archive = new Archive(in, out, options);
+        archive.pack();
+        in.close();
+        out.close();
+
+        // Pass one file
+        in = new JarFile(new File(Archive.class
+                .getResource("/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        file = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file);
+        options = new PackingOptions();
+        options.setGzip(false);
+        options.addPassFile("bin/test/org/apache/harmony/sql/tests/java/sql/DatabaseMetaDataTest.class");
+        assertTrue(options.isPassFile("bin/test/org/apache/harmony/sql/tests/java/sql/DatabaseMetaDataTest.class"));
+        archive = new Archive(in, out, options);
+        archive.pack();
+        in.close();
+        out.close();
+
+        // Pass a whole directory
+        in = new JarFile(new File(Archive.class
+                .getResource("/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
+        File file2 = File.createTempFile("sql", ".pack");
+        out = new FileOutputStream(file2);
+        options = new PackingOptions();
+        options.setGzip(false);
+        options.addPassFile("bin/test/org/apache/harmony/sql/tests/java/sql");
+        assertTrue(options.isPassFile("bin/test/org/apache/harmony/sql/tests/java/sql/DatabaseMetaDataTest.class"));
+        assertFalse(options.isPassFile("bin/test/org/apache/harmony/sql/tests/java/sqldata/SqlData.class"));
+        archive = new Archive(in, out, options);
+        archive.pack();
+        in.close();
+        out.close();
+
+        assertTrue("If files are passed then the pack file should be larger", file.length() > file0.length());
+        assertTrue("If more files are passed then the pack file should be larger", file2.length() > file.length());
+
+        // now unpack
+        InputStream in2 = new FileInputStream(file);
+        File file3 = File.createTempFile("sql", ".jar");
+        JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file3));
+        org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(in2, out2);
+        u2archive.unpack();
+
+        File compareFile = new File(Archive.class.getResource(
+                "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
+        JarFile jarFile = new JarFile(file3);
+        file2.deleteOnExit();
+
+        JarFile jarFile2 = new JarFile(compareFile);
+        // Check that both jars have the same entries
+        compareJarEntries(jarFile, jarFile2);
+
+        // now unpack the file with lots of passed files
+        InputStream in3 = new FileInputStream(file2);
+        File file4 = File.createTempFile("sql", ".jar");
+        JarOutputStream out3 = new JarOutputStream(new FileOutputStream(file4));
+        u2archive = new org.apache.harmony.unpack200.Archive(in3, out3);
+        u2archive.unpack();
+        jarFile = new JarFile(file4);
+        jarFile2 = new JarFile(compareFile);
+        compareJarEntries(jarFile, jarFile2);
+    }
+
     public void testAnnotations() throws IOException, Pack200Exception,
             URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
@@ -323,6 +395,20 @@ public class ArchiveTest extends TestCase {
 
 			}
 		}
+    }
+
+    private void compareJarEntries(JarFile jarFile, JarFile jarFile2)
+            throws IOException {
+        Enumeration entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+
+            JarEntry entry = (JarEntry) entries.nextElement();
+            assertNotNull(entry);
+
+            String name = entry.getName();
+            JarEntry entry2 = jarFile2.getJarEntry(name);
+            assertNotNull("Missing Entry: " + name, entry2);
+        }
     }
 
     private void compareFiles(JarFile jarFile, JarFile jarFile2)

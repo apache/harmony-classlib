@@ -50,7 +50,4 @@
    <jdk location="../../deploy/jdk" />
    <build location="../../build/classes" />
 
-   <tests>
-      <reports location="../../build/test_report" />
-   </tests>
 </hy>

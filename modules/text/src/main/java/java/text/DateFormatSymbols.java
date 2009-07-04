@@ -100,7 +100,20 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the locale.
      */
     public DateFormatSymbols(Locale locale) {
-        icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
+        this(locale, new com.ibm.icu.text.DateFormatSymbols(locale));
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        if (zoneStrings == null) {
+            zoneStrings = icuSymbols.getZoneStrings();
+        }
+        oos.defaultWriteObject();
+    }
+
+    DateFormatSymbols(Locale locale,
+            com.ibm.icu.text.DateFormatSymbols icuSymbols) {
+
+        this.icuSymbols = icuSymbols;
         localPatternChars = icuSymbols.getLocalPatternChars();
         ampms = icuSymbols.getAmPmStrings();
         eras = icuSymbols.getEras();
@@ -199,13 +212,6 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         // return DateFormatSymbols using default locale
         return new DateFormatSymbols();
 
-    }
-
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        if (zoneStrings == null) {
-            zoneStrings = icuSymbols.getZoneStrings();
-        }
-        oos.defaultWriteObject();
     }
 
     @Override

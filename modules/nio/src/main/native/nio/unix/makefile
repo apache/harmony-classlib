@@ -31,7 +31,7 @@ endif
 
 MDLLIBFILES = \
 	$(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a
+	$(LIBPATH)libhypool.a
 
 DLLNAME = ../libhynio$(HY_SHLIB_SUFFIX)
 EXPNAME = HYNIO_0.1

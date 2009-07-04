@@ -39,8 +39,10 @@
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"
-        depends="clean-test-output, test-modules, process-empty, gen-report, check-test-result">
-    </target>
+            depends="clean-test-output, test-jar-init, test-modules, process-test-output" />
+
+    <target name="process-test-output"
+            depends="process-empty, gen-report, check-test-result" />
 
     <target name="clean">
         <delete dir="${tests.output}" />
@@ -54,9 +56,16 @@
     </target>
 
     <target name="test-modules" depends="support-jar, test-jre-vm-info">
+        <poll-modules target="-test-module" />
+    </target>
+
+    <target name="test-jar-init">
         <copy file="${basedir}/make/test.properties" tofile="${hy.hdk}/build/test/test.properties"/>
         <copy file="${basedir}/make/run-test.xml" tofile="${hy.hdk}/build/test/build.xml"/>
-        <poll-modules target="-test-module" />
+    </target>
+
+    <target name="test-jar-modules" depends="test-jar-init">
+        <poll-modules target="test-jar" /> 
     </target>
 
     <target name="gen-report" depends="full-report,short-report" />

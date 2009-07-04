@@ -606,11 +606,22 @@ public class DecimalFormat extends NumberFormat {
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
         symbols = (DecimalFormatSymbols) value.clone();
-        Locale locale = symbols.getLocale(); //$NON-NLS-1$
+        Locale locale = symbols.getLocale();
         icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
         copySymbols(icuSymbols, symbols);
 
         dform = new com.ibm.icu.text.DecimalFormat(pattern, icuSymbols);
+
+        super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
+        super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
+        super.setMinimumFractionDigits(dform.getMinimumFractionDigits());
+        super.setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
+    }
+
+    DecimalFormat(String pattern, DecimalFormatSymbols value, com.ibm.icu.text.DecimalFormat icuFormat) {
+        symbols = value;
+        icuSymbols = value.getIcuSymbols();
+        dform = icuFormat;
 
         super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
         super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
@@ -1385,7 +1396,7 @@ public class DecimalFormat extends NumberFormat {
             final DecimalFormatSymbols dfs) {
         Currency currency = dfs.getCurrency();
         if (currency == null) {
-            icu.setCurrency(com.ibm.icu.util.Currency.getInstance("XXX"));
+            icu.setCurrency(com.ibm.icu.util.Currency.getInstance("XXX")); //$NON-NLS-1$
         } else {
             icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs
                     .getCurrency().getCurrencyCode()));

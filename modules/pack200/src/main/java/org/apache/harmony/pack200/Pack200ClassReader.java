@@ -34,6 +34,7 @@ public class Pack200ClassReader extends ClassReader {
 
     /**
      * @param b
+     *            the contents of class file in the format of bytes
      */
     public Pack200ClassReader(byte[] b) {
         super(b);
@@ -41,6 +42,7 @@ public class Pack200ClassReader extends ClassReader {
 
     /**
      * @param is
+     *            the input stream of class file
      * @throws IOException
      */
     public Pack200ClassReader(InputStream is) throws IOException {
@@ -53,6 +55,15 @@ public class Pack200ClassReader extends ClassReader {
      */
     public Pack200ClassReader(String name) throws IOException {
         super(name);
+    }
+
+    /**
+     * @param b
+     * @param off
+     * @param len
+     */
+    public Pack200ClassReader(byte[] b, int off, int len) {
+        super(b, off, len);
     }
 
     public int readUnsignedShort(int index) {
@@ -74,19 +85,10 @@ public class Pack200ClassReader extends ClassReader {
 
     public String readUTF8(int arg0, char[] arg1) {
         String utf8 = super.readUTF8(arg0, arg1);
-        if(!anySyntheticAttributes && utf8.equals("Synthetic")) {
+        if(!anySyntheticAttributes && "Synthetic".equals(utf8)) {
             anySyntheticAttributes = true;
         }
         return utf8;
-    }
-
-    /**
-     * @param b
-     * @param off
-     * @param len
-     */
-    public Pack200ClassReader(byte[] b, int off, int len) {
-        super(b, off, len);
     }
 
     public boolean lastConstantHadWideIndex() {

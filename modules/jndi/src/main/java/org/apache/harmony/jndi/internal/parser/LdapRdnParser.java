@@ -107,7 +107,7 @@ public class LdapRdnParser implements LdapParser {
     }
 
     private static String getEscaped(char[] chars) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int leftSpaceCnt = 0, rightSpaceCnt = 0;
         int pos = chars.length - 1;
         while (pos >= 0 && chars[pos] == ' ') {
@@ -131,7 +131,7 @@ public class LdapRdnParser implements LdapParser {
     }
 
     private static String getHexValues(byte[] byteArray) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < byteArray.length; i++) {
             sb.append(Integer.toHexString(byteArray[i] >> 4 & 0x0F));
             sb.append(Integer.toHexString(byteArray[i] & 0x0F));
@@ -190,7 +190,7 @@ public class LdapRdnParser implements LdapParser {
     }
 
     private static String getUnEscapedValues(char[] chars) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean trailing20h = false;
         for (int i = 0; i < chars.length; i++) {
             trailing20h = false;

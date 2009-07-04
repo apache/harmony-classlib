@@ -1018,7 +1018,7 @@ public class X509CertSelector implements CertSelector {
         // all of the fields named according to the rfc 3280
         // (http://www.ietf.org/rfc/rfc3280.txt).
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append("X509CertSelector: \n["); //$NON-NLS-1$
         if (this.certificateEquals != null) {
             result.append("\n  certificateEquals: " + certificateEquals); //$NON-NLS-1$

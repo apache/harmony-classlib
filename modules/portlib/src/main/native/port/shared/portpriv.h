@@ -318,7 +318,7 @@ struct HyPortLibrary;
 extern HY_CFUNC void *VMCALL
   hymem_allocate_memory_callSite
 PROTOTYPE ((struct HyPortLibrary * portLibrary, UDATA byteAmount,
-            char *callSite));
+            const char *callSite));
 struct HyPortLibrary;
 extern HY_CFUNC void VMCALL
   hymem_shutdown PROTOTYPE ((struct HyPortLibrary * portLibrary));
@@ -587,7 +587,7 @@ PROTOTYPE ((struct HyPortLibrary * portLibrary, char *envVar,
 struct HyPortLibrary;
 extern HY_CFUNC UDATA VMCALL
   hysl_lookup_name
-PROTOTYPE ((struct HyPortLibrary * portLibrary, UDATA descriptor, char *name,
+PROTOTYPE ((struct HyPortLibrary * portLibrary, UDATA descriptor, const char *name,
             UDATA * func, const char *argSignature));
 struct HyPortLibrary;
 extern HY_CFUNC UDATA VMCALL
@@ -823,7 +823,7 @@ PROTOTYPE ((struct HyPortLibrary * portLibrary, hysocket_t socketP,
 struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
   hysock_inetaddr
-PROTOTYPE ((struct HyPortLibrary * portLibrary, char *addrStr, U_32 * addr));
+PROTOTYPE ((struct HyPortLibrary * portLibrary, const char *addrStr, U_32 * addr));
 struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
   hysock_bind
@@ -882,7 +882,7 @@ struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
   hysock_sockaddr
 PROTOTYPE ((struct HyPortLibrary * portLibrary, hysockaddr_t handle,
-            char *addrStr, U_16 port));
+            const char *addrStr, U_16 port));
 struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
   hysock_gethostbyaddr
@@ -965,7 +965,7 @@ PROTOTYPE ((struct HyPortLibrary * portLibrary, hysockaddr_t handle));
 struct HyPortLibrary;
 extern HY_CFUNC I_32 VMCALL
   hysock_gethostbyname
-PROTOTYPE ((struct HyPortLibrary * portLibrary, char *name,
+PROTOTYPE ((struct HyPortLibrary * portLibrary, const char *name,
             hyhostent_t handle));
 struct HyPortLibrary;
 struct hyNetworkInterfaceArray_struct;
@@ -1137,6 +1137,14 @@ extern HY_CFUNC HyThreadLibrary * VMCALL
   hyport_get_thread_library
 PROTOTYPE ((HyPortLibrary * portLib));
 #endif /* HY_NO_THR */
+struct HyPortLibrary;
+extern HY_CFUNC void VMCALL
+  hysock_fdset_zero
+PROTOTYPE ((struct HyPortLibrary * portLibrary, hyfdset_t fdset));
+struct HyPortLibrary;
+extern HY_CFUNC void VMCALL
+  hysock_fdset_set
+PROTOTYPE ((struct HyPortLibrary * portLibrary, hysocket_t aSocket, hyfdset_t fdset));
 static HyPortLibrary MasterPortLibraryTable = {
   {HYPORT_MAJOR_VERSION_NUMBER, HYPORT_MINOR_VERSION_NUMBER, 0, HYPORT_CAPABILITY_MASK},        /* portVersion */
   NULL,                         /* portGlobals */
@@ -1376,6 +1384,8 @@ hytty_startup,                /* tty_startup */
 #ifdef HY_NO_THR
   hyport_get_thread_library,    /* port_get_thread_library */
 #endif /* HY_NO_THR */
+  hysock_fdset_zero,
+  hysock_fdset_set,
 };
 #endif
 

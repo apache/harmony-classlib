@@ -293,7 +293,7 @@ public final class MathContext implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(45);
+        StringBuilder sb = new StringBuilder(45);
 
         sb.append(chPrecision);
         sb.append(precision);

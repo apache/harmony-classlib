@@ -23,6 +23,14 @@
 #include "helpers.h"
 #include "jclprots.h"
 
+void
+throwPathTooLongIOException(JNIEnv *env, jsize length)
+{
+  char errorString[100];
+  sprintf(errorString, "Path length of %d characters exceeds maximum supported length of %d", length, HyMaxPath-1);
+  throwJavaIoIOException(env, errorString);
+}
+
 JNIEXPORT jboolean JNICALL
 Java_java_io_File_deleteFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
@@ -31,7 +39,7 @@ Java_java_io_File_deleteFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -48,7 +56,7 @@ Java_java_io_File_deleteDirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -80,7 +88,7 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   currentEntry = NULL;
 
   if (length >= HyMaxPath) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -161,7 +169,7 @@ Java_java_io_File_isDirectoryImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -178,7 +186,7 @@ Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -243,7 +251,7 @@ Java_java_io_File_isFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -261,7 +269,7 @@ Java_java_io_File_lastModifiedImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -279,7 +287,7 @@ Java_java_io_File_lengthImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
 
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -330,7 +338,7 @@ Java_java_io_File_mkdirImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path length exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -347,16 +355,19 @@ Java_java_io_File_renameToImpl (JNIEnv * env, jobject recv,
   I_32 result;
   jsize length;
   char pathExistCopy[HyMaxPath], pathNewCopy[HyMaxPath];
+  char errorString[100];
   length = (*env)->GetArrayLength (env, pathExist);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "old path exceeds maximum supported length");
+    sprintf(errorString, "Old path length of %d characters exceeds maximum supported length of %d", length, HyMaxPath-1);
+    throwJavaIoIOException(env, errorString);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, pathExist, 0, length, (jbyte *)pathExistCopy));
   pathExistCopy[length] = '\0';
   length = (*env)->GetArrayLength (env, pathNew);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "new path exceeds maximum supported length");
+    sprintf(errorString, "New path length of %d characters exceeds maximum supported length of %d", length, HyMaxPath-1);
+    throwJavaIoIOException(env, errorString);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, pathNew, 0, length, (jbyte *)pathNewCopy));
@@ -376,7 +387,7 @@ Java_java_io_File_getCanonImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   U_32 length = (U_32) (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   (*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy);
@@ -399,7 +410,7 @@ Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -469,7 +480,7 @@ Java_java_io_File_isHiddenImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -486,7 +497,7 @@ Java_java_io_File_setLastModifiedImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -504,7 +515,7 @@ Java_java_io_File_setReadOnlyImpl (JNIEnv * env, jobject recv,
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -568,7 +579,7 @@ Java_java_io_File_isReadOnlyImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -585,7 +596,7 @@ Java_java_io_File_isWriteOnlyImpl (JNIEnv * env, jobject recv,
   char pathCopy[HyMaxPath];
   jsize length = (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
@@ -602,7 +613,7 @@ Java_java_io_File_getLinkImpl (JNIEnv * env, jobject recv, jbyteArray path)
   char pathCopy[HyMaxPath];
   U_32 length = (U_32) (*env)->GetArrayLength (env, path);
   if (length > HyMaxPath-1) {
-    throwJavaIoIOException(env, "path exceeds maximum supported length");
+    throwPathTooLongIOException(env, length);
     return 0;
   }
   (*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy);

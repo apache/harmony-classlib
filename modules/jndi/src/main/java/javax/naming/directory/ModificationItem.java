@@ -117,7 +117,7 @@ public class ModificationItem implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         switch (mod_op) {
             case DirContext.ADD_ATTRIBUTE:
                 sb.append("Operation is add attribute: "); //$NON-NLS-1$

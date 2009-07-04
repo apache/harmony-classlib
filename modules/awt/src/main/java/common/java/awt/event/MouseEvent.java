@@ -96,7 +96,7 @@ public class MouseEvent extends InputEvent {
     }
 
     public static String getMouseModifiersText(int modifiers) {
-        final StringBuffer text = new StringBuffer();
+        final StringBuilder text = new StringBuilder();
 
         if ((modifiers & META_MASK) != 0) {
             text.append(Toolkit.getProperty("AWT.meta", "Meta")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

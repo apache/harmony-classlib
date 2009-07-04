@@ -268,7 +268,7 @@ public final class MediaMargins
      * Throws IllegalArgumentException if units < 1.
      */
     public String toString(int myunits, String unitsName) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("x1=");
         s.append(getX1(myunits));
         s.append(" y1=");

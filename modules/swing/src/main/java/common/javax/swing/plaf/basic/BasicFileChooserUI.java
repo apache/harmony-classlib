@@ -376,7 +376,7 @@ public class BasicFileChooserUI extends FileChooserUI {
                     if (flavor.equals(DataFlavor.stringFlavor)
                         || flavor.equals(DataFlavor.plainTextFlavor)) {
 
-                        StringBuffer content = new StringBuffer();
+                        StringBuilder content = new StringBuilder();
                         for (int i = 0; i < transferingFiles.length; i++) {
                             content.append(transferingFiles[i].getAbsolutePath());
                             if (i < transferingFiles.length - 1) {

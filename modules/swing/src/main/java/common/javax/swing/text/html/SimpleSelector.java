@@ -34,7 +34,7 @@ final class SimpleSelector {
     }
 
     public String toString() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         if (tag != null) {
             result.append(tag);
         }

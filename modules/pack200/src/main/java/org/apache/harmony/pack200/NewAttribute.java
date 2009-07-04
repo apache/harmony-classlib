@@ -69,6 +69,7 @@ public class NewAttribute extends Attribute {
             break;
         case AttributeDefinitionBands.CONTEXT_CODE:
             contextCode = true;
+            break;
         }
     }
 

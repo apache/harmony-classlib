@@ -444,7 +444,7 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
                 if (file.canWrite() && !file.isHidden()) {
                     return null;
                 } else {
-                    StringBuffer result = new StringBuffer();
+                    StringBuilder result = new StringBuilder();
                     if (!file.canWrite()) {
                         result.append("R");
                     }
@@ -823,7 +823,7 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
                         return;
                     }
 
-                    StringBuffer textSelection = new StringBuffer();
+                    StringBuilder textSelection = new StringBuilder();
                     if (selectedFiles.length == 1) {
                         textSelection.append(fileToText(selectedFiles[0]));
                         getViewRepresentation().setSelectedValue(selectedFiles[0], true);

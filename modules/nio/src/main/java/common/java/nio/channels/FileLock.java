@@ -195,7 +195,7 @@ public abstract class FileLock {
     @Override
     @SuppressWarnings("nls")
     public final String toString() {
-        StringBuffer buffer = new StringBuffer(64); // Guess length of string
+        StringBuilder buffer = new StringBuilder(64); // Guess length of string
         buffer.append("FileLock: [position=");
         buffer.append(position);
         buffer.append(", size=");

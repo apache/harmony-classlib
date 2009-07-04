@@ -97,7 +97,7 @@ public final class BHSDCodec extends Codec {
     private final int h;
 
     /**
-     * The co-parameter of h; h-256
+     * The co-parameter of h; 256-h
      */
     private final int l;
 
@@ -127,7 +127,7 @@ public final class BHSDCodec extends Codec {
      *            the radix of the encoding [1..256]
      */
     public BHSDCodec(int b, int h) {
-        this(b, h, 0);
+        this(b, h, 0, 0);
     }
 
     /**
@@ -162,18 +162,24 @@ public final class BHSDCodec extends Codec {
      *            delta)
      */
     public BHSDCodec(int b, int h, int s, int d) {
-        if (b < 1 || b > 5)
+        if (b < 1 || b > 5) {
             throw new IllegalArgumentException("1<=b<=5");
-        if (h < 1 || h > 256)
+        }
+        if (h < 1 || h > 256) {
             throw new IllegalArgumentException("1<=h<=256");
-        if (s < 0 || s > 2)
+        }
+        if (s < 0 || s > 2) {
             throw new IllegalArgumentException("0<=s<=2");
-        if (d < 0 || d > 1)
+        }
+        if (d < 0 || d > 1) {
             throw new IllegalArgumentException("0<=d<=1");
-        if (b == 1 && h != 256)
+        }
+        if (b == 1 && h != 256) {
             throw new IllegalArgumentException("b=1 -> h=256");
-        if (h == 256 && b == 5)
+        }
+        if (h == 256 && b == 5) {
             throw new IllegalArgumentException("h=256 -> b!=5");
+        }
         this.b = b;
         this.h = h;
         this.s = s;
@@ -205,9 +211,10 @@ public final class BHSDCodec extends Codec {
     }
 
     public int decode(InputStream in) throws IOException, Pack200Exception {
-        if (d != 0)
+        if (d != 0) {
             throw new Pack200Exception(
                     "Delta encoding used without passing in last value; this is a coding error");
+        }
         return decode(in, 0);
     }
 
@@ -224,9 +231,10 @@ public final class BHSDCodec extends Codec {
             n++;
         } while (x >= l && n < b);
 
-        if (x == -1)
+        if (x == -1) {
             throw new EOFException("End of stream reached whilst decoding");
-
+        }
+        
         if (isSigned()) {
             int u = ((1 << s) - 1);
             if ((z & u) == u) {
@@ -251,8 +259,9 @@ public final class BHSDCodec extends Codec {
         // z = (long) (-Math.floor(u/ twoPowS) - 1);
         // }
         // }
-        if (isDelta())
+        if (isDelta()) {
             z += last;
+        }
         return (int)z;
     }
 
@@ -333,7 +342,7 @@ public final class BHSDCodec extends Codec {
         } else {
             if (z < 0) {
                 // Need to use integer overflow here to represent negatives.
-                if(cardinality < 4294967296L) {
+                if (cardinality < 4294967296L) {
                     z += cardinality;
                 } else {
                     z += 4294967296L; // this value is equal to (1 << 32).
@@ -351,8 +360,9 @@ public final class BHSDCodec extends Codec {
                 byteN = z;
             } else {
                 byteN = z % h;
-                while (byteN < l)
+                while (byteN < l) {
                     byteN += h;
+                }
             }
             byteList.add(new Byte((byte) byteN));
             if (byteN < l) {
@@ -493,11 +503,11 @@ public final class BHSDCodec extends Codec {
     }
 
     public boolean equals(Object o) {
-        if(!(o instanceof BHSDCodec)) {
-            return false;
+        if (o instanceof BHSDCodec) {
+            BHSDCodec codec = (BHSDCodec) o;
+            return codec.b == b && codec.h == h && codec.s == s && codec.d == d;
         }
-        BHSDCodec codec = (BHSDCodec) o;
-        return codec.b == b && codec.h == h && codec.s == s && codec.d == d;
+        return false;
     }
 
     public int hashCode() {

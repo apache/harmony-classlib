@@ -603,7 +603,7 @@ public abstract class AbstractDocument implements Document, Serializable {
 
         @Override
         public String toString() {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (UndoableEdit edit : edits) {
                 result.append(", ")
                       .append(edit.toString());

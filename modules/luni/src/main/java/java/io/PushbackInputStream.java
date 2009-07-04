@@ -300,9 +300,11 @@ public class PushbackInputStream extends FilterInputStream {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        for (int i = offset + length - 1; i >= offset; i--) {
-            unread(buffer[i]);
+        if (buf == null) {
+            throw new IOException();
         }
+        System.arraycopy(buffer, offset, buf, pos - length, length);
+        pos = pos - length;
     }
 
     /**

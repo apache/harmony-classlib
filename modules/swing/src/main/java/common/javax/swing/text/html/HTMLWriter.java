@@ -183,7 +183,7 @@ public class HTMLWriter extends AbstractWriter {
             return;
         }
 
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int writtenLength = 0;
         for (int i = 0; i < length; i++) {
             String entity = getEntity(chars[start + i]);
@@ -338,7 +338,7 @@ public class HTMLWriter extends AbstractWriter {
 
     protected void writeOption(final Option option) throws IOException {
         indent();
-        StringBuffer buffer = new StringBuffer(50);
+        StringBuilder buffer = new StringBuilder(50);
         buffer.append("<option");
         String value =
             (String)option.getAttributes().getAttribute(HTML.Attribute.VALUE);
@@ -365,7 +365,7 @@ public class HTMLWriter extends AbstractWriter {
 
         isOptionGroupOpen = true;
         indent();
-        StringBuffer buffer = new StringBuffer(50);
+        StringBuilder buffer = new StringBuilder(50);
         buffer.append("<optgroup");
         if (option.getLabel() != null) {
             buffer.append(" label=\"");

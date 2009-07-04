@@ -446,7 +446,7 @@ public class ChoiceFormat extends NumberFormat {
      * @return the pattern.
      */
     public String toPattern() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < choiceLimits.length; i++) {
             if (i != 0) {
                 buffer.append('|');

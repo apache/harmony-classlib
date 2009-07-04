@@ -20,12 +20,15 @@
  */
 package javax.swing.text;
 
-import junit.framework.TestCase;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+
+import junit.framework.TestCase;
 
 public class StyleConstantsTest extends TestCase {
     protected StyleConstants sc;
@@ -33,6 +36,8 @@ public class StyleConstantsTest extends TestCase {
     protected SimpleAttributeSet attr = new SimpleAttributeSet();
 
     String message = "Test for StyleConstants";
+
+    private Component component;
 
     @Override
     protected void setUp() throws Exception {
@@ -427,22 +432,40 @@ public class StyleConstantsTest extends TestCase {
         assertEquals("component", StyleConstants.ComponentAttribute.toString());
     }
 
-    public void testGetComponent() {
+    public void testGetComponent() throws Exception {
         assertNull(StyleConstants.getComponent(SimpleAttributeSet.EMPTY));
-        Component val = new JLabel("test component");
-        putAttribute(StyleConstants.ComponentAttribute, val);
-        assertEquals(val, StyleConstants.getComponent(attr));
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    component = new JLabel("test component");
+                }
+            });
+        putAttribute(StyleConstants.ComponentAttribute, component);
+        assertEquals(component, StyleConstants.getComponent(attr));
     }
 
-    public void testSetComponent() {
+    public void testGetComponent_Null() {
+        // Regression test for HARMONY-1767
+        try {
+            StyleConstants.getComponent(null);
+            fail("NullPointerException should be thrown");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testSetComponent() throws Exception {
         attr.removeAttributes(attr);
-        Component val = new JLabel("test component");
-        StyleConstants.setComponent(attr, val);
-        assertEquals(AbstractDocument.ElementNameAttribute + "=component component=" + val
-                + " ", attr.toString());
-        assertEquals(val, attr.getAttribute(StyleConstants.ComponentAttribute));
-        assertEquals(StyleConstants.ComponentElementName, attr
-                .getAttribute(AbstractDocument.ElementNameAttribute));
+        SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    component = new JLabel("test component");
+                }
+            });
+        StyleConstants.setComponent(attr, component);
+        assertEquals(2, attr.getAttributeCount());
+        assertEquals(component,
+                     attr.getAttribute(StyleConstants.ComponentAttribute));
+        assertEquals(StyleConstants.ComponentElementName,
+                     attr.getAttribute(AbstractDocument.ElementNameAttribute));
     }
 
     public void testFontFamily() {
@@ -499,8 +522,7 @@ public class StyleConstantsTest extends TestCase {
             }
         };
         StyleConstants.setIcon(attr, val);
-        assertEquals(AbstractDocument.ElementNameAttribute + "=icon icon=" + val + " ", attr
-                .toString());
+        assertEquals(2, attr.getAttributeCount());
         assertEquals(val, attr.getAttribute(StyleConstants.IconAttribute));
         assertEquals(StyleConstants.IconElementName, attr
                 .getAttribute(AbstractDocument.ElementNameAttribute));

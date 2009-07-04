@@ -14,4 +14,5 @@
 #  limitations under the License.
 
 DEFINES += -DLINUX -DLINUX_X86 -DHYX86 -DIPv6_FUNCTION_SUPPORT
-OPT += -fpic -march=pentium3
+PLATFORM += -march=pentium3
+OSLIBS += -ldl

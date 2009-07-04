@@ -129,7 +129,7 @@ public final class Timestamp implements Serializable {
      * @return a printable representation for this {@code Timestamp}.
      */
     public String toString() {
-        StringBuffer buf = new StringBuffer(256);
+        StringBuilder buf = new StringBuilder(256);
         // Dump only the first certificate
         buf.append("Timestamp [").append(timestamp).append(" certPath="); //$NON-NLS-1$ //$NON-NLS-2$
         buf.append(signerCertPath.getCertificates().get(0)).append("]"); //$NON-NLS-1$

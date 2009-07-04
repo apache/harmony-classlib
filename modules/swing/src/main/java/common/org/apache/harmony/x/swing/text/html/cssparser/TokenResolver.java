@@ -28,7 +28,7 @@ public class TokenResolver {
     }
 
     public static String resolve(final Token start, final Token end, final boolean allowSeparation) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         Token nextToken = start;
         do {
             if (allowSeparation && result.length() != 0) {

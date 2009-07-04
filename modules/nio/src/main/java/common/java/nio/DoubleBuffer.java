@@ -528,7 +528,7 @@ public abstract class DoubleBuffer extends Buffer implements
      */
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(getClass().getName());
         buf.append(", status: capacity="); //$NON-NLS-1$
         buf.append(capacity());

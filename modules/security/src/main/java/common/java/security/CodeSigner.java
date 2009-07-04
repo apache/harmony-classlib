@@ -127,8 +127,7 @@ public final class CodeSigner implements Serializable {
      */
     public String toString() {
         // There is no any special reason for '256' here, it's taken abruptly
-        // FIXME: 1.5 StringBuffer => StringBuilder
-        StringBuffer buf = new StringBuffer(256);
+        StringBuilder buf = new StringBuilder(256);
         // The javadoc says nothing, and the others implementations behavior seems as 
         // dumping only the first certificate. Well, let's do the same.
         buf.append("CodeSigner [").append(signerCertPath.getCertificates().get(0)); //$NON-NLS-1$

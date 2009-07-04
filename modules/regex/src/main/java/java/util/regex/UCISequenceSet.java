@@ -32,7 +32,7 @@ class UCISequenceSet extends LeafSet {
     private String string = null;
 
     UCISequenceSet(StringBuffer substring) {
-        StringBuffer res = new StringBuffer();
+        StringBuilder res = new StringBuilder();
         for (int i = 0; i < substring.length(); i++) {
             res.append(Character.toLowerCase(Character.toUpperCase(substring
                     .charAt(i))));

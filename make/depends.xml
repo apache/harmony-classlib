@@ -42,7 +42,6 @@
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
         <check-one-file src="${derby.url}" dest="${derby.jar}" />
-        <check-one-file src="${asm.url}" dest="${asm.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
         <check-one-file src="${icu4j-charsets.url}" dest="${icu4j-charsets.jar}" />    
     </target>
@@ -175,10 +174,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${derby.url}"
                        dest="${derby.jar}"
                        md5="${derby.md5}" />
-
-    <mkdir dir="${asm.dir}" />
-    <download-one-file src="${asm.url}" dest="${asm.jar}"
-                           md5="${asm.md5}" />
 
     <mkdir dir="${icu4j.dir}" />
     <download-one-file src="${icu4j.url}"

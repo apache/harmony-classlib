@@ -3331,7 +3331,7 @@ hythread_lib_clear_flags (UDATA flags)
  */
 IDATA VMCALL
 hythread_monitor_init_with_name (hythread_monitor_t * handle, UDATA flags,
-                                 char *name)
+                                 const char *name)
 {
   ASSERT (handle);
 

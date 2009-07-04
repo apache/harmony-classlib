@@ -402,7 +402,7 @@ public class BasicListUI extends ListUI {
                 return null;
             }
 
-            StringBuffer content = new StringBuffer();
+            StringBuilder content = new StringBuilder();
             for (int i = 0; i < selectedValues.length; i++) {
                 content.append(selectedValues[i]);
                 if (i < selectedValues.length - 1) {

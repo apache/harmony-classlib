@@ -304,7 +304,7 @@ public class LdapName implements Name {
             return ""; //$NON-NLS-1$
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(rdns.get(rdns.size() - 1).toString());
         for (int i = rdns.size() - 2; i >= 0; i--) {
             sb.append(',');

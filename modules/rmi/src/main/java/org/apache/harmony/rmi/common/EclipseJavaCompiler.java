@@ -140,7 +140,7 @@ public class EclipseJavaCompiler extends MethodJavaCompiler {
      * {@inheritDoc}
      */
     protected int run(String[] args) throws JavaCompilerException {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         for (int i = 0; i < args.length; i++) {
             if (i > 0) {

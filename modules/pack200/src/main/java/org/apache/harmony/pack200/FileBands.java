@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.harmony.pack200.Archive.File;
+import org.apache.harmony.pack200.Archive.SegmentUnit;
 import org.objectweb.asm.ClassReader;
 
 /**
@@ -41,27 +42,28 @@ public class FileBands extends BandSet {
     private final byte[][] file_bits;
 
     public FileBands(CpBands cpBands, SegmentHeader segmentHeader,
-            List files, List classes, int effort) {
+            PackingOptions options, SegmentUnit segmentUnit, int effort) {
         super(effort, segmentHeader);
-        int size =  files.size();
+        List fileList = segmentUnit.getFileList();
+        int size =  fileList.size();
         fileName = new CPUTF8[size];
         file_modtime = new int[size];
         file_size = new long[size];
         file_options = new int[size];
         int totalSize = 0;
-        file_bits = new byte[files.size()][];
+        file_bits = new byte[size][];
         int archiveModtime = segmentHeader.getArchive_modtime();
 
         Set classNames = new HashSet();
-        for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = segmentUnit.getClassList().iterator(); iterator.hasNext();) {
             ClassReader reader = (ClassReader) iterator.next();
             classNames.add(reader.getClassName());
         }
         CPUTF8 emptyString = cpBands.getCPUtf8("");
-        for (int i = 0; i < files.size(); i++) {
-             File file = (File)files.get(i);
+        for (int i = 0; i < size; i++) {
+             File file = (File)fileList.get(i);
              String name = file.getName();
-             if(name.endsWith(".class")) {
+             if(name.endsWith(".class") && !options.isPassFile(name)) {
                  file_options[i] |= (1 << 1);
                  if(classNames.contains(name.substring(0, name.length() - 6))) {
                      fileName[i] = emptyString;
@@ -92,17 +94,39 @@ public class FileBands extends BandSet {
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
-        out.write(encodeBandInt("file_name", file_name, Codec.UNSIGNED5));
-        out.write(encodeFlags("file_size", file_size, Codec.UNSIGNED5,
-                Codec.UNSIGNED5, segmentHeader.have_file_size_hi()));
+        PackingUtils.log("Writing file bands...");
+        byte[] encodedBand = encodeBandInt("file_name", file_name,
+                Codec.UNSIGNED5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from file_name[" + file_name.length + "]");
+
+        encodedBand = encodeFlags("file_size", file_size, Codec.UNSIGNED5,
+                Codec.UNSIGNED5, segmentHeader.have_file_size_hi());
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from file_size[" + file_size.length + "]");
+
         if (segmentHeader.have_file_modtime()) {
-            out.write(encodeBandInt("file_modtime", file_modtime, Codec.DELTA5));
+            encodedBand = encodeBandInt("file_modtime", file_modtime,
+                    Codec.DELTA5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length
+                    + " bytes from file_modtime[" + file_modtime.length + "]");
         }
         if (segmentHeader.have_file_options()) {
-            out.write(encodeBandInt("file_options", file_options,
-                    Codec.UNSIGNED5));
+            encodedBand = encodeBandInt("file_options", file_options,
+                    Codec.UNSIGNED5);
+            out.write(encodedBand);
+            PackingUtils.log("Wrote " + encodedBand.length
+                    + " bytes from file_options[" + file_options.length + "]");
         }
-        out.write(encodeBandInt("file_bits", flatten(file_bits), Codec.BYTE1));
+
+        encodedBand = encodeBandInt("file_bits", flatten(file_bits),
+                Codec.BYTE1);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length
+                + " bytes from file_bits[" + file_bits.length + "]");
     }
 
     private int[] flatten(byte[][] bytes) {

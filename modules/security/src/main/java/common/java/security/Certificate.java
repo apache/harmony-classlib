@@ -27,7 +27,7 @@ import java.io.OutputStream;
  * validity of itself. It's in the responsibility of the application to verify
  * the validity of its certificates.
  * 
- * @deprecated Replaced by behavior in {@link javax.security.cert}
+ * @deprecated Replaced by behavior in {@link java.security.cert}
  * @see java.security.cert.Certificate
  */
 @Deprecated

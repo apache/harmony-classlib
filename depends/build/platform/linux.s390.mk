@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 DEFINES += -DLINUX -DLINUX_S390 -DHYS390 -DIPv6_FUNCTION_SUPPORT
-OPT += -fpic -m31
-
+PLATFORM += -m31
 ASFLAGS += -m31
 LDFLAGS += -m31
+OSLIBS += -ldl

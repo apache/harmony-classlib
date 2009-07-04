@@ -35,13 +35,13 @@
 #endif
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
-UDATA VMCALL EsSharedLibraryLookupName (UDATA descriptor, char *name,
+UDATA VMCALL EsSharedLibraryLookupName (UDATA descriptor, const char *name,
 					UDATA * func);
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION EsSharedLibraryLookupName
 UDATA VMCALL
-EsSharedLibraryLookupName (UDATA descriptor, char *name, UDATA * func)
+EsSharedLibraryLookupName (UDATA descriptor, const char *name, UDATA * func)
 {
   UDATA lpfnFunction;
 
@@ -259,7 +259,7 @@ hysl_close_shared_library (struct HyPortLibrary * portLibrary,
  */
 UDATA VMCALL
 hysl_lookup_name (struct HyPortLibrary * portLibrary, UDATA descriptor,
-		  char *name, UDATA * func, const char *argSignature)
+		  const char *name, UDATA * func, const char *argSignature)
 {
   char *mangledName;
   UDATA result;

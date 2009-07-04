@@ -195,7 +195,7 @@ class DecomposedCharSet extends JointSet {
      */
     private String getDecomposedChar() {
         if (decomposedCharUTF16 == null) {
-            StringBuffer strBuff = new StringBuffer();
+            StringBuilder strBuff = new StringBuilder();
             
             for (int i = 0; i < decomposedCharLength; i++) {
                 strBuff.append(Character.toChars(decomposedChar[i]));

@@ -17,6 +17,9 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +55,44 @@ public class HashMapTest extends junit.framework.TestCase {
         }
     }
     
+    interface MockInterface {
+        public String mockMethod();
+    }
+
+    class MockClass implements MockInterface {
+        public String mockMethod() {
+            return "This is a MockClass";
+        }
+    }
+
+    class MockHandler implements InvocationHandler {
+
+        Object obj;
+
+        public MockHandler(Object o) {
+            obj = o;
+        }
+
+        public Object invoke(Object proxy, Method m, Object[] args)
+                throws Throwable {
+
+            Object result = null;
+
+            try {
+
+                result = m.invoke(obj, args);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+
+            }
+            return result;
+        }
+
+    }
+
+
 	HashMap hm;
 
 	final static int hmSize = 1000;
@@ -295,6 +336,17 @@ public class HashMapTest extends junit.framework.TestCase {
 
 		k.setKey(17);
 		assertNull(map.get(k));
+
+        // Regression for HARMONY-6237
+        MockInterface proxyInstance = (MockInterface) Proxy.newProxyInstance(
+                MockInterface.class.getClassLoader(),
+                new Class[] { MockInterface.class }, new MockHandler(
+                        new MockClass()));
+
+        hm.put(proxyInstance, "value2");
+
+        assertEquals("Failed with proxy object key", "value2", hm
+                .get(proxyInstance));
 	}
 
 	/**

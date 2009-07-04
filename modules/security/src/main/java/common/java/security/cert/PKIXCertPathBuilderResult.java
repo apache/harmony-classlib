@@ -74,7 +74,7 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
      *         instance.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n Certification Path: "); //$NON-NLS-1$
         sb.append(certPath.toString());
         sb.append("\n]"); //$NON-NLS-1$

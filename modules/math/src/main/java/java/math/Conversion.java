@@ -158,7 +158,7 @@ class Conversion {
                 case 6:
                     return "0.000000"; //$NON-NLS-1$
                 default:
-                    StringBuffer result1 = new StringBuffer();
+                    StringBuilder result1 = new StringBuilder();
                     if (scale < 0) {
                         result1.append("0E+"); //$NON-NLS-1$
                     } else {
@@ -270,7 +270,7 @@ class Conversion {
         }
         int startPoint = currentChar + 1;
         int endPoint = resLengthInChars;
-        StringBuffer result1 = new StringBuffer(16 + endPoint - startPoint);
+        StringBuilder result1 = new StringBuilder(16 + endPoint - startPoint);
         if (negNumber) {
             result1.append('-');
         }
@@ -310,7 +310,7 @@ class Conversion {
                 case 5: return "0.00000"; //$NON-NLS-1$
                 case 6: return "0.000000"; //$NON-NLS-1$
                 default:
-                    StringBuffer result1 = new StringBuffer();
+                    StringBuilder result1 = new StringBuilder();
                     if (scale  < 0) {
                         result1.append("0E+"); //$NON-NLS-1$
                     } else {
@@ -370,7 +370,7 @@ class Conversion {
         }
         int startPoint = currentChar + 1;
         int endPoint = resLengthInChars;
-        StringBuffer result1 = new StringBuffer(16+endPoint-startPoint);
+        StringBuilder result1 = new StringBuilder(16+endPoint-startPoint);
         if (negNumber) {
             result1.append('-');
         }

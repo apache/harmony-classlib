@@ -78,33 +78,45 @@ public class XMLDecoderTest extends TestCase {
     /*
      * test XMLDecoder constructor with null inputStream argument
      */
-    public void test_Constructor_NullInputStream() {
-        XMLDecoder xmlDecoder;
-        try {
-            xmlDecoder = new XMLDecoder(null);
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException iae) {
-            // Expected
-        }
-        
-        try{
-            xmlDecoder = new XMLDecoder(null, null);
-        }catch(IllegalArgumentException iae){
-            // Expected
-        }
-        
-        try{
-            xmlDecoder = new XMLDecoder(null, null, null);
-        }catch(IllegalArgumentException iae){
-            // Expected
-        }
-        
-        try{
-            xmlDecoder = new XMLDecoder(null, null, null, null);
-        }catch(IllegalArgumentException iae){
-            // Expected
-        }
-        
+    public void test_Constructor_NullInputStream_scenario1() {
+        XMLDecoder xmlDecoder = new XMLDecoder(null);
+        assertNull(xmlDecoder.readObject());
+        assertNull(xmlDecoder.getOwner());
+        assertNotNull(xmlDecoder.getExceptionListener());
+        xmlDecoder.close();
+    }
+
+    /*
+     * test XMLDecoder constructor with null inputStream argument
+     */
+    public void test_Constructor_NullInputStream_scenario2() {
+        XMLDecoder xmlDecoder = new XMLDecoder(null, null);
+        assertNull(xmlDecoder.readObject());
+        assertNull(xmlDecoder.getOwner());
+        assertNotNull(xmlDecoder.getExceptionListener());
+        xmlDecoder.close();
+    }
+
+    /*
+     * test XMLDecoder constructor with null inputStream argument
+     */
+    public void test_Constructor_NullInputStream_scenario3() {
+        XMLDecoder xmlDecoder = new XMLDecoder(null, null, null);
+        assertNull(xmlDecoder.readObject());
+        assertNull(xmlDecoder.getOwner());
+        assertNotNull(xmlDecoder.getExceptionListener());
+        xmlDecoder.close();
+    }
+
+    /*
+     * test XMLDecoder constructor with null inputStream argument
+     */
+    public void test_Constructor_NullInputStream_scenario4() {
+        XMLDecoder xmlDecoder = new XMLDecoder(null, null, null, null);
+        assertNull(xmlDecoder.readObject());
+        assertNull(xmlDecoder.getOwner());
+        assertNotNull(xmlDecoder.getExceptionListener());
+        xmlDecoder.close();
     }
     
     /*
