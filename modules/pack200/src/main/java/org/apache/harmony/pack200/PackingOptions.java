@@ -123,6 +123,10 @@ public class PackingOptions {
         return deflateHint;
     }
 
+    public boolean isKeepDeflateHint() {
+        return KEEP.equals(deflateHint);
+    }
+
     public void setDeflateHint(String deflateHint) {
         this.deflateHint = deflateHint;
     }

@@ -67,8 +67,8 @@ public class FileBands extends BandSet {
         boolean isLatest = !PackingOptions.KEEP.equals(options
                 .getModificationTime());
         for (int i = 0; i < size; i++) {
-            PackingFile file = (PackingFile) fileList.get(i);
-            String name = file.getName();
+            PackingFile packingFile = (PackingFile) fileList.get(i);
+            String name = packingFile.getName();
             if (name.endsWith(".class") && !options.isPassFile(name)) {
                 file_options[i] |= (1 << 1);
                 if (classNames.contains(name.substring(0, name.length() - 6))) {
@@ -79,18 +79,22 @@ public class FileBands extends BandSet {
             } else {
                 fileName[i] = cpBands.getCPUtf8(name);
             }
-            byte[] bytes = file.getContents();
+            // set deflate_hint for file element
+            if (options.isKeepDeflateHint() && packingFile.isDefalteHint()) {
+                file_options[i] |= 0x1;
+            }
+            byte[] bytes = packingFile.getContents();
             file_size[i] = bytes.length;
             totalSize += file_size[i];
 
             // update modification time
-            modtime = (file.getModtime() + TimeZone.getDefault().getRawOffset()) / 1000L;
+            modtime = (packingFile.getModtime() + TimeZone.getDefault().getRawOffset()) / 1000L;
             file_modtime[i] = (int) (modtime - archiveModtime);
             if (isLatest && latestModtime < file_modtime[i]) {
                 latestModtime = file_modtime[i];
             }
 
-            file_bits[i] = file.getContents();
+            file_bits[i] = packingFile.getContents();
         }
 
         if (isLatest) {

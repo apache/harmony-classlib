@@ -85,6 +85,10 @@ public class Segment implements ClassVisitor {
         segmentHeader = new SegmentHeader();
         segmentHeader.setFile_count(segmentUnit.fileListSize());
         segmentHeader.setHave_all_code_flags(!stripDebug);
+        if (!options.isKeepDeflateHint()) {
+            segmentHeader.setDeflate_hint("true".equals(options
+                    .getDeflateHint()));
+        }
         
         PackingUtils.log("Setup constant pool bands for the segment");
         cpBands = new CpBands(this, effort);

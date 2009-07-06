@@ -274,7 +274,7 @@ public class Archive {
             javaClasses.add(classParser);
             bytes = new byte[0];
         }
-        files.add(new PackingFile(name, bytes, jarEntry.getTime()));
+        files.add(new PackingFile(name, bytes, jarEntry));
         return true;
     }
 
@@ -354,11 +354,20 @@ public class Archive {
         private final String name;
         private byte[] contents;
         private final long modtime;
+        private final boolean deflateHint;
 
         public PackingFile(String name, byte[] contents, long modtime) {
             this.name = name;
             this.contents = contents;
             this.modtime = modtime;
+            deflateHint = false;
+        }
+
+        public PackingFile(String name, byte[] contents, JarEntry jarEntry) {
+            this.name = name;
+            this.contents = contents;
+            modtime = jarEntry.getTime();
+            deflateHint = (jarEntry.getMethod() == JarEntry.DEFLATED);
         }
 
         public byte[] getContents() {
@@ -379,6 +388,10 @@ public class Archive {
 
         public void setContents(byte[] contents) {
             this.contents = contents;
+        }
+
+        public boolean isDefalteHint() {
+            return deflateHint;
         }
     }
 
