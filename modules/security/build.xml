@@ -61,6 +61,8 @@
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/security" />
+    <property name="tests.resources.dir"
+              value="${tests.hdk.dir}/resources/${hy.security.packaging.jarname}" />
     <property name="security.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
 
@@ -107,9 +109,6 @@
         <make dir="${hy.security.src.main.native}/security/${hy.os.family}" target="clean" />
     </target>
 
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test" />
-    <property name="tests.resources.dir" value="${tests.hdk.dir}/resources/${hy.security.packaging.jarname}" />
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar" />
@@ -185,7 +184,7 @@
         </jar>
     </target>
 
-    <target name="test-jar" depends="svn-info">
+    <target name="test-jar" depends="svn-info, compile-tests">
 	<mkdir dir="${tests.hdk.dir}"/>
         <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api.jar">
             <fileset refid="tests.api" />
@@ -217,6 +216,8 @@
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
         </jar>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="copy-tests-resources">
@@ -311,7 +312,7 @@
         <run-tests description="api.injected tests">
             <junit-elements>
                 <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar${path.separator}../junit.jar${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
 
                 <batchtest todir="${tests.output}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/api/java.injected">
@@ -355,7 +356,7 @@
         <run-tests description="impl injected tests">
             <junit-elements>
                 <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar${path.separator}../junit.jar${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
 
                 <batchtest todir="${tests.output}" haltonfailure="no" >
                     <fileset dir="${hy.security.src.test}/impl/java.injected">
@@ -432,7 +433,7 @@
                    errorproperty="test.errors"
                    failureproperty="test.failures"
                    showoutput="on"
-                   dir="${basedir}"
+                   dir="${tests.hdk.dir}"
                    jvm="${test.jre.home}/bin/java">
 
                 <assertions enableSystemAssertions="true">
