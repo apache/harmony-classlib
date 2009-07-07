@@ -182,7 +182,7 @@ public class ZipFileTest extends junit.framework.TestCase {
                 r = in.read(buf);
                 in.close();
                 assertEquals("incorrect contents",
-                             "This is also text", new String(buf, 0, r));
+                             "This is also text", new String(buf, 0, r, "UTF-8"));
 	}
 
     public void test_getEntryLjava_lang_String_Ex() throws IOException {
@@ -212,7 +212,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 			int r;
 			is.read(rbuf, 0, r = (int) zentry.getSize());
 			assertEquals("getInputStream read incorrect data", "This is text", new String(rbuf,
-					0, r));
+					0, r, "UTF-8"));
 		} catch (java.io.IOException e) {
 			fail("IOException during getInputStream");
 		} finally {
