@@ -66,7 +66,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar" />
-        <delete file="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar" />
+        <delete file="${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -130,14 +130,15 @@
 
     </target>
 
-    <target name="test-jar" depends="svn-info">
-	<mkdir dir="${hy.jdk}/build/test"/>
-        <jar destfile="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar">
+    <target name="test-jar" depends="svn-info,compile-tests">
+	<mkdir dir="${tests.hdk.dir}" />
+        <jar destfile="${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar">
             <fileset refid="tests" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
         </jar>
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests">
@@ -167,8 +168,8 @@
     </target>
 
     <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="accessibility" dir="./make"
-                             result="${accessibility.exclude.file}"/>
+        <prepare-exclude-list moduleName="accessibility" dir="./make"
+                              result="${accessibility.exclude.file}"/>
     </target>
 
     <target name="run-tests">
@@ -184,7 +185,7 @@
                errorproperty="test.errors"
                failureproperty="test.failures"
                showoutput="on"
-               dir="${basedir}"
+               dir="${tests.hdk.dir}"
                jvm="${test.jre.home}/bin/java">
 
             <assertions enableSystemAssertions="true">
@@ -193,7 +194,7 @@
 
             <jvmarg line="${hy.test.vmargs}" />
 
-            <jvmarg value="-Xbootclasspath/a:${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 
