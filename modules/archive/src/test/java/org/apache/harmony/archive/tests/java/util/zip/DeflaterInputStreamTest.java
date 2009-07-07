@@ -131,7 +131,7 @@ public class DeflaterInputStreamTest extends TestCase {
         assertEquals(23, dis.read(buf1, 0, 256));
         dis = new DeflaterInputStream(is);
         assertEquals(8, dis.read(buf2, 0, 256));
-        is = new ByteArrayInputStream(testStr.getBytes());
+        is = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
         dis = new DeflaterInputStream(is);
         assertEquals(1, dis.available());
         assertEquals(120, dis.read());
@@ -254,7 +254,7 @@ public class DeflaterInputStreamTest extends TestCase {
         assertEquals(1, dis.available());
         dis.skip(1);
         assertEquals(0, dis.available());
-        is = new ByteArrayInputStream(testStr.getBytes());
+        is = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
         dis = new DeflaterInputStream(is);
         assertEquals(1, dis.available());
         dis.skip(56);
@@ -283,7 +283,7 @@ public class DeflaterInputStreamTest extends TestCase {
             // expected
         }
 
-        is = new ByteArrayInputStream(testStr.getBytes());
+        is = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
         dis = new DeflaterInputStream(is);
         assertEquals(23, dis.skip(Long.MAX_VALUE));
         assertEquals(0, dis.available());
@@ -367,7 +367,7 @@ public class DeflaterInputStreamTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        is = new ByteArrayInputStream(testStr.getBytes());
+        is = new ByteArrayInputStream(testStr.getBytes("UTF-8"));
     }
 
     @Override
