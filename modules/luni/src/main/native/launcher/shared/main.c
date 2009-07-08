@@ -860,7 +860,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
            /* Ignore classpath defines for -jar */
            /* XXX -cp is accepted ??? */
            /* if user overrides bootclasspath, skip bootclasspath defines */
-           if ( (isStandaloneJar && 0 == strcmp (props[l].key, "-Djava.class.path"))
+           if ( (isStandaloneJar && 0 == strncmp (props[l].key, "-Djava.class.path", 17))
                || (ignoreBCP && 0 == strncmp (props[l].key, "-Xbootclasspath", 15)) )
            {
                props[l].key[0] = '\0';
