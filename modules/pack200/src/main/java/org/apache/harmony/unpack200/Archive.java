@@ -232,6 +232,11 @@ public class Archive {
         this.logFile = new FileOutputStream(logFileName);
     }
 
+    public void setLogFile(String logFileName, boolean append)
+            throws FileNotFoundException {
+        logFile = new FileOutputStream(logFileName, true);
+    }
+
     public void setDeflateHint(boolean deflateHint) {
         overrideDeflateHint = true;
         this.deflateHint = deflateHint;
