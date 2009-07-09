@@ -56,20 +56,20 @@
         <run-tests module="luni" jar="luni_tests_api.jar">
             <junit-elements>
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
+                <jvmarg value="-Djava.security.policy=${target.dir}/../testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
+                <jvmarg value="-Dtest.ini.file=${target.dir}/resources/config/localhosttest.ini" />
             </junit-elements>
         </run-tests>    
 
         <run-tests module="luni" jar="luni_tests_impl.jar">
             <junit-elements>
                 <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
+                <jvmarg value="-Djava.security.policy=${target.dir}/../testing.policy" />
 
                 <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=${target.dir}/luni/resources/config/localhosttest.ini" />
+                <jvmarg value="-Dtest.ini.file=${target.dir}/resources/config/localhosttest.ini" />
             </junit-elements>
         </run-tests>
     </target>
@@ -135,7 +135,7 @@
                    errorproperty="test.errors" 
                    failureproperty="test.failures" 
                    showoutput="on" 
-                   dir="${work.dir}" 
+                   dir="${work.dir}/@{module}" 
                    tempdir="${work.dir}"
                    jvm="${test.jre.home}/bin/java">
 
