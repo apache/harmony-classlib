@@ -86,8 +86,10 @@ module:
     <target name="rebuild" depends="clean,build"
         description="Performs a full build - that is 'clean' then 'build'" />
 	
-    <target name="build" depends="build-java,build-native"
-        description="Compiles the java and native code to produce a jdk">
+    <target name="build" depends="build-java,build-native,build-test"
+        description="Compiles the java and native code to produce a jdk" />
+
+    <target name="support-jar" depends="build-java" >
         <ant antfile="make/build-test.xml" inheritall="false"
              target="support-jar"/>
     </target>
@@ -174,11 +176,11 @@ Testing class libraries...
         <ant antfile="make/build-test.xml" inheritall="false" target="test-all"/>
     </target>
 
-    <target name="test-jar" depends="-init-hdk"
-            description="Jar all tests">
+    <target name="build-test" depends="-init-hdk,support-jar"
+            description="Compile and archive all tests">
         <echo>
 ========================================
-Archive testing classes ...
+Compiling and archiving test classes ...
 ========================================
 </echo>
         <ant antfile="make/build-test.xml" inheritall="false" target="test-jar-modules"/>
