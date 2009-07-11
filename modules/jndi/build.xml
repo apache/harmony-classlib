@@ -21,17 +21,18 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.jndi.src.main.java}" />
-            <present targetdir="${hy.jndi.src.main.java}">
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -71,11 +72,11 @@
     <target name="compile-java">
         <echo message="Compiling JNDI classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.jndi.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -93,9 +94,9 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.jndi.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -103,7 +104,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/jndi.jar"
-             manifest="${hy.jndi}/META-INF/MANIFEST.MF"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -114,7 +115,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/jndi-src.jar">
-            <fileset dir="${hy.jndi.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -126,10 +127,10 @@
     <target name="compile-tests" depends="copy-test-resources" >
         <echo message="Compiling JNDI tests" />
 
-        <mkdir dir="${hy.jndi.bin.test}" />
+        <mkdir dir="bin/test" />
 
-        <javac srcdir="${hy.jndi.src.test.java}"
-            destdir="${hy.jndi.bin.test}"
+        <javac srcdir="src/test/java"
+            destdir="bin/test"
             sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -176,7 +177,7 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
-                <pathelement path="${hy.jndi.bin.test}"/>
+                <pathelement path="bin/test"/>
                 <fileset dir="${hy.hdk}/build/test/">
                     <include name="*.jar" />
                 </fileset>
@@ -187,7 +188,7 @@
 
             <batchtest todir="${tests.output}" haltonfailure="no" >
 
-                <fileset dir="${hy.jndi.src.test.java}">
+                <fileset dir="src/test/java">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
@@ -205,7 +206,7 @@
             <batchtest todir="${tests.output}" haltonfailure="no"
                    unless="test.case">
             
-                <fileset dir="${hy.jndi.src.test.java}">
+                <fileset dir="src/test/java">
                     <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
                 </fileset>
             </batchtest>
@@ -213,7 +214,7 @@
             <batchtest todir="${tests.output}" haltonfailure="no"
                    unless="test.case">
             
-                <fileset dir="${hy.jndi.src.test.java}">
+                <fileset dir="src/test/java">
                     <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
                 </fileset>
             </batchtest>            
@@ -221,7 +222,7 @@
             <batchtest todir="${tests.output}" haltonfailure="no"
                    unless="test.case">
             
-                <fileset dir="${hy.jndi.src.test.java}">
+                <fileset dir="src/test/java">
                     <include name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
                 </fileset>
             </batchtest>            
@@ -242,9 +243,9 @@
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.jndi.bin.test}" />
-        <copy todir="${hy.jndi.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.jndi.src.test.resources}">
+        <mkdir dir="bin/test" />
+        <copy todir="bin/test" includeemptydirs="false">
+            <fileset dir="src/test/resources">
                 <exclude name="**/*.java" />
                 <exclude name="**/*.zip" />
             </fileset>

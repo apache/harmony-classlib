@@ -22,23 +22,24 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.auth.src.main.java.platform"
-              value="${hy.auth.src.main.java}/../${hy.os.family}" />
+              value="src/main/java/common/../${hy.os.family}" />
 
     <property name="hy.auth.src.test.java.platform"
-              value="${hy.auth.src.test.java}/../${hy.os.family}" />
+              value="src/test/java/common/../${hy.os.family}" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.auth.src.main.java}" />
-            <present targetdir="${hy.auth.src.main.java}">
+            <present targetdir="src/main/java/common" />
+            <present targetdir="src/main/java/common">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -77,11 +78,11 @@
     <!-- Build native code -->
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" >
-        <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" />
+        <make dir="src/main/native/auth/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.auth.src.main.native}/auth">
+            <fileset dir="src/main/native/auth">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -89,7 +90,7 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.auth.src.main.native}/auth/${hy.os.family}">
+            <fileset dir="src/main/native/auth/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
@@ -97,12 +98,12 @@
     
     <!-- Clean natives -->
     <target name="clean-native">
-    <make dir="${hy.auth.src.main.native}/auth/${hy.os.family}" target="clean" />
+    <make dir="src/main/native/auth/${hy.os.family}" target="clean" />
     </target>
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/auth.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/auth-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -112,10 +113,10 @@
     <target name="compile-java">
         <echo message="Compiling AUTH classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               destdir="${hy.build}"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -123,7 +124,7 @@
                debug="${hy.javac.debug}">
 
             <src>
-                <pathelement location="${hy.auth.src.main.java}"/>
+                <pathelement location="src/main/java/common"/>
                 <pathelement location="${hy.auth.src.main.java.platform}" />
             </src>
 
@@ -136,17 +137,17 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.auth.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java/common">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}.jar"
-             manifest="${hy.auth}/META-INF/MANIFEST.MF"
+        <jar destfile="${hy.jdk}/jre/lib/boot/auth.jar"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -156,8 +157,8 @@
             <metainf refid="hy.required.metainf-files"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}-src.jar">
-            <fileset dir="${hy.auth.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/auth-src.jar">
+            <fileset dir="src/main/java/common" />
             <fileset dir="${hy.auth.src.main.java.platform}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -170,9 +171,9 @@
     <target name="compile-tests">
         <echo message="Compiling AUTH tests" />
 
-        <mkdir dir="${hy.auth.bin.test}" />
+        <mkdir dir="bin/test" />
 
-        <javac  destdir="${hy.auth.bin.test}"
+        <javac  destdir="bin/test"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -180,7 +181,7 @@
                debug="${hy.javac.debug}">
 
             <src>
-                <pathelement location="${hy.auth.src.test.java}"/>
+                <pathelement location="src/test/java/common"/>
                 <pathelement location="${hy.auth.src.test.java.platform}"/>
             </src>
 
@@ -230,11 +231,11 @@
 
 
             <!-- to pick up junit.jar -->
-            <jvmarg value="-Xbootclasspath/a:${hy.auth.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:bin/test${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <classpath>
-                <pathelement path="${hy.auth.src.test.resources}"/>
-                <pathelement path="${hy.auth.bin.test}"/>
+                <pathelement path="src/test/resources"/>
+                <pathelement path="bin/test"/>
             </classpath>
 
             <formatter type="xml" />
@@ -248,7 +249,7 @@
                     <include name="**/*Test.java" unless="test.case" />
                     <excludesfile name="${auth.exclude.file}" unless="test.case" />
                 </fileset>
-                <fileset dir="${hy.auth.src.test.java}">
+                <fileset dir="src/test/java/common">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->

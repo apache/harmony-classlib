@@ -21,17 +21,18 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.logging.src.main.java}" />
-            <present targetdir="${hy.logging.src.main.java}">
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -71,11 +72,11 @@
     <target name="compile-java">
         <echo message="Compiling LOGGING classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.logging.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -94,7 +95,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/logging.jar"
-             manifest="${hy.logging}/META-INF/MANIFEST.MF"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -105,7 +106,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/logging-src.jar">
-            <fileset dir="${hy.logging.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -117,11 +118,11 @@
     <target name="compile-tests" depends="copy-test-resources" >
         <echo message="Compiling LOGGING tests" />
 
-        <mkdir dir="${hy.logging.bin.internal}" />
-        <mkdir dir="${hy.logging.bin.test}" />
+        <mkdir dir="bin/test-internal" />
+        <mkdir dir="bin/test" />
 
-        <javac srcdir="${hy.logging.src.test.internal}"
-               destdir="${hy.logging.bin.internal}"
+        <javac srcdir="src/test/java-internal"
+               destdir="bin/test-internal"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -139,8 +140,8 @@
             <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
         </javac>
-        <javac srcdir="${hy.logging.src.test.java}"
-               destdir="${hy.logging.bin.test}"
+        <javac srcdir="src/test/java"
+               destdir="bin/test"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -154,7 +155,7 @@
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
-                <pathelement path="${hy.logging.bin.internal}"/>
+                <pathelement path="bin/test-internal"/>
             </bootclasspath>
             <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
@@ -196,10 +197,10 @@
         	<!-- Required by various tests that set security manager etc -->
             <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
 
-            <jvmarg value="-Xbootclasspath/a:${hy.logging.bin.internal}"/>
+            <jvmarg value="-Xbootclasspath/a:bin/test-internal"/>
 
             <classpath>
-                <pathelement path="${hy.logging.bin.test}"/>
+                <pathelement path="bin/test"/>
             </classpath>
             <classpath location="${hy.hdk}/build/test/support.jar" />
             <classpath location="../../build/tests" />
@@ -210,7 +211,7 @@
             <batchtest todir="${tests.output}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.logging.src.test.java}">
+                <fileset dir="src/test/java">
                     <include name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.java"/>
                     <excludesfile name="${logging.exclude.file}" />
                 </fileset>
@@ -218,7 +219,7 @@
 
             <batchtest todir="${tests.output}" haltonfailure="no" >
 
-                <fileset dir="${hy.logging.src.test.java}">
+                <fileset dir="src/test/java">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
@@ -244,9 +245,9 @@
     </target>
 
     <target name="copy-jar-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.logging.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
                 <exclude name="**/logging.properties" />
             </fileset>
@@ -255,16 +256,16 @@
 
     <target name="copy-resources">
         <copy todir="${hy.jdk}/jre/lib" flatten="yes">
-            <fileset dir="${hy.logging.src.main.java}">
+            <fileset dir="src/main/java">
                 <include name="**/logging.properties" />
             </fileset>
         </copy>
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.logging.bin.test}" />
-        <copy todir="${hy.logging.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.logging.src.test.resources}">
+        <mkdir dir="bin/test" />
+        <copy todir="bin/test" includeemptydirs="false">
+            <fileset dir="src/test/resources">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>

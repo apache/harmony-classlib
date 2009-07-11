@@ -21,17 +21,18 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.imageio.src.main.java}" />
-            <present targetdir="${hy.imageio.src.main.java}">
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -74,20 +75,20 @@
     </target>
 
     <target name="clean-native">
-        <make dir="${hy.imageio.src.main.native}/jpegencoder/${hy.os.family}"
+        <make dir="src/main/native/jpegencoder/${hy.os.family}"
               target="clean" />
-        <make dir="${hy.imageio.src.main.native}/pngencoder/${hy.os.family}"
+        <make dir="src/main/native/pngencoder/${hy.os.family}"
               target="clean" />
     </target>
 
     <target name="compile-java">
         <echo message="Compiling ImageIO classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.imageio.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -106,10 +107,10 @@
     
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" >
-        <make dir="${hy.imageio.src.main.native}/jpegencoder/${hy.os.family}" />
+        <make dir="src/main/native/jpegencoder/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.imageio.src.main.native}/jpegencoder/">
+            <fileset dir="src/main/native/jpegencoder/">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -117,15 +118,15 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.imageio.src.main.native}/jpegencoder/${hy.os.family}">
+            <fileset dir="src/main/native/jpegencoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
-        <make dir="${hy.imageio.src.main.native}/pngencoder/${hy.os.family}" />
+        <make dir="src/main/native/pngencoder/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.imageio.src.main.native}/pngencoder/">
+            <fileset dir="src/main/native/pngencoder/">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -133,16 +134,16 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.imageio.src.main.native}/pngencoder/${hy.os.family}">
+            <fileset dir="src/main/native/pngencoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.imageio.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -150,7 +151,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/imageio.jar"
-             manifest="${hy.imageio}/META-INF/MANIFEST.MF"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -161,7 +162,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/imageio-src.jar">
-            <fileset dir="${hy.imageio.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -173,10 +174,10 @@
     <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling ImageIO tests" />
 
-        <mkdir dir="${hy.imageio.bin.test}" />
+        <mkdir dir="bin/test" />
 
-        <javac srcdir="${hy.imageio.src.test.java}"
-               destdir="${hy.imageio.bin.test}"
+        <javac srcdir="src/test/java"
+               destdir="bin/test"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -218,14 +219,14 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
-                <pathelement path="${hy.imageio.bin.test}"/>
+                <pathelement path="bin/test"/>
             </classpath>
 
             <formatter type="xml" />
 
             <batchtest todir="${tests.output}" haltonfailure="no" >
 
-                <fileset dir="${hy.imageio.src.test.java}" >
+                <fileset dir="src/test/java" >
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
@@ -249,9 +250,9 @@
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.imageio.bin.test}/resources" />
-        <copy todir="${hy.imageio.bin.test}/resources" includeemptydirs="false">
-            <fileset dir="${hy.imageio.src.test.resources}">
+        <mkdir dir="bin/test/resources" />
+        <copy todir="bin/test/resources" includeemptydirs="false">
+            <fileset dir="src/test/resources">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>

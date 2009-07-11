@@ -21,21 +21,22 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.luni.src.test.api.java.platform"
-        value="${hy.luni.src.test.api}/${hy.os.family}" />
+        value="src/test/api/${hy.os.family}" />
     <property name="hy.luni.src.test.impl.java.platform"
-        value="${hy.luni.src.test.impl}/${hy.os.family}" />
-    <fileset id="classes" dir="${hy.build}">
+        value="src/test/impl/${hy.os.family}" />
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.luni.src.main.java}" />
-            <present targetdir="${hy.luni.src.main.java}">
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -43,8 +44,8 @@
         </or>
     </fileset>
 
-    <fileset id="tests.api" dir="${hy.luni.bin.test}/api"/>
-    <fileset id="tests.impl" dir="${hy.luni.bin.test}/impl"/>
+    <fileset id="tests.api" dir="bin/test/api"/>
+    <fileset id="tests.impl" dir="bin/test/impl"/>
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/luni" />
     <property name="tests.resources.hdk.dir" value="${tests.hdk.dir}/resources" />
@@ -60,7 +61,7 @@
 
     <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/shared">
+            <fileset dir="src/main/native/include/shared">
                 <include name="vmi.h" />
                 <include name="hyvmls.h" />
                 <include name="hysocket.h" />
@@ -71,7 +72,7 @@
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/shared">
+            <fileset dir="src/main/native/include/shared">
                 <include name="jni.h" />
                 <include name="jni_types.h" />
                 <include name="jvmti.h" />
@@ -80,7 +81,7 @@
         </copy>
 
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/include/${hy.os.family}">
+            <fileset dir="src/main/native/include/${hy.os.family}">
                 <include name="jclprots.h" />
             </fileset>
         </copy>
@@ -95,7 +96,7 @@
     <target name="build-native-core" >
 
         <!-- Build vmi dll -->
-        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" />
+        <make dir="src/main/native/vmi/${hy.os.family}" />
 
         <!-- On Linux we want to copy the libvmi.so into the
              deploy/lib directory so that the natives can link
@@ -104,11 +105,11 @@
              implementation is loaded
           -->
         <copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
-            <fileset dir="${hy.luni.src.main.native}/vmi">
+            <fileset dir="src/main/native/vmi">
                 <include name="libvmi${shlib.suffix}"/>
             </fileset>
             <!-- Copy link exports file on z/OS -->
-            <fileset dir="${hy.luni.src.main.native}/vmi/${hy.os.family}">
+            <fileset dir="src/main/native/vmi/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
@@ -122,12 +123,12 @@
     <target name="-build-native-secondary" >
 
         <!-- Build fdlibm lib -->
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" />
+        <make dir="src/main/native/fdlibm/${hy.os.family}" />
 
         <!-- Build luni dll -->
-        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
+        <make dir="src/main/native/luni/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/luni">
+            <fileset dir="src/main/native/luni">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -135,28 +136,28 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/luni/${hy.os.family}">
+            <fileset dir="src/main/native/luni/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
         <!-- Build vmls lib -->
-        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" />
+        <make dir="src/main/native/vmls/${hy.os.family}" />
     </target>
 
     <target name="-build-hyzip" unless="hy.skip.zip.api">
         <!-- Build hyzip lib -->
-        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}" />
+        <make dir="src/main/native/hyzip/${hy.os.family}" />
     </target>
 
     <target name="-build-native-secondary2" >
 
         <!-- Build launcher executables -->
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
+        <make dir="src/main/native/launcher/${hy.os.family}" />
 
         <!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.luni.src.main.native}/launcher">
+            <fileset dir="src/main/native/launcher">
                 <patternset includes="java${exe.suffix}" />
                 <patternset includes="javaw${exe.suffix}" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -171,41 +172,41 @@
     <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion" />
 
     <target name="-unzip-oss">
-        <unzip src="${fdlibm.zip}" dest="${hy.luni.src.main.native}/fdlibm_dist" />
-        <chmod dir="${hy.luni.src.main.native}/fdlibm_dist" perm="ugo+r" />
+        <unzip src="${fdlibm.zip}" dest="src/main/native/fdlibm_dist" />
+        <chmod dir="src/main/native/fdlibm_dist" perm="ugo+r" />
     </target>
 
     <target name="-ascii2ebcdic-conversion" if="is.zos">
-        <move todir="${hy.luni.src.main.native}/fdlibm_dist_ascii">
-            <fileset dir="${hy.luni.src.main.native}/fdlibm_dist">
+        <move todir="src/main/native/fdlibm_dist_ascii">
+            <fileset dir="src/main/native/fdlibm_dist">
                 <include name="**/*" />
                 <exclude name="**/*.o" />
             </fileset>
         </move>
-        <copy todir="${hy.luni.src.main.native}/fdlibm_dist" outputencoding="IBM-1047" >
-            <fileset dir="${hy.luni.src.main.native}/fdlibm_dist_ascii">
+        <copy todir="src/main/native/fdlibm_dist" outputencoding="IBM-1047" >
+            <fileset dir="src/main/native/fdlibm_dist_ascii">
                 <include name="**/*" />
                 <exclude name="**/*.o" />
             </fileset>               
         </copy>
-        <fixcrlf srcdir="${hy.luni.src.main.native}/fdlibm_dist" includes="**/*" excludes="**/*.o" eol="unix" />
-        <delete dir="${hy.luni.src.main.native}/fdlibm_dist_ascii" />
+        <fixcrlf srcdir="src/main/native/fdlibm_dist" includes="**/*" excludes="**/*.o" eol="unix" />
+        <delete dir="src/main/native/fdlibm_dist_ascii" />
     </target>
 
     <!-- Clean overlaid OSS packages -->
     <target name="clean-overlay-oss" >
-        <delete dir="${hy.luni.src.main.native}/fdlibm_dist" quiet="true" />
+        <delete dir="src/main/native/fdlibm_dist" quiet="true" />
     </target>
 
     <!-- Clean natives -->
     <target name="clean-native">
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}"
+        <make dir="src/main/native/fdlibm/${hy.os.family}" target="clean" />
+        <make dir="src/main/native/vmi/${hy.os.family}" target="clean" />
+        <make dir="src/main/native/luni/${hy.os.family}" target="clean" />
+        <make dir="src/main/native/vmls/${hy.os.family}" target="clean" />
+        <make dir="src/main/native/hyzip/${hy.os.family}"
               target="clean" />
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
+        <make dir="src/main/native/launcher/${hy.os.family}"
               target="clean" />
     </target>
 
@@ -259,8 +260,8 @@
         <echo message="Compiling LUNI classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.luni.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -279,7 +280,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
-             manifest="${hy.luni}/META-INF/MANIFEST.MF"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -290,7 +291,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/luni-src.jar">
-            <fileset dir="${hy.luni.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
@@ -302,14 +303,14 @@
     <target name="test-jar" depends="compile-tests, prepare-exclude">
         <mkdir dir="${tests.hdk.dir}"/>
 
-        <jar destfile="${tests.hdk.dir}/${hy.luni.packaging.jarname}_tests_api.jar">
+        <jar destfile="${tests.hdk.dir}/luni_tests_api.jar">
             <fileset refid="tests.api" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
         </jar>
 
-        <jar destfile="${tests.hdk.dir}/${hy.luni.packaging.jarname}_tests_impl.jar">
+        <jar destfile="${tests.hdk.dir}/luni_tests_impl.jar">
             <fileset refid="tests.impl" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
@@ -317,7 +318,7 @@
         </jar>
 
         <copy todir="${tests.resources.hdk.dir}">
-            <fileset dir="${hy.luni.src.test.resources}" >
+            <fileset dir="src/test/resources" >
                 <include name="org/**/*"/>
                 <include name="net.resources/**/*"/>
             </fileset>
@@ -330,7 +331,7 @@
               todir="${tests.resources.hdk.dir}/config"/>
 
         <copy todir="${tests.resources.hdk.dir}">
-            <fileset dir="${hy.luni.src.test.resources}" >
+            <fileset dir="src/test/resources" >
                 <include name="serialization/**/*"/>
             </fileset>
         </copy>
@@ -353,10 +354,10 @@
     <target name="compile-tests" depends="compile-tests-api, compile-tests-impl" />
 
     <target name="compile-tests-api" depends="copy-test-resources">
-        <compile-tests description="JUnit API Tests" destdir="${hy.luni.bin.test}/api">
+        <compile-tests description="JUnit API Tests" destdir="bin/test/api">
             <javac-elements>
                 <src>
-                    <pathelement location="${hy.luni.src.test.api}/common" />
+                    <pathelement location="src/test/api/common" />
                     <pathelement location="${hy.luni.src.test.api.java.platform}" />
                 </src>
                 <include name="**/*.java" />
@@ -365,10 +366,10 @@
     </target>
 
     <target name="compile-tests-impl" depends="copy-test-resources">
-         <compile-tests description="JUnit Impl tests" destdir="${hy.luni.bin.test}/impl">
+         <compile-tests description="JUnit Impl tests" destdir="bin/test/impl">
             <javac-elements>
                 <src>
-                   <pathelement location="${hy.luni.src.test.impl}/common" />
+                   <pathelement location="src/test/impl/common" />
                    <pathelement location="${hy.luni.src.test.impl.java.platform}" />
                 </src>
                 <include name="**/*.java" />
@@ -388,8 +389,8 @@
         <run-tests description="JUnit API Tests">
             <junit-elements>
                 <classpath>
-                    <pathelement path="${hy.luni.bin.test}/api"/>
-                    <pathelement path="${hy.luni.src.test.resources}"/>
+                    <pathelement path="bin/test/api"/>
+                    <pathelement path="src/test/resources"/>
                     <pathelement path="../../build/tests"/>
                     <fileset dir="${hy.hdk}/build/test/">
                         <include name="*.jar" />
@@ -397,7 +398,7 @@
                 </classpath>
  
                 <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="${hy.luni.src.test.api}/common">
+                    <fileset dir="src/test/api/common">
                         <!-- if ${test.case}     -->
                         <include name="${converted.tc}" if="test.case" />
                         <!-- unless ${test.case} -->
@@ -423,15 +424,15 @@
         <run-tests description="JUnit Impl Tests">
             <junit-elements>
                 <classpath>
-                    <pathelement path="${hy.luni.bin.test}/impl"/>
-                    <pathelement path="${hy.luni.src.test.resources}"/>
+                    <pathelement path="bin/test/impl"/>
+                    <pathelement path="src/test/resources"/>
                     <pathelement path="../../build/tests"/>
                     <fileset dir="${hy.hdk}/build/test/">
                         <include name="*.jar" />
                     </fileset>
                 </classpath>
                 <batchtest todir="${tests.output}" haltonfailure="no" >
-                   <fileset dir="${hy.luni.src.test.impl}/common">
+                   <fileset dir="src/test/impl/common">
                         <!-- if ${test.case}     -->
                         <include name="${converted.tc}" if="test.case" />
                         <!-- unless ${test.case} -->
@@ -465,18 +466,18 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.luni.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.luni.bin.test}" />
-        <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.luni.src.test.resources}" />
+        <mkdir dir="bin/test" />
+        <copy todir="bin/test" includeemptydirs="false">
+            <fileset dir="src/test/resources" />
         </copy>
     </target>
 

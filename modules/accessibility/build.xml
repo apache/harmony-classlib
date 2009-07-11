@@ -21,17 +21,18 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.accessibility.src.main.java}" />
-            <present targetdir="${hy.accessibility.src.main.java}">
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -39,7 +40,7 @@
         </or>
     </fileset>
 
-    <fileset id="tests" dir="${hy.accessibility.bin.test}"/>
+    <fileset id="tests" dir="bin/test"/>
 
     <property file="../../make/depends.properties" />
 
@@ -64,9 +65,9 @@
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, test-jar, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar" />
-        <delete file="${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/accessibility.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/accessibility-src.jar" />
+        <delete file="${tests.hdk.dir}/accessibility_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -76,11 +77,11 @@
     <target name="compile-java">
         <echo message="Compiling ACCESSIBILITY classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.accessibility.src.main.java}" 
-               destdir="${hy.build}"
+               srcdir="src/main/java" 
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -98,9 +99,9 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.accessibility.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -108,8 +109,8 @@
 
     <target name="build-jar" depends="svn-info">
         <mkdir dir="${hy.jdk}/jre/lib/boot"/>
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar"
-             manifest="${hy.accessibility}/META-INF/MANIFEST.MF"
+        <jar destfile="${hy.jdk}/jre/lib/boot/accessibility.jar"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -119,8 +120,8 @@
             <metainf refid="hy.required.metainf-files"/>    
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar">
-            <fileset dir="${hy.accessibility.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/accessibility-src.jar">
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -132,7 +133,7 @@
 
     <target name="test-jar" depends="svn-info,compile-tests">
 	<mkdir dir="${tests.hdk.dir}" />
-        <jar destfile="${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar">
+        <jar destfile="${tests.hdk.dir}/accessibility_tests.jar">
             <fileset refid="tests" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -144,10 +145,10 @@
     <target name="compile-tests">
         <echo message="Compiling ACCESSIBILITY tests" />
 
-        <mkdir dir="${hy.accessibility.bin.test}" />
+        <mkdir dir="bin/test" />
 
-        <javac srcdir="${hy.accessibility.src.test.api}/java/common"
-               destdir="${hy.accessibility.bin.test}"
+        <javac srcdir="src/test/api/java/common"
+               destdir="bin/test"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -194,13 +195,13 @@
 
             <jvmarg line="${hy.test.vmargs}" />
 
-            <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/accessibility_tests.jar${path.separator}../junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 
             <batchtest todir="${tests.output}" haltonfailure="no">
 
-                <fileset dir="${hy.accessibility.src.test.api}/java/common">
+                <fileset dir="src/test/api/java/common">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->

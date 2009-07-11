@@ -21,23 +21,24 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.awt.src.main.java.platform"
-              value="${hy.awt.src.main.java}/../${hy.os.family}" />
+              value="src/main/java/common/../${hy.os.family}" />
 
     <property name="hy.awt.src.test.impl.platform"
-              value="${hy.awt.src.test.impl}/${hy.os.family}" />
+              value="src/test/impl/${hy.os.family}" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.awt.src.main.java}" />
-            <present targetdir="${hy.awt.src.main.java}">
+            <present targetdir="src/main/java/common" />
+            <present targetdir="src/main/java/common">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -86,10 +87,10 @@
     <target name="compile-java">
         <echo message="Compiling AWT classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               destdir="${hy.build}"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -99,7 +100,7 @@
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.awt.src.main.java}"/>
+                <pathelement location="src/main/java/common"/>
                 <pathelement location="${hy.awt.src.main.java.platform}" />
             </src>
 
@@ -112,29 +113,29 @@
     </target>
 
     <target name="copy-resources" depends="-copy-win-resources">
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.awt.src.main.java}">
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java/common">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
 
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
-            <fileset dir="${hy.awt.src.main.resources}/cmm"/>
+            <fileset dir="src/main/resources/cmm"/>
         </copy>	
     </target>
     
     <target name="-copy-win-resources" if="is.windows">
         <mkdir dir="${hy.jdk}/jre/lib" />
-        <copy file="${hy.awt.src.main.resources}/font.properties.xp"
+        <copy file="src/main/resources/font.properties.xp"
               tofile="${hy.jdk}/jre/lib/font.properties"/>
     </target>
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/awt.jar"
-             manifest="${hy.awt}/META-INF/MANIFEST.MF"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -145,7 +146,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/awt-src.jar">
-            <fileset dir="${hy.awt.src.main.java}" />
+            <fileset dir="src/main/java/common" />
             <fileset dir="${hy.awt.src.main.java.platform}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -160,10 +161,10 @@
         depends="-build-native-common,-build-native-unix,-build-native-windows" />
         
     <target name="-build-native-common">
-        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}" />
+        <make dir="src/main/native/lcmm/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/lcmm">
+            <fileset dir="src/main/native/lcmm">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -171,15 +172,15 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}">
+            <fileset dir="src/main/native/lcmm/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}" />
+        <make dir="src/main/native/jpegdecoder/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/jpegdecoder">
+            <fileset dir="src/main/native/jpegdecoder">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -187,15 +188,15 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}">
+            <fileset dir="src/main/native/jpegdecoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}" />
+        <make dir="src/main/native/gl/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/gl">
+            <fileset dir="src/main/native/gl">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -203,15 +204,15 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/gl/${hy.os.family}">
+            <fileset dir="src/main/native/gl/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
         
-        <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}" />
+        <make dir="src/main/native/oglwrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/oglwrapper">
+            <fileset dir="src/main/native/oglwrapper">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -219,15 +220,15 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}">
+            <fileset dir="src/main/native/oglwrapper/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}" />
+        <make dir="src/main/native/fontlib/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/fontlib">
+            <fileset dir="src/main/native/fontlib">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -235,57 +236,57 @@
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}">
+            <fileset dir="src/main/native/fontlib/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
 
     <target name="-build-native-unix" if="is.unix">
-        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}" />
+        <make dir="src/main/native/x11wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/x11wrapper">
+            <fileset dir="src/main/native/x11wrapper">
                 <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}">
+            <fileset dir="src/main/native/x11wrapper/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}" />
+        <make dir="src/main/native/linuxfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/linuxfont">
+            <fileset dir="src/main/native/linuxfont">
                 <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}">
+            <fileset dir="src/main/native/linuxfont/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
 
     <target name="-build-native-windows" if="is.windows">
-        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os.family}" />
+        <make dir="src/main/native/win32wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/win32wrapper">
+            <fileset dir="src/main/native/win32wrapper">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
 
-        <make dir="${hy.awt.src.main.native}/winfont/${hy.os.family}" />
+        <make dir="src/main/native/winfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/winfont">
+            <fileset dir="src/main/native/winfont">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" />
                 <exclude name="*${manifest.suffix}"/>
@@ -295,37 +296,37 @@
 
     <target name="clean-native"
             depends="-clean-native-unix,-clean-native-windows">
-        <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}"
+        <make dir="src/main/native/lcmm/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}"
+        <make dir="src/main/native/jpegdecoder/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}"
+        <make dir="src/main/native/gl/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}"
+        <make dir="src/main/native/oglwrapper/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}"
+        <make dir="src/main/native/fontlib/${hy.os.family}"
               target="clean"/>
     </target>
 
     <target name="-clean-native-unix" if="is.unix">
-        <make dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}"
+        <make dir="src/main/native/x11wrapper/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}"
+        <make dir="src/main/native/linuxfont/${hy.os.family}"
               target="clean"/>
     </target>
 
     <target name="-clean-native-windows" if="is.windows">
-        <make dir="${hy.awt.src.main.native}/win32wrapper/${hy.os.family}"
+        <make dir="src/main/native/win32wrapper/${hy.os.family}"
               target="clean"/>
-        <make dir="${hy.awt.src.main.native}/winfont/${hy.os.family}"
+        <make dir="src/main/native/winfont/${hy.os.family}"
               target="clean"/>
     </target>
 
     <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling AWT tests" />
 
-        <mkdir dir="${hy.awt.bin.test.boot}" />
-        <javac destdir="${hy.awt.bin.test.boot}"
+        <mkdir dir="bin/test/boot" />
+        <javac destdir="bin/test/boot"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -336,7 +337,7 @@
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.awt.src.test.impl.boot}" />
+                <pathelement location="src/test/impl/boot" />
             </src>
                
             <bootclasspath>
@@ -348,8 +349,8 @@
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
 
-        <mkdir dir="${hy.awt.bin.test.classes}" />
-        <javac destdir="${hy.awt.bin.test.classes}"
+        <mkdir dir="bin/test/classes" />
+        <javac destdir="bin/test/classes"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -360,7 +361,7 @@
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.awt.src.test.api.java}" />
+                <pathelement location="src/test/api/java" />
                 <pathelement location="${hy.awt.src.test.impl.platform}" />
             </src>
                
@@ -376,9 +377,9 @@
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.awt.bin.test.resources}" />
-        <copy todir="${hy.awt.bin.test.resources}" includeemptydirs="false">
-            <fileset dir="${hy.awt.src.test.api.resources}" />
+        <mkdir dir="bin/test/resources" />
+        <copy todir="bin/test/resources" includeemptydirs="false">
+            <fileset dir="src/test/api/resources" />
         </copy>
     </target>
 
@@ -407,12 +408,12 @@
             </assertions>
 
             <jvmarg line="${hy.test.vmargs}" />
-            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test.boot}${path.separator}${basedir}/../../${junit.jar}"/>
+            <jvmarg value="-Xbootclasspath/a:bin/test/boot${path.separator}${basedir}/../../${junit.jar}"/>
 
             <formatter type="xml" />
 
             <batchtest todir="${tests.output}" haltonfailure="no">
-                <fileset dir="${hy.awt.src.test.impl.boot}">
+                <fileset dir="src/test/impl/boot">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case" />
@@ -438,7 +439,7 @@
 
             <jvmarg line="${hy.test.vmargs}" />
             <classpath>
-                <pathelement path="${hy.awt.bin.test.classes}" />
+                <pathelement path="bin/test/classes" />
                 <fileset dir="${hy.hdk}/build/test/">
                     <include name="*.jar" />
                 </fileset>
@@ -447,7 +448,7 @@
             <formatter type="xml" />
 
             <batchtest todir="${tests.output}">
-                <fileset dir="${hy.awt.src.test.api.java}">
+                <fileset dir="src/test/api/java">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Test.java" unless="test.case" />
                     <exclude name="**/*Headless*Test.java" unless="test.case" />
@@ -479,12 +480,12 @@
 
             <jvmarg line="${hy.test.vmargs}" />
             <jvmarg value="-Djava.awt.headless=true"/>
-            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test.boot}${path.separator}${basedir}/../../${junit.jar}"/>
+            <jvmarg value="-Xbootclasspath/a:bin/test/boot${path.separator}${basedir}/../../${junit.jar}"/>
 
             <formatter type="xml" />
 
             <batchtest todir="${tests.output}" haltonfailure="no" >
-                <fileset dir="${hy.awt.src.test.impl.boot}">
+                <fileset dir="src/test/impl/boot">
                     <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>

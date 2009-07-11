@@ -21,23 +21,24 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
 
     <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <property name="hy.swing.src.main.java.platform"
-              value="${hy.swing.src.main.java}/../${hy.os.family}" />
+              value="src/main/java/common/../${hy.os.family}" />
 
     <property name="hy.swing.src.test.java.platform"
               value="${hy.swing.src.test.java}/../${hy.os.family}" />
 
-    <fileset id="classes" dir="${hy.build}">
+    <fileset id="classes" dir="../../build/classes">
         <or>
-            <present targetdir="${hy.swing.src.main.java}" />
-            <present targetdir="${hy.swing.src.main.java}">
+            <present targetdir="src/main/java/common" />
+            <present targetdir="src/main/java/common">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -52,7 +53,7 @@
     </fileset>
 
     <!-- List of private classes that cannot be mapped by above mappers -->
-    <fileset id="hidden.classes" dir="${hy.build}">
+    <fileset id="hidden.classes" dir="../../build/classes">
         <include name="javax/swing/text/html/parser/ModelElement.class"/>
         <include name="javax/swing/text/html/parser/Asn1ModelElement.class"/>
         <include name="javax/swing/text/html/parser/Asn1ModelElement$1.class"/>
@@ -82,8 +83,8 @@
     <target name="-test-module" depends="build, prepare-exclude, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/swing.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/swing-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset refid="hidden.classes"/>
@@ -94,10 +95,10 @@
     <target name="compile-java">
         <echo message="Compiling SWING classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               destdir="${hy.build}"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -107,7 +108,7 @@
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.swing.src.main.java}"/>
+                <pathelement location="src/main/java/common"/>
                 <pathelement location="${hy.swing.src.main.java.platform}" />
             </src>
 
@@ -120,17 +121,17 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.swing.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java/common">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
-             manifest="${hy.swing}/META-INF/MANIFEST.MF"
+        <jar destfile="${hy.jdk}/jre/lib/boot/swing.jar"
+             manifest="./META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <fileset refid="hidden.classes" />
@@ -141,8 +142,8 @@
             <metainf refid="hy.required.metainf-files"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar">
-            <fileset dir="${hy.swing.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/swing-src.jar">
+            <fileset dir="src/main/java/common" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -154,10 +155,10 @@
     <target name="compile-tests">
         <echo message="Compiling SWING tests" />
 
-        <mkdir dir="${hy.swing.bin.test}" />
+        <mkdir dir="bin/test" />
 
-        <javac srcdir="${hy.swing.src.test.api}/java.injected"
-               destdir="${hy.swing.bin.test}"
+        <javac srcdir="src/test/api/java.injected"
+               destdir="bin/test"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -206,12 +207,12 @@
 
             <formatter type="xml" />
 
-            <jvmarg value="-Xbootclasspath/a:${hy.swing.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+            <jvmarg value="-Xbootclasspath/a:bin/test${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 <!--            <jvmarg value="-Djava2d.opengl=true"/> -->
 
             <batchtest todir="${tests.output}" haltonfailure="no" >
 
-                <fileset dir="${hy.swing.src.test.api}/java.injected">
+                <fileset dir="src/test/api/java.injected">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
@@ -235,9 +236,9 @@
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.swing.bin.test}" />
-        <copy todir="${hy.swing.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.swing.src.test.resources}">
+        <mkdir dir="bin/test" />
+        <copy todir="bin/test" includeemptydirs="false">
+            <fileset dir="src/test/resources">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
