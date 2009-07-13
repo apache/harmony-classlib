@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
@@ -337,17 +336,47 @@ public class HashMapTest extends junit.framework.TestCase {
 
 		k.setKey(17);
 		assertNull(map.get(k));
-
+	}
+	
+	/**
+	 * Tests for proxy object keys and values
+	 */
+	public void test_proxies() {
         // Regression for HARMONY-6237
-        MockInterface proxyInstance = (MockInterface) Proxy.newProxyInstance(
+        MockInterface proxyKey = (MockInterface) Proxy.newProxyInstance(
+                MockInterface.class.getClassLoader(),
+                new Class[] { MockInterface.class }, new MockHandler(
+                        new MockClass()));
+        MockInterface proxyValue = (MockInterface) Proxy.newProxyInstance(
                 MockInterface.class.getClassLoader(),
                 new Class[] { MockInterface.class }, new MockHandler(
                         new MockClass()));
 
-        hm.put(proxyInstance, "value2");
+        // Proxy key
+        Object val = new Object();
+        hm.put(proxyKey, val);
 
-        assertEquals("Failed with proxy object key", "value2", hm
-                .get(proxyInstance));
+        assertEquals("Failed with proxy object key", val, hm
+                .get(proxyKey));
+        assertTrue("Failed to find proxy key", hm.containsKey(proxyKey));
+        assertEquals("Failed to remove proxy object key", val,
+                hm.remove(proxyKey));
+        assertFalse("Should not have found proxy key", hm.containsKey(proxyKey));
+        
+        // Proxy value
+        Object k = new Object();
+        hm.put(k, proxyValue);
+        
+        assertTrue("Failed to find proxy object as value", hm.containsValue(proxyValue));
+        
+        // Proxy key and value
+        HashMap map = new HashMap();
+        map.put(proxyKey, proxyValue);
+        assertTrue("Failed to find proxy key", map.containsKey(proxyKey));
+        assertEquals(1, map.size());
+        Object[] entries = map.entrySet().toArray();
+        Map.Entry entry = (Map.Entry)entries[0];
+        assertTrue("Failed to find proxy association", map.entrySet().contains(entry));
 	}
 
 	/**
