@@ -96,17 +96,6 @@
         <echo message="The test report is in ${display-location}"/>
     </target>
     
-    <target name="failure">
-        <fail message="Some tests failed">
-            <condition>
-                <or>
-                    <isset property="test.failures" />
-                    <isset property="test.errors" />
-                </or>
-            </condition>
-        </fail>
-    </target>
-
     <macrodef name="run-tests">
         <attribute name="module" />
         <attribute name="jar" />
