@@ -29,27 +29,22 @@
     <property name="test.report.dir" value="${work.dir}/report" />
     <property name="junit.jar" value="${target.dir}/junit.jar" />
 
-    <target name="test" depends="test-jre-vm-info">
+    <target name="test"
+            depends="test-jre-vm-info,-test,test-module,gen-report,check-test-result" />
+    <target name="-test">
         <echo message="Test Work Dir: ${work.dir}" />
         <echo message="Test Target Dir: ${target.dir}" />
         <mkdir dir="${work.dir}" /> 
         <delete dir="${test.report.dir}" quiet="true"/>
         <convert-test-as-class from="test.case" to="converted.tc.class" />
-
-        <antcall target="test-module"/>
-
-        <antcall target="generate-report"/>
-        <antcall target="check-test-result"/>
     </target>
     
     <target name="test-module">
-        <antcall target="test-${build.module}"/>
+        <antcall target="test-${build.module}" />
     </target>
 
-    <target name="test-all">
-        <echo message="Test all modules"/>
-        <!--TODO: will add all modules here -->
-        <antcall target="test-luni"/>
+    <target name="test-all" depends="test-luni">
+        <!--TODO: will add all modules as depends -->
     </target>
     
     <target name="test-luni">
@@ -89,7 +84,7 @@
         <fail if="test.failures" message="There were test failures." />
     </target>
 
-    <target name="generate-report">
+    <target name="gen-report">
         <junitreport todir="${test.report.dir}">
             <fileset dir="${test.report.dir}">
                 <include name="**/TEST*-*.xml" />
