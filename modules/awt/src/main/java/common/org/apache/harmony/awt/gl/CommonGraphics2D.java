@@ -235,8 +235,8 @@ public abstract class CommonGraphics2D extends Graphics2D {
             mra.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
         } else {
             int type = transform.getType();
-            if(s instanceof Rectangle && (type & (AffineTransform.TYPE_IDENTITY |
-                AffineTransform.TYPE_TRANSLATION)) != 0){
+            if(s instanceof Rectangle && (type == AffineTransform.TYPE_IDENTITY ||
+                type == AffineTransform.TYPE_TRANSLATION )) {
                     mra = new MultiRectArea((Rectangle)s);
                     if(type == AffineTransform.TYPE_TRANSLATION){
                         mra.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
@@ -931,8 +931,8 @@ public abstract class CommonGraphics2D extends Graphics2D {
             setTransformedClip(nclip);
         } else {
             int type = transform.getType();
-            if(s instanceof Rectangle && (type & (AffineTransform.TYPE_IDENTITY |
-                AffineTransform.TYPE_TRANSLATION)) != 0){
+            if(s instanceof Rectangle && (type == AffineTransform.TYPE_IDENTITY ||
+                type == AffineTransform.TYPE_TRANSLATION )) {
                     MultiRectArea nclip = new MultiRectArea((Rectangle)s);
                     if(type == AffineTransform.TYPE_TRANSLATION){
                         nclip.translate((int)transform.getTranslateX(), (int)transform.getTranslateY());
