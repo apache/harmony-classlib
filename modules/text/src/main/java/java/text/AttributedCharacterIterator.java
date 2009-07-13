@@ -89,10 +89,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
          */
         @Override
         public final boolean equals(Object object) {
-            if (object == null || !(object.getClass().equals(this.getClass()))) {
-                return false;
-            }
-            return name.equals(((Attribute) object).name);
+            return this == object;
         }
 
         /**
@@ -113,7 +110,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
          */
         @Override
         public final int hashCode() {
-            return name.hashCode();
+            return super.hashCode();
         }
 
         /**
@@ -129,13 +126,13 @@ public interface AttributedCharacterIterator extends CharacterIterator {
                 // text.0C=cannot resolve subclasses
                 throw new InvalidObjectException(Messages.getString("text.0C")); //$NON-NLS-1$
             }
-            if (this.equals(INPUT_METHOD_SEGMENT)) {
+            if (this.getName().equals(INPUT_METHOD_SEGMENT.getName())) {
                 return INPUT_METHOD_SEGMENT;
             }
-            if (this.equals(LANGUAGE)) {
+            if (this.getName().equals(LANGUAGE.getName())) {
                 return LANGUAGE;
             }
-            if (this.equals(READING)) {
+            if (this.getName().equals(READING.getName())) {
                 return READING;
             }
             // text.02=Unknown attribute

@@ -928,10 +928,16 @@ public abstract class DateFormat extends Format {
          */
         @Override
         protected Object readResolve() throws InvalidObjectException {
+        	if (this.getClass() != Field.class) {
+                // text.0C=cannot resolve subclasses
+                throw new InvalidObjectException(Messages.getString("text.0C")); //$NON-NLS-1$
+            }
+        	
             if (calendarField != -1) {
                 try {
                     Field result = ofCalendarField(calendarField);
-                    if (result != null && this.equals(result)) {
+                    
+                    if (result != null && this.getName().equals(result.getName())) {
                         return result;
                     }
                 } catch (IllegalArgumentException e) {
