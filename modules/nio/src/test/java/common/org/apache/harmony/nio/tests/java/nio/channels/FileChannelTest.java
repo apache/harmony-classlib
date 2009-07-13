@@ -2123,7 +2123,7 @@ public class FileChannelTest extends TestCase {
         byte[] inputBuffer = new byte[CONTENT_AS_BYTES_LENGTH - pos];
         fis.read(inputBuffer);
         String test = CONTENT.substring(pos);        
-        assertTrue(Arrays.equals(test.getBytes(), inputBuffer));
+        assertTrue(Arrays.equals(test.getBytes("iso8859-1"), inputBuffer));
     }
 
     /**
