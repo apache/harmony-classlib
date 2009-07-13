@@ -61,6 +61,7 @@ private final int jjMoveStringLiteralDfa0_0()
    switch(curChar)
    {
       case 10:
+      case 133: // NEL character for z/OS new lines
          return jjStopAtPos(0, 17);
       case 33:
          return jjStopAtPos(0, 10);
