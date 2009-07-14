@@ -33,6 +33,9 @@
     <target name="test-module" depends="test-jre-vm-info">
         <convert-test-as-class from="test.case" to="converted.tc.class" />
         <run-hdk-tests module="luni" jar="luni_tests_api.jar">
+            <excludeorinclude>
+                <exclude name="**/java/io/Test.class" />
+            </excludeorinclude>
             <junit-elements>
                 <!-- Required by various tests that set security manager etc -->
                 <jvmarg value="-Djava.security.policy=../testing.policy" />
