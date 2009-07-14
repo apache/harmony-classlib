@@ -45,6 +45,7 @@
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/accessibility" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="accessibility.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
 
@@ -133,12 +134,26 @@
 
     <target name="test-jar" depends="svn-info,compile-tests">
 	<mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
         <jar destfile="${tests.hdk.dir}/accessibility_tests.jar">
             <fileset refid="tests" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
         </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
         <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
