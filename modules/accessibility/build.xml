@@ -63,7 +63,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, test-jar, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/accessibility.jar" />
@@ -183,60 +183,8 @@
         </javac>
     </target>
 
-    <target name="prepare-exclude">
-        <prepare-exclude-list moduleName="accessibility" dir="./make"
-                              result="${accessibility.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${tests.hdk.dir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/accessibility_tests.jar${path.separator}../junit.jar${path.separator}${hy.hdk}/build/test/support.jar"/>
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no">
-
-                <fileset dir="src/test/api/java/common">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*.java" unless="test.case" />
-                    <excludesfile name="${accessibility.exclude.file}" unless="test.case"/>
-                </fileset>  
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">accessibility${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">accessibility${line.separator}</echo>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>
