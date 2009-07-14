@@ -59,6 +59,25 @@ public final class VM {
     };
 
     /**
+     * This method must be provided by the VM vendor. Returns the class of the
+     * method (including natives) at the specified depth on the stack of the
+     * calling thread. Frames representing the VM implementation of
+     * java.lang.reflect are not included in the list. Notes:
+     * <ul>
+     * <li>This method operates on the defining classes of methods on stack.
+     * NOT the classes of receivers.</li>
+     * <li>The item at depth zero is the caller of this method</li>
+     * </ul>
+     *
+     * @param depth the stack depth of the requested Class
+     * @return the Class at the specified depth
+     * @see Class#getStackClasses
+     */
+    public static Class<?> getStackClass(int depth) {
+        return null;
+    }
+
+    /**
      * This method must be provided by the vm vendor, as it is used by other
      * provided class implementations. For example,
      * java.io.ObjectInputStream.readObject() and
