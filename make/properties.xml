@@ -635,7 +635,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
             <property name="test.resources.dir" value="${test.module.dir}/resources" />
             <property name="test.exclude.file" value="${work.dir}/@{module}.exclude" />
             
-            <mkdir dir="${test.report.dir}/@{module}" /> 
+            <mkdir dir="${tests.output}" /> 
 
             <prepare-exclude-list moduleName="@{module}" dir="${test.excludes.dir}" result="${test.exclude.file}" />
             <junit fork="yes" 
@@ -660,7 +660,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
 
                 <junit-elements />
 
-                <batchtest todir="${test.report.dir}/@{module}" haltonfailure="no">
+                <batchtest todir="${tests.output}" haltonfailure="no">
                     <zipfileset src="${test.module.dir}/@{jar}">
                         <exclude name="Test.class" />
                         <exclude name="**/*$*" />
@@ -696,12 +696,12 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
     </macrodef>
 
     <target name="touch-failures-file" if="test.failures">
-        <echo file="${test.report.dir}/test.failures"
+        <echo file="${tests.output}/test.failures"
             append="true">${module}${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
-        <echo file="${test.report.dir}/test.errors"
+        <echo file="${tests.output}/test.errors"
             append="true">${module}${line.separator}</echo>
     </target>
 

@@ -24,7 +24,7 @@
 
     <property name="work.dir" value=".." />
     <property name="target.dir" value=".." />
-    <property name="test.report.dir" location="../report" />
+    <property name="tests.output" location="../report" />
     <property name="junit.jar" location="../junit.jar" />
 
     <target name="test" depends="test-module" />

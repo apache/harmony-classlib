@@ -26,7 +26,7 @@
     <!-- These two parameters could be assigned by user -->
     <property name="target.dir" value="." />
     <property name="work.dir" value="${target.dir}" />
-    <property name="test.report.dir" value="${work.dir}/report" />
+    <property name="tests.output" value="${work.dir}/report" />
     <property name="junit.jar" value="${target.dir}/junit.jar" />
 
     <target name="test"
@@ -36,7 +36,7 @@
         <echo message="Test Work Dir: ${work.dir}" />
         <echo message="Test Target Dir: ${target.dir}" />
         <mkdir dir="${work.dir}" /> 
-        <delete dir="${test.report.dir}" quiet="true"/>
+        <delete dir="${tests.output}" quiet="true"/>
         <poll-modules dir="." target="test-module" />
     </target>
 
@@ -48,14 +48,14 @@
     </target>
 
     <target name="gen-report">
-        <junitreport todir="${test.report.dir}">
-            <fileset dir="${test.report.dir}">
+        <junitreport todir="${tests.output}">
+            <fileset dir="${tests.output}">
                 <include name="**/TEST*-*.xml" />
             </fileset>
-            <report format="frames" todir="${test.report.dir}" />
+            <report format="frames" todir="${tests.output}" />
         </junitreport>
         <property name="display-location"
-                  location="${test.report.dir}/index.html"/>
+                  location="${tests.output}/index.html"/>
         <echo message="The test report is in ${display-location}"/>
     </target>
     
