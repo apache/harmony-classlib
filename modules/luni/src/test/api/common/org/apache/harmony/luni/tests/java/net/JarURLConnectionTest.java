@@ -185,8 +185,9 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         URL fileURL = new URL(BASE);
         URL u = new URL("jar:"+BASE+"!/plus.bmp");
         juc = (JarURLConnection) u.openConnection();
-        assertTrue("Returned incorrect file URL", juc.getJarFileURL().equals(
-                fileURL));
+        assertEquals("Returned incorrect file URL",
+                     fileURL, juc.getJarFileURL());
+
         // Regression test for harmony-3053
         URL url = new URL("jar:file:///bar.jar!/foo.jar!/Bugs/HelloWorld.class");
         assertEquals("file:/bar.jar",((JarURLConnection)url.openConnection()).getJarFileURL().toString());
