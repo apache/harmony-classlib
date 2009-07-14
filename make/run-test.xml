@@ -18,7 +18,8 @@
 
 <project name="Harmony Test" default="test" basedir=".">
 
-    <property name="test.jre.home" location="../../jdk/jre" />
+    <property name="hy.hdk" location="../.." />
+    <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
     <property file="test.properties" />
     <property name="build.module" value="all"/>
     <import file="../ant/properties.xml" />
