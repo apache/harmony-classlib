@@ -64,6 +64,9 @@
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/security" />
     <property name="tests.resources.dir"
               value="${tests.hdk.dir}/resources/security" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
+    <property name="tests.resources.hdk.dir"
+              value="${tests.hdk.dir}/resources" />
     <property name="security.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
 
@@ -187,6 +190,9 @@
 
     <target name="test-jar" depends="svn-info, compile-tests">
 	<mkdir dir="${tests.hdk.dir}"/>
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
         <jar destfile="${tests.hdk.dir}/security_tests_api.jar">
             <fileset refid="tests.api" />
             <manifest>
@@ -217,6 +223,20 @@
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
         </jar>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="src/test/resources" />
+        </copy>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
 
         <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
