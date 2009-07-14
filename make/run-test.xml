@@ -21,7 +21,7 @@
     <property name="test.jre.home" location="../../jdk/jre" />
     <property file="test.properties" />
     <property name="build.module" value="all"/>
-    <import file="properties.xml" />
+    <import file="../ant/properties.xml" />
 
     <!-- These two parameters could be assigned by user -->
     <property name="target.dir" value="." />

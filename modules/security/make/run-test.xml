@@ -20,7 +20,7 @@
 
     <property name="test.jre.home" location="../../../jdk/jre" />
     <property file="../test.properties" />
-    <import file="../properties.xml" />
+    <import file="../../ant/properties.xml" />
 
     <property name="work.dir" value=".." />
     <property name="target.dir" value=".." />

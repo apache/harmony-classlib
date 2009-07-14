@@ -349,8 +349,6 @@
             </filterchain>
         </copy>
 
-        <copy todir="${tests.hdk.dir}/.." file="${hy.hdk}/build/ant/properties.xml"/>
-
     </target>
 
     <!-- compile both api tests and impl tests-->
