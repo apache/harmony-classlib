@@ -124,27 +124,14 @@
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling ANNOTATION tests" />
-
-        <mkdir dir="bin/test" />
-
-        <javac srcdir="src/test/java"
-               destdir="bin/test"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+        <compile-tests description="annotation tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
