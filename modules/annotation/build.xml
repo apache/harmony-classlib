@@ -40,11 +40,15 @@
         </or>
     </fileset>
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/annotation" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="annotation.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
+    <fileset id="tests" dir="bin/test" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -58,11 +62,12 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/annotation.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/annotation-src.jar" />
+        <delete file="${tests.hdk.dir}/annotation_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -83,6 +88,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -99,7 +106,6 @@
             </fileset>
         </copy>
     </target>
-
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/annotation.jar"
@@ -123,8 +129,33 @@
         </jar>
     </target>
 
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+        
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+        
+        <jar destfile="${tests.hdk.dir}/annotation_tests.jar">
+            <fileset refid="tests" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
     <target name="compile-tests">
-        <compile-tests description="annotation tests"
+        <compile-tests description="annotation api tests"
                        destdir="bin/test">
             <javac-elements>
                 <src>
@@ -134,63 +165,8 @@
         </compile-tests>
     </target>
 
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="annotation" dir="./make"
-                             result="${annotation.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="bin/test"/>
-            </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="src/test/java">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${annotation.exclude.file}" unless="test.case" />
-                </fileset>  
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">annotation${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">annotation${line.separator}</echo>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>
