@@ -128,7 +128,7 @@
 
     <target name="compile-tests">
 
-        <compile-tests description="api tests" destdir="bin/test/api">
+        <compile-tests description="rmi api tests" destdir="bin/test/api">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/java"/>
@@ -183,38 +183,6 @@
         <echo file="${tests.output}/test.errors"
             append="true">rmi${line.separator}</echo>
     </target>
-
-    <macrodef name="compile-tests">
-        <attribute name="description" default="" />
-        <attribute name="destdir"  />
-        <element name="javac-elements" />
-        <sequential>
-            <echo message="Compiling RMI @{description}" />
-
-            <mkdir dir="@{destdir}" />
-
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-                <javac-elements />
-
-                <compilerarg line="${build.compilerarg}" />
-
-                <bootclasspath>
-                    <fileset dir="${hy.jdk}/jre/lib/boot">
-                        <include name="**/*.jar" />
-                    </fileset>
-                </bootclasspath>
-                <classpath location="../../build/tests" />
-                <classpath location="${hy.hdk}/build/test/support.jar" />
-            </javac>
-        </sequential>
-    </macrodef>
-
 
     <macrodef name="run-tests">
         <attribute name="description" default="" />

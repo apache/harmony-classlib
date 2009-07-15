@@ -128,7 +128,8 @@
 
     <target name="compile-tests">
 
-        <compile-tests description="test support files" destdir="../../build/tests">
+        <compile-tests description="crypto test support files"
+                       destdir="../../build/tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/support/common/java"/>
@@ -142,28 +143,30 @@
         </compile-tests>
 
 
-        <compile-tests description="api tests" destdir="bin/test/api">
+        <compile-tests description="crypto api tests" destdir="bin/test/api">
             <javac-elements>
                 <src path="src/test/api/java"/>
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="api injected tests" destdir="bin/test/api.injected">
+        <compile-tests description="crypto api injected tests"
+                       destdir="bin/test/api.injected">
             <javac-elements>
                 <src path="src/test/api/java.injected"/>
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="impl injected tests" destdir="bin/test/impl.injected">
+        <compile-tests description="crypto impl injected tests"
+                       destdir="bin/test/impl.injected">
             <javac-elements>
                 <src path="src/test/impl/java.injected"/>
                 <include name="**/*Test.java" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="impl tests" destdir="bin/test/impl">
+        <compile-tests description="crypto impl tests" destdir="bin/test/impl">
             <javac-elements>
                 <src path="src/test/impl/java"/>
                 <include name="**/*Test.java" />
@@ -276,37 +279,6 @@
         <echo file="${tests.output}/test.errors"
             append="true">crypto${line.separator}</echo>
     </target>
-    
-    <macrodef name="compile-tests">
-        <attribute name="description" default="" />
-        <attribute name="destdir"  />
-        <element name="javac-elements" />
-        <sequential>
-            <echo message="Compiling CRYPTO @{description}" />
-            
-            <mkdir dir="@{destdir}" />
-            
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-                <javac-elements />
-
-                <compilerarg line="${build.compilerarg}" />
-
-                <bootclasspath>
-                    <fileset dir="${hy.jdk}/jre/lib/boot">
-                        <include name="**/*.jar" />
-                    </fileset>
-                </bootclasspath>
-                <classpath location="../../build/tests" />
-                <classpath location="${hy.hdk}/build/test/support.jar" />
-            </javac>
-        </sequential>
-    </macrodef>
     
     <macrodef name="run-tests">
         <attribute name="description" default="" />

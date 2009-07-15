@@ -240,7 +240,8 @@
 
     <target name="compile-tests">
 
-        <compile-tests description="test support files" destdir="bin/test/support">
+        <compile-tests description="security test support files"
+                       destdir="bin/test/support">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/support/common/java"/>
@@ -250,40 +251,47 @@
         </compile-tests>
 
 
-        <compile-tests description="api tests" destdir="bin/test/api">
+        <compile-tests description="security api tests" destdir="bin/test/api">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/java"/>
                 </src>
 
                 <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="api injected tests" destdir="bin/test/api.injected">
+        <compile-tests description="security api injected tests"
+                       destdir="bin/test/api.injected">
             <javac-elements>
                 <src path="src/test/api/java.injected"/>
                 <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="impl injected tests" destdir="bin/test/impl.injected">
+        <compile-tests description="security impl injected tests"
+                       destdir="bin/test/impl.injected">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/impl/java.injected"/>
                 </src>
 
                 <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
             </javac-elements>
         </compile-tests>
 
-        <compile-tests description="impl tests" destdir="bin/test/impl">
+        <compile-tests description="security impl tests"
+                       destdir="bin/test/impl">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/impl/java"/>
                 </src>
 
                 <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
             </javac-elements>
         </compile-tests>
     </target>
@@ -291,36 +299,5 @@
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
-
-    <macrodef name="compile-tests">
-        <attribute name="description" default="" />
-        <attribute name="destdir"  />
-        <element name="javac-elements" />
-        <sequential>
-            <echo message="Compiling SECURITY @{description}" />
-
-            <mkdir dir="@{destdir}" />
-
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-                <javac-elements />
-
-                <compilerarg line="${build.compilerarg}" />
-
-                <bootclasspath>
-                    <fileset dir="${hy.jdk}/jre/lib/boot">
-                        <include name="**/*.jar" />
-                    </fileset>
-                </bootclasspath>
-                <classpath location="bin/test/support" />
-                <classpath location="${hy.hdk}/build/test/support.jar" />
-            </javac>
-        </sequential>
-    </macrodef>
 
 </project>

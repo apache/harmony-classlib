@@ -622,6 +622,40 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
        </javac>
    </presetdef>
 
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir"  />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling tests for @{description}" />
+            
+            <mkdir dir="@{destdir}" />
+            
+            <javac destdir="@{destdir}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+                <javac-elements />
+
+                <compilerarg line="${build.compilerarg}" />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jdk}/jre/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+
+                <!-- TOFIX: this next line breaks modularity a bit -->
+                <classpath location="../../build/tests" />
+
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </javac>
+        </sequential>
+    </macrodef>
+
     <macrodef name="run-hdk-tests">
         <attribute name="module" />
         <attribute name="jar" />
