@@ -308,7 +308,6 @@ public class CompositeName implements Name {
      * Format name elements to its string representation.
      */
     private static String formatName(Vector<String> elems) {
-
         // special case: all empty elements
         if (isAllEmptyElements(elems)) {
             StringBuilder buf = new StringBuilder();
@@ -325,17 +324,14 @@ public class CompositeName implements Name {
             if (i > 0) {
                 buf.append("/"); //$NON-NLS-1$
             }
-            if (elem.indexOf('/') < 0 && elem.indexOf('\\') < 0
-                    && elem.indexOf('"') < 0) {
+            
+            // Add quotation while elem contains separater char
+            if (elem.indexOf('/') != -1){
+                buf.append("\"");
                 buf.append(elem);
-            } else {
-                char chars[] = elem.toCharArray();
-                for (char c : chars) {
-                    if (c == '/' || c == '\\' || c == '"') {
-                        buf.append('\\');
-                    }
-                    buf.append(c);
-                }
+                buf.append("\"");
+            }else{
+                buf.append(elem);
             }
         }
         return buf.toString();

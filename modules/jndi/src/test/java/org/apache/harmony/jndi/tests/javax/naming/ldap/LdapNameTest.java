@@ -621,6 +621,14 @@ public class LdapNameTest extends TestCase {
             new LdapName(" =b");
             fail("InvalidNameException expected");
         } catch (InvalidNameException e) {}
+
+        LdapName ldapName = new LdapName("cn=a+");
+        assertEquals("cn=a+", ldapName.toString());
+        assertEquals("cn=a", ldapName.getRdns().get(0).toString());
+        
+        ldapName = new LdapName("cn=\\+");
+        assertEquals("cn=\\+", ldapName.toString());
+        assertEquals("cn=\\+", ldapName.getRdns().get(0).toString());
     }
 
     /**
@@ -646,7 +654,132 @@ public class LdapNameTest extends TestCase {
             fail("InvalidNameException expected");
         } catch (InvalidNameException e) {}
     }
+    
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.LdapName(String)'
+     * </p>
+     * <p>
+     * Here we are testing the constructor, this method should accept a
+     * String notice here that here that we are testing the special case
+     * in which the name is quoted and the meta characters in it are ignored.
+     * </p>
+     * <p>
+     * The expected result is an instance of the class.
+     * </p>
+     */
+    public void testLdapNameString054() throws Exception {
+        LdapName ldapName;
+        String stringName;
+        
+        stringName = "dc=apacheorg\"";
+        ldapName = new LdapName(stringName);
+        assertEquals(stringName, ldapName.toString());
+        
+        stringName = "dc=\"apache,org\"";
+        ldapName = new LdapName(stringName);
+        assertEquals(stringName, ldapName.toString());
+        
+        stringName = "dc=\"apache;org\"";
+        ldapName = new LdapName(stringName);
+        assertEquals(stringName, ldapName.toString());
+        
+        stringName = "dc=\"apache\\\";org\"";
+        ldapName = new LdapName(stringName);
+        assertEquals(stringName, ldapName.toString());
+        
+        stringName = "dc=apache\\\"org,O=org";
+        ldapName = new LdapName(stringName);
+        assertEquals(stringName, ldapName.toString());
+        
+        stringName = "\"az=a,O=a\"";
+        try{
+            new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        }catch(InvalidNameException e){
+            //expected
+        }
+        
+        stringName = "dc=apache\\\";org,O=org";
+        try{
+            new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        }catch(InvalidNameException e){
+            //expected
+        }
+        
+        try{
+            new LdapName("dc=apache,org");
+            fail("Should throw InvalidNameException");
+        }catch(InvalidNameException e){
+            //expected
+        }
+        
+        try{
+            new LdapName("dc=apache;org");
+            fail("Should throw InvalidNameException");
+        }catch(InvalidNameException e){
+            //expected
+        }
+        
+        try{
+            new LdapName("dc=\"apache\"harmony\"org\"");
+            fail("Should throw InvalidNameException");
+        }catch(InvalidNameException e){
+            //expected
+        }
+        
+        stringName = "DC=\"Apache,org\",DC=\"Apacheorg\"";
+        String expectedRdnsName = "DC=\"Apache,org\",DC=\"Apacheorg\"";
+        ldapName = new LdapName(stringName);
+        List rdns = ldapName.getRdns();
+        assertEquals(2, rdns.size());
+        assertEquals(expectedRdnsName, ldapName.toString());
+        
+        stringName= "abc=\"DC:O=ab,DC=COM\",cn=apache\"org,O=harmony";
+        new LdapName(stringName);
 
+        try {
+            stringName = "DC=A\"pache,org\",DC=\"Apacheorg\"";
+            ldapName = new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+
+        try {
+            stringName = "DC=\"Apache,org,DC=\"Apacheorg\"";
+            ldapName = new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+
+        try {
+            stringName = "DC=\"Apache,org,DC=\"Apacheorg";
+            ldapName = new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+        
+        try {
+            stringName = "+";
+            ldapName = new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+        
+        try {
+            stringName = ";";
+            ldapName = new LdapName(stringName);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+    }
+    
     /**
      * <p>
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
