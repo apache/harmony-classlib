@@ -158,29 +158,14 @@
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling ACCESSIBILITY tests" />
-
-        <mkdir dir="bin/test" />
-
-        <javac srcdir="src/test/api/java/common"
-               destdir="bin/test"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" /> 
-        </javac>
+        <compile-tests description="accessibility api tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/api/java/common" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="run-tests" depends="test-jar">
