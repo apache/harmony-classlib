@@ -782,6 +782,99 @@ public class LdapNameTest extends TestCase {
     
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName(String)'
+     * </p>
+     * <p>
+     * Here we are testing the constructor, this method should accept a
+     * String notice here that here that we are testing the special case
+     * in which the name contains \\*, \\%, \\_
+     * </p>
+     * <p>
+     * The expected result is an instance of the class.
+     * </p>
+     */
+    public void testLdapNameString055() throws Exception {
+        LdapName ldapName;
+        String stringName;
+        String expectedName;
+        String expectedRndName;
+        List<Rdn> rdns;
+        
+        // Test \\*
+        stringName = "dc=\\*";
+        expectedName = "dc=\\*";
+        expectedRndName = "dc=*";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\"\\*\"";
+        expectedName = "dc=\"\\*\"";
+        expectedRndName = "dc=*";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\\\\*";
+        expectedName = "dc=\\\\*";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedName, rdns.get(0).toString());
+        
+        // Test \\%
+        stringName = "dc=\\%";
+        expectedName = "dc=\\%";
+        expectedRndName = "dc=%";       
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\"\\%\"";
+        expectedName = "dc=\"\\%\"";
+        expectedRndName = "dc=%";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\\\\%";
+        expectedName = "dc=\\\\%";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedName, rdns.get(0).toString());
+        
+        // Test \\_
+        stringName = "dc=\\_";
+        expectedName = "dc=\\_";
+        expectedRndName = "dc=_";       
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\"\\_\"";
+        expectedName = "dc=\"\\_\"";
+        expectedRndName = "dc=_";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedRndName, rdns.get(0).toString());
+        
+        stringName = "dc=\\\\_";
+        expectedName = "dc=\\\\_";
+        ldapName = new LdapName(stringName);
+        assertEquals(expectedName, ldapName.toString());
+        rdns = ldapName.getRdns();
+        assertEquals(expectedName, rdns.get(0).toString());
+    }
+    
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
