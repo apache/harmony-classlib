@@ -169,35 +169,15 @@
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling AUTH tests" />
-
-        <mkdir dir="bin/test" />
-
-        <javac  destdir="bin/test"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <src>
-                <pathelement location="src/test/java/common"/>
-                <pathelement location="${hy.auth.src.test.java.platform}"/>
-            </src>
-
-            <include name="javax/security/auth/**/*Test*.java" />
-            <include name="javax/security/sasl/**/*Test*.java" />
-            <include name="org/ietf/jgss/*Test.java" />
-            <include name="org/apache/harmony/auth/**/*Test.java" />
-            <include name="tests/api/javax/security/auth/x500/X500PrincipalTest.java" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+        <compile-tests description="auth api tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java/common"/>
+                    <pathelement location="${hy.auth.src.test.java.platform}"/>
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
