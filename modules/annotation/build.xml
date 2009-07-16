@@ -139,6 +139,7 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>

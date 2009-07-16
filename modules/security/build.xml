@@ -195,30 +195,35 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_api_in.jar">
             <fileset refid="tests.api.in" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_impl.jar">
             <fileset refid="tests.impl" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_impl_in.jar">
             <fileset refid="tests.impl.in" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_support.jar">
             <fileset refid="tests.support" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <copy todir="${tests.resources.hdk.dir}">

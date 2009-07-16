@@ -262,6 +262,7 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <jar destfile="${tests.hdk.dir}/archive_internal_tests.jar">
@@ -269,6 +270,7 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>

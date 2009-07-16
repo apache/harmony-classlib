@@ -311,6 +311,7 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <jar destfile="${tests.hdk.dir}/luni_tests_impl.jar">
@@ -318,6 +319,7 @@
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
+            <metainf refid="hy.required.metainf-files"/>
         </jar>
 
         <copy todir="${tests.resources.hdk.dir}">
