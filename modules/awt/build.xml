@@ -323,57 +323,23 @@
     </target>
 
     <target name="compile-tests" depends="copy-test-resources">
-        <echo message="Compiling AWT tests" />
-
-        <mkdir dir="bin/test/boot" />
-        <javac destdir="bin/test/boot"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <src>
-                <pathelement location="src/test/impl/boot" />
-            </src>
-               
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${basedir}/../../${junit.jar}" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-
-        <mkdir dir="bin/test/classes" />
-        <javac destdir="bin/test/classes"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <src>
-                <pathelement location="src/test/api/java" />
-                <pathelement location="${hy.awt.src.test.impl.platform}" />
-            </src>
-               
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${basedir}/../../${junit.jar}" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-
+        <compile-tests description="awt impl tests"
+                       destdir="bin/test/boot">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/impl/boot" />
+                </src>
+            </javac-elements>
+        </compile-tests>
+        <compile-tests description="awt api tests"
+                       destdir="bin/test/classes">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/api/java" />
+                    <pathelement location="${hy.awt.src.test.impl.platform}" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="copy-test-resources">
