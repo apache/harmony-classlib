@@ -129,6 +129,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
   int execvFailure[2] = {0,0};
   int forkedChildIsRunning[2] = {0,0};
   int error = 0;
+  int writeRC = 0;
 
   /* Build the new io pipes (in/out/err) */
   if (pipe(newFD[0]) == -1) goto error;
@@ -173,11 +174,14 @@ execProgram(JNIEnv * vmthread, jobject recv,
     dup2(newFD[2][1], 2);
 
     /* tells the parent that that very process is running */
-    write(forkedChildIsRunning[1], &dummy, 1);
+    if (-1 == write(forkedChildIsRunning[1], &dummy, 1)) {
+      goto error;
+    }
 
     if (dir) {
       if (chdir(dir) == -1) {
-        write(execvFailure[1], &errno, sizeof(errno));
+        /* capture return code to fix compiler warning */
+        writeRC = write(execvFailure[1], &errno, sizeof(errno));
         exit(-1);
       }
     }
@@ -192,7 +196,8 @@ execProgram(JNIEnv * vmthread, jobject recv,
     /* ===================================================== */
 
     /* if we get here ==> tell the parent that the execv failed ! */
-    write(execvFailure[1], &errno, sizeof(errno));
+    /* capture return code to fix compiler warning */
+    writeRC = write(execvFailure[1], &errno, sizeof(errno));
     /* If the exec failed, we must exit or there will be two VM processes running. */
     exit(rc);
   } else {
@@ -212,7 +217,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
     *(procHandle) = (IDATA) grdpid;
 
     /* let the forked child start. */
-    read(forkedChildIsRunning[0], &dummy, 1);
+    if (-1 == read(forkedChildIsRunning[0], &dummy, 1)) {
+    	goto error;
+    }
     close(forkedChildIsRunning[0]);
     close(forkedChildIsRunning[1]);
 
