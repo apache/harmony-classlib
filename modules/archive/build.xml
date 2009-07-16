@@ -248,48 +248,22 @@
     </target>
 
     <target name="compile-tests" depends="copy-test-resources">
-        <mkdir dir="bin/test-internal" />
-        <mkdir dir="bin/test" />
-
-        <echo message="Compiling internal ARCHIVE tests" />
-        <javac srcdir="src/test/java-internal"
-               destdir="bin/test-internal"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-
-        <echo message="Compiling ARCHIVE tests" />
-        <javac srcdir="src/test/java"
-               destdir="bin/test"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+        <compile-tests description="archive internal tests"
+                       destdir="bin/test-internal">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java-internal" />
+                </src>
+            </javac-elements>
+        </compile-tests>
+        <compile-tests description="archive api tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
