@@ -45,8 +45,11 @@
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/archive" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="archive.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
+    <fileset id="tests.api" dir="bin/test" />
+    <fileset id="tests.internal" dir="bin/test-internal" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
@@ -173,11 +176,13 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
+        <delete file="${tests.hdk.dir}/archive_tests.jar" />
+        <delete file="${tests.hdk.dir}/archive_internal_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -247,7 +252,39 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources">
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+        
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+        
+        <jar destfile="${tests.hdk.dir}/archive_tests.jar">
+            <fileset refid="tests.api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+
+        <jar destfile="${tests.hdk.dir}/archive_internal_tests.jar">
+            <fileset refid="tests.internal" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
+    <target name="compile-tests">
         <compile-tests description="archive internal tests"
                        destdir="bin/test-internal">
             <javac-elements>
@@ -266,117 +303,8 @@
         </compile-tests>
     </target>
 
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="archive" dir="./make"
-                             result="${archive.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <!-- internal tests that need to run on the bootclasspath -->
-        <echo message="Running internal ARCHIVE tests" />
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <jvmarg value="-Xbootclasspath/a:bin/test-internal${path.separator}../../${junit.jar}"/>         
-            
-            <classpath>
-                <pathelement path="bin/test"/>
-            </classpath>
-            <classpath location="../../build/tests" />
-			<classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="src/test/java-internal">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${archive.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        
-        <!-- API tests -->
-        <echo message="Running ARCHIVE tests" />
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-            <!-- Used by Support_Exec.execJava() -->
-            <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="bin/test"/>
-            </classpath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="src/test/java">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${archive.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">archive${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">archive${line.separator}</echo>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="bin/test" />
-        <copy todir="bin/test" includeemptydirs="false">
-            <fileset dir="src/test/resources">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>
