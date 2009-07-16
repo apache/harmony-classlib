@@ -43,6 +43,8 @@ public class ManifestTest extends TestCase {
 
     private final String MANIFEST_NAME = "manifest/hyts_MANIFEST.MF";
 
+    private static final String MANIFEST_CONTENTS = "Manifest-Version: 1.0\nBundle-Name: ClientSupport\nBundle-Description: Provides SessionService, AuthenticationService. Extends RegistryService.\nBundle-Activator: com.ibm.ive.eccomm.client.support.ClientSupportActivator\nImport-Package: com.ibm.ive.eccomm.client.services.log,\n com.ibm.ive.eccomm.client.services.registry,\n com.ibm.ive.eccomm.service.registry; specification-version=1.0.0,\n com.ibm.ive.eccomm.service.session; specification-version=1.0.0,\n com.ibm.ive.eccomm.service.framework; specification-version=1.2.0,\n org.osgi.framework; specification-version=1.0.0,\n org.osgi.service.log; specification-version=1.0.0,\n com.ibm.ive.eccomm.flash; specification-version=1.2.0,\n com.ibm.ive.eccomm.client.xml,\n com.ibm.ive.eccomm.client.http.common,\n com.ibm.ive.eccomm.client.http.client\nImport-Service: org.osgi.service.log.LogReaderService\n org.osgi.service.log.LogService,\n com.ibm.ive.eccomm.service.registry.RegistryService\nExport-Package: com.ibm.ive.eccomm.client.services.authentication; specification-version=1.0.0,\n com.ibm.ive.eccomm.service.authentication; specification-version=1.0.0,\n com.ibm.ive.eccomm.common; specification-version=1.0.0,\n com.ibm.ive.eccomm.client.services.registry.store; specification-version=1.0.0\nExport-Service: com.ibm.ive.eccomm.service.authentication.AuthenticationService,\n com.ibm.ive.eccomm.service.session.SessionService\nBundle-Vendor: IBM\nBundle-Version: 1.2.0\n";
+
     private File resources;
 
     @Override
@@ -79,8 +81,8 @@ public class ManifestTest extends TestCase {
      * @tests java.util.jar.Manifest#Manifest(java.util.jar.Manifest)
      */
     public void testCopyingConstructor() throws IOException {
-        Manifest firstManifest = new Manifest(new URL(Support_Resources
-                .getURL(MANIFEST_NAME)).openStream());
+        Manifest firstManifest = new Manifest(new ByteArrayInputStream(
+                MANIFEST_CONTENTS.getBytes("ISO-8859-1")));
         Manifest secondManifest = new Manifest(firstManifest);
         assertEquals(firstManifest, secondManifest);
     }
@@ -127,8 +129,8 @@ public class ManifestTest extends TestCase {
         Manifest mCopy = new Manifest(is);
         assertEquals(m, mCopy);
 
-        Manifest manifest = new Manifest(new URL(Support_Resources
-                .getURL(MANIFEST_NAME)).openStream());
+        Manifest manifest = new Manifest(new ByteArrayInputStream(
+                MANIFEST_CONTENTS.getBytes("ISO-8859-1")));
         checkManifest(manifest);
 
         // regression test for HARMONY-5424
@@ -174,10 +176,10 @@ public class ManifestTest extends TestCase {
      * @tests java.util.jar.Manifest#equals(java.lang.Object)
      */
     public void testEquals() throws IOException {
-        Manifest firstManifest = new Manifest(new URL(Support_Resources
-                .getURL(MANIFEST_NAME)).openStream());
-        Manifest secondManifest = new Manifest(new URL(Support_Resources
-                .getURL(MANIFEST_NAME)).openStream());
+        Manifest firstManifest = new Manifest(new ByteArrayInputStream(
+                MANIFEST_CONTENTS.getBytes("ISO-8859-1")));
+        Manifest secondManifest = new Manifest(new ByteArrayInputStream(
+                MANIFEST_CONTENTS.getBytes("ISO-8859-1")));
 
         assertEquals(firstManifest, secondManifest);
     }
