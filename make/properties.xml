@@ -627,7 +627,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
         <attribute name="destdir"  />
         <element name="javac-elements" />
         <sequential>
-            <echo message="Compiling tests for @{description}" />
+            <echo message="Compiling @{description}" />
             
             <mkdir dir="@{destdir}" />
             
