@@ -151,28 +151,14 @@
     </target>
 
     <target name="compile-tests" depends="copy-test-resources">
-        <echo message="Compiling INSTRUMENT tests" />
-
-        <mkdir dir="bin/test" />
-
-        <javac srcdir="src/test/java"
-            destdir="bin/test"
-            sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+        <compile-tests description="instrument tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
