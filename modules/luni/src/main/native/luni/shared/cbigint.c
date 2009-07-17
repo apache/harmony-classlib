@@ -18,7 +18,7 @@
 #include <string.h>
 #include "cbigint.h"
 
-#if defined(LINUX) || defined(FREEBSD) || defined(ZOS) || defined(MACOSX)
+#if defined(LINUX) || defined(FREEBSD) || defined(ZOS) || defined(MACOSX) || defined(AIX)
 #define USE_LL
 #endif
 

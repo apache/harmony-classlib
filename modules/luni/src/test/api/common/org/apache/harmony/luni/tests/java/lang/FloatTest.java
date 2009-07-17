@@ -815,6 +815,12 @@ public class FloatTest extends TestCase {
         test_toString(12.90898f, "12.90898");
 
         test_toString(1.7014118346046924e+38F, "1.7014118E38");
+        
+        test_toString(1E19F, "1.0E19");
+        
+        test_toString(1E-36F, "1.0E-36");
+        
+        test_toString(1.0E-38F, "1.0E-38");
     }
 
     /**
