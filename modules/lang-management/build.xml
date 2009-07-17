@@ -111,59 +111,23 @@
         </jar>
     </target>
 
-    <target name="compile-tests"
-            depends="compile-tests-api,compile-tests-impl" />
-
-    <target name="compile-tests-api">
-        <echo message="Compiling LANG-MANAGEMENT API tests" />
-
-        <mkdir dir="bin/api" />
-
-        <javac srcdir="src/test/api/java"
-               destdir="bin/api"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}"
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-    </target>
-
-    <target name="compile-tests-impl">
-        <echo message="Compiling LANG-MANAGEMENT Implementation tests" />
-
-        <mkdir dir="bin/impl" />
-
-        <javac srcdir="src/test/impl/java"
-               destdir="bin/impl"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}"
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
+    <target name="compile-tests">
+        <compile-tests description="lang-management api tests"
+                       destdir="bin/api">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/api/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
+        <compile-tests description="lang-management impl tests"
+                       destdir="bin/impl">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/impl/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
