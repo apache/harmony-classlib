@@ -137,28 +137,15 @@
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling SOUND tests" />
-
-        <mkdir dir="bin/test" />
-
-        <javac srcdir="src/test/java"
-               destdir="bin/test"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-            <classpath location="${hy.hdk}/build/test/resources/sound/org/apache/harmony/sound/tests/javax/sound/sampled/soundProvider.jar" />
-        </javac>
+        <compile-tests description="sound tests"
+                       destdir="bin/test">
+            <javac-elements>
+                <classpath location="${hy.hdk}/build/test/resources/sound/org/apache/harmony/sound/tests/javax/sound/sampled/soundProvider.jar" />
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
     </target>
 
     <target name="prepare-exclude">
