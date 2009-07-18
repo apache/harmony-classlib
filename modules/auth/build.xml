@@ -108,7 +108,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/auth.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/auth-src.jar" />
-        <delete file="${tests.hdk.dir}/mmmmmm_tests.jar" />
+        <delete file="${tests.hdk.dir}/auth_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
