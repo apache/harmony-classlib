@@ -33,12 +33,18 @@
         <or>
             <present targetdir="src/main/java" />
             <present targetdir="src/main/java">
-                <mapper type="regexp" from="^(.*?)(\$$[^/\\\.]*)?\.class$$" to="\1.java" />
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java" />
             </present>
         </or>
     </fileset>
 
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/lang-management" />
+    <property file="../../make/depends.properties" />
+
+    <property name="tests.hdk.dir"
+              value="${hy.hdk}/build/test/lang-management" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="lang-management.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
 
@@ -56,11 +62,12 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/lang-management.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/lang-management-src.jar" />
+        <delete file="${tests.hdk.dir}/lang-management_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -111,6 +118,40 @@
         </jar>
     </target>
 
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <jar destfile="${tests.hdk.dir}/lang-management_tests.jar">
+            <fileset dir="bin/api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${tests.hdk.dir}/lang-management_impl_tests.jar">
+            <fileset dir="bin/impl" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
     <target name="compile-tests">
         <compile-tests description="lang-management api tests"
                        destdir="bin/api">
@@ -130,103 +171,8 @@
         </compile-tests>
     </target>
 
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="lang-management" dir="./make"
-                             result="${lang-management.exclude.file}"/>
-    </target>
-
-    <target name="run-tests" depends="run-tests-api,run-tests-impl" />
-
-    <target name="run-tests-api">
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="bin/api" />
-            </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-                <fileset dir="src/test/api/java" >
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case"/>
-                    <excludesfile name="${lang-management.exclude.file}" unless="test.case"/>
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="run-tests-impl">
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="bin/impl" />
-            </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-                <fileset dir="src/test/impl/java">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${lang-management.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures" append="true">lang-management${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors" append="true">lang-management${line.separator}</echo>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>
