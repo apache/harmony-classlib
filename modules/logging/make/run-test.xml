@@ -40,7 +40,6 @@
                 <jvmarg value="-Xbootclasspath/a:logging_boot_tests.jar"/>
             </junit-elements>
             <excludeorinclude>
-                <exclude name="org/apache/harmony/logging/tests/java/util/logging/*Test.class" unless="test.case" />
                 <include name="org/apache/harmony/logging/tests/java/util/logging/LogManagerTest.class"/>
             </excludeorinclude>
         </run-selected-hdk-tests>
