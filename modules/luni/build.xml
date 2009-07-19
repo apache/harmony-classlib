@@ -300,7 +300,7 @@
         </jar>
     </target>
 
-    <target name="test-jar" depends="compile-tests, prepare-exclude">
+    <target name="test-jar" depends="compile-tests">
         <mkdir dir="${tests.hdk.dir}"/>
 
         <copy file="make/run-test.xml"
@@ -351,6 +351,8 @@
             </filterchain>
         </copy>
 
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="../../${jetty.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <!-- compile both api tests and impl tests-->
@@ -380,92 +382,9 @@
         </compile-tests>
     </target>
     
-    <target name="prepare-exclude">
-        <prepare-exclude-list moduleName="luni" dir="./make"
-                              result="${luni.exclude.file}"/>
-    </target>
-
     <!-- run both api tests and impl tests -->
-    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
-
-    <target name="run-tests-api">
-        <run-tests description="JUnit API Tests">
-            <junit-elements>
-                <classpath>
-                    <pathelement path="bin/test/api"/>
-                    <pathelement path="src/test/resources"/>
-                    <pathelement path="../../build/tests"/>
-                    <fileset dir="${hy.hdk}/build/test/">
-                        <include name="*.jar" />
-                    </fileset>
-                </classpath>
- 
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="src/test/api/common">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
-                    </fileset>
-                    <fileset dir="${hy.luni.src.test.api.java.platform}">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
-                    </fileset>             
-                </batchtest>
-
-            </junit-elements>
-        </run-tests>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-       
-    <target name="run-tests-impl">         
-        <run-tests description="JUnit Impl Tests">
-            <junit-elements>
-                <classpath>
-                    <pathelement path="bin/test/impl"/>
-                    <pathelement path="src/test/resources"/>
-                    <pathelement path="../../build/tests"/>
-                    <fileset dir="${hy.hdk}/build/test/">
-                        <include name="*.jar" />
-                    </fileset>
-                </classpath>
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                   <fileset dir="src/test/impl/common">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
-                    </fileset>
-                    <fileset dir="${hy.luni.src.test.impl.java.platform}">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
-                    </fileset>              
-                </batchtest>
-
-            </junit-elements>
-        </run-tests>
-
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">luni${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">luni${line.separator}</echo>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
     <target name="copy-resources">
@@ -484,44 +403,4 @@
         </copy>
     </target>
 
-    <macrodef name="run-tests">
-        <attribute name="description" default="" />
-        <element name="junit-elements" />
-        <sequential>
-            <echo message="Running LUNI @{description}" />
-
-            <mkdir dir="${tests.output}" />
-
-            <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-            <junit fork="yes"
-                   forkmode="${hy.test.forkmode}"
-                   timeout="${hy.test.timeout}"
-                   printsummary="withOutAndErr"
-                   errorproperty="test.errors"
-                   failureproperty="test.failures"
-                   showoutput="on"
-                   dir="${tests.hdk.dir}"
-                   jvm="${test.jre.home}/bin/java">
-
-                <assertions enableSystemAssertions="true">
-                   <enable />
-                </assertions>
-
-                <jvmarg line="${hy.test.vmargs}" />
-                <!-- Used by Support_Exec.execJava() -->
-                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
-                
-                <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=${hy.hdk}/build/test/testing.policy" />
-
-                <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=${tests.hdk.dir}/resources/config/localhosttest.ini" />
-
-                <junit-elements />
-
-                <formatter type="xml" />
-            </junit>
-        </sequential>
-    </macrodef>
 </project>
