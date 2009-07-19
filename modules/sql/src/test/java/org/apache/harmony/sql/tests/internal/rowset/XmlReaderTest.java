@@ -31,11 +31,11 @@ import org.w3c.dom.Document;
 
 public class XmlReaderTest extends TestCase {
 
-    public final String XML_SRC_URL_RI = "src/test/resources/org/apache/harmony/sql/internal/rowset/XmlReaderTest_RI.xml";
+    public final String XML_SRC_URL_RI = "resources/org/apache/harmony/sql/internal/rowset/XmlReaderTest_RI.xml";
 
-    public final String XML_SRC_URL_HY = "src/test/resources/org/apache/harmony/sql/internal/rowset/XmlReaderTest_HY.xml";
+    public final String XML_SRC_URL_HY = "resources/org/apache/harmony/sql/internal/rowset/XmlReaderTest_HY.xml";
 
-    public final String XML_SRC_URL_INVALID_HEADER = "src/test/resources/org/apache/harmony/sql/internal/rowset/XmlFile_InvalidHeader.xml";
+    public final String XML_SRC_URL_INVALID_HEADER = "resources/org/apache/harmony/sql/internal/rowset/XmlFile_InvalidHeader.xml";
 
     public String currentUrl;
 
