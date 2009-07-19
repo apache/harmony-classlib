@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+ 
       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 -->
 
 <project name="NIO_CHAR Build" default="build" basedir=".">
@@ -42,7 +40,12 @@
         </or>
     </fileset>
 
+    <property file="../../make/depends.properties" />
+
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/nio_char" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
+    <property name="tests.resources.hdk.dir"
+              value="${tests.hdk.dir}/resources" />
     <property name="nio_char.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
 
@@ -74,7 +77,7 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <!-- Clean natives. -->
     <target name="clean-native">
@@ -85,6 +88,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/nio_char.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/nio_char-src.jar" />
+        <delete file="${tests.hdk.dir}/nio_char_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -158,7 +162,38 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources">
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <jar destfile="${tests.hdk.dir}/nio_char_tests.jar">
+            <fileset dir="bin/test" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="./make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="src/test/resources" />
+            <fileset dir="META-INF" />
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
+    <target name="compile-tests">
         <compile-tests description="nio_char tests"
                        destdir="bin/test">
             <javac-elements>
@@ -169,76 +204,8 @@
         </compile-tests>
     </target>
 
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="nio_char" dir="./make"
-                             result="${nio_char.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="bin/test"/>
-                <pathelement path="../../build/tests" />
-                <pathelement path="${hy.hdk}/build/test/support.jar" />
-                <fileset dir="src/test/resources/jars">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="src/test/java">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${nio_char.exclude.file}"  unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">nio_char${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">nio_char${line.separator}</echo>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="bin/test" />
-        <copy todir="bin/test" includeemptydirs="false">
-            <fileset dir="src/test/resources">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>

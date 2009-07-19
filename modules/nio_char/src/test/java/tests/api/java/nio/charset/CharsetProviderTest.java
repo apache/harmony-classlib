@@ -50,7 +50,7 @@ public class CharsetProviderTest extends TestCase {
 	 */
 	public CharsetProviderTest(String arg0) {
 		super(arg0);
-        CONFIG_FILE1 = System.getProperty("user.dir")+"/bin/test";
+                CONFIG_FILE1 = System.getProperty("user.dir") + "/resources";
         
 		String sep = System.getProperty("file.separator");
 
