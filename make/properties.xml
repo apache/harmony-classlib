@@ -648,9 +648,6 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                     </fileset>
                 </bootclasspath>
 
-                <!-- TOFIX: this next line breaks modularity a bit -->
-                <classpath location="../../build/tests" />
-
                 <classpath location="${hy.hdk}/build/test/support.jar" />
             </javac>
         </sequential>

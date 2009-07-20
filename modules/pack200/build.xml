@@ -225,7 +225,6 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../build/tests" />
         </javac>
     </target>
 
