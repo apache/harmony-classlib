@@ -354,9 +354,7 @@
     </target>
 
     <!-- compile both api tests and impl tests-->
-    <target name="compile-tests" depends="compile-tests-api, compile-tests-impl" />
-
-    <target name="compile-tests-api" depends="copy-test-resources">
+    <target name="compile-tests">
         <compile-tests description="luni api tests" destdir="bin/test/api">
             <javac-elements>
                 <src>
@@ -366,14 +364,11 @@
                 <include name="**/*.java" />
             </javac-elements>
         </compile-tests>
-    </target>
-
-    <target name="compile-tests-impl" depends="copy-test-resources">
-         <compile-tests description="luni impl tests" destdir="bin/test/impl">
+        <compile-tests description="luni impl tests" destdir="bin/test/impl">
             <javac-elements>
                 <src>
-                   <pathelement location="src/test/impl/common" />
-                   <pathelement location="${hy.luni.src.test.impl.java.platform}" />
+                    <pathelement location="src/test/impl/common" />
+                    <pathelement location="${hy.luni.src.test.impl.java.platform}" />
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
@@ -391,13 +386,6 @@
             <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
-        </copy>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="bin/test" />
-        <copy todir="bin/test" includeemptydirs="false">
-            <fileset dir="src/test/resources" />
         </copy>
     </target>
 
