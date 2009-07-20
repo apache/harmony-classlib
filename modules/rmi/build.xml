@@ -68,7 +68,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/rmi.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/rmi-src.jar" />
-        <delete file="${tests.hdk.dir}/rmi_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

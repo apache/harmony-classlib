@@ -93,7 +93,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/pack200.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/pack200-src.jar" />
-        <delete file="${tests.hdk.dir}/pack200_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

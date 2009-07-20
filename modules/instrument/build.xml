@@ -93,7 +93,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/instrument.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/instrument-src.jar" />
-        <delete file="${tests.hdk.dir}/instrument_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

@@ -66,7 +66,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/concurrent.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/concurrent-src.jar" />
-        <delete file="${tests.hdk.dir}/concurrent_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

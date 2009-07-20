@@ -68,7 +68,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/text.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/text-src.jar" />
-        <delete file="${tests.hdk.dir}/text_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

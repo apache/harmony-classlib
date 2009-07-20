@@ -80,9 +80,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/awt.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
-        <delete file="${tests.hdk.dir}/awt_boot_tests.jar" />
-        <delete file="${tests.hdk.dir}/awt_tests.jar" />
-        <delete file="${tests.hdk.dir}/awt_headless_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />

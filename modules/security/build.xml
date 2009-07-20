@@ -107,12 +107,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/security.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/security-src.jar" />
-        <delete file="${tests.hdk.dir}/security_tests_api.jar" />
-        <delete file="${tests.hdk.dir}/security_tests_api_in.jar" />
-        <delete file="${tests.hdk.dir}/security_tests_impl.jar" />
-        <delete file="${tests.hdk.dir}/security_tests_impl_in.jar" />
-        <delete file="${tests.hdk.dir}/security_tests_support.jar" />
-        <delete dir="${tests.resources.hdk.dir}" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

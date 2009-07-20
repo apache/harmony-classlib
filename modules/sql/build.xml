@@ -68,8 +68,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/sql.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/sql-src.jar" />
-        <delete file="${tests.hdk.dir}/sql_tests.jar" />
-        <delete failonerror="false" dir="${tests.resources.hdk.dir}/TESTDB"/>
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

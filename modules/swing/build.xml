@@ -88,7 +88,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/swing.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/swing-src.jar" />
-        <delete file="${tests.hdk.dir}/swing_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset refid="hidden.classes"/>

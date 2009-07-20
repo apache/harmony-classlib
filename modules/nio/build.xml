@@ -100,7 +100,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/nio.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/nio-src.jar" />
-        <delete file="${tests.hdk.dir}/nio_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
         </delete>

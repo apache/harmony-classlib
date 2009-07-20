@@ -67,7 +67,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/lang-management.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/lang-management-src.jar" />
-        <delete file="${tests.hdk.dir}/lang-management_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

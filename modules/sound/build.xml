@@ -68,7 +68,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/sound.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/sound-src.jar" />
-        <delete file="${tests.hdk.dir}/sound_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

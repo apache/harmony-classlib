@@ -225,11 +225,11 @@
     <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
         <delete failonerror="false" dir="bin"/>
-        <delete dir="${tests.hdk.dir}" quiet="true" />
     </target>
 
     <target name="clean-native-includes">

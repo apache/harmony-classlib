@@ -68,9 +68,7 @@
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/beans.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/beans-src.jar" />
-        <delete file="${tests.hdk.dir}/beans_test_support.jar" />
-        <delete file="${tests.hdk.dir}/beans_tests.jar" />
-        <delete file="${tests.hdk.dir}/beans_impl_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>

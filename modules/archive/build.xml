@@ -179,8 +179,7 @@
     <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
-        <delete file="${tests.hdk.dir}/archive_tests.jar" />
-        <delete file="${tests.hdk.dir}/archive_internal_tests.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
