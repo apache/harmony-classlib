@@ -68,8 +68,4 @@ the top-level build.
         </delete>
     </target>
 
-    <target name="-test-module">
-        <!-- just to match "API" for other modules. -->
-    </target>
-
 </project>
