@@ -53,8 +53,6 @@
     <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="tests.resources.hdk.dir"
               value="${tests.hdk.dir}/resources" />
-    <property name="pack200.exclude.file"
-              location="${tests.hdk.dir}/test.exclude" />
 
     <target name="build"
             depends="check-depends, compile-java, copy-resources, build-jar" />
