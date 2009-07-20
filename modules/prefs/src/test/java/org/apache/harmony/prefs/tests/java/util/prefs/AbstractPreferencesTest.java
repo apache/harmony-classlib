@@ -329,7 +329,7 @@ public class AbstractPreferencesTest extends TestCase {
         // "abc"
 
         pref.put("testGetByteArrayKey", "abc=");
-        pref.put("testGetByteArrayKey2", new String(b64Array));
+        pref.put("testGetByteArrayKey2", new String(b64Array, "UTF-8"));
         pref.put("invalidKey", "<>?");
         // assertTrue(Arrays.equals(new byte[0], p.getByteArray(
         // "testGetByteArrayKey", new byte[0])));
