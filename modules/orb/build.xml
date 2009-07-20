@@ -22,7 +22,6 @@
     <description>Build for ORB component</description>
 
     <property name="hy.hdk" location="${basedir}/../../deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
     <import file="${hy.hdk}/build/ant/depends.xml" />

@@ -25,12 +25,12 @@
 		Compile the native source into component shared libs.
     </description>
 
+    <property name="hy.hdk" location="deploy" />
+
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
     <import file="${basedir}/make/depends.xml" />
 
-    <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property name="depends.build" location="depends/build" />
     <property name="depends.oss" location="depends/oss" />
     <property name="depends.libs" location="depends/libs/${hy.platform}" />

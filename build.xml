@@ -73,7 +73,6 @@ module:
     <property file="${user.home}/.harmony-classlib.properties" />
 
     <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <!-- import properties for snapshot targets -->
     <import file="${basedir}/make/properties.xml" />

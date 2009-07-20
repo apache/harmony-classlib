@@ -25,6 +25,8 @@
         Compile the Java source and package in component archives.
     </description>
 
+    <property name="hy.hdk" location="deploy" />
+
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
 
@@ -32,8 +34,6 @@
     <property name="depends.jars" location="depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />
-    <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property file="make/depends.properties" />
 
 

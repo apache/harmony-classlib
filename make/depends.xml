@@ -25,6 +25,8 @@
     where possible.
     </description>
 
+    <property name="hy.hdk" location="${basedir}/deploy" />
+
     <import file="${basedir}/make/properties.xml" />
     <import file="${basedir}/make/depends-common.xml" />
 

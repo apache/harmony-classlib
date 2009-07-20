@@ -22,7 +22,6 @@
     <description> Tests for classlib package</description>
 
     <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
