@@ -30,17 +30,6 @@
     <property name="stub.jar"
               location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
 
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="src/main/java" />
-            <present targetdir="src/main/java">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-
     <target name="warn">
         <fail>...
 

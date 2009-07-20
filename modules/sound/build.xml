@@ -29,17 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <fileset id="classes" dir="../../build/classes">
-        <or>
-            <present targetdir="src/main/java" />
-            <present targetdir="src/main/java">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/sound" />
