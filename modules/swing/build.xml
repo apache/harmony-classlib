@@ -32,9 +32,6 @@
     <property name="hy.swing.src.main.java.platform"
               value="src/main/java/common/../${hy.os.family}" />
 
-    <property name="hy.swing.src.test.java.platform"
-              value="${hy.swing.src.test.java}/../${hy.os.family}" />
-
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java/common" />
