@@ -44,14 +44,12 @@
         </or>
     </fileset>
 
-    <fileset id="tests.api" dir="bin/test/api"/>
-    <fileset id="tests.impl" dir="bin/test/impl"/>
+    <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/luni" />
     <property name="tests.resources.hdk.dir" value="${tests.hdk.dir}/resources" />
     <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
 
-    <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
     <property name="luni.exclude.file"
@@ -307,7 +305,7 @@
               tofile="${tests.hdk.dir}/build.xml" />
 
         <jar destfile="${tests.hdk.dir}/luni_tests_api.jar">
-            <fileset refid="tests.api" />
+            <fileset dir="bin/test/api" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
@@ -315,7 +313,7 @@
         </jar>
 
         <jar destfile="${tests.hdk.dir}/luni_tests_impl.jar">
-            <fileset refid="tests.impl" />
+            <fileset dir="bin/test/impl" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>

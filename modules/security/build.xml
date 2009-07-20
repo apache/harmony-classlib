@@ -52,12 +52,6 @@
         </or>
     </fileset>
 
-    <fileset id="tests.api" dir="bin/test/api"/>
-    <fileset id="tests.api.in" dir="bin/test/api.injected"/>
-    <fileset id="tests.impl" dir="bin/test/impl"/>
-    <fileset id="tests.impl.in" dir="bin/test/impl.injected"/>
-    <fileset id="tests.support" dir="bin/test/support"/>
-
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/security" />
@@ -191,35 +185,35 @@
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
 
         <jar destfile="${tests.hdk.dir}/security_tests_api.jar">
-            <fileset refid="tests.api" />
+            <fileset dir="bin/test/api" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
             <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_api_in.jar">
-            <fileset refid="tests.api.in" />
+            <fileset dir="bin/test/api.injected" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
             <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_impl.jar">
-            <fileset refid="tests.impl" />
+            <fileset dir="bin/test/impl" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
             <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_impl_in.jar">
-            <fileset refid="tests.impl.in" />
+            <fileset dir="bin/test/impl.injected" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
             <metainf refid="hy.required.metainf-files"/>
         </jar>
         <jar destfile="${tests.hdk.dir}/security_tests_support.jar">
-            <fileset refid="tests.support" />
+            <fileset dir="bin/test/support" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

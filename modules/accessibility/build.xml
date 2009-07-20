@@ -40,8 +40,6 @@
         </or>
     </fileset>
 
-    <fileset id="tests" dir="bin/test"/>
-
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/accessibility" />
@@ -138,7 +136,7 @@
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
 
         <jar destfile="${tests.hdk.dir}/accessibility_tests.jar">
-            <fileset refid="tests" />
+            <fileset dir="bin/test" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

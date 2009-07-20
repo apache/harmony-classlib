@@ -61,7 +61,6 @@
     <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="auth.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
-    <fileset id="tests" dir="bin/test" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -179,7 +178,7 @@
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
         <jar destfile="${tests.hdk.dir}/auth_tests.jar">
-            <fileset refid="tests" />
+            <fileset dir="bin/test" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

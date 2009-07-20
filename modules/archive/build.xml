@@ -48,8 +48,6 @@
     <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
     <property name="archive.exclude.file"
               location="${tests.hdk.dir}/test.exclude" />
-    <fileset id="tests.api" dir="bin/test" />
-    <fileset id="tests.internal" dir="bin/test-internal" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
@@ -258,7 +256,7 @@
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
         <jar destfile="${tests.hdk.dir}/archive_tests.jar">
-            <fileset refid="tests.api" />
+            <fileset dir="bin/test" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -266,7 +264,7 @@
         </jar>
 
         <jar destfile="${tests.hdk.dir}/archive_internal_tests.jar">
-            <fileset refid="tests.internal" />
+            <fileset dir="bin/test-internal" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
