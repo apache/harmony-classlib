@@ -29,10 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.luni.src.test.api.java.platform"
-        value="src/test/api/${hy.os.family}" />
-    <property name="hy.luni.src.test.impl.java.platform"
-        value="src/test/impl/${hy.os.family}" />
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java" />
@@ -359,7 +355,7 @@
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/common" />
-                    <pathelement location="${hy.luni.src.test.api.java.platform}" />
+                    <pathelement location="src/test/api/${hy.os.family}" />
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
@@ -367,8 +363,8 @@
         <compile-tests description="luni impl tests" destdir="bin/test/impl">
             <javac-elements>
                 <src>
-                    <pathelement location="src/test/impl/common" />
-                    <pathelement location="${hy.luni.src.test.impl.java.platform}" />
+                   <pathelement location="src/test/impl/common" />
+                   <pathelement location="src/test/impl/${hy.os.family}" />
                 </src>
                 <include name="**/*.java" />
             </javac-elements>

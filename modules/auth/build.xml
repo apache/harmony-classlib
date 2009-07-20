@@ -30,12 +30,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.auth.src.main.java.platform"
-              value="src/main/java/common/../${hy.os.family}" />
-
-    <property name="hy.auth.src.test.java.platform"
-              value="src/test/java/common/../${hy.os.family}" />
-
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java/common" />
@@ -44,8 +38,8 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
-            <present targetdir="${hy.auth.src.main.java.platform}" />
-            <present targetdir="${hy.auth.src.main.java.platform}">
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -129,7 +123,7 @@
 
             <src>
                 <pathelement location="src/main/java/common"/>
-                <pathelement location="${hy.auth.src.main.java.platform}" />
+                <pathelement location="src/main/java/${hy.os.family}" />
             </src>
 
             <bootclasspath>
@@ -163,7 +157,7 @@
 
         <jar destfile="${hy.jdk}/jre/lib/boot/auth-src.jar">
             <fileset dir="src/main/java/common" />
-            <fileset dir="${hy.auth.src.main.java.platform}" />
+            <fileset dir="src/main/java/${hy.os.family}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -208,7 +202,7 @@
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java/common"/>
-                    <pathelement location="${hy.auth.src.test.java.platform}"/>
+                    <pathelement location="src/test/java/${hy.os.family}"/>
                 </src>
             </javac-elements>
         </compile-tests>

@@ -29,12 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.awt.src.main.java.platform"
-              value="src/main/java/common/../${hy.os.family}" />
-
-    <property name="hy.awt.src.test.impl.platform"
-              value="src/test/impl/${hy.os.family}" />
-
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java/common" />
@@ -43,8 +37,8 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
-            <present targetdir="${hy.awt.src.main.java.platform}" />
-            <present targetdir="${hy.awt.src.main.java.platform}">
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -105,7 +99,7 @@
 
             <src>
                 <pathelement location="src/main/java/common"/>
-                <pathelement location="${hy.awt.src.main.java.platform}" />
+                <pathelement location="src/main/java/${hy.os.family}" />
             </src>
 
             <bootclasspath>
@@ -151,7 +145,7 @@
 
         <jar destfile="${hy.jdk}/jre/lib/boot/awt-src.jar">
             <fileset dir="src/main/java/common" />
-            <fileset dir="${hy.awt.src.main.java.platform}" />
+            <fileset dir="src/main/java/${hy.os.family}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -375,7 +369,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="awt impl tests"
+        <compile-tests description="awt boot tests"
                        destdir="bin/test/boot">
             <javac-elements>
                 <src>
@@ -383,12 +377,12 @@
                 </src>
             </javac-elements>
         </compile-tests>
-        <compile-tests description="awt api tests"
+        <compile-tests description="awt tests"
                        destdir="bin/test/classes">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/java" />
-                    <pathelement location="${hy.awt.src.test.impl.platform}" />
+                    <pathelement location="src/test/impl/${hy.os.family}" />
                 </src>
             </javac-elements>
         </compile-tests>

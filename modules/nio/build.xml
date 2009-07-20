@@ -29,12 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.nio.src.main.java.platform"
-              value="src/main/java/common/../${hy.os.family}" />
-
-    <property name="hy.nio.src.test.java.platform"
-              value="src/test/java/common/../${hy.os.family}" />
-
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/nio" />
@@ -51,8 +45,8 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java" />
             </present>
-            <present targetdir="${hy.nio.src.main.java.platform}" />
-            <present targetdir="${hy.nio.src.main.java.platform}">
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java" />
@@ -130,7 +124,7 @@
 
             <src>
                 <pathelement location="src/main/java/common" />
-                <pathelement location="${hy.nio.src.main.java.platform}" />
+                <pathelement location="src/main/java/${hy.os.family}" />
             </src>
 
             <bootclasspath>
@@ -208,7 +202,7 @@
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java/common" />
-                    <pathelement location="${hy.nio.src.test.java.platform}" />
+                    <pathelement location="src/test/java/${hy.os.family}" />
                 </src>
             </javac-elements>
         </compile-tests>

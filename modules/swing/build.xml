@@ -29,9 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.swing.src.main.java.platform"
-              value="src/main/java/common/../${hy.os.family}" />
-
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java/common" />
@@ -40,8 +37,8 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
-            <present targetdir="${hy.swing.src.main.java.platform}" />
-            <present targetdir="${hy.swing.src.main.java.platform}">
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -110,7 +107,7 @@
 
             <src>
                 <pathelement location="src/main/java/common"/>
-                <pathelement location="${hy.swing.src.main.java.platform}" />
+                <pathelement location="src/main/java/${hy.os.family}" />
             </src>
 
             <bootclasspath>

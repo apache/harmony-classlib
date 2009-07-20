@@ -29,9 +29,6 @@
 
     <!-- set global properties for this build. -->
 
-    <property name="hy.print.src.main.java.platform"
-              value="src/main/java/common/../${hy.os.family}" />
-
     <fileset id="classes" dir="../../build/classes">
         <or>
             <present targetdir="src/main/java/common" />
@@ -40,8 +37,8 @@
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
-            <present targetdir="${hy.print.src.main.java.platform}" />
-            <present targetdir="${hy.print.src.main.java.platform}">
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -149,7 +146,7 @@
                 dir="src/main/java/common/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>
             <metainf prefix="META-INF/services"
-                dir="${hy.print.src.main.java.platform}/org/apache/harmony/x/print"
+                dir="src/main/java/${hy.os.family}/org/apache/harmony/x/print"
                 includes="javax.print.PrintServiceLookup"/>
             <fileset refid="classes" />
             <manifest>
@@ -164,10 +161,10 @@
                 dir="src/main/java/common/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>
             <metainf prefix="META-INF/services"
-                dir="${hy.print.src.main.java.platform}/org/apache/harmony/x/print"
+                dir="src/main/java/${hy.os.family}/org/apache/harmony/x/print"
                 includes="javax.print.PrintServiceLookup"/>
             <fileset dir="src/main/java/common" />
-            <fileset dir="${hy.print.src.main.java.platform}" />
+            <fileset dir="src/main/java/${hy.os.family}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
