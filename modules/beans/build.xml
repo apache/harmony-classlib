@@ -115,7 +115,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/beans.jar"
-             manifest="./META-INF/MANIFEST.MF"
+             manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -167,7 +167,7 @@
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">
-            <fileset dir="./make" includes="exclude*"/>
+            <fileset dir="make" includes="exclude*"/>
             <filterchain>
                 <tokenfilter>
                     <replaceregex pattern="\.java" replace="\.class" flags="g"/>

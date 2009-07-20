@@ -119,7 +119,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/crypto.jar"
-             manifest="./META-INF/MANIFEST.MF"
+             manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -208,7 +208,7 @@
                     <pathelement location="src/test/support/common/java"/>
 
                     <!-- FIXME: CRYPTO tests should not reach into security module code -->
-                    <pathelement location="./../security/src/test/support/common/java"/>
+                    <pathelement location="../security/src/test/support/common/java"/>
                 </src>
 
                 <include name="**/*.java" />
