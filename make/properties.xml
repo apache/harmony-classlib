@@ -664,7 +664,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
             <property name="test.module.dir" value="${target.dir}/@{module}" />
             <property name="test.excludes.dir" value="${test.module.dir}/excludes" />
             <property name="test.resources.dir" value="${test.module.dir}/resources" />
-            <property name="test.exclude.file" value="${work.dir}/@{module}.exclude" />
+            <property name="test.exclude.file" value="${work.dir}/@{module}/test.exclude" />
             
             <mkdir dir="${tests.output}" /> 
 
@@ -740,7 +740,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
             <property name="test.module.dir" value="${target.dir}/@{module}" />
             <property name="test.excludes.dir" value="${test.module.dir}/excludes" />
             <property name="test.resources.dir" value="${test.module.dir}/resources" />
-            <property name="test.exclude.file" value="${work.dir}/@{module}.exclude" />
+            <property name="test.exclude.file" value="${work.dir}/@{module}/test.exclude" />
             
             <mkdir dir="${tests.output}" /> 
 
