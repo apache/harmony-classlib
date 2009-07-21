@@ -21,7 +21,7 @@
 
     <description>Build for security kernel stub jar</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="security-kernel" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 

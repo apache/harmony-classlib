@@ -19,16 +19,13 @@
 <project name="ARCHIVE Build" default="build" basedir=".">
     <description>Build for ARCHIVE component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="archive" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
 
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/archive" />
-    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     

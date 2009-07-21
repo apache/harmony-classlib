@@ -19,14 +19,11 @@
 <project name="CONCURRENT Build" default="build" basedir=".">
     <description>Build for CONCURRENT component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="concurrent" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/concurrent" />
-    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
 
     <target name="build" depends="compile-java, build-jar" />
 

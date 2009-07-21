@@ -19,16 +19,11 @@
 <project name="LUNI Build" default="build" basedir=".">
     <description>Build for LUNI component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="luni" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/luni" />
-    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
-    <property name="tests.resources.hdk.dir"
-              value="${tests.hdk.dir}/resources" />
 
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 

@@ -21,6 +21,7 @@
 <project name="ORB Build" default="build" basedir=".">
     <description>Build for ORB component</description>
 
+    <property name="hy.module" value="orb" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />

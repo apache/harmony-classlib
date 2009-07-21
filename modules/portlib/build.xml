@@ -19,7 +19,7 @@
 <project name="PORTLIB Build" default="build" basedir=".">
     <description>Build for PORTLIB component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="portlib" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 

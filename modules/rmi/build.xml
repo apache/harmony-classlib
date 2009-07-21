@@ -19,16 +19,11 @@
 <project name="RMI Build" default="build" basedir=".">
     <description>Build for RMI component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="rmi" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/rmi" />
-    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
-    <property name="tests.resources.hdk.dir"
-              value="${tests.hdk.dir}/resources" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 

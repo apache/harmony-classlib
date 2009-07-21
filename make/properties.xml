@@ -361,6 +361,10 @@
 
     <!-- test properties -->
     <property name="tests.output" location="../../build/test_report" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/${hy.module}" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
+    <property name="tests.resources.hdk.dir"
+              value="${tests.hdk.dir}/resources" />
 
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >

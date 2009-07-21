@@ -20,16 +20,11 @@
 <project name="AUTH Build" default="build" basedir=".">
     <description>Build for AUTH component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="auth" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-
-    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/auth" />
-    <property name="tests.resources.hdk.dir"
-              value="${tests.hdk.dir}/resources" />
-    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
