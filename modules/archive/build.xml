@@ -23,10 +23,6 @@
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="tests.output" location="../../build/test_report" />
-
-    <!-- set global properties for this build. -->
-
     <property file="../../make/depends.properties" />
 
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />

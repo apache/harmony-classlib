@@ -356,7 +356,11 @@
                         to="\1.java"/>
             </present>
         </or>
+
     </fileset>
+
+    <!-- test properties -->
+    <property name="tests.output" location="../../build/test_report" />
 
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >

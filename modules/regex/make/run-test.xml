@@ -21,12 +21,13 @@
     <property name="hy.hdk" location="../../.." />
     <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
     <property file="../test.properties" />
-    <import file="../../ant/properties.xml" />
 
     <property name="work.dir" value=".." />
     <property name="target.dir" value=".." />
     <property name="tests.output" location="../report" />
     <property name="junit.jar" location="../junit.jar" />
+
+    <import file="../../ant/properties.xml" />
 
     <target name="test" depends="test-module" />
 

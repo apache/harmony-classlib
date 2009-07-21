@@ -23,10 +23,6 @@
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="tests.output" location="../../build/test_report" />
-
-    <!-- set global properties for this build. -->
-
     <property file="../../make/depends.properties" />
 
     <property name="tests.hdk.dir" value="${hy.hdk}/build/test/annotation" />
