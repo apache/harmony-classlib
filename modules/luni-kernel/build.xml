@@ -25,7 +25,6 @@
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="hy.build" location="../../build/classes" />
     <property name="stub.jar"
               location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
 
