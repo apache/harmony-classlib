@@ -201,7 +201,7 @@ ${built.files.list}
         <!-- Copy across the boot dependency jars --><!-- TOFIX clean these? -->
         <copy todir="${hy.jdk}/jre/lib/boot">
             <fileset dir="${depends.jars}">
-                <patternset includes="icu4j_4.0/*.jar" />
+                <patternset includes="icu4j_4.2.1/*.jar" />
                 <patternset includes="xalan-j_2.7.0/xalan.jar" />
                 <patternset includes="xerces_2.9.1/*.jar" />
             </fileset>
