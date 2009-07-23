@@ -19,6 +19,7 @@ package org.apache.harmony.security.tests.java.security;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -149,13 +150,14 @@ public class DigestInputStream2Test extends junit.framework.TestCase {
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
+	 * @throws UnsupportedEncodingException 
 	 */
-	protected void setUp() {
+	protected void setUp() throws UnsupportedEncodingException {
 		// create a ByteArrayInputStream to perform digesting on
 		inStream = new ByteArrayInputStream(
-				"This is a test string for digesting".getBytes());
+				"This is a test string for digesting".getBytes("UTF-8"));
 		inStream1 = new ByteArrayInputStream(
-				"This is a test string for digesting".getBytes());
+				"This is a test string for digesting".getBytes("UTF-8"));
 		try {
 			digest = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
