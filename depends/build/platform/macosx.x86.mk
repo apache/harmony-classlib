@@ -13,6 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+CC = gcc-4.2
+CXX = g++-4.2
+
 DEFINES += -DMACOSX -DMACOSX_X86 -DHYX86 -DIPv6_FUNCTION_SUPPORT
 
 # Add the default location of the macports.org install to the includes
