@@ -18,11 +18,11 @@ include $(HY_HDK)/build/make/defines.mk
 INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include $(LCMS_INCLUDES)
 
 BUILDFILES = \
-  $(SHAREDSUB)/cmmerror.o \
-  $(SHAREDSUB)/cmmio.o \
-  $(SHAREDSUB)/cmmxforms.o \
-  $(SHAREDSUB)/NativeCMM.o \
-  $(SHAREDSUB)/NativeImageFormat.o
+  $(SHAREDSUB)cmmerror.o \
+  $(SHAREDSUB)cmmio.o \
+  $(SHAREDSUB)cmmxforms.o \
+  $(SHAREDSUB)NativeCMM.o \
+  $(SHAREDSUB)NativeImageFormat.o
 
 OSLIBS += -llcms
 
