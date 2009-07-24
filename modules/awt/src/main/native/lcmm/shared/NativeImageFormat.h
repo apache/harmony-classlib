@@ -25,14 +25,6 @@
 
 #include "NativeCMM.h"
 
-jfieldID clr_NIF_cmmFormatID;
-jfieldID clr_NIF_colsID;
-jfieldID clr_NIF_rowsID;
-jfieldID clr_NIF_scanlineStrideID;
-jfieldID clr_NIF_imageDataID;
-jfieldID clr_NIF_dataOffsetID;
-jfieldID clr_NIF_alphaOffsetID;
-
 // Represents NativeImageFormat java class
 typedef struct {
     int cmmFormat;
