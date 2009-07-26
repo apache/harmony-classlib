@@ -164,8 +164,7 @@
                 </src>
             </javac-elements>
         </compile-tests>
-        <compile-tests description="logging api tests"
-                       destdir="bin/test">
+        <compile-tests description="logging api tests">
             <javac-elements>
                 <bootclasspath>
                     <pathelement path="bin/test-internal"/>

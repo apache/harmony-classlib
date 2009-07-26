@@ -139,8 +139,7 @@
     </target>
 
     <target name="compile-tests" depends="copy-test-resources">
-        <compile-tests description="sound tests"
-                       destdir="bin/test">
+        <compile-tests description="sound tests">
             <javac-elements>
                 <classpath location="${tests.resources.hdk.dir}/org/apache/harmony/sound/tests/javax/sound/sampled/soundProvider.jar" />
                 <src>

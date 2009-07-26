@@ -179,8 +179,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="imageio tests"
-                       destdir="bin/test">
+        <compile-tests description="imageio tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

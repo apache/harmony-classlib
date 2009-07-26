@@ -136,8 +136,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="sql tests"
-                       destdir="bin/test">
+        <compile-tests description="sql tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

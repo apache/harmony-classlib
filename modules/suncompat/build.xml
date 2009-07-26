@@ -131,8 +131,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="suncompat tests"
-                       destdir="bin/test">
+        <compile-tests description="suncompat tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

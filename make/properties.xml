@@ -677,7 +677,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
 
     <macrodef name="compile-tests">
         <attribute name="description" default="" />
-        <attribute name="destdir"  />
+        <attribute name="destdir" default="bin/test" />
         <element name="javac-elements" />
         <sequential>
             <echo message="Compiling @{description}" />

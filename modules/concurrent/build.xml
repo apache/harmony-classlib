@@ -124,8 +124,7 @@
       </target>
 
     <target name="compile-tests">
-        <compile-tests description="concurrent tests"
-                       destdir="bin/test">
+        <compile-tests description="concurrent tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

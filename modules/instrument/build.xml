@@ -165,8 +165,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="instrument tests"
-                       destdir="bin/test">
+        <compile-tests description="instrument tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

@@ -172,8 +172,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="print tests"
-                       destdir="bin/test">
+        <compile-tests description="print tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/java/common" />

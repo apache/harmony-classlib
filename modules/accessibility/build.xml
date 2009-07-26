@@ -135,8 +135,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="accessibility api tests"
-                       destdir="bin/test">
+        <compile-tests description="accessibility api tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/api/java/common" />

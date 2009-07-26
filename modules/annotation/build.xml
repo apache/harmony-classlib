@@ -133,8 +133,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="annotation api tests"
-                       destdir="bin/test">
+        <compile-tests description="annotation api tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

@@ -270,8 +270,7 @@
                 </src>
             </javac-elements>
         </compile-tests>
-        <compile-tests description="archive api tests"
-                       destdir="bin/test">
+        <compile-tests description="archive api tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

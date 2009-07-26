@@ -137,8 +137,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="text tests"
-                       destdir="bin/test">
+        <compile-tests description="text tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java" />

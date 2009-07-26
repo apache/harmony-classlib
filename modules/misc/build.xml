@@ -159,8 +159,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="misc tests"
-                       destdir="bin/test">
+        <compile-tests description="misc tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java/common" />

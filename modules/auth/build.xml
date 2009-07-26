@@ -167,8 +167,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="auth api tests"
-                       destdir="bin/test">
+        <compile-tests description="auth api tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java/common"/>

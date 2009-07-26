@@ -168,8 +168,7 @@
     </target>
 
     <target name="compile-tests">
-        <compile-tests description="nio tests"
-                       destdir="bin/test">
+        <compile-tests description="nio tests">
             <javac-elements>
                 <src>
                     <pathelement location="src/test/java/common" />
