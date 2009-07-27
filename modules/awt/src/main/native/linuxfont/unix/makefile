@@ -21,7 +21,7 @@ ifeq ($(HY_OS),freebsd)
 INCLUDES += -I/usr/local/include -I/usr/local/include/freetype2
 endif
 ifeq ($(HY_OS),macosx)
-INCLUDES += -I/sw/lib/freetype2/include/freetype2 -I/sw/lib/freetype2/include
+INCLUDES += -I/opt/local/include/freetype2 -I/opt/local/include/freetype2
 endif
 
 BUILDFILES = LinuxNativeFont.o
@@ -31,7 +31,7 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += $(LIBPATH)libhypool.a \
-	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX) ../../fontlib/libFL.so
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX) ../../fontlib/libFL$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(XLIBS)
 
