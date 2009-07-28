@@ -392,6 +392,17 @@ public class ExpressionTest extends TestCase {
     }
 
     /*
+     * Test the constructor(value, ...) with a expression value.
+     */
+    public void testConstructor_EmptyTarget_EmptyMethod_ExpressionArguments() {
+        Object[] objectArray = new Object[] { new Expression((Object) null,
+                (String) null, (Object[]) null) };
+        Expression expression = new Expression(objectArray, new String(),
+                new String(), objectArray);
+        assertEquals("ObjectArray=\"\".(Expression);", expression.toString());
+    }
+
+    /*
      * Test the setValue() method with a non-null value when the value of the
      * expression is still unbounded.
      */

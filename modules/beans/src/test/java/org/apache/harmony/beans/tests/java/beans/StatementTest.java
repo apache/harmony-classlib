@@ -338,6 +338,34 @@ public class StatementTest extends TestCase {
         assertEquals("Object.method(null);", t.toString());
     }
 
+    public void testConstructor_EmptyTarget_EmptyMethod_NullArguments() {
+        Statement statement = new Statement(new String(), new String(),
+                (Object[]) null);
+        assertEquals("\"\".();", statement.toString());
+    }
+
+    public void testConstructor_StringArrayTarget_EmptyMethod_NullArguments() {
+        Object target = new String[2];
+        Statement statement = new Statement(target, new String(),
+                (Object[]) null);
+        assertEquals("StringArray.();", statement.toString());
+    }
+
+    public void testConstructor_StringArrayArrayTarget_EmptyMethod_NullArguments() {
+        Object target = new String[2][];
+        Statement statement = new Statement(target, new String(),
+                (Object[]) null);
+        assertEquals("StringArrayArray.();", statement.toString());
+    }
+
+    public void testConstructor_StringArrayArrayTarget_EmptyMethod_StringArrayArrayTarget() {
+        Object target = new String[2][];
+        Statement statement = new Statement(target, new String(),
+                new Object[] { target });
+        assertEquals("StringArrayArray.(StringArrayArray);", statement
+                .toString());
+    }
+
     // public void testGetArguments() {
     // // Covered in the testcases for the constructor
     // }

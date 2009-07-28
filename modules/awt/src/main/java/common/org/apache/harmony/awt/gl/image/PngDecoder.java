@@ -107,27 +107,17 @@ public class PngDecoder extends ImageDecoder {
     public void decodeImage() throws IOException {
         try {
             int bytesRead = 0;
-            int needBytes, offset, bytesInBuffer = 0;
             // Read from the input stream
             for (;;) {
-                needBytes = buffer_size - bytesInBuffer;
-                offset = bytesInBuffer;
+                bytesRead = inputStream.read(buffer, 0, buffer_size);
 
-                bytesRead = inputStream.read(buffer, offset, needBytes);
-
-                if (bytesRead < 0) { // Break, nothing to read from buffer, image truncated?
+                if (bytesRead < 0) {
+                    // Break, nothing to read from buffer, image truncated?
                     releaseNativeDecoder(hNativeDecoder);
                     break;
                 }
 
-                // Keep track on how much bytes left in buffer
-                bytesInBuffer += bytesRead;
-                hNativeDecoder = decode(buffer, bytesInBuffer, hNativeDecoder);
-                // PNG decoder always consumes all bytes at once
-                bytesInBuffer = 0;
-
-                // if (bytesConsumed < 0)
-                //break; // Error exit
+                hNativeDecoder = decode(buffer, bytesRead, hNativeDecoder);
 
                 returnData();
 

@@ -73,6 +73,33 @@ public class PipedInputStreamTest extends TestCase {
         pis.available();
     }
 
+
+    /**
+     * @test java.io.PipedInputStream#read()
+     */
+    public void test_readException() {
+        pis = new PipedInputStream();
+        pos = new PipedOutputStream();
+
+        try {
+            pis.connect(pos);
+            t = new Thread(pw = new PWriter(pos, 1000));
+            t.start();
+            assertTrue(t.isAlive());
+            while (true) {
+                pis.read();
+                t.interrupted();
+            }
+        } catch (IOException e) {
+            assertTrue(e.getMessage().contains("Write end dead"));
+        } finally {
+            try {
+                pis.close();
+                pos.close();
+            } catch (IOException ee) {}
+        }
+    }
+
     /**
      * @tests java.io.PipedInputStream#available()
      */

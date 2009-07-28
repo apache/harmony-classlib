@@ -92,7 +92,7 @@ public class FilterInputStreamTest extends TestCase {
         byte[] buf1 = new byte[100];
         is.read(buf1);
         assertTrue("Failed to read correct data", new String(buf1, 0,
-                buf1.length).equals(fileString.substring(0, 100)));
+                buf1.length, "UTF-8").equals(fileString.substring(0, 100)));
     }
 
     /**
@@ -104,7 +104,7 @@ public class FilterInputStreamTest extends TestCase {
         is.mark(1000);
         is.read(buf1, 0, buf1.length);
         assertTrue("Failed to read correct data", new String(buf1, 0,
-                buf1.length).equals(fileString.substring(3000, 3100)));
+                buf1.length, "UTF-8").equals(fileString.substring(3000, 3100)));
     }
 
     /**
@@ -127,7 +127,7 @@ public class FilterInputStreamTest extends TestCase {
         is.skip(1000);
         is.read(buf1, 0, buf1.length);
         assertTrue("Failed to skip to correct position", new String(buf1, 0,
-                buf1.length).equals(fileString.substring(1000, 1010)));
+                buf1.length, "UTF-8").equals(fileString.substring(1000, 1010)));
     }
 
     /**
@@ -146,7 +146,7 @@ public class FilterInputStreamTest extends TestCase {
                     + separator, "input.tst");
         }
         java.io.OutputStream fos = new java.io.FileOutputStream(fileName);
-        fos.write(fileString.getBytes());
+        fos.write(fileString.getBytes("UTF-8"));
         fos.close();
         is = new MyFilterInputStream(new java.io.FileInputStream(fileName));
     }

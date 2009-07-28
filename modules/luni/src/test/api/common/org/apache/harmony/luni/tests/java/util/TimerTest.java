@@ -189,6 +189,22 @@ public class TimerTest extends junit.framework.TestCase {
         }
     }
 
+    public void testConstructorThrowsException() {
+        try {
+            new Timer(null, true);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            //expected
+        }
+
+        try {
+            new Timer(null, false);
+            fail("NullPointerException expected");
+        } catch (NullPointerException e) {
+            //expected
+        }
+    }
+
     /**
      * @tests java.util.Timer#cancel()
      */

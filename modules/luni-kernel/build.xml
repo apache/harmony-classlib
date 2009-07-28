@@ -21,25 +21,12 @@
 
     <description>Build for luni kernel stub jar</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="luni-kernel" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="hy.jdk" location="../../deploy/jdk" />
-    <property name="hy.build" location="../../build/classes" />
     <property name="stub.jar"
               location="${hy.jdk}/jre/lib/boot/luni-kernel-stubs.jar" />
-
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="src/main/java" />
-            <present targetdir="src/main/java">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
 
     <target name="warn">
         <fail>...
@@ -66,10 +53,6 @@ the top-level build.
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
-    </target>
-
-    <target name="-test-module">
-        <!-- just to match "API" for other modules. -->
     </target>
 
 </project>

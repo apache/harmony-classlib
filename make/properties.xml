@@ -21,10 +21,19 @@
 
 <project name="Top-Level property definitions" default="echo" basedir="..">
     <description>
-        Ant file of common properties to be imported by other ant files
+        Ant file of common properties to be imported by other ant files.
+        Property "hy.hdk" must be defined before this file is imported.
     </description>
 
     <property file="${user.home}/.harmony-classlib.properties" />
+
+    <fail message="Property 'hy.hdk' is not defined">
+        <condition>
+            <not><isset property="hy.hdk" /></not>
+        </condition>
+    </fail>
+    <property name="hy.jdk" location="${hy.hdk}/jdk" />
+    <property name="hy.jre" location="${hy.jdk}/jre" />
 
     <!-- Debug or release version -->
     <property name="hy.cfg" value="debug" />
@@ -314,6 +323,49 @@
     <property name="hy.platform.variant"
               value="${hy.platform}${hy.libstdc++.suffix}" />
 
+    <!-- fileset to represent classes built by a module. -->
+    <fileset id="classes" dir="../../build/classes">
+        <or>
+            <!-- only common code case -->
+            <present targetdir="src/main/java" />
+            <present targetdir="src/main/java">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+
+            <!-- java5 common code case -->
+            <present targetdir="src/main/java5" />
+            <present targetdir="src/main/java5">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+
+            <!-- all common and platform code case -->
+            <present targetdir="src/main/java/common" />
+            <present targetdir="src/main/java/common">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="src/main/java/${hy.os.family}" />
+            <present targetdir="src/main/java/${hy.os.family}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+
+    </fileset>
+
+    <!-- test properties -->
+    <property name="tests.output" location="../../build/test_report" />
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test/${hy.module}" />
+    <property name="tests.excludes.hdk.dir" value="${tests.hdk.dir}/excludes" />
+    <property name="tests.resources.hdk.dir"
+              value="${tests.hdk.dir}/resources" />
+
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
@@ -369,7 +421,8 @@ Harmony platform properties:
   make.command = ${make.command}
 
   hy.hdk = ${hy.hdk}
-
+  hy.jdk = ${hy.jdk}
+  hy.jre = ${hy.jre}
 
 The following property is only set if the "svn-prop" target has been
 called:
@@ -452,7 +505,7 @@ properties in preference to these:
     </target>
 
     <target name="-get-test-vm-output">
-        <condition property="test.jre.home" value="${hy.jdk}/jre">
+        <condition property="test.jre.home" value="${hy.jre}">
             <not><isset property="test.jre.home" /></not>
         </condition>
         <exec executable="${test.jre.home}/bin/java" failifexecutionfails="false">
@@ -580,6 +633,9 @@ properties in preference to these:
                       value="exclude.${hy.platform}.${hy.test.vm.name}.interm"
             />
 
+            <dirname file="@{result}" property="@{result}.dir" />
+            <mkdir dir="${@{result}.dir}" />
+
            <echo message="" file="@{result}"/>
            <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
                <fileset dir="@{dir}">
@@ -618,5 +674,213 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
            <compilerarg line="${build.compilerarg}" />
        </javac>
    </presetdef>
+
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir" default="bin/test" />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling @{description}" />
+            
+            <mkdir dir="@{destdir}" />
+            
+            <javac destdir="@{destdir}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+                <javac-elements />
+
+                <compilerarg line="${build.compilerarg}" />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jre}/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="run-hdk-tests">
+        <attribute name="module" />
+        <attribute name="jar" />
+        <element name="junit-elements" optional="true"/>
+        <element name="excludeorinclude" optional="true"/>
+        <sequential>
+            <echo message="Running @{module} Unit Test from @{jar}" />
+            <echo message="Tested jre: ${test.jre.home}/bin/java" />
+            <property name="test.module.dir" value="${target.dir}/@{module}" />
+            <property name="test.excludes.dir" value="${test.module.dir}/excludes" />
+            <property name="test.resources.dir" value="${test.module.dir}/resources" />
+            <property name="test.exclude.file" value="${work.dir}/@{module}/test.exclude" />
+            
+            <mkdir dir="${tests.output}" /> 
+
+            <prepare-exclude-list moduleName="@{module}" dir="${test.excludes.dir}" result="${test.exclude.file}" />
+            <junit fork="yes" 
+                   forkmode="${hy.test.forkmode}" 
+                   timeout="${hy.test.timeout}" 
+                   printsummary="withOutAndErr" 
+                   errorproperty="test.errors" 
+                   failureproperty="test.failures" 
+                   showoutput="on" 
+                   dir="${work.dir}/@{module}" 
+                   tempdir="${work.dir}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <classpath>
+                    <fileset dir="${target.dir}">
+                        <include name="*.jar" />
+                    </fileset>
+                    <pathelement path="${test.resources.dir}/" />
+                    <pathelement path="${test.module.dir}/" />
+                    <pathelement location="${test.module.dir}/@{jar}" />
+                </classpath>
+
+                <junit-elements />
+
+                <batchtest todir="${tests.output}" haltonfailure="no">
+                    <zipfileset src="${test.module.dir}/@{jar}">
+                        <exclude name="Test.class" />
+                        <exclude name="**/*$*" />
+
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc.class}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.class" unless="test.case" />
+                        <excludesfile name="${test.exclude.file}" unless="test.case"/>
+                        <excludeorinclude/>
+                    </zipfileset>
+                </batchtest>
+
+                <assertions enableSystemAssertions="true">
+                    <enable />
+                </assertions>
+
+                <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
+                <formatter type="xml" />
+            </junit>
+
+            <antcall target="touch-failures-file">
+                <param name="module" value="@{module}" />
+            </antcall>
+            <antcall target="touch-errors-file">
+                <param name="module" value="@{module}" />
+            </antcall>
+
+        </sequential>
+    </macrodef>
+
+    <!-- TOFIX: Can't seem to override the line:
+             <include name="**/*Test.class" unless="test.case" />
+         so this is just run-hdk-tests without that line -->
+    <macrodef name="run-selected-hdk-tests">
+        <attribute name="module" />
+        <attribute name="jar" />
+        <element name="junit-elements" optional="true"/>
+        <element name="excludeorinclude" optional="true"/>
+        <sequential>
+            <echo message="Running @{module} Unit Test from @{jar}" />
+            <echo message="Tested jre: ${test.jre.home}/bin/java" />
+            <property name="test.module.dir" value="${target.dir}/@{module}" />
+            <property name="test.excludes.dir" value="${test.module.dir}/excludes" />
+            <property name="test.resources.dir" value="${test.module.dir}/resources" />
+            <property name="test.exclude.file" value="${work.dir}/@{module}/test.exclude" />
+            
+            <mkdir dir="${tests.output}" /> 
+
+            <prepare-exclude-list moduleName="@{module}" dir="${test.excludes.dir}" result="${test.exclude.file}" />
+            <junit fork="yes" 
+                   forkmode="${hy.test.forkmode}" 
+                   timeout="${hy.test.timeout}" 
+                   printsummary="withOutAndErr" 
+                   errorproperty="test.errors" 
+                   failureproperty="test.failures" 
+                   showoutput="on" 
+                   dir="${work.dir}/@{module}" 
+                   tempdir="${work.dir}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <classpath>
+                    <fileset dir="${target.dir}">
+                        <include name="*.jar" />
+                    </fileset>
+                    <pathelement path="${test.resources.dir}/" />
+                    <pathelement path="${test.module.dir}/" />
+                    <pathelement location="${test.module.dir}/@{jar}" />
+                </classpath>
+
+                <junit-elements />
+
+                <batchtest todir="${tests.output}" haltonfailure="no">
+                    <zipfileset src="${test.module.dir}/@{jar}">
+                        <exclude name="Test.class" />
+                        <exclude name="**/*$*" />
+
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc.class}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <excludesfile name="${test.exclude.file}" unless="test.case"/>
+                        <excludeorinclude/>
+                    </zipfileset>
+                </batchtest>
+
+                <assertions enableSystemAssertions="true">
+                    <enable />
+                </assertions>
+
+                <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
+                <formatter type="xml" />
+            </junit>
+
+            <antcall target="touch-failures-file">
+                <param name="module" value="@{module}" />
+            </antcall>
+            <antcall target="touch-errors-file">
+                <param name="module" value="@{module}" />
+            </antcall>
+
+        </sequential>
+    </macrodef>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${tests.output}/test.failures"
+            append="true">${module}${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${tests.output}/test.errors"
+            append="true">${module}${line.separator}</echo>
+    </target>
+
+    <!-- To use with -Dtest.case=... option                   -->
+    <!-- if ${test.case} is provided in package+class form    -->
+    <!-- it is converted to dir+filename form                 -->
+    <macrodef name="convert-test-as-class">
+        <attribute name="from" />
+        <attribute name="to" />
+        <sequential>
+            <pathconvert property="@{to}" setonempty="no">
+                <path path="${@{from}}" />
+                <chainedmapper>
+                    <filtermapper>
+                        <replaceregex pattern="\.java$$" />
+                    </filtermapper>
+                    <unpackagemapper from="${basedir}${file.separator}*" to="*.class" />
+                </chainedmapper>
+            </pathconvert>
+        </sequential>
+    </macrodef>
 
 </project>

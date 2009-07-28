@@ -100,7 +100,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'Y':
-              if (index + 4 >= bufLen - 1)
+              if (index + 4 >= bufLen)
                 {
                   return bufLen;
                 }
@@ -110,7 +110,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'm':
-              if (index + 2 >= bufLen - 1)
+              if (index + 2 >= bufLen)
                 {
                   return bufLen;
                 }
@@ -120,7 +120,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'b':
-              if (index + strlen (abbMonthName[tm.month - 1]) >= bufLen - 1)
+              if (index + strlen (abbMonthName[tm.month - 1]) >= bufLen)
                 {
                   return bufLen;
                 }
@@ -131,7 +131,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'd':
-              if (index + 2 >= bufLen - 1)
+              if (index + 2 >= bufLen)
                 {
                   return bufLen;
                 }
@@ -141,7 +141,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'H':
-              if (index + 2 >= bufLen - 1)
+              if (index + 2 >= bufLen)
                 {
                   return bufLen;
                 }
@@ -151,7 +151,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'M':
-              if (index + 2 >= bufLen - 1)
+              if (index + 2 >= bufLen)
                 {
                   return bufLen;
                 }
@@ -161,7 +161,7 @@ hystrftime (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
               format++;
               break;
             case 'S':
-              if (index + 2 >= bufLen - 1)
+              if (index + 2 >= bufLen)
                 {
                   return bufLen;
                 }

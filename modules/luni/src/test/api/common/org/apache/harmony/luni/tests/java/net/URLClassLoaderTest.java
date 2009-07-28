@@ -44,7 +44,7 @@ public class URLClassLoaderTest extends TestCase {
 
     private static final String PREFIX = "http://localhost:";
 
-    private static final String ROOT = "../../support/src/test/resources/net.resources/HTTP/html/testres231";
+    private static final String ROOT = "resources/net.resources/HTTP/html/testres231";
 
     private static String serverURL = null;
 

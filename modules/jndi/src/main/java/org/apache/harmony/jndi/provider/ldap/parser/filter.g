@@ -214,7 +214,7 @@ TOKEN :
 |
 <SEMI: ";">
 |
-<CHAR : ~["*", "\\", "(", ")", "\n"] >
+<CHAR : ~["*", "\\", "(", ")", "\n", "\u0085"] >
 }
 
 String option():
@@ -317,7 +317,7 @@ void test():
                 }
             }
 
-            parse() "\n" test() | LOOKAHEAD(2) "\n" | "\n" <EOF> | <EOF>
+            parse() ("\n" | "\u0085") test() | LOOKAHEAD(2) ("\n" | "\u0085") | ("\n" | "\u0085") <EOF> | <EOF> 
         }
 // FIXME: get string representation of AttributeValue, then use Rdn.unescapeValue(String) to get value
 String value():

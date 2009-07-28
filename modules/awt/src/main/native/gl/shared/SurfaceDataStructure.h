@@ -30,7 +30,7 @@
 #include "gl_GDIPlus.h"
 #endif
 
-#ifdef unix
+#if defined(unix) || defined(MACOSX)
 #include "XSurfaceInfo.h"
 #endif
 
@@ -158,7 +158,7 @@ typedef struct _SURFACE_STRUCTURE{
     BOOL isTrueColor;
 #endif
 
-#ifdef unix
+#if defined(unix) || defined(MACOSX)
     // XVolatileImage
     XImage *ximage;
 

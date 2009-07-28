@@ -1107,7 +1107,7 @@ public class BasicSliderUI extends SliderUI {
 
     protected int xPositionForValue(final int value) {
         // Changed according to JIRA 4445
-        double valueToSizeRatio = (double) value
+        double valueToSizeRatio = (double) (value - slider.getMinimum())
                 / (double) (slider.getMaximum() - slider.getMinimum());
 
         if ((drawInverted() ^ !slider.getComponentOrientation().isLeftToRight())) {
@@ -1120,7 +1120,7 @@ public class BasicSliderUI extends SliderUI {
 
     protected int yPositionForValue(final int value) {
         // Changed according to JIRA 4445
-        double valueToSizeRatio = (double) value
+        double valueToSizeRatio = (double) (value - slider.getMinimum())
                 / (double) (slider.getMaximum() - slider.getMinimum());
 
         if ((drawInverted() ^ (!slider.getComponentOrientation()

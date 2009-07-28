@@ -131,7 +131,7 @@ public class ObjectStreamClassTest extends TestCase {
      */
     public void test_getSerialVersionUID_classloader() throws Exception {
         File file = new File(
-                "src/test/resources/org/apache/harmony/luni/tests/ObjectStreamClassTest.jar");
+                "resources/org/apache/harmony/luni/tests/ObjectStreamClassTest.jar");
         ClassLoader loader = new URLClassLoader(new URL[] { file.toURL() },
                 null);
         Class cl1 = Class.forName("Test1$TestVarArgs", false, loader);

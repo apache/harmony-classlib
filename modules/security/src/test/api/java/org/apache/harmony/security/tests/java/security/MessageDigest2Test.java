@@ -20,6 +20,7 @@ package org.apache.harmony.security.tests.java.security;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -207,9 +208,10 @@ public class MessageDigest2Test extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws UnsupportedEncodingException 
 	 * @tests java.security.MessageDigest#digest()
 	 */
-	public void test_digest() {
+	public void test_digest() throws UnsupportedEncodingException {
 		MessageDigest sha = null;
 		try {
 			sha = MessageDigest.getInstance("SHA");
@@ -217,7 +219,7 @@ public class MessageDigest2Test extends junit.framework.TestCase {
 		} catch (NoSuchAlgorithmException e) {
 			fail("getInstance did not find algorithm");
 		}
-		sha.update(MESSAGE.getBytes());
+		sha.update(MESSAGE.getBytes("UTF-8"));
 		byte[] digest = sha.digest();
 		assertTrue("bug in SHA", MessageDigest.isEqual(digest, MESSAGE_DIGEST));
 

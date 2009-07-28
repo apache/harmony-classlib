@@ -172,6 +172,17 @@ public final class FloatingPointParser {
 			s = s.substring(start, end);
 		}
 
+        // Trim the length of very small numbers, natives can only handle down
+        // to E-309
+        final int APPROX_MIN_MAGNITUDE = -359;
+        final int MAX_DIGITS = 52;
+        length = s.length();
+        if (length > MAX_DIGITS && e < APPROX_MIN_MAGNITUDE) {
+            int d = Math.min(APPROX_MIN_MAGNITUDE - e, length - 1);
+            s = s.substring(0, length - d);
+            e += d;
+        }
+
 		return new StringExponentPair(s, e, negative);
 	}
 

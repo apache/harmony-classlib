@@ -181,7 +181,7 @@ TOKEN :
 |
 <ZERO : "0">
 |
-<CHAR : ~["/", "?", "\n"] >
+<CHAR : ~["/", "?", "\n", "\u0085"] >
 
 }
 
@@ -394,5 +394,5 @@ String oid():
 void test():
         {}
         {
-            parseURL() "\n" test() | LOOKAHEAD(2) "\n" | "\n" <EOF> | <EOF>
+            parseURL() ("\n" | "\u0085") test() | LOOKAHEAD(2) ("\n" | "\u0085") | ("\n" | "\u0085") <EOF> | <EOF>
         }

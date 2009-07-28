@@ -458,6 +458,7 @@ public class MathTest extends junit.framework.TestCase {
 				2.0, Math.min(2.0, 1908897.6000089), 0D);
 		assertEquals("Incorrect double min value", -1908897.6000089, Math.min(-2.0,
 				-1908897.6000089), 0D);
+		assertEquals("Incorrect double min value", 1.0d, Math.min(1.0d, 1.0d));
 		
 	    // Compare toString representations here since -0.0 = +0.0, and
         // NaN != NaN and we need to distinguish
@@ -486,7 +487,8 @@ public class MathTest extends junit.framework.TestCase {
 				Math.min(2.0f, 1908897.600f) == 2.0f);
 		assertTrue("Incorrect float min value",
 				Math.min(-2.0f, -1908897.600f) == -1908897.600f);
-		
+		assertEquals("Incorrect float min value", 1.0f, Math.min(1.0f, 1.0f));
+
         // Compare toString representations here since -0.0 = +0.0, and
         // NaN != NaN and we need to distinguish
         assertEquals("Min failed for NaN",

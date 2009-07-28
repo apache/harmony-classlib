@@ -80,7 +80,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
                 "KR"));
         assertTrue("Test1: Returned incorrect currency",
                 dfs1.getCurrency() == currK);
-        assertEquals("Test1: Returned incorrect currencySymbol", "\uffe6", dfs1
+        assertEquals("Test1: Returned incorrect currencySymbol", "\u20a9", dfs1
                 .getCurrencySymbol());
         assertEquals("Test1: Returned incorrect intlCurrencySymbol", "KRW",
                 dfs1.getInternationalCurrencySymbol());
@@ -88,7 +88,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
         dfs1 = new DecimalFormatSymbols(new Locale("", "KR"));
         assertTrue("Test2: Returned incorrect currency",
                 dfs1.getCurrency() == currK);
-        assertEquals("Test2: Returned incorrect currencySymbol", "KRW", dfs1
+        assertEquals("Test2: Returned incorrect currencySymbol", "\u20a9", dfs1
                 .getCurrencySymbol());
         assertEquals("Test2: Returned incorrect intlCurrencySymbol", "KRW",
                 dfs1.getInternationalCurrencySymbol());

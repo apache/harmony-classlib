@@ -808,7 +808,7 @@ public class URLTest extends TestCase {
         assertTrue("openStream succeeded for non existent resource", exception);
 
         int port = Support_Jetty
-                .startHttpServerWithDocRoot("./src/test/resources/org/apache/harmony/luni/tests/java/net/");
+                .startHttpServerWithDocRoot("resources/org/apache/harmony/luni/tests/java/net/");
         URL u = new URL("jar:" + "http://localhost:" + port
                 + "/lf.jar!/plus.bmp");
         InputStream in = u.openStream();

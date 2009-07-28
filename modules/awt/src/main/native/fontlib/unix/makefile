@@ -37,11 +37,11 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += \
-	$(LIBPATH)libhypool.a $(LIBPATH)libvmi.so
+	$(LIBPATH)libhypool.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS)
 
-DLLNAME=../libFL.so
+DLLNAME=../libFL$(HY_LINKLIB_SUFFIX)
 EXPNAME=HYFONTLIB_0.1
 
 include $(HY_HDK)/build/make/rules.mk

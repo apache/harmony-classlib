@@ -337,7 +337,7 @@ public class ExecutorsTest extends JSR166TestCase{
 		    try {
 			Thread current = Thread.currentThread();
 			threadAssertTrue(!current.isDaemon());
-			threadAssertTrue(current.getPriority() == Thread.NORM_PRIORITY);
+			threadAssertTrue(current.getPriority() <= Thread.NORM_PRIORITY);
 			ThreadGroup g = current.getThreadGroup();
 			SecurityManager s = System.getSecurityManager();
 			if (s != null)
@@ -392,7 +392,7 @@ public class ExecutorsTest extends JSR166TestCase{
 		    try {
 			Thread current = Thread.currentThread();
 			threadAssertTrue(!current.isDaemon());
-			threadAssertTrue(current.getPriority() == Thread.NORM_PRIORITY);
+			threadAssertTrue(current.getPriority() <= Thread.NORM_PRIORITY);
 			ThreadGroup g = current.getThreadGroup();
 			SecurityManager s = System.getSecurityManager();
 			if (s != null)

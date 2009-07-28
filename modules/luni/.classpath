@@ -14,5 +14,6 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="var" path="HARMONY_CLASSLIB/deploy/jdk/jre/lib/boot/luni-kernel-stubs.jar"/>
 	<classpathentry kind="output" path="bin/main"/>
 </classpath>

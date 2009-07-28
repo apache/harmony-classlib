@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 CC = xlc
-DEFINES += -DAIX -DAIX_PPC32 -DHYPPC32 -D_Xconst="" -DIPv6_FUNCTION_SUPPORT \
+DEFINES += -DAIX -DAIX_PPC32 -DHYPPC32 -D_Xconst="" -DIPv6_FUNCTION_SUPPORT
 PLATFORM += -qcpluscmt -q32 -q mbcs -qlanglvl=extended -qarch=ppc -qinfo=pro \
 	    -qalias=noansi -D_XOPEN_SOURCE_EXTENDED=1 -D_ALL_SOURCE \
             -D_LARGE_FILES -qsuppress=1500-010

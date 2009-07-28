@@ -83,7 +83,10 @@ hydump_create (struct HyPortLibrary *portLibrary, char *filename,
       if (lastSep != NULL)
         {
           lastSep[1] = '\0';
-          chdir (filename);
+          if (0 != chdir (filename))
+            {
+              return -1;
+            }
         }
 
       /* Ensure we get default action (core) - reset primary&app handlers */

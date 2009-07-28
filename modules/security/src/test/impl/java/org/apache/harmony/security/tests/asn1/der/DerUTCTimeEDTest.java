@@ -56,7 +56,7 @@ public class DerUTCTimeEDTest extends TestCase {
         Date myDate = getGmtDate(1101980374187L);
         byte[] encoded =
             new DerOutputStream(uTime, myDate).encoded;
-        String rep = new String(encoded, 2, encoded[1] & 0xff);
+        String rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("no fraction", "041202093934Z", rep);
 
         // midnight
@@ -66,7 +66,7 @@ public class DerUTCTimeEDTest extends TestCase {
         myDate = sdf.parse("06.06.2004 00:00");
         encoded =
             new DerOutputStream(uTime, myDate).encoded;
-        rep = new String(encoded, 2, encoded[1] & 0xff);
+        rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("midnight", "040606000000Z", rep);
     }
 

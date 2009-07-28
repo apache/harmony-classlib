@@ -614,6 +614,23 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
         }
         assertTrue(q.isEmpty());
     }
+
+    /**
+     * An add following remove(x) succeeds
+     */
+    public void testRemoveElementAndAdd() {
+        try {
+            LinkedBlockingQueue q = new LinkedBlockingQueue();
+            assertTrue(q.add(new Integer(1)));
+            assertTrue(q.add(new Integer(2)));
+            assertTrue(q.remove(new Integer(1)));
+            assertTrue(q.remove(new Integer(2)));
+            assertTrue(q.add(new Integer(3)));
+            assertTrue(q.take() != null);
+        } catch (Exception e){
+            unexpectedException();
+        }
+    }
 	
     /**
      * contains(x) reports true when elements added but not yet removed
@@ -638,6 +655,7 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
         assertEquals(SIZE, q.remainingCapacity());
         q.add(one);
         assertFalse(q.isEmpty());
+        assertTrue(q.contains(one));
         q.clear();
         assertTrue(q.isEmpty());
     }
@@ -956,6 +974,17 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
         assertEquals(l.size(), SIZE);
         for (int i = 0; i < SIZE; ++i) 
             assertEquals(l.get(i), new Integer(i));
+        q.add(zero);
+        q.add(one);
+        assertFalse(q.isEmpty());
+        assertTrue(q.contains(zero));
+        assertTrue(q.contains(one));
+        l.clear();
+        q.drainTo(l);
+        assertEquals(q.size(), 0);
+        assertEquals(l.size(), 2);
+        for (int i = 0; i < 2; ++i) 
+            assertEquals(l.get(i), new Integer(i));
     }
 
     /**
@@ -1014,15 +1043,18 @@ public class LinkedBlockingQueueTest extends JSR166TestCase {
      * drainTo(c, n) empties first max {n, size} elements of queue into c
      */ 
     public void testDrainToN() {
+        LinkedBlockingQueue q = new LinkedBlockingQueue();
         for (int i = 0; i < SIZE + 2; ++i) {
-            LinkedBlockingQueue q = populatedQueue(SIZE);
+            for(int j = 0; j < SIZE; j++)
+                assertTrue(q.offer(new Integer(j)));
             ArrayList l = new ArrayList();
             q.drainTo(l, i);
             int k = (i < SIZE)? i : SIZE;
-            assertEquals(q.size(), SIZE-k);
             assertEquals(l.size(), k);
+            assertEquals(q.size(), SIZE-k);
             for (int j = 0; j < k; ++j) 
                 assertEquals(l.get(j), new Integer(j));
+            while (q.poll() != null) ;
         }
     }
 
