@@ -1287,6 +1287,24 @@ public class BigDecimalArithmeticTest extends TestCase {
         assertEquals("incorrect scale", resScale, result.scale());
     }
 
+
+    /**
+     * BigDecimal.divide with a scale that's too large
+     * 
+     * Regression test for HARMONY-6271
+     */
+    public void testDivideLargeScale() {
+    	BigDecimal arg1 = new BigDecimal("320.0E+2147483647");
+		BigDecimal arg2 = new BigDecimal("6E-2147483647");
+    	try {
+    		BigDecimal result = arg1.divide(arg2, Integer.MAX_VALUE, 
+    				java.math.RoundingMode.CEILING);
+    		fail("Expected ArithmeticException when dividing with a scale that's too large");
+    	} catch (ArithmeticException e) {
+    		// expected behaviour
+    	}
+    }
+
     /**
      * divideToIntegralValue(BigDecimal)
      */
