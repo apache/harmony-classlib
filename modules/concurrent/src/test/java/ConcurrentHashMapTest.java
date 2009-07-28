@@ -81,8 +81,8 @@ public class ConcurrentHashMapTest extends JSR166TestCase{
      */
     public void testContainsValue() {
         ConcurrentHashMap map = map5();
-	assertTrue(map.contains("A"));
-        assertFalse(map.contains("Z"));
+	assertTrue(map.containsValue("A"));
+        assertFalse(map.containsValue("Z"));
     }
 
     /**
@@ -147,6 +147,49 @@ public class ConcurrentHashMapTest extends JSR166TestCase{
 	assertTrue(s.contains(three));
 	assertTrue(s.contains(four));
 	assertTrue(s.contains(five));
+    }
+
+    /**
+     *  keySet.toArray returns contains all keys
+     */
+    public void testKeySetToArray() {
+        ConcurrentHashMap map = map5();
+	Set s = map.keySet();
+        Object[] ar = s.toArray();
+        assertTrue(s.containsAll(Arrays.asList(ar)));
+	assertEquals(5, ar.length);
+        ar[0] = m10;
+        assertFalse(s.containsAll(Arrays.asList(ar)));
+    }
+
+    /**
+     *  Values.toArray contains all values
+     */
+    public void testValuesToArray() {
+        ConcurrentHashMap map = map5();
+	Collection v = map.values();
+        Object[] ar = v.toArray();
+        ArrayList s = new ArrayList(Arrays.asList(ar));
+	assertEquals(5, ar.length);
+	assertTrue(s.contains("A"));
+	assertTrue(s.contains("B"));
+	assertTrue(s.contains("C"));
+	assertTrue(s.contains("D"));
+	assertTrue(s.contains("E"));
+    }
+
+    /**
+     *  entrySet.toArray contains all entries
+     */
+    public void testEntrySetToArray() {
+        ConcurrentHashMap map = map5();
+	Set s = map.entrySet();
+        Object[] ar = s.toArray();
+        assertEquals(5, ar.length);
+        for (int i = 0; i < 5; ++i) {
+            assertTrue(map.containsKey(((Map.Entry)(ar[i])).getKey()));
+            assertTrue(map.containsValue(((Map.Entry)(ar[i])).getValue()));
+        }
     }
 
     /**
@@ -498,6 +541,19 @@ public class ConcurrentHashMapTest extends JSR166TestCase{
             c.remove(null, "whatever");
             shouldThrow();
         } catch(NullPointerException e){}
+    }
+
+    /**
+     * remove(x, null) returns false
+     */
+    public void testRemove3() {
+        try {
+            ConcurrentHashMap c = new ConcurrentHashMap(5);
+            c.put("sadsdf", "asdads");
+            assertFalse(c.remove("sadsdf", null));
+        } catch(NullPointerException e){
+            fail();
+        }
     }
 
     /**

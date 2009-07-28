@@ -489,17 +489,22 @@ public class Statement {
     }
 
     static String convertClassName(Class<?> type) {
-        Class<?> componentType = type.getComponentType();
-        Class<?> resultType = (componentType == null) ? type : componentType;
-        String result = resultType.getName();
-        int k = result.lastIndexOf('.');
-        if (k != -1 && k < result.length()) {
-            result = result.substring(k + 1);
+        StringBuilder clazzNameSuffix = new StringBuilder();
+        Class<?> componentType = null;
+        Class<?> clazzType = type;
+        while ((componentType = clazzType.getComponentType()) != null) {
+            clazzNameSuffix.append("Array"); //$NON-NLS-1$
+            clazzType = componentType;
         }
-        if (componentType != null) {
-            result += "Array"; //$NON-NLS-1$
+        String clazzName = clazzType.getName();
+        int k = clazzName.lastIndexOf('.');
+        if (k != -1 && k < clazzName.length()) {
+            clazzName = clazzName.substring(k + 1);
         }
-        return result;
+        if (clazzNameSuffix.length() == 0 && "String".equals(clazzName)) { //$NON-NLS-1$
+            return "\"\""; //$NON-NLS-1$
+        }
+        return clazzName + clazzNameSuffix.toString();
     }
 
     private static Class<?>[] getClasses(Object[] arguments) {

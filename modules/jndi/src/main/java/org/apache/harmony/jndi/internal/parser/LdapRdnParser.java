@@ -44,7 +44,7 @@ public class LdapRdnParser implements LdapParser {
      * Constructor
      */
     public LdapRdnParser(String name) {
-        if (name.endsWith("+")) {
+        if (name.endsWith("+") && name.length() > 1 && name.charAt(name.length()-2) != '\\') {
             this.name = name.substring(0, name.lastIndexOf('+'));
         } else {
             this.name = name;

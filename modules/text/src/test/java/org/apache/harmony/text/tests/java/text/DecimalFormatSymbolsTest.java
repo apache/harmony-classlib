@@ -80,7 +80,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
      * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_correct_provider() throws Exception {
-        URL path = new File("src/test/resources/provider/correct").toURL();
+        URL path = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
                 new URL[] { path }) {
             @Override
@@ -109,7 +109,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
      * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_wrong_provider() throws Exception {
-        URL path = new File("src/test/resources/provider/wrong").toURL();
+        URL path = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
                 new URL[] { path }) {
             @Override
@@ -184,7 +184,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
      */
     public void test_getInstanceLjava_util_Locale_correct_provider()
             throws Exception {
-        URL path = new File("src/test/resources/provider/correct").toURL();
+        URL path = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
                 new URL[] { path }) {
             @Override
@@ -206,7 +206,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
      */
     public void test_getInstanceLjava_util_Locale_wrong_provider()
             throws Exception {
-        URL path = new File("src/test/resources/provider/wrong").toURL();
+        URL path = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
                 new URL[] { path }) {
             @Override
@@ -254,7 +254,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
                 "KR"));
         assertTrue("Test1: Returned incorrect currency",
                 dfs1.getCurrency() == currK);
-        assertEquals("Test1: Returned incorrect currencySymbol", "\uffe6", dfs1
+        assertEquals("Test1: Returned incorrect currencySymbol", "\u20a9", dfs1
                 .getCurrencySymbol());
         assertEquals("Test1: Returned incorrect intlCurrencySymbol", "KRW",
                 dfs1.getInternationalCurrencySymbol());
@@ -262,7 +262,7 @@ public class DecimalFormatSymbolsTest extends TestCase {
         dfs1 = new DecimalFormatSymbols(new Locale("", "KR"));
         assertTrue("Test2: Returned incorrect currency",
                 dfs1.getCurrency() == currK);
-        assertEquals("Test2: Returned incorrect currencySymbol", "KRW", dfs1
+        assertEquals("Test2: Returned incorrect currencySymbol", "\u20a9", dfs1
                 .getCurrencySymbol());
         assertEquals("Test2: Returned incorrect intlCurrencySymbol", "KRW",
                 dfs1.getInternationalCurrencySymbol());

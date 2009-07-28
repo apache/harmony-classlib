@@ -153,6 +153,66 @@ public class CompositeNameTest extends TestCase {
 
         assertEquals("test's", new CompositeName("test's").toString());
         assertEquals("test", new CompositeName("'test'").toString());
+        
+        name = new CompositeName("O=\"s,g");
+        assertEquals("O=\"s,g", name.toString());
+        
+        name = new CompositeName("\"O=/s\"");
+        assertEquals("O=/s", name.get(0));
+
+        name.add("s/s");
+        assertEquals(2, name.size());
+        assertEquals("\"O=/s\"/\"s/s\"", name.toString());
+
+        name.add("ss");
+        assertEquals(3, name.size());
+        assertEquals("\"O=/s\"/\"s/s\"/ss", name.toString());
+
+        name = new CompositeName("\"O=\\s\"");
+        assertEquals("O=\\s", name.toString());
+
+        CompositeName name = new CompositeName("");
+        name.add("abc/abc");
+        assertEquals(1, name.size());
+
+        CompositeName newCompositeName = new CompositeName(name.toString());
+        assertEquals(1, newCompositeName.size());
+        assertEquals(newCompositeName, name);
+        
+        name = new CompositeName("O=\"s,g\"");
+        assertEquals("O=\"s,g\"", name.toString());
+        
+        name = new CompositeName("O=#");
+        assertEquals("O=#", name.toString());
+        
+        name = new CompositeName("O=\\s");
+        assertEquals("O=\\s", name.toString());
+        
+        name = new CompositeName("\"O=\\s\"");
+        assertEquals("O=\\s", name.toString());
+        
+        name = new CompositeName("O=/s");
+        assertEquals("O=/s", name.toString());
+
+        name = new CompositeName("\"O=\"/\"s\"");
+        assertEquals(2,name.size());
+        assertEquals("O=/s", name.toString());
+        
+        name = new CompositeName("");
+        assertEquals(0,name.size());
+        assertEquals("", name.toString());
+        
+        name = new CompositeName("\"\"");
+        assertEquals(1,name.size());
+        assertEquals("/", name.toString());
+        
+        name = new CompositeName("\"\"/\"\"");
+        assertEquals(2,name.size());
+        assertEquals("//", name.toString());
+        
+        name = new CompositeName("\"O=/s\"");
+        assertEquals("\"O=/s\"", name.toString());
+
 	}
 
 	/**

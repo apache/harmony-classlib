@@ -16,21 +16,15 @@
  */
 package org.apache.harmony.pack200;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -41,7 +35,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Archive {
 
-    private final JarInputStream inputStream;
+    private final JarInputStream jarInputStream;
     private final OutputStream outputStream;
     private JarFile jarFile;
     private long currentSegmentSize;
@@ -57,8 +51,9 @@ public class Archive {
      */
     public Archive(JarInputStream inputStream, OutputStream outputStream,
             PackingOptions options) throws IOException {
-        this.inputStream = inputStream;
-        if(options == null) { // use all defaults
+        jarInputStream = inputStream;
+        if(options == null) {
+            // use all defaults
             options = new PackingOptions();
         }
         this.options = options;
@@ -88,7 +83,7 @@ public class Archive {
         }
         this.outputStream = new BufferedOutputStream(outputStream);
         this.jarFile = jarFile;
-        inputStream = null;
+        jarInputStream = null;
         PackingUtils.config(options);
     }
 
@@ -98,194 +93,126 @@ public class Archive {
      * @throws IOException
      */
     public void pack() throws Pack200Exception, IOException {
-        int effort = options.getEffort();
-        if(effort == 0) {
+        if (0 == options.getEffort()) {
             doZeroEffortPack();
         } else {
-            List classes = new ArrayList();
-            List files = new ArrayList();
-            long segmentLimit = options.getSegmentLimit();
-            List segmentUnitList = new ArrayList();
-            if (inputStream != null) {
-                Manifest manifest = jarFile != null ? jarFile.getManifest()
-                        : inputStream.getManifest();
-                if (manifest != null) {
-                    PackingUtils.log("Pack META-INF/MANIFEST.MF");
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    manifest.write(baos);
-                    files.add(new File("META-INF/MANIFEST.MF", baos.toByteArray(), 0));
-                }
-                JarEntry jarEntry = inputStream.getNextJarEntry();
-                while (jarEntry != null) {
-                    if(jarEntry.getName().startsWith("META-INF")) {
-                        PackingUtils.log("Pack " + jarEntry.getName());
-                    }
-                    boolean added = addJarEntry(jarEntry,
-                            new BufferedInputStream(inputStream), classes,
-                            files);
-                    if (!added) { // not added because segment has reached
-                        // maximum size
-                        if(classes.size() > 0 || files.size() > 0) {
-                            segmentUnitList.add(new SegmentUnit(classes, files));
-                            classes = new ArrayList();
-                            files = new ArrayList();
-                            currentSegmentSize = 0;
-                            addJarEntry(jarEntry, new BufferedInputStream(inputStream), classes, files);
-                            currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
-                        }
-                    } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
-                        // create a new segment for each class unless size = 0
-                        segmentUnitList.add(new SegmentUnit(classes, files));
-                        classes = new ArrayList();
-                        files = new ArrayList();
-                    }
-                    jarEntry = inputStream.getNextJarEntry();
-                }
-            } else {
-                Enumeration jarEntries = jarFile.entries();
-                while (jarEntries.hasMoreElements()) {
-                    JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                    boolean added = addJarEntry(jarEntry, new BufferedInputStream(
-                            jarFile.getInputStream(jarEntry)), classes, files);
-                    if (!added) { // not added because segment has reached maximum
-                        // size
-                        segmentUnitList.add(new SegmentUnit(classes, files));
-                        classes = new ArrayList();
-                        files = new ArrayList();
-                        currentSegmentSize = 0;
-                        addJarEntry(jarEntry, new BufferedInputStream(jarFile
-                                .getInputStream(jarEntry)), classes, files);
-                        currentSegmentSize = 0; // ignore the size of the first entry for compatibility with the RI
-                    } else if (segmentLimit == 0 && estimateSize(jarEntry) > 0) {
-                        // create a new segment for each class unless size = 0
-                        segmentUnitList.add(new SegmentUnit(classes, files));
-                        classes = new ArrayList();
-                        files = new ArrayList();
-                    }
-                }
-            }
-            if(classes.size() > 0 || files.size() > 0) {
-                segmentUnitList.add(new SegmentUnit(classes, files));
-            }
-
-            int size = segmentUnitList.size();
-            int classFileAmount = 0;
-            int fileAmount = 0;
-            int totalByteAmount = 0;
-            int totalPackedByteAmount = 0;
-            SegmentUnit segmentUnit = null;
-            for (int index = 0; index < size; index++) {
-                segmentUnit = (SegmentUnit) segmentUnitList.get(index);
-                classFileAmount += segmentUnit.classList.size();
-                fileAmount += segmentUnit.fileList.size();
-                new Segment().pack(segmentUnit, outputStream, options);
-                totalByteAmount += segmentUnit.getByteAmount();
-                totalPackedByteAmount += segmentUnit.getPackedByteAmount();
-            }
-            PackingUtils.log("Total: Packed " + fileAmount + " files including "
-                    + classFileAmount + " classes of " + totalByteAmount
-                    + " input bytes into " + totalPackedByteAmount + " bytes");
-
-            outputStream.close();
+            doNormalPack();
         }
     }
 
     private void doZeroEffortPack() throws IOException, Pack200Exception {
         PackingUtils.log("Start to perform a zero-effort packing");
-        JarOutputStream jarOutputStream = new JarOutputStream(outputStream);
-        if(inputStream != null) {
-            Manifest manifest = inputStream.getManifest();
-            if (manifest != null) {
-                jarOutputStream.putNextEntry(new JarEntry("META-INF/"));
-                jarOutputStream.closeEntry();
-                PackingUtils.log("Packed \"META-INF\" folder");
-                
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                manifest.write(baos);
-                jarOutputStream.putNextEntry(new JarEntry("META-INF/MANIFEST.MF"));
-                jarOutputStream.write(baos.toByteArray());
-                jarOutputStream.closeEntry();
-                PackingUtils.log("Packed META-INF/MANIFEST.MF");
-            }
-            BufferedInputStream buff = new BufferedInputStream(inputStream);
-            JarEntry jarEntry;
-            while ((jarEntry = inputStream.getNextJarEntry()) != null) {
-                jarOutputStream.putNextEntry(jarEntry);
-                byte[] bytes = new byte[(int) jarEntry.getSize()];
-                int bytesRead = buff.read(bytes);
-                if(bytesRead != jarEntry.getSize()) {
-                    throw new Pack200Exception("Error reading from input jar file");
-                }
-                jarOutputStream.write(bytes, 0, bytesRead);
-                jarOutputStream.closeEntry();
-                PackingUtils.log("Packed " + jarEntry.getName());
-            }
-            jarOutputStream.close();
+        if (jarInputStream != null) {
+            PackingUtils.copyThroughJar(jarInputStream, outputStream);
         } else {
-            Enumeration jarEntries = jarFile.entries();
-            while (jarEntries.hasMoreElements()) {
-                JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                InputStream inStream = new BufferedInputStream(
-                        jarFile.getInputStream(jarEntry));
-                jarOutputStream.putNextEntry(jarEntry);
-                byte[] bytes = new byte[16384];
-                int bytesRead = inStream.read(bytes);
-                while (bytesRead != -1) {
-                    jarOutputStream.write(bytes, 0, bytesRead);
-                    bytesRead = inStream.read(bytes);
-                }
-                jarOutputStream.closeEntry();
-                PackingUtils.log("Packed " + jarEntry.getName());
-            }
-            jarOutputStream.close();
+            PackingUtils.copyThroughJar(jarFile, outputStream);
         }
     }
 
-    private boolean addJarEntry(JarEntry jarEntry, InputStream stream,
-            List javaClasses, List files) throws IOException, Pack200Exception {
-        long segmentLimit = options.getSegmentLimit();
-        String name = jarEntry.getName();
-        long size = jarEntry.getSize();
-        if (size > Integer.MAX_VALUE) {
-            throw new RuntimeException("Large Class!"); // TODO: Should probably allow this
-        } else if (size < 0) {
-            size = 0;
-//            throw new RuntimeException("Error: size for " + name + " is " + size);
+    private void doNormalPack() throws IOException, Pack200Exception {
+        PackingUtils.log("Start to perform a normal packing");
+        List packingFileList;
+        if (jarInputStream != null) {
+            packingFileList = PackingUtils.getPackingFileListFromJar(
+                    jarInputStream, options.isKeepFileOrder());
+        } else {
+            packingFileList = PackingUtils.getPackingFileListFromJar(jarFile,
+                    options.isKeepFileOrder());
         }
-        if(segmentLimit != -1 && segmentLimit != 0) {
-            // -1 is a special case where only one segment is created and
-            // 0 is a special case where one segment is created for each file except for files in "META-INF"
 
-            long packedSize = estimateSize(jarEntry);
-            if (packedSize + currentSegmentSize > segmentLimit && currentSegmentSize > 0) {
-                return false; // don't add this JarEntry to the current segment
-            } else {
-                currentSegmentSize += packedSize; // do add this JarEntry
+        List segmentUnitList = splitIntoSegments(packingFileList);
+        int previousByteAmount = 0;
+        int packedByteAmount = 0;
+
+        int segmentSize = segmentUnitList.size();
+        SegmentUnit segmentUnit;
+        for (int index = 0; index < segmentSize; index++) {
+            segmentUnit = (SegmentUnit) segmentUnitList.get(index);
+            new Segment().pack(segmentUnit, outputStream, options);
+            previousByteAmount += segmentUnit.getByteAmount();
+            packedByteAmount += segmentUnit.getPackedByteAmount();
+        }
+
+        PackingUtils.log("Total: Packed " + previousByteAmount
+                + " input bytes of " + packingFileList.size() + " files into "
+                + packedByteAmount + " bytes in " + segmentSize + " segments");
+
+        outputStream.close();
+    }
+
+    private List splitIntoSegments(List packingFileList) throws IOException,
+            Pack200Exception {
+        List segmentUnitList = new ArrayList();
+        List classes = new ArrayList();
+        List files = new ArrayList();
+        long segmentLimit = options.getSegmentLimit();
+        
+        int size = packingFileList.size();
+        PackingFile packingFile;
+        for (int index = 0; index < size; index++) {
+            packingFile = (PackingFile) packingFileList.get(index);
+            if (!addJarEntry(packingFile, classes, files)) {
+                // not added because segment has reached maximum size
+                segmentUnitList.add(new SegmentUnit(classes, files));
+                classes = new ArrayList();
+                files = new ArrayList();
+                currentSegmentSize = 0;
+                // add the jar to a new segment
+                addJarEntry(packingFile, classes, files);
+                // ignore the size of first entry for compatibility with RI
+                currentSegmentSize = 0;
+            } else if (segmentLimit == 0 && estimateSize(packingFile) > 0) {
+                // create a new segment for each class unless size is 0
+                segmentUnitList.add(new SegmentUnit(classes, files));
+                classes = new ArrayList();
+                files = new ArrayList();
             }
         }
-        byte[] bytes = new byte[(int) size];
-        int read = stream.read(bytes);
-        if (read != size) {
-            throw new RuntimeException("Error reading from stream");
+        if (classes.size() > 0 && files.size() > 0) {
+            segmentUnitList.add(new SegmentUnit(classes, files));
         }
+        return segmentUnitList;
+    }
+
+    private boolean addJarEntry(PackingFile packingFile, List javaClasses,
+            List files) throws IOException, Pack200Exception {
+        long segmentLimit = options.getSegmentLimit();
+        if (segmentLimit != -1 && segmentLimit != 0) {
+            // -1 is a special case where only one segment is created and
+            // 0 is a special case where one segment is created for each file
+            // except for files in "META-INF"
+            long packedSize = estimateSize(packingFile);
+            if (packedSize + currentSegmentSize > segmentLimit
+                    && currentSegmentSize > 0) {
+                // don't add this JarEntry to the current segment
+                return false;
+            } else {
+                // do add this JarEntry
+                currentSegmentSize += packedSize;
+            }
+        }
+
+        String name = packingFile.getName();
         if (name.endsWith(".class") && !options.isPassFile(name)) {
-            Pack200ClassReader classParser = new Pack200ClassReader(bytes);
+            Pack200ClassReader classParser = new Pack200ClassReader(
+                    packingFile.contents);
             classParser.setFileName(name);
             javaClasses.add(classParser);
-            bytes = new byte[0];
+            packingFile.contents = new byte[0];
         }
-        files.add(new File(name, bytes, jarEntry.getTime()));
+        files.add(packingFile);
         return true;
     }
 
-    private long estimateSize(JarEntry jarEntry) {
-        // The heuristic used here is for compatibility with the RI and should not be changed
-        String name = jarEntry.getName();
-        if(name.startsWith("META-INF") || name.startsWith("/META-INF")) {
+    private long estimateSize(PackingFile packingFile) {
+        // The heuristic used here is for compatibility with the RI and should
+        // not be changed
+        String name = packingFile.getName();
+        if (name.startsWith("META-INF") || name.startsWith("/META-INF")) {
             return 0;
         } else {
-            long fileSize = jarEntry.getSize();
-            if(fileSize < 0) {
+            long fileSize = packingFile.contents.length;
+            if (fileSize < 0) {
                 fileSize = 0;
             }
             return name.length() + fileSize + 5;
@@ -313,9 +240,9 @@ public class Archive {
                 byteAmount += classReader.b.length;
             }
 
-            File file;
+            PackingFile file;
             for (Iterator iterator = fileList.iterator(); iterator.hasNext();) {
-                file = (File) iterator.next();
+                file = (PackingFile) iterator.next();
                 byteAmount += file.contents.length;
             }
         }
@@ -349,16 +276,28 @@ public class Archive {
         }
     }
 
-    static class File {
+    static class PackingFile {
 
         private final String name;
         private byte[] contents;
         private final long modtime;
+        private final boolean deflateHint;
+        private final boolean isDirectory;
 
-        public File(String name, byte[] contents, long modtime) {
+        public PackingFile(String name, byte[] contents, long modtime) {
             this.name = name;
             this.contents = contents;
             this.modtime = modtime;
+            deflateHint = false;
+            isDirectory = false;
+        }
+
+        public PackingFile(byte[] bytes, JarEntry jarEntry) {
+            name = jarEntry.getName();
+            contents = bytes;
+            modtime = jarEntry.getTime();
+            deflateHint = jarEntry.getMethod() == JarEntry.DEFLATED;
+            isDirectory = jarEntry.isDirectory();
         }
 
         public byte[] getContents() {
@@ -373,12 +312,16 @@ public class Archive {
             return modtime;
         }
 
-        public String toString() {
-            return name;
-        }
-
         public void setContents(byte[] contents) {
             this.contents = contents;
+        }
+
+        public boolean isDefalteHint() {
+            return deflateHint;
+        }
+
+        public boolean isDirectory(){
+            return isDirectory;
         }
     }
 

@@ -219,13 +219,17 @@ public class DoubleTest extends TestCase {
         assertEquals("Created incorrect double", 39089.88888888888888888888888888888888, d
                 .doubleValue(), 0D);
 
-        // REGRESSION for HARMONY-489
+        // Regression test for HARMONY-489
         try {
             d = new Double("1E+-20");
             fail("new Double(\"1E+-20\") should throw exception");
         } catch (NumberFormatException e) {
             // expected
         }
+        
+        // Regression test for HARMONY-329
+        d = Double.parseDouble("-1.233999999999999965116738099630936817275852021384209929081813042837802886790127428328465579708849276001782791006814286802871737087810957327493372866733334925806221045495205250590286471187577636646208155890426896101636282423463443661040209738873506655844025580428394216030152374941053494694642722606658935546875E-112");
+        assertEquals("Failed to parse long string", -1.234E-112D, d.doubleValue(), 0D);
     }
 
     /**

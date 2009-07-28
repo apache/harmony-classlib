@@ -189,10 +189,17 @@ public class PipedInputStream extends InputStream {
     @Override
     public synchronized int read() throws IOException {
         if (!isConnected) {
+            // K0074=Not connected
             throw new IOException(Msg.getString("K0074")); //$NON-NLS-1$
         }
         if (buffer == null) {
+            // K0075=InputStream is closed
             throw new IOException(Msg.getString("K0075")); //$NON-NLS-1$
+        }
+
+        if (lastWriter != null && !lastWriter.isAlive() && (in < 0)) {
+            // KA030=Write end dead
+            throw new IOException(Msg.getString("KA030")); //$NON-NLS-1$
         }
         /**
          * Set the last thread to be reading on this PipedInputStream. If
@@ -208,6 +215,7 @@ public class PipedInputStream extends InputStream {
                     return -1;
                 }
                 if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
+                    // K0076=Pipe broken
                     throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                 }
                 // Notify callers of receive()
@@ -278,11 +286,18 @@ public class PipedInputStream extends InputStream {
         }
 
         if (!isConnected) {
+            // K0074=Not connected
             throw new IOException(Msg.getString("K0074")); //$NON-NLS-1$
         }
 
         if (buffer == null) {
+            // K0075=InputStream is closed
             throw new IOException(Msg.getString("K0075")); //$NON-NLS-1$
+        }
+
+        if (lastWriter != null && !lastWriter.isAlive() && (in < 0)) {
+            // KA030=Write end dead
+            throw new IOException(Msg.getString("KA030")); //$NON-NLS-1$
         }
 
         /**
@@ -299,6 +314,7 @@ public class PipedInputStream extends InputStream {
                     return -1;
                 }
                 if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
+                    // K0076=Pipe broken
                     throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                 }
                 // Notify callers of receive()

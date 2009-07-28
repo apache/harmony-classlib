@@ -23,6 +23,14 @@
 #include "NativeImageFormat.h"
 #include "exceptions.h"
 
+jfieldID clr_NIF_cmmFormatID;
+jfieldID clr_NIF_colsID;
+jfieldID clr_NIF_rowsID;
+jfieldID clr_NIF_scanlineStrideID;
+jfieldID clr_NIF_imageDataID;
+jfieldID clr_NIF_dataOffsetID;
+jfieldID clr_NIF_alphaOffsetID;
+
 /*
  * Class:     org_apache_harmony_awt_gl_color_NativeImageFormat
  * Method:    initIDs

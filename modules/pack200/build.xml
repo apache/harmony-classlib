@@ -19,38 +19,13 @@
 <project name="PACK200 Build" default="build" basedir=".">
     <description>Build for PACK200 component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="pack200" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
     <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
     <import file="${hy.hdk}/build/ant/depends.xml" />
 
-    <property name="tests.output" location="../../build/test_report" />
-
-    <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
-
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="${hy.pack200.src.main.java}" />
-            <present targetdir="${hy.pack200.src.main.java}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-            <present targetdir="${hy.pack200.src.main.java5}" />
-            <present targetdir="${hy.pack200.src.main.java5}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-
     <property file="../../make/depends.properties" />
-
-    <property name="pack200.exclude.file" location="${hy.hdk}/build/pack200.exclude" />
 
     <target name="build"
             depends="check-depends, compile-java, copy-resources, build-jar" />
@@ -84,11 +59,12 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/pack200.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/pack200-src.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -98,16 +74,16 @@
     <target name="compile-java">
         <echo message="Compiling PACK200 classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
     	<!-- Ordinary classes -->
         <javac sourcepath=""
-               srcdir="${hy.pack200.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.pack200.javac.source}"
-               target="${hy.pack200.javac.target}"
+               source="1.4"
+               target="1.4"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
@@ -120,8 +96,8 @@
         </javac>
     	<!-- Java5 classes, with generics -->
         <javac sourcepath=""
-               srcdir="${hy.pack200.src.main.java5}"
-               destdir="${hy.build}"
+               srcdir="src/main/java5"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}"
@@ -139,9 +115,9 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.pack200.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -149,7 +125,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/pack200.jar"
-             manifest="${hy.pack200}/META-INF/MANIFEST.MF"
+             manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -160,8 +136,8 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/pack200-src.jar">
-            <fileset dir="${hy.pack200.src.main.java}" />
-            <fileset dir="${hy.pack200.src.main.java}/../java5" />
+            <fileset dir="src/main/java" />
+            <fileset dir="src/main/java/../java5" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -170,17 +146,47 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources" > 
-        <mkdir dir="${hy.pack200.bin.test}" />
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <jar destfile="${tests.hdk.dir}/pack200_tests.jar">
+            <fileset dir="bin/test" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="src/test/resources" />
+        </copy>
+
+        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
+    <target name="compile-tests"> 
+        <mkdir dir="bin/test" />
 
         <echo message="Compiling PACK200 tests" />
-        <javac srcdir="${hy.pack200.src.test.java}"
-               destdir="${hy.pack200.bin.test}"
+        <javac srcdir="src/test/java"
+               destdir="bin/test"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.pack200.javac.source}" 
-               target="${hy.pack200.javac.target}"
+               source="1.4" 
+               target="1.4"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
@@ -190,79 +196,11 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../build/tests" />
         </javac>
     </target>
 
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="pack200" dir="./make"
-                             result="${pack200.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <echo message="Running PACK200 tests" />
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <classpath>
-                <pathelement path="${hy.pack200.bin.test}"/>
-                <pathelement path="${hy.pack200.src.test.resources}"/>
-            </classpath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="${hy.pack200.src.test.java}">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${pack200.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">pack200${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">pack200${line.separator}</echo>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="${hy.pack200.bin.test}" />
-        <copy todir="${hy.pack200.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.pack200.src.test.resources}">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>

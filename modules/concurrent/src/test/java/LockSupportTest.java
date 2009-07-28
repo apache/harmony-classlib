@@ -75,7 +75,6 @@ public class LockSupportTest extends JSR166TestCase{
 		public void run() {
 		    try {
 			LockSupport.park();
-                        threadAssertTrue(Thread.interrupted());
 		    } catch(Exception e){
                         threadUnexpectedException();
                     }

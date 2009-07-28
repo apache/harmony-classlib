@@ -35,7 +35,7 @@ import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
  * instance of org.apache.harmony.jndi.provider.ldap.filter.Filter according
  * RFC2254. And It also support parse variables of the form {i}.
  * 
- * @see org.apache.harmony.jndi.provider.ldap.Filter
+ * @see org.apache.harmony.jndi.provider.ldap.filter.Filter
  * @see javax.naming.directory.DirContext#search(javax.naming.Name, String,
  *      Object[], javax.naming.directory.SearchControls)
  */
@@ -402,24 +402,58 @@ public class FilterParser implements FilterParserConstants {
                     args[i] = "{" + i + "}";
                 }
       parse();
-      jj_consume_token(24);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 24:
+        jj_consume_token(24);
+        break;
+      case 25:
+        jj_consume_token(25);
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
       test();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[15] = jj_gen;
       if (jj_2_1(2)) {
-        jj_consume_token(24);
-      } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 24:
           jj_consume_token(24);
+          break;
+        case 25:
+          jj_consume_token(25);
+          break;
+        default:
+          jj_la1[13] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 24:
+        case 25:
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case 24:
+            jj_consume_token(24);
+            break;
+          case 25:
+            jj_consume_token(25);
+            break;
+          default:
+            jj_la1[14] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
           jj_consume_token(0);
           break;
         case 0:
           jj_consume_token(0);
           break;
         default:
-          jj_la1[13] = jj_gen;
+          jj_la1[16] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -473,7 +507,7 @@ public class FilterParser implements FilterParserConstants {
                           value.append(t.image);
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -490,7 +524,7 @@ public class FilterParser implements FilterParserConstants {
         ;
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[18] = jj_gen;
         break label_6;
       }
     }
@@ -520,7 +554,7 @@ public class FilterParser implements FilterParserConstants {
       t = jj_consume_token(ZERO);
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -536,7 +570,7 @@ public class FilterParser implements FilterParserConstants {
       t = jj_consume_token(ZERO);
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -564,7 +598,7 @@ public class FilterParser implements FilterParserConstants {
           ;
           break;
         default:
-          jj_la1[18] = jj_gen;
+          jj_la1[21] = jj_gen;
           break label_7;
         }
         temp = parse();
@@ -585,7 +619,7 @@ public class FilterParser implements FilterParserConstants {
           ;
           break;
         default:
-          jj_la1[19] = jj_gen;
+          jj_la1[22] = jj_gen;
           break label_8;
         }
         temp = parse();
@@ -606,7 +640,7 @@ public class FilterParser implements FilterParserConstants {
       filter = item();
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -652,7 +686,7 @@ public class FilterParser implements FilterParserConstants {
                     filter = new Filter(Filter.LESS_OR_EQUAL_FILTER);filter.setValue(new AttributeTypeAndValuePair(des, value));
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[25] = jj_gen;
           if (jj_2_3(3)) {
             jj_consume_token(EQUAL);
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -671,7 +705,7 @@ public class FilterParser implements FilterParserConstants {
               value_start(list);
               break;
             default:
-              jj_la1[21] = jj_gen;
+              jj_la1[24] = jj_gen;
               jj_consume_token(-1);
               throw new ParseException();
             }
@@ -684,7 +718,7 @@ public class FilterParser implements FilterParserConstants {
                                             filter = new Filter(Filter.EXTENSIBLE_MATCH_FILTER); filter.setValue(rule);
               break;
             default:
-              jj_la1[23] = jj_gen;
+              jj_la1[26] = jj_gen;
               jj_consume_token(-1);
               throw new ParseException();
             }
@@ -698,7 +732,7 @@ public class FilterParser implements FilterParserConstants {
                                      filter = new Filter(Filter.EXTENSIBLE_MATCH_FILTER); filter.setValue(rule);
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[27] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -722,7 +756,7 @@ public class FilterParser implements FilterParserConstants {
       value_start(list);
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[28] = jj_gen;
       ;
     }
   }
@@ -736,7 +770,7 @@ public class FilterParser implements FilterParserConstants {
       asterisk_start(list);
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;
     }
   }
@@ -766,7 +800,7 @@ public class FilterParser implements FilterParserConstants {
                                                      value = value + temp;
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[30] = jj_gen;
       ;
     }
              {if (true) return value;}
@@ -893,54 +927,6 @@ public class FilterParser implements FilterParserConstants {
     finally { jj_save(6, xla); }
   }
 
-  final private boolean jj_3R_12() {
-    Token xsp;
-    if (jj_3R_16()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_16()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_15() {
-    if (jj_3R_12()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_19()) jj_scanpos = xsp;
-    return false;
-  }
-
-  final private boolean jj_3R_32() {
-    if (jj_scan_token(LBRACE)) return true;
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_6() {
-    if (jj_scan_token(COLON)) return true;
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_5() {
-    if (jj_scan_token(COLON_DN)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_14() {
-    if (jj_scan_token(ASTERISK)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_18()) jj_scanpos = xsp;
-    return false;
-  }
-
-  final private boolean jj_3R_19() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
@@ -976,7 +962,17 @@ public class FilterParser implements FilterParserConstants {
     return false;
   }
 
-  final private boolean jj_3R_13() {
+  final private boolean jj_3_1() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(24)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(25)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_13() {
     if (jj_3R_17()) return true;
     return false;
   }
@@ -1000,11 +996,6 @@ public class FilterParser implements FilterParserConstants {
 
   final private boolean jj_3R_28() {
     if (jj_scan_token(CHAR)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(24)) return true;
     return false;
   }
 
@@ -1109,82 +1100,146 @@ public class FilterParser implements FilterParserConstants {
     return false;
   }
 
+  final private boolean jj_3R_12() {
+    Token xsp;
+    if (jj_3R_16()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_16()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_15() {
+    if (jj_3R_12()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_19()) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_scan_token(LBRACE)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_6() {
+    if (jj_scan_token(COLON)) return true;
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_scan_token(COLON_DN)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_14() {
+    if (jj_scan_token(ASTERISK)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_18()) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3R_19() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  /** Generated Token Manager. */
   public FilterParserTokenManager token_source;
   SimpleCharStream jj_input_stream;
-  public Token token, jj_nt;
+  /** Current token. */
+  public Token token;
+  /** Next token. */
+  public Token jj_nt;
   private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
-  public boolean lookingAhead = false;
-  private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[28];
+  final private int[] jj_la1 = new int[31];
   static private int[] jj_la1_0;
   static {
-      jj_la1_0();
+      jj_la1_init_0();
    }
-   private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0xc080c,0xc080c,0x40800,0x40800,0x40800,0x100000,0x4084c,0x4c,0xc084c,0xc080c,0xc084c,0x400000,0x10,0x1000001,0xac184c,0xac184c,0x40804,0x40804,0x10,0x10,0x174e,0xae184c,0xc000,0x1002,0x104e,0xac184c,0x20000,0xac184c,};
+   private static void jj_la1_init_0() {
+      jj_la1_0 = new int[] {0xc080c,0xc080c,0x40800,0x40800,0x40800,0x100000,0x4084c,0x4c,0xc084c,0xc080c,0xc084c,0x400000,0x3000000,0x3000000,0x3000000,0x10,0x3000001,0xac184c,0xac184c,0x40804,0x40804,0x10,0x10,0x174e,0xae184c,0xc000,0x1002,0x104e,0xac184c,0x20000,0xac184c,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[7];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
+  /** Constructor with InputStream. */
   public FilterParser(java.io.InputStream stream) {
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
+     this(stream, null);
+  }
+  /** Constructor with InputStream and supplied encoding */
+  public FilterParser(java.io.InputStream stream, String encoding) {
+    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new FilterParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
+     ReInit(stream, null);
+  }
+  /** Reinitialise. */
+  public void ReInit(java.io.InputStream stream, String encoding) {
+    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Constructor. */
   public FilterParser(java.io.Reader stream) {
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new FilterParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Constructor with generated Token Manager. */
   public FilterParser(FilterParserTokenManager tm) {
     token_source = tm;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   public void ReInit(FilterParserTokenManager tm) {
     token_source = tm;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 28; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1235,6 +1290,8 @@ public class FilterParser implements FilterParserConstants {
     return false;
   }
 
+
+/** Get the next Token. */
   final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -1243,8 +1300,9 @@ public class FilterParser implements FilterParserConstants {
     return token;
   }
 
+/** Get the specific Token. */
   final public Token getToken(int index) {
-    Token t = lookingAhead ? jj_scanpos : token;
+    Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
       else t = t.next = token_source.getNextToken();
@@ -1259,7 +1317,7 @@ public class FilterParser implements FilterParserConstants {
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.Vector jj_expentries = new java.util.Vector();
+  private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
   private int[] jj_lasttokens = new int[100];
@@ -1274,36 +1332,31 @@ public class FilterParser implements FilterParserConstants {
       for (int i = 0; i < jj_endpos; i++) {
         jj_expentry[i] = jj_lasttokens[i];
       }
-      boolean exists = false;
-      for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
-        int[] oldentry = (int[])(e.nextElement());
+      jj_entries_loop: for (java.util.Iterator it = jj_expentries.iterator(); it.hasNext();) {
+        int[] oldentry = (int[])(it.next());
         if (oldentry.length == jj_expentry.length) {
-          exists = true;
           for (int i = 0; i < jj_expentry.length; i++) {
             if (oldentry[i] != jj_expentry[i]) {
-              exists = false;
-              break;
+              continue jj_entries_loop;
             }
           }
-          if (exists) break;
+          jj_expentries.add(jj_expentry);
+          break jj_entries_loop;
         }
       }
-      if (!exists) jj_expentries.addElement(jj_expentry);
       if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
     }
   }
 
+  /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[25];
-    for (int i = 0; i < 25; i++) {
-      la1tokens[i] = false;
-    }
+    jj_expentries.clear();
+    boolean[] la1tokens = new boolean[26];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 31; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1312,11 +1365,11 @@ public class FilterParser implements FilterParserConstants {
         }
       }
     }
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 26; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
-        jj_expentries.addElement(jj_expentry);
+        jj_expentries.add(jj_expentry);
       }
     }
     jj_endpos = 0;
@@ -1324,20 +1377,23 @@ public class FilterParser implements FilterParserConstants {
     jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.elementAt(i);
+      exptokseq[i] = (int[])jj_expentries.get(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }
 
+  /** Enable tracing. */
   final public void enable_tracing() {
   }
 
+  /** Disable tracing. */
   final public void disable_tracing() {
   }
 
   final private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 7; i++) {
+    try {
       JJCalls p = jj_2_rtns[i];
       do {
         if (p.gen > jj_gen) {
@@ -1354,6 +1410,7 @@ public class FilterParser implements FilterParserConstants {
         }
         p = p.next;
       } while (p != null);
+      } catch(LookaheadSuccess ls) { }
     }
     jj_rescan = false;
   }

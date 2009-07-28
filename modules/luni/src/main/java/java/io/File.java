@@ -25,6 +25,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.luni.internal.io.FileCanonPathCache;
 import org.apache.harmony.luni.util.DeleteOnExit;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
@@ -488,6 +489,12 @@ public class File implements Serializable, Comparable<File> {
      */
     public String getCanonicalPath() throws IOException {
         byte[] result = properPath(false);
+        String absPath = Util.toUTF8String(result);
+        String canonPath = FileCanonPathCache.get(absPath);
+
+        if (canonPath != null) {
+            return canonPath;
+        }
         if(separatorChar == '/') {
             // resolve the full path first
             result = resolveLink(result, result.length, false);
@@ -559,7 +566,9 @@ public class File implements Serializable, Comparable<File> {
         newResult[newLength] = 0;
         newResult = getCanonImpl(newResult);
         newLength = newResult.length;
-        return Util.toUTF8String(newResult, 0, newLength);
+        canonPath = Util.toUTF8String(newResult, 0, newLength);
+        FileCanonPathCache.put(absPath, canonPath);
+        return canonPath;
     }
     
     /*

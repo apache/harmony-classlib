@@ -783,6 +783,19 @@ public class FloatTest extends TestCase {
     }
 
     /**
+     * @tests java.lang.Float#parseFloat(java.lang.String)
+     */
+    public void test_parseFloat_LString_Harmony6261() {
+        // Regression test for HARMONY-6261
+        float f = new Float("2147483648");
+        assertEquals("2.1474836E9", Float.toString(f));
+
+        doTestCompareRawBits("123456790528.000000000000000f", 0x51e5f4c9, "1.2345679E11");
+        doTestCompareRawBits("8589934592", 0x50000000, "8.5899346E9");
+        doTestCompareRawBits("8606711808", 0x50004000, "8.606712E9");
+    }
+    
+    /**
      * @tests java.lang.Float#shortValue()
      */
     public void test_shortValue() {
@@ -802,6 +815,12 @@ public class FloatTest extends TestCase {
         test_toString(12.90898f, "12.90898");
 
         test_toString(1.7014118346046924e+38F, "1.7014118E38");
+        
+        test_toString(1E19F, "1.0E19");
+        
+        test_toString(1E-36F, "1.0E-36");
+        
+        test_toString(1.0E-38F, "1.0E-38");
     }
 
     /**

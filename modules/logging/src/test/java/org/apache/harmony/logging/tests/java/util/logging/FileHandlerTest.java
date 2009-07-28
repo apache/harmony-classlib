@@ -17,17 +17,17 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilePermission;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.security.Permission;
 import java.util.Properties;
@@ -132,7 +132,7 @@ public class FileHandlerTest extends TestCase {
         h.publish(r);
         h.close();
         assertFileContent(TEMPPATH + SEP + "log", "java1.test.0", h
-                .getFormatter());
+                .getFormatter(), "UTF-8");
         output.close();
     }
 
@@ -156,7 +156,7 @@ public class FileHandlerTest extends TestCase {
         }
         assertFileContent(TEMPPATH + SEP + "log", "java0.test.0",
                 new LogRecord[] { r, null, r, null, r, null, r },
-                new MockFormatter());
+                new MockFormatter(), "UTF-8");
     }
 
     public void testDefaultValue() throws Exception {
@@ -180,16 +180,16 @@ public class FileHandlerTest extends TestCase {
             handler.publish(r);
             handler.close();
         }
-        assertFileContent(HOMEPATH, "java0.log", new XMLFormatter());
+        assertFileContent(HOMEPATH, "java0.log", new XMLFormatter(), null);
     }
 
     private void assertFileContent(String homepath, String filename,
-            Formatter formatter) throws Exception {
-        assertFileContent(homepath, filename, new LogRecord[] { r }, formatter);
+            Formatter formatter, String encoding) throws Exception {
+        assertFileContent(homepath, filename, new LogRecord[] { r }, formatter, encoding);
     }
 
     private void assertFileContent(String homepath, String filename,
-            LogRecord[] lr, Formatter formatter) throws Exception {
+            LogRecord[] lr, Formatter formatter, String encoding) throws Exception {
         handler.close();
         String msg = "";
         // if formatter is null, the file content should be empty
@@ -213,23 +213,26 @@ public class FileHandlerTest extends TestCase {
             sb.append(formatter.getTail(handler));
             msg = sb.toString();
         }
-        char[] chars = new char[msg.length()];
-        Reader reader = null;
+        byte[] bytes = new byte[msg.length()];
+        InputStream inputStream = null;
         try {
-            reader = new BufferedReader(new FileReader(homepath + SEP
-                    + filename));
-            reader.read(chars);
-            // System.out.println(new String(chars));
-            assertEquals(msg, new String(chars));
+            inputStream = new BufferedInputStream(new FileInputStream(homepath
+                    + SEP + filename));
+            inputStream.read(bytes);
+            if (encoding == null) {
+                assertEquals(msg, new String(bytes));
+            } else {
+                assertEquals(msg, new String(bytes, encoding));
+            }
             // assert has reached the end of the file
-            assertEquals(-1, reader.read());
+            assertEquals(-1, inputStream.read());
         } finally {
             try {
-                if (reader != null) {
-                    reader.close();
+                if (inputStream != null) {
+                    inputStream.close();
                 }
             } catch (Exception e) {
-                // don't care
+                // ignored
             }
             reset(homepath, filename);
         }
@@ -273,7 +276,7 @@ public class FileHandlerTest extends TestCase {
         handler = new FileHandler("%t/testLimitCount%g", 1, 2, false);
         handler.publish(r);
         handler.close();
-        assertFileContent(TEMPPATH, "testLimitCount1", handler.getFormatter());
+        assertFileContent(TEMPPATH, "testLimitCount1", handler.getFormatter(), "UTF-8");
 
         // very small limit value, count=1
         // output once, rotate(equals to nothing output)
@@ -281,7 +284,7 @@ public class FileHandlerTest extends TestCase {
         handler.publish(r);
         handler.close();
         assertFileContent(TEMPPATH, "testLimitCount0", new LogRecord[0],
-                handler.getFormatter());
+                handler.getFormatter(), "UTF-8");
 
         // normal case, limit is 60(>2*msg length <3*msg length), append is
         // false
@@ -300,9 +303,9 @@ public class FileHandlerTest extends TestCase {
         }
 
         assertFileContent(TEMPPATH, "testLimitCount0.1", new LogRecord[] {
-                rs[5], rs[6], rs[7] }, handler.getFormatter());
+                rs[5], rs[6], rs[7] }, handler.getFormatter(), "UTF-8");
         assertFileContent(TEMPPATH, "testLimitCount0.0", new LogRecord[] {
-                rs[8], rs[9] }, handler.getFormatter());
+                rs[8], rs[9] }, handler.getFormatter(), "UTF-8");
 
         // normal case, limit is 60(>2*msg length <3*msg length), append is true
         handler = new FileHandler("%t/testLimitCount%u", 60, 3, false);
@@ -319,11 +322,11 @@ public class FileHandlerTest extends TestCase {
         }
         handler.close();
         assertFileContent(TEMPPATH, "testLimitCount0.2", new LogRecord[] {
-                rs[3], rs[4], null, rs[5] }, handler.getFormatter());
+                rs[3], rs[4], null, rs[5] }, handler.getFormatter(), "UTF-8");
         assertFileContent(TEMPPATH, "testLimitCount0.1", new LogRecord[] {
-                rs[6], rs[7], rs[8] }, handler.getFormatter());
+                rs[6], rs[7], rs[8] }, handler.getFormatter(), "UTF-8");
         assertFileContent(TEMPPATH, "testLimitCount0.0",
-                new LogRecord[] { rs[9] }, handler.getFormatter());
+                new LogRecord[] { rs[9] }, handler.getFormatter(), "UTF-8");
 
         FileHandler h1 = null;
         FileHandler h2 = null;
@@ -566,7 +569,7 @@ public class FileHandlerTest extends TestCase {
         String msg = new String(out.toByteArray());
         Formatter f = handler.getFormatter();
         assertEquals(msg, f.getHead(handler) + f.format(r) + f.getTail(handler));
-        assertFileContent(HOMEPATH, "setoutput.log", handler.getFormatter());
+        assertFileContent(HOMEPATH, "setoutput.log", handler.getFormatter(), null);
     }
 
     /*
@@ -587,10 +590,10 @@ public class FileHandlerTest extends TestCase {
         h2.close();
         h3.close();
         h4.close();
-        assertFileContent(TEMPPATH + SEP + "log", "string", h.getFormatter());
-        assertFileContent(TEMPPATH + SEP + "log", "string.1", h.getFormatter());
-        assertFileContent(TEMPPATH + SEP + "log", "string.2", h.getFormatter());
-        assertFileContent(TEMPPATH + SEP + "log", "string.3", h.getFormatter());
+        assertFileContent(TEMPPATH + SEP + "log", "string", h.getFormatter(), "UTF-8");
+        assertFileContent(TEMPPATH + SEP + "log", "string.1", h.getFormatter(), "UTF-8");
+        assertFileContent(TEMPPATH + SEP + "log", "string.2", h.getFormatter(), "UTF-8");
+        assertFileContent(TEMPPATH + SEP + "log", "string.3", h.getFormatter(), "UTF-8");
 
         // default is append mode
         FileHandler h6 = new FileHandler("%t/log/string%u.log");
@@ -601,7 +604,7 @@ public class FileHandlerTest extends TestCase {
         h7.close();
         try {
             assertFileContent(TEMPPATH + SEP + "log", "string0.log", h
-                    .getFormatter());
+                    .getFormatter(), "UTF-8");
             fail("should assertion failed");
         } catch (Error e) {
         }
@@ -616,9 +619,9 @@ public class FileHandlerTest extends TestCase {
         h9.close();
         h8.close();
         assertFileContent(TEMPPATH + SEP + "log", "0string0.log", h
-                .getFormatter());
+                .getFormatter(), "UTF-8");
         assertFileContent(TEMPPATH + SEP + "log", "1string1.log", h
-                .getFormatter());
+                .getFormatter(), "UTF-8");
         file = new File(TEMPPATH + SEP + "log");
         assertTrue(file.list().length <= 2);
     }
@@ -627,7 +630,7 @@ public class FileHandlerTest extends TestCase {
             IOException {
         // regression HARMONY-2421
         try {
-            FileHandler fh = new FileHandler(new String(), 1, 1);
+            new FileHandler(new String(), 1, 1);
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // Expected
@@ -638,7 +641,7 @@ public class FileHandlerTest extends TestCase {
             IOException {
         // regression HARMONY-2421
         try {
-            FileHandler fh = new FileHandler(new String(), true);
+            new FileHandler(new String(), true);
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // Expected
@@ -649,7 +652,7 @@ public class FileHandlerTest extends TestCase {
             IOException {
         // regression HARMONY-2421
         try {
-            FileHandler fh = new FileHandler(new String(), 1, 1, true);
+            new FileHandler(new String(), 1, 1, true);
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // Expected

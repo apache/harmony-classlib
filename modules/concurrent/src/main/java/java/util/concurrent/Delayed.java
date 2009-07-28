@@ -27,11 +27,12 @@ import java.util.*;
 public interface Delayed extends Comparable<Delayed> {
 
     /**
-     * Returns the delay associated with this object, in the given time unit.
+     * Returns the remaining delay associated with this object, in the
+     * given time unit.
      *
      * @param unit the time unit
-     * @return the delay; zero or negative values indicate that the
-     * delay has already elapsed
+     * @return the remaining delay; zero or negative values indicate
+     * that the delay has already elapsed
      */
     long getDelay(TimeUnit unit);
 }

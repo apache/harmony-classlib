@@ -1196,10 +1196,6 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     Class<?> findClassImpl(String className) {
-        Class<?> loadedClass = findLoadedClass(className);
-        if (null != loadedClass) {
-            return loadedClass;
-        }
         String partialName = className.replace('.', '/');
         final String classFileName = new StringBuilder(partialName).append(".class").toString(); //$NON-NLS-1$
         String packageName = null;

@@ -36,7 +36,7 @@ public class ImageIOTest extends TestCase {
     }
 
     protected List<URL> listImages() {
-        final String imgPath = "/resources/images/utest."; //$NON-NLS-1$
+        final String imgPath = "/images/utest."; //$NON-NLS-1$
         final Class<? extends ImageIOTest> c = getClass();
         final List<URL> img = new LinkedList<URL>();
 

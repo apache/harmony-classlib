@@ -230,14 +230,14 @@ walkUTF8String (const U_8 * buf, IDATA nbytes)
   const U_8 *cursor = buf;
   IDATA newLength = 0;
   int hasHighChars = 0;
+  int wcresult;
   /* reset the shift state */
-  wctomb (NULL, 0);
+  wcresult = wctomb (NULL, 0);
   while (cursor < end)
     {
       if ((*cursor & 0x80) == 0x80)
         {
           char temp[MB_CUR_MAX];
-          int wcresult;
           U_16 unicode;
           U_32 numberU8Consumed =
             decodeUTF8CharN (cursor, &unicode, end - cursor);

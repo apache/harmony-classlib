@@ -19,29 +19,11 @@
 <project name="BEANS Build" default="build" basedir=".">
     <description>Build for BEANS component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="beans" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="tests.output" location="../../build/test_report" />
-
-    <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
-
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="${hy.beans.src.main.java}" />
-            <present targetdir="${hy.beans.src.main.java}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-
     <property file="../../make/depends.properties" />
-
-    <property name="beans.exclude.file" location="${hy.hdk}/build/beans.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -57,11 +39,12 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/beans.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/beans-src.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -71,11 +54,11 @@
     <target name="compile-java">
         <echo message="Compiling BEANS classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.beans.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -93,9 +76,9 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.beans.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -103,7 +86,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/beans.jar"
-             manifest="${hy.beans}/META-INF/MANIFEST.MF"
+             manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -114,7 +97,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/beans-src.jar">
-            <fileset dir="${hy.beans.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -123,192 +106,87 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources" > 
-        <mkdir dir="${hy.beans.bin.internal}" />
-        <mkdir dir="${hy.beans.bin.test}" />
-        <mkdir dir="${hy.beans.bin.test.support}" />
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
         
-        <echo message="Compiling support classes for BEANS tests" />
-        <javac srcdir="${hy.beans.src.test.support}"
-               destdir="${hy.beans.bin.test.support}"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-        </javac>
-
-        <echo message="Compiling internal BEANS tests" />
-        <javac srcdir="${hy.beans.src.test.internal}"
-               destdir="${hy.beans.bin.internal}"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.beans.bin.test.support}" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-
-        <echo message="Compiling BEANS tests" />
-        <javac srcdir="${hy.beans.src.test.java}"
-               destdir="${hy.beans.bin.test}"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.beans.bin.test.support}" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
-        </javac>
-    </target>
-
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="beans" dir="./make"
-                             result="${beans.exclude.file}"/>
-    </target>
-
-    <target name="run-tests">
-
-        <mkdir dir="${tests.output}" />
-
-        <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-        <!-- internal tests that need to run on the bootclasspath -->
-        <echo message="Running internal BEANS tests" />
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
-
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
-
-            <jvmarg line="${hy.test.vmargs}" />
-
-            <jvmarg value="-Xbootclasspath/a:${hy.beans.bin.internal}${path.separator}../../${junit.jar}"/>         
-            
-            <classpath>
-                <pathelement path="${hy.beans.bin.test}"/>
-                <pathelement path="${hy.beans.bin.test.support}"/>
-                <pathelement path="${hy.beans.src.test.resources}"/>
-            </classpath>
-            <classpath location="../../build/tests" />
-
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="${hy.beans.src.test.internal}">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${beans.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
-        <!-- API tests -->
-        <echo message="Running BEANS tests" />
-        <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
-               printsummary="withOutAndErr"
-               errorproperty="test.errors"
-               failureproperty="test.failures"
-               showoutput="on"
-               dir="${basedir}"
-               jvm="${test.jre.home}/bin/java">
+        <jar destfile="${tests.hdk.dir}/beans_test_support.jar">
+            <fileset dir="bin/test_support" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
 
-            <assertions enableSystemAssertions="true">
-                <enable />
-            </assertions>
+        <jar destfile="${tests.hdk.dir}/beans_tests.jar">
+            <fileset dir="bin/test" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
 
-            <jvmarg line="${hy.test.vmargs}" />
+        <jar destfile="${tests.hdk.dir}/beans_impl_tests.jar">
+            <fileset dir="bin/test-internal" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
 
-            <classpath>
-                <pathelement path="${hy.beans.bin.test}"/>
-                <pathelement path="${hy.beans.bin.test.support}"/>
-                <pathelement path="${hy.beans.src.test.resources}"/>
-                <pathelement path="${hy.beans}"/>
-            </classpath>
-            <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
 
-            <formatter type="xml" />
-
-            <batchtest todir="${tests.output}" haltonfailure="no" >
-
-                <fileset dir="${hy.beans.src.test.java}">
-                    <!-- if ${test.case}     -->
-                    <include name="${converted.tc}" if="test.case" />
-                    <!-- unless ${test.case} -->
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${beans.exclude.file}" unless="test.case" />
-                </fileset>
-            </batchtest>
-        </junit>
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">beans${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">beans${line.separator}</echo>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="${hy.beans.bin.test}" />
-        <copy todir="${hy.beans.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.beans.src.test.resources}">
+        <copy todir="${tests.resources.hdk.dir}" includeemptydirs="false">
+            <fileset dir="src/test/resources">
                 <exclude name="**/*.java" />
             </fileset>
-        	<fileset dir="${hy.beans.src.test.support}">
+            <fileset dir="src/test/support/java">
                 <exclude name="**/*.java" />
-        	</fileset>
-        </copy>  	
+            </fileset>
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
+    <target name="compile-tests"> 
+        <compile-tests description="beans test support"
+                       destdir="bin/test_support">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/support/java" />
+                </src>
+            </javac-elements>
+        </compile-tests>
+        <compile-tests description="beans internal tests"
+                       destdir="bin/test-internal">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java-internal" />
+                </src>
+                <classpath location="bin/test_support" />
+            </javac-elements>
+        </compile-tests>
+        <compile-tests description="beans api tests">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+                <classpath location="bin/test_support" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
 </project>

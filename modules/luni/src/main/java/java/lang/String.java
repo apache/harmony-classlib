@@ -861,7 +861,12 @@ public final class String implements Serializable, Comparable<String>,
                     || (hashCode != s.hashCode && hashCode != 0 && s.hashCode != 0)) {
                 return false;
             }
-            return regionMatches(0, s, 0, count);
+            for (int i = 0; i < count; ++i) {
+                if (value[offset + i] != s.value[s.offset + i]) {
+                    return false;
+                }
+            }
+            return true;
         }
         return false;
     }

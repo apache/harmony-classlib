@@ -54,28 +54,28 @@ public class DerGeneralizedTimeEDTest extends TestCase {
         Date myDate = getGmtDate(1101980374187L);
         byte[] encoded =
             new DerOutputStream(gTime, myDate).encoded;
-        String rep = new String(encoded, 2, encoded[1] & 0xff);
+        String rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("full", "20041202093934.187Z", rep);
 
         // 2 digit fractional seconds (last 0 must be trimmed out)
         myDate = getGmtDate(1101980374180L);
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
-        rep = new String(encoded, 2, encoded[1] & 0xff);
+        rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("2 fraction", "20041202093934.18Z", rep);
 
         // 1 digit fractional seconds (last 2 0s must be trimmed out)
         myDate = getGmtDate(1101980374100L);
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
-        rep = new String(encoded, 2, encoded[1] & 0xff);
+        rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("1 fraction", "20041202093934.1Z", rep);
 
         // no fractional seconds (last 3 0s and "." must be trimmed out)
         myDate = getGmtDate(1101980374000L);
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
-        rep = new String(encoded, 2, encoded[1] & 0xff);
+        rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("no fraction", "20041202093934Z", rep);
 
         // midnight
@@ -85,7 +85,7 @@ public class DerGeneralizedTimeEDTest extends TestCase {
         myDate = sdf.parse("06.06.2004 00:00");
         encoded =
             new DerOutputStream(gTime, myDate).encoded;
-        rep = new String(encoded, 2, encoded[1] & 0xff);
+        rep = new String(encoded, 2, encoded[1] & 0xff, "UTF-8");
         assertEquals("midnight", "20040606000000Z", rep);
     }
 

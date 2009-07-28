@@ -19,7 +19,7 @@ DEFINES += -DMACOSX -DMACOSX_X86_64 -DHYX86_64 -DIPv6_FUNCTION_SUPPORT
 INCLUDES += -I/opt/local/include
 PLATFORM = -fPIC -fno-common -arch x86_64 -mmacosx-version-min=10.5
 ASFLAGS += -arch x86_64
-WARNFLAGS += -Wconversion -Wformat -Wshorten-64-to-32
+# WARNFLAGS += -Wconversion -Wformat -Wshorten-64-to-32
 OSLIBS = -L/opt/local/lib -lc -lm -ldl -liconv
 XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext -lXtst -lXrender -lexpat \
         -lfreetype -lfontconfig

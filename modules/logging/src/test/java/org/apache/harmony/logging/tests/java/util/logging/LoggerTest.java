@@ -53,7 +53,7 @@ public class LoggerTest extends TestCase {
 
 	private final static String INVALID_RESOURCE_BUNDLE = "impossible_not_existing";
     
-    private final static String LOGGING_CONFIG_FILE= "src/test/resources/config/java/util/logging/logging.config";
+    private final static String LOGGING_CONFIG_FILE= "resources/config/java/util/logging/logging.config";
 
 	private final static String VALID_KEY = "LOGGERTEST";
 

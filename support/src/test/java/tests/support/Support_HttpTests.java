@@ -257,9 +257,9 @@ public class Support_HttpTests {
 			connector.open(postTestUrl);
 			connector.setRequestProperty("Content-Length", "10");
 			os = connector.getOutputStream();
-			os.write(message1.getBytes());
+			os.write(message1.getBytes("ISO8859_1"));
 			os.flush();
-			os.write(message2.getBytes());
+			os.write(message2.getBytes("ISO8859_1"));
 			os.close();
 			is = connector.getInputStream();
 			len = 0;

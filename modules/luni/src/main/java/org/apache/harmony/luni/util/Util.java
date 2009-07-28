@@ -20,6 +20,7 @@ package org.apache.harmony.luni.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UTFDataFormatException;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -267,38 +268,61 @@ public final class Util {
 	 *            java.lang.String The encoded string.
 	 * @return java.lang.String The decoded version.
 	 */
-	public static String decode(String s, boolean convertPlus) {
-		if (!convertPlus && s.indexOf('%') == -1)
-			return s;
-		StringBuilder result = new StringBuilder(s.length());
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		for (int i = 0; i < s.length();) {
-			char c = s.charAt(i);
-			if (convertPlus && c == '+')
-				result.append(' ');
-			else if (c == '%') {
-				out.reset();
-				do {
-					if (i + 2 >= s.length())
-						throw new IllegalArgumentException(Msg.getString(
-								"K01fe", i));
-					int d1 = Character.digit(s.charAt(i + 1), 16);
-					int d2 = Character.digit(s.charAt(i + 2), 16);
-					if (d1 == -1 || d2 == -1)
-						throw new IllegalArgumentException(Msg.getString(
-								"K01ff", s.substring(i, i + 3), String
-										.valueOf(i)));
-					out.write((byte) ((d1 << 4) + d2));
-					i += 3;
-				} while (i < s.length() && s.charAt(i) == '%');
-				result.append(out.toString());
-				continue;
-			} else
-				result.append(c);
-			i++;
-		}
-		return result.toString();
-	}
+    public static String decode(String s, boolean convertPlus) {
+        return decode(s, convertPlus, null);
+    }
+
+    /**
+     * '%' and two following hex digit characters are converted to the
+     * equivalent byte value. All other characters are passed through
+     * unmodified. e.g. "ABC %24%25" -> "ABC $%"
+     * 
+     * @param s
+     *            java.lang.String The encoded string.
+     * @param encoding
+     *            the specified encoding
+     * @return java.lang.String The decoded version.
+     */
+    public static String decode(String s, boolean convertPlus, String encoding) {
+        if (!convertPlus && s.indexOf('%') == -1)
+            return s;
+        StringBuilder result = new StringBuilder(s.length());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        for (int i = 0; i < s.length();) {
+            char c = s.charAt(i);
+            if (convertPlus && c == '+')
+                result.append(' ');
+            else if (c == '%') {
+                out.reset();
+                do {
+                    if (i + 2 >= s.length())
+                        throw new IllegalArgumentException(Msg.getString(
+                                "K01fe", i));
+                    int d1 = Character.digit(s.charAt(i + 1), 16);
+                    int d2 = Character.digit(s.charAt(i + 2), 16);
+                    if (d1 == -1 || d2 == -1)
+                        throw new IllegalArgumentException(Msg.getString(
+                                "K01ff", s.substring(i, i + 3), String
+                                        .valueOf(i)));
+                    out.write((byte) ((d1 << 4) + d2));
+                    i += 3;
+                } while (i < s.length() && s.charAt(i) == '%');
+                if (encoding == null) {
+                    result.append(out.toString());
+                } else {
+                    try {
+                        result.append(out.toString(encoding));
+                    } catch (UnsupportedEncodingException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+                continue;
+            } else
+                result.append(c);
+            i++;
+        }
+        return result.toString();
+    }
 	
 	public static String toASCIILowerCase(String s) {
         int len = s.length();

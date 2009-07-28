@@ -321,8 +321,12 @@ public class String2Test extends junit.framework.TestCase {
      * @tests java.lang.String#equals(java.lang.Object)
      */
     public void test_equalsLjava_lang_Object() {
-        // Test for method boolean java.lang.String.equals(java.lang.Object)
-        assertTrue("String not equal", hw1.equals(hw2) && !(hw1.equals(comp11)));
+        assertEquals("String not equal", hw1, hw2);
+        assertEquals("Empty string equals check", "", "");
+        assertEquals("Null string equals check", (String)null, (String)null);
+        
+        assertFalse("Unequal strings reports as equal", hw1.equals(comp11));
+        assertFalse("Null string comparison failed", hw1.equals((String)null));        
     }
 
     /**

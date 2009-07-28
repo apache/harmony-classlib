@@ -545,7 +545,7 @@ public class SocketTest extends SocketTestCase {
 
         // Regression for HARMONY-946
         ServerSocket ss = new ServerSocket(0);
-        Socket s = new Socket("0.0.0.0 ", ss.getLocalPort());
+        Socket s = new Socket("0.0.0.0", ss.getLocalPort());
         ss.close();
         s.close();
     }

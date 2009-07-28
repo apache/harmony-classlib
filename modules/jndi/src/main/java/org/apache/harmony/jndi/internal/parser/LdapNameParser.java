@@ -70,9 +70,33 @@ public class LdapNameParser implements NameParser, LdapParser {
             throw new InvalidNameException("Invalid name: " + s);
         }
 
+        int mark = 0;
+        boolean isInQuote = false;
         for (int i = 0; i < c.length; i++) {
-            if ((c[i] == ',' || c[i] == ';') && c[i - 1] != '\\') {
-
+            if (c[i] == '\"' && i > 0 && c[i-1] != '\\'){
+                if (isInQuote){
+                    isInQuote = false;
+                    continue;
+                }else{
+                    isInQuote = true;
+                    // Record quotation mark's location in case it is a single one
+                    mark = i+1;
+                    continue;
+                }
+            }
+            
+            // Ignore quoted string
+            if (isInQuote) {
+                if (i == c.length -1){
+                    // if the last quotation mark is a single one, ignored it.
+                    // and rescan the chars at the marked location.
+                    i = mark;
+                    isInQuote = false;
+                }
+                continue;
+            }
+            
+            if ((c[i] == ',' || c[i] == ';') && i > 0 && c[i - 1] != '\\') {
                 String sub = s.substring(from, i);
                 if (sub.equals("")) {
                     throw new InvalidNameException("Invalid name: " + s);

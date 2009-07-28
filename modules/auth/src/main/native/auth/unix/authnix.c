@@ -131,6 +131,7 @@ Java_org_apache_harmony_auth_module_UnixSystem_load
     (*jenv)->SetObjectField (jenv, thiz, jf_groupname, (*jenv)->NewStringUTF (jenv, pg->gr_name));
 
     gcount = getgroups(0, NULL);
+    
     if( 0 != gcount ) {
 
         gid_t * gids;
@@ -138,10 +139,13 @@ Java_org_apache_harmony_auth_module_UnixSystem_load
         jlong * jgs_raw;
         jobjectArray jgsnames;
         int i;
+        int gcount_temp;
 
         gids = (gid_t*)hymem_allocate_memory(gcount*sizeof(gid_t));
 
-        getgroups(gcount, gids);
+        /* capture return code to fix compiler warning */
+        gcount_temp = getgroups(gcount, gids);
+        
         jgs = (*jenv)->NewLongArray (jenv, gcount);
         jgs_raw = (*jenv)->GetLongArrayElements (jenv, jgs, NULL);
         jgsnames = (*jenv)->NewObjectArray (jenv, gcount, jclassString, NULL);

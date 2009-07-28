@@ -39,7 +39,7 @@ public class PackingOptions {
     private boolean gzip = true;
     private boolean stripDebug = false;
     private boolean keepFileOrder = true;
-    private long segmentLimit = 1000000;
+    private long segmentLimit = 1000000L;
     private int effort = 5;
     private String deflateHint = KEEP;
     private String modificationTime = KEEP;
@@ -123,6 +123,10 @@ public class PackingOptions {
         return deflateHint;
     }
 
+    public boolean isKeepDeflateHint() {
+        return KEEP.equals(deflateHint);
+    }
+
     public void setDeflateHint(String deflateHint) {
         this.deflateHint = deflateHint;
     }
@@ -132,6 +136,13 @@ public class PackingOptions {
     }
 
     public void setModificationTime(String modificationTime) {
+        if (!KEEP.equals(modificationTime)
+                && !"latest".equals(modificationTime)) {
+            throw new IllegalArgumentException(
+                    "Bad argument: -m "
+                            + modificationTime
+                            + " ? transmit modtimes should be either latest or keep (default)");
+        }
         this.modificationTime = modificationTime;
     }
 

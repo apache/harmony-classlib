@@ -19,29 +19,11 @@
 <project name="CRYPTO Build" default="build" basedir=".">
     <description>Build for CRYPTO component</description>
 
-    <!-- import common properties -->
+    <property name="hy.module" value="crypto" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
-    <property name="tests.output" location="../../build/test_report" />
-
-    <!-- set global properties for this build. -->
-    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
-
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="${hy.crypto.src.main.java}" />
-            <present targetdir="${hy.crypto.src.main.java}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-
     <property file="../../make/depends.properties" />
-
-    <property name="crypto.exclude.file" location="${hy.hdk}/build/crypto.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -57,11 +39,12 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module" depends="build, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/crypto.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/crypto-src.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -71,11 +54,11 @@
     <target name="compile-java">
         <echo message="Compiling CRYPTO classes" />
 
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="../../build/classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.crypto.src.main.java}"
-               destdir="${hy.build}"
+               srcdir="src/main/java"
+               destdir="../../build/classes"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -93,17 +76,17 @@
     </target>
 
     <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.crypto.src.main.java}">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}.jar"
-             manifest="${hy.crypto}/META-INF/MANIFEST.MF"
+        <jar destfile="${hy.jdk}/jre/lib/boot/crypto.jar"
+             manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -113,8 +96,8 @@
             <metainf refid="hy.required.metainf-files"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.crypto.packaging.jarname}-src.jar">
-            <fileset dir="${hy.crypto.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/crypto-src.jar">
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -123,224 +106,126 @@
         </jar>
     </target>
 
+    <target name="test-jar" depends="svn-info,compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <jar destfile="${tests.hdk.dir}/crypto_test_support.jar">
+            <fileset dir="bin/test/support" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${tests.hdk.dir}/crypto_api_tests.jar">
+            <fileset dir="bin/test/api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/crypto_api_boot_tests.jar">
+            <fileset dir="bin/test/api.injected" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${tests.hdk.dir}/crypto_impl_tests.jar">
+            <fileset dir="bin/test/impl" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/crypto_impl_boot_tests.jar">
+            <fileset dir="bin/test/impl.injected" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <mkdir dir="${tests.excludes.hdk.dir}" />
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="src/test/resources" />
+        </copy>
+
+        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+    </target>
+
     <target name="compile-tests">
 
-        <compile-tests description="test support files" destdir="../../build/tests">
+        <compile-tests description="crypto test support files"
+                       destdir="bin/test/support">
             <javac-elements>
                 <src>
-                    <pathelement location="${hy.crypto.src.test}/support/common/java"/>
+                    <pathelement location="src/test/support/common/java"/>
 
                     <!-- FIXME: CRYPTO tests should not reach into security module code -->
-                    <pathelement location="${hy.crypto}/../security/src/test/support/common/java"/>
+                    <pathelement location="../security/src/test/support/common/java"/>
                 </src>
 
                 <include name="**/*.java" />
             </javac-elements>
         </compile-tests>
 
-
-        <compile-tests description="api tests" destdir="${hy.crypto.bin.test}/api">
+        <compile-tests description="crypto api tests"
+                       destdir="bin/test/api">
             <javac-elements>
-                <src path="${hy.crypto.src.test}/api/java"/>
+                <src path="src/test/api/java"/>
                 <include name="**/*Test.java" />
-            </javac-elements>
-        </compile-tests>
-
-        <compile-tests description="api injected tests" destdir="${hy.crypto.bin.test}/api.injected">
-            <javac-elements>
-                <src path="${hy.crypto.src.test}/api/java.injected"/>
-                <include name="**/*Test.java" />
-            </javac-elements>
-        </compile-tests>
-
-        <compile-tests description="impl injected tests" destdir="${hy.crypto.bin.test}/impl.injected">
-            <javac-elements>
-                <src path="${hy.crypto.src.test}/impl/java.injected"/>
-                <include name="**/*Test.java" />
-            </javac-elements>
-        </compile-tests>
-
-        <compile-tests description="impl tests" destdir="${hy.crypto.bin.test}/impl">
-            <javac-elements>
-                <src path="${hy.crypto.src.test}/impl/java"/>
-                <include name="**/*Test.java" />
-            </javac-elements>
-        </compile-tests>
-    </target>
-
-    <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="crypto" dir="./make"
-                             result="${crypto.exclude.file}"/>
-    </target>
-
-    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
-
-    <target name="run-tests-api">
-
-        <run-tests description="api tests">
-            <junit-elements>
-
                 <classpath>
-                    <pathelement path="${hy.crypto.bin.test}/api"/>
-                    <pathelement path="${hy.hdk}/build/test/support.jar" />
-                    <pathelement path="../../build/tests" />
+                    <pathelement path="bin/test/support" />
                 </classpath>
+            </javac-elements>
+        </compile-tests>
 
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="${hy.crypto.src.test}/api/java">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
-                    </fileset>
-                </batchtest>
-
-            </junit-elements>
-        </run-tests>
-
-        <run-tests description="api.injected tests">
-            <junit-elements>
-                <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/api.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar"/>
-
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="${hy.crypto.src.test}/api/java.injected">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
-                    </fileset>
-                </batchtest>
-
-            </junit-elements>
-        </run-tests>
-
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="run-tests-impl" unless="test.noimpl">
-        <run-tests description="impl tests">
-            <junit-elements>
+        <compile-tests description="crypto api injected tests"
+                       destdir="bin/test/api.injected">
+            <javac-elements>
+                <src path="src/test/api/java.injected"/>
+                <include name="**/*Test.java" />
                 <classpath>
-                    <pathelement path="${hy.crypto.bin.test}/impl"/>
-                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+                    <pathelement path="bin/test/support" />
                 </classpath>
-                
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="${hy.crypto.src.test}/impl/java">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
-                    </fileset>
-                </batchtest>
+            </javac-elements>
+        </compile-tests>
 
-            </junit-elements>
-        </run-tests>
+        <compile-tests description="crypto impl injected tests"
+                       destdir="bin/test/impl.injected">
+            <javac-elements>
+                <src path="src/test/impl/java.injected"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
 
-        <run-tests description="impl injected tests">
-            <junit-elements>
-                <!-- to pick up junit.jar               -->
-                <jvmarg value="-Xbootclasspath/a:${hy.crypto.bin.test}/impl.injected${path.separator}../../${junit.jar}${path.separator}../../build/tests"/>
-
-                <batchtest todir="${tests.output}" haltonfailure="no" >
-                    <fileset dir="${hy.crypto.src.test}/impl/java.injected">
-                        <!-- if ${test.case}     -->
-                        <include name="${converted.tc}" if="test.case" />
-                        <!-- unless ${test.case} -->
-                        <include name="**/*Test.java" unless="test.case" />
-                        <excludesfile name="${crypto.exclude.file}" unless="test.case" />
-                    </fileset>
-                </batchtest>
-
-            </junit-elements>
-        </run-tests>
-
-        <antcall target="touch-failures-file" />
-        <antcall target="touch-errors-file" />
-    </target>
-
-    <target name="touch-failures-file" if="test.failures">
-        <echo file="${tests.output}/test.failures"
-            append="true">crypto${line.separator}</echo>
-    </target>
-
-    <target name="touch-errors-file" if="test.errors">
-        <echo file="${tests.output}/test.errors"
-            append="true">crypto${line.separator}</echo>
-    </target>
-    
-    <macrodef name="compile-tests">
-        <attribute name="description" default="" />
-        <attribute name="destdir"  />
-        <element name="javac-elements" />
-        <sequential>
-            <echo message="Compiling CRYPTO @{description}" />
-            
-            <mkdir dir="@{destdir}" />
-            
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-                <javac-elements />
-
-                <compilerarg line="${build.compilerarg}" />
-
-                <bootclasspath>
-                    <fileset dir="${hy.jdk}/jre/lib/boot">
-                        <include name="**/*.jar" />
-                    </fileset>
-                </bootclasspath>
-                <classpath location="../../build/tests" />
-                <classpath location="${hy.hdk}/build/test/support.jar" />
-            </javac>
-        </sequential>
-    </macrodef>
-    
-    <macrodef name="run-tests">
-        <attribute name="description" default="" />
-        <element name="junit-elements" />
-        <sequential>
-            <echo message="Running CRYPTO @{description}" />
-
-            <mkdir dir="${tests.output}" />
-
-            <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-            <junit fork="yes"
-                   forkmode="${hy.test.forkmode}"
-                   timeout="${hy.test.timeout}"
-                   printsummary="withOutAndErr"
-                   errorproperty="test.errors"
-                   failureproperty="test.failures"
-                   showoutput="on"
-                   dir="${basedir}"
-                   jvm="${test.jre.home}/bin/java">
-
-                <assertions enableSystemAssertions="true">
-                    <enable />
-                </assertions>
-
-                <jvmarg line="${hy.test.vmargs}" />
-
-                <junit-elements />
-
+        <compile-tests description="crypto impl tests"
+                       destdir="bin/test/impl">
+            <javac-elements>
+                <src path="src/test/impl/java"/>
+                <include name="**/*Test.java" />
                 <classpath>
-                    <pathelement path="${hy.crypto.src.test.resources}"/>
-                    <pathelement path="../../build/tests" />
+                    <pathelement path="bin/test/support" />
                 </classpath>
+            </javac-elements>
+        </compile-tests>
+    </target>
 
-                <formatter type="xml" />
-            </junit>
-        </sequential>
-    </macrodef>
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
 
 </project>

@@ -34,9 +34,9 @@ import javax.sql.rowset.CachedRowSet;
 import junit.framework.TestCase;
 
 public class CachedRowSetTestCase extends TestCase {
-    public static final String DERBY_URL_Create = "jdbc:derby:src/test/resources/TESTDB;create=true";
+    public static final String DERBY_URL_Create = "jdbc:derby:resources/TESTDB;create=true";
 
-    public static final String DERBY_URL = "jdbc:derby:src/test/resources/TESTDB";
+    public static final String DERBY_URL = "jdbc:derby:resources/TESTDB";
 
     protected Connection conn = null;
 

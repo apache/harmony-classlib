@@ -214,7 +214,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         try {
             X509EncodedKeySpec publicKeySpec =
                 new X509EncodedKeySpec(
-                        Base64.decode(b64PublicKeySpec.getBytes()));
+                        Base64.decode(b64PublicKeySpec.getBytes("UTF-8")));
             KeyFactory keyFactory =
                 KeyFactory.getInstance(publicKeyAlgorithm);
             publicKey = keyFactory.generatePublic(publicKeySpec);
@@ -260,7 +260,7 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         // Testing the CRLs generation on the base of PKCS7 SignedData object
         ByteArrayInputStream bais = new ByteArrayInputStream(
-                Base64.decode(pkcs7so.getBytes()));
+                Base64.decode(pkcs7so.getBytes("UTF-8")));
 
         Collection crls = factory.generateCRLs(bais);
         assertNotNull("Factory returned null on correct PKCS7 data", crls);
@@ -284,12 +284,12 @@ public class CertificateFactory_ImplTest extends TestCase {
         CertificateFactory factory = CertificateFactory.getInstance("X.509");
 
         ByteArrayInputStream bais = new ByteArrayInputStream(
-                Base64.decode(pkcs7so.getBytes()));
+                Base64.decode(pkcs7so.getBytes("UTF-8")));
         try {
             factory.generateCRL(bais);
             fail("Expected exception was not thrown");
         } catch (Exception e) { }
-        bais = new ByteArrayInputStream(Base64.decode(pkcs7so.getBytes()));
+        bais = new ByteArrayInputStream(Base64.decode(pkcs7so.getBytes("UTF-8")));
         try {
             factory.generateCertificate(bais);
             fail("Expected exception was not thrown");
@@ -305,7 +305,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         
         for (int i=0; i<good.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[i][0] + x509crl + good[i][1]).getBytes());
+                    (good[i][0] + x509crl + good[i][1]).getBytes("UTF-8"));
 
             X509CRL crl = (X509CRL) factory.generateCRL(bais);
             assertNotNull("Factory returned null on correct data", crl);
@@ -318,7 +318,7 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         for (int i=0; i<bad_content.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCRL(bais);
                 fail("Expected exception was not thrown");
@@ -329,7 +329,7 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         for (int i=0; i<bad.length; i++) {
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + x509crl + bad[i][1]).getBytes());
+                    (bad[i][0] + x509crl + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCRL(bais);
                 fail("Expected exception was not thrown");
@@ -399,10 +399,10 @@ public class CertificateFactory_ImplTest extends TestCase {
         };
         // actual encodings
         byte[][] data = new byte[num_of_variants][];
-        data[pem_x509] = (good[0][0] + x509crl + good[0][1] + "\n").getBytes();
-        data[asn_x509] = Base64.decode(x509crl.getBytes());
-        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes();
-        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes());
+        data[pem_x509] = (good[0][0] + x509crl + good[0][1] + "\n").getBytes("UTF-8");
+        data[asn_x509] = Base64.decode(x509crl.getBytes("UTF-8"));
+        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes("UTF-8");
+        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes("UTF-8"));
         data[bad] = new byte[] {0, 1, 1, 1, 1, 1, 0, 1};
         data[npe_bad] = new byte[] {0, 1, 1, 1, 1, 1, 1, 0};
         data[npe_bad2] = new byte[] {48, 0, 3, 4, 5, 6, 7};
@@ -498,10 +498,10 @@ public class CertificateFactory_ImplTest extends TestCase {
         };
         // actual encodings
         byte[][] data = new byte[num_of_variants][];
-        data[pem_x509] = (good[0][0] + x509cert + good[0][1] + "\n").getBytes();
-        data[asn_x509] = Base64.decode(x509cert.getBytes());
-        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes();
-        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes());
+        data[pem_x509] = (good[0][0] + x509cert + good[0][1] + "\n").getBytes("UTF-8");
+        data[asn_x509] = Base64.decode(x509cert.getBytes("UTF-8"));
+        data[pem_pkcs] = (good[0][0] + pkcs7so + good[0][1] + "\n").getBytes("UTF-8");
+        data[asn_pkcs] = Base64.decode(pkcs7so.getBytes("UTF-8"));
         data[bad] = new byte[] {0, 1, 1, 1, 1, 1, 0, 1};
         data[bad1] = new byte[] {0, 1, 1, 1, 1, 1, 1, 0};
         data[bad2] = new byte[] {48, 0, 3, 4, 5, 6, 7};
@@ -562,7 +562,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         ByteArrayInputStream bais;
         for (int i=0; i<good.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes("UTF-8"));
             Collection crls = factory.generateCRLs(bais);
             assertNotNull("Factory returned null on correct PKCS7 data", crls);
             assertEquals("The size of collection differs from expected",
@@ -574,7 +574,7 @@ public class CertificateFactory_ImplTest extends TestCase {
                 }
             }
             bais = new ByteArrayInputStream(
-                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes("UTF-8"));
             Collection certs = factory.generateCertificates(bais);
             assertNotNull("Factory returned null on correct PKCS7 data", certs);
             assertEquals("The size of collection differs from expected",
@@ -589,13 +589,13 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         for (int i=0; i<bad_content.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertificates(bais);
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCRLs(bais);
                 fail("Expected exception was not thrown");
@@ -604,13 +604,13 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         for (int i=0; i<bad.length; i++) {
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCRLs(bais);
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertificates(bais);
                 fail("Expected exception was not thrown");
@@ -628,7 +628,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         List certificates;
         for (int i=0; i<good.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[i][0] + pkiPath + good[i][1]).getBytes());
+                    (good[i][0] + pkiPath + good[i][1]).getBytes("UTF-8"));
 
             certificates = factory.generateCertPath(bais).getCertificates();
             assertEquals("The size of the list differs from expected",
@@ -642,7 +642,7 @@ public class CertificateFactory_ImplTest extends TestCase {
             }
 
             bais = new ByteArrayInputStream(
-                    (good[i][0] + pkiPath + good[i][1]).getBytes());
+                    (good[i][0] + pkiPath + good[i][1]).getBytes("UTF-8"));
 
             certificates = 
                 factory.generateCertPath(bais, "PkiPath").getCertificates();
@@ -657,7 +657,7 @@ public class CertificateFactory_ImplTest extends TestCase {
             }
 
             bais = new ByteArrayInputStream(
-                    (good[i][0] + pkcs7so + good[i][1]).getBytes());
+                    (good[i][0] + pkcs7so + good[i][1]).getBytes("UTF-8"));
 
             certificates = 
                 factory.generateCertPath(bais, "PKCS7").getCertificates();
@@ -674,7 +674,7 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         // testing empty PkiPath structure (ASN.1 such as 0x30, 0x00)
         bais = new ByteArrayInputStream(
-                (good[0][0] + "MAB=" + good[0][1]).getBytes()); // "MABCDEFG"
+                (good[0][0] + "MAB=" + good[0][1]).getBytes("UTF-8")); // "MABCDEFG"
         assertEquals("The size of the list differs from expected",
                 0, factory.generateCertPath(bais, "PkiPath")
                                 .getCertificates().size());
@@ -682,19 +682,19 @@ public class CertificateFactory_ImplTest extends TestCase {
         // testing with bad PEM content
         for (int i=0; i<bad_content.length; i++) {
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais);
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais, "PkiPath");
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (good[0][0] + bad_content[i] + good[0][1]).getBytes());
+                    (good[0][0] + bad_content[i] + good[0][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais, "PKCS7");
                 fail("Expected exception was not thrown");
@@ -703,19 +703,19 @@ public class CertificateFactory_ImplTest extends TestCase {
 
         for (int i=0; i<bad.length; i++) {
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + pkiPath + bad[i][1]).getBytes());
+                    (bad[i][0] + pkiPath + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais);
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + pkiPath + bad[i][1]).getBytes());
+                    (bad[i][0] + pkiPath + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais, "PkiPath");
                 fail("Expected exception was not thrown");
             } catch (Exception e) { }
             bais = new ByteArrayInputStream(
-                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes());
+                    (bad[i][0] + pkcs7so + bad[i][1]).getBytes("UTF-8"));
             try {
                 factory.generateCertPath(bais, "PKCS7");
                 fail("Expected exception was not thrown");
@@ -732,7 +732,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         // Testing the Certificates generation
         // on the base of PKCS7 SignedData object
         ByteArrayInputStream bais = new ByteArrayInputStream(
-                Base64.decode(pkcs7so.getBytes()));
+                Base64.decode(pkcs7so.getBytes("UTF-8")));
 
         Collection certs = factory.generateCertificates(bais);
         assertNotNull("Factory returned null on correct PKCS7 data", certs);
@@ -756,7 +756,7 @@ public class CertificateFactory_ImplTest extends TestCase {
         // Testing the CertPath generation
         // on the base of PKCS7 SignedData object
         ByteArrayInputStream bais = new ByteArrayInputStream(
-                Base64.decode(pkcs7so.getBytes()));
+                Base64.decode(pkcs7so.getBytes("UTF-8")));
 
         Collection certPath =
             factory.generateCertPath(bais, "PKCS7").getCertificates();
