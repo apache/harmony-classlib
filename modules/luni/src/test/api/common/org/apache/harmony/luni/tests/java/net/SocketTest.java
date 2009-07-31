@@ -1582,8 +1582,10 @@ public class SocketTest extends SocketTestCase {
         server.close();
 
         receivedString = new String(myBytes, 0, totalBytesRead);
-        assertEquals("Urgent data was not received with one urgent byte",
-                sendString + (char) urgentByte + sendString, receivedString);
+        assertEquals(
+                "Urgent data was not received with one urgent byte",
+                sendString + new String(new byte[] { urgentByte }) + sendString,
+                receivedString);
 
         /*
          * Test 3: Now validate that urgent data is received as expected. Expect
@@ -1634,7 +1636,8 @@ public class SocketTest extends SocketTestCase {
 
         receivedString = new String(myBytes, 0, totalBytesRead);
         assertEquals("Urgent data was not received with two urgent bytes",
-                sendString + (char) urgentByte1 + (char) urgentByte2
+                sendString
+                        + new String(new byte[] { urgentByte1, urgentByte2 })
                         + sendString, receivedString);
 
         /*
@@ -1663,8 +1666,8 @@ public class SocketTest extends SocketTestCase {
         client.close();
         server.close();
 
-        assertEquals("Sole urgent data was not received", (int) urgentByte,
-                byteRead);
+        assertEquals("Sole urgent data was not received",
+                (int) (urgentByte & 0xff), byteRead);
     }
 
     /**
