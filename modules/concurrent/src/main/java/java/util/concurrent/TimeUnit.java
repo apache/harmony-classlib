@@ -222,8 +222,9 @@ public enum TimeUnit {
      * or <tt>Long.MIN_VALUE</tt> if conversion would negatively
      * overflow, or <tt>Long.MAX_VALUE</tt> if it would positively overflow.
      * @see #convert
+     * @since 1.6
      */
-    long toMinutes(long duration) {
+    public long toMinutes(long duration) {
         throw new AbstractMethodError();
     }
 
@@ -234,8 +235,9 @@ public enum TimeUnit {
      * or <tt>Long.MIN_VALUE</tt> if conversion would negatively
      * overflow, or <tt>Long.MAX_VALUE</tt> if it would positively overflow.
      * @see #convert
+     * @since 1.6
      */
-    long toHours(long duration) {
+    public long toHours(long duration) {
         throw new AbstractMethodError();
     }
 
@@ -244,8 +246,9 @@ public enum TimeUnit {
      * @param duration the duration
      * @return the converted duration
      * @see #convert
+     * @since 1.6
      */
-    long toDays(long duration) {
+    public long toDays(long duration) {
         throw new AbstractMethodError();
     }
 

@@ -773,7 +773,7 @@ public class ScheduledThreadPoolExecutor
             int newCapacity = oldCapacity + (oldCapacity >> 1); // grow 50%
             if (newCapacity < 0) // overflow
                 newCapacity = Integer.MAX_VALUE;
-            queue = Java6Arrays.copyOf(queue, newCapacity);
+            queue = Arrays.copyOf(queue, newCapacity);
         }
 
         /**
@@ -1074,7 +1074,7 @@ public class ScheduledThreadPoolExecutor
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {
-                return Java6Arrays.copyOf(queue, size, Object[].class);
+                return Arrays.copyOf(queue, size, Object[].class);
             } finally {
                 lock.unlock();
             }
@@ -1086,7 +1086,7 @@ public class ScheduledThreadPoolExecutor
             lock.lock();
             try {
                 if (a.length < size)
-                    return (T[]) Java6Arrays.copyOf(queue, size, a.getClass());
+                    return (T[]) Arrays.copyOf(queue, size, a.getClass());
                 System.arraycopy(queue, 0, a, 0, size);
                 if (a.length > size)
                     a[size] = null;
@@ -1097,7 +1097,7 @@ public class ScheduledThreadPoolExecutor
         }
 
         public Iterator<Runnable> iterator() {
-            return new Itr(Java6Arrays.copyOf(queue, size));
+            return new Itr(Arrays.copyOf(queue, size));
         }
 
         /**
