@@ -64,6 +64,16 @@ public class AtomicReference<V>  implements java.io.Serializable {
     }
 
     /**
+     * Eventually sets to the given value.
+     *
+     * @param newValue the new value
+     * @since 1.6
+     */
+    public final void lazySet(V newValue) {
+        unsafe.putOrderedObject(this, valueOffset, newValue);
+    }
+
+    /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      * @param expect the expected value

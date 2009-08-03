@@ -102,6 +102,16 @@ public abstract class  AtomicLongFieldUpdater<T>  {
     public abstract void set(T obj, long newValue);
 
     /**
+     * Eventually sets the field of the given object managed by this
+     * updater to the given updated value.
+     *
+     * @param obj An object whose field to set
+     * @param newValue the new value
+     * @since 1.6
+     */
+    public abstract void lazySet(T obj, long newValue);
+
+    /**
      * Gets the current value held in the field of the given object managed
      * by this updater.
      *
@@ -282,6 +292,11 @@ public abstract class  AtomicLongFieldUpdater<T>  {
         public void set(T obj, long newValue) {
             if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
             unsafe.putLongVolatile(obj, offset, newValue);
+        }
+
+        public void lazySet(T obj, long newValue) {
+            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            unsafe.putOrderedLong(obj, offset, newValue);
         }
 
         public long get(T obj) {

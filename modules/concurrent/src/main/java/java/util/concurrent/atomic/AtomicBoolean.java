@@ -100,6 +100,17 @@ public class AtomicBoolean implements java.io.Serializable {
     }
 
     /**
+     * Eventually sets to the given value.
+     *
+     * @param newValue the new value
+     * @since 1.6
+     */
+    public final void lazySet(boolean newValue) {
+        int v = newValue ? 1 : 0;
+        unsafe.putOrderedInt(this, valueOffset, v);
+    }
+
+    /**
      * Atomically sets to the given value and returns the previous value.
      *
      * @param newValue the new value

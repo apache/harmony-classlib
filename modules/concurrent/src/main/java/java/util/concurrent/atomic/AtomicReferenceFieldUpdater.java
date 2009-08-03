@@ -117,6 +117,16 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
     public abstract void set(T obj, V newValue);
 
     /**
+     * Eventually sets the field of the given object managed by this
+     * updater to the given updated value.
+     *
+     * @param obj An object whose field to set
+     * @param newValue the new value
+     * @since 1.6
+     */
+    public abstract void lazySet(T obj, V newValue);
+
+    /**
      * Gets the current value held in the field of the given object managed
      * by this updater.
      *
@@ -238,6 +248,14 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
                  vclass != newValue.getClass()))
                 updateCheck(obj, newValue);
             unsafe.putObjectVolatile(obj, offset, newValue);
+        }
+
+        public void lazySet(T obj, V newValue) {
+            if (obj == null || obj.getClass() != tclass || cclass != null ||
+                (newValue != null && vclass != null &&
+                 vclass != newValue.getClass()))
+                updateCheck(obj, newValue);
+            unsafe.putOrderedObject(obj, offset, newValue);
         }
 
         public V get(T obj) {
