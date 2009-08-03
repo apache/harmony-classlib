@@ -15,9 +15,10 @@ package java.util.concurrent.locks;
  * appropriately maintained values to help control and monitor access
  * and provide diagnostics.
  *
+ * @since 1.6
  * @author Doug Lea
  */
-abstract class AbstractOwnableSynchronizer
+public abstract class AbstractOwnableSynchronizer
         implements java.io.Serializable {
 
     /** Use serial ID even though all fields transient. */
