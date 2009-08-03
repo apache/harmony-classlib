@@ -285,16 +285,41 @@
         <sequential>
             <property name="@{test}.name"
                       value="native.portlib.@{test}" />
-            <exec executable="src/test/native/@{test}/@{test}${exe.suffix}"
+            
+            <!--
+              The following three conditions are a way of working around Ant's
+              environment variable handling on Windows. Windows environment variables
+              are NOT case-sensitive, but Ant's 'env.XXX' variables are case-sensitive.
+              -->
+            <condition property="exec.env.path.name" value="path">
+                <isset property="env.path" />
+            </condition>
+            <condition property="exec.env.path.value" value="${env.path}">
+                <isset property="env.path" />
+            </condition>
+            
+            <condition property="exec.env.path.name" value="Path">
+                <isset property="env.Path" />
+            </condition>
+            <condition property="exec.env.path.value" value="${env.Path}">
+                <isset property="env.Path" />
+            </condition>
+            
+            <condition property="exec.env.path.name" value="PATH">
+                <isset property="env.PATH" />
+            </condition>
+            <condition property="exec.env.path.value" value="${env.PATH}">
+                <isset property="env.PATH" />
+            </condition>
+            
+            <exec executable="${basedir}/src/test/native/@{test}/@{test}${exe.suffix}"
                   failonerror="false"
                   outputproperty="@{test}.output"
                   resultproperty="@{test}.resultcode" >
-                <env key="PATH"
-                     path="${env.Path}${path.separator}${env.PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
-                <env key="Path"
-                     path="${env.Path}${path.separator}${env.PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
+                <env key="${exec.env.path.name}"
+                     path="${exec.env.path.value}:${hy.jdk}/jre/bin${hy.thr.libpath}" />
                 <env key="LD_LIBRARY_PATH"
-                     path="${env.LD_LIBRARY_PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
+                     path="${hy.jdk}/jre/bin${hy.thr.libpath}" />
             </exec>
             <condition property="@{test}.result" value="passed" else="FAILED">
                 <equals arg1="${@{test}.resultcode}" arg2="0" />
