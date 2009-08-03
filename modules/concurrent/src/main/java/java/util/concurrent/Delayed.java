@@ -4,11 +4,6 @@
  * http://creativecommons.org/licenses/publicdomain
  */
 
-/*
- * Modified in Apache Harmony to comply with Java 5 signature
- * specification.
- */
-
 package java.util.concurrent;
 
 import java.util.*;
