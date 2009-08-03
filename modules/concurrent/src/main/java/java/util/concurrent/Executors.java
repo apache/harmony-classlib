@@ -614,20 +614,20 @@ public class Executors {
         public <T> Future<T> submit(Runnable task, T result) {
             return e.submit(task, result);
         }
-        public <T> List<Future<T>> invokeAll(Collection<Callable<T>> tasks)
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
             throws InterruptedException {
             return e.invokeAll(tasks);
         }
-        public <T> List<Future<T>> invokeAll(Collection<Callable<T>> tasks,
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
                                              long timeout, TimeUnit unit)
             throws InterruptedException {
             return e.invokeAll(tasks, timeout, unit);
         }
-        public <T> T invokeAny(Collection<Callable<T>> tasks)
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
             throws InterruptedException, ExecutionException {
             return e.invokeAny(tasks);
         }
-        public <T> T invokeAny(Collection<Callable<T>> tasks,
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks,
                                long timeout, TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
             return e.invokeAny(tasks, timeout, unit);
