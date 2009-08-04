@@ -17,6 +17,7 @@
 
 package org.apache.harmony.auth.module;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -123,41 +124,46 @@ public class LoginModuleUtils {
      * @throws IOException
      */
     public static char[] getPassword(InputStream in) throws IOException {
-        char[] buffer = new char[512];
-
-        // 1.Just ASCII encoding is supported. bytes read from inputstream is
-        // cast and put into char array.
-        // 2.just read one line.
-        int length = 0;
-        int nextChar = -1;
+        // just read one line.
+        char[] passwdBuffer = new char[512];
+        int passwdLength = 0;
         boolean hasCarriage = false;
 
-        do {
-            nextChar = in.read();
-            if (nextChar == -1 || nextChar == '\n') {
-                break;
+        boolean isFinished = false;
+        BufferedInputStream bis = new BufferedInputStream(in);
+        byte[] byteBuffer = new byte[512];
+        byte[] utf8Bytes;
+        int readLength;
+        while (!isFinished && (readLength = bis.read(byteBuffer)) != -1) {
+            utf8Bytes = new String(byteBuffer, 0, readLength).getBytes("UTF-8"); //$NON-NLS-1$
+            for (int index = 0; index < readLength; index++) {
+                if (utf8Bytes[index] == '\n') {
+                    isFinished = true;
+                    break;
+                }
+
+                if (hasCarriage) {
+                    passwdBuffer = appendChars(passwdBuffer, '\r',
+                            passwdLength++);
+                    hasCarriage = false;
+                }
+
+                if (utf8Bytes[index] == '\r') {
+                    hasCarriage = true;
+                } else {
+                    passwdBuffer = appendChars(passwdBuffer,
+                            (char) utf8Bytes[index], passwdLength++);
+                }
             }
+        }
 
-            if (hasCarriage) {
-                buffer = appendChars(buffer, '\r', length++);
-                hasCarriage = false;
-            }
-
-            if (nextChar == '\r') {
-                hasCarriage = true;
-            } else {
-                buffer = appendChars(buffer, (char) nextChar, length++);
-            }
-
-        } while (true);
-
-        if (length == 0) {
+        if (passwdLength == 0) {
             return null;
         }
 
-        char[] password = new char[length];
-        System.arraycopy(buffer, 0, password, 0, length);
-        return password;
+        char[] passwd = new char[passwdLength];
+        System.arraycopy(passwdBuffer, 0, passwd, 0, passwdLength);
+        return passwd;
     }
 
     private static char[] appendChars(char[] src, char c, int position) {
