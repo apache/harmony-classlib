@@ -81,6 +81,12 @@
  * for producer-consumer, messaging, parallel tasking, and
  * related concurrent designs.
  *
+ * <p>The {@link java.util.concurrent.BlockingDeque} interface
+ * extends {@code BlockingQueue} to support both FIFO and LIFO
+ * (stack-based) operations.
+ * Class {@link java.util.concurrent.LinkedBlockingDeque}
+ * provides an implementation.
+ *
  * <h2>Timing</h2>
  *
  * The {@link java.util.concurrent.TimeUnit} class provides
@@ -102,27 +108,40 @@
  * <h2>Synchronizers</h2>
  *
  * Four classes aid common special-purpose synchronization idioms.
- * {@link java.util.concurrent.Semaphore} is a classic concurrency tool.
- * {@link java.util.concurrent.CountDownLatch} is a very simple yet very
- * common utility for blocking until a given number of signals, events,
- * or conditions hold.  A {@link java.util.concurrent.CyclicBarrier} is a
- * resettable multiway synchronization point useful in some styles of
- * parallel programming.  An {@link java.util.concurrent.Exchanger} allows
- * two threads to exchange objects at a rendezvous point, and is useful
- * in several pipeline designs.
+ * <ul>
+ *
+ * <li>{@link java.util.concurrent.Semaphore} is a classic concurrency tool.
+ *
+ * <li>{@link java.util.concurrent.CountDownLatch} is a very simple yet
+ * very common utility for blocking until a given number of signals,
+ * events, or conditions hold.
+ *
+ * <li>A {@link java.util.concurrent.CyclicBarrier} is a resettable
+ * multiway synchronization point useful in some styles of parallel
+ * programming.
+ *
+ * <li>An {@link java.util.concurrent.Exchanger} allows two threads to
+ * exchange objects at a rendezvous point, and is useful in several
+ * pipeline designs.
+ *
+ * </ul>
  *
  * <h2>Concurrent Collections</h2>
  *
  * Besides Queues, this package supplies Collection implementations
  * designed for use in multithreaded contexts:
  * {@link java.util.concurrent.ConcurrentHashMap},
+ * {@link java.util.concurrent.ConcurrentSkipListMap},
+ * {@link java.util.concurrent.ConcurrentSkipListSet},
  * {@link java.util.concurrent.CopyOnWriteArrayList}, and
  * {@link java.util.concurrent.CopyOnWriteArraySet}.
  * When many threads are expected to access a given collection, a
  * {@code ConcurrentHashMap} is normally preferable to a synchronized
- * {@code HashMap}. A {@code CopyOnWriteArrayList} is preferable to a
- * synchronized {@code ArrayList} when the expected number of reads and
- * traversals greatly outnumber the number of updates to a list.
+ * {@code HashMap}, and a {@code ConcurrentSkipListMap} is normally
+ * preferable to a synchronized {@code TreeMap}.
+ * A {@code CopyOnWriteArrayList} is preferable to a synchronized
+ * {@code ArrayList} when the expected number of reads and traversals
+ * greatly outnumber the number of updates to a list.
 
  * <p>The "Concurrent" prefix used with some classes in this package
  * is a shorthand indicating several differences from similar
