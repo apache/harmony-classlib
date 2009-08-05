@@ -151,7 +151,8 @@ public class PipedWriterTest extends junit.framework.TestCase {
      */
     public void test_flushAfterClose() throws Exception {
     	
-    	pw = new PipedWriter();
+        PipedReader pr = new PipedReader();
+        pw = new PipedWriter(pr);
     	pw.close();
     	try {
             pw.flush();
@@ -160,7 +161,7 @@ public class PipedWriterTest extends junit.framework.TestCase {
             // expected
         }
     	
-        PipedReader pr = new PipedReader();
+        pr = new PipedReader();
         pw = new PipedWriter(pr);
         pr.close();
 	
