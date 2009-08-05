@@ -301,8 +301,7 @@ public class BufferedReader extends Reader {
      * Returns the next line of text available from this reader. A line is
      * represented by zero or more characters followed by {@code '\n'},
      * {@code '\r'}, {@code "\r\n"} or the end of the reader. The string does
-     * not include the newline sequence. In EBCDIC systems, a new line can also
-     * be represented by the {@code &#92;u0085} (NEL) character.
+     * not include the newline sequence.
      * 
      * @return the contents of the line or {@code null} if no characters were
      *         read before the end of the reader has been reached.
@@ -320,7 +319,7 @@ public class BufferedReader extends Reader {
             }
             for (int charPos = pos; charPos < count; charPos++) {
                 char ch = buf[charPos];
-                if ((ch > '\r') && (ch != '\u0085')) {
+                if (ch > '\r') {
                     continue;
                 }
                 if (ch == '\n') {
@@ -334,11 +333,6 @@ public class BufferedReader extends Reader {
                             && (buf[pos] == '\n')) {
                         pos++;
                     }
-                    return res;
-                } else if (ch == '\u0085') {
-                    /* Also handle the EBCDIC NEL character */
-                    String res = new String(buf, pos, charPos - pos);
-                    pos = charPos + 1;
                     return res;
                 }
             }
@@ -364,7 +358,7 @@ public class BufferedReader extends Reader {
                 }
                 for (int charPos = pos; charPos < count; charPos++) {
                     if (eol == '\0') {
-                        if ((buf[charPos] == '\n' || buf[charPos] == '\r') || (buf[charPos] == '\u0085')) {
+                        if ((buf[charPos] == '\n' || buf[charPos] == '\r')) {
                             eol = buf[charPos];
                         }
                     } else if (eol == '\r' && (buf[charPos] == '\n')) {
@@ -373,7 +367,7 @@ public class BufferedReader extends Reader {
                         }
                         pos = charPos + 1;
                         return result.toString();
-                    } else if (eol != '\0') {
+                    } else {
                         if (charPos > pos) {
                             result.append(buf, pos, charPos - pos - 1);
                         }
