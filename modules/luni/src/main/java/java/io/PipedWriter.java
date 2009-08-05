@@ -112,6 +112,12 @@ public class PipedWriter extends Writer {
      */
     @Override
     public void flush() throws IOException {
+        synchronized(lock) {
+            if (closed) {
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            }
+        }
+    	
         if (dest != null) {
             dest.flush();
         }

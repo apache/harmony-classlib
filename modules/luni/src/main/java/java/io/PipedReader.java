@@ -139,6 +139,7 @@ public class PipedReader extends Reader {
                 /* Release buffer to indicate closed. */
                 data = null;
             }
+            isClosed = true;
         }
     }
 
@@ -477,8 +478,11 @@ public class PipedReader extends Reader {
         }
     }
 
-    void flush() {
+    void flush() throws IOException {
         synchronized (lock) {
+            if (isClosed) {
+                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            }
             lock.notifyAll();
         }
     }

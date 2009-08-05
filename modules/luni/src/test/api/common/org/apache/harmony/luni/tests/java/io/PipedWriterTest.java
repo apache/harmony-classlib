@@ -144,6 +144,33 @@ public class PipedWriterTest extends junit.framework.TestCase {
         assertEquals("Failed to flush chars", "HelloWorld", new String(
                 reader.buf));
     }
+    
+    /**
+     * @tests java.io.PipedWriter#flush()
+     * Regression HARMONY-6293
+     */
+    public void test_flushAfterClose() throws Exception {
+    	
+    	pw = new PipedWriter();
+    	pw.close();
+    	try {
+            pw.flush();
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // expected
+        }
+    	
+        PipedReader pr = new PipedReader();
+        pw = new PipedWriter(pr);
+        pr.close();
+	
+        try {
+            pw.flush();
+            fail("should throw IOException");
+        } catch (IOException e) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.io.PipedWriter#write(char[], int, int)
