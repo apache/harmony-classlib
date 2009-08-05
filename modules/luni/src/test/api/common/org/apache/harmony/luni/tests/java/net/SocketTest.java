@@ -35,6 +35,7 @@ import java.net.SocketImplFactory;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.Permission;
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.harmony.luni.net.PlainSocketImpl;
@@ -1506,13 +1507,13 @@ public class SocketTest extends SocketTestCase {
         OutputStream theOutput = worker.getOutputStream();
 
         // Send the regular data
-        String sendString = new String("Test");
-        theOutput.write(sendString.getBytes());
+        byte[] sendBytes = new String("Test").getBytes();
+        theOutput.write(sendBytes);
         theOutput.flush();
 
         // Send the urgent data byte which should not be received
         worker.sendUrgentData("UrgentData".getBytes()[0]);
-        theOutput.write(sendString.getBytes());
+        theOutput.write(sendBytes);
         worker.shutdownOutput();
         worker.close();
 
@@ -1532,9 +1533,16 @@ public class SocketTest extends SocketTestCase {
         client.close();
         server.close();
 
-        String receivedString = new String(myBytes, 0, totalBytesRead);
-        assertEquals("Urgent data was received", sendString + sendString,
-                receivedString);
+        byte[] expectBytes = new byte[2 * sendBytes.length];
+        System.arraycopy(sendBytes, 0, expectBytes, 0, sendBytes.length);
+        System.arraycopy(sendBytes, 0, expectBytes, sendBytes.length,
+                sendBytes.length);
+
+        byte[] resultBytes = new byte[totalBytesRead];
+        System.arraycopy(myBytes, 0, resultBytes, 0, totalBytesRead);
+
+        assertTrue("Urgent data was received", Arrays.equals(expectBytes,
+                resultBytes));
 
         /*
          * Test 2: Now validate that urgent data is received as expected. Expect
@@ -1552,8 +1560,8 @@ public class SocketTest extends SocketTestCase {
         theOutput = worker.getOutputStream();
 
         // Send the regular data
-        sendString = new String("Test - Urgent Data");
-        theOutput.write(sendString.getBytes());
+        sendBytes = new String("Test - Urgent Data").getBytes();
+        theOutput.write(sendBytes);
 
         // Send the urgent data (one byte) which should be received
         client.setOOBInline(true);
@@ -1561,7 +1569,7 @@ public class SocketTest extends SocketTestCase {
         worker.sendUrgentData(urgentByte);
 
         // Send more data, the urgent byte must stay in position
-        theOutput.write(sendString.getBytes());
+        theOutput.write(sendBytes);
         worker.shutdownOutput();
         worker.close();
 
@@ -1581,11 +1589,17 @@ public class SocketTest extends SocketTestCase {
         client.close();
         server.close();
 
-        receivedString = new String(myBytes, 0, totalBytesRead);
-        assertEquals(
-                "Urgent data was not received with one urgent byte",
-                sendString + new String(new byte[] { urgentByte }) + sendString,
-                receivedString);
+        expectBytes = new byte[2 * sendBytes.length + 1];
+        System.arraycopy(sendBytes, 0, expectBytes, 0, sendBytes.length);
+        expectBytes[sendBytes.length] = urgentByte;
+        System.arraycopy(sendBytes, 0, expectBytes, sendBytes.length + 1,
+                sendBytes.length);
+
+        resultBytes = new byte[totalBytesRead];
+        System.arraycopy(myBytes, 0, resultBytes, 0, totalBytesRead);
+
+        assertTrue("Urgent data was not received with one urgent byte", Arrays
+                .equals(expectBytes, resultBytes));
 
         /*
          * Test 3: Now validate that urgent data is received as expected. Expect
@@ -1603,8 +1617,8 @@ public class SocketTest extends SocketTestCase {
         theOutput = worker.getOutputStream();
 
         // Send the regular data
-        sendString = new String("Test - Urgent Data");
-        theOutput.write(sendString.getBytes());
+        sendBytes = new String("Test - Urgent Data").getBytes();
+        theOutput.write(sendBytes);
 
         // Send the urgent data (one byte) which should be received
         client.setOOBInline(true);
@@ -1614,7 +1628,7 @@ public class SocketTest extends SocketTestCase {
         worker.sendUrgentData(urgentByte2);
 
         // Send more data, the urgent byte must stay in position
-        theOutput.write(sendString.getBytes());
+        theOutput.write(sendBytes);
         worker.shutdownOutput();
         worker.close();
 
@@ -1634,11 +1648,18 @@ public class SocketTest extends SocketTestCase {
         client.close();
         server.close();
 
-        receivedString = new String(myBytes, 0, totalBytesRead);
-        assertEquals("Urgent data was not received with two urgent bytes",
-                sendString
-                        + new String(new byte[] { urgentByte1, urgentByte2 })
-                        + sendString, receivedString);
+        expectBytes = new byte[2 * sendBytes.length + 2];
+        System.arraycopy(sendBytes, 0, expectBytes, 0, sendBytes.length);
+        expectBytes[sendBytes.length] = urgentByte1;
+        expectBytes[sendBytes.length + 1] = urgentByte2;
+        System.arraycopy(sendBytes, 0, expectBytes, sendBytes.length + 2,
+                sendBytes.length);
+
+        resultBytes = new byte[totalBytesRead];
+        System.arraycopy(myBytes, 0, resultBytes, 0, totalBytesRead);
+
+        assertTrue("Urgent data was not received with two urgent bytes", Arrays
+                .equals(expectBytes, resultBytes));
 
         /*
          * Test 4: Now test the case where there is only urgent data.
