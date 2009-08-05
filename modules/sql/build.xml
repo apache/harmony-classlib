@@ -21,11 +21,25 @@
 
     <property name="hy.module" value="sql" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
+
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build"
+            depends="check-depends, compile-java, copy-resources, build-jar" />
+
+    <target name="check-depends">
+        <check-one-file src="${derby.url}" dest="${derby.jar}" />
+    </target>
+
+    <target name="fetch-depends">
+        <mkdir dir="${derby.dir}" />
+        <download-one-file src="${derby.url}" dest="${derby.jar}"
+                           md5="${derby.md5}" />
+    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -45,6 +59,7 @@
         <delete file="${hy.jdk}/jre/lib/boot/sql.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/sql-src.jar" />
         <delete dir="${tests.hdk.dir}" failonerror="false" />
+        <delete dir="${hy.hdk}/build/test/derby" /> 
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -133,8 +148,13 @@
             <fileset dir="src/test/resources" />
         </copy>
         
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
-        <copy file="../../${derby.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
+
+        <copy todir="${hy.hdk}/build/test/derby"> 
+            <fileset dir="${derby.dir}">
+                <include name="*.jar" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="compile-tests">

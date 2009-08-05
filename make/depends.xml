@@ -42,7 +42,6 @@
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
-        <check-one-file src="${derby.url}" dest="${derby.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
         <check-one-file src="${icu4j-charsets.url}" dest="${icu4j-charsets.jar}" />    
     </target>
@@ -166,11 +165,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${dejavu-fonts.dir}" />
     <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
                            md5="${dejavu-fonts.md5}" />
-
-    <mkdir dir="${derby.dir}" />
-    <download-one-file src="${derby.url}"
-                       dest="${derby.jar}"
-                       md5="${derby.md5}" />
 
     <mkdir dir="${icu4j.dir}" />
     <download-one-file src="${icu4j.url}"
