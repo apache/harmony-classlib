@@ -47,7 +47,17 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
 
     /* Fields used for the internal representation. */
 
-    /** The magnitude of this in the little-endian representation. */
+    /**
+     * The magnitude of this big integer. This array holds unsigned little
+     * endian digits. For example:
+     *   {@code 13} is represented as [ 13 ]
+     *   {@code -13} is represented as [ 13 ]
+     *   {@code 2^32 + 13} is represented as [ 13, 1 ]
+     *   {@code 2^64 + 13} is represented as [ 13, 0, 1 ]
+     *   {@code 2^31} is represented as [ Integer.MIN_VALUE ]
+     * The magnitude array may be longer than strictly necessary, which results
+     * in additional trailing zeros.
+     */
     transient int digits[];
 
     /** The length of this in measured in ints. Can be less than digits.length(). */
