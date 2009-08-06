@@ -33,6 +33,12 @@
 extern char **environ;
 #endif
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 #include <sys/wait.h>
 
 #include "procimpl.h"
@@ -153,7 +159,6 @@ execProgram(JNIEnv * vmthread, jobject recv,
   if (grdpid == 0) {
     char dummy = '\0';
 
-#ifndef ZOS
     /* Close file descriptors that are not used */
     close(newFD[0][1]);
     close(newFD[1][0]);
@@ -167,7 +172,6 @@ execProgram(JNIEnv * vmthread, jobject recv,
     setCloseOnExec(newFD[2][1]);
     setCloseOnExec(forkedChildIsRunning[1]);
     setCloseOnExec(execvFailure[1]);
-#endif /* ZOS */
 
     /* Redirect pipes so grand-child inherits new pipes */
     dup2(newFD[0][0], 0);
@@ -212,9 +216,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
     close(newFD[1][1]);
     close(newFD[2][1]);
     /* Store the rw handles to the childs io */
-    *(inHandle) = (IDATA) newFD[0][1];
-    *(outHandle) = (IDATA) newFD[1][0];
-    *(errHandle) = (IDATA) newFD[2][0];
+    *(inHandle) = (IDATA) newFD[0][1] + FD_BIAS;
+    *(outHandle) = (IDATA) newFD[1][0] + FD_BIAS;
+    *(errHandle) = (IDATA) newFD[2][0] + FD_BIAS;
     *(procHandle) = (IDATA) grdpid;
 
     /* let the forked child start. */
@@ -328,7 +332,7 @@ int
 getAvailable(IDATA sHandle)
 {
   int avail, rc;
-  rc = ioctl((int) sHandle, FIONREAD, &avail);
+  rc = ioctl((int) sHandle - FD_BIAS, FIONREAD, &avail);
   if (rc == -1)
     return -2;
   return avail;
