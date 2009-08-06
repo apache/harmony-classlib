@@ -151,6 +151,8 @@ execProgram(JNIEnv * vmthread, jobject recv,
   if (grdpid == -1) goto error;
 
   if (grdpid == 0) {
+    char dummy = '\0';
+
 #ifndef ZOS
     /* Close file descriptors that are not used */
     close(newFD[0][1]);
@@ -168,7 +170,6 @@ execProgram(JNIEnv * vmthread, jobject recv,
 #endif /* ZOS */
 
     /* Redirect pipes so grand-child inherits new pipes */
-    char dummy = '\0';
     dup2(newFD[0][0], 0);
     dup2(newFD[1][1], 1);
     dup2(newFD[2][1], 2);
