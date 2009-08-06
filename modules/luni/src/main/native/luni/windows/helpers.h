@@ -34,4 +34,5 @@ I_32 getPlatformIsReadOnly (JNIEnv * env, char *path);
 void setPlatformBindOptions (JNIEnv * env, hysocket_t socketP);
 I_32 setPlatformLastModified (JNIEnv * env, char *path, I_64 time);
 I_32 setPlatformReadOnly (JNIEnv * env, char *path);
+void getOSCharset(char *locale, const size_t size);
 #endif /* helpers_h */
