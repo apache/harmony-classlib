@@ -25,7 +25,6 @@
 #include <windows.h>
 #include <winbase.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <LMCONS.H>
 #include <direct.h>
 
