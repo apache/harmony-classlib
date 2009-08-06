@@ -31,7 +31,7 @@
 
     <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="src/main/native/include/shared">
+            <fileset dir="src/main/native/include">
                 <include name="vmi.h" />
                 <include name="hyvmls.h" />
                 <include name="hysocket.h" />
@@ -42,20 +42,13 @@
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">
-            <fileset dir="src/main/native/include/shared">
+            <fileset dir="src/main/native/include">
                 <include name="jni.h" />
                 <include name="jni_types.h" />
                 <include name="jvmti.h" />
                 <include name="jvmti_types.h" />
             </fileset>
         </copy>
-
-        <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="src/main/native/include/${hy.os.family}">
-                <include name="jclprots.h" />
-            </fileset>
-        </copy>
-
     </target>
 
     <!-- Build native code -->
@@ -209,7 +202,6 @@
             <fileset dir="${hy.hdk}/include">
                 <include name="vmi.h" />
                 <include name="hyvmls.h" />
-                <include name="jclprots.h" />
                 <include name="hysocket.h" />
                 <include name="gp.h" />
                 <include name="fdlibm.h" />

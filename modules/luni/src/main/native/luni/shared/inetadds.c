@@ -16,7 +16,6 @@
  */
 
 #include <stdlib.h>
-#include "jclprots.h"
 #include "nethelp.h"
 #include "hysock.h"
 #include "harmonyglob.h"

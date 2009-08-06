@@ -29,7 +29,6 @@
 #include <direct.h>
 
 #include "vmi.h"
-#include "jclprots.h"
 #include "harmonyglob.h"
 #include "charsetmap.h"
 

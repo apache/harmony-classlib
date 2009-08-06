@@ -18,7 +18,6 @@
 #include "iohelp.h"
 #include "exceptions.h"
 #include "jclglob.h"
-#include "jclprots.h"
 #include "zip.h"
 
 void zfree PROTOTYPE ((void *opaque, void *address));
