@@ -222,7 +222,7 @@ setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP)
 }
 
 /* Get charset from the OS */
-inline void getOSCharset(char *locale, const size_t size) {
+void getOSCharset(char *locale, const size_t size) {
   char * codec = NULL;
   size_t cur = 0;
   short flag = 0;
