@@ -21,11 +21,41 @@
 
     <property name="hy.module" value="awt" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
+
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build"
+            depends="check-depends,compile-java, copy-resources, build-jar" />
+
+    <target name="check-depends" depends="-check-depends,-extract" />
+
+    <target name="-check-depends">
+        <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
+    </target>
+
+    <target name="-extract"
+         depends="-extract-props,-extract-dejavu-fonts" />
+
+    <target name="-extract-props">
+        <uptodate property="dejavu-fonts.uptodate"
+                  srcfile="${dejavu-fonts.zip}"
+                  targetfile="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
+    </target>
+
+    <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
+        <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
+        <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
+    </target>
+
+    <target name="fetch-depends">
+        <mkdir dir="${dejavu-fonts.dir}" />
+        <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
+                           md5="${dejavu-fonts.md5}" />
+    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -46,6 +76,7 @@
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
         <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
+        <delete dir="${hy.jdk}/jre/lib/fonts" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -92,7 +123,18 @@
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
             <fileset dir="src/main/resources/cmm"/>
-        </copy>	
+        </copy>
+        
+        <mkdir dir="${hy.jdk}/jre/lib/fonts" />
+        <copy todir="${hy.jdk}/jre/lib/fonts">
+            <fileset dir="${dejavu-fonts.fonts.dir}">
+                <include name="DejaVuSans.ttf" />
+                <include name="DejaVuSans-*.ttf" />
+                <exclude name="DejaVuSans-ExtraLight.ttf" />
+                <include name="DejaVuSerif.ttf" />
+                <include name="DejaVuSerif-*.ttf" />
+            </fileset>
+        </copy>
     </target>
     
     <target name="-copy-win-resources" if="is.windows">
@@ -335,7 +377,7 @@
             <fileset dir="src/test/api/resources" />
         </copy>
 
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests">

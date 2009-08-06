@@ -41,7 +41,6 @@
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
-        <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
         <check-one-file src="${icu4j-charsets.url}" dest="${icu4j-charsets.jar}" />    
     </target>
@@ -61,24 +60,15 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-dejavu-fonts,-extract-xerces,-fix-xalan-manifest" />
+         depends="-extract-props,-extract-xerces,-fix-xalan-manifest" />
 
     <target name="-extract-props">
-        <uptodate property="dejavu-fonts.uptodate"
-                  srcfile="${dejavu-fonts.zip}"
-                  targetfile="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
         <uptodate property="xalan.uptodate"
                   srcfile="${xalan.orig.jar}"
                   targetfile="${xalan.jar}" />
-    </target>
-
-
-    <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
-        <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
-        <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
     </target>
 
     <target name="-extract-xerces" unless="xerces.uptodate">
@@ -162,10 +152,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <download-one-file src="${servlet-api.url}" dest="${servlet-api.jar}"
                            md5="${servlet-api.md5}" />
                            
-    <mkdir dir="${dejavu-fonts.dir}" />
-    <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
-                           md5="${dejavu-fonts.md5}" />
-
     <mkdir dir="${icu4j.dir}" />
     <download-one-file src="${icu4j.url}"
                        dest="${icu4j.jar}"
