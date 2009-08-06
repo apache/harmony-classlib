@@ -14,10 +14,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Charles Lee
- * @version $Revision: 1.0$
- */
 
 #if !defined(charsetmap_h)
 #define charsetmap_h
