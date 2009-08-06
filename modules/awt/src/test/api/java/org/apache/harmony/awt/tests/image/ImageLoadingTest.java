@@ -31,8 +31,6 @@ public class ImageLoadingTest extends TestCase {
 
         url = Support_Resources.class
                 .getResource(Support_Resources.RESOURCE_PACKAGE + "Harmony.GIF");
-        System.out.println(url);
-        System.out.println(url.getContent());
         assertTrue("Returned object doesn't implement ImageProducer interface",
                 url.getContent() instanceof ImageProducer);
 
