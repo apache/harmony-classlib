@@ -37,6 +37,7 @@
         <check-one-file src="${xalan.url}" dest="${xalan.orig.jar}" />
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
+        <check-one-file src="${hamcrest-library.url}" dest="${hamcrest-library.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
@@ -137,6 +138,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${junit.dir}" />
     <download-one-file src="${junit.url}" dest="${junit.jar}"
                            md5="${junit.md5}" />
+
+    <mkdir dir="${hamcrest-library.dir}" />
+    <download-one-file src="${hamcrest-library.url}" dest="${hamcrest-library.jar}"
+                           md5="${hamcrest-library.md5}" />
 
     <mkdir dir="${bcprov.dir}" />
     <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
