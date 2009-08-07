@@ -35,6 +35,7 @@ extern char **environ;
 
 #ifdef ZOS
 #define FD_BIAS 1000
+#include <sys/socket.h>
 #else
 #define FD_BIAS 0
 #endif /* ZOS */
@@ -137,14 +138,25 @@ execProgram(JNIEnv * vmthread, jobject recv,
   int error = 0;
   int writeRC = 0;
 
-  /* Build the new io pipes (in/out/err) */
-  if (pipe(newFD[0]) == -1) goto error;
-  if (pipe(newFD[1]) == -1) goto error;
-  if (pipe(newFD[2]) == -1) goto error;
+  #ifdef ZOS
+    /* Build the new io pipes (in/out/err) */
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[0]) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[1]) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[2]) == -1) goto error;
 
-  /* pipes for synchronization */
-  if (pipe(forkedChildIsRunning) == -1) goto error;
-  if (pipe(execvFailure) == -1) goto error;
+    /* pipes for synchronization */
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,forkedChildIsRunning) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,execvFailure) == -1) goto error;       
+  #else
+     /* Build the new io pipes (in/out/err) */
+    if (pipe(newFD[0]) == -1) goto error;
+    if (pipe(newFD[1]) == -1) goto error;
+    if (pipe(newFD[2]) == -1) goto error;
+
+    /* pipes for synchronization */
+    if (pipe(forkedChildIsRunning) == -1) goto error;
+    if (pipe(execvFailure) == -1) goto error;  
+  #endif /* ZOS */
 
   cmd = command[0];
 
