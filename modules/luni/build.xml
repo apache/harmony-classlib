@@ -315,7 +315,8 @@
             </filterchain>
         </copy>
 
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="../../${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
         <copy file="../../${jetty.jar}" todir="${hy.hdk}/build/test" />
     </target>
 

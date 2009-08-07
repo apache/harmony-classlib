@@ -161,7 +161,8 @@
             <fileset dir="src/test/resources" />
         </copy>
 
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="../../${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
     </target>
 
     <target name="compile-tests">
