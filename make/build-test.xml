@@ -42,9 +42,7 @@
     <target name="clean">
         <delete dir="${tests.output}" />
         <delete dir="${tests.support.output}" />
-        <delete file="${hy.hdk}/build/test/support.jar" />
-        <delete file="${hy.hdk}/build/test/test.properties" />
-        <delete file="${hy.hdk}/build/test/build.xml" />
+        <delete dir="${hy.hdk}/build/test" />
     </target>
 
     <target name="clean-test-output">
