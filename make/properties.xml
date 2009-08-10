@@ -702,6 +702,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                 </bootclasspath>
 
                 <classpath location="${hy.hdk}/build/test/support.jar" />
+                <classpath location="../../build/classes" />
             </javac>
         </sequential>
     </macrodef>
