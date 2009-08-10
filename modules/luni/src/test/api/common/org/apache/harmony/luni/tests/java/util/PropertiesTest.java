@@ -27,9 +27,12 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
@@ -498,6 +501,114 @@ public class PropertiesTest extends junit.framework.TestCase {
         } catch (UnsupportedOperationException e) {
             // expected
         }
+    }
+
+    /**
+     * @tests {@link java.util.Properties#stringPropertyNames()}
+     * @since 1.6
+     */
+    public void test_stringPropertyNames_scenario1() {
+        String[] keys = new String[] { "key1", "key2", "key3" };
+        String[] values = new String[] { "value1", "value2", "value3" };
+        List<String> keyList = Arrays.asList(keys);
+
+        Properties properties = new Properties();
+        for (int index = 0; index < keys.length; index++) {
+            properties.setProperty(keys[index], values[index]);
+        }
+
+        properties = new Properties(properties);
+        Set<String> nameSet = properties.stringPropertyNames();
+        assertEquals(keys.length, nameSet.size());
+        Iterator<String> iterator = nameSet.iterator();
+        while (iterator.hasNext()) {
+            assertTrue(keyList.contains(iterator.next()));
+        }
+
+        Enumeration<?> nameEnum = properties.propertyNames();
+        int count = 0;
+        while (nameEnum.hasMoreElements()) {
+            count++;
+            assertTrue(keyList.contains(nameEnum.nextElement()));
+        }
+        assertEquals(keys.length, count);
+
+        properties = new Properties(properties);
+        nameSet = properties.stringPropertyNames();
+        assertEquals(keys.length, nameSet.size());
+        iterator = nameSet.iterator();
+        while (iterator.hasNext()) {
+            assertTrue(keyList.contains(iterator.next()));
+        }
+
+        nameEnum = properties.propertyNames();
+        count = 0;
+        while (nameEnum.hasMoreElements()) {
+            count++;
+            assertTrue(keyList.contains(nameEnum.nextElement()));
+        }
+        assertEquals(keys.length, count);
+    }
+
+    /**
+     * @tests {@link java.util.Properties#stringPropertyNames()}
+     * @since 1.6
+     */
+    public void test_stringPropertyNames_scenario2() {
+        String[] defaultKeys = new String[] { "defaultKey1", "defaultKey2",
+                "defaultKey3", "defaultKey4", "defaultKey5", "defaultKey6" };
+        String[] defaultValues = new String[] { "defaultValue1",
+                "defaultValue2", "defaultValue3", "defaultValue4",
+                "defaultValue5", "defaultValue6" };
+        List<String> keyList = new ArrayList<String>();
+        Properties defaults = new Properties();
+        for (int index = 0; index < 3; index++) {
+            defaults.setProperty(defaultKeys[index], defaultValues[index]);
+            keyList.add(defaultKeys[index]);
+        }
+
+        String[] keys = new String[] { "key1", "key2", "key3" };
+        String[] values = new String[] { "value1", "value2", "value3" };
+        Properties properties = new Properties(defaults);
+        for (int index = 0; index < keys.length; index++) {
+            properties.setProperty(keys[index], values[index]);
+            keyList.add(keys[index]);
+        }
+
+        Set<String> nameSet = properties.stringPropertyNames();
+        assertEquals(keyList.size(), nameSet.size());
+        Iterator<String> iterator = nameSet.iterator();
+        while (iterator.hasNext()) {
+            assertTrue(keyList.contains(iterator.next()));
+        }
+
+        Enumeration<?> nameEnum = properties.propertyNames();
+        int count = 0;
+        while (nameEnum.hasMoreElements()) {
+            count++;
+            assertTrue(keyList.contains(nameEnum.nextElement()));
+        }
+        assertEquals(keyList.size(), count);
+
+        for (int index = 3; index < defaultKeys.length; index++) {
+            defaults.setProperty(defaultKeys[index], defaultValues[index]);
+            keyList.add(defaultKeys[index]);
+        }
+
+        nameSet = properties.stringPropertyNames();
+        assertEquals(keyList.size(), nameSet.size());
+        iterator = nameSet.iterator();
+        while (iterator.hasNext()) {
+            assertTrue(keyList.contains(iterator.next()));
+        }
+
+        nameEnum = properties.propertyNames();
+        count = 0;
+        while (nameEnum.hasMoreElements()) {
+            count++;
+            assertTrue(keyList.contains(nameEnum.nextElement()));
+        }
+        assertEquals(keyList.size(), count);
     }
 
     /**

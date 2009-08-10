@@ -628,22 +628,8 @@ public class Properties extends Hashtable<Object, Object> {
      *         that this {@code Properties} object contains.
      */
     public Enumeration<?> propertyNames() {
-        if (defaults == null) {
-            return keys();
-        }
-
-        Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults
-                .size()
-                + size());
-		Enumeration<?> keys = defaults.propertyNames();
-		while (keys.hasMoreElements()) {
-			set.put(keys.nextElement(), set);
-		}
-		keys = keys();
-		while (keys.hasMoreElements()) {
-			set.put(keys.nextElement(), set);
-		}
-		return set.keys();
+        Hashtable<Object, Object> allProperties = getAllProperties();
+        return allProperties.keys();
 	}
     
     /**
@@ -655,21 +641,36 @@ public class Properties extends Hashtable<Object, Object> {
      * @since 1.6
      */    
     public Set<String> stringPropertyNames(){
-        HashSet<String> set = new HashSet<String>();        
-        Enumeration<?> keys = propertyNames();
+        Hashtable<Object, Object> allProperties = getAllProperties();       
+        Enumeration<?> keys = allProperties.keys();
+        HashSet<String> set = new HashSet<String>();
+        Object key, value;
         while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();            
+            key = keys.nextElement();
             if (key instanceof String) {
-                Object value = this.get(key);
-                if (value == null){
-                    value = this.defaults.get(key);
-                }
+                value = allProperties.get(key);
                 if (value instanceof String){
                     set.add((String)key);    
                 }
             }           
         }
         return Collections.unmodifiableSet(set);
+    }
+
+    /*
+     * Add all of properties into the given allProperties hashtable including
+     * default properties
+     */
+    private Hashtable<Object, Object> getAllProperties() {
+        Hashtable<Object, Object> allProperties = new Hashtable<Object, Object>();
+        Properties properties = this;
+        Properties defaultProperties = null;
+        while (properties != null) {
+            defaultProperties = properties.defaults;
+            allProperties.putAll(properties);
+            properties = defaultProperties;
+        }
+        return allProperties;
     }
 
     /**
