@@ -745,7 +745,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                 <junit-elements />
 
                 <batchtest todir="${tests.output}" haltonfailure="no">
-                    <zipfileset src="${test.module.dir}/@{jar}">
+                    <zipfileset src="${test.module.dir}/@{jar}" encoding="UTF-8">
                         <exclude name="Test.class" />
                         <exclude name="**/*$*" />
 
@@ -821,7 +821,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                 <junit-elements />
 
                 <batchtest todir="${tests.output}" haltonfailure="no">
-                    <zipfileset src="${test.module.dir}/@{jar}">
+                    <zipfileset src="${test.module.dir}/@{jar}" encoding="UTF-8">
                         <exclude name="Test.class" />
                         <exclude name="**/*$*" />
 
