@@ -21,11 +21,73 @@
 
     <property name="hy.module" value="imageio" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build"
+            depends="check-depends,compile-java,copy-resources,build-jar" />
+
+    <target name="check-depends"
+            depends="-check-win-depends,-check-unix-depends" />
+
+    <target name="-check-win-depends" if="is.windows"
+            depends="-really-check-win-depends,-ext-props,-ext-jpeg,-ext-png" />
+
+    <target name="-really-check-win-depends" if="is.windows">
+        <check-one-file src="${jpeg.url}" dest="${jpeg.tar}" />
+        <check-one-file src="${png.url}" dest="${png.tar}" />
+    </target>
+
+    <target name="-check-unix-depends" if="is.unix">
+        <property name="jpeg.msg"
+                  value="libjpeg development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
+${line.separator}For Fedora try: yum install libjpeg-devel" />
+        <check-os-file src="${jpeg.home}/include/jconfig.h"
+                       message="${jpeg.msg}" />
+
+        <property name="png.msg"
+                  value="libpng development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
+${line.separator}For Fedora try: yum install libpng-devel" />
+        <check-os-file src="${png.home}/include/png.h"
+                       message="${png.msg}" />
+    </target>
+
+    <target name="-ext-props" if="is.windows">
+        <uptodate property="jpeg.uptodate"
+                  srcfile="${jpeg.tar}"
+                  targetfile="${jpeg.testfile}" />
+                <uptodate property="png.uptodate"
+                  srcfile="${png.tar}"
+                  targetfile="${png.testfile}" />
+    </target>
+
+    <target name="-ext-jpeg" if="is.windows" unless="jpeg.uptodate">
+        <echo>Extracting jpeg dependencies</echo>
+        <untar src="${jpeg.tar}" dest="${depends.lib.dir}" compression="gzip" />
+        <touch file="${jpeg.testfile}" />
+    </target>
+
+    <target name="-ext-png" if="is.windows" unless="png.uptodate">
+        <echo>Extracting png dependencies</echo>
+        <untar src="${png.tar}" dest="${depends.lib.dir}" compression="gzip" />
+        <touch file="${png.testfile}" />
+    </target>
+
+    <target name="fetch-depends" if="is.windows">
+        <mkdir dir="${jpeg.dir}" />
+        <download-one-file src="${jpeg.url}"
+                           dest="${jpeg.tar}"
+                           md5="${jpeg.md5}" />
+        <mkdir dir="${png.dir}" />
+        <download-one-file src="${png.url}"
+                           dest="${png.tar}"
+                           md5="${png.md5}" />
+    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -175,8 +237,7 @@
             <fileset dir="src/test/resources" />
         </copy>
 
-        <copy file="../../${junit.jar}"
-              tofile="${hy.hdk}/build/test/junit.jar" />
+        <copy file="${junit.jar}" tofile="${hy.hdk}/build/test/junit.jar" />
     </target>
 
     <target name="compile-tests">

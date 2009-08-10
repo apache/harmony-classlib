@@ -31,7 +31,7 @@
     <import file="${basedir}/make/depends-common.xml" />
 
     <target name="check" description="Check whether dependencies are available"
-            depends="-check,-check-win,-check-unix,-extract" />
+            depends="-check,-check-win,-extract" />
 
     <target name="-check">
         <check-one-file src="${xalan.url}" dest="${xalan.orig.jar}" />
@@ -46,45 +46,11 @@
         <check-one-file src="${icu4j-charsets.url}" dest="${icu4j-charsets.jar}" />    
     </target>
 
-    <target name="-check-win" if="is.windows"
-            depends="-really-check-win,-win-props,-ext-jpeg,-ext-lcms,-ext-png" />
-
-    <target name="-really-check-win" if="is.windows">
+    <target name="-check-win" if="is.windows">
         <property environment="hyenv" />
 
         <check-one-file src="${msvcr.url}" dest="${msvcr.dll}" />
         <check-one-file src="${msvcp.url}" dest="${msvcp.dll}" />
-        <check-one-file src="${jpeg.url}" dest="${jpeg.tar}" />
-        <check-one-file src="${lcms.url}" dest="${lcms.tar}" />
-        <check-one-file src="${png.url}" dest="${png.tar}" />
-    </target>
-
-    <target name="-win-props" if="is.windows">
-        <uptodate property="jpeg.uptodate"
-                  srcfile="${jpeg.tar}"
-                  targetfile="${jpeg.testfile}" />
-        <uptodate property="lcms.uptodate"
-                  srcfile="${lcms.tar}"
-                  targetfile="${lcms.testfile}" />
-        <uptodate property="png.uptodate"
-                  srcfile="${png.tar}"
-                  targetfile="${png.testfile}" />
-    </target>
-
-    <target name="-ext-jpeg" if="is.windows" unless="jpeg.uptodate">
-        <echo>Extracting jpeg dependencies</echo>
-        <untar src="${jpeg.tar}" dest="${depends.lib.dir}" compression="gzip" />
-	<touch file="${jpeg.testfile}" />
-    </target>
-    <target name="-ext-lcms" if="is.windows" unless="lcms.uptodate">
-        <echo>Extracting lcms dependencies</echo>
-        <untar src="${lcms.tar}" dest="${depends.lib.dir}" compression="gzip" />
-	<touch file="${lcms.testfile}" />
-    </target>
-    <target name="-ext-png" if="is.windows" unless="png.uptodate">
-        <echo>Extracting png dependencies</echo>
-        <untar src="${png.tar}" dest="${depends.lib.dir}" compression="gzip" />
-	<touch file="${png.testfile}" />
     </target>
 
     <target name="-extract"
@@ -121,32 +87,6 @@
         <jar destfile="${xalan.jar}" basedir="${xalan.dir}.tmp"
              manifest="${xalan.dir}.tmp/META-INF/MANIFEST.MF" />
         <delete dir="${xalan.dir}.tmp" />
-    </target>
-
-    <target name="-check-unix" if="is.unix">
-        
-        <property name="lcms.msg"
-                  value="liblcms development package not installed
-${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
-${line.separator}For Fedora try: yum install lcms-devel" />
-        <check-os-file src="${lcms.home}/include/lcms.h"
-                       message="${lcms.msg}" />
-
-        <property name="png.msg"
-                  value="libpng development package not installed
-${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
-${line.separator}For Fedora try: yum install libpng-devel" />
-        <check-os-file src="${png.home}/include/png.h"
-                       message="${png.msg}" />
-
-        <property name="jpeg.msg"
-                  value="libjpeg development package not installed
-${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
-${line.separator}For Fedora try: yum install libjpeg-devel" />
-        <mkdir dir="depends/libs/build/jpeg" />
-        <check-os-file src="${jpeg.home}/include/jconfig.h"
-                       message="${jpeg.msg}" />
-
     </target>
 
     <target name="download" description="Download required jars"
@@ -210,18 +150,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${msvcp.md5}"
                            md5-deprecated="${msvcp.md5.deprecated}" />
 
-        <mkdir dir="${jpeg.dir}" />
-        <download-one-file src="${jpeg.url}"
-                           dest="${jpeg.tar}"
-                           md5="${jpeg.md5}" />
-        <mkdir dir="${lcms.dir}" />
-        <download-one-file src="${lcms.url}"
-                           dest="${lcms.tar}"
-                           md5="${lcms.md5}" />
-        <mkdir dir="${png.dir}" />
-        <download-one-file src="${png.url}"
-                           dest="${png.tar}"
-                           md5="${png.md5}" />
     </target>
 
 </project>
