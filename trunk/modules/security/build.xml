@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="SECURITY Build" default="build" basedir=".">
+    <description>Build for SECURITY component</description>
+
+    <property name="hy.module" value="security" />
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <property file="../../make/depends.properties" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, run-tests" />
+
+    <!-- Build native code -->
+    <available file="src/main/native/security/${hy.os.family}" property="native.present" />
+
+    <target name="build-native" depends="build-native-all" />
+    <target name="build-native-all" if="native.present" >
+        <make dir="src/main/native/security/${hy.os.family}" />
+
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="src/main/native/security">
+                <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+            <!-- Copy link exports file on z/OS -->
+            <fileset dir="src/main/native/security/${hy.os.family}">
+                <include name="*${linklib.suffix}*" if="is.zos" />
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- Clean natives -->
+    <target name="clean-native" if="native.present" >
+        <make dir="src/main/native/security/${hy.os.family}" target="clean" />
+    </target>
+
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/security.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/security-src.jar" />
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
+        <delete failonerror="false" dir="bin"/>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling SECURITY classes" />
+
+        <mkdir dir="../../build/classes" />
+
+        <javac sourcepath=""
+               destdir="../../build/classes"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <src>
+                <pathelement location="src/main/java/common"/>
+                <pathelement location="src/main/java/${hy.os.family}" />
+            </src>
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="copy-resources">
+        <mkdir dir="../../build/classes" />
+        <copy todir="../../build/classes" includeemptydirs="false">
+            <fileset dir="src/main/java/common">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/security.jar"
+             manifest="META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
+            <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/security-src.jar">
+            <fileset dir="src/main/java/common" />
+            <fileset dir="src/main/java/${hy.os.family}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </target>
+
+    <target name="test-jar" depends="svn-info, compile-tests">
+	<mkdir dir="${tests.hdk.dir}"/>
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <jar destfile="${tests.hdk.dir}/security_tests_api.jar">
+            <fileset dir="bin/test/api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/security_tests_api_in.jar">
+            <fileset dir="bin/test/api.injected" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/security_tests_impl.jar">
+            <fileset dir="bin/test/impl" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/security_tests_impl_in.jar">
+            <fileset dir="bin/test/impl.injected" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/security_tests_support.jar">
+            <fileset dir="bin/test/support" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <copy todir="${tests.resources.hdk.dir}">
+            <fileset dir="src/test/resources" />
+        </copy>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <copy file="../../${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
+    </target>
+
+    <target name="compile-tests">
+
+        <compile-tests description="security test support files"
+                       destdir="bin/test/support">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/support/common/java"/>
+                </src>
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="security api tests" destdir="bin/test/api">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/api/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="security api injected tests"
+                       destdir="bin/test/api.injected">
+            <javac-elements>
+                <src path="src/test/api/java.injected"/>
+                <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="security impl injected tests"
+                       destdir="bin/test/impl.injected">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/impl/java.injected"/>
+                </src>
+
+                <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="security impl tests"
+                       destdir="bin/test/impl">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/impl/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+                <classpath location="bin/test/support" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+    <target name="run-tests" depends="test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+</project>

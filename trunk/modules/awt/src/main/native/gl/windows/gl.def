@@ -1,0 +1,6 @@
+LIBRARY	GL
+
+SECTIONS
+	.data	READ WRITE
+	.text	EXECUTE READ
+
