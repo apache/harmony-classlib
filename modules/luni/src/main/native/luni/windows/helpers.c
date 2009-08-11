@@ -29,8 +29,8 @@
 #include <direct.h>
 
 #include "vmi.h"
-#include "jclprots.h"
 #include "harmonyglob.h"
+#include "charsetmap.h"
 
 #include "helpers.h"
 #include "hysock.h"
@@ -1048,3 +1048,21 @@ getPlatformInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfac
 	return 0;
 }
 
+/* Get charset from the OS */
+void getOSCharset(char *locale, const size_t size) {
+  size_t cp;
+  DWORD holder;
+#if defined(_WIN32_WCE)
+  LCID localeId = GetUserDefaultLCID();
+#else
+  LCID localeId = GetThreadLocale();
+#endif
+  if (0 < GetLocaleInfo(localeId, LOCALE_IDEFAULTANSICODEPAGE | LOCALE_RETURN_NUMBER,
+                        (LPTSTR)&holder, sizeof(holder) / sizeof(TCHAR))) {
+    cp = (size_t)holder;
+  } else {
+    cp = (size_t)GetACP();
+  }
+  getCharset(cp, locale, size);
+  return;
+}

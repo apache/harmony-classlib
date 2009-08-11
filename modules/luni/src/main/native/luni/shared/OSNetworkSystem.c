@@ -19,7 +19,6 @@
 #include "vmi.h"
 #include "nethelp.h"
 #include "helpers.h"
-#include "jclprots.h"
 #include "hysock.h"
 #include "socket.h"
 #include "harmonyglob.h"

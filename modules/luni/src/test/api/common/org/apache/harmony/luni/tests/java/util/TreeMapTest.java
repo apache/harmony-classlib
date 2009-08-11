@@ -578,6 +578,48 @@ public class TreeMapTest extends junit.framework.TestCase {
         	// expected
         }
     }
+    
+    
+    /**
+     * @tests java.util.TreeMap#subMap(java.lang.Object, java.lang.Object)
+     */
+    public void test_subMap_Iterator() {
+        TreeMap<String, String> map = new TreeMap<String, String>();
+
+        String[] keys = { "1", "2", "3" };
+        String[] values = { "one", "two", "three" };
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i], values[i]);
+        }
+
+        assertEquals(3, map.size());
+
+        Map subMap = map.subMap("", "test");
+        assertEquals(3, subMap.size());
+
+        Set entrySet = subMap.entrySet();
+        Iterator iter = entrySet.iterator();
+        int size = 0;
+        while (iter.hasNext()) {
+            Map.Entry<String, String> entry = (Map.Entry<String, String>) iter
+                    .next();
+            assertTrue(map.containsKey(entry.getKey()));
+            assertTrue(map.containsValue(entry.getValue()));
+            size++;
+        }
+        assertEquals(map.size(), size);
+
+        Set<String> keySet = subMap.keySet();
+        iter = keySet.iterator();
+        size = 0;
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
+            assertTrue(map.containsKey(key));
+            size++;
+        }
+        assertEquals(map.size(), size);
+    }
+
 
     /**
      * @tests java.util.TreeMap#tailMap(java.lang.Object)

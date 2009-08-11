@@ -21,7 +21,6 @@
 #include "exceptions.h"
 #include "harmonyglob.h"
 #include "helpers.h"
-#include "jclprots.h"
 
 void
 throwPathTooLongIOException(JNIEnv *env, jsize length)

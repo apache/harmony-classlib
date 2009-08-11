@@ -165,14 +165,26 @@ class BitLevel {
         }
     }
 
+    /**
+     * Shifts the source digits left one bit, creating a value whose magnitude
+     * is doubled.
+     *
+     * @param result an array of digits that will hold the computed result when
+     *      this method returns. The size of this array is {@code srcLen + 1},
+     *      and the format is the same as {@link BigInteger#digits}.
+     * @param source the array of digits to shift left, in the same format as
+     *      {@link BigInteger#digits}.
+     * @param srcLen the length of {@code source}; may be less than {@code
+     *      source.length}
+     */
     static void shiftLeftOneBit(int result[], int source[], int srcLen) {
         int carry = 0;
-        for(int i = 0; i < srcLen; i++) {
+        for (int i = 0; i < srcLen; i++) {
             int val = source[i];
             result[i] = (val << 1) | carry;
             carry = val >>> 31;
         }
-        if(carry != 0) {
+        if (carry != 0) {
             result[srcLen] = carry;
         }
     }

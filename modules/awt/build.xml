@@ -21,11 +21,116 @@
 
     <property name="hy.module" value="awt" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build"
+            depends="check-depends,compile-java, copy-resources, build-jar" />
+
+    <target name="check-depends" depends="-check-depends,-extract" />
+
+    <target name="-check-depends"
+            depends="-check-win-depends,-check-unix-depends">
+        <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
+    </target>
+
+    <target name="-check-win-depends" if="is.windows">
+        <check-one-file src="${jpeg.url}" dest="${jpeg.tar}" />
+        <check-one-file src="${lcms.url}" dest="${lcms.tar}" />
+        <check-one-file src="${png.url}" dest="${png.tar}" />
+    </target>
+
+    <target name="-check-unix-depends" if="is.unix">
+        <property name="jpeg.msg"
+                  value="libjpeg development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
+${line.separator}For Fedora try: yum install libjpeg-devel" />
+        <check-os-file src="${jpeg.home}/include/jconfig.h"
+                       message="${jpeg.msg}" />
+
+        <property name="lcms.msg"
+                  value="liblcms development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
+${line.separator}For Fedora try: yum install lcms-devel" />
+        <check-os-file src="${lcms.home}/include/lcms.h"
+                       message="${lcms.msg}" />
+
+        <property name="png.msg"
+                  value="libpng development package not installed
+${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
+${line.separator}For Fedora try: yum install libpng-devel" />
+        <check-os-file src="${png.home}/include/png.h"
+                       message="${png.msg}" />
+    </target>
+
+    <target name="-extract"
+            depends="-extract-props,-extract-dejavu-fonts,-extract-win" />
+
+    <target name="-extract-props">
+        <uptodate property="dejavu-fonts.uptodate"
+                  srcfile="${dejavu-fonts.zip}"
+                  targetfile="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
+    </target>
+
+    <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
+        <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
+        <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
+    </target>
+
+    <target name="-extract-win"
+            depends="-ext-props,-ext-jpeg,-ext-lcms,-ext-png" />
+
+    <target name="-ext-props" if="is.windows">
+        <uptodate property="jpeg.uptodate"
+                  srcfile="${jpeg.tar}"
+                  targetfile="${jpeg.testfile}" />
+        <uptodate property="lcms.uptodate"
+                  srcfile="${lcms.tar}"
+                  targetfile="${lcms.testfile}" />
+        <uptodate property="png.uptodate"
+                  srcfile="${png.tar}"
+                  targetfile="${png.testfile}" />
+    </target>
+
+    <target name="-ext-jpeg" if="is.windows" unless="jpeg.uptodate">
+        <echo>Extracting jpeg dependencies</echo>
+        <untar src="${jpeg.tar}" dest="${depends.lib.dir}" compression="gzip" />
+        <touch file="${jpeg.testfile}" />
+    </target>
+    <target name="-ext-lcms" if="is.windows" unless="lcms.uptodate">
+        <echo>Extracting lcms dependencies</echo>
+        <untar src="${lcms.tar}" dest="${depends.lib.dir}" compression="gzip" />
+        <touch file="${lcms.testfile}" />
+    </target>
+    <target name="-ext-png" if="is.windows" unless="png.uptodate">
+        <echo>Extracting png dependencies</echo>
+        <untar src="${png.tar}" dest="${depends.lib.dir}" compression="gzip" />
+        <touch file="${png.testfile}" />
+    </target>
+
+    <target name="fetch-depends" depends="-fetch-win-depends">
+        <mkdir dir="${dejavu-fonts.dir}" />
+        <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
+                           md5="${dejavu-fonts.md5}" />
+    </target>
+
+    <target name="-fetch-win-depends" if="is.windows">
+        <mkdir dir="${jpeg.dir}" />
+        <download-one-file src="${jpeg.url}"
+                           dest="${jpeg.tar}"
+                           md5="${jpeg.md5}" />
+        <mkdir dir="${lcms.dir}" />
+        <download-one-file src="${lcms.url}"
+                           dest="${lcms.tar}"
+                           md5="${lcms.md5}" />
+        <mkdir dir="${png.dir}" />
+        <download-one-file src="${png.url}"
+                           dest="${png.tar}"
+                           md5="${png.md5}" />
+    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -46,6 +151,7 @@
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
         <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
+        <delete dir="${hy.jdk}/jre/lib/fonts" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
@@ -92,7 +198,18 @@
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
             <fileset dir="src/main/resources/cmm"/>
-        </copy>	
+        </copy>
+        
+        <mkdir dir="${hy.jdk}/jre/lib/fonts" />
+        <copy todir="${hy.jdk}/jre/lib/fonts">
+            <fileset dir="${dejavu-fonts.fonts.dir}">
+                <include name="DejaVuSans.ttf" />
+                <include name="DejaVuSans-*.ttf" />
+                <exclude name="DejaVuSans-ExtraLight.ttf" />
+                <include name="DejaVuSerif.ttf" />
+                <include name="DejaVuSerif-*.ttf" />
+            </fileset>
+        </copy>
     </target>
     
     <target name="-copy-win-resources" if="is.windows">
@@ -335,7 +452,7 @@
             <fileset dir="src/test/api/resources" />
         </copy>
 
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests">

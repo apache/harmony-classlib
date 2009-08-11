@@ -404,7 +404,6 @@ public class LogManager {
      *             not have the required permissions to perform this action.
      */
     public void readConfiguration() throws IOException {
-        checkAccess();
         // check config class
         String configClassName = System
                 .getProperty("java.util.logging.config.class"); //$NON-NLS-1$
@@ -425,7 +424,7 @@ public class LogManager {
             InputStream input = null;
             try {
                 input = new BufferedInputStream(new FileInputStream(configFile));
-                readConfigurationImpl(input);
+                readConfiguration(input);
             } finally {
                 if (input != null) {
                     try {

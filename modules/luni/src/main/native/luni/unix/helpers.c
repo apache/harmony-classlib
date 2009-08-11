@@ -993,3 +993,41 @@ setPlatformExecutable (JNIEnv * env, char *path, jboolean executable, jboolean o
       mode &= ~(S_IXUSR | S_IXGRP | S_IXOTH);
   return chmod (path, mode) == 0;
 }
+
+/* Get charset from the OS */
+void getOSCharset(char *locale, const size_t size) {
+  char * codec = NULL;
+  size_t cur = 0;
+  short flag = 0;
+  setlocale(LC_CTYPE, "");
+  codec = setlocale(LC_CTYPE, NULL);
+  // get codeset from language[_territory][.codeset][@modifier]
+  while (*codec) {
+    if (!flag) {
+      if (*codec != '.') {
+        codec++;
+        continue;
+      } else {
+        flag = 1;
+        codec++;
+      }
+    } else {
+      if (*codec == '@') {
+        break;
+      } else {
+        locale[cur++] = (*codec);
+        codec++;
+        if (cur >= size) {
+          // Not enough size
+          cur = 0;
+          break;
+        }
+      }
+    }
+  }
+  locale[cur] = '\0';
+  if (!strlen(locale)) {
+    strcpy(locale, "8859_1");
+  }
+  return;
+}

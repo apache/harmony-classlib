@@ -29,6 +29,7 @@
 #include "hyport.h"
 #include "strhelp.h"
 #include "hycomp.h"
+#include "helpers.h"
 
 static UDATA keyInitCount = 0;
 
@@ -52,6 +53,8 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   VMInterface *vmInterface;
   char *bootPath = NULL;
   char *propVal = NULL;
+#define CHARSETBUFF 64
+  char charset[CHARSETBUFF];
   vmiError propRes;
 
   /* Query the VM interface */
@@ -156,7 +159,8 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
        (*vmInterface)->GetSystemProperty (vmInterface, "file.encoding", &propVal);
        if (propVal == NULL) {
            /* FIXME provide appropriate non-dummy value */
-           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "file.encoding", "8859_1");
+           getOSCharset(charset, CHARSETBUFF);
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "file.encoding", charset);
            if (VMI_ERROR_NONE != propRes) {
                /* goto fail2; */
            }

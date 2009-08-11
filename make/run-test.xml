@@ -21,7 +21,6 @@
     <property name="hy.hdk" location="../.." />
     <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
     <property file="test.properties" />
-    <property name="build.module" value="all"/>
 
     <!-- These two parameters could be assigned by user -->
     <property name="target.dir" value="." />

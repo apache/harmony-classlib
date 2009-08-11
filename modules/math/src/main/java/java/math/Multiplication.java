@@ -440,7 +440,7 @@ class Multiplication {
         
         if (byteArraySize > Runtime.getRuntime().freeMemory()) {
             // math.01=power of ten too big
-            throw new OutOfMemoryError(Messages.getString("math.01")); //$NON-NLS-1$
+            throw new ArithmeticException(Messages.getString("math.01")); //$NON-NLS-1$
         }
         if (exp <= Integer.MAX_VALUE) {
             // To calculate:    5^exp * 2^exp

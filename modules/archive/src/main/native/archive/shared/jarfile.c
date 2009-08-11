@@ -19,7 +19,6 @@
 #include "iohelp.h"
 #include "exceptions.h"
 #include "jclglob.h"
-#include "jclprots.h"
 
 #ifndef HY_ZIP_API
 #include "zipsup.h"

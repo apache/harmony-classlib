@@ -91,6 +91,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <src>
                 <pathelement location="src/main/java/common"/>
                 <pathelement location="src/main/java/${hy.os.family}" />
@@ -163,7 +165,8 @@
             </filterchain>
         </copy>
 
-        <copy file="../../${junit.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="../../${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
     </target>
 
     <target name="compile-tests">
