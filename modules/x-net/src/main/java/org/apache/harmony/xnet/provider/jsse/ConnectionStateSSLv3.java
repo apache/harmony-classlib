@@ -51,7 +51,7 @@ public class ConnectionStateSSLv3 extends ConnectionState {
     /**
      * Creates the instance of SSL v3 Connection State. All of the
      * security parameters are provided by session object.
-     * @param   session: the sessin object which incapsulates
+     * @param   session: the session object which encapsulates
      * all of the security parameters established by handshake protocol.
      * The key calculation for the state is done according
      * to the SSL v3 Protocol specification.

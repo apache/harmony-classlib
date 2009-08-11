@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Paramenter annotations class file attribute, either a
- * RuntimeVisibleParamenterAnnotations attribute or a
+ * Parameter annotations class file attribute, either a
+ * RuntimeVisibleParameterAnnotations attribute or a
  * RuntimeInvisibleParameterAnnotations attribute.
  */
 public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends

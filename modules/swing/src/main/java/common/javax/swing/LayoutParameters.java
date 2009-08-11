@@ -31,7 +31,7 @@ import org.apache.harmony.x.swing.Utilities;
 
 /**
  * This class helps BoxLayout and OverlayLayout to layout their components
- * and calculate all target's necessary parameters. It incapsulates all necessary
+ * and calculate all target's necessary parameters. It encapsulates all necessary
  * for calculations data.
  *
  */

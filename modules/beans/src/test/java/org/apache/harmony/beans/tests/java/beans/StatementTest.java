@@ -915,7 +915,7 @@ public class StatementTest extends TestCase {
     }
     
     /*
-     * Test for special case of the same signature but differnt return type
+     * Test for special case of the same signature but different return type
      */
     public void testExecute_SameSignatureDifferentReturn() throws Exception {
         // Regression for Harmony-5854

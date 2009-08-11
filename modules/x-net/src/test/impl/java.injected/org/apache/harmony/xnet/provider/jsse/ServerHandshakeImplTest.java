@@ -78,7 +78,7 @@ public void setUp() throws Exception {
         
         // ----------------------------------------
         // unwrap client hello (full handshake)
-        // precondition: session hash does not contains requested sesssion        
+        // precondition: session hash does not contains requested session        
         server.unwrap(encodedClientHello);
         server.getTask().run(); // process client hello in delegated task
         server.wrap(); // modelling of server respond sending
@@ -101,7 +101,7 @@ public void setUp() throws Exception {
         
         // ----------------------------------------
         // unwrap client hello (abbreviated handshake)
-        // precondition: session hash contains requested sesssion
+        // precondition: session hash contains requested session
         clearServerData();
         SSLSessionImpl session = new SSLSessionImpl(
                 CipherSuite.TLS_RSA_WITH_RC4_128_MD5, new SecureRandom());
