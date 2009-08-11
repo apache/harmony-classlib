@@ -103,7 +103,6 @@
         <copy todir="../../build/classes" includeemptydirs="false">
             <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
-                <exclude name="**/java.nio.charset.spi.CharsetProvider" />
             </fileset>
         </copy>
     </target>
@@ -112,9 +111,7 @@
         <jar destfile="${hy.jdk}/jre/lib/boot/nio_char.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
-            <metainf prefix="META-INF/services"
-                dir="src/main/java/org/apache/harmony/niochar"
-                includes="java.nio.charset.spi.CharsetProvider"/>
+            <service type="java.nio.charset.spi.CharsetProvider" provider="org.apache.harmony.niochar.CharsetProviderImpl" />
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -124,9 +121,7 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/nio_char-src.jar">
-            <metainf prefix="META-INF/services"
-                dir="src/main/java/org/apache/harmony/niochar"
-                includes="java.nio.charset.spi.CharsetProvider"/>
+            <service type="java.nio.charset.spi.CharsetProvider" provider="org.apache.harmony.niochar.CharsetProviderImpl" />
             <fileset dir="src/main/java">
                 <excludesfile name="${basedir}/make/excludesfile"/>
             </fileset>
