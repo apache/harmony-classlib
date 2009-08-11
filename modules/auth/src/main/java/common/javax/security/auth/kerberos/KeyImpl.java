@@ -134,7 +134,8 @@ class KeyImpl implements SecretKey, Destroyable, Serializable {
         buf.append(realm);
         buf.append(pname.substring(0, pname.length() - realm.length() - 1));
 
-        byte[] tmp = buf.toString().getBytes();
+        byte[] tmp = org.apache.harmony.luni.util.Util.getUTF8Bytes(buf
+                .toString());
 
         // pad with 0x00 to 8 byte boundary
         byte[] raw = new byte[tmp.length

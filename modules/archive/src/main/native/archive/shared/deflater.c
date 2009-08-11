@@ -22,7 +22,6 @@
 #include "zlib.h"
 #include "inflater.h"
 #include "jclglob.h"
-#include "jclprots.h"
 
 #ifndef HY_ZIP_API
 void zfree PROTOTYPE ((void *opaque, void *address));

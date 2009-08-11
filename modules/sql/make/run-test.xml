@@ -35,7 +35,7 @@
         <convert-test-as-class from="test.case" to="converted.tc.class" />
         <run-hdk-tests module="sql" jar="sql_tests.jar">
             <junit-elements>
-                <classpath location="../derby.jar" />
+                <classpath location="../derby/derby.jar" />
                 <classpath location="resources" />
             </junit-elements>
         </run-hdk-tests>

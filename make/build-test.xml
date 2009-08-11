@@ -42,7 +42,7 @@
     <target name="clean">
         <delete dir="${tests.output}" />
         <delete dir="${tests.support.output}" />
-        <delete file="${hy.hdk}/build/test/support.jar" />
+        <delete dir="${hy.hdk}/build/test" />
     </target>
 
     <target name="clean-test-output">
@@ -103,12 +103,9 @@
             <metainf refid="hy.required.metainf-files"/>
         </jar>
         <copy todir="${hy.hdk}/build/test"> 
-        <fileset dir="${jetty.dir}">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="${derby.dir}">
-            <include name="*.jar" />
-        </fileset>
+            <fileset dir="${jetty.dir}">
+                <include name="*.jar" />
+            </fileset>
         </copy>
     </target>
 

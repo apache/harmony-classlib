@@ -15,7 +15,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-LCMS_DIR=$(HY_HDK)\..\depends\libs\build\lcms\# comment to avoid continuation
+LCMS_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\lcms-1.15\# avoid continuation
 
 LIBBASE=lcmm
 DLLNAME=..\$(LIBBASE).dll
@@ -35,7 +35,7 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LCMS_DIR)lcms114$(HY_LINKLIB_SUFFIX)
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LCMS_DIR)lcms$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"LCMM Wrapper native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."

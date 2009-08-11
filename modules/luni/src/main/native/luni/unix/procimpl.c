@@ -33,6 +33,13 @@
 extern char **environ;
 #endif
 
+#ifdef ZOS
+#define FD_BIAS 1000
+#include <sys/socket.h>
+#else
+#define FD_BIAS 0
+#endif /* ZOS */
+
 #include <sys/wait.h>
 
 #include "procimpl.h"
@@ -131,14 +138,25 @@ execProgram(JNIEnv * vmthread, jobject recv,
   int error = 0;
   int writeRC = 0;
 
-  /* Build the new io pipes (in/out/err) */
-  if (pipe(newFD[0]) == -1) goto error;
-  if (pipe(newFD[1]) == -1) goto error;
-  if (pipe(newFD[2]) == -1) goto error;
+  #ifdef ZOS
+    /* Build the new io pipes (in/out/err) */
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[0]) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[1]) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,newFD[2]) == -1) goto error;
 
-  /* pipes for synchronization */
-  if (pipe(forkedChildIsRunning) == -1) goto error;
-  if (pipe(execvFailure) == -1) goto error;
+    /* pipes for synchronization */
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,forkedChildIsRunning) == -1) goto error;
+    if(socketpair(AF_UNIX,SOCK_STREAM,0,execvFailure) == -1) goto error;       
+  #else
+     /* Build the new io pipes (in/out/err) */
+    if (pipe(newFD[0]) == -1) goto error;
+    if (pipe(newFD[1]) == -1) goto error;
+    if (pipe(newFD[2]) == -1) goto error;
+
+    /* pipes for synchronization */
+    if (pipe(forkedChildIsRunning) == -1) goto error;
+    if (pipe(execvFailure) == -1) goto error;  
+  #endif /* ZOS */
 
   cmd = command[0];
 
@@ -151,7 +169,8 @@ execProgram(JNIEnv * vmthread, jobject recv,
   if (grdpid == -1) goto error;
 
   if (grdpid == 0) {
-#ifndef ZOS
+    char dummy = '\0';
+
     /* Close file descriptors that are not used */
     close(newFD[0][1]);
     close(newFD[1][0]);
@@ -165,10 +184,8 @@ execProgram(JNIEnv * vmthread, jobject recv,
     setCloseOnExec(newFD[2][1]);
     setCloseOnExec(forkedChildIsRunning[1]);
     setCloseOnExec(execvFailure[1]);
-#endif /* ZOS */
 
     /* Redirect pipes so grand-child inherits new pipes */
-    char dummy = '\0';
     dup2(newFD[0][0], 0);
     dup2(newFD[1][1], 1);
     dup2(newFD[2][1], 2);
@@ -211,9 +228,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
     close(newFD[1][1]);
     close(newFD[2][1]);
     /* Store the rw handles to the childs io */
-    *(inHandle) = (IDATA) newFD[0][1];
-    *(outHandle) = (IDATA) newFD[1][0];
-    *(errHandle) = (IDATA) newFD[2][0];
+    *(inHandle) = (IDATA) newFD[0][1] + FD_BIAS;
+    *(outHandle) = (IDATA) newFD[1][0] + FD_BIAS;
+    *(errHandle) = (IDATA) newFD[2][0] + FD_BIAS;
     *(procHandle) = (IDATA) grdpid;
 
     /* let the forked child start. */
@@ -327,7 +344,7 @@ int
 getAvailable(IDATA sHandle)
 {
   int avail, rc;
-  rc = ioctl((int) sHandle, FIONREAD, &avail);
+  rc = ioctl((int) sHandle - FD_BIAS, FIONREAD, &avail);
   if (rc == -1)
     return -2;
   return avail;

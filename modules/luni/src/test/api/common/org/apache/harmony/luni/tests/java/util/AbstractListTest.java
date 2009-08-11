@@ -345,4 +345,89 @@ public class AbstractListTest extends junit.framework.TestCase {
     		//Excepted to catch IllegalStateException here
     	}
     }
+
+    public void test_subListII2() {
+        List<Integer> holder = new ArrayList<Integer>(16);
+        for (int i=0; i<10; i++) {
+            holder.add(i);
+        }
+
+        // parent change should cause sublist concurrentmodification fail
+        List<Integer> sub = holder.subList(0, holder.size());
+        holder.add(11);
+        try {
+            sub.size();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.add(12);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.add(0, 11);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.clear();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.contains(11);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.get(9);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.indexOf(10);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.isEmpty();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.iterator();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.lastIndexOf(10);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.listIterator();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.listIterator(0);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.remove(0);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.remove(9);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.set(0, 0);
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.size();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.toArray();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+        try {
+            sub.toString();
+            fail("Should throw ConcurrentModificationException.");
+        } catch (ConcurrentModificationException e) {}
+
+        holder.clear();
+    }
 }
