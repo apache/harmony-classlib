@@ -65,7 +65,7 @@ public class TrustManagerImplTest extends TestCase {
         super.setUp();
         CertificateFactory certFactory = CertificateFactory.getInstance("X509");
         ByteArrayInputStream bais = new ByteArrayInputStream(base64certEncoding
-                .getBytes());
+                .getBytes("UTF-8"));
         X509Certificate cert = (X509Certificate) certFactory
                 .generateCertificate(bais);
         untrustedChain = new X509Certificate[] { cert };

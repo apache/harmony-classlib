@@ -57,7 +57,7 @@ public void testCertificateRequest() throws Exception {
 
         CertificateFactory certFactory = CertificateFactory.getInstance("X509");
         ByteArrayInputStream bais = new ByteArrayInputStream(base64certEncoding
-                .getBytes());
+                .getBytes("UTF-8"));
         X509Certificate cert = (X509Certificate) certFactory.generateCertificate(bais);
         X509Certificate[] accepted = {cert};
         X500Principal[] certificate_authorities = {cert.getIssuerX500Principal()};
