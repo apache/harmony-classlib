@@ -33,6 +33,7 @@
 #include "charsetmap.h"
 
 #include "helpers.h"
+#include "nethelp.h"
 #include "hysock.h"
 #include <iphlpapi.h>
 
