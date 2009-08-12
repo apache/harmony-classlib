@@ -1889,7 +1889,7 @@ public class LdapSchemaContextTest extends TestCase {
         assertFalse(ne.hasMore());
     }
 
-    public void testSearch_ReturnAtributes() throws NamingException {
+    public void testSearch_ReturnAttributes() throws NamingException {
         addMoreSchemaData();
         ArrayList<String> verifyList = new ArrayList<String>();
         SearchControls controls = new SearchControls();

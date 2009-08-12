@@ -1257,7 +1257,7 @@ public class PersistenceDelegateTest extends TestCase {
         encoder.writeObject( date );
         // The value for the bean is already part of the expression
         // so instead of writing the value we write a reference to
-        // the extpression.
+        // the expression.
         encoder.writeObject( bean );
 
         encoder.flush();

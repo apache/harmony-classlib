@@ -115,7 +115,7 @@ public class ArrayPersistenceDelegateTest extends TestCase {
         assertFalse(pd.mutatesTo(new MockObject[] {new MockBObject()}, new MockBObject[] { new MockBObject() }));
         assertFalse(pd.mutatesTo(new MockObject[] {new MockAObject()}, new MockBObject[] { new MockBObject() }));
         
-        // two object array with the same length and component type but differnt internal values
+        // two object array with the same length and component type but different internal values
         assertTrue(pd.mutatesTo(new MockObject[] { new MockAObject() }, new MockObject[] { new MockBObject() }));
         assertTrue(pd.mutatesTo(new MockAObject[] { new MockAObject(1) }, new MockAObject[] { new MockAObject(2) }));
         assertTrue(pd.mutatesTo(new MockBObject[] { new MockBObject(1) }, new MockBObject[] { new MockBObject(2) }));

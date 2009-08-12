@@ -31,7 +31,7 @@ import javax.net.ssl.SSLServerSocket;
  */
 public class SSLServerSocketImpl extends SSLServerSocket {
 
-    // the sslParameters object incapsulates all the info
+    // the sslParameters object encapsulates all the info
     // about supported and enabled cipher suites and protocols,
     // as well as the information about client/server mode of
     // ssl socket, whether it require/want client authentication or not,

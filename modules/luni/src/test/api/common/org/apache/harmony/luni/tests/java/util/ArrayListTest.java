@@ -243,7 +243,7 @@ public class ArrayListTest extends junit.framework.TestCase {
         while (list1.size() > 0)
             list1.remove(0);
         list1.addAll(list2);
-        assertTrue("The object list is not the same as orginal list", list1
+        assertTrue("The object list is not the same as original list", list1
                 .containsAll(list2)
                 && list2.containsAll(list1));
 
@@ -254,7 +254,7 @@ public class ArrayListTest extends junit.framework.TestCase {
                 obj.addAll(list1);
             }
         }
-        assertTrue("The object list is not the same as orginal list", obj
+        assertTrue("The object list is not the same as original list", obj
                 .containsAll(list1)
                 && list1.containsAll(obj));
 

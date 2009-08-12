@@ -526,7 +526,7 @@ public class ExecutorsTest extends JSR166TestCase{
                         checkCCL();
                         return null;
                     }}, noprivAcc);
-            // too many permssions; skip test
+            // too many permissions; skip test
             return;
         } catch(AccessControlException ok) {
         }

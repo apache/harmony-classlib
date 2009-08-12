@@ -1116,7 +1116,7 @@ public class ComponentColorModel extends ColorModel {
     public int getAlpha(int pixel) {
 
         // This method throw IllegalArgumentException according to 
-        // Java API Spacification
+        // Java API Specification
         if (signed) {
             // awt.210=The component value for this ColorModel is signed
             throw new IllegalArgumentException(Messages.getString("awt.210")); //$NON-NLS-1$
@@ -1220,7 +1220,7 @@ public class ComponentColorModel extends ColorModel {
     private float[] toRGB(int pixel) {
         
         // This method throw IllegalArgumentException according to 
-        // Java API Spacification
+        // Java API Specification
         if (signed) {
             // awt.210=The component value for this ColorModel is signed
             throw new IllegalArgumentException(Messages.getString("awt.210")); //$NON-NLS-1$

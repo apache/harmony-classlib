@@ -658,7 +658,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
         }
     }
 
-    // find sesssion in the session hash
+    // find session in the session hash
     private SSLSessionImpl findSessionToResume(byte[] session_id) {
         return (SSLSessionImpl)parameters.getServerSessionContext().getSession(session_id);
     }
