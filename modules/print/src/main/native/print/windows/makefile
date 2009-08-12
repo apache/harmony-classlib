@@ -22,7 +22,7 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 # TOFIX: fix warning so we can use default HYCFLAGS
 # That is:
-# HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include -I$(JPEG_DIR)
+# HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include
 HYCFLAGS = \
   -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
   -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0500 -D_WINSOCKAPI_ -DWINVER=0x0500 \
@@ -37,9 +37,7 @@ devmode_struct_wrapper.obj
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = #\
-#  $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib \
-#  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
+MDLLIBFILES =
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Print native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."

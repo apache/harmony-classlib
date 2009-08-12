@@ -713,7 +713,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                 && searchControls.getReturningAttributes() != null) {
             String[] attributesToReturn = searchControls
                     .getReturningAttributes();
-            // Take the 0 as special case to improve perfomance.
+            // Take the 0 as special case to improve performance.
             if (attributesToReturn.length > 0) {
                 iterator = searchResults.iterator();
                 while (iterator.hasNext()) {

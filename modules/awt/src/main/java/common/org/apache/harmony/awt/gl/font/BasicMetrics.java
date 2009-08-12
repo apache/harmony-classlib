@@ -30,7 +30,7 @@ import java.awt.*;
  * Date: May 14, 2005
  * Time: 7:44:13 PM
  *
- * This class incapsulates text metrics specific for the text layout or
+ * This class encapsulates text metrics specific for the text layout or
  * for the separate text segment. Text segment is a text run with the constant direction
  * and attributes like font, decorations, etc. BasicMetrics is also used to store
  * calculated text metrics like advance, ascent or descent. this class is very similar to

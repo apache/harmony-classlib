@@ -33,7 +33,7 @@ import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * The instances of this class incapsulate all the info
+ * The instances of this class encapsulate all the info
  * about enabled cipher suites and protocols,
  * as well as the information about client/server mode of
  * ssl socket, whether it require/want client authentication or not,

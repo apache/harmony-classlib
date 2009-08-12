@@ -349,7 +349,7 @@ public class Parser implements DTDConstants {
      * {@link Element}.
      * 
      * @param elem the {@link Element} that constains the information.
-     * @return a new {@link TagElement} that encapsullates the {@link Element}
+     * @return a new {@link TagElement} that encapsulates the {@link Element}
      *         received as argument. The fictional value is set to false.
      */
     protected TagElement makeTag(final Element elem) {
@@ -363,7 +363,7 @@ public class Parser implements DTDConstants {
      * @param elem the {@link Element} that constains the information.
      * @param fictional the value stored in the fictional field of the
      * {@link TagElement}.
-     * @return a new {@link TagElement} that encapsullates the {@link Element}
+     * @return a new {@link TagElement} that encapsulates the {@link Element}
      *         received as argument.
      */
     protected TagElement makeTag(final Element elem, final boolean fictional) {

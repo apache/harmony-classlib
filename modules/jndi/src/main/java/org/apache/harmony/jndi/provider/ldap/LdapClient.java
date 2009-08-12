@@ -141,7 +141,7 @@ public class LdapClient {
 
         public Dispatcher() {
             /**
-             * must be daemon thread, otherwrise can't destory by gc
+             * must be daemon thread, otherwise can't destory by gc
              */
             setDaemon(true);
         }

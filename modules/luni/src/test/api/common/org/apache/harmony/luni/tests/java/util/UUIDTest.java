@@ -28,7 +28,7 @@ public class UUIDTest extends TestCase {
     /**
      * @see UUID#UUID(long, long)
      */
-    public void test_ConstructurJJ() {
+    public void test_ConstructorJJ() {
         UUID uuid = new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6bf6L);
         assertEquals(2, uuid.variant());
         assertEquals(1, uuid.version());

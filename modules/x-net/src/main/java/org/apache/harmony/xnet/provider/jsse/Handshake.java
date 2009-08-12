@@ -19,7 +19,7 @@ package org.apache.harmony.xnet.provider.jsse;
 
 /**
  * 
- * This class incapsulates the constants determining the types of handshake
+ * This class encapsulates the constants determining the types of handshake
  * messages as defined in TLS 1.0 spec., 7.4. Handshake protocol.
  * (http://www.ietf.org/rfc/rfc2246.txt)
  * 
