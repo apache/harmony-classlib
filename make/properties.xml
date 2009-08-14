@@ -572,6 +572,7 @@ properties in preference to these:
     <macrodef name="make">
         <attribute name="dir" />
         <attribute name="target" default="" />
+        <element name="make-elements" optional="true" />
         <sequential>
             <echo>Making "@{target}" in @{dir}</echo>
             <exec failonerror="true"
@@ -591,6 +592,7 @@ properties in preference to these:
                 <env key="HY_LINKLIB_SUFFIX" value="${linklib.suffix}" />
                 <arg line="${make.arg}" />
                 <arg line="@{target}" />
+                <make-elements />
             </exec>
         </sequential>
     </macrodef>

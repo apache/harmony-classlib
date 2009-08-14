@@ -146,7 +146,11 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" >
-        <make dir="src/main/native/jpegencoder/${hy.os.family}" />
+        <make dir="src/main/native/jpegencoder/${hy.os.family}">
+            <make-elements>
+                <env key="HY_JPEG_VER" value="${jpeg.ver}" />
+            </make-elements>
+        </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="src/main/native/jpegencoder/">
@@ -162,7 +166,11 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
 
-        <make dir="src/main/native/pngencoder/${hy.os.family}" />
+        <make dir="src/main/native/pngencoder/${hy.os.family}">
+            <make-elements>
+                <env key="HY_PNG_VER" value="${png.ver}" />
+            </make-elements>
+        </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="src/main/native/pngencoder/">
