@@ -17,8 +17,6 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.CodeSource;
 import java.security.Permission;
@@ -26,6 +24,7 @@ import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.security.SecurityPermission;
+
 import junit.framework.TestCase;
 
 public class ClassLoaderTest extends TestCase {
@@ -259,8 +258,8 @@ class Ldr extends ClassLoader {
     @SuppressWarnings("deprecation")
     public Class<?> define() throws Exception {
         Package p = getClass().getPackage();
-        String path = p == null ? "" : p.getName().replace('.', File.separatorChar)
-                + File.separator;
+        // Class loader paths use '/' character as separator
+        String path = p == null ? "" : p.getName().replace('.', '/') + '/';
         InputStream is = getResourceAsStream(path + "A.class");
         byte[] buf = new byte[512];
         int len = is.read(buf);
