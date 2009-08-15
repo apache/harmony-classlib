@@ -91,7 +91,8 @@ public class ClassLoaderTest extends TestCase {
             0, 1, 0, 1, 0, 8, 0, 0, 0, 2,
             0, 9 };
 
-        protected Class findClass(String name) throws ClassNotFoundException {
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
             try {
                 while (flag != 2) {
                     synchronized (lock) {
@@ -103,21 +104,21 @@ public class ClassLoaderTest extends TestCase {
             if (name.equals("TestClass")) {
                 numFindClassCalled++;
                 return defineClass(null, classData, 0, classData.length);
-            } else {
-                throw new ClassNotFoundException("Class " + name + " not found.");
             }
+            throw new ClassNotFoundException("Class " + name + " not found.");
         }
     }
     
     static class SyncLoadTestThread extends Thread {
         volatile boolean started;
         ClassLoader cl;
-        Class cls;
+        Class<?> cls;
         
         SyncLoadTestThread(ClassLoader cl) {
             this.cl = cl;
         }
         
+        @Override
         public void run() {
             try {
                 started = true;
