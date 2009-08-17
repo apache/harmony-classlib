@@ -128,6 +128,7 @@ public class BasicPermission2Test extends junit.framework.TestCase {
         Permission permission_exitVM_0 = new RuntimePermission("exitVM.0");
         Permission permission_exitVM_a = new RuntimePermission("exitVM.a");
         assertTrue(permission_exitVM.implies(permission_exitVM_ALL));
+        assertTrue(permission_exitVM.implies(permission_exitVM));
         assertTrue(permission_exitVM.implies(permission_exitVM_0));
         assertTrue(permission_exitVM.implies(permission_exitVM_a));
         assertTrue(permission_exitVM_ALL.implies(permission_exitVM));

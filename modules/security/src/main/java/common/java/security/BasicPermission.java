@@ -153,7 +153,8 @@ public abstract class BasicPermission extends Permission implements
             if (this instanceof RuntimePermission) {
                 if (thatName.equals("exitVM")) {
                     thatName = "exitVM.*";
-                } else if (name.equals("exitVM")) {
+                } 
+                if (name.equals("exitVM")) {
                     name = "exitVM.*";
                 }
             }
