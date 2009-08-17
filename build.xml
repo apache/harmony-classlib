@@ -320,6 +320,7 @@ Generating snapshot zip
 
     <target name="-clean-hdk">
         <delete dir="${hy.hdk}/build/ant" />
+	<delete dir="${hy.hdk}/build/make" />
     </target>
     
     <macrodef name="chksum">
@@ -358,6 +359,14 @@ Generating snapshot zip
                   tofile="${hy.hdk}/build/ant/depends.properties"
                   outputencoding="UTF-8" >
             </copy>
+
+	    <mkdir dir="${hy.hdk}/build/make" />
+	    <copy todir="${hy.hdk}/build/make" overwrite="yes">
+                <fileset dir="depends/build">
+                    <include name="**" />
+                </fileset>
+            </copy>
+
         </sequential>
     </macrodef>
 
