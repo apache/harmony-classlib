@@ -49,7 +49,7 @@ public class DigitalSignatureTest extends TestCase {
                 + "0piKwYmLXtqi7BTgpgoDXtYi6VJYzvBxLhe050vi1lUNe2iCl/jsU4IcBCcOjV4CwbTDRhq6PzT7"
                 + "70uWtMhAV28E/jcszlyxHYZ5qK0wp8BoBdcNQf3tihBuQkrsv57z94tbEJxg5JeMOl1aWVtw6LLR"
                 + "K2GQBaDrwvy7R4FA2oOc/JS9PsiT0ieKO1dhPGmqJDaVMlZMFeUY41hTzU3BAmcjYBWQI2oNqHRv"
-                + "ya9tUQIDAQAB").getBytes();
+                + "ya9tUQIDAQAB").getBytes("UTF-8");
 
         byte[] b64PrivateKeySpec = ("MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCTur+p5srr+1IvJ1FQIC/BypGV"
                 + "L3lpq7nGPZ8WktFhgbRq+47SpefXgc2agLyTO2TrpD7ihlL1KRBjCvbjH72J17Sz3F+NDmiEOljo"
@@ -72,7 +72,7 @@ public class DigitalSignatureTest extends TestCase {
                 + "LZRbOXEAR4abQ4g0IDeLNZAFfHttdKTesIrCH54R/tP2Eq/8w3U+hvhxltjqd9keKUBJFvlVSJAI"
                 + "6qJhAoGBAJU8ET4NHv4/AS3SiTcg65TE4ktrTsVZixNYVORE32bFZCZClWLI2aUattiIk8UqvG74"
                 + "wugnxUGk8tJMcw1J/gh+UlnGrX7HqiWTCzEyepOiDQV3NkOQ+9z9WeQNNUtQyIFZZB4wQHaH21BB"
-                + "a1kmrzyqihpAVWrpBOJCipel8S0X").getBytes();
+                + "a1kmrzyqihpAVWrpBOJCipel8S0X").getBytes("UTF-8");
 
         // Create public/private keys and certificate
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");

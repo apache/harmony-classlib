@@ -27,6 +27,8 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
             <condition>
@@ -42,7 +44,8 @@
     <target name="-test-module" depends="build, run-tests" />
 
     <!-- Build native code -->
-    <available file="src/main/native/security/${hy.os.family}" property="native.present" />
+    <available file="src/main/native/security/${hy.os.family}"
+               property="native.present" />
 
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" if="native.present" >
@@ -62,18 +65,20 @@
         </copy>
     </target>
     
-    <!-- Clean natives -->
+    <target name="clean-java">
+        <delete file="${hy.jdk}/jre/lib/boot/security.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/security-src.jar" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
+    </target>
+
     <target name="clean-native" if="native.present" >
         <make dir="src/main/native/security/${hy.os.family}" target="clean" />
     </target>
 
-    <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/security.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/security-src.jar" />
+    <target name="clean-test">
         <delete dir="${tests.hdk.dir}" failonerror="false" />
-        <delete failonerror="false">
-            <fileset refid="classes" />
-        </delete>
         <delete failonerror="false" dir="bin"/>
     </target>
 

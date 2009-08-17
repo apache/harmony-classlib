@@ -41,13 +41,18 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean">
+    <target name="clean" depends="clean-java,clean-test" />
+    
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/beans.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/beans-src.jar" />
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false" dir="bin"/>
     </target>
 

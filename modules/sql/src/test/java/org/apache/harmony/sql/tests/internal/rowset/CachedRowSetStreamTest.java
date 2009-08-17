@@ -241,7 +241,7 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
             out.write(i);
         }
 
-        byte[] expected = value.getBytes();
+        byte[] expected = value.getBytes("ISO8859-1");
 
         byte[] actual = out.toByteArray();
 
@@ -281,7 +281,7 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
             out.write(i);
         }
 
-        byte[] expected = value.getBytes();
+        byte[] expected = value.getBytes("ISO8859-1");
 
         byte[] actual = out.toByteArray();
 
@@ -348,7 +348,7 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
             out.write(i);
         }
 
-        byte[] expected = "test".getBytes();
+        byte[] expected = "test".getBytes("ISO8859-1");
         byte[] actual = out.toByteArray();
 
         assertEquals(expected.length, actual.length);
@@ -779,30 +779,27 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
         }
 
         String value = new String("\u548c\u8c10");
-        in = new ByteArrayInputStream(value.getBytes());
+        in = new ByteArrayInputStream(value.getBytes("ISO-8859-1"));
         crset.updateAsciiStream(2, in, in.available());
 
         obj = crset.getObject(2);
         assertTrue(obj instanceof String);
-        assertEquals(new String(value.getBytes()), obj);
 
-        byte[] bytes = ((String) obj).getBytes();
-        byte[] expected = value.getBytes();
+        byte[] bytes = ((String) obj).getBytes("ISO-8859-1");
+        byte[] expected = value.getBytes("ISO-8859-1");
         assertEquals(expected.length, bytes.length);
         for (int i = 0; i < bytes.length; i++) {
             assertEquals(expected[i], bytes[i]);
         }
 
         value = new String("\u548d\u8c1a");
-        in = new ByteArrayInputStream(value.getBytes());
+        in = new ByteArrayInputStream(value.getBytes("ISO-8859-1"));
         crset.updateAsciiStream(3, in, in.available());
 
         obj = crset.getObject(3);
         assertTrue(obj instanceof String);
-        assertEquals(new String(value.getBytes()), obj);
-
-        bytes = ((String) obj).getBytes();
-        expected = value.getBytes();
+        bytes = ((String) obj).getBytes("ISO-8859-1");
+        expected = value.getBytes("ISO-8859-1");
         assertEquals(expected.length, bytes.length);
         for (int i = 0; i < bytes.length; i++) {
             assertEquals(expected[i], bytes[i]);
@@ -1207,8 +1204,8 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
         crset.setCommand("update STREAM set LONGVARCHAR_T=? where ID= ?");
 
         String value = "It's    is a very very very long long long story";
-        crset.setAsciiStream(1, new ByteArrayInputStream(value.getBytes()),
-                value.getBytes().length);
+        byte[] bytes = value.getBytes("ISO-8859-1");
+        crset.setAsciiStream(1, new ByteArrayInputStream(bytes), bytes.length);
         crset.setInt(2, 1);
 
         if ("true".equals(System.getProperty("Testing Harmony"))) {

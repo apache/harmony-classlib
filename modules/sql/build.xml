@@ -31,6 +31,8 @@
     <target name="build"
             depends="check-depends, compile-java, copy-resources, build-jar" />
 
+    <target name="clean" depends="clean-java,clean-test" />
+
     <target name="check-depends">
         <check-one-file src="${derby.url}" dest="${derby.jar}" />
     </target>
@@ -55,14 +57,17 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean">
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/sql.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/sql-src.jar" />
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
-        <delete dir="${hy.hdk}/build/test/derby" /> 
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
+        <delete dir="${hy.hdk}/build/test/derby" /> 
         <delete failonerror="false" dir="bin"/>
     </target>
 

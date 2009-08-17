@@ -15,7 +15,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-JPEG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\jpeg-6b\# avoid continuation
+JPEG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\jpeg-$(HY_JPEG_VER)\# avoid continuation
 
 LIBBASE=jpegencoder
 DLLNAME=..\$(LIBBASE).dll

@@ -29,6 +29,8 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+
     <target name="copy-native-includes"
             depends="overlay-oss, copy-zipsup-include, copy-zlib-include" />
 
@@ -75,10 +77,6 @@
         <delete dir="src/main/native/zlib_dist_ascii" />
     </target>
     
-    <target name="clean-overlay-oss" unless="hy.skip.zlib" >
-        <delete dir="src/main/native/zlib_dist" quiet="true" />
-    </target>
-    
     <!-- Build native code -->
     <target name="build-native"
             depends="-build-native-zip,-build-native-zlib,-build-native-archive" />
@@ -121,25 +119,31 @@
         </copy>
     </target>
     
-    <!-- Clean natives -->
     <target name="clean-native"
-            depends="-clean-native-zip,-clean-native-zlib,-clean-native-archive"/>
+            depends="-clean-native-zip,-clean-native-zlib,clean-native-includes,clean-overlay-oss">
+        <make dir="src/main/native/archive/${hy.os.family}" target="clean" />
+    </target>
 
     <target name="-clean-native-zip" if="hy.skip.zip.api">
-        <make dir="src/main/native/zip/${hy.os.family}"
-              target="clean" />
+        <make dir="src/main/native/zip/${hy.os.family}" target="clean" />
     </target>
 
     <target name="-clean-native-zlib" unless="hy.skip.zlib">
-        <make dir="src/main/native/zlib/${hy.os.family}"
-              target="clean" />
+        <make dir="src/main/native/zlib/${hy.os.family}" target="clean" />
     </target>
 
-    <target name="-clean-native-archive">
-        <make dir="src/main/native/archive/${hy.os.family}"
-              target="clean" />
+    <target name="clean-native-includes">
+        <delete failonerror="false">
+            <fileset dir="${hy.hdk}/include">
+                <include name="zipsup.h" />
+            </fileset>
+        </delete>
     </target>
 
+    <target name="clean-overlay-oss" unless="hy.skip.zlib" >
+        <delete dir="src/main/native/zlib_dist" quiet="true" />
+    </target>
+    
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
             <condition>
@@ -154,22 +158,17 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean" depends="clean-native-includes" >
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
-        <delete failonerror="false" dir="bin"/>
     </target>
 
-    <target name="clean-native-includes">
-        <delete failonerror="false">
-            <fileset dir="${hy.hdk}/include">
-                <include name="zipsup.h" />
-            </fileset>
-        </delete>
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">
