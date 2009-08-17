@@ -29,6 +29,8 @@
 
     <target name="build" depends="check-depends" />
 
+    <target name="clean" depends="clean-java" />
+
     <target name="check-depends" depends="-check,-extract,-copy-jars" />
 
     <target name="-check">
@@ -87,7 +89,7 @@
 
     <target name="test" />
 
-    <target name="clean">
+    <target name="clean-java">
         <delete dir="${hy.jdk}/jre/lib/boot/mx4j_${mx4j.version}" />
     </target>
 

@@ -30,6 +30,8 @@
     <target name="build"
             depends="check-depends,compile-java, copy-resources, build-jar" />
 
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+
     <target name="check-depends" depends="-check-depends,-extract" />
 
     <target name="-check-depends"
@@ -146,15 +148,18 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean">
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/awt.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
         <delete dir="${hy.jdk}/jre/lib/fonts" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false" dir="bin"/>
     </target>
 
@@ -246,7 +251,12 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         depends="-build-native-common,-build-native-unix,-build-native-windows" />
         
     <target name="-build-native-common">
-        <make dir="src/main/native/lcmm/${hy.os.family}" />
+        <make dir="src/main/native/lcmm/${hy.os.family}">
+            <make-elements>
+                <env key="HY_LCMS_VER" value="${lcms.ver}" />
+            </make-elements>
+        </make>
+
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="src/main/native/lcmm">
@@ -262,7 +272,11 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
 
-        <make dir="src/main/native/jpegdecoder/${hy.os.family}" />
+        <make dir="src/main/native/jpegdecoder/${hy.os.family}">
+            <make-elements>
+                <env key="HY_JPEG_VER" value="${jpeg.ver}" />
+            </make-elements>
+        </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="src/main/native/jpegdecoder">
@@ -278,7 +292,12 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
 
-        <make dir="src/main/native/gl/${hy.os.family}" />
+        <make dir="src/main/native/gl/${hy.os.family}">
+            <make-elements>
+                <env key="HY_PNG_VER" value="${png.ver}" />
+            </make-elements>
+        </make>
+
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="src/main/native/gl">

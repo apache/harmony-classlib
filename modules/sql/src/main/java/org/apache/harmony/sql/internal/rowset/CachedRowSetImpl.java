@@ -2442,7 +2442,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw ex;
         }
 
-        updateString(columnIndex, new String(byteArray));
+        try {
+            updateString(columnIndex, new String(byteArray, "ISO-8859-1")); //$NON-NLS-1$
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void updateAsciiStream(String columnName, InputStream x, int length)

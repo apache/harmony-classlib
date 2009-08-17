@@ -71,7 +71,7 @@ public class CharsetProviderTest extends TestCase {
 		f.mkdirs();
         
 		FileOutputStream fos = new FileOutputStream(path);
-		OutputStreamWriter writer = new OutputStreamWriter(fos);// , "UTF-8");
+		OutputStreamWriter writer = new OutputStreamWriter(fos, "UTF-8");
 		try {
 			writer.write(content);
 		} finally {

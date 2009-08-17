@@ -36,6 +36,8 @@
 
     <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
 
+    <target name="clean" depends="clean-native,clean-test" />
+
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
             <condition>
@@ -162,15 +164,13 @@
     </target>
 
     <!-- Clean natives -->
-    <target name="clean-native" depends="-clean-native-tests">
+    <target name="clean-native" depends="clean-native-includes">
         <make dir="src/main/native/thread/${hy.os.family}" target="clean" />
         <make dir="src/main/native/thrstub/${hy.os.family}" target="clean" />
         <make dir="src/main/native/port/${hy.os.family}" target="clean" />
         <make dir="src/main/native/common/${hy.os.family}" target="clean" />
         <make dir="src/main/native/pool/${hy.os.family}" target="clean" />
     </target>
-
-    <target name="clean" depends="clean-native-includes" />
 
     <target name="clean-native-includes">
         <delete failonerror="false">
@@ -244,7 +244,7 @@
         <antcall target="touch-errors-file" />
     </target>
 
-    <target name="-clean-native-tests" >
+    <target name="clean-test" >
         <make dir="src/test/native/init/${hy.os.family}" 
               target="clean" />
         <make dir="src/test/native/hycpu/${hy.os.family}" 

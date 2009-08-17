@@ -31,7 +31,6 @@
     <import file="${basedir}/make/properties.xml" />
     <import file="${basedir}/make/depends.xml" />
 
-    <property name="depends.build" location="depends/build" />
     <property name="depends.oss" location="depends/oss" />
     <property name="depends.libs" location="depends/libs/${hy.platform}" />
     <property name="depends.files" location="depends/files" />
@@ -55,18 +54,17 @@
           target: build
          ================================= -->
     <target name="build"
-        depends="overlay-oss, copy-includes, layout, make-all" />
+            depends="overlay-oss,copy-includes,layout,build-modules" />
 
 
     <!-- ================================= 
           target: clean              
          ================================= -->
-    <target name="clean"
-        depends="make-clean, clean-includes, clean-overlay-oss, clean-layout" />
+    <target name="clean" depends="clean-modules,clean-includes,clean-layout" />
 
 
     <!-- This target invokes make on the all target to compile all natives -->
-    <target name="make-all" depends="copy-makefile-includes">
+    <target name="build-modules">
     	
     	<!-- These module targets take care of building and copying
              their shared libs -->
@@ -84,10 +82,7 @@
     <!-- ================================= 
           target: make-clean              
          ================================= -->
-    <target name="make-clean"
-        depends="copy-makefile-includes,-make-clean,clean-makefile-includes" />
-
-    <target name="-make-clean">
+    <target name="clean-modules">
         <poll-modules target="clean-native" />
     	<delete dir="${native.lib.target}" />
     </target>
@@ -172,43 +167,8 @@
           target: clean-includes              
          ================================= -->
     <target name="clean-includes" >
-	<!-- Call clean.native.includes targets to delete global
-   	     includes under deploy/includes/harmony -->
-        
-        <poll-modules target="clean-native-includes" />
-
-        <!-- delete the deploy/include and deploy/jdk/include directories -->
         <delete dir="${hy.hdk}/include" />
         <delete dir="${hy.hdk}/jdk/include" />
-    </target>
-
-    <!-- ================================= 
-          target: copy-makefile-includes              
-         ================================= -->
-    <target name="copy-makefile-includes">
-	<!-- copy generic defines and rules for each platform into a shared
-	     place -->
-	<mkdir dir="${hy.hdk}/build/make" />
-	<copy todir="${hy.hdk}/build/make" overwrite="yes">
-            <fileset dir="${depends.build}">
-                <include name="**" />
-            </fileset>
-        </copy>
-    </target>
-	
-    <!-- ================================= 
-          target: clean-makefile-includes              
-         ================================= -->
-    <target name="clean-makefile-includes">
-	<!-- delete generic defines and rules -->
-	<delete dir="${hy.hdk}/build/make" />
-    </target>
-
-    <!-- ================================= 
-          target: clean-overlay-oss              
-         ================================= -->
-    <target name="clean-overlay-oss">
-        <poll-modules target="clean-overlay-oss" />
     </target>
 
 </project>

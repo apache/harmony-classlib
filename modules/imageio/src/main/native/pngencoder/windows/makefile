@@ -15,7 +15,7 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-PNG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\png-1.2.12\# avoid continuation
+PNG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\png-$(HY_PNG_VER)\# avoid continuation
 
 LIBBASE=pngencoder
 DLLNAME=..\$(LIBBASE).dll

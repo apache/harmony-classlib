@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.harmony.luni.util.Util;
+
 import tests.support.Support_Configuration;
 import tests.support.Support_HttpServer;
 import tests.support.Support_HttpServerSocket;
@@ -201,7 +203,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
     public void test_getContent() throws IOException {
         byte[] ba = new byte[600];
         ((InputStream) uc.getContent()).read(ba, 0, 600);
-        String s = new String(ba);
+        String s = Util.toUTF8String(ba);
         assertTrue("Incorrect content returned",
                 s.indexOf("Hello OneHandler") > 0);
     }
@@ -608,7 +610,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
         byte[] ba = new byte[600];
         is.read(ba, 0, 600);
         is.close();
-        String s = new String(ba);
+        String s = Util.toUTF8String(ba);
         assertTrue("Incorrect input stream read",
                 s.indexOf("Hello OneHandler") > 0);
 
