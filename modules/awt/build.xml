@@ -30,6 +30,8 @@
     <target name="build"
             depends="check-depends,compile-java, copy-resources, build-jar" />
 
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+
     <target name="check-depends" depends="-check-depends,-extract" />
 
     <target name="-check-depends"
@@ -146,15 +148,18 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean">
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/awt.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
         <delete dir="${hy.jdk}/jre/lib/fonts" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false" dir="bin"/>
     </target>
 

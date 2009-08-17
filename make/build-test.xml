@@ -40,6 +40,7 @@
             depends="process-empty, gen-report, check-test-result" />
 
     <target name="clean">
+        <poll-modules target="clean-test" />
         <delete dir="${tests.output}" />
         <delete dir="${tests.support.output}" />
         <delete dir="${hy.hdk}/build/test" />

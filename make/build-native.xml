@@ -54,15 +54,13 @@
     <!-- ================================= 
           target: build
          ================================= -->
-    <target name="build"
-        depends="overlay-oss, copy-includes, layout, make-all" />
+    <target name="build" depends="overlay-oss,copy-includes,layout,make-all" />
 
 
     <!-- ================================= 
           target: clean              
          ================================= -->
-    <target name="clean"
-        depends="make-clean, clean-includes, clean-overlay-oss, clean-layout" />
+    <target name="clean" depends="make-clean,clean-includes,clean-layout" />
 
 
     <!-- This target invokes make on the all target to compile all natives -->
@@ -172,12 +170,6 @@
           target: clean-includes              
          ================================= -->
     <target name="clean-includes" >
-	<!-- Call clean.native.includes targets to delete global
-   	     includes under deploy/includes/harmony -->
-        
-        <poll-modules target="clean-native-includes" />
-
-        <!-- delete the deploy/include and deploy/jdk/include directories -->
         <delete dir="${hy.hdk}/include" />
         <delete dir="${hy.hdk}/jdk/include" />
     </target>
@@ -202,13 +194,6 @@
     <target name="clean-makefile-includes">
 	<!-- delete generic defines and rules -->
 	<delete dir="${hy.hdk}/build/make" />
-    </target>
-
-    <!-- ================================= 
-          target: clean-overlay-oss              
-         ================================= -->
-    <target name="clean-overlay-oss">
-        <poll-modules target="clean-overlay-oss" />
     </target>
 
 </project>

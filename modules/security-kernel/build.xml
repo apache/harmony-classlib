@@ -48,7 +48,9 @@ the top-level build.
         </jar>
     </target>
 
-    <target name="clean">
+    <target name="clean" depends="clean-java" />
+
+    <target name="clean-java">
         <delete file="${stub.jar}" />
         <delete failonerror="false">
             <fileset refid="classes" />

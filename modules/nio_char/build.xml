@@ -27,6 +27,8 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+
     <!-- Build natives.-->
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" >
@@ -55,19 +57,20 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <!-- Clean natives. -->
-    <target name="clean-native">
-        <make dir="src/main/native/niochar/${hy.os.family}"
-                      target="clean" />
-    </target>
-
-    <target name="clean">
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/nio_char.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/nio_char-src.jar" />
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+    </target>
+
+    <target name="clean-native">
+        <make dir="src/main/native/niochar/${hy.os.family}" target="clean" />
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false" dir="bin"/>
     </target>
 
