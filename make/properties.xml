@@ -886,4 +886,37 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
         </sequential>
     </macrodef>
 
+    <macrodef name="make-patternset">
+        <attribute name="source" default="${basedir}/src/main" />
+        <attribute name="file"
+                   default="${hy.hdk}/build/ant/patternsets/${hy.module}.txt" />
+        <sequential>
+            <dirname file="@{file}" property="@{file}.dir" />
+            <mkdir dir="${@{file}.dir}" />
+            <pathconvert targetos="unix" property="@{file}.content"
+                         pathsep="${line.separator}">
+                <fileset dir="@{source}" includes="java*/**/*.java" />
+                <map from="@{source}/java/unix/" to="" />
+                <map from="@{source}/java/windows/" to="" />
+                <map from="@{source}/java/common/" to="" />
+                <map from="@{source}/java5/" to="" />
+                <map from="@{source}/java/" to="" />
+                <compositemapper>
+                    <mapper type="regexp" from="^(.*)\.java$$" to="\1.*"/>
+                    <mapper type="regexp" from="^(.*)\.java$$" to="\1$*.*"/>
+                </compositemapper>
+            </pathconvert>
+            <echo message="${@{file}.content}${line.separator}"
+                  file="@{file}" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="delete-patternset">
+        <attribute name="file"
+                   default="${hy.hdk}/build/ant/patternsets/${hy.module}.txt" />
+        <sequential>
+            <delete file="@{file}" />
+        </sequential>
+    </macrodef>
+
 </project>
