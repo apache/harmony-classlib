@@ -80,9 +80,10 @@ public class DecimalFormatSymbolsTest extends TestCase {
      * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_correct_provider() throws Exception {
-        URL path = new File("resources/provider/correct").toURL();
+        URL path1 = new File("src/test/resources/provider/correct").toURL();
+        URL path2 = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 Locale[] locales = DecimalFormatSymbols.getAvailableLocales();
@@ -109,9 +110,10 @@ public class DecimalFormatSymbolsTest extends TestCase {
      * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_wrong_provider() throws Exception {
-        URL path = new File("resources/provider/wrong").toURL();
+        URL path1 = new File("src/test/resources/provider/wrong").toURL();
+        URL path2 = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 try {
@@ -184,9 +186,10 @@ public class DecimalFormatSymbolsTest extends TestCase {
      */
     public void test_getInstanceLjava_util_Locale_correct_provider()
             throws Exception {
-        URL path = new File("resources/provider/correct").toURL();
+        URL path1 = new File("src/test/resources/provider/correct").toURL();
+        URL path2 = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 DecimalFormatSymbols symbols = DecimalFormatSymbols
@@ -206,9 +209,10 @@ public class DecimalFormatSymbolsTest extends TestCase {
      */
     public void test_getInstanceLjava_util_Locale_wrong_provider()
             throws Exception {
-        URL path = new File("resources/provider/wrong").toURL();
+        URL path1 = new File("src/test/resources/provider/wrong").toURL();
+        URL path2 = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 try {

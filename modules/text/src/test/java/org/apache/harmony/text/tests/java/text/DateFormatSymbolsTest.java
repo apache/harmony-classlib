@@ -71,9 +71,10 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      * @tests java.text.DateFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_correct_provider() throws Exception {
-        URL path = new File("src/test/resources/provider/correct").toURL();
+        URL path1 = new File("src/test/resources/provider/correct").toURL();
+        URL path2 = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 Locale[] locales = DateFormatSymbols.getAvailableLocales();
@@ -100,9 +101,10 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      * @tests java.text.DateFormatSymbols#getAvailableLocales()
      */
     public void test_getAvailableLocales_wrong_provider() throws Exception {
-        URL path = new File("src/test/resources/provider/wrong").toURL();
+        URL path1 = new File("src/test/resources/provider/wrong").toURL();
+        URL path2 = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 try {
@@ -173,9 +175,10 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      */
     public void test_getInstanceLjava_util_Locale_correct_provider()
             throws Exception {
-        URL path = new File("src/test/resources/provider/correct").toURL();
+        URL path1 = new File("src/test/resources/provider/correct").toURL();
+        URL path2 = new File("resources/provider/correct").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 DateFormatSymbols symbols = DateFormatSymbols
@@ -195,14 +198,14 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      */
     public void test_getInstanceLjava_util_Locale_wrong_provider()
             throws Exception {
-        URL path = new File("src/test/resources/provider/wrong").toURL();
+        URL path1 = new File("src/test/resources/provider/wrong").toURL();
+        URL path2 = new File("resources/provider/wrong").toURL();
         LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
-                new URL[] { path }) {
+                new URL[] { path1, path2 }) {
             @Override
             public void test() {
                 try {
-                    DateFormatSymbols symbols = DateFormatSymbols
-                            .getInstance(new Locale("Mock"));
+                    DateFormatSymbols.getInstance(new Locale("Mock"));
                     fail("Should throw ServiceConfigurationError");
                 } catch (ServiceConfigurationError e) {
                     // expected
