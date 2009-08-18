@@ -1024,52 +1024,59 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 #endif
 /* now get the addresses */
               currentIPAddressIndex = 0;
-              lastName = ifc.ifc_req[counter].ifr_name;
 
-              for (;;)
+              /* go through addresses again to find ones with similar names */
+              for (counter2 = counter; counter2 < totalInterfaces; counter2++)
                 {
-                  if (ifc.ifc_req[counter].ifr_addr.sa_family == AF_INET)
+            	  if (strncmp (ifc.ifc_req[counter].ifr_name,
+            	  			   ifc.ifc_req[counter2].ifr_name, IFNAMSIZ) == 0)
                     {
-                      interfaces[currentAdapterIndex].
-                        addresses[currentIPAddressIndex].addr.inAddr.s_addr =
-                        ((struct sockaddr_in *) (&ifc.ifc_req[counter].
+                      if (ifc.ifc_req[counter2].ifr_addr.sa_family == AF_INET)
+                        {
+                          interfaces[currentAdapterIndex].
+                            addresses[currentIPAddressIndex].addr.inAddr.s_addr =
+                            ((struct sockaddr_in *) (&ifc.ifc_req[counter2].
                                                  ifr_addr))->sin_addr.s_addr;
-                      interfaces[currentAdapterIndex].
-                        addresses[currentIPAddressIndex].length =
-                        sizeof (struct in_addr);
-                      interfaces[currentAdapterIndex].
-                        addresses[currentIPAddressIndex].scope = 0;
-                      currentIPAddressIndex++;
-                    }
+                          interfaces[currentAdapterIndex].
+                            addresses[currentIPAddressIndex].length =
+                            sizeof (struct in_addr);
+                          interfaces[currentAdapterIndex].
+                            addresses[currentIPAddressIndex].scope = 0;
+                          currentIPAddressIndex++;
+                        }
 #if defined(IPv6_FUNCTION_SUPPORT)
-                  else if (ifc.ifc_req[counter].ifr_addr.sa_family ==
+                      else if (ifc.ifc_req[counter2].ifr_addr.sa_family ==
                            AF_INET6)
-                    {
-                      memcpy (interfaces[currentAdapterIndex].
+                        {
+                          memcpy (interfaces[currentAdapterIndex].
                               addresses[currentIPAddressIndex].addr.bytes,
                               &(((struct sockaddr_in6 *) (&ifc.
-                                                          ifc_req[counter].
+                                                          ifc_req[counter2].
                                                           ifr_addr))->
                                 sin6_addr), sizeof (struct in6_addr));
-                      interfaces[currentAdapterIndex].
-                        addresses[currentIPAddressIndex].length =
-                        sizeof (struct in6_addr);
-                      interfaces[currentAdapterIndex].
-                        addresses[currentIPAddressIndex].scope =
-                        ((struct sockaddr_in6 *) (&ifc.ifc_req[counter].
+                          interfaces[currentAdapterIndex].
+                            addresses[currentIPAddressIndex].length =
+                            sizeof (struct in6_addr);
+                          interfaces[currentAdapterIndex].
+                            addresses[currentIPAddressIndex].scope =
+                            ((struct sockaddr_in6 *) (&ifc.ifc_req[counter2].
                                                     ifr_addr))->
-                          sin6_scope_id;
-                      currentIPAddressIndex++;
-                    }
+                              sin6_scope_id;
+                          currentIPAddressIndex++;
+                        }
+#endif
+                    } /* end if aliased address */
+                } /* end for all interfaces */
 
-	      if ((ipv6 = fopen("/proc/net/if_inet6", "r"))) {
+              if ((ipv6 = fopen("/proc/net/if_inet6", "r"))) {
                 while(fscanf(ipv6, "%4x%4x%4x%4x%4x%4x%4x%4x %x %x %x %x %s\n", &oct6[0], &oct6[1], &oct6[2], &oct6[3], &oct6[4], &oct6[5], &oct6[6], &oct6[7],
                              &index6, &other, &scope, &other, ifname6) != EOF) {
                   if(strncmp(ifc.ifc_req[counter].ifr_name, ifname6, IFNAMSIZ) == 0) {
                     sprintf(addr6, "%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", oct6[0], oct6[1], oct6[2], oct6[3], oct6[4], oct6[5], oct6[6], oct6[7]);
-                    inet_pton(AF_INET6, addr6, 
+#if defined(IPv6_FUNCTION_SUPPORT)
+                    inet_pton(AF_INET6, addr6,
                               (void *)(&interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].addr.in6Addr));
-
+#endif
                     interfaces[currentAdapterIndex].
                       addresses[currentIPAddressIndex].length = sizeof (struct in6_addr);
                     interfaces[currentAdapterIndex].addresses[currentIPAddressIndex].scope = scope;
@@ -1078,24 +1085,9 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
                 }
                 fclose(ipv6);
               }
-
-#endif
-/* we mean to increment the outside counter here as we want to skip the next entry as it is for the same interface
-					   as we are currently working on */
-                  if ((counter + 1 < totalInterfaces)
-                      &&
-                      (strncmp
-                       (ifc.ifc_req[counter + 1].ifr_name, lastName,
-                        IFNAMSIZ) == 0))
-                    {
-                      counter++;
-                    }
-                  else
-                    {
-                      break;
-                    }
-
-                }
+              
+	          /* update lastName variable and increment loop index */
+              lastName = ifc.ifc_req[counter].ifr_name;
               currentAdapterIndex++;
             }
         }
