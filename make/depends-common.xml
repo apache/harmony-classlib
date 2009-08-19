@@ -139,14 +139,6 @@ is missing.
         </sequential>
     </macrodef>
 
-    <target name="-awt-tar-extract" unless="awtdeps.uptodate">
-        <echo>Extracting awt dependencies</echo>
-        <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
-               compression="gzip" />
-        <echo file="${awtdeps.testfile}"
-              message="${awtdeps.tar} extracted${line.separator}" />
-    </target>
-
     <macrodef name="check-one-link">
         <attribute name="src" />
         <attribute name="dest" />
