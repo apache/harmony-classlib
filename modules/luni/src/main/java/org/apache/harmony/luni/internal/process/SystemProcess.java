@@ -68,7 +68,7 @@ public class SystemProcess extends Process {
         }
         envBytes = new byte[envp.length][];
         for (int i = 0; i < envp.length; i++) {
-            envBytes[i] = Util.getBytes(envp[i]);
+            envBytes[i] = envp[i].getBytes();
         }
 
         final SystemProcess p = new SystemProcess();
