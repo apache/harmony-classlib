@@ -339,12 +339,12 @@ public abstract class CharsetEncoder {
                 continue;
             }
             checkCoderResult(result);
-        output.flip();
-        if (result.isMalformed()) {
-            throw new MalformedInputException(result.length());
-        } else if (result.isUnmappable()) {
-            throw new UnmappableCharacterException(result.length());
-        }
+            output.flip();
+            if (result.isMalformed()) {
+                throw new MalformedInputException(result.length());
+            } else if (result.isUnmappable()) {
+                throw new UnmappableCharacterException(result.length());
+            }
             break;
         }
         status = FLUSH;
@@ -451,18 +451,18 @@ public abstract class CharsetEncoder {
             } catch (BufferUnderflowException e) {
                 throw new CoderMalfunctionError(e);
             }
-            if (result==CoderResult.UNDERFLOW) {
+            if (result == CoderResult.UNDERFLOW) {
                 status = endOfInput ? END : ONGOING;
                 if (endOfInput) {
                     int remaining = in.remaining();
-                    if( remaining > 0) {
-                    result = CoderResult.malformedForLength(remaining);
+                    if (remaining > 0) {
+                        result = CoderResult.malformedForLength(remaining);
+                    } else {
+                        return result;
+                    }
                 } else {
                     return result;
                 }
-                } else {
-                    return result;
-            }
             } else if (result==CoderResult.OVERFLOW) {
                 status = endOfInput ? END : ONGOING;
                 return result;

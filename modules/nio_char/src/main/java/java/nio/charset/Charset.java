@@ -483,7 +483,7 @@ public abstract class Charset implements Comparable<Charset> {
             }
         } catch (IOException ex) {
             // Unexpected ClassLoader exception, ignore
-		} finally {
+        } finally {
 		    inForNameInternal = false;
         }
         return null;
@@ -494,7 +494,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
     private static void cacheCharset(Charset cs) {
         if (!cachedCharsetTable.containsKey(cs.name())){
-            cachedCharsetTable.put(cs.name(), cs);  
+            cachedCharsetTable.put(cs.name(), cs);
         }
         Set<String> aliasesSet = cs.aliases();
         if (null != aliasesSet) {
@@ -502,7 +502,7 @@ public abstract class Charset implements Comparable<Charset> {
             while (iter.hasNext()) {
                 String alias = iter.next();
                 if (!cachedCharsetTable.containsKey(alias)) {
-                    cachedCharsetTable.put(alias, cs); 
+                    cachedCharsetTable.put(alias, cs);
                 }
             }
         }
@@ -536,8 +536,8 @@ public abstract class Charset implements Comparable<Charset> {
      * @throws IllegalCharsetNameException
      *             if the specified charset name is illegal.
      */
-    public static boolean isSupported(String charsetName) {
-        if (inForNameInternal  == true) {
+    public static synchronized boolean isSupported(String charsetName) {
+        if (inForNameInternal) {
             Charset cs = cachedCharsetTable.get(charsetName);
             if (null != cs) {
                 return true;
