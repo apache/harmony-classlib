@@ -35,7 +35,7 @@
             depends="overlay-oss, copy-zipsup-include, copy-zlib-include" />
 
     <target name="copy-zlib-include" unless="hy.skip.zlib">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/zlib_dist">
                 <include name="zlib.h" />
                 <include name="zconf.h" />
@@ -44,7 +44,7 @@
     </target>
 	
     <target name="copy-zipsup-include" if="hy.skip.zip.api">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include/shared">
                 <include name="zipsup.h" />
             </fileset>
@@ -95,7 +95,7 @@
         
     <target name="-build-native-zlib" unless="hy.skip.zlib">
         <make dir="src/main/native/zlib/${hy.os.family}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/zlib">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -103,7 +103,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/zlib/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -112,7 +112,7 @@
         
     <target name="-build-native-archive">
         <make dir="src/main/native/archive/${hy.os.family}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/archive">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -120,7 +120,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/archive/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>

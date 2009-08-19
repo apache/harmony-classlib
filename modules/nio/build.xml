@@ -49,7 +49,7 @@
         <make dir="src/main/native/nio/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/nio">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -57,7 +57,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/nio/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
