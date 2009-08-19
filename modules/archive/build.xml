@@ -51,16 +51,24 @@
         </copy>
     </target>
     
-    <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion"
+    <target name="overlay-oss"
+            depends="-extract-props,-unzip-oss,-ascii2ebcdic-conversion"
             unless="hy.skip.zlib" />
-        
-    <target name="-unzip-oss">
+
+    <target name="-extract-props">
+        <uptodate property="zlib.uptodate"
+                  srcfile="${zlib.zip}"
+                  targetfile="src/main/native/zlib_dist/README" />
+    </target>
+
+    <target name="-unzip-oss" unless="zlib.uptodate">
         <mkdir dir="src/main/native/zlib_dist" />
         <unzip src="${zlib.zip}" dest="src/main/native/zlib_dist" />
         <chmod dir="src/main/native/zlib_dist" perm="ugo+r" />
+        <touch file="src/main/native/zlib_dist/README" />
     </target>
 
-    <target name="-ascii2ebcdic-conversion" if="is.zos">
+    <target name="-ascii2ebcdic-conversion" if="is.zos" unless="zlib.uptodate">
         <move todir="src/main/native/zlib_dist_ascii">
             <fileset dir="src/main/native/zlib_dist">
                 <include name="**/*" />
