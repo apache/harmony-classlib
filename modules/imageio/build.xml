@@ -27,8 +27,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build"
-            depends="check-depends,compile-java,copy-resources,build-jar" />
+    <target name="build" depends="check-depends,compile-java,build-jar" />
 
     <target name="clean" depends="clean-java,clean-native,clean-test" />
 
@@ -105,12 +104,13 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/imageio.jar" />
 	<delete file="${hy.jdk}/jre/lib/boot/imageio-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-native">
@@ -155,7 +155,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </make-elements>
         </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/jpegencoder/">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -163,7 +163,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/jpegencoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -175,7 +175,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </make-elements>
         </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/pngencoder/">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -183,27 +183,19 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/pngencoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/imageio.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -263,6 +255,10 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

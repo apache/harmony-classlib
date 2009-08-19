@@ -34,7 +34,7 @@
         </and>
     </condition>
 
-    <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
+    <target name="build" />
 
     <target name="clean" depends="clean-native,clean-test" />
 
@@ -53,7 +53,7 @@
 
     <target name="copy-native-includes"
             depends="-copy-thread-include,-copy-thread-stub-include" >
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include/shared">
                 <include name="hyport.h" />
                 <include name="hycomp.h" />
@@ -67,7 +67,7 @@
                 <include name="utf8encode.h" />
             </fileset>
         </copy>
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include/${hy.os.family}">
                 <include name="hymutex.h" />
                 <include name="hysock.h" />
@@ -77,7 +77,7 @@
     </target>
 
     <target name="-copy-thread-include" unless="hy.skip.thr" >
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include/shared">
                 <include name="hythread.h" />
             </fileset>
@@ -85,7 +85,7 @@
     </target>
 
     <target name="-copy-thread-stub-include" if="hy.skip.thr" >
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/thrstub/shared">
                 <include name="hythread.h" />
             </fileset>
@@ -110,7 +110,7 @@
         <antcall target="-build-copy-thread" />
 
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/thread/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -118,7 +118,7 @@
     </target>
 
     <target name="-build-copy-thread" unless="hy.thr.nodeploy">
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/thread">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -131,7 +131,7 @@
         <!-- Build thread dll -->
         <make dir="src/main/native/thrstub/${hy.os.family}" />
 
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/thrstub">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -148,7 +148,7 @@
         <!-- Build port dll -->
         <make dir="src/main/native/port/${hy.os.family}" />
 
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/port">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -156,7 +156,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/port/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>

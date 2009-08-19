@@ -27,12 +27,12 @@
 
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build" depends="compile-java, build-jar" />
 
     <target name="clean" depends="clean-java,clean-native,clean-test" />
 
     <target name="copy-native-includes">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include">
                 <include name="vmi.h" />
                 <include name="hyvmls.h" />
@@ -43,7 +43,7 @@
                 <include name="vmizip.h"/>
             </fileset>
         </copy>
-        <copy todir="${hy.jdk}/include" overwrite="yes">
+        <copy todir="${hy.jdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include">
                 <include name="jni.h" />
                 <include name="jni_types.h" />
@@ -69,7 +69,8 @@
              runtime the libvmi.so provided by the VM
              implementation is loaded
           -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
+        <copy todir="${hy.hdk}/lib" failonerror="false"
+              preservelastmodified="true">
             <fileset dir="src/main/native/vmi">
                 <include name="libvmi${shlib.suffix}"/>
             </fileset>
@@ -92,7 +93,7 @@
 
         <!-- Build luni dll -->
         <make dir="src/main/native/luni/${hy.os.family}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/luni">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -100,7 +101,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/luni/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -121,7 +122,7 @@
         <make dir="src/main/native/launcher/${hy.os.family}" />
 
         <!-- Copy across the built executables -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/launcher">
                 <patternset includes="java${exe.suffix}" />
                 <patternset includes="javaw${exe.suffix}" />
@@ -172,12 +173,13 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, test-jar, run-tests" />
 
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-native"
@@ -222,7 +224,7 @@
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling LUNI classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -245,11 +247,12 @@
         </javac>
     </target>
 
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/>
             </manifest>
@@ -350,13 +353,8 @@
         <ant dir="${tests.hdk.dir}" target="test-module" />
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

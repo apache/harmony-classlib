@@ -25,7 +25,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-jar-resources, build-jar, copy-resources" />
+    <target name="build" depends="compile-java, build-jar, copy-properties" />
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -43,12 +43,13 @@
 
     <target name="clean" depends="clean-java,clean-test" />
     
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/logging.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/logging-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-test">
@@ -57,7 +58,7 @@
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling LOGGING classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -80,11 +81,15 @@
         </javac>
     </target>
 
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/logging.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset dir="src/main/java">
+                <exclude name="**/*.java" />
+                <exclude name="**/logging.properties" />
+            </fileset>
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -102,17 +107,7 @@
         </jar>
     </target>
 
-    <target name="copy-jar-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-                <exclude name="**/logging.properties" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="copy-resources">
+    <target name="copy-properties">
         <copy todir="${hy.jdk}/jre/lib" flatten="yes">
             <fileset dir="src/main/java">
                 <include name="**/logging.properties" />
@@ -184,6 +179,10 @@
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>
