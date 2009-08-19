@@ -37,7 +37,7 @@ the top-level build.
         </fail>
     </target>
 
-    <target name="build" depends="svn-info">
+    <target name="build" depends="svn-info,class-patternset">
         <jar destfile="${stub.jar}" manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <manifest>
@@ -50,11 +50,16 @@ the top-level build.
 
     <target name="clean" depends="clean-java" />
 
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${stub.jar}" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

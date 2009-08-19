@@ -343,7 +343,7 @@ Generating snapshot zip
                 <filterchain>
                     <tokenfilter>
                         <replacestring from="Top-Level property definitions"
-                                       to="Common property definitions" />
+                                       to="Classlib property definitions" />
                     </tokenfilter>
                 </filterchain>
             </copy>
@@ -354,6 +354,12 @@ Generating snapshot zip
             <copy file="make/depends-common.xml"
                   tofile="${hy.hdk}/build/ant/depends.xml"
                   outputencoding="UTF-8" >
+                <filterchain>
+                    <tokenfilter>
+                        <replacestring from="Common dependency definitions"
+                                       to="Classlib dependency definitions" />
+                    </tokenfilter>
+                </filterchain>
             </copy>
             <copy file="make/depends.properties"
                   tofile="${hy.hdk}/build/ant/depends.properties"

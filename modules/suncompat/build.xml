@@ -43,12 +43,13 @@
 
     <target name="clean" depends="clean-java,clean-test" />
     
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/suncompat.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/suncompat-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-test">
@@ -56,7 +57,7 @@
         <delete failonerror="false" dir="bin"/>
     </target>
 
-    <target name="compile-java" depends="copy-resources">
+    <target name="compile-java">
         <echo message="Compiling Sun Compat classes" />
 
         <mkdir dir="../../build/classes" />
@@ -80,20 +81,12 @@
         </javac>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/suncompat.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -150,6 +143,10 @@
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

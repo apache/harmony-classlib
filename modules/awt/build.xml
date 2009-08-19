@@ -28,7 +28,7 @@
     <property file="../../make/depends.properties" />
 
     <target name="build"
-            depends="check-depends,compile-java, copy-resources, build-jar" />
+            depends="check-depends,compile-java,copy-resources,build-jar" />
 
     <target name="clean" depends="clean-java,clean-native,clean-test" />
 
@@ -148,7 +148,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/awt.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/awt-src.jar" />    
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
@@ -156,6 +156,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-test">
@@ -164,7 +165,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling AWT classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -192,13 +193,6 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     </target>
 
     <target name="copy-resources" depends="-copy-win-resources">
-        <mkdir dir="../../build/classes" />
-
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java/common">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
 
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
@@ -223,11 +217,12 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
               tofile="${hy.jdk}/jre/lib/font.properties"/>
     </target>
 
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/awt.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="common.resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -258,7 +253,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         </make>
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/lcmm">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -266,7 +261,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/lcmm/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -278,7 +273,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </make-elements>
         </make>
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/jpegdecoder">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -286,7 +281,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/jpegdecoder/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -299,7 +294,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         </make>
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/gl">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -307,7 +302,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/gl/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -315,7 +310,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         
         <make dir="src/main/native/oglwrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/oglwrapper">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -323,7 +318,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/oglwrapper/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -331,7 +326,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
 
         <make dir="src/main/native/fontlib/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/fontlib">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -339,7 +334,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/fontlib/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -349,13 +344,13 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <target name="-build-native-unix" if="is.unix">
         <make dir="src/main/native/x11wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/x11wrapper">
                 <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/x11wrapper/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -363,13 +358,13 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
 
         <make dir="src/main/native/linuxfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/linuxfont">
                 <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/linuxfont/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -379,7 +374,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     <target name="-build-native-windows" if="is.windows">
         <make dir="src/main/native/win32wrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/win32wrapper">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" />
@@ -389,7 +384,7 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
 
         <make dir="src/main/native/winfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/winfont">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" />
@@ -496,6 +491,10 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

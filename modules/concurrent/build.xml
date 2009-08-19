@@ -43,12 +43,13 @@
 
     <target name="clean" depends="clean-java,clean-test" />
     
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/concurrent.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/concurrent-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-test">
@@ -57,7 +58,7 @@
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling CONCURRENT classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -80,7 +81,7 @@
         </javac>
     </target>
 
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/concurrent.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
@@ -141,6 +142,10 @@
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

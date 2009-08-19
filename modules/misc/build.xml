@@ -25,7 +25,7 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build" depends="compile-java, build-jar" />
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -41,18 +41,27 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean">
+    <target name="clean" depends="clean-java,clean-native,clean-test" />
+    <target name="clean-java">
         <delete file="${hy.jdk}/jre/lib/boot/misc.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/misc-src.jar" />
-        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
+    </target>
+
+    <target name="clean-native">
+        <make dir="src/main/native/accessors/${hy.os.family}" target="clean" />
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
         <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling MISC classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -75,20 +84,12 @@
         </javac>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/misc.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -111,7 +112,7 @@
         <make dir="src/main/native/accessors/${hy.os.family}" />
 
         <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/accessors">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -119,19 +120,13 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/accessors/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
     
-    <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="src/main/native/accessors/${hy.os.family}"
-              target="clean" />
-    </target>
-
     <target name="test-jar" depends="svn-info,compile-tests">
         <mkdir dir="${tests.hdk.dir}" />
         
@@ -171,6 +166,10 @@
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>

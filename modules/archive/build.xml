@@ -27,7 +27,7 @@
 
     <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
 
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build" depends="compile-java, build-jar" />
     
     <target name="clean" depends="clean-java,clean-native,clean-test" />
 
@@ -35,7 +35,7 @@
             depends="overlay-oss, copy-zipsup-include, copy-zlib-include" />
 
     <target name="copy-zlib-include" unless="hy.skip.zlib">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/zlib_dist">
                 <include name="zlib.h" />
                 <include name="zconf.h" />
@@ -44,23 +44,31 @@
     </target>
 	
     <target name="copy-zipsup-include" if="hy.skip.zip.api">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
+        <copy todir="${hy.hdk}/include" preservelastmodified="true">
             <fileset dir="src/main/native/include/shared">
                 <include name="zipsup.h" />
             </fileset>
         </copy>
     </target>
     
-    <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion"
+    <target name="overlay-oss"
+            depends="-extract-props,-unzip-oss,-ascii2ebcdic-conversion"
             unless="hy.skip.zlib" />
-        
-    <target name="-unzip-oss">
+
+    <target name="-extract-props">
+        <uptodate property="zlib.uptodate"
+                  srcfile="${zlib.zip}"
+                  targetfile="src/main/native/zlib_dist/README" />
+    </target>
+
+    <target name="-unzip-oss" unless="zlib.uptodate">
         <mkdir dir="src/main/native/zlib_dist" />
         <unzip src="${zlib.zip}" dest="src/main/native/zlib_dist" />
         <chmod dir="src/main/native/zlib_dist" perm="ugo+r" />
+        <touch file="src/main/native/zlib_dist/README" />
     </target>
 
-    <target name="-ascii2ebcdic-conversion" if="is.zos">
+    <target name="-ascii2ebcdic-conversion" if="is.zos" unless="zlib.uptodate">
         <move todir="src/main/native/zlib_dist_ascii">
             <fileset dir="src/main/native/zlib_dist">
                 <include name="**/*" />
@@ -87,7 +95,7 @@
         
     <target name="-build-native-zlib" unless="hy.skip.zlib">
         <make dir="src/main/native/zlib/${hy.os.family}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/zlib">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -95,7 +103,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/zlib/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -104,7 +112,7 @@
         
     <target name="-build-native-archive">
         <make dir="src/main/native/archive/${hy.os.family}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+        <copy todir="${hy.jdk}/jre/bin" preservelastmodified="true">
             <fileset dir="src/main/native/archive">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
@@ -112,7 +120,7 @@
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
+        <copy todir="${hy.hdk}/lib" preservelastmodified="true">
             <fileset dir="src/main/native/archive/${hy.os.family}">
                 <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
@@ -158,12 +166,13 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, run-tests" />
 
-    <target name="clean-java">
+    <target name="clean-java" depends="class-patternset">
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
+        <delete-patternset module="${hy.module}" />
     </target>
 
     <target name="clean-test">
@@ -172,7 +181,7 @@
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling ARCHIVE classes" />
+        <echo message="Compiling ${hy.module} classes" />
 
         <mkdir dir="../../build/classes" />
 
@@ -195,20 +204,12 @@
         </javac>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="../../build/classes" />
-        <copy todir="../../build/classes" includeemptydirs="false">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="build-jar" depends="svn-info">
+    <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/archive.jar"
              manifest="META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
+            <fileset refid="resources" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -281,6 +282,10 @@
 
     <target name="run-tests" depends="test-jar">
         <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+    <target name="class-patternset">
+        <make-patternset module="${hy.module}" />
     </target>
 
 </project>
