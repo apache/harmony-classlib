@@ -325,38 +325,17 @@
 
     <!-- fileset to represent classes built by a module. -->
     <fileset id="classes" dir="../../build/classes">
-        <or>
-            <!-- only common code case -->
-            <present targetdir="src/main/java" />
-            <present targetdir="src/main/java">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
+        <includesfile name="${hy.hdk}/build/ant/patternsets/${hy.module}.txt" />
+    </fileset>
 
-            <!-- java5 common code case -->
-            <present targetdir="src/main/java5" />
-            <present targetdir="src/main/java5">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
+    <!-- fileset for resources of a module. -->
+    <fileset id="resources" dir="src/main/java">
+        <exclude name="**/*.java" />
+    </fileset>
 
-            <!-- all common and platform code case -->
-            <present targetdir="src/main/java/common" />
-            <present targetdir="src/main/java/common">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-            <present targetdir="src/main/java/${hy.os.family}" />
-            <present targetdir="src/main/java/${hy.os.family}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-
+    <!-- fileset for resources of a module with platform-dependent code. -->
+    <fileset id="common.resources" dir="src/main/java/common">
+        <exclude name="**/*.java" />
     </fileset>
 
     <!-- test properties -->
@@ -887,20 +866,23 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
     </macrodef>
 
     <macrodef name="make-patternset">
-        <attribute name="source" default="${basedir}/src/main" />
+        <attribute name="source" default="src/main" />
+        <attribute name="module" />
         <attribute name="file"
-                   default="${hy.hdk}/build/ant/patternsets/${hy.module}.txt" />
+                   default="${hy.hdk}/build/ant/patternsets/@{module}.txt" />
         <sequential>
             <dirname file="@{file}" property="@{file}.dir" />
             <mkdir dir="${@{file}.dir}" />
+            <property name="@{source}.loc" location="@{source}"/>
+
             <pathconvert targetos="unix" property="@{file}.content"
                          pathsep="${line.separator}">
-                <fileset dir="@{source}" includes="java*/**/*.java" />
-                <map from="@{source}/java/unix/" to="" />
-                <map from="@{source}/java/windows/" to="" />
-                <map from="@{source}/java/common/" to="" />
-                <map from="@{source}/java5/" to="" />
-                <map from="@{source}/java/" to="" />
+                <fileset dir="${@{source}.loc}" includes="java*/**/*.java" />
+                <map from="${@{source}.loc}/java/unix/" to="" />
+                <map from="${@{source}.loc}/java/windows/" to="" />
+                <map from="${@{source}.loc}/java/common/" to="" />
+                <map from="${@{source}.loc}/java5/" to="" />
+                <map from="${@{source}.loc}/java/" to="" />
                 <compositemapper>
                     <mapper type="regexp" from="^(.*)\.java$$" to="\1.*"/>
                     <mapper type="regexp" from="^(.*)\.java$$" to="\1$*.*"/>
@@ -912,10 +894,9 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
     </macrodef>
 
     <macrodef name="delete-patternset">
-        <attribute name="file"
-                   default="${hy.hdk}/build/ant/patternsets/${hy.module}.txt" />
+        <attribute name="module" />
         <sequential>
-            <delete file="@{file}" />
+            <delete file="${hy.hdk}/build/ant/patternsets/@{module}.txt" />
         </sequential>
     </macrodef>
 

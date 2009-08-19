@@ -34,7 +34,7 @@
         </and>
     </condition>
 
-    <target name="build" /> <!-- depends="compile-java, copy-resources, build-jar" -->
+    <target name="build" />
 
     <target name="clean" depends="clean-native,clean-test" />
 
