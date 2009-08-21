@@ -293,7 +293,7 @@ createDouble1 (JNIEnv * env, U_64 * f, IDATA length, jint e)
     }
   else if (e >= 0 && e < APPROX_MAX_MAGNITUDE)
     {
-      result = toDoubleHighPrecision (f, length) * pow (10.0, e);
+      result = toDoubleHighPrecision (f, length) * pow (10.0, (double) e);
     }
   else if (e >= APPROX_MAX_MAGNITUDE)
     {
@@ -313,14 +313,14 @@ createDouble1 (JNIEnv * env, U_64 * f, IDATA length, jint e)
     }
   else if (e > APPROX_MIN_MAGNITUDE)
     {
-      result = toDoubleHighPrecision (f, length) / pow (10.0, -e);
+      result = toDoubleHighPrecision (f, length) / pow (10.0, (double) -e);
     }
 
   if (e <= APPROX_MIN_MAGNITUDE)
     {
 
-      result = toDoubleHighPrecision (f, length) * pow (10.0, e + 52);
-      result = result * pow (10.0, -52);
+      result = toDoubleHighPrecision (f, length) * pow (10.0, (double) (e + 52));
+      result = result * pow (10.0, (double) -52);
 
     }
 
