@@ -17,15 +17,12 @@
 
 package java.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.security.AccessController;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -43,8 +40,6 @@ import com.ibm.icu.util.ULocale;
 public final class Locale implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 9149081749638150636L;
-
-    private static volatile Locale[] availableLocales;
 
     // Initialize a default which is used during static
     // initialization of the default for the platform.
@@ -294,91 +289,6 @@ public final class Locale implements Cloneable, Serializable {
                     && variantCode.equals(o.variantCode);
         }
         return false;
-    }
-
-    static Locale[] find(String prefix) {
-        int last = prefix.lastIndexOf('/');
-        final String thePackage = prefix.substring(0, last + 1);
-        int length = prefix.length();
-        final String classPrefix = prefix.substring(last + 1, length);
-        Set<String> result = new HashSet<String>();
-        StringTokenizer paths = new StringTokenizer(System.getProperty(
-                "org.apache.harmony.boot.class.path", ""), System.getProperty( //$NON-NLS-1$ //$NON-NLS-2$
-                "path.separator", ";")); //$NON-NLS-1$//$NON-NLS-2$
-        while (paths.hasMoreTokens()) {
-            String nextToken = paths.nextToken();
-            File directory = new File(nextToken);
-            if (directory.exists()) {
-                if (directory.isDirectory()) {
-                    String path;
-                    try {
-                        path = directory.getCanonicalPath();
-                    } catch (IOException e) {
-                        continue;
-                    }
-                    File newDir;
-                    if (path.charAt(path.length() - 1) == File.separatorChar) {
-                        newDir = new File(path + thePackage);
-                    } else {
-                        newDir = new File(path + File.separatorChar
-                                + thePackage);
-                    }
-                    if (newDir.isDirectory()) {
-                        String[] list = newDir.list();
-                        for (int i = 0; i < list.length; i++) {
-                            String name = list[i];
-                            if (name.startsWith(classPrefix)
-                                    && name.endsWith(".class")) { //$NON-NLS-1$
-                                result
-                                        .add(name.substring(0,
-                                                name.length() - 6));
-                            }
-                        }
-                    }
-
-                } else {
-                    // Handle ZIP/JAR files.
-                    try {
-                        ZipFile zip = new ZipFile(directory);
-                        Enumeration<? extends ZipEntry> entries = zip.entries();
-                        while (entries.hasMoreElements()) {
-                            ZipEntry e = entries.nextElement();
-                            String name = e.getName();
-                            if (name.startsWith(prefix)
-                                    && name.endsWith(".class")) {//$NON-NLS-1$
-                                result.add(name.substring(last + 1, name
-                                        .length() - 6));
-                            }
-                        }
-                        zip.close();
-                    } catch (IOException e) {
-                        // Empty
-                    }
-                }
-            }
-        }
-        Locale[] locales = new Locale[result.size()];
-        int i = 0;
-        for (String name : result) {
-            int index = name.indexOf('_');
-            int nextIndex = name.indexOf('_', index + 1);
-            if (nextIndex == -1) {
-                locales[i++] = new Locale(name.substring(index + 1, name
-                        .length()), ""); //$NON-NLS-1$
-            } else {
-                String language = name.substring(index + 1, nextIndex);
-                String variant;
-                if ((index = name.indexOf('_', nextIndex + 1)) == -1) {
-                    variant = ""; //$NON-NLS-1$
-                    index = name.length();
-                } else {
-                    variant = name.substring(index + 1, name.length());
-                }
-                String country = name.substring(nextIndex + 1, index);
-                locales[i++] = new Locale(language, country, variant);
-            }
-        }
-        return locales;
     }
 
 	/**
