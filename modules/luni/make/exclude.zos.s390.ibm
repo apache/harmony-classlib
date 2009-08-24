@@ -2,5 +2,3 @@ org/apache/harmony/luni/tests/java/util/PropertiesTest.java
 org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java
 org/apache/harmony/luni/tests/java/lang/PackageTest.java
 org/apache/harmony/luni/tests/java/net/InetAddressTest.java
-org/apache/harmony/luni/tests/java/lang/DoubleTest.java
-org/apache/harmony/luni/tests/java/lang/FloatTest.java
