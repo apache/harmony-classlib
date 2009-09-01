@@ -115,7 +115,7 @@ BUILDFILES = \
   ../shared/additional/x_windows_949.o 
 
 
-DLLNAME = ../libhyniochar.so
+DLLNAME = ../libhyniochar$(HY_SHLIB_SUFFIX)
 
 MDLLIBFILES += $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
