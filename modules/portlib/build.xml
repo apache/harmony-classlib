@@ -110,6 +110,7 @@
                 <include name="stdlib.h" />
                 <include name="string.h" />
                 <include name="time.h" />
+                <include name="utime.h" />
                 <include name="unistd.h" />
                 <include name="arpa\inet.h" />
                 <include name="sys\ipc.h" />
@@ -261,6 +262,7 @@
                 <include name="stdlib.h" />
                 <include name="string.h" />
                 <include name="time.h" />
+                <include name="utime.h" />
                 <include name="unistd.h" />
                 <include name="arpa\inet.h" />
                 <include name="sys\ipc.h" />

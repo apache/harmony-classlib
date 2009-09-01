@@ -47,6 +47,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <utime.h>
 #include <pwd.h>
 #include <grp.h>
 #include <dirent.h>
@@ -2154,6 +2155,30 @@ int atoe_utimes(const char *path, const struct timeval *times)
    ep = a2e_string(path);
 
    return utimes(ep, times);
+}
+
+/*********************************************************************/
+/* name        - atoe_utime                                          */
+/*                                                                   */
+/* description - provide a version of the utime() system function    */
+/*               that converts the specified path from an ascii to   */
+/*               an ebcdic string.                                   */
+/*                                                                   */
+/* parameters  - path:  ascii string representing the path name      */
+/*               buf: times to be used in setting the modification   */
+/*                      and access times of the specified file       */
+/*                                                                   */
+/* returns     - int: 0 (success) or -1 (failure)                    */
+/*********************************************************************/
+
+int atoe_utime(const char *path, const struct utimebuf *buf)
+
+{
+   char *ep;
+
+   ep = a2e_string(path);
+
+   return utime(ep, buf);
 }
 
 /*********************************************************************/
