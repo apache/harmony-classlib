@@ -24,6 +24,9 @@
 #include "hyport.h"
 #include "portpriv.h"
 #include "hyportpg.h"
+#ifdef ZOS
+#include "atoe.h"
+#endif
 
 /**
  * Initialize the port library.
@@ -45,7 +48,15 @@ hyport_init_library (struct HyPortLibrary *portLibrary,
   /* return value of 0 is success */
   I_32 rc;
 
+#if defined(ZOS)
+  /* Initialise the ascii2ebcdic functions if it has not already been done */
+  rc = iconv_init();
+
+  if (rc ==0)
+#endif
+  {
   rc = hyport_create_library (portLibrary, version, size);
+  }
   
   if (rc == 0)
     {

@@ -14,24 +14,18 @@
 #  limitations under the License.
 
 #
-# Makefile for 'launcher'
+# Makefile for module 'a2e'
 #
 
 include $(HY_HDK)/build/make/defines.mk
 
-BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
-	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
-	$(SHAREDSUB)libhlp.o
-ifeq ($(HY_NO_THR),false)
-MDLLIBFILES += $(DLLPATH)libhyprt$(HY_LINKLIB_SUFFIX)
-else
-BUILDFILES += main_hlp.o
-endif
-EXENAME = $(EXEPATH)java
+INCLUDES += -DHYPORT_LIBRARY_DEFINE
 
-ifeq ($(HY_OS),zos)
-# On z/OS statically link the a2e lib so it can be used before LIBPATH is set
-MDLLIBFILES = $(LIBPATH)libhya2e.a $(LIBPATH)libhycommon.a
-endif
+BUILDFILES = sysTranslate.o atoe.o atoe_utils.o
+
+MDLLIBFILES =
+
+DLLNAME = ../libhya2e$(HY_SHLIB_SUFFIX)
+LIBNAME = $(LIBPATH)libhya2e.a
 
 include $(HY_HDK)/build/make/rules.mk

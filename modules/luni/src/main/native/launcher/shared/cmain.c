@@ -17,11 +17,19 @@
 
 #include "hycomp.h"
 #include "hyport.h"
+
 #ifdef HY_NO_THR
 #include "main_hlp.h"
+#if defined(ZOS)
+/* Need ascii2ebcdic functions on zOS */
+#include "atoe.h"
+#endif
 #endif /* HY_NO_THR */
+
 #include <stdlib.h>             /* for malloc for atoe and abort */
 #include <stdio.h>
+
+
 
 struct haCmdlineOptions
 {
@@ -103,6 +111,21 @@ main (int argc, char **argv, char **envp)
 #ifdef HY_NO_THR
   UDATA portLibDescriptor;
   hyport_init_library_type port_init_library_func;
+
+#if defined(ZOS)
+  /* Initialise the ascii2ebcdic functions before doing anything else */
+  rc = iconv_init();
+  if (0 != rc) {
+#pragma convlit(suspend)
+      fprintf(stderr, "Failed to initialise atoe library\n");
+#pragma convlit(resume)
+      return rc;
+  }
+
+  /* Convert our command line options into ASCII - this function is
+     part of the hya2e library */
+  ConvertArgstoASCII(argc, argv);
+#endif
 
   /* determine which VM directory to use and add it to the path */
   rc = main_addVMDirToPath(argc, argv, envp);

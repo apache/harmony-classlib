@@ -18,6 +18,9 @@
 #include <string.h>
 #include "hyport.h"
 #include "strhelp.h"
+#ifdef ZOS
+#include "atoe.h"
+#endif
 
 static int prop_alloc(HyPortLibrary * portLibrary, key_value_pair* property,
                       char* start, char* delim, char* end);
@@ -167,6 +170,11 @@ properties_load(HyPortLibrary * portLibrary, const char *filename,
     if (!scanCursor) {
         return JNI_ERR;
     }
+
+#ifdef ZOS
+    /* Convert the scan buffer into ASCII */
+    scanCursor = e2a(scanCursor, seekResult);
+#endif
 
     fileSize = (IDATA) seekResult;
     arraySize = fileSize/50 + 1;
