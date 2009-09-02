@@ -59,7 +59,7 @@ typedef struct InstanceData {
 
 /**************************************************************************
  * name        - pchar
- * description - Print a charater to InstanceData buffer
+ * description - Print a character to InstanceData buffer
  * parameters  - this   Structure holding the receiving buffer
  *               c      Character to add to buffer
  * returns     - int return code, 0 for success
@@ -133,7 +133,7 @@ typedef enum {
  *               value          The value to format
  *               format_type    Character flag specifying format type
  *               left_justify   Left justify number flag
- *               min_width      Minimum number of charaters value will
+ *               min_width      Minimum number of characters value will
  *                              occupy
  *               precision
  *               zero_pad       Pad number with zeros, flag
@@ -245,7 +245,7 @@ fnumber(InstanceData *this, long value, int format_type, int left_justify,
  *               value         Number to convert
  *               format_type   Character flag defining format
  *               left_justify  Left justify number flag
- *               min_width     Minimum number of charaters value will
+ *               min_width     Minimum number of characters value will
  *                             occupy
  *               precision
  *               zero_pad      Pad number with zeros, flag
