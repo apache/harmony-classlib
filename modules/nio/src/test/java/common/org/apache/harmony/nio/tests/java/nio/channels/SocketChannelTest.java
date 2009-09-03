@@ -1711,7 +1711,7 @@ public class SocketChannelTest extends TestCase {
      * Regression test for Harmony-1947.
      */
     public void test_finishConnect() throws Exception {
-        SocketAddress address = new InetSocketAddress("localhost", 2046);
+        SocketAddress address = new InetSocketAddress("localhost", 0);
 
         ServerSocketChannel theServerChannel = ServerSocketChannel.open();
         ServerSocket serversocket = theServerChannel.socket();
@@ -1727,7 +1727,7 @@ public class SocketChannelTest extends TestCase {
             // Set the SocketChannel to non-blocking so that connect(..) does
             // not block
             channel1.configureBlocking(false);
-            boolean connected = channel1.connect(address);
+            boolean connected = channel1.connect(new InetSocketAddress("localhost",serversocket.getLocalPort()));
             if (!connected) {
                 // Now set the SocketChannel back to blocking so that
                 // finishConnect() blocks.
