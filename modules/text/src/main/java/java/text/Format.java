@@ -185,7 +185,7 @@ public abstract class Format implements Serializable, Cloneable {
     public Object parseObject(String string) throws ParseException {
         ParsePosition position = new ParsePosition(0);
         Object result = parseObject(string, position);
-        if (position.getErrorIndex() != -1 || position.getIndex() == 0) {
+        if (position.getIndex() == 0) {
             // text.1C=Format.parseObject(String) parse failure
             throw new ParseException(
                     Messages.getString("text.1C"), position.getErrorIndex()); //$NON-NLS-1$
