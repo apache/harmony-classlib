@@ -1839,35 +1839,29 @@ public class Collections {
      * @throws UnsupportedOperationException
      *             when replacing an element in the list is not supported.
      */
-    @SuppressWarnings("unchecked")
     public static void shuffle(List<?> list, Random random) {
-        if (!(list instanceof RandomAccess)) {
-            Object[] array = list.toArray();
-            for (int i = array.length - 1; i > 0; i--) {
+        @SuppressWarnings("unchecked") // we won't put foreign objects in
+        List<Object> objectList = (List<Object>) list;
+
+        if (list instanceof RandomAccess) {
+            for (int i = objectList.size() - 1; i > 1; i--) {
                 int index = random.nextInt(i + 1);
-                if (index < 0) {
-                    index = -index;
-                }
+                objectList.set(index, objectList.set(i, objectList.get(index)));
+            }
+        } else {
+            Object[] array = list.toArray();
+            for (int i = array.length - 1; i > 1; i--) {
+                int index = random.nextInt(i + 1);
                 Object temp = array[i];
                 array[i] = array[index];
                 array[index] = temp;
             }
 
             int i = 0;
-            ListIterator<Object> it = (ListIterator<Object>) list
-                    .listIterator();
+            ListIterator<Object> it = objectList.listIterator();
             while (it.hasNext()) {
                 it.next();
                 it.set(array[i++]);
-            }
-        } else {
-            List<Object> rawList = (List<Object>) list;
-            for (int i = rawList.size() - 1; i > 0; i--) {
-                int index = random.nextInt(i + 1);
-                if (index < 0) {
-                    index = -index;
-                }
-                rawList.set(index, rawList.set(i, rawList.get(index)));
             }
         }
     }
