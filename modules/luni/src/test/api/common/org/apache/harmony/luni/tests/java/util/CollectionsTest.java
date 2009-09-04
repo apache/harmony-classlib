@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Arrays;
 
 import org.apache.harmony.luni.internal.nls.Messages;
 
@@ -585,6 +586,19 @@ public class CollectionsTest extends junit.framework.TestCase {
 		ll2.addAll(ll);
 		testShuffle(ll2, "Random Access", false);
 	}
+
+    public void testShuffleRandomAccessWithSeededRandom() {
+        List<String> list = Arrays.asList("A", "B", "C", "D", "E", "F", "G");
+        Collections.shuffle(list, new Random(0));
+        assertEquals(Arrays.asList("B", "A", "D", "C", "G", "E", "F"), list);
+    }
+
+    public void testShuffleWithSeededRandom() {
+        List<String> list = new LinkedList<String>(Arrays.asList(
+                "A", "B", "C", "D", "E", "F", "G"));
+        Collections.shuffle(list, new Random(0));
+        assertEquals(Arrays.asList("B", "A", "D", "C", "G", "E", "F"), list);
+    }
 
 	private void testShuffle(List list, String type, boolean random) {
 		boolean sorted = true;

@@ -1841,16 +1841,16 @@ public class Collections {
      */
     public static void shuffle(List<?> list, Random random) {
         @SuppressWarnings("unchecked") // we won't put foreign objects in
-        List<Object> objectList = (List<Object>) list;
+        final List<Object> objectList = (List<Object>) list;
 
         if (list instanceof RandomAccess) {
-            for (int i = objectList.size() - 1; i > 1; i--) {
+            for (int i = objectList.size() - 1; i > 0; i--) {
                 int index = random.nextInt(i + 1);
                 objectList.set(index, objectList.set(i, objectList.get(index)));
             }
         } else {
-            Object[] array = list.toArray();
-            for (int i = array.length - 1; i > 1; i--) {
+            Object[] array = objectList.toArray();
+            for (int i = array.length - 1; i > 0; i--) {
                 int index = random.nextInt(i + 1);
                 Object temp = array[i];
                 array[i] = array[index];
