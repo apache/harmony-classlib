@@ -648,9 +648,6 @@ public class MessageFormatTest extends TestCase {
      *        java.text.ParsePosition)
      */
     public void test_parseLjava_lang_StringLjava_text_ParsePosition() {
-        // Test for method java.lang.Object []
-        // java.text.MessageFormat.parse(java.lang.String,
-        // java.text.ParsePosition)
         MessageFormat format = new MessageFormat("date is {0,date,MMM d, yyyy}");
         ParsePosition pos = new ParsePosition(2);
         Object[] result = (Object[]) format
@@ -669,6 +666,13 @@ public class MessageFormatTest extends TestCase {
         String parse = "a; b; c";
         result = mf.parse(parse, new ParsePosition(0));
 		assertEquals("Wrong variable result", "c", result[0]);
+
+		mf = new MessageFormat("before {0}, after {1,number}");
+		parse = "before you, after 42";
+		pos.setIndex(0);
+		pos.setErrorIndex(8);
+		result = mf.parse(parse, pos);
+		assertEquals(2, result.length);
     }
 
     /**
@@ -727,10 +731,6 @@ public class MessageFormatTest extends TestCase {
     	Locale.setDefault(defaultLocale);
     }
     
-    
-    
-    
-    
 	/**
 	 * @tests java.text.MessageFormat(java.util.Locale)
 	 */
@@ -754,6 +754,7 @@ public class MessageFormatTest extends TestCase {
 		assertEquals("Assert 0: incorrect size of parsed data ", 1, res.length);
 		assertEquals("Assert 1: parsed value incorrectly", new Long(10000), (Long)res[0]);
 	}
+
 	public void test_format_Object() { 
 		// Regression for HARMONY-1875
         Locale.setDefault(Locale.CANADA); 
