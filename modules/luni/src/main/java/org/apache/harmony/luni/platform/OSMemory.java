@@ -69,6 +69,15 @@ final class OSMemory implements IMemorySystem {
 		return singleton;
 	}
 
+    /*
+     * Native method to determine whether the underlying platform is little
+     * endian.
+     * 
+     * @return <code>true</code> if the platform is little endian or
+     * <code>false</code> if it is big endian.
+     */
+    private static native boolean isLittleEndianImpl();
+
 	/**
 	 * This class is not designed to be publicly instantiated.
 	 * 
@@ -78,16 +87,14 @@ final class OSMemory implements IMemorySystem {
 		super();
 	}
 
-	/**
-	 * Answers whether the byte order of this machine is little endian or not..
-	 * 
-	 * @return <code>false</code> for Big Endian, and
-	 *         <code>true</code. for Little Endian.
-	 */
-	public static native boolean isLittleEndianImpl();
-
+    /**
+     * Answers whether the byte order of this machine is little endian or not.
+     * 
+     * @return <code>false</code> for Big Endian, and
+     *         <code>true</code> for Little Endian.
+     */
 	public boolean isLittleEndian() {
-		return isLittleEndianImpl();
+		return NATIVE_ORDER == Endianness.LITTLE_ENDIAN;
 	}
 
 	/**
