@@ -19,6 +19,8 @@ package java.text;
 
 import java.util.Locale;
 
+import org.apache.harmony.text.internal.nls.Messages;
+
 /**
  * Locates boundaries in text. This class defines a protocol for objects that
  * break up a piece of natural-language text according to a set of criteria.
@@ -538,11 +540,10 @@ public abstract class BreakIterator implements Cloneable {
      *             greater than the length of {@code buf}.
      */
     protected static long getLong(byte[] buf, int offset) {
-        if (null == buf) {
-            throw new NullPointerException();
-        }
-        if (offset < 0 || buf.length - offset < LONG_LENGTH) {
-            throw new ArrayIndexOutOfBoundsException();
+        // Force a buf null check first!
+        if (buf.length - offset < LONG_LENGTH || offset < 0) {
+            // text.1E=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("text.1E", offset)); //$NON-NLS-1$
         }
         long result = 0;
         for (int i = offset; i < offset + LONG_LENGTH; i++) {
@@ -567,11 +568,10 @@ public abstract class BreakIterator implements Cloneable {
      *             greater than the length of {@code buf}.
      */
     protected static int getInt(byte[] buf, int offset) {
-        if (null == buf) {
-            throw new NullPointerException();
-        }
-        if (offset < 0 || buf.length - INT_LENGTH < offset) {
-            throw new ArrayIndexOutOfBoundsException();
+        // Force buf null check first!
+        if (buf.length - INT_LENGTH < offset || offset < 0) {
+            // text.1E=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("text.1E", offset)); //$NON-NLS-1$
         }
         int result = 0;
         for (int i = offset; i < offset + INT_LENGTH; i++) {
@@ -596,11 +596,10 @@ public abstract class BreakIterator implements Cloneable {
      *             greater than the length of {@code buf}.
      */
     protected static short getShort(byte[] buf, int offset) {
-        if (null == buf) {
-            throw new NullPointerException();
-        }
-        if (offset < 0 || buf.length - SHORT_LENGTH < offset) {
-            throw new ArrayIndexOutOfBoundsException();
+        // Force buf null check first!
+        if (buf.length - SHORT_LENGTH < offset || offset < 0) {
+            // text.1E=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("text.1E", offset)); //$NON-NLS-1$
         }
         short result = 0;
         for (int i = offset; i < offset + SHORT_LENGTH; i++) {
