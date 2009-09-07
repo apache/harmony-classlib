@@ -28,7 +28,9 @@ import java.nio.channels.spi.AbstractInterruptibleChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+
 import org.apache.harmony.nio.internal.IOUtil;
+import org.apache.harmony.nio.internal.nls.Messages;
 
 /**
  * This class provides several utilities to get I/O streams from channels.
@@ -242,8 +244,13 @@ public final class Channels {
         public synchronized int read(byte[] target, int offset, int length)
                 throws IOException {
             // avoid int overflow, check null target
-            if (length + offset > target.length || length < 0 || offset < 0) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (offset > target.length || offset < 0) {
+                // nio.0C=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0C", offset)); //$NON-NLS-1$
+            }
+            if (length < 0 || offset > target.length - length) {
+                // nio.0D=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0D", length)); //$NON-NLS-1$
             }
             if (0 == length) {
                 return 0;
@@ -271,9 +278,15 @@ public final class Channels {
         @Override
         public synchronized int read(byte[] target, int offset, int length)
                 throws IOException {
-            // avoid int overflow, check null target
-            if (length + offset > target.length || length < 0 || offset < 0) {
-                throw new ArrayIndexOutOfBoundsException();
+            // Force null target check first!
+            if (offset > target.length || offset < 0) {
+                // nio.0C=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0C", offset)); //$NON-NLS-1$
+            }
+            
+            if (length < 0 || length > target.length - offset) {
+                // nio.0D=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0D", length)); //$NON-NLS-1$
             }
             if (0 == length) {
                 return 0;
@@ -306,8 +319,13 @@ public final class Channels {
         public synchronized void write(byte[] source, int offset, int length)
                 throws IOException {
             // avoid int overflow, check null source
-            if (length + offset > source.length || length < 0 || offset < 0) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (offset > source.length || offset < 0) {
+                // nio.0C=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0C", offset)); //$NON-NLS-1$
+            }
+            if (length < 0 || offset > source.length - length) {
+                // nio.0D=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("nio.0D", length)); //$NON-NLS-1$
             }
             if (0 == length) {
                 return;
