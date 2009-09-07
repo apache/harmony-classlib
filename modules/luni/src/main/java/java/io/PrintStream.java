@@ -653,7 +653,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      *            the buffer to be written.
      * @param offset
      *            the index of the first byte in {@code buffer} to write.
-     * @param count
+     * @param length
      *            the number of bytes in {@code buffer} to write.
      * @throws IndexOutOfBoundsException
      *             if {@code offset < 0} or {@code count < 0}, or if {@code
@@ -661,14 +661,15 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      * @see #flush()
      */
     @Override
-    public void write(byte[] buffer, int offset, int count) {
-        if (buffer == null) {
-            throw new NullPointerException();
+    public void write(byte[] buffer, int offset, int length) {
+        // Force buffer null check first!
+        if (offset > buffer.length || offset < 0) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
         }
-        // avoid int overflow
-        if (offset < 0 || offset > buffer.length || count < 0
-                || count > buffer.length - offset) {
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+        if (length < 0 || length > buffer.length - offset) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
         }
         synchronized (this) {
             if (out == null) {
@@ -676,7 +677,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
                 return;
             }
             try {
-                out.write(buffer, offset, count);
+                out.write(buffer, offset, length);
                 if (autoflush) {
                     flush();
                 }

@@ -17,6 +17,8 @@
 
 package java.io;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * Wraps an existing {@link InputStream} and counts the line terminators
  * encountered while reading the data. Line numbering starts at 0. Recognized
@@ -167,13 +169,14 @@ public class LineNumberInputStream extends FilterInputStream {
      */
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
-        if (buffer == null) {
-            throw new NullPointerException();
-        }
-        // avoid int overflow
-        if (offset < 0 || offset > buffer.length || length < 0
-                || length > buffer.length - offset) {
-            throw new ArrayIndexOutOfBoundsException();
+        // Force buffer null check first!
+        if (offset > buffer.length || offset < 0) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+        } 
+        if (length < 0 || length > buffer.length - offset) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
         }
 
         for (int i = 0; i < length; i++) {

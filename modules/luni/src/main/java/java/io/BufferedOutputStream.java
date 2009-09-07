@@ -131,9 +131,14 @@ public class BufferedOutputStream extends FilterOutputStream {
             return;
         }
         
-        if (offset < 0 || offset > buffer.length - length || length < 0) {
-            // K002f=Arguments out of bounds
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+        if (offset < 0 || offset > buffer.length - length) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+        
+        }
+        if (length < 0) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
         }
 
         // flush the internal buffer first if we have not enough space left
