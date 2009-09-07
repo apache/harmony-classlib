@@ -566,9 +566,6 @@ public class Statement {
             }
             for (int i = 0; i < referenceMethodArgumentTypes.length; i++) {
                 if (referenceMethodArgumentTypes[i] == null) {
-                    if (argumentTypes[i].isPrimitive()) {
-                        return INFINITY;
-                    }
                     // doesn't affect the norm calculation if null
                     continue;
                 }
