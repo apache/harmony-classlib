@@ -154,6 +154,7 @@
         <compile-tests description="swing tests">
             <javac-elements>
                 <src>
+                    <pathelement location="src/test/api/java" />
                     <pathelement location="src/test/api/java.injected" />
                 </src>
             </javac-elements>
