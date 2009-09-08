@@ -345,7 +345,8 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
     public void test_getZoneStrings() {
         // Test for method java.lang.String [][]
         // java.text.DateFormatSymbols.getZoneStrings()
-        String[][] val = { { "XX" }, { "YY" } };
+        String[][] val = { { "XX", "XX", "XX", "XX", "XX" }, 
+                { "YY", "YY", "YY", "YY", "YY" } };
         dfs.setZoneStrings(val);
         String[][] retVal = dfs.getZoneStrings();
         if (retVal.length != val.length)
@@ -488,18 +489,56 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
     public void test_setZoneStrings$$Ljava_lang_String() {
         // Test for method void
         // java.text.DateFormatSymbols.setZoneStrings(java.lang.String [][])
-        String[][] val = { { "XX" }, { "YY" } };
+        String[][] val = { { "XX", "XX", "XX", "XX", "XX" },
+                        { "YY", "YY", "YY", "YY", "YY" } };
         dfs.setZoneStrings(val);
         String[][] retVal = dfs.getZoneStrings();
         assertTrue("get returns identical", retVal != dfs.getZoneStrings());
         assertTrue("get[0] returns identical", retVal[0] != dfs
                 .getZoneStrings()[0]);
         assertTrue("get returned identical", retVal != val);
-        if (retVal.length != val.length)
-            fail("Returned wrong array");
+        assertEquals("Returned wrong array", val.length, retVal.length);
         for (int i = 0; i < val.length; i++)
             assertTrue("Failed to set strings: " + retVal[i], Arrays.equals(
                     retVal[i], val[i]));
+    }
+
+    /**
+     * @tests java.text.DateFormatSymbols#setZoneStrings(java.lang.String[][])
+     * 
+     * Tests setting zone strings to invalid values
+     * Regression for HARMONY-6337
+     */
+    public void test_setZoneStrings_invalid() {
+        // failing cases
+        String[][] val1 = null;
+        try {
+            dfs.setZoneStrings(val1);
+            fail("Attempt to set zone strings a null array should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        String[][] val2 = { { "XX", "XX" }, { "YY", "YY" } };
+        try {
+            dfs.setZoneStrings(val2);
+            fail("Attempt to set zone strings to a 2D array that contains one or more "
+                 + "rows of length less than 5 should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected because each subarray has length < 5
+        }
+
+        String[][] val3 = { { "a", "b", "c", "d", "e" },
+                { "a", "b", "c", "d", "e" },
+                { "a", "b", "c", "d" },
+                { "a", "b", "c", "d", "e" } };
+        try {
+            dfs.setZoneStrings(val3);
+            fail("Attempt to set zone strings to a 2D array that contains one or more "
+                 + "rows of length less than 5 should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected because each subarray has length < 5
+        }
     }
 
     /**

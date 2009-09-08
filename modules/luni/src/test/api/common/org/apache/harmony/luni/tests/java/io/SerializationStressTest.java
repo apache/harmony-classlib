@@ -186,8 +186,8 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 		CALENDAR.set(Calendar.MILLISECOND, 553);
 		DATEFORM.setCalendar(CALENDAR);
 		java.text.DateFormatSymbols symbols = new java.text.DateFormatSymbols();
-		symbols.setZoneStrings(new String[][] { { "a", "b", "c", "d" },
-				{ "e", "f", "g", "h" } });
+		symbols.setZoneStrings(new String[][] { { "a", "b", "c", "d", "e" },
+				{ "f", "g", "h", "i", "j" } });
 		((java.text.SimpleDateFormat) DATEFORM).setDateFormatSymbols(symbols);
 		DATEFORM.setNumberFormat(new java.text.DecimalFormat("#.#;'-'#.#"));
 		DATEFORM.setTimeZone(TimeZone.getTimeZone("EST"));

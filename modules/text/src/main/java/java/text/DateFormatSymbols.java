@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.harmony.text.LocaleServiceProviderLoader;
+import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * Encapsulates localizable date-time formatting data, such as the names of the
@@ -533,6 +534,19 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the two-dimensional array of strings.
      */
     public void setZoneStrings(String[][] data) {
+        validateZoneStrings(data);
         zoneStrings = data.clone();
+    }
+
+    /**
+     * Check that each row in the 2D array is at least length 5
+     * 
+     * @param data
+     * @throws IllegalArgumentException if array contains a short row
+     */
+    private void validateZoneStrings(String[][] data) {
+        for (String[] row : data)
+            if (row.length < 5)
+                throw new IllegalArgumentException(Messages.getString("text.1B"));
     }
 }
