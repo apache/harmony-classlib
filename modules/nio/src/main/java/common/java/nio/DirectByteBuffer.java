@@ -36,20 +36,8 @@ import org.apache.harmony.nio.internal.nls.Messages;
  */
 abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
 
-    // This class will help us track whether the address is valid or not.
-    static final class SafeAddress {
-        protected volatile boolean isValid = true;
-
-        protected final PlatformAddress address;
-
-        protected SafeAddress(PlatformAddress address) {
-            super();
-            this.address = address;
-        }
-    }
-
-    // This is a wrapped reference to the base address of the buffer memory.
-    protected final SafeAddress safeAddress;
+    // This is the base address of the buffer memory.
+    protected PlatformAddress address;
 
     // This is the offset from the base address at which this buffer logically
     // starts.
@@ -63,14 +51,13 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
      * free the memory where possible.
      */
     DirectByteBuffer(int capacity) {
-        this(new SafeAddress(PlatformAddressFactory.alloc(capacity, (byte) 0)),
-                capacity, 0);
-        safeAddress.address.autoFree();
+        this(PlatformAddressFactory.alloc(capacity, (byte) 0), capacity, 0);
+        address.autoFree();
     }
 
-    DirectByteBuffer(SafeAddress address, int capacity, int offset) {
+    DirectByteBuffer(PlatformAddress address, int capacity, int offset) {
         super(capacity);
-        this.safeAddress = address;
+        this.address = address;
         this.offset = offset;
     }
 
@@ -212,7 +199,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
     }
 
     public final boolean isAddressValid() {
-        return safeAddress.isValid;
+        return address != PlatformAddress.INVALID;
     }
 
     public final void addressValidityCheck() {
@@ -223,16 +210,12 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
         }
     }
 
-    private void markAddressInvalid() {
-        safeAddress.isValid = false;
-    }
-
     /*
      * Answers the base address of the buffer (i.e. before offset).
      */
     public final PlatformAddress getBaseAddress() {
         addressValidityCheck();
-        return safeAddress.address;
+        return address;
     }
 
     /**
@@ -262,14 +245,15 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
      * <code>IllegalStateException</code>.
      * <p>
      * Note this is is possible that the memory is freed by code that reaches
-     * into the address and explicitly frees it 'beneith' us -- this is bad
+     * into the address and explicitly frees it 'beneath' us -- this is bad
      * form.
      * </p>
      */
     public final void free() {
         if (isAddressValid()) {
-            markAddressInvalid();
-            safeAddress.address.free();
+            PlatformAddress a = address;
+            address = PlatformAddress.INVALID;
+            a.free();
         }
     }
 

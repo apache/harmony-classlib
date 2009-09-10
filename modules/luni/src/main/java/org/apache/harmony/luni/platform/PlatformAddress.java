@@ -24,6 +24,11 @@ package org.apache.harmony.luni.platform;
  */
 public class PlatformAddress implements ICommonDataTypes, Comparable {
 
+    /**
+     * This final field defines the sentinel for an unknown address value.
+     */
+    static final long UNKNOWN = -1;
+
 	/**
 	 * This final field defines the size of an address on this platform.
 	 */
@@ -33,12 +38,15 @@ public class PlatformAddress implements ICommonDataTypes, Comparable {
 	 * NULL is the canonical address with address value zero.
 	 */
 	public static final PlatformAddress NULL = new PlatformAddress(0, 0);
+	
+	/**
+	 * INVALID is the canonical address with an invalid value (i.e. a non-address).
+	 */
+    public static final PlatformAddress INVALID = new PlatformAddress(UNKNOWN, UNKNOWN);
 
 	public static final IMemorySpy memorySpy = new RuntimeMemorySpy();
 
 	static final IMemorySystem osMemory = Platform.getMemorySystem();
-
-    static final long UNKNOWN = -1;
 
 	final long osaddr;
     
