@@ -279,14 +279,14 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
 
     int writeLongToBuffer(long val,
                           byte[] buffer, int offset) throws IOException {
-        buff[offset++] = (byte) (val >> 56);
-        buff[offset++] = (byte) (val >> 48);
-        buff[offset++] = (byte) (val >> 40);
-        buff[offset++] = (byte) (val >> 32);
-        buff[offset++] = (byte) (val >> 24);
-        buff[offset++] = (byte) (val >> 16);
-        buff[offset++] = (byte) (val >> 8);
-        buff[offset++] = (byte) val;
+        buffer[offset++] = (byte) (val >> 56);
+        buffer[offset++] = (byte) (val >> 48);
+        buffer[offset++] = (byte) (val >> 40);
+        buffer[offset++] = (byte) (val >> 32);
+        buffer[offset++] = (byte) (val >> 24);
+        buffer[offset++] = (byte) (val >> 16);
+        buffer[offset++] = (byte) (val >> 8);
+        buffer[offset++] = (byte) val;
         return offset;
     }
 
