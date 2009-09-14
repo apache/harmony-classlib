@@ -29,4 +29,9 @@ BUILDFILES += main_hlp.o
 endif
 EXENAME = $(EXEPATH)java
 
+ifeq ($(HY_OS),zos)
+# On z/OS statically link the a2e lib so it can be used before LIBPATH is set
+MDLLIBFILES = $(LIBPATH)libhya2e.a $(LIBPATH)libhycommon.a
+endif
+
 include $(HY_HDK)/build/make/rules.mk

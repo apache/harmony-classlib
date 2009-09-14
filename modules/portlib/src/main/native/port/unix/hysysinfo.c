@@ -49,6 +49,18 @@
 #include "portpriv.h"
 #include "hyportpg.h"
 
+#if defined(ZOS)
+#include <sys/ps.h>
+#include <sys/types.h>
+#include "atoe.h"
+
+#if !defined(PATH_MAX) 
+/* This is a somewhat arbitrarily selected fixed buffer size. */
+#define PATH_MAX 1024
+#endif
+
+#endif
+
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 #if !defined(FREEBSD)
 static IDATA readSymbolicLink (struct HyPortLibrary *portLibrary,
@@ -191,7 +203,11 @@ hysysinfo_get_OS_type (struct HyPortLibrary *portLibrary)
       char *buffer;
       struct utsname sysinfo;
 
+#if !defined(ZOS)
       rc = uname (&sysinfo);
+#else /* !defined(ZOS) */
+      rc = __osname(&sysinfo);
+#endif /* !defined(ZOS) */
 
       if (rc >= 0)
         {
@@ -232,13 +248,18 @@ hysysinfo_get_OS_version (struct HyPortLibrary *portLibrary)
       int rc;
       struct utsname sysinfo;
 
+#if !defined(ZOS)
       rc = uname (&sysinfo);
+#else /* !defined(ZOS) */
+      rc = __osname(&sysinfo);
+#endif /* !defined(ZOS) */
 
       if (rc >= 0)
         {
           int len;
           char *buffer;
 
+#if !defined(ZOS)
           len = strlen (sysinfo.release) + 1;
           buffer = portLibrary->mem_allocate_memory (portLibrary, len);
           if (NULL == buffer)
@@ -247,6 +268,14 @@ hysysinfo_get_OS_version (struct HyPortLibrary *portLibrary)
             }
           strncpy (buffer, sysinfo.release, len);
           buffer[len - 1] = '\0';
+#else /* !defined(ZOS) */
+			len = strlen(sysinfo.version) + strlen(sysinfo.release) + 2; /* "." and terminating null character */
+			buffer = portLibrary->mem_allocate_memory(portLibrary, len);
+			if (NULL == buffer) {
+				return NULL;
+			}
+			sprintf(buffer, "%s.%s", sysinfo.version, sysinfo.release);
+#endif /* !defined(ZOS) */
 
           PPG_si_osVersion = buffer;
         }
@@ -334,6 +363,7 @@ hysysinfo_get_executable_name (struct HyPortLibrary * portLibrary,
   char *currentPath = NULL;
   char *originalWorkingDirectory = NULL;
 
+#if !defined(ZOS)
   if (!argv0)
     {
       return -1;
@@ -344,6 +374,39 @@ hysysinfo_get_executable_name (struct HyPortLibrary * portLibrary,
     {
       strcpy (currentPath, argv0);
     }
+#else /* !defined(ZOS) */
+    char *e2aName = NULL;
+	int token = 0;
+	W_PSPROC buf;
+	pid_t mypid = getpid();
+
+	memset(&buf, 0x00, sizeof(buf));
+	buf.ps_pathptr   = portLibrary->mem_allocate_memory(portLibrary, buf.ps_pathlen = PS_PATHBLEN);
+	if (buf.ps_pathptr   == NULL) {
+		retval = -1;
+		goto cleanup;
+	}
+	while ((token = w_getpsent(token, &buf, sizeof(buf))) > 0) {
+		if (buf.ps_pid == mypid) {
+            e2aName = e2a_func(buf.ps_pathptr, strlen(buf.ps_pathptr)+1);
+			break;
+		}
+	}
+
+    /* Return val of w_getpsent == -1 indicates error, == 0 indicates no more processes */
+	if (token <= 0) {
+		retval = -1;
+		goto cleanup;
+	}
+
+	currentPath = (portLibrary->mem_allocate_memory) (portLibrary, strlen(e2aName) + 1);
+	if (currentPath) {
+		strcpy(currentPath, e2aName);
+	}
+    portLibrary->mem_free_memory(portLibrary, buf.ps_pathptr);
+    free(e2aName);
+#endif /* !defined(ZOS) */
+
   if (!currentPath)
     {
       retval = -1;
@@ -678,8 +741,7 @@ hysysinfo_get_number_CPUs (struct HyPortLibrary * portLibrary)
 #if defined(LINUX) || defined(FREEBSD)
   /* returns number of online(_SC_NPROCESSORS_ONLN) processors, number configured(_SC_NPROCESSORS_CONF) may  be more than online */
   return sysconf (_SC_NPROCESSORS_ONLN);
-#else
-#if defined(MACOSX)
+#elif defined(MACOSX)
   /* derived from examples in the sysctl(3) man page from FreeBSD */
   int mib[2], ncpu;
   size_t len;
@@ -693,8 +755,6 @@ hysysinfo_get_number_CPUs (struct HyPortLibrary * portLibrary)
 #else
   return 0;
 #endif
-#endif
-
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -722,6 +782,9 @@ hysysinfo_get_physical_memory (struct HyPortLibrary * portLibrary)
   sysctl(mib, 2, &mem, &len, NULL, 0);
   return (U_64)mem;
 
+#elif defined(ZOS)
+	/* TODO: implement. Currently this function is unused. */
+	return 0;
 #else
   IDATA pagesize, num_pages;
 
@@ -866,23 +929,39 @@ IDATA VMCALL
 hysysinfo_get_username (struct HyPortLibrary * portLibrary, char *buffer,
                         UDATA length)
 {
+  char *remoteCopy = NULL;
+#if defined(ZOS)
+  char *loginID = getlogin();
+  if (NULL != loginID) {
+    struct passwd *userDescription = getpwnam(loginID);
+    if (NULL != userDescription) {
+      remoteCopy = userDescription->pw_name;
+    }
+  }
+	/* there exist situations where one of the above calls will fail.  Fall through to the Unix solution for those cases */
+#endif
+
+  if (NULL == remoteCopy) {
   uid_t uid = getuid ();
-  int nameLen;
   struct passwd *pwent = getpwuid (uid);
 
-  if (pwent == NULL)
+    if (pwent != NULL)
     {
-      return -1;
+      remoteCopy = pwent->pw_name;
     }
-
-  nameLen = strlen (pwent->pw_name);
+  }
+  if (NULL == remoteCopy) {
+    return -1;
+  } else {
+    size_t nameLen = strlen (remoteCopy);
 
   if ((nameLen + 1) > length)
     {
       return nameLen + 1;
     }
 
-  portLibrary->str_printf (portLibrary, buffer, length, "%s", pwent->pw_name);
+    portLibrary->str_printf (portLibrary, buffer, length, "%s", remoteCopy);
+  }
 
   return 0;
 }

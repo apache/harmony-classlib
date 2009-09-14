@@ -34,6 +34,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef ZOS
+#include <iconv.h>
+#endif
+
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 static const char *nlsh_lookup (struct HyPortLibrary *portLibrary,
                                 U_32 module_name, U_32 message_num);
@@ -1233,12 +1237,25 @@ read_from_catalog (struct HyPortLibrary *portLibrary, IDATA fd, char *buf,
   char temp[BUF_SIZE];
   IDATA count, nbytes = bufsize;
   char *cursor = buf;
+#ifdef ZOS
+	iconv_t converter;
+	size_t inbytesleft, outbytesleft;
+	char* inbuf, *outbuf;
+#endif
 
   if (nbytes <= 0)
     return 0;
 
   /* discount 1 for the trailing NUL */
   nbytes -= 1;
+
+#ifdef ZOS
+/* iconv_open is not an a2e function, so we need to pass it EBCDIC strings */
+#pragma convlit(suspend)
+	converter = iconv_open("UTF-8", "IBM-1047");
+#pragma convlit(resume)
+	if ( converter == (iconv_t)-1 ) return NULL;
+#endif
 
   while (nbytes)
     {
@@ -1247,20 +1264,43 @@ read_from_catalog (struct HyPortLibrary *portLibrary, IDATA fd, char *buf,
 
       if (count < 0)
         {
-
+#ifdef ZOS
+          iconv_close(converter);
+#endif
           /* if we've made it through a successful read, return the buf. */
           if (nbytes + 1 != bufsize)
             return buf;
           return NULL;
         }
 
+#ifdef ZOS
+		inbuf = temp;
+		inbytesleft = count;
+		outbuf = cursor;
+		outbytesleft = nbytes;
+		if ( (size_t)-1 == iconv(converter, &inbuf, &inbytesleft, &outbuf, &outbytesleft) || inbytesleft == count ) {
+			/* conversion failed */
+			iconv_close(converter);
+			portLibrary->file_seek(portLibrary, fd, -1 * count, HySeekCur);
+			return NULL;
+		}
+		if ( inbytesleft > 0 ) {
+			portLibrary->file_seek(portLibrary, fd, inbytesleft - count, HySeekCur);
+		}
+		nbytes -= count - inbytesleft;
+		cursor += count - inbytesleft;
+#else 
       memcpy (cursor, temp, count);
       cursor += count;
       nbytes -= count;
-
+#endif /* ZOS */
     }
 
   *cursor = '\0';
+
+#ifdef ZOS
+	if ( converter != (iconv_t)-1 ) iconv_close(converter);
+#endif
 
   return buf;
 }

@@ -35,7 +35,7 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
 
     static ReadOnlyDirectByteBuffer copy(DirectByteBuffer other, int markOfOther) {
         ReadOnlyDirectByteBuffer buf = new ReadOnlyDirectByteBuffer(
-                other.safeAddress, other.capacity(), other.offset);
+                other.address, other.capacity(), other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
         buf.mark = markOfOther;
@@ -43,14 +43,9 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
         return buf;
     }
 
-    protected ReadOnlyDirectByteBuffer(SafeAddress address, int capacity,
-            int offset) {
-        super(address, capacity, offset);
-    }
-
     protected ReadOnlyDirectByteBuffer(PlatformAddress address, int capacity,
             int offset) {
-        super(new SafeAddress(address), capacity, offset);
+        super(address, capacity, offset);
     }
 
     @Override
@@ -146,7 +141,7 @@ final class ReadOnlyDirectByteBuffer extends DirectByteBuffer {
     @Override
     public ByteBuffer slice() {
         ReadOnlyDirectByteBuffer buf = new ReadOnlyDirectByteBuffer(
-                safeAddress, remaining(), offset + position);
+                address, remaining(), offset + position);
         buf.order = order;
         return buf;
     }

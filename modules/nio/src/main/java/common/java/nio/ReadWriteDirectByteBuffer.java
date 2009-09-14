@@ -36,7 +36,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
     static ReadWriteDirectByteBuffer copy(DirectByteBuffer other,
             int markOfOther) {
         ReadWriteDirectByteBuffer buf = new ReadWriteDirectByteBuffer(
-                other.safeAddress, other.capacity(), other.offset);
+                other.address, other.capacity(), other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
         buf.mark = markOfOther;
@@ -48,13 +48,8 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
         super(capacity);
     }
 
-    ReadWriteDirectByteBuffer(SafeAddress address, int capacity, int offset) {
+    ReadWriteDirectByteBuffer(PlatformAddress address, int capacity, int offset) {
         super(address, capacity, offset);
-    }
-
-    ReadWriteDirectByteBuffer(PlatformAddress address, int aCapacity,
-            int anOffset) {
-        super(new SafeAddress(address), aCapacity, anOffset);
     }
 
     @Override
@@ -225,7 +220,7 @@ final class ReadWriteDirectByteBuffer extends DirectByteBuffer {
     @Override
     public ByteBuffer slice() {
         ReadWriteDirectByteBuffer buf = new ReadWriteDirectByteBuffer(
-                safeAddress, remaining(), offset + position);
+                address, remaining(), offset + position);
         buf.order = order;
         return buf;
     }

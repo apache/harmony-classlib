@@ -200,10 +200,15 @@ public class CharArrayReader extends Reader {
      */
     @Override
     public int read(char buffer[], int offset, int len) throws IOException {
-        // avoid int overflow
-        if (offset < 0 || offset > buffer.length || len < 0
-                || len > buffer.length - offset) {
-            throw new ArrayIndexOutOfBoundsException();
+        if (offset < 0 || offset > buffer.length) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(
+                    Msg.getString("K002e", offset)); //$NON-NLS-1$
+        }
+        if (len < 0 || len > buffer.length - offset) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(
+                    Msg.getString("K0031", len)); //$NON-NLS-1$
         }
         synchronized (lock) {
             if (isClosed()) {

@@ -289,7 +289,7 @@ public class PushbackReader extends FilterReader {
      *            reader.
      * @param offset
      *            the index of the first byte in {@code buffer} to push back.
-     * @param count
+     * @param length
      *            the number of bytes to push back.
      * @throws IndexOutOfBoundsException
      *             if {@code offset < 0} or {@code count < 0}, or if
@@ -302,23 +302,27 @@ public class PushbackReader extends FilterReader {
      * @throws NullPointerException
      *             if {@code buffer} is {@code null}.
      */
-    public void unread(char[] buffer, int offset, int count) throws IOException {
+    public void unread(char[] buffer, int offset, int length) throws IOException {
         synchronized (lock) {
             if (buf == null) {
+                // K0059=Stream is closed
                 throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
             }
-            if (count > pos) {
-                // Pushback buffer full
+            if (length > pos) {
+                // K007e=Pushback buffer full
                 throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
             }
-            if (buffer == null) {
-                throw new NullPointerException();
+            // Force buffer null check first!
+            if (offset > buffer.length - length || offset < 0) {
+                // K002e=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
             }
-            // avoid int overflow
-            if (offset < 0 || count < 0 || offset > buffer.length - count) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (length < 0) {
+                // K0031=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
             }
-            for (int i = offset + count - 1; i >= offset; i--) {
+
+            for (int i = offset + length - 1; i >= offset; i--) {
                 unread(buffer[i]);
             }
         }

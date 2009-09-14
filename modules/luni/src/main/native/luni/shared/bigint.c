@@ -42,9 +42,15 @@
 #define LONG_DIV(u64, div) ((U_32)(*(U_64*)(u64) / (U_32)(div)))
 #define LONG_REM(u64, div) ((U_32)(*(U_64*)(u64) % (U_32)(div)))
 
-                /* 32 bit */
+#ifndef HY_WORD64
+/* 32 bit */
 #define IS_NEGATIVE(ar,len)     (((I_32*)ar)[at(len*2-1)] < 0)
 #define atx(i) (at(i))
+#else
+/* 64 bit */
+#define IS_NEGATIVE(ar,len)	(((I_64*)ar)[len-1] < 0L)
+#define atx(i) (i)
+#endif
 
 #define GET_LENGTH(obj) ((*env)->GetArrayLength(env,obj))
 #define GET_ELEMENTS(obj) ((U_32*)(*env)->GetLongArrayElements(env, obj, NULL))

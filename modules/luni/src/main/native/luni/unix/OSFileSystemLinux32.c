@@ -255,6 +255,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
 #if defined(AIX) || defined(ZOS)
   {
     struct sf_parms parms;
+    int result;
+    int positionBack = Java_org_apache_harmony_luni_platform_OSFileSystem_seekImpl(env, thiz, fd, 0, 2);
     parms.file_descriptor = (int)fd - FD_BIAS;
     parms.file_offset = (off64_t)offset;
     parms.file_bytes = count;
@@ -262,7 +264,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
     parms.header_length = 0;
     parms.trailer_data = 0;
     parms.trailer_length = 0;
-    return send_file(&socket, &parms, 0);
+    result = send_file(&socket, &parms, 0);
+    if (result == 0) {
+      Java_org_apache_harmony_luni_platform_OSFileSystem_seekImpl(env, thiz, fd, (jlong)positionBack, 1);
+      return count;
+    } else {
+      return result;
+    }
   }
 #else
   /* Value of offset is checked in jint scope (checked in java layer)

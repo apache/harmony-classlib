@@ -62,6 +62,10 @@ OPT += $(HYDEBUGCFLAGS)
 endif
 
 MDLLIBFILES = $(LIBPATH)libhycommon.a
+ifeq ($(HY_OS),zos)
+# On z/OS we need to link every module against the ascii2ebcdic library
+MDLLIBFILES += $(LIBPATH)libhya2e.x
+endif
 
 ifeq ($(HY_NO_THR),false)
 ifeq ($(HY_THR_NO_DEPLOY), true)

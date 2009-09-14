@@ -539,7 +539,7 @@ final class EpollSelectorImpl extends AbstractSelector {
                 }
             }
 
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException(key);
         }
 
         private E putEntry(int key, Entry<E> entry) {

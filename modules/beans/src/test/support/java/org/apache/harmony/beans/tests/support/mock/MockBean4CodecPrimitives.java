@@ -93,6 +93,9 @@ public class MockBean4CodecPrimitives {
             Field fields[] = getClass().getDeclaredFields();
             for (Field element : fields) {
                 Object mine = element.get(this);
+                if (mine instanceof MockBean4CodecPrimitives) {
+                    continue;
+                }
                 if (mine != null) {
                     code += mine.hashCode();
                 }
