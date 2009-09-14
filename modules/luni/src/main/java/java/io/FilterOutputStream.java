@@ -99,7 +99,7 @@ public class FilterOutputStream extends OutputStream {
      *            the buffer to write.
      * @param offset
      *            the index of the first byte in {@code buffer} to write.
-     * @param count
+     * @param length
      *            the number of bytes in {@code buffer} to write.
      * @throws IndexOutOfBoundsException
      *             if {@code offset < 0} or {@code count < 0}, or if
@@ -109,13 +109,17 @@ public class FilterOutputStream extends OutputStream {
      *             if an I/O error occurs while writing to this stream.
      */
     @Override
-    public void write(byte buffer[], int offset, int count) throws IOException {
-        // avoid int overflow, force null buffer check first
-        if (offset > buffer.length || offset < 0 || count < 0
-                || count > buffer.length - offset) {
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+    public void write(byte buffer[], int offset, int length) throws IOException {
+        // Force null buffer check first!
+        if (offset > buffer.length || offset < 0) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
         }
-        for (int i = 0; i < count; i++) {
+        if (length < 0 || length > buffer.length - offset) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+        }
+        for (int i = 0; i < length; i++) {
             // Call write() instead of out.write() since subclasses could
             // override the write() method.
             write(buffer[offset + i]);

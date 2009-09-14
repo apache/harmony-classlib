@@ -45,31 +45,17 @@ public class FileTest extends TestCase {
     
     private static void deleteTempFolder(File dir) {
         String files[] = dir.list();
-        for (int i = 0; i < files.length; i++) {
-            File f = new File(dir, files[i]);
-            if (f.isDirectory()) {
-                deleteTempFolder(f);
-            } else {
-                f.delete();
-            }
-        }
-        dir.delete();
-    }
-    
-    private static void cleanupTempFiles() {
-        // Delete all old temporary files
-        File tempDir = new File(System.getProperty("java.io.tmpdir"));
-        File[] files = tempDir.listFiles();
         if (files != null) {
-            for (File file : files) {
-                if (file.getName().startsWith("harmony-test")) {
-                    if (file.isDirectory()) {
-                        deleteTempFolder(file);
-                    }
-                    file.delete();
+            for (int i = 0; i < files.length; i++) {
+                File f = new File(dir, files[i]);
+                if (f.isDirectory()) {
+                    deleteTempFolder(f);
+                } else {
+                    f.delete();
                 }
             }
         }
+        dir.delete();
     }
     
     private static String addTrailingSlash(String path) {
@@ -91,8 +77,10 @@ public class FileTest extends TestCase {
     }
 
     protected void tearDown() {
-        tempDirectory = null;
-        cleanupTempFiles();
+        if (tempDirectory != null) {
+            deleteTempFolder(tempDirectory);
+            tempDirectory = null;
+        }
     }
 
     /**

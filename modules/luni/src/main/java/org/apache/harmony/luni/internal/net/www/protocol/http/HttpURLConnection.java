@@ -172,13 +172,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         @Override
         public int read(byte[] buf, int offset, int length) throws IOException {
-            if (buf == null) {
-                throw new NullPointerException();
+            // Force buf null check first, and avoid int overflow
+            if (offset < 0 || offset > buf.length) {
+                // K002e=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
             }
-            // avoid int overflow
-            if (offset < 0 || length < 0 || offset > buf.length
-                    || buf.length - offset < length) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (length < 0 || buf.length - offset < length) {
+                // K0031=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
             }
             if (bytesRemaining <= 0) {
                 disconnect(false);
@@ -292,13 +293,14 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
 
         @Override
         public int read(byte[] buf, int offset, int length) throws IOException {
-            if (buf == null) {
-                throw new NullPointerException();
+            // Force buf null check first, and avoid int overflow
+            if (offset > buf.length || offset < 0) {
+                // K002e=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
             }
-            // avoid int overflow
-            if (offset < 0 || length < 0 || offset > buf.length
-                    || buf.length - offset < length) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (length < 0 || buf.length - offset < length) {
+                // K0031=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
             }
             if (bytesRemaining <= 0) {
                 readChunkSize();

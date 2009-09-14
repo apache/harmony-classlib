@@ -664,13 +664,14 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
-        if (buffer == null) {
-            throw new NullPointerException();
+        // Force buffer null check first!
+        if (offset > buffer.length || offset < 0) {
+            // K002e=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
         }
-        // avoid int overflow
-        if (offset < 0 || offset > buffer.length || length < 0
-                || length > buffer.length - offset) {
-            throw new ArrayIndexOutOfBoundsException();
+        if (length < 0 || length > buffer.length - offset) {
+            // K0031=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
         }
         if (length == 0) {
             return 0;

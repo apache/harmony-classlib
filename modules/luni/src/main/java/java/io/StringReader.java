@@ -154,12 +154,16 @@ public class StringReader extends Reader {
     public int read(char buf[], int offset, int len) throws IOException {
         synchronized (lock) {
             if (isClosed()) {
+                // K0083=StringReader is closed.
                 throw new IOException(Msg.getString("K0083")); //$NON-NLS-1$
             }
-            // avoid int overflow
-            if (offset < 0 || offset > buf.length || len < 0
-                    || len > buf.length - offset) {
-                throw new ArrayIndexOutOfBoundsException();
+            if (offset < 0 || offset > buf.length) {
+                // K002e=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            }
+            if (len < 0 || len > buf.length - offset) {
+                // K0031=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", len)); //$NON-NLS-1$
             }
             if (len == 0) {
                 return 0;

@@ -277,6 +277,19 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         written += 8;
     }
 
+    int writeLongToBuffer(long val,
+                          byte[] buffer, int offset) throws IOException {
+        buffer[offset++] = (byte) (val >> 56);
+        buffer[offset++] = (byte) (val >> 48);
+        buffer[offset++] = (byte) (val >> 40);
+        buffer[offset++] = (byte) (val >> 32);
+        buffer[offset++] = (byte) (val >> 24);
+        buffer[offset++] = (byte) (val >> 16);
+        buffer[offset++] = (byte) (val >> 8);
+        buffer[offset++] = (byte) val;
+        return offset;
+    }
+
     /**
      * Writes the specified 16-bit short to the target stream. Only the lower
      * two bytes of the integer {@code val} are written, with the higher one
@@ -294,6 +307,13 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         buff[1] = (byte) val;
         out.write(buff, 0, 2);
         written += 2;
+    }
+
+    int writeShortToBuffer(int val,
+                           byte[] buffer, int offset) throws IOException {
+        buffer[offset++] = (byte) (val >> 8);
+        buffer[offset++] = (byte) val;
+        return offset;
     }
 
     /**
@@ -314,8 +334,11 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         if (utfCount > 65535) {
             throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
         }
-        writeShort((int) utfCount);
-        writeUTFBytes(str, utfCount);
+        byte[] buffer = new byte[(int)utfCount + 2];
+        int offset = 0;
+        offset = writeShortToBuffer((int) utfCount, buffer, offset);
+        offset = writeUTFBytesToBuffer(str, (int) utfCount, buffer, offset);
+        write(buffer, 0, offset);
     }
 
     long countUTFBytes(String str) {
@@ -333,24 +356,22 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         return utfCount;
     }
 
-    void writeUTFBytes(String str, long count) throws IOException {
-        int size = (int) count;
+    int writeUTFBytesToBuffer(String str, long count,
+                              byte[] buffer, int offset) throws IOException {
         int length = str.length();
-        byte[] utfBytes = new byte[size];
-        int utfIndex = 0;
         for (int i = 0; i < length; i++) {
             int charValue = str.charAt(i);
             if (charValue > 0 && charValue <= 127) {
-                utfBytes[utfIndex++] = (byte) charValue;
+                buffer[offset++] = (byte) charValue;
             } else if (charValue <= 2047) {
-                utfBytes[utfIndex++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
-                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+                buffer[offset++] = (byte) (0xc0 | (0x1f & (charValue >> 6)));
+                buffer[offset++] = (byte) (0x80 | (0x3f & charValue));
             } else {
-                utfBytes[utfIndex++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
-                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
-                utfBytes[utfIndex++] = (byte) (0x80 | (0x3f & charValue));
+                buffer[offset++] = (byte) (0xe0 | (0x0f & (charValue >> 12)));
+                buffer[offset++] = (byte) (0x80 | (0x3f & (charValue >> 6)));
+                buffer[offset++] = (byte) (0x80 | (0x3f & charValue));
              }
         }
-        write(utfBytes, 0, utfIndex);
+        return offset;
     }
 }

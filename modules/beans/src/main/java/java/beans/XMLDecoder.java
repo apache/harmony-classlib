@@ -48,7 +48,7 @@ public class XMLDecoder {
     private static class DefaultExceptionListener implements ExceptionListener {
 
         public void exceptionThrown(Exception e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             System.err.println("Continue..."); //$NON-NLS-1$
         }
     }
@@ -266,8 +266,9 @@ public class XMLDecoder {
             while (readObjs.pop() != toClose) {
                 //
             }
-            // push back expression
+
             if (toClose.isExpression) {
+                // push back expression
                 readObjs.push(toClose);
             }
         }
@@ -413,15 +414,20 @@ public class XMLDecoder {
                     clazzes);
             Method chosenOne = matchMethods.get(0);
             matchMethods.remove(0);
+            int methodCounter = 1;
             for (Method method : matchMethods) {
                 int difference = comparator.compare(chosenOne, method);
                 if (difference > 0) {
                     chosenOne = method;
+                    methodCounter = 1;
                 } else if (difference == 0) {
-                    // if 2 methods have same relevance, throw exception
-                    throw new NoSuchMethodException(Messages.getString(
-                            "beans.62", methodName)); //$NON-NLS-1$
+                    methodCounter++;
                 }
+            }
+            if (methodCounter > 1) {
+                // if 2 methods have same relevance, throw exception
+                throw new NoSuchMethodException(Messages.getString(
+                                                                   "beans.62", methodName)); //$NON-NLS-1$
             }
             return chosenOne;
         }
@@ -517,6 +523,7 @@ public class XMLDecoder {
         boolean fromOwner;
 
         Object result;
+
     }
 
     private InputStream inputStream;
@@ -630,7 +637,7 @@ public class XMLDecoder {
                 this.listener.exceptionThrown(e);
             }
         }
-        
+
         if (readObjIndex >= readObjs.size()) {
             throw new ArrayIndexOutOfBoundsException("no more objects to read");
         }

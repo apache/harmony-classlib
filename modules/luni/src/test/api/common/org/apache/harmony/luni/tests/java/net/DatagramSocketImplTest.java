@@ -71,7 +71,6 @@ class MockDatagramSocketImpl extends DatagramSocketImpl {
         // empty
     }
 
-    @Override
     public Object getOption(int optID) throws SocketException {
         return null;
     }
@@ -129,7 +128,6 @@ class MockDatagramSocketImpl extends DatagramSocketImpl {
 
     }
 
-    @Override
     public void setOption(int optID, Object val) throws SocketException {
         // empty
     }

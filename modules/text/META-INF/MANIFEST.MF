@@ -18,10 +18,9 @@ Import-Package: com.ibm.icu.math,
  java.lang,
  java.lang.reflect,
  java.math,
- java.net,
+ java.net;resolution:=optional,
  java.security,
  java.util,
  org.apache.harmony.kernel.vm,
- org.apache.harmony.luni.util,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: java.text
