@@ -244,13 +244,11 @@ public class MathTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Math#floor(double)
      */
-	public void test_floorD() {
-		// Test for method double java.lang.Math.floor(double)
-                assertEquals("Incorrect floor for double",
-                             78, Math.floor(78.89), 0);
-		assertEquals("Incorrect floor for double",
-                             -79, Math.floor(-78.89), 0);
-	}
+    public void test_floorD() {
+        assertEquals("Incorrect floor for double", 78, Math.floor(78.89), 0);
+        assertEquals("Incorrect floor for double", -79, Math.floor(-78.89), 0);
+        assertEquals("floor large double", 3.7314645675925406E19, Math.floor(3.7314645675925406E19),0);
+    }
     
     /**
      * @tests java.lang.Math#hypot(double, double)
