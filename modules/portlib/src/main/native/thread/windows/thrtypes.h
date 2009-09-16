@@ -80,7 +80,7 @@ extern "C"
   typedef struct HyThreadGlobal
   {
     struct HyThreadGlobal *next;
-    char *name;
+    const char *name;
     UDATA data;
   } HyThreadGlobal;
 
