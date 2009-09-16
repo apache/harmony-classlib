@@ -79,7 +79,7 @@ typedef struct HySemaphore *hysem_t;
 
 typedef struct HyThreadMonitorTracing
 {
-	char *monitor_name;
+    const char *monitor_name;
     UDATA enter_count;
     UDATA slow_count;
     UDATA recursive_count;
@@ -111,12 +111,12 @@ typedef struct HyThreadLibrary {
   void  (PVMCALL thread_detach) (struct HyThreadLibrary * threadLibrary, hythread_t thread);
   void  (PVMCALL NORETURN thread_exit) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
 
-  UDATA *(PVMCALL thread_global) (struct HyThreadLibrary * threadLibrary, char *name);
+  UDATA *(PVMCALL thread_global) (struct HyThreadLibrary * threadLibrary, const char *name);
 
   IDATA (PVMCALL thread_monitor_destroy) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
   IDATA (PVMCALL thread_monitor_enter) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
   IDATA (PVMCALL thread_monitor_exit) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
-  IDATA (PVMCALL thread_monitor_init_with_name) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t * handle, UDATA flags, char *name);
+  IDATA (PVMCALL thread_monitor_init_with_name) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t * handle, UDATA flags, const char *name);
   IDATA (PVMCALL thread_monitor_notify) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
   IDATA (PVMCALL thread_monitor_notify_all) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);
   IDATA (PVMCALL thread_monitor_wait) (struct HyThreadLibrary * threadLibrary, hythread_monitor_t monitor);

@@ -90,7 +90,7 @@ extern "C"
 
   typedef struct HyThreadMonitorTracing
   {
-    char *monitor_name;
+    const char *monitor_name;
     UDATA enter_count;
     UDATA slow_count;
     UDATA recursive_count;
@@ -190,7 +190,7 @@ extern "C"
     hythread_monitor_init
     PROTOTYPE ((hythread_monitor_t * handle, UDATA flags));
   extern HY_CFUNC IDATA VMCALL hythread_sleep PROTOTYPE ((I_64 millis));
-  extern HY_CFUNC UDATA *VMCALL hythread_global PROTOTYPE ((char *name));
+  extern HY_CFUNC UDATA *VMCALL hythread_global PROTOTYPE ((const char *name));
   extern HY_CFUNC IDATA VMCALL
     hythread_tls_alloc_with_finalizer
     PROTOTYPE ((hythread_tls_key_t * handle,
