@@ -2657,6 +2657,32 @@ public class SocketChannelTest extends TestCase {
         sc.write(byteBufferArray);
         assertTrue(sc.isWriteCalled);
     }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_writev() throws Exception {
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        SocketChannel sock = ssc.accept();
+        ByteBuffer[] buf = { ByteBuffer.allocate(10), ByteBuffer.allocateDirect(20) };
+
+        while (buf[0].remaining() != 0 && buf[1].remaining() !=0) {
+            assertTrue(sc.write(buf, 0, 2) >= 0);
+        }
+
+        ByteBuffer target = ByteBuffer.allocate(30);
+
+        while (target.remaining() != 0) {
+            assertTrue(sock.read(target) >=0);
+        }
+
+        ssc.close();
+        sc.close();
+        sock.close();
+    }
     
     public void testSocket_configureblocking() throws IOException {
         byte[] serverWBuf = new byte[CAPACITY_NORMAL];

@@ -62,6 +62,9 @@ public interface INetworkSystem {
     public int writeDirect(FileDescriptor fd, long address, int count)
             throws IOException;
 
+    public int writev(FileDescriptor fd, Object[] buffers, int[] offsets,
+            int[] counts, int length) throws IOException;
+
 	public void setNonBlocking(FileDescriptor aFD, boolean block)
 			throws IOException;
 

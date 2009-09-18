@@ -434,3 +434,88 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   return result;
 }
 
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
+  (JNIEnv *env, jobject thiz, jobject fd, jobjectArray buffers, jintArray offsets, jintArray counts, jint length) {
+
+  PORT_ACCESS_FROM_ENV(env);
+
+  jobject buffer;
+  jobject* toBeReleasedBuffers;
+  jint *cts;
+  jint *noffset;
+  jboolean isDirectBuffer = JNI_FALSE;
+  jint result;
+  LPWSABUF vect;
+  int i;
+  jint sentBytes;
+  jint rc;
+  jclass byteBufferClass;
+
+  hysocket_t socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
+
+  if (!hysock_socketIsValid(socketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
+
+  vect = (LPWSABUF) hymem_allocate_memory(sizeof(WSABUF) * length);
+  if (vect == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    return 0;
+  }
+
+  toBeReleasedBuffers = (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
+  if (toBeReleasedBuffers == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    return 0;
+  }
+
+  byteBufferClass = HARMONY_CACHE_GET (env, CLS_java_nio_DirectByteBuffer);
+  noffset = (*env)->GetIntArrayElements(env, offsets, NULL);
+
+  cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
+
+  for (i = 0; i < length; ++i) {
+    buffer = (*env)->GetObjectArrayElement(env, buffers, i);
+    isDirectBuffer = (*env)->IsInstanceOf(env, buffer, byteBufferClass);
+    if (isDirectBuffer) {
+      vect[i].buf =  (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer) + noffset[i];
+      toBeReleasedBuffers[i] = NULL;
+    } else {
+      vect[i].buf = (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL) + noffset[i];
+      toBeReleasedBuffers[i] = buffer;
+    }
+    vect[i].len = cts[i];
+  }
+
+  (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
+
+  if (socketP->flags & SOCKET_USE_IPV4_MASK)
+    {
+      result = WSASend(socketP->ipv4, vect, length, &sentBytes, HYSOCK_NOFLAGS, NULL, NULL);
+    }
+  else
+    {
+      result = WSASend(socketP->ipv6, vect, length, &sentBytes, HYSOCK_NOFLAGS, NULL, NULL);
+    }
+
+  for (i = 0; i < length; ++i) {
+    if (toBeReleasedBuffers[i] != NULL) {
+      (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i], vect[i].buf - noffset[i], JNI_ABORT);
+    }
+  }
+
+  (*env)->ReleaseIntArrayElements(env, offsets, noffset, JNI_ABORT);
+
+  hymem_free_memory(toBeReleasedBuffers);
+  hymem_free_memory(vect);
+
+  if (SOCKET_ERROR == result) {
+    rc = WSAGetLastError ();
+    throwJavaNetSocketException(env, rc);
+    return (jint) 0;  // Ignored, exception takes precedence
+  }
+
+  return sentBytes;
+}
