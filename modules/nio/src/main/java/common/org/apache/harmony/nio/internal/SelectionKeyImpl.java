@@ -49,10 +49,12 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         attach(attachment);
     }
 
+    @Override
     public SelectableChannel channel() {
         return channel;
     }
 
+    @Override
     public int interestOps() {
         checkValid();
         synchronized (selector.keysLock) {
@@ -60,6 +62,7 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         }
     }
 
+    @Override
     public SelectionKey interestOps(int operations) {
         checkValid();
         if ((operations & ~(channel().validOps())) != 0) {
@@ -72,11 +75,13 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         return this;
     }
 
+    @Override
     public int readyOps() {
         checkValid();
         return readyOps;
     }
 
+    @Override
     public Selector selector() {
         return selector;
     }
