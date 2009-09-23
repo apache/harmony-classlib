@@ -30,7 +30,7 @@ MDLLIBFILES += \
 	$(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-DLLNAME = ../libhyinstrument$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhyinstrument$(HY_SHLIB_SUFFIX)
 EXPNAME = HYINSTRUMENT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

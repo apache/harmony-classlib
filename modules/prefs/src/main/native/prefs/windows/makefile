@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hyprefs
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def

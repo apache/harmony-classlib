@@ -18,7 +18,7 @@
 PNG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\png-$(HY_PNG_VER)\# avoid continuation
 
 LIBBASE=pngencoder
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 

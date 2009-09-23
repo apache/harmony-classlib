@@ -20,8 +20,9 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hythr
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(LIBPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
+DBGPATH=$(LIBPATH)
 
 BUILDFILES = $(SHAREDSUB)hythread.obj
 

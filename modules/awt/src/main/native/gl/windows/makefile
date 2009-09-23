@@ -19,7 +19,7 @@ APPVER = 5.0 # Need WINVER=0x0500 to get HMONITOR defined.
 PNG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\png-$(HY_PNG_VER)\# avoid continuation
 
 LIBBASE=gl
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 

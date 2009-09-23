@@ -32,7 +32,7 @@ endif
 MDLLIBFILES += $(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-DLLNAME=../libjpegencoder$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libjpegencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYJPEGENCODER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

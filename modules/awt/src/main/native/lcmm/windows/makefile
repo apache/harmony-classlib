@@ -18,7 +18,7 @@
 LCMS_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\lcms-$(HY_LCMS_VER)\# avoid continuation
 
 LIBBASE=lcmm
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 

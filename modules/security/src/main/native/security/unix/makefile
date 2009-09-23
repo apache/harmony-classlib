@@ -22,7 +22,7 @@ include $(HY_HDK)/build/make/defines.mk
 BUILDFILES = \
 	$(SHAREDSUB)security_copyright.o getUnixSystemRandom.o
 
-DLLNAME = ../libhysecurity$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhysecurity$(HY_SHLIB_SUFFIX)
 EXPNAME = HYSECURITY_0.1
 
 MDLLIBFILES += $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)

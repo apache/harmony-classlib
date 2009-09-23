@@ -32,15 +32,7 @@
     <!-- Build natives.-->
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" >
-
         <make dir="src/main/native/niochar/${hy.os.family}" />
-
-        <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="src/main/native/niochar">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
     </target>
 
     <target name="test" depends="-test-module">

@@ -41,9 +41,10 @@ PLATFORM = -fpic
 HYDEBUGCFLAGS = -ggdb -O0
 HYRELEASECFLAGS = -O1 -DNDEBUG
 
-EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
+EXEPATH=$(HY_HDK)/jdk/jre/bin/
+DBGPATH=$(HY_HDK)/jdk/lib/
 SHAREDSUB=../shared/
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 

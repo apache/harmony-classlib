@@ -114,9 +114,7 @@ BUILDFILES = \
   ../shared/additional/x_MS950_HKSCS.o \
   ../shared/additional/x_windows_949.o 
 
-
-DLLNAME = ../libhyniochar$(HY_SHLIB_SUFFIX)
-
+DLLNAME = $(DLLPATH)libhyniochar$(HY_SHLIB_SUFFIX)
 MDLLIBFILES += $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 include $(HY_HDK)/build/make/rules.mk

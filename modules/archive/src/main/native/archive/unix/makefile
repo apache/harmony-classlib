@@ -33,7 +33,7 @@ MDLLIBFILES += \
 	$(MDLLIBZLIB) $(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-DLLNAME=../libhyarchive$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
 EXPNAME=HYARCHIVE_0.1
 
 include $(HY_HDK)/build/make/rules.mk

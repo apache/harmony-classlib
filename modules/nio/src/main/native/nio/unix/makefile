@@ -33,7 +33,7 @@ MDLLIBFILES = \
 	$(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a
 
-DLLNAME = ../libhynio$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhynio$(HY_SHLIB_SUFFIX)
 EXPNAME = HYNIO_0.1
 
 include $(HY_HDK)/build/make/rules.mk
