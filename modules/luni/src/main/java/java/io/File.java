@@ -753,18 +753,31 @@ public class File implements Serializable, Comparable<File> {
      * Indicates if this file's pathname is absolute. Whether a pathname is
      * absolute is platform specific. On UNIX, absolute paths must start with
      * the character '/'; on Windows it is absolute if either it starts with
-     * '\', '/', '\\' (to represent a file server), or a letter followed by a
-     * colon.
+     * '\\' (to represent a file server), or a letter followed by a colon.
      * 
      * @return {@code true} if this file's pathname is absolute, {@code false}
      *         otherwise.
      * @see #getPath
      */
     public boolean isAbsolute() {
-        return isAbsoluteImpl(Util.getUTF8Bytes(path));
-    }
+        if (File.separatorChar == '\\') {
+            // for windows
+            if (path.length() > 1 && path.charAt(0) == File.separatorChar
+                    && path.charAt(1) == File.separatorChar) {
+                return true;
+            }
+            if (path.length() > 2) {
+                if (Character.isLetter(path.charAt(0)) && path.charAt(1) == ':'
+                        && (path.charAt(2) == '/' || path.charAt(2) == '\\')) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
-    private native boolean isAbsoluteImpl(byte[] filePath);
+        // for Linux
+        return (path.length() > 0 && path.charAt(0) == File.separatorChar);
+    }
 
     /**
      * Indicates if this file represents a <em>directory</em> on the
@@ -1311,8 +1324,9 @@ public class File implements Serializable, Comparable<File> {
         if (properPath != null) {
             return properPath;
         }
-        byte[] pathBytes = Util.getUTF8Bytes(path);
-        if (isAbsoluteImpl(pathBytes)) {
+
+        if (isAbsolute()) {
+            byte[] pathBytes = Util.getUTF8Bytes(path);
             return properPath = pathBytes;
         }
         // Check security by getting user.dir when the path is not absolute

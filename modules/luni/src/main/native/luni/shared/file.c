@@ -252,36 +252,6 @@ Java_java_io_File_lengthImpl (JNIEnv * env, jobject recv, jbyteArray path)
 }
 
 JNIEXPORT jboolean JNICALL
-Java_java_io_File_isAbsoluteImpl (JNIEnv * env, jobject recv, jbyteArray path)
-{
-  I_32 result = 0;
-  jsize length = (*env)->GetArrayLength (env, path);
-  jbyte *lpath = (jbyte *) ((*env)->GetPrimitiveArrayCritical (env, path, 0));
-
-  if (jclSeparator == '/' && length > 0)
-    {
-      result = (lpath[0] == jclSeparator);
-      goto release;
-    }
-  if (length > 1 && lpath[0] == '\\' && lpath[1] == '\\')
-    {
-      result = 1;
-      goto release;
-    }
-  if (length > 2)
-    {
-      if (isalpha (lpath[0]) && lpath[1] == ':'
-          && (lpath[2] == '\\' || lpath[2] == '/'))
-        result = 1;
-    }
-
-release:
-  /* Easier to release in one area than copy the code around */
-  (*env)->ReleasePrimitiveArrayCritical (env, path, lpath, JNI_ABORT);
-  return result;
-}
-
-JNIEXPORT jboolean JNICALL
 Java_java_io_File_mkdirImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
