@@ -457,12 +457,6 @@ Java_java_io_File_oneTimeInitialization (JNIEnv * env, jclass clazz)
   return;
 }
 
-JNIEXPORT jbyteArray JNICALL
-Java_java_io_File_properPathImpl (JNIEnv * env, jobject recv, jbyteArray path)
-{
-  return getPlatformPath (env, path);
-}
-
 JNIEXPORT jboolean JNICALL
 Java_java_io_File_isReadOnlyImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {

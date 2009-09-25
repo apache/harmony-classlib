@@ -1366,8 +1366,6 @@ public class File implements Serializable, Comparable<File> {
         return properPath = Util.getUTF8Bytes(result);
     }
 
-    private static native byte[] properPathImpl(byte[] path);
-
     /**
      * Renames this file to the name represented by the {@code dest} file. This
      * works for both normal files and directories.

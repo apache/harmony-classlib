@@ -18,7 +18,6 @@
 #if !defined(helpers_h)
 #define helpers_h
 int platformReadLink (char *link);
-jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);
 void setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP);
 jint getPlatformDatagramNominalSize (JNIEnv * env, hysocket_t socketP);
 I_32 getPlatformRoots (char *rootStrings);
