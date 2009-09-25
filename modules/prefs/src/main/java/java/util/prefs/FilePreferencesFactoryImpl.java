@@ -17,16 +17,17 @@
 package java.util.prefs;
 
 /**
- * The default implementation of <code>PreferencesFactory</code> for the Linux
+ * The default implementation of {@code PreferencesFactory} for the Linux
  * platform, using the file system as its back end.
  * 
  * @since 1.4
  */
 class FilePreferencesFactoryImpl implements PreferencesFactory {
-    //  user root preferences
+
+    // user root preferences
     private static final Preferences USER_ROOT = new FilePreferencesImpl(true);
 
-    //  system root preferences
+    // system root preferences
     private static final Preferences SYSTEM_ROOT = new FilePreferencesImpl(false);
 
     public FilePreferencesFactoryImpl() {

@@ -26,6 +26,7 @@ package java.util.prefs;
  * @since 1.4
  */
 public interface PreferencesFactory {
+
     /**
      * Returns the root node of the preferences hierarchy for the calling user
      * context.

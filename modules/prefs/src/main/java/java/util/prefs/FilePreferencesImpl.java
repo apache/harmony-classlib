@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.harmony.prefs.internal.nls.Messages;
 
 /**
- * The default implementation of <code>AbstractPreferences</code> for the Linux
+ * The default implementation of {@code AbstractPreferences} for the Linux
  * platform, using the file system as its back end.
  * 
  * TODO some sync mechanism with backend, Performance - check file edit date
@@ -37,69 +37,47 @@ import org.apache.harmony.prefs.internal.nls.Messages;
  */
 class FilePreferencesImpl extends AbstractPreferences {
 
-    /*
-     * --------------------------------------------------------------
-     * Class fields
-     * --------------------------------------------------------------
-     */
-
-    //prefs file name
+    // prefs file name
     private static final String PREFS_FILE_NAME = "prefs.xml"; //$NON-NLS-1$
 
-    //home directory for user prefs
+    // home directory for user prefs
     private static String USER_HOME;
 
-    //home directory for system prefs
+    // home directory for system prefs
     private static String SYSTEM_HOME;
 
-    /*
-     * --------------------------------------------------------------
-     * Class initializer
-     * --------------------------------------------------------------
-     */
     static {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @SuppressWarnings("nls")
             public Void run() {
-                USER_HOME = System.getProperty("user.home") + "/.java/.userPrefs";//$NON-NLS-1$ //$NON-NLS-2$
-                SYSTEM_HOME = System.getProperty("java.home") + "/.systemPrefs";//$NON-NLS-1$//$NON-NLS-2$
+                USER_HOME = System.getProperty("user.home") + "/.java/.userPrefs";
+                SYSTEM_HOME = System.getProperty("java.home") + "/.systemPrefs";
                 return null;
             }
         });
     }
 
-    /*
-     * --------------------------------------------------------------
-     * Instance fields
-     * --------------------------------------------------------------
-     */
-
-    //file path for this preferences node
+    // file path for this preferences node
     private String path;
 
-    //internal cache for prefs key-value pair
+    // internal cache for prefs key-value pair
     private Properties prefs;
 
-    //file represents this preferences node
+    // file represents this preferences node
     private File prefsFile;
 
-    //parent dir for this preferences node
+    // parent dir for this preferences node
     private File dir;
 
-    //cache for removed prefs key-value pair
+    // cache for removed prefs key-value pair
     private Set<String> removed = new HashSet<String>();
 
-    //cache for updated prefs key-value pair
+    // cache for updated prefs key-value pair
     private Set<String> updated = new HashSet<String>();
 
-    /*
-     * --------------------------------------------------------------
-     * Constructors
-     * --------------------------------------------------------------
-     */
-
     /**
-     * Construct root <code>FilePreferencesImpl</code> instance, construct 
-     * user root if userNode is true, system root otherwise
+     * Construct root {@code FilePreferencesImpl} instance, construct user
+     * root if userNode is true, system root otherwise
      */
     FilePreferencesImpl(boolean userNode) {
         super(null, ""); //$NON-NLS-1$
@@ -109,7 +87,7 @@ class FilePreferencesImpl extends AbstractPreferences {
     }
 
     /**
-     * Construct a prefs using given parent and given name 
+     * Construct a prefs using given parent and given name
      */
     private FilePreferencesImpl(AbstractPreferences parent, String name) {
         super(parent, name);
@@ -120,10 +98,10 @@ class FilePreferencesImpl extends AbstractPreferences {
     private void initPrefs() {
         dir = new File(path);
         newNode = (AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-            public Boolean run() {
-                return Boolean.valueOf(!dir.exists());
-            }
-        })).booleanValue();
+                    public Boolean run() {
+                        return Boolean.valueOf(!dir.exists());
+                    }
+                })).booleanValue();
         prefsFile = new File(path + File.separator + PREFS_FILE_NAME);
         prefs = XMLParser.loadFilePrefs(prefsFile);
     }
@@ -142,7 +120,7 @@ class FilePreferencesImpl extends AbstractPreferences {
             }
         });
         if (null == names) {// file is not a directory, exception case
-            // prefs.3=Cannot get children names for {0}!
+            // prefs.3=Cannot get children names for {0}
             throw new BackingStoreException(
                     Messages.getString("prefs.3", toString()));  //$NON-NLS-1$
         }
@@ -158,8 +136,8 @@ class FilePreferencesImpl extends AbstractPreferences {
     @Override
     protected void flushSpi() throws BackingStoreException {
         try {
-            //if removed, return
-            if(isRemoved()){
+            // if removed, return
+            if (isRemoved()) {
                 return;
             }
             // reload
@@ -218,7 +196,7 @@ class FilePreferencesImpl extends AbstractPreferences {
             }
         })).booleanValue();
         if (!removeSucceed) {
-            // prefs.4=Cannot remove {0}!
+            // prefs.4=Cannot remove {0}
             throw new BackingStoreException(Messages.getString("prefs.4", toString()));  //$NON-NLS-1$
         }
     }

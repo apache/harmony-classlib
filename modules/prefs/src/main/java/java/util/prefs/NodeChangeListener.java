@@ -36,7 +36,7 @@ public interface NodeChangeListener extends EventListener {
      * @param e
      *            the node change event.
      */
-    public void childAdded (NodeChangeEvent e);
+    public void childAdded(NodeChangeEvent e);
 
     /**
      * This method gets called whenever a child node is removed from another
@@ -45,5 +45,5 @@ public interface NodeChangeListener extends EventListener {
      * @param e
      *            the node change event.
      */
-    public void childRemoved (NodeChangeEvent e);
+    public void childRemoved(NodeChangeEvent e);
 }
