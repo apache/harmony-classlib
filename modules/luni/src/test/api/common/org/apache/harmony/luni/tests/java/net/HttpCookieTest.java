@@ -897,7 +897,55 @@ public class HttpCookieTest extends TestCase {
         cookie = list.get(0);
         assertEquals(0, cookie.getVersion());
     }
+    
+    /**
+     * @tests java.net.HttpCookie#parse(String) on multiple threads
+     * Regression test for HARMONY-6307
+     * 
+     * @since 1.6
+     * 
+     */
+    class ParseThread extends Thread {
+        public AssertionError error = null;
+        public void run() {
+            try {
+                for (int i = 0; i < 200; i++) {
+                    List<HttpCookie> list = HttpCookie.parse("Set-cookie:PREF=test;path=/;domain=.b.c;");
+                    assertEquals(1, list.size());
+                    HttpCookie cookie = list.get(0);
+                    assertEquals(0, cookie.getVersion());
+                    assertEquals(".b.c", cookie.getDomain());
+                }
+            } catch (AssertionError e) {
+                error = e;
+            }
+        }
+    }
 
+    public void test_Parse_multipleThreads() throws InterruptedException {
+        ParseThread[] threads = new ParseThread[10];
+        // create threads
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new ParseThread();
+        }
+        
+        // start threads
+        for (ParseThread thread : threads) {
+            thread.start();
+        }
+
+        // wait for threads to finish
+        for (ParseThread thread : threads) {
+            thread.join();
+        }
+
+        for (ParseThread thread : threads) {
+            if (thread.error != null) {
+                fail("Assertion thrown in thread "+thread+": "+thread.error);
+            }
+        }        
+    }
+    
     private void checkValidValue(String header, String value) {
         List<HttpCookie> list = HttpCookie
                 .parse(header + "name=" + value + ";");

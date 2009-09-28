@@ -83,7 +83,7 @@ public final class HttpCookie implements Cloneable {
     private static Pattern ATTR_PATTERN1 = Pattern
             .compile("(,?[^;=]*)(?:=([^;,]*))?((?=.))?"); //$NON-NLS-1$
 
-    private static HashMap<String, Setter> attributeSet = new HashMap<String, Setter>();
+    private HashMap<String, Setter> attributeSet = new HashMap<String, Setter>();
 
     /**
      * A utility method used to check whether the host name is in a domain or
@@ -248,7 +248,7 @@ public final class HttpCookie implements Cloneable {
                     }
                 }
 
-                Setter setter = attributeSet.get(attrName.toLowerCase());
+                Setter setter = cookie.attributeSet.get(attrName.toLowerCase());
                 if (null == setter) {
                     throw new IllegalArgumentException();
                 }
