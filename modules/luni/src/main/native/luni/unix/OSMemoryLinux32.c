@@ -159,7 +159,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   //PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
-  char errorString[100];
+  char errorString[102]; // 102 to contain the longest error message
 
   // Convert from Java mapping mode to port library mapping mode.
   switch (mmode)

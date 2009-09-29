@@ -556,10 +556,8 @@ final class OSMemory implements IMemorySystem {
 		{
 			return 0;
 		}
+                // No need to check mmapImpl return as it throws IOException in error cases
 		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
-		if (address == -1) {
-			throw new IOException();
-		}
 		return address;
 	}
 
