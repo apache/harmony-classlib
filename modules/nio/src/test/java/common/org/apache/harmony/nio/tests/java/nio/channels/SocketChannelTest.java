@@ -299,15 +299,19 @@ public class SocketChannelTest extends TestCase {
     public void testSocket_NonBlock_BasicStatusAfterConnect() throws Exception {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        Socket s1 = this.channel1.socket();
-        // status of not connected
-        assertSocketBeforeConnect(s1);
-        Socket s2 = this.channel1.socket();
-        // same
-        assertSame(s1, s2);
+        boolean connected = channel1.connect(localAddr1);
+        Socket s1 = null;
+        Socket s2 = null;
+        if (!connected) {
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            s1 = this.channel1.socket();
+            // status of not connected
+            assertSocketBeforeConnect(s1);
+            s2 = this.channel1.socket();
+            // same
+            assertSame(s1, s2);
+        }
 
         if (tryFinish()) {
             assertTrue(this.channel1.isConnected());
@@ -338,22 +342,24 @@ public class SocketChannelTest extends TestCase {
             throws IOException {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        Socket s1 = this.channel1.socket();
-        // Action of not connected
-        assertSocketAction_NonBlock_BeforeConnect(s1);
-        Socket s2 = this.channel1.socket();
-        // same
-        assertSame(s1, s2);
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            Socket s1 = this.channel1.socket();
+            // Action of not connected
+            assertSocketAction_NonBlock_BeforeConnect(s1);
+            Socket s2 = this.channel1.socket();
+            // same
+            assertSame(s1, s2);
+        }
     }
 
     public void testSocket_NonBlock_ActionsAfterConnectAfterFinish()
             throws Exception {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
+        channel1.connect(localAddr1);
         if (tryFinish()) {
             Socket s1 = this.channel1.socket();
             assertSocketAction_NonBlock_AfterConnect(s1);
@@ -641,9 +647,10 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         ensureServerClosed();
 
         tryFinish();
@@ -1051,37 +1058,38 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
 
-        try {
-            this.channel1.connect(localAddr1);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
+            try {
+                this.channel1.connect(localAddr1);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
+
+            // connect another addr
+            try {
+                this.channel1.connect(localAddr2);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
+
+            // connect if server closed
+            ensureServerClosed();
+
+            try {
+                this.channel1.connect(localAddr1);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
         }
-        statusNotConnected_Pending();
-
-        // connect another addr
-        try {
-            this.channel1.connect(localAddr2);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
-        }
-        statusNotConnected_Pending();
-
-        // connect if server closed
-        ensureServerClosed();
-
-        try {
-            this.channel1.connect(localAddr1);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
-        }
-        statusNotConnected_Pending();
-
         tryFinish();
 
         this.channel1.close();
@@ -1196,9 +1204,10 @@ public class SocketChannelTest extends TestCase {
         }
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         tryFinish();
 
         this.channel1.close();
@@ -1376,9 +1385,10 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         tryFinish();
     }
 
@@ -1487,9 +1497,11 @@ public class SocketChannelTest extends TestCase {
         this.channel1.connect(localAddr1);
 
         assertFalse(this.channel1.isBlocking());
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
+        boolean connected = channel1.isConnected();
+        if (!connected) {
+            assertTrue(this.channel1.isConnectionPending());
+            assertTrue(this.channel1.isOpen());
+        }
         if (tryFinish()) {
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBufArr, 0, 1));
@@ -1525,11 +1537,13 @@ public class SocketChannelTest extends TestCase {
         } catch (NoConnectionPendingException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            assertTrue(this.channel1.isOpen());
+        }
         this.server1.accept();
         if (tryFinish()) {
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
@@ -1979,10 +1993,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf));
         }
@@ -2013,10 +2029,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf));
         }
@@ -2117,10 +2135,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf, 0, 1));
             assertEquals(0, this.channel1.read(readBuf, 0, 2));
@@ -2156,10 +2176,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf, 0, 1));
             assertEquals(0, this.channel1.read(readBuf, 0, 2));

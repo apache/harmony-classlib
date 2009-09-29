@@ -299,11 +299,11 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         // set the connected address.
         connectAddress = inetSocketAddress;
         synchronized (this) {
-            if (isBlocking()) {
-                status = (finished ? SOCKET_STATUS_CONNECTED
-                        : SOCKET_STATUS_UNCONNECTED);
+            if (finished) {
+                status = SOCKET_STATUS_CONNECTED;
             } else {
-                status = SOCKET_STATUS_PENDING;
+                status = isBlocking() ? SOCKET_STATUS_UNCONNECTED
+                        : SOCKET_STATUS_PENDING;
             }
         }
         return finished;
