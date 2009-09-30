@@ -64,18 +64,6 @@
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vmargs" value="" />
 
-    <!-- FindBugs properties -->
-    <property name="findbugs.home" location="${basedir}/../../depends/oss/findbugs-1.3.9"/>
-    <available
-       classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
-       classpath="${findbugs.home}/lib/findbugs-ant.jar"
-       property="findbugs.available"/>
-    <taskdef
-       name="findbugs"
-       classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
-       classpath="${findbugs.home}/lib/findbugs-ant.jar"
-       onerror="ignore"/>
-
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
         <os family="Windows" />
@@ -918,7 +906,20 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
        <attribute name="excludeFilter"/>
        <attribute name="jarFile"/>
        <sequential>
+           <!-- Find and define findbugs task -->
+           <property name="findbugs.home" location="${basedir}/../../depends/oss/findbugs-1.3.9"/>
+           <available
+               classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+               classpath="${findbugs.home}/lib/findbugs-ant.jar"
+               property="findbugs.available"/>
+           <taskdef
+               name="findbugs"
+               classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+               classpath="${findbugs.home}/lib/findbugs-ant.jar"
+               onerror="ignore"/>
           <fail message="FindBugs is unavailable" unless="findbugs.available"/>
+
+          <!-- Run findbugs using the attributes given -->
           <dirname file="@{outputFile}" property="@{outputFile}.dir" />
           <mkdir dir="${@{outputFile}.dir}" />
           <findbugs home="${findbugs.home}"
