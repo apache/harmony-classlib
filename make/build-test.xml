@@ -54,7 +54,7 @@
         <poll-modules target="-test-module" />
     </target>
 
-    <target name="findbugs">
+    <target name="findbugs" depends="check-support-jars">
         <poll-modules target="findbugs" />
     </target>
 
