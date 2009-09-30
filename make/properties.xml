@@ -919,6 +919,8 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
        <attribute name="jarFile"/>
        <sequential>
           <fail message="FindBugs is unavailable" unless="findbugs.available"/>
+          <dirname file="@{outputFile}" property="@{outputFile}.dir" />
+          <mkdir dir="${@{outputFile}.dir}" />
           <findbugs home="${findbugs.home}"
             output="xml"
             outputFile="@{outputFile}"
