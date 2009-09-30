@@ -38,6 +38,7 @@
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${hamcrest-library.url}" dest="${hamcrest-library.jar}" />
+        <check-one-file src="${findbugs.url}" dest="${findbugs.zip}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
@@ -54,7 +55,7 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-xerces,-fix-xalan-manifest" />
+         depends="-extract-props,-extract-xerces,-fix-xalan-manifest,-extract-findbugs" />
 
     <target name="-extract-props">
         <uptodate property="xerces.uptodate"
@@ -63,6 +64,9 @@
         <uptodate property="xalan.uptodate"
                   srcfile="${xalan.orig.jar}"
                   targetfile="${xalan.jar}" />
+        <uptodate property="findbugs.uptodate"
+                  srcfile="${findbugs.zip}"
+                  targetfile="${findbugs.dir}/uptodate" />
     </target>
 
     <target name="-extract-xerces" unless="xerces.uptodate">
@@ -89,6 +93,12 @@
         <delete dir="${xalan.dir}.tmp" />
     </target>
 
+    <target name="-extract-findbugs" unless="findbugs.uptodate">
+        <!-- Note that FindBugs contains a top level dir name -->
+        <unzip src="${findbugs.zip}" dest="${findbugs.dir}/.." />
+        <touch file="${findbugs.dir}/uptodate" />
+    </target>
+
     <target name="download" description="Download required jars"
             depends="-download,-download-win" />
 
@@ -110,6 +120,11 @@
         <download-one-file src="${hamcrest-library.url}"
                            dest="${hamcrest-library.jar}"
                            md5="${hamcrest-library.md5}" />
+
+        <mkdir dir="${findbugs.dir}" />
+        <download-one-file src="${findbugs.url}"
+                           dest="${findbugs.zip}"
+                           md5="${findbugs.md5}" />
 
         <mkdir dir="${bcprov.dir}" />
         <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"

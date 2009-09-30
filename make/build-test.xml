@@ -54,6 +54,10 @@
         <poll-modules target="-test-module" />
     </target>
 
+    <target name="findbugs">
+        <poll-modules target="findbugs" />
+    </target>
+
     <target name="test-jar-init">
         <copy file="${basedir}/make/test.properties" tofile="${hy.hdk}/build/test/test.properties"/>
         <copy file="${basedir}/make/run-test.xml" tofile="${hy.hdk}/build/test/build.xml"/>

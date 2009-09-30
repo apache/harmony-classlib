@@ -64,6 +64,18 @@
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vmargs" value="" />
 
+    <!-- FindBugs properties -->
+    <property name="findbugs.home" location="${basedir}/../../depends/oss/findbugs-1.3.9"/>
+    <available
+       classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+       classpath="${findbugs.home}/lib/findbugs-ant.jar"
+       property="findbugs.available"/>
+    <taskdef
+       name="findbugs"
+       classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+       classpath="${findbugs.home}/lib/findbugs-ant.jar"
+       onerror="ignore"/>
+
     <!-- Conditions for operating systems -->
     <condition property="is.windows">
         <os family="Windows" />
@@ -367,6 +379,7 @@ Harmony test properties:
     hy.test.timeout = ${hy.test.timeout}
     hy.test.vm.name = ${hy.test.vm.name}
     hy.test.vmargs = ${hy.test.vmargs}
+    findbugs.available = ${findbugs.available}
 
 Harmony platform properties:
 
@@ -898,6 +911,29 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
         <sequential>
             <delete file="${hy.hdk}/build/ant/patternsets/@{module}.txt" />
         </sequential>
+    </macrodef>
+
+    <macrodef name="run-findBugs">
+       <attribute name="outputFile"/>
+       <attribute name="excludeFilter"/>
+       <attribute name="jarFile"/>
+       <sequential>
+          <fail message="FindBugs is unavailable" unless="findbugs.available"/>
+          <findbugs home="${findbugs.home}"
+            output="xml"
+            outputFile="@{outputFile}"
+            excludeFilter="@{excludeFilter}"
+            jvmargs="-Xmx512M"
+            workhard="true">
+            <auxClasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </auxClasspath>
+            <sourcePath path="src/main/java" />
+            <class location="@{jarFile}" />
+        </findbugs>
+       </sequential>
     </macrodef>
 
 </project>
