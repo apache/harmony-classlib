@@ -18,6 +18,11 @@
 
 <!-- Exclusion filter for running FindBugs against Apache Harmony -->
 
+    <!--
+      Format and code information is available here
+      http://findbugs.sourceforge.net/manual/filter.html
+    -->
+
 <FindBugsFilter>
      
        <!-- Number classes should be able to call Number constructors -->
@@ -100,6 +105,13 @@
          <Method name="getData" />
        </Or>
        <Bug code="EI2, EI" />
+     </Match>
+     
+     <!-- Spec requires that InetAddress readResolve is private -->
+     <Match>
+       <Class name="java.net.InetAddress" />
+       <Method name="readResolve" />
+       <Bug code="Se" />
      </Match>
      
      <!-- Method is not static in the spec, so can't change it -->
