@@ -27,7 +27,7 @@
 	<!-- Spec requires it is called Date -->
 	<Match>
 		<Class name="java.sql.Date" />
-		<Bug code="Nm" />
+		<Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
 	</Match>
-</FindBugsFilter>
 
+</FindBugsFilter>
