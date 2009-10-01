@@ -31,6 +31,7 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 #include "exceptions.h"
+#include "hyport.h"
 
 #ifdef ZOS
 #define FD_BIAS 1000
@@ -156,10 +157,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
 {
-  //PORT_ACCESS_FROM_ENV (env);
+  PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
-  char errorString[102]; // 102 to contain the longest error message
 
   // Convert from Java mapping mode to port library mapping mode.
   switch (mmode)
@@ -177,41 +177,15 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
 	flags = MAP_PRIVATE;
         break;
       default:
-    sprintf(errorString, "Map mode %d not recognised", mmode);
-    throwJavaIoIOException(env, errorString);
+    throwJavaIoIOException(env, "Map mode not recognised");
         return -1;
     }
 
   mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags, fd-FD_BIAS, (off_t)(alignment&0x7fffffff));
   if (mapAddress == MAP_FAILED)
     {
-      switch (errno)
-        {
-        case EACCES:
-          strcpy(errorString, "Call to mmap failed - a file descriptor refers to a non-regular file.");
-          break;
-        case EAGAIN:
-          strcpy(errorString, "Call to mmap failed with error EAGAIN - the file has been locked, or too much memory has been locked.");
-          break;
-        case EBADF:
-          strcpy(errorString, "Call to mmap failed with error EBADF - invalid file descriptor");
-          break;
-        case EINVAL:
-          strcpy(errorString, "Call to mmap failed with error EINVAL - invalid start, length or offset.");
-          break;
-        case ENFILE:
-          strcpy(errorString, "Call to mmap failed with error ENFILE - number of open files has reached the system limit.");
-          break;
-        case ENODEV:
-          strcpy(errorString, "Call to mmap failed with error ENODEV - filesystem does not support memory mapping.");
-          break;
-        case ENOMEM:
-          strcpy(errorString, "Call to mmap failed with error ENOMEM - no memory is available");
-          break;
-        default:
-          sprintf(errorString, "Call to mmap returned with errno %d", errno);
-        }
-      throwJavaIoIOException(env, errorString);
+      hyerror_set_last_error(errno, HYPORT_ERROR_OPFAILED);
+      throwJavaIoIOException(env, hyerror_last_error_message());
       return -1;
     }
   return (jlong) ((IDATA)mapAddress);
