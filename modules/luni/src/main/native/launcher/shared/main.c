@@ -1037,17 +1037,28 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
 static BOOLEAN findDirInPath(char *path, char *dir, char *separator)
 {
   char *pos;
+  int pathlen;
   int dirlen = strlen(dir);
+  while (dirlen > 1 && dir[dirlen-1] == DIR_SEPARATOR) {
+    dirlen--;
+  }
 
   while ((pos = strchr(path, *separator)) != NULL) {
-    int pathlen = pos - path;
+    int savedpathlen = pathlen = pos - path;
+    while (pathlen > 1 && path[pathlen-1] == DIR_SEPARATOR) {
+      pathlen--;
+    }
     if (dirlen == pathlen && !strncmp(path, dir, dirlen)) {
       return TRUE;
     }
-    path += pathlen + 1;
+    path += savedpathlen + 1;
   }
 
-  return !strcmp(dir, path);
+  pathlen = strlen(path);
+  while (pathlen > 1 && path[pathlen-1] == DIR_SEPARATOR) {
+    pathlen--;
+  }
+  return dirlen == pathlen && !strncmp(path, dir, dirlen);
 }
 
 /**
