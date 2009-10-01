@@ -222,7 +222,6 @@
     </target>
 
     <target name="findbugs" depends="build-jar">
-        <property name="findBugs.report" location="../../build/findbugs_report" />
         <run-findBugs
             jarFile="${hy.jdk}/jre/lib/boot/luni.jar"
             excludeFilter="make/findbugs-exclude-filter.xml"

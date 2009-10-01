@@ -345,6 +345,8 @@
     <property name="tests.resources.hdk.dir"
               value="${tests.hdk.dir}/resources" />
 
+    <property name="findBugs.report" location="../../build/findbugs_report" />
+
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>

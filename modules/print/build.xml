@@ -90,6 +90,13 @@
         <make dir="src/main/native/print/${hy.os.family}" />
     </target>
 
+    <target name="findbugs" depends="build-jar">
+        <run-findBugs
+            jarFile="${hy.jdk}/jre/lib/boot/print.jar"
+            excludeFilter="make/findbugs-exclude-filter.xml"
+            outputFile="${findBugs.report}/print.xml"/>
+    </target>
+
     <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/print.jar"
              manifest="META-INF/MANIFEST.MF"

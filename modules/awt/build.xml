@@ -217,6 +217,13 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
               tofile="${hy.jdk}/jre/lib/font.properties"/>
     </target>
 
+    <target name="findbugs" depends="build-jar">
+        <run-findBugs
+            jarFile="${hy.jdk}/jre/lib/boot/awt.jar"
+            excludeFilter="make/findbugs-exclude-filter.xml"
+            outputFile="${findBugs.report}/awt.xml"/>
+    </target>
+
     <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/awt.jar"
              manifest="META-INF/MANIFEST.MF"

@@ -178,6 +178,13 @@
         </javac>
     </target>
 
+    <target name="findbugs" depends="build-jar">
+        <run-findBugs
+            jarFile="${hy.jdk}/jre/lib/boot/archive.jar"
+            excludeFilter="make/findbugs-exclude-filter.xml"
+            outputFile="${findBugs.report}/archive.xml"/>
+    </target>
+
     <target name="build-jar" depends="svn-info,class-patternset">
         <jar destfile="${hy.jdk}/jre/lib/boot/archive.jar"
              manifest="META-INF/MANIFEST.MF"
