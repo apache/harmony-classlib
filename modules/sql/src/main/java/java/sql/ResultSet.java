@@ -1937,7 +1937,7 @@ public interface ResultSet {
      * Determines whether the last column read from this {@code ResultSet}
      * contained SQL {@code NULL}.
      * 
-     * @return {@code {@code true} if the last column contained SQL {@code
+     * @return {@code true} if the last column contained SQL {@code
      *         NULL}, {@code false} otherwise
      * @throws SQLException
      *             if a database error happens.
