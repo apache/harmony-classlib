@@ -34,5 +34,40 @@
 		<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
 	</Match>
 
+	<!-- Exception is ignored on purpose -->
+	<Match>
+		<Class name="java.util.jar.JarVerifier" />
+		<Method name="verifyCertificate" />
+		<Bug code="DE" />
+	</Match>
+
+	<!-- OK to ignore return value as result is checked in next line -->
+	<Match>
+		<Class name="java.util.zip.ZipInputStream" />
+		<Method name="closeEntry" />
+		<Bug code="RR" />
+	</Match>
+
+	<!-- OK to return actual byte array as this matches RI's behaviour -->
+	<Match>
+		<Class name="java.util.zip.ZipEntry" />
+		<Method name="getExtra" />
+		<Bug code="EI" />
+	</Match>
+
+	<!-- OK to use actual byte array as this matches RI's behaviour -->
+	<Match>
+		<Class name="java.util.zip.ZipEntry" />
+		<Method name="setExtra" />
+		<Bug code="EI2" />
+	</Match>
+
+	<!-- OK to use actual byte array as this matches RI's behaviour -->
+	<Match>
+		<Class name="java.util.zip.Deflater" />
+		<Method name="setInput" />
+		<Bug code="EI2" />
+	</Match>
+
 </FindBugsFilter>
 
