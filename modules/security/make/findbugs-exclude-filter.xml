@@ -24,6 +24,13 @@
 
 <FindBugsFilter>
 
+	<!-- This string comparison using == is deliberate. -->
+	<Match>
+		<Class name="java.security.BasicPermission" />
+		<Method name="nameImplies" />
+		<Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ" />
+	</Match>
+
 	<!-- CodeSource needs to call equals on a URL in a few methods. -->
 	<Match>
 		<Class name="java.security.CodeSource" />
