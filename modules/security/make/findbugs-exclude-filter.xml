@@ -47,13 +47,22 @@
 	-->
 	<Match>
 		<Class name="java.security.MessageDigest" />
-		<Method name="clone" />
 		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
 	</Match>
 	<Match>
 		<Class name="java.security.Signature" />
-		<Method name="clone" />
 		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
+	</Match>
+	<Match>
+		<Class name="java.security.Signature$SignatureImpl" />
+		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
+	</Match>
+
+	<!-- A false positive warning for double check lock -->
+	<Match>
+		<Class name="java.security.Policy" />
+		<Method name="getAccessiblePolicy" />
+		<Bug pattern="DC_DOUBLECHECK" />
 	</Match>
 
 </FindBugsFilter>
