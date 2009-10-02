@@ -158,14 +158,20 @@
 	<!-- URLClassLoader needs to use URL.equals() method -->
 	<Match>
 		<Class name="java.net.URLClassLoader" />
-		<Bug code="DMI_BLOCKING_METHODS_ON_URL" />
+		<Bug pattern="DMI_BLOCKING_METHODS_ON_URL" />
 	</Match>
 
+	<!-- URLClassLoader deals with collections of URLs -->
+	<Match>
+		<Class name="java.net.URLClassLoader" />
+		<Bug pattern="DMI_COLLECTION_OF_URLS" />
+	</Match>
+	
 	<!-- OK for URLClassLoader to ignore the exception here -->
 	<Match>
 		<Class name="java.net.URLClassLoader" />
 		<Method name="findResources"/>
-		<Bug code="DE_MIGHT_IGNORE" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!-- Ignoring exceptions in this method is ok -->
