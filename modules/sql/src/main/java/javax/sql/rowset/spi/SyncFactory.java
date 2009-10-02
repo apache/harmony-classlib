@@ -40,11 +40,20 @@ import org.apache.harmony.sql.internal.nls.Messages;
  * Applications can also use it to add and remove SyncProviders at runtime.
  */
 public class SyncFactory {
-    public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
+    /**
+     * The property name for the synchronization provider's implementation class.
+     */
+    public static final String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
 
-    public static String ROWSET_SYNC_VENDOR = "rowset.provider.vendor"; //$NON-NLS-1$
+    /**
+     * The property name for the synchronization provider's vendor name.
+     */
+    public static final String ROWSET_SYNC_VENDOR = "rowset.provider.vendor"; //$NON-NLS-1$
 
-    public static String ROWSET_SYNC_PROVIDER_VERSION = "rowset.provider.version"; //$NON-NLS-1$
+    /**
+     * The property name for the synchronization provider's version information.
+     */
+    public static final String ROWSET_SYNC_PROVIDER_VERSION = "rowset.provider.version"; //$NON-NLS-1$
 
     private static SyncFactory instance = new SyncFactory();
 
