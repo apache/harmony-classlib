@@ -33,7 +33,7 @@
 			<Class name="java.lang.Long" />
 			<Class name="java.lang.Short" />
 		</Or>
-		<Bug code="Dm" />
+		<Bug pattern="DM_FP_NUMBER_CTOR" />
 	</Match>
 
 	<!--
@@ -52,7 +52,7 @@
 	-->
 	<Match>
 		<Class name="java.io.ByteArrayInputStream" />
-		<Bug code="EI2" />
+		<Bug pattern="EI_EXPOSE_REP2" />
 	</Match>
 
 	<!--
@@ -61,7 +61,7 @@
 	-->
 	<Match>
 		<Class name="java.io.CharArrayReader" />
-		<Bug code="EI2" />
+		<Bug pattern="EI_EXPOSE_REP2" />
 	</Match>
 
 	<!-- Fallthrough in switch statement is meant to be there -->
@@ -75,7 +75,7 @@
 	<Match>
 		<Class name="java.io.LineNumberReader" />
 		<Method name="read" />
-		<Bug code="SF" />
+		<Bug pattern="SF_SWITCH_FALLTHROUGH" />
 	</Match>
 
 	<!--
@@ -83,14 +83,14 @@
 	-->
 	<Match>
 		<Class name="java.lang.String" />
-		<Bug code="ES" />
+		<Bug pattern="ES_COMPARING_STRINGS_WITH_EQ" />
 	</Match>
 
 	<!-- Ignore this unused private method -->
 	<Match>
 		<Class name="java.lang.String" />
 		<Method name="indexOf" />
-		<Bug code="UPM" />
+		<Bug pattern="UPM_UNCALLED_PRIVATE_METHOD" />
 	</Match>
 
 	<!--
@@ -110,7 +110,7 @@
 	<Match>
 		<Class name="java.lang.SecurityManager" />
 		<Method name="checkTopLevelWindow" />
-		<Bug code="DE" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!-- OK to use mutable Objects for DatagramPacket -->
@@ -127,40 +127,47 @@
 	<Match>
 		<Class name="java.net.InetAddress" />
 		<Method name="readResolve" />
-		<Bug code="Se" />
+		<Bug pattern="SE_PRIVATE_READ_RESOLVE_NOT_INHERITED" />
 	</Match>
 
 	<!-- Method is not static in the spec, so can't change it -->
 	<Match>
 		<Class name="java.net.URLConnection" />
 		<Method name="setDefaultUseCaches" />
-		<Bug code="ST" />
+		<Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
 	</Match>
 
 	<!-- Exceptions are supposed to be ignored -->
 	<Match>
 		<Class name="java.net.URLConnection" />
 		<Method name="getContentHandler" />
-		<Bug code="DE" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!-- Exceptions are supposed to be ignored -->
 	<Match>
 		<Class name="java.net.URL" />
 		<Method name="setupStreamHandler" />
-		<Bug code="DE" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!-- URLClassLoader needs to use URL.equals() method -->
 	<Match>
 		<Class name="java.net.URLClassLoader" />
-		<Bug code="Dm" />
+		<Bug code="DMI_BLOCKING_METHODS_ON_URL" />
 	</Match>
 
 	<!-- Load of known null value is intended (line 409) -->
 	<Match>
 		<Class name="java.net.URL" />
 		<Bug code="NP" />
+	</Match>
+
+	<!-- Ignoring exceptions in this method is ok -->
+	<Match>
+		<Class name="java.net.URL" />
+		<Method name="setupStreamHandler" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!--
@@ -190,16 +197,6 @@
 	</Match>
 
 	<!--
-		PropertyPermission.equals does not need to check for null because it
-		delegates to its superclass, which does
-	-->
-	<Match>
-		<Class name="java.util.PropertyPermission" />
-		<Method name="equals" />
-		<Bug code="NP" />
-	</Match>
-
-	<!--
 		The comparator field is part of the serialized form specification for
 		both TreeMap and PriorityQueue
 	-->
@@ -216,21 +213,14 @@
 	<Match>
 		<Class name="java.util.Timer" />
 		<Field name="finalizer" />
-		<Bug code="UrF" />
+		<Bug pattern="URF_UNREAD_FIELD" />
 	</Match>
 
 	<!-- Exception is ignored on purpose -->
 	<Match>
 		<Class name="java.util.Timer$TimerImpl" />
 		<Method name="run" />
-		<Bug code="DE" />
-	</Match>
-
-	<!-- Access is synchronized - looks like FindBugs got it wrong here -->
-	<Match>
-		<Class name="java.util.Timer$TimerImpl" />
-		<Field name="cancelled" />
-		<Bug code="IS" />
+		<Bug pattern="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!--
@@ -274,14 +264,14 @@
 		<Bug code="Se" />
 	</Match>
 
-	<!-- Fallthrough in switch statements are meant to be there -->
+	<!-- Fall through in switch statements are meant to be there -->
 	<Match>
 		<Class name="org.apache.harmony.luni.util.FloatingPointParser" />
 		<Or>
 			<Method name="parseDblName" />
 			<Method name="parseFltName" />
 		</Or>
-		<Bug code="SF" />
+		<Bug pattern="SF_SWITCH_FALLTHROUGH" />
 	</Match>
 
 	<!-- OK to throw a NullPointerException if one key is null -->
@@ -298,15 +288,7 @@
 			<Field name="isIPV6Address" />
 			<Field name="interfaceIdx" />
 		</Or>
-		<Bug code="UrF" />
-	</Match>
-
-	<!-- Ignored result is not important in this case -->
-	<Match>
-		<Class
-			name="org.apache.harmony.luni.internal.net.www.protocol.ftp.FtpURLConnection" />
-		<Method name="getReply" />
-		<Bug code="RR" />
+		<Bug pattern="URF_UNREAD_FIELD" />
 	</Match>
 
 	<!-- Invocation of inherited method is intended -->
