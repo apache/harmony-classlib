@@ -33,7 +33,7 @@
 			<Class name="java.lang.Long" />
 			<Class name="java.lang.Short" />
 		</Or>
-		<Bug pattern="DM_FP_NUMBER_CTOR" />
+		<Bug pattern="DM_NUMBER_CTOR" />
 	</Match>
 
 	<!--
@@ -161,10 +161,11 @@
 		<Bug code="DMI_BLOCKING_METHODS_ON_URL" />
 	</Match>
 
-	<!-- Load of known null value is intended (line 409) -->
+	<!-- OK for URLClassLoader to ignore the exception here -->
 	<Match>
-		<Class name="java.net.URL" />
-		<Bug code="NP" />
+		<Class name="java.net.URLClassLoader" />
+		<Method name="findResources"/>
+		<Bug code="DE_MIGHT_IGNORE" />
 	</Match>
 
 	<!-- Ignoring exceptions in this method is ok -->
