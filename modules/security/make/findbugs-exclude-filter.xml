@@ -24,8 +24,19 @@
 
 <FindBugsFilter>
 
+	<!-- CodeSource needs to call equals on a URL in a few methods. -->
+	<Match>
+		<Class name="java.security.CodeSource" />
+		<Or>
+			<Method name="equals" />
+			<Method name="hashCode" />
+			<Method name="implies" />
+		</Or>
+		<Bug pattern="DMI_BLOCKING_METHODS_ON_URL" />
+	</Match>
+
 	<!--
-        Spec requires that the class implements clone, but not cloneable.
+		Spec requires that the class implements clone, but not cloneable.
 	-->
 	<Match>
 		<Class name="java.security.MessageDigest" />
