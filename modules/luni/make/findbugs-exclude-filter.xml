@@ -85,6 +85,10 @@
 		<Class name="java.lang.String" />
 		<Bug pattern="ES_COMPARING_STRINGS_WITH_EQ" />
 	</Match>
+	<Match>
+		<Class name="java.lang.String" />
+		<Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ" />
+	</Match>
 
 	<!-- Ignore this unused private method -->
 	<Match>
