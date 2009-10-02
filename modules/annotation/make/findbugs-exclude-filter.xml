@@ -28,7 +28,7 @@
 	<Match>
 		<Class name="java.lang.annotation.AnnotationTypeMismatchException" />
 		<Field name="element" />
-		<Bug code="Se" />
+		<Bug pattern="SE_BAD_FIELD" />
 	</Match>
 
 </FindBugsFilter>
