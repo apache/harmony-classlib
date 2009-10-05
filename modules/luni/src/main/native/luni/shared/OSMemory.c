@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArr
   jbyte *bytes = (*env)->GetPrimitiveArrayCritical(env, byteArray, &isCopy);
   memcpy ((void *) ((IDATA) address),
 	  (const jbyte *) ((IDATA) bytes + offset), (size_t) length);
-  (*env)->ReleaseByteArrayElements(env, byteArray, bytes, JNI_ABORT);
+  (*env)->ReleasePrimitiveArrayCritical(env, byteArray, bytes, JNI_ABORT);
 }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte
