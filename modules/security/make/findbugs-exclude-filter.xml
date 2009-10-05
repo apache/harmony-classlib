@@ -69,4 +69,11 @@
 		<Bug pattern="DC_DOUBLECHECK" />
 	</Match>
 
+	<!-- Allow this dead store, we are trying to force a potential exception -->
+	<Match>
+		<Class name="org.apache.harmony.security.provider.crypto.SHA1withDSA_SignatureImpl" />
+		<Method name="checkSignature" />
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+	</Match>
+
 </FindBugsFilter>
