@@ -50,6 +50,10 @@
 		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
 	</Match>
 	<Match>
+		<Class name="java.security.MessageDigest$MessageDigestImpl" />
+		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
+	</Match>
+	<Match>
 		<Class name="java.security.Signature" />
 		<Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
 	</Match>
