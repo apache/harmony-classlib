@@ -30,4 +30,22 @@
 		<Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
 	</Match>
 
+	<!-- Spec shows there is no compareTo(Object) method. -->
+	<Match>
+		<Class name="java.sql.Timestamp" />
+		<Bug pattern="CO_SELF_NO_OBJECT" />
+	</Match>
+
+	<!-- Spec shows there is an equals() but no hashCode(). Shameful.-->
+	<Match>
+		<Class name="java.sql.Timestamp" />
+		<Bug pattern="HE_EQUALS_NO_HASHCODE" />
+	</Match>
+
+	<!-- equals() follows spec and is not symmetrical.-->
+	<Match>
+		<Class name="java.sql.Timestamp" />
+		<Bug pattern="EQ_OVERRIDING_EQUALS_NOT_SYMMETRIC" />
+	</Match>
+
 </FindBugsFilter>
