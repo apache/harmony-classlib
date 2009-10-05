@@ -252,6 +252,7 @@ public class SecureRandom extends Random {
      * @param seed
      *            the new seed.
      */
+    @Override
     public void setSeed(long seed) {
         if (seed == 0) {    // skip call from Random
             return;
@@ -276,6 +277,7 @@ public class SecureRandom extends Random {
      * @param bytes
      *            the {@code byte[]} to be filled with random bytes.
      */
+    @Override
     public synchronized void nextBytes(byte[] bytes) {
         secureRandomSpi.engineNextBytes(bytes);
     }
@@ -289,6 +291,7 @@ public class SecureRandom extends Random {
      *            the range [0, 32].
      * @return an {@code int} containing the specified number of random bits.
      */
+    @Override
     protected final int next(int numBits) {
         if (numBits < 0) {
             numBits = 0;

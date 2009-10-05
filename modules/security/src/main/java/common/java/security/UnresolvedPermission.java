@@ -118,6 +118,7 @@ public final class UnresolvedPermission extends Permission
      * @return {@code true} if the specified object is equal to this {@code
      *         UnresolvedPermission}, otherwise {@code false}.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -200,6 +201,7 @@ public final class UnresolvedPermission extends Permission
      * @see Object#equals(Object)
      * @see UnresolvedPermission#equals(Object)
      */
+    @Override
     public int hashCode() {
         if (hash == 0) {
             hash = getName().hashCode();
@@ -220,6 +222,7 @@ public final class UnresolvedPermission extends Permission
      *
      * @return an empty string, indicating that there are no actions.
      */
+    @Override
     public String getActions() {
         return ""; //$NON-NLS-1$
     }
@@ -287,6 +290,7 @@ public final class UnresolvedPermission extends Permission
      *            the permission to check.
      * @return always {@code false}
      */
+    @Override
     public boolean implies(Permission permission) {
         return false;
     }
@@ -298,6 +302,7 @@ public final class UnresolvedPermission extends Permission
      *
      * @return a printable representation for this {@code UnresolvedPermission}.
      */
+    @Override
     public String toString() {
         return "(unresolved " + type + " " + name + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             + actions + ")"; //$NON-NLS-1$
@@ -310,6 +315,7 @@ public final class UnresolvedPermission extends Permission
      * @return a new PermissionCollection for holding {@code
      *         UnresolvedPermission} objects.
      */
+    @Override
     public PermissionCollection newPermissionCollection() {
         return new UnresolvedPermissionCollection();
     }

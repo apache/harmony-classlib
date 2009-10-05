@@ -45,6 +45,7 @@ public abstract class Permission implements Guard, Serializable {
      * @return {@code true} if the specified object is equal to this {@code
      *         Permission}, otherwise {@code false}.
      */
+    @Override
     public abstract boolean equals(Object obj);
 
     /**
@@ -56,6 +57,7 @@ public abstract class Permission implements Guard, Serializable {
      * @see Object#equals(Object)
      * @see Permission#equals(Object)
      */
+    @Override
     public abstract int hashCode();
 
     /**
@@ -149,6 +151,7 @@ public abstract class Permission implements Guard, Serializable {
      *
      * @return a printable representation for this {@code Permission}.
      */
+    @Override
     public String toString() {
         String actions = getActions();
         actions = (actions == null || actions.length() == 0) ? "" : " " //$NON-NLS-1$ //$NON-NLS-2$

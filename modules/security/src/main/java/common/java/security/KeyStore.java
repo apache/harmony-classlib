@@ -983,6 +983,7 @@ public class KeyStore {
             // 
             // Result KeyStore object is returned.
             //
+            @Override
             public synchronized KeyStore getKeyStore() throws KeyStoreException {
                 // If KeyStore was created but in final block some exception was
                 // thrown
@@ -1059,6 +1060,7 @@ public class KeyStore {
             // Return: ProtectionParameter to get Entry which was saved in
             // KeyStore with defined alias
             //
+            @Override
             public synchronized ProtectionParameter getProtectionParameter(
                     String alias) throws KeyStoreException {
                 if (alias == null) {
@@ -1073,8 +1075,6 @@ public class KeyStore {
 
         /*
          * Implementation of LoadStoreParameter interface
-         * 
-         * @author Vera Petrashkova
          */
         private static class TmpLSParameter implements LoadStoreParameter {
 
@@ -1083,6 +1083,7 @@ public class KeyStore {
 
             /**
              * Creates TmpLoadStoreParameter object
+             * @param protPar protection parameter
              */
             public TmpLSParameter(ProtectionParameter protPar) {
                 this.protPar = protPar;
@@ -1336,6 +1337,7 @@ public class KeyStore {
          *
          * @return a printable representation for this {@code PrivateKeyEntry}.
          */
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(
                     "PrivateKeyEntry: number of elements in certificate chain is "); //$NON-NLS-1$
@@ -1390,6 +1392,7 @@ public class KeyStore {
          * @return a printable representation for this {@code
          *         SecretKeyEntry}.
          */
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder("SecretKeyEntry: algorithm - "); //$NON-NLS-1$
             sb.append(secretKey.getAlgorithm());
@@ -1438,6 +1441,7 @@ public class KeyStore {
          * @return a printable representation for this {@code
          *         TrustedCertificateEntry}.
          */
+        @Override
         public String toString() {
             return "Trusted certificate entry:\n" + trustCertificate; //$NON-NLS-1$
         }

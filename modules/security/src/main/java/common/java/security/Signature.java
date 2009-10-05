@@ -515,6 +515,7 @@ public abstract class Signature extends SignatureSpi {
      *
      * @return a printable representation for this {@code Signature}.
      */
+    @Override
     public String toString() {
         return "SIGNATURE " + algorithm + " state: " + stateToString(state); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -594,12 +595,12 @@ public abstract class Signature extends SignatureSpi {
         return engineGetParameter(param);
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         if (this instanceof Cloneable) {
             return super.clone();
-        } else {
-            throw new CloneNotSupportedException();
         }
+        throw new CloneNotSupportedException();
     }
 
     /**
@@ -620,58 +621,66 @@ public abstract class Signature extends SignatureSpi {
         }
 
         // engineSign() implementation
+        @Override
         protected byte[] engineSign() throws SignatureException {
             return spiImpl.engineSign();
         }
 
         //  engineUpdate() implementation
+        @Override
         protected void engineUpdate(byte arg0) throws SignatureException {
             spiImpl.engineUpdate(arg0);
         }
 
         // engineVerify() implementation
+        @Override
         protected boolean engineVerify(byte[] arg0) throws SignatureException {
             return spiImpl.engineVerify(arg0);
         }
 
         // engineUpdate() implementation
+        @Override
         protected void engineUpdate(byte[] arg0, int arg1, int arg2)
                 throws SignatureException {
             spiImpl.engineUpdate(arg0, arg1, arg2);
         }
 
         // engineInitSign() implementation
+        @Override
         protected void engineInitSign(PrivateKey arg0)
                 throws InvalidKeyException {
             spiImpl.engineInitSign(arg0);
         }
 
         // engineInitVerify() implementation
+        @Override
         protected void engineInitVerify(PublicKey arg0)
                 throws InvalidKeyException {
             spiImpl.engineInitVerify(arg0);
         }
 
         // engineGetParameter() implementation
+        @Override
         protected Object engineGetParameter(String arg0)
                 throws InvalidParameterException {
             return spiImpl.engineGetParameter(arg0);
         }
 
         // engineSetParameter() implementation
+        @Override
         protected void engineSetParameter(String arg0, Object arg1)
                 throws InvalidParameterException {
             spiImpl.engineSetParameter(arg0, arg1);
         }
 
         // Returns a clone if the spiImpl is cloneable
+        @Override
         public Object clone() throws CloneNotSupportedException {
             if (spiImpl instanceof Cloneable) {
                 SignatureSpi spi = (SignatureSpi) spiImpl.clone();
                 return new SignatureImpl(spi, getProvider(), getAlgorithm());
-            } else {
-                throw new CloneNotSupportedException();
             }
+            throw new CloneNotSupportedException();
         }
     }
 }
