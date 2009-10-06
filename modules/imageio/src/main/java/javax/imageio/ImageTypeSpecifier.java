@@ -174,4 +174,9 @@ public class ImageTypeSpecifier {
         }
         return rt;
     }
+
+    @Override
+    public int hashCode() {
+        return colorModel.hashCode() + sampleModel.hashCode();
+    }
 }
