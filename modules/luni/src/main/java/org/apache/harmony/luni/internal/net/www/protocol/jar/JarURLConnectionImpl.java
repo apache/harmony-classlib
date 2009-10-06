@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ContentHandler;
 import java.net.ContentHandlerFactory;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
@@ -46,9 +47,9 @@ import org.apache.harmony.luni.util.Util;
  * <p>
  * 
  * This class is responsible for connecting and retrieving resources from a Jar
- * file which can be anywhere that can be refered to by an URL.
+ * file which can be anywhere that can be referred to by an URL.
  */
-public class JarURLConnection extends java.net.JarURLConnection {
+public class JarURLConnectionImpl extends JarURLConnection {
 
     static HashMap<URL, JarFile> jarCache = new HashMap<URL, JarFile>();
 
@@ -69,7 +70,7 @@ public class JarURLConnection extends java.net.JarURLConnection {
      * @throws java.net.MalformedURLException
      *             if the URL is malformed
      */
-    public JarURLConnection(java.net.URL url) throws MalformedURLException, IOException {
+    public JarURLConnectionImpl(java.net.URL url) throws MalformedURLException, IOException {
         super(url);
         jarFileURL = getJarFileURL();
         jarFileURLConnection = jarFileURL.openConnection();
