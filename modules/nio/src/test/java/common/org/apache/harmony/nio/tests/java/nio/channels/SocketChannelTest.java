@@ -28,6 +28,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.AlreadyConnectedException;
 import java.nio.channels.ClosedChannelException;
@@ -298,15 +299,19 @@ public class SocketChannelTest extends TestCase {
     public void testSocket_NonBlock_BasicStatusAfterConnect() throws Exception {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        Socket s1 = this.channel1.socket();
-        // status of not connected
-        assertSocketBeforeConnect(s1);
-        Socket s2 = this.channel1.socket();
-        // same
-        assertSame(s1, s2);
+        boolean connected = channel1.connect(localAddr1);
+        Socket s1 = null;
+        Socket s2 = null;
+        if (!connected) {
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            s1 = this.channel1.socket();
+            // status of not connected
+            assertSocketBeforeConnect(s1);
+            s2 = this.channel1.socket();
+            // same
+            assertSame(s1, s2);
+        }
 
         if (tryFinish()) {
             assertTrue(this.channel1.isConnected());
@@ -337,22 +342,24 @@ public class SocketChannelTest extends TestCase {
             throws IOException {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        Socket s1 = this.channel1.socket();
-        // Action of not connected
-        assertSocketAction_NonBlock_BeforeConnect(s1);
-        Socket s2 = this.channel1.socket();
-        // same
-        assertSame(s1, s2);
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            Socket s1 = this.channel1.socket();
+            // Action of not connected
+            assertSocketAction_NonBlock_BeforeConnect(s1);
+            Socket s2 = this.channel1.socket();
+            // same
+            assertSame(s1, s2);
+        }
     }
 
     public void testSocket_NonBlock_ActionsAfterConnectAfterFinish()
             throws Exception {
         assertFalse(this.channel1.isConnected());// not connected
         this.channel1.configureBlocking(false);
-        assertFalse(this.channel1.connect(localAddr1));
+        channel1.connect(localAddr1);
         if (tryFinish()) {
             Socket s1 = this.channel1.socket();
             assertSocketAction_NonBlock_AfterConnect(s1);
@@ -640,9 +647,10 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         ensureServerClosed();
 
         tryFinish();
@@ -1050,37 +1058,38 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
 
-        try {
-            this.channel1.connect(localAddr1);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
+            try {
+                this.channel1.connect(localAddr1);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
+
+            // connect another addr
+            try {
+                this.channel1.connect(localAddr2);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
+
+            // connect if server closed
+            ensureServerClosed();
+
+            try {
+                this.channel1.connect(localAddr1);
+                fail("Should throw a ConnectionPendingException here.");
+            } catch (ConnectionPendingException e) {
+                // OK.
+            }
+            statusNotConnected_Pending();
         }
-        statusNotConnected_Pending();
-
-        // connect another addr
-        try {
-            this.channel1.connect(localAddr2);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
-        }
-        statusNotConnected_Pending();
-
-        // connect if server closed
-        ensureServerClosed();
-
-        try {
-            this.channel1.connect(localAddr1);
-            fail("Should throw a ConnectionPendingException here.");
-        } catch (ConnectionPendingException e) {
-            // OK.
-        }
-        statusNotConnected_Pending();
-
         tryFinish();
 
         this.channel1.close();
@@ -1195,9 +1204,10 @@ public class SocketChannelTest extends TestCase {
         }
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         tryFinish();
 
         this.channel1.close();
@@ -1375,9 +1385,10 @@ public class SocketChannelTest extends TestCase {
         this.channel1.configureBlocking(false);
         statusNotConnected_NotPending();
         // connect
-        assertFalse(this.channel1.connect(localAddr1));
-        statusNotConnected_Pending();
-
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            statusNotConnected_Pending();
+        }
         tryFinish();
     }
 
@@ -1486,9 +1497,11 @@ public class SocketChannelTest extends TestCase {
         this.channel1.connect(localAddr1);
 
         assertFalse(this.channel1.isBlocking());
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
+        boolean connected = channel1.isConnected();
+        if (!connected) {
+            assertTrue(this.channel1.isConnectionPending());
+            assertTrue(this.channel1.isOpen());
+        }
         if (tryFinish()) {
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBufArr, 0, 1));
@@ -1524,11 +1537,13 @@ public class SocketChannelTest extends TestCase {
         } catch (NoConnectionPendingException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertFalse(this.channel1.isConnected());
-        assertTrue(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
+        boolean connected = channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertFalse(this.channel1.isConnected());
+            assertTrue(this.channel1.isConnectionPending());
+            assertTrue(this.channel1.isOpen());
+        }
         this.server1.accept();
         if (tryFinish()) {
             assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
@@ -1840,7 +1855,7 @@ public class SocketChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
      */
-    public void test_wrtieLjava_nio_ByteBuffer_Blocking() throws IOException {
+    public void test_writeLjava_nio_ByteBuffer_Blocking() throws IOException {
         // initialize write content
         ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
         for (int i = 0; i < CAPACITY_NORMAL; i++) {
@@ -1890,7 +1905,7 @@ public class SocketChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
      */
-    public void test_wrtieLjava_nio_ByteBuffer_NonBlocking() throws Exception {
+    public void test_writeLjava_nio_ByteBuffer_NonBlocking() throws Exception {
         // initialize write content
         ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
         for (int i = 0; i < CAPACITY_NORMAL; i++) {
@@ -1978,10 +1993,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf));
         }
@@ -2012,10 +2029,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf));
         }
@@ -2116,10 +2135,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf, 0, 1));
             assertEquals(0, this.channel1.read(readBuf, 0, 2));
@@ -2155,10 +2176,12 @@ public class SocketChannelTest extends TestCase {
         } catch (NotYetConnectedException e) {
             // correct
         }
-        this.channel1.connect(localAddr1);
-        assertFalse(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnectionPending());
-        assertFalse(this.channel1.isConnected());
+        boolean connected = this.channel1.connect(localAddr1);
+        if (!connected) {
+            assertFalse(this.channel1.isBlocking());
+            assertTrue(this.channel1.isConnectionPending());
+            assertFalse(this.channel1.isConnected());
+        }
         if (tryFinish()) {
             assertEquals(0, this.channel1.read(readBuf, 0, 1));
             assertEquals(0, this.channel1.read(readBuf, 0, 2));
@@ -2657,7 +2680,234 @@ public class SocketChannelTest extends TestCase {
         sc.write(byteBufferArray);
         assertTrue(sc.isWriteCalled);
     }
-    
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_writev() throws Exception {
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.socket().bind(localAddr2);
+        SocketChannel sc = SocketChannel.open();
+        sc.connect(localAddr2);
+        SocketChannel sock = ssc.accept();
+        ByteBuffer[] buf = { ByteBuffer.allocate(10), ByteBuffer.allocateDirect(20) };
+
+        while (buf[0].remaining() != 0 && buf[1].remaining() !=0) {
+            assertTrue(sc.write(buf, 0, 2) >= 0);
+        }
+
+        ByteBuffer target = ByteBuffer.allocate(30);
+
+        while (target.remaining() != 0) {
+            assertTrue(sock.read(target) >=0);
+        }
+
+        ssc.close();
+        sc.close();
+        sock.close();
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer2() throws IOException {
+        // Set-up
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(null);
+        SocketChannel client = SocketChannel.open();
+        client.connect(server.socket().getLocalSocketAddress());
+        SocketChannel worker = server.accept();
+
+        // Test overlapping buffers
+        byte[] data = "Hello world!".getBytes("UTF-8");
+        ByteBuffer[] buffers = new ByteBuffer[3];
+        buffers[0] = ByteBuffer.wrap(data, 0, 6);
+        buffers[1] = ByteBuffer.wrap(data, 6, data.length - 6);
+        buffers[2] = ByteBuffer.wrap(data);
+
+        // Write them out, read what we wrote and check it
+        client.write(buffers);
+        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        worker.read(readBuffer);
+        readBuffer.flip();
+        Buffer expected = ByteBuffer.allocate(1024).put(data).put(data).flip();
+        assertEquals(expected, readBuffer);
+
+        // Tidy-up
+        worker.close();
+        client.close();
+        server.close();
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer_buffers() throws IOException {
+        // Set-up
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(null);
+        SocketChannel client = SocketChannel.open();
+        client.connect(server.socket().getLocalSocketAddress());
+        SocketChannel worker = server.accept();
+
+        // A variety of buffer types to write
+        byte[] data = "Hello world!".getBytes("UTF-8");
+        ByteBuffer[] buffers = new ByteBuffer[3];
+        buffers[0] = ByteBuffer.wrap(data, 0, 2);
+        assertFalse(buffers[0].isDirect());
+        assertTrue(buffers[0].hasArray());
+
+        buffers[1] = ByteBuffer.wrap(data, 2, 4).asReadOnlyBuffer();
+        assertFalse(buffers[1].isDirect());
+        assertFalse(buffers[1].hasArray());
+
+        buffers[2] = ByteBuffer.allocateDirect(42);
+        buffers[2].put(data, 6, data.length - 6);
+        buffers[2].flip();
+        assertTrue(buffers[2].isDirect());
+        assertFalse(buffers[2].hasArray());
+
+        // Write them out, read what we wrote and check it
+        client.write(buffers);
+        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        worker.read(readBuffer);
+        readBuffer.flip();
+        assertEquals(ByteBuffer.wrap(data), readBuffer);
+
+        // Tidy-up
+        worker.close();
+        client.close();
+        server.close();
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer_writes() throws IOException {
+        // Set-up
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(null);
+        SocketChannel client = SocketChannel.open();
+        client.connect(server.socket().getLocalSocketAddress());
+        SocketChannel worker = server.accept();
+
+        // Data to write
+        byte[] data = "Hello world!".getBytes("UTF-8");
+        ByteBuffer[] buffers = new ByteBuffer[3];
+        buffers[0] = ByteBuffer.wrap(data, 0, 6);
+        buffers[1] = ByteBuffer.wrap("world!".getBytes("UTF-8"));
+        buffers[2] = buffers[0];
+        assertTrue(buffers[0].hasArray());
+
+        // Test a sequence of write calls
+        client.write(buffers, 0, 0); // write nothing
+        client.write(buffers, 1, 0); // write nothing
+        client.write(buffers, 0, 1); // write "Hello "
+        assertEquals("Failed to drain buffer 0", 0, buffers[0].remaining());
+        assertEquals("Shouldn't touch buffer 1", buffers[1].limit(), buffers[1]
+                .remaining());
+        client.write(buffers, 0, 2); // writes "world!"
+        assertEquals("Failed to drain buffer 1", 0, buffers[1].remaining());
+        client.write(buffers, 0, 3); // write nothing
+
+        // Read what we wrote and check it
+        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        worker.read(readBuffer);
+        readBuffer.flip();
+        assertEquals(ByteBuffer.wrap(data), readBuffer);
+
+        // Tidy-up
+        worker.close();
+        client.close();
+        server.close();
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
+    public void test_write$LByteBuffer_invalid() throws IOException {
+        // Set-up
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(null);
+
+        SocketChannel client = SocketChannel.open();
+        client.connect(server.socket().getLocalSocketAddress());
+
+        SocketChannel worker = server.accept();
+
+        // Do some stuff
+        try {
+            client.write((ByteBuffer[]) null);
+            fail("Should throw a NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            client.write((ByteBuffer[]) null, 0, 0);
+            fail("Should throw a NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            client.write((ByteBuffer[]) null, 1, 0);
+            fail("Should throw a NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            client.write((ByteBuffer[]) null, 0, 1);
+            fail("Should throw a NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            client.write((ByteBuffer[]) null, 1, 1);
+            fail("Should throw a NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        ByteBuffer[] buffers = new ByteBuffer[2];
+        buffers[0] = ByteBuffer.wrap("Hello ".getBytes("UTF-8"));
+        buffers[1] = ByteBuffer.wrap("world!".getBytes("UTF-8"));
+
+        try {
+            client.write((ByteBuffer[]) null, -1, 0);
+            fail("Should throw a IOBE");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            client.write((ByteBuffer[]) null, 0, -1);
+            fail("Should throw a IOBE");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            client.write(buffers, 0, 42);
+            fail("Should throw a IOBE");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            client.write(buffers, 42, 0);
+            fail("Should throw a IOBE");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            client.write(buffers, 1, 2);
+            fail("Should throw a IOBE");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        // Tidy-up
+        worker.close();
+        client.close();
+        server.close();
+    }
+
     public void testSocket_configureblocking() throws IOException {
         byte[] serverWBuf = new byte[CAPACITY_NORMAL];
         for (int i = 0; i < serverWBuf.length; i++) {

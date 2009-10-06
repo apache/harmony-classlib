@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hysecurity
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)security_copyright.obj getWindowsRandom.obj
 VIRTFILES = $(LIBBASE).res

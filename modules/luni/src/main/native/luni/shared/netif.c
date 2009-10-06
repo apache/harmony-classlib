@@ -1126,6 +1126,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 			{
 				return NULL;
 			}
+          (*env)->DeleteLocalRef(env, bytearray);
 		}
 
 		if (networkInterfaceArray.elements[j].displayName != NULL)
@@ -1147,6 +1148,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 			{
 				return NULL;
 			}
+          (*env)->DeleteLocalRef(env, bytearray);
 		}
 
 		/* generate the object with the inet addresses for the interface       */
@@ -1188,6 +1190,9 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 			displayName, addresses,
 			networkInterfaceArray.elements[j].index);
 
+      (*env)->DeleteLocalRef(env, name);
+      (*env)->DeleteLocalRef(env, addresses);
+
 		if (j == 0)
 		{
 			networkInterfaces =
@@ -1199,6 +1204,9 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
 			(*env)->SetObjectArrayElement (env, networkInterfaces, j,
 				currentInterface);
 		}
+          
+      (*env)->DeleteLocalRef(env, currentInterface);
+
 	}
 	/* free the memory for the interfaces struct and return the new NetworkInterface List */
 	hysock_free_network_interface_struct (&networkInterfaceArray);

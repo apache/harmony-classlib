@@ -167,6 +167,7 @@ public class Date extends java.util.Date {
      *         "yyyy-mm-dd"}.
      */
     @Override
+    @SuppressWarnings("deprecation")
     public String toString() {
         StringBuilder sb = new StringBuilder(10);
 

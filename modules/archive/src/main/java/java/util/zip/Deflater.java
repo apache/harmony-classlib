@@ -17,7 +17,6 @@
 
 package java.util.zip;
 
-import org.apache.harmony.luni.platform.OSResourcesMonitor;
 
 /**
  * This class compresses data using the <i>DEFLATE</i> algorithm (see <a
@@ -147,8 +146,7 @@ public class Deflater {
             throw new IllegalArgumentException();
         }
         compressLevel = level;
-        streamHandle = createStreamWithMemoryEnsurance(compressLevel, strategy,
-                noHeader);
+        streamHandle = createStream(compressLevel, strategy, noHeader);
     }
 
     /**
@@ -491,12 +489,6 @@ public class Deflater {
             throw new NullPointerException();
         }
         return getTotalOutImpl(streamHandle);
-    }
-
-    private long createStreamWithMemoryEnsurance(int level, int strategy1,
-            boolean noHeader1) {
-        OSResourcesMonitor.ensurePhysicalMemoryCapacity();
-        return createStream(level, strategy1, noHeader1);
     }
 
     private native long createStream(int level, int strategy1, boolean noHeader1);

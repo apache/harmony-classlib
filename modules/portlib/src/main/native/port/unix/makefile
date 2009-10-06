@@ -41,7 +41,7 @@ endif
 ifeq ($(HY_NO_THR),true)
 MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
 endif
-DLLNAME = ../libhyprt$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhyprt$(HY_SHLIB_SUFFIX)
 EXPNAME = HYPRT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

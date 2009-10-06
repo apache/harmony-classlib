@@ -91,7 +91,13 @@ public class ExceptionsAttribute extends Attribute {
     }
 
     public String toString() {
-        return "Exceptions: " + exceptions;
+        StringBuffer sb = new StringBuffer();
+        sb.append("Exceptions: ");
+        for (int i = 0; i < exceptions.length; i++) {
+            sb.append(exceptions[i]);
+            sb.append(' ');
+        }
+        return sb.toString();
     }
 
     protected void writeBody(DataOutputStream dos) throws IOException {

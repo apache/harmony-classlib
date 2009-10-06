@@ -40,37 +40,21 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
 
     private int index;
 
-    private int hashCode;
-
-    public int hashCode() {
-        return hashCode;
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final SelectionKeyImpl other = (SelectionKeyImpl) obj;
-        return hashCode == other.hashCode;
-    }
-
     public SelectionKeyImpl(AbstractSelectableChannel channel, int operations,
             Object attachment, SelectorImpl selector) {
         super();
         this.channel = channel;
         interestOps = operations;
         this.selector = selector;
-        this.hashCode = stHash++;
         attach(attachment);
     }
 
+    @Override
     public SelectableChannel channel() {
         return channel;
     }
 
+    @Override
     public int interestOps() {
         checkValid();
         synchronized (selector.keysLock) {
@@ -78,6 +62,7 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         }
     }
 
+    @Override
     public SelectionKey interestOps(int operations) {
         checkValid();
         if ((operations & ~(channel().validOps())) != 0) {
@@ -90,11 +75,13 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         return this;
     }
 
+    @Override
     public int readyOps() {
         checkValid();
         return readyOps;
     }
 
+    @Override
     public Selector selector() {
         return selector;
     }

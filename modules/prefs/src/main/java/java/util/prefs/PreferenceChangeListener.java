@@ -25,7 +25,7 @@ import java.util.EventListener;
  * 
  * @see Preferences
  * @see PreferenceChangeEvent
- *
+ * 
  * 
  * @since 1.4
  */
@@ -36,8 +36,8 @@ public interface PreferenceChangeListener extends EventListener {
      * updated.
      * 
      * @param pce
-     *            the event instance which describes the changed {@code Preferences}
-     *            instance and the preference value.
+     *            the event instance which describes the changed {@code
+     *            Preferences} instance and the preference value.
      */
-    void preferenceChange (PreferenceChangeEvent pce);
+    void preferenceChange(PreferenceChangeEvent pce);
 }

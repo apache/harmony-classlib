@@ -212,12 +212,6 @@ setPlatformFileLength (JNIEnv * env, IDATA descriptor, jlong newLength)
 
 }
 
-jbyteArray
-getPlatformPath (JNIEnv * env, jbyteArray path)
-{
-  return NULL;
-}
-
 void
 setPlatformBindOptions (JNIEnv * env, hysocket_t socketP)
 {

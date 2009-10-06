@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class SecureClassLoader extends ClassLoader {
 
     // A cache of ProtectionDomains for a given CodeSource
-    private HashMap pds = new HashMap();
+    private HashMap<CodeSource, ProtectionDomain> pds = new HashMap<CodeSource, ProtectionDomain>();
 
     /**
      * Constructs a new instance of {@code SecureClassLoader}. The default
@@ -150,7 +150,7 @@ public class SecureClassLoader extends ClassLoader {
         // will have it's own ProtectionDomain, which does not look right.
         ProtectionDomain pd;
         synchronized (pds) {
-            if ((pd = (ProtectionDomain) pds.get(cs)) != null) {
+            if ((pd = pds.get(cs)) != null) {
                 return pd;
             }
             PermissionCollection perms = getPermissions(cs);

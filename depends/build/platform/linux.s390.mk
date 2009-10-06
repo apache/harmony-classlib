@@ -18,3 +18,4 @@ PLATFORM += -m31
 ASFLAGS += -m31
 LDFLAGS += -m31
 OSLIBS += -ldl
+HY_CAN_LINK_DEBUG = yes

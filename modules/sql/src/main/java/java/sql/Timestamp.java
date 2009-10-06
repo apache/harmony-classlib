@@ -77,7 +77,6 @@ public class Timestamp extends Date {
      * @throws IllegalArgumentException
      *             if any of the parameters is out of range.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Timestamp(int theYear, int theMonth, int theDate, int theHour,
             int theMinute, int theSecond, int theNano) {

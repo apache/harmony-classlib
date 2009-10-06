@@ -1037,17 +1037,28 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
 static BOOLEAN findDirInPath(char *path, char *dir, char *separator)
 {
   char *pos;
+  int pathlen;
   int dirlen = strlen(dir);
+  while (dirlen > 1 && dir[dirlen-1] == DIR_SEPARATOR) {
+    dirlen--;
+  }
 
   while ((pos = strchr(path, *separator)) != NULL) {
-    int pathlen = pos - path;
+    int savedpathlen = pathlen = pos - path;
+    while (pathlen > 1 && path[pathlen-1] == DIR_SEPARATOR) {
+      pathlen--;
+    }
     if (dirlen == pathlen && !strncmp(path, dir, dirlen)) {
       return TRUE;
     }
-    path += pathlen + 1;
+    path += savedpathlen + 1;
   }
 
-  return !strcmp(dir, path);
+  pathlen = strlen(path);
+  while (pathlen > 1 && path[pathlen-1] == DIR_SEPARATOR) {
+    pathlen--;
+  }
+  return dirlen == pathlen && !strncmp(path, dir, dirlen);
 }
 
 /**
@@ -1073,8 +1084,8 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
   int rc = 0;
   char *exeName;
   int found = 0;
-  int i=0;
-  int strLen;
+  int i = 0;
+  int strLen = 0;
 
 #ifndef HY_NO_THR
   PORT_ACCESS_FROM_PORT (portLibrary);
@@ -1096,10 +1107,13 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
    *  see if we can find all paths in the current path
    */
     
-  for (i=0; i < count; i++) { 
-    if (newPathToAdd[i] != NULL
-        && findDirInPath(oldPath, newPathToAdd[i], separator) != 0) {
+  for (i=0; i < count; i++) {
+    if (newPathToAdd[i] != NULL) {
+      if (findDirInPath(oldPath, newPathToAdd[i], separator) != 0) {
         found++;
+      } else {
+        strLen += strlen(newPathToAdd[i]) + 1;
+      }
     }
   }
 
@@ -1116,15 +1130,7 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
    *  short) and then add the old path on the end
    */
    
-  strLen = strlen(variableName) + strlen("=") + strlen(oldPath);
-  
-  for (i=0; i < count; i++) {
-    if (newPathToAdd[i] != NULL
-        && findDirInPath(oldPath, newPathToAdd[i],separator) == 0) {
-        strLen += strlen(newPathToAdd[i]);
-        strLen++; // for each separator
-    }
-  }
+  strLen += strlen(variableName) + strlen("=") + strlen(oldPath);
 
 #ifndef HY_NO_THR
   newPath = hymem_allocate_memory(strLen + 1);
@@ -1138,14 +1144,11 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
   for (i=0; i < count; i++) { 
     if (newPathToAdd[i] != NULL
         && findDirInPath(oldPath, newPathToAdd[i], separator) == 0) {
-        if (i != 0) {
-            strcat(newPath, separator);
-        }
-        strcat(newPath, newPathToAdd[i]);
+      strcat(newPath, newPathToAdd[i]);
+      strcat(newPath, separator);
     }
   }
   
-  strcat(newPath, separator);
   strcat(newPath, oldPath);
 
   /* 

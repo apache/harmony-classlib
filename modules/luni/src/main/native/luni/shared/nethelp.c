@@ -208,7 +208,14 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   if (!globalRef)
     return;
   HARMONY_CACHE_SET (env, CLS_java_net_Inet6Address, globalRef);
-  
+  lookupClass = (*env)->FindClass (env, "java/nio/DirectByteBuffer");
+  if (!lookupClass)
+    return;
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
+  if (!globalRef)
+    return;
+  HARMONY_CACHE_SET (env, CLS_java_nio_DirectByteBuffer, globalRef);
+
 }
 
 /**

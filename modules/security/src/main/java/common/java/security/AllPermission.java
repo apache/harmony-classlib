@@ -71,6 +71,7 @@ public final class AllPermission extends Permission {
      *         AllPermission}, otherwise {@code false}.
      * @see #hashCode
      */
+    @Override
     public boolean equals(Object obj) {
         return (obj instanceof AllPermission);
     }
@@ -84,6 +85,7 @@ public final class AllPermission extends Permission {
      * @see Object#equals(Object)
      * @see AllPermission#equals(Object)
      */
+    @Override
     public int hashCode() {
         return 1;
     }
@@ -95,6 +97,7 @@ public final class AllPermission extends Permission {
      *
      * @return the actions associated with this {@code AllPermission}.
      */
+    @Override
     public String getActions() {
         return ALL_ACTIONS;
     }
@@ -107,6 +110,7 @@ public final class AllPermission extends Permission {
      * @param permission
      *            the permission to check.
      */
+    @Override
     public boolean implies(Permission permission) {
         return true;
     }
@@ -117,6 +121,7 @@ public final class AllPermission extends Permission {
      *
      * @return a new {@code PermissionCollection}.
      */
+    @Override
     public PermissionCollection newPermissionCollection() {
         return new AllPermissionCollection();
     }

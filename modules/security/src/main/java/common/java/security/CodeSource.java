@@ -118,6 +118,7 @@ public class CodeSource implements Serializable {
      * @return {@code true} if the specified object is equal to this {@code
      *         CodeSource}, otherwise {@code false}.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -313,6 +314,7 @@ public class CodeSource implements Serializable {
      * @see Object#equals(Object)
      * @see CodeSource#equals(Object)
      */
+    @Override
     public int hashCode() {
         //
         // hashCode() is undocumented there. Should we also use certs[i] to
@@ -539,6 +541,7 @@ public class CodeSource implements Serializable {
      *
      * @return a printable representation for this {@code CodeSource}.
      */
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("CodeSource, url="); //$NON-NLS-1$

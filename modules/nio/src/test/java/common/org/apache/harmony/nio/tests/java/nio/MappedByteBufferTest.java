@@ -22,17 +22,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.NonWritableChannelException;
 import java.nio.channels.FileChannel.MapMode;
 
 import junit.framework.TestCase;
 
 public class MappedByteBufferTest extends TestCase {
 
-    File tmpFile;
+    File tmpFile, emptyFile;
     
     /**
      * A regression test for failing to correctly set capacity of underlying
@@ -58,6 +60,62 @@ public class MappedByteBufferTest extends TestCase {
         for (int i = 0; i < 5; i++) {
             int val = ibuffer.get();
             assertEquals("Got wrong int value", i + 1, val); //$NON-NLS-1$
+        }
+        fc.close();
+    }
+    
+    /**
+     * Regression for HARMONY-6315 - FileChannel.map throws IOException
+     * when called with size 0
+     * 
+     * @throws IOException
+     */
+    public void testEmptyBuffer() throws IOException {
+    	// Map empty file
+        FileInputStream fis = new FileInputStream(emptyFile);
+        FileChannel fc = fis.getChannel();
+        MappedByteBuffer mmb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+        
+        // check non-null
+        assertNotNull("MappedByteBuffer created from empty file should not be null", 
+        		mmb);
+        
+        // check capacity is 0
+        int len = mmb.capacity();
+        assertEquals("MappedByteBuffer created from empty file should have 0 capacity", 
+        		0, len);
+        
+        assertFalse("MappedByteBuffer from empty file shouldn't be backed by an array ", 
+        		mmb.hasArray());
+        
+        try
+        {
+        	byte b = mmb.get();
+        	fail("Calling MappedByteBuffer.get() on empty buffer should throw a BufferUnderflowException");
+        }
+        catch (BufferUnderflowException e)
+        {
+        	// expected behaviour
+        }
+        
+        // test expected exceptions thrown
+        try 
+        {
+        	mmb = fc.map(FileChannel.MapMode.READ_WRITE, 0, fc.size());
+        	fail("Expected NonWritableChannelException to be thrown");
+        }
+        catch (NonWritableChannelException e)
+        {
+        	// expected behaviour
+        }
+        try
+        {
+        	mmb = fc.map(FileChannel.MapMode.PRIVATE, 0, fc.size());
+        	fail("Expected NonWritableChannelException to be thrown");
+        }
+        catch (NonWritableChannelException e)
+        {
+        	// expected behaviour
         }
         fc.close();
     }
@@ -146,5 +204,8 @@ public class MappedByteBufferTest extends TestCase {
         fileChannel.write(byteBuffer);
         fileChannel.close();
         fileOutputStream.close();
+        
+        emptyFile = File.createTempFile("harmony", "test");  //$NON-NLS-1$//$NON-NLS-2$
+        emptyFile.deleteOnExit();
     }
 }

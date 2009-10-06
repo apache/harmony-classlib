@@ -54,12 +54,24 @@ endif
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) $(EXPFILE)
 	$(DLL_LD) $(DLL_LDFLAGS) $(LDFLAGS) $(VMLINK) -o $@ \
 	$(BUILDFILES) $(MDLLIBARGS) $(OSLIBS)
+ifeq ($(HY_CAN_LINK_DEBUG),yes)
+	objcopy --only-keep-debug $@ $@.dbg
+	strip --strip-debug --strip-unneeded $@
+	( cd $(@D) && objcopy --add-gnu-debuglink=$(@F).dbg $(@F) )
+	-mkdir -p $(DBGPATH)
+	test "$@.dbg" = "$(DBGPATH)$(@F).dbg" || \
+		mv $@.dbg $(DBGPATH)$(@F).dbg
+endif
+ifeq ($(HY_OS),zos)
+	mv $(basename $(DLLNAME))$(HY_LINKLIB_SUFFIX) $(LIBPATH)
+endif
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
 	$(CC) $(VMLINK) $(EXELDFLAGS) \
 	$(BUILDFILES) $(MDLLIBARGS) -o $@ $(OSLIBS) \
-	$(EXERPATHPREFIX) -L$(HY_HDK)/jdk/jre/bin
+	$(EXERPATHPREFIX) -L$(DLLPATH)
+	@chmod 755 $(EXENAME)
 
 clean:
 	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME) $(EXPFILE) \
-	       $(CLEANFILES)
+	       $(CLEANFILES) $(DBGPATH)$(notdir $(DLLNAME)).dbg

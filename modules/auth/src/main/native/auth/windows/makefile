@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hyauth
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 BUILDFILES = $(SHAREDSUB)auth_copyright.obj authwin32.obj
 VIRTFILES = $(LIBBASE).res

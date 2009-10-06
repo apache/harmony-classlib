@@ -270,9 +270,7 @@ public final class Math {
      *            the value whose closest integer value has to be computed.
      * @return the ceiling of the argument.
      */
-    public static double ceil(double d) {
-        return -floor(-d);
-    }
+    public static native double ceil(double d);
 
     /**
      * Returns the closest double approximation of the cosine of the argument.
@@ -372,13 +370,7 @@ public final class Math {
      *            the value whose closest integer value has to be computed.
      * @return the floor of the argument.
      */
-    public static double floor(double d) {
-        if (Double.isNaN(d) || Double.isInfinite(d) || d == 0) {
-            return d;
-        }
-        double res = (long) d;
-        return d > 0 || res == d ? res : res - 1;
-    }
+    public static native double floor(double d);
 
     /**
      * Returns {@code sqrt(}<i>{@code x}</i><sup>{@code 2}</sup>{@code +} <i>
@@ -759,13 +751,7 @@ public final class Math {
      *            the value to be rounded.
      * @return the closest integer to the argument (as a double).
      */
-    public static double rint(double d) {
-        if (d == +0.0d || d == -0.0d) {
-            return d;
-        }
-        double res = floor(d + 0.5d);
-        return res - d == 0.5d && res % 2 != 0 ? res - 1 : res;
-    }
+    public static native double rint(double d);
 
     /**
      * Returns the result of rounding the argument to an integer. The result is

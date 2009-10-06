@@ -388,13 +388,30 @@ public class MathTest extends junit.framework.TestCase {
     /**
      * @tests java.lang.Math#floor(double)
      */
-	public void test_floorD() {
-		// Test for method double java.lang.Math.floor(double)
-                assertEquals("Incorrect floor for double",
-                             78, Math.floor(78.89), 0);
-		assertEquals("Incorrect floor for double",
-                             -79, Math.floor(-78.89), 0);
-	}
+    public void test_floorD() {
+        assertEquals("Incorrect floor for int", 42, Math.floor(42), 0);
+        assertEquals("Incorrect floor for -int", -2, Math.floor(-2), 0);
+        assertEquals("Incorrect floor for zero", 0d, Math.floor(0d), 0);
+
+        assertEquals("Incorrect floor for +double", 78, Math.floor(78.89), 0);
+        assertEquals("Incorrect floor for -double", -79, Math.floor(-78.89), 0);
+        assertEquals("floor large +double", 3.7314645675925406E19, Math.floor(3.7314645675925406E19), 0);
+        assertEquals("floor large -double", -8.173521839218E12, Math.floor(-8.173521839218E12), 0);
+        assertEquals("floor small double", 0.0d, Math.floor(1.11895241315E-102), 0);
+
+        // Compare toString representations here since -0.0 = +0.0, and
+        // NaN != NaN and we need to distinguish
+        assertEquals("Floor failed for NaN",
+                Double.toString(Double.NaN), Double.toString(Math.floor(Double.NaN)));
+        assertEquals("Floor failed for +0.0",
+                Double.toString(+0.0d), Double.toString(Math.floor(+0.0d)));
+        assertEquals("Floor failed for -0.0",
+                Double.toString(-0.0d), Double.toString(Math.floor(-0.0d)));
+        assertEquals("Floor failed for +infinity",
+                Double.toString(Double.POSITIVE_INFINITY), Double.toString(Math.floor(Double.POSITIVE_INFINITY)));
+        assertEquals("Floor failed for -infinity",
+                Double.toString(Double.NEGATIVE_INFINITY), Double.toString(Math.floor(Double.NEGATIVE_INFINITY)));
+    }
 	
 	/**
      * cases for test_getExponent_D in MathTest/StrictMathTest

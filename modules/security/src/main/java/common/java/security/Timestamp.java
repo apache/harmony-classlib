@@ -76,6 +76,7 @@ public final class Timestamp implements Serializable {
      *         Timestamp}, otherwise {@code false}.
      * @see #hashCode
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -115,6 +116,7 @@ public final class Timestamp implements Serializable {
      * @see Object#equals(Object)
      * @see Timestamp#equals(Object)
      */
+    @Override
     public int hashCode() {
         if (hash == 0) {
             hash = timestamp.hashCode() ^ signerCertPath.hashCode();
@@ -128,6 +130,7 @@ public final class Timestamp implements Serializable {
      *
      * @return a printable representation for this {@code Timestamp}.
      */
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(256);
         // Dump only the first certificate

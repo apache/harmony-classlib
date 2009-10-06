@@ -299,11 +299,11 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         // set the connected address.
         connectAddress = inetSocketAddress;
         synchronized (this) {
-            if (isBlocking()) {
-                status = (finished ? SOCKET_STATUS_CONNECTED
-                        : SOCKET_STATUS_UNCONNECTED);
+            if (finished) {
+                status = SOCKET_STATUS_CONNECTED;
             } else {
-                status = SOCKET_STATUS_PENDING;
+                status = isBlocking() ? SOCKET_STATUS_UNCONNECTED
+                        : SOCKET_STATUS_PENDING;
             }
         }
         return finished;
@@ -495,19 +495,39 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
 
         checkOpenConnected();
-        int count = calculateByteBufferArray(sources, offset, length);
-        if (0 == count) {
+
+        Object[] src = new Object[length];
+        int[] offsets = new int[length];
+        int[] counts = new int[length];
+        for (int i = 0; i < length; ++i) {
+            ByteBuffer buffer = sources[i + offset];
+            if (!buffer.isDirect()) {
+                if (buffer.hasArray()) {
+                    src[i] = buffer.array();
+                    counts[i] = buffer.remaining();
+                    offsets[i] = buffer.position();
+                } else {
+                    ByteBuffer db = ByteBuffer.allocateDirect(buffer.remaining());
+                    int oldPosition = buffer.position();
+                    db.put(buffer);
+                    buffer.position(oldPosition);
+                    db.flip();
+                    src[i] = db;
+                    counts[i] = buffer.remaining();
+                    offsets[i] = 0;
+                }
+            } else {
+                src[i] = buffer;
+                counts[i] = buffer.remaining();
+                offsets[i] = buffer.position();
+            }
+        }
+
+        if (length == 0) {
             return 0;
         }
-        ByteBuffer writeBuf = ByteBuffer.allocate(count);
-        for (int val = offset; val < length + offset; val++) {
-            ByteBuffer source = sources[val];
-            int oldPosition = source.position();
-            writeBuf.put(source);
-            source.position(oldPosition);
-        }
-        writeBuf.flip();
-        int result = writeImpl(writeBuf);
+
+        int result = writevImpl(src, offsets, counts);
         int val = offset;
         int written = result;
         while (result > 0) {
@@ -518,6 +538,35 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             result -= gap;
         }
         return written;
+    }
+
+    /*
+     * Write the source. return the count of bytes written.
+     */
+    private int writevImpl(Object[] sources, int[] offsets, int[] counts) throws IOException {
+        int writeCount = 0;
+        try {
+            if (isBlocking()) {
+                begin();
+            }
+
+            synchronized (writeLock) {
+                writeCount = networkSystem.writev(fd, sources, offsets, counts, sources.length);
+            }
+        } catch (SocketException e) {
+            if (e.getCause() instanceof ErrorCodeException) {
+                if (ERRCODE_SOCKET_NONBLOCKING_WOULD_BLOCK == ((ErrorCodeException) e
+                        .getCause()).getErrorCode()) {
+                    return writeCount;
+                }
+            }
+            throw e;
+        } finally {
+            if (isBlocking()) {
+                end(writeCount >= 0);
+            }
+        }
+        return writeCount;
     }
 
     private int calculateByteBufferArray(ByteBuffer[] sources, int offset,

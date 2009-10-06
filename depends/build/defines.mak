@@ -26,8 +26,9 @@ SEHMAP = TRUE
 !include <win32.mak>
 
 LIBPATH=$(HY_HDK)\lib\# comment to avoid \ being treated as continuation
-EXEPATH=..\# ditto
 DLLPATH=$(HY_HDK)\jdk\jre\bin\# ditto
+EXEPATH=$(HY_HDK)\jdk\jre\bin\# ditto
+DBGPATH=$(HY_HDK)\jdk\lib\# ditto
 SHAREDSUB=..\shared\# ditto
 
 !IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 

@@ -271,8 +271,9 @@ public class InitialContext implements Context {
         
         // 4.2 Read "java.home"/lib/jndi.properties
         if (libProperties == null) {
-            libProperties = new Hashtable<Object, Object>();
-            EnvironmentReader.readLibraryResourceFile(libProperties);
+            Hashtable<Object, Object> props = new Hashtable<Object, Object>();
+            EnvironmentReader.readLibraryResourceFile(props);
+            libProperties = props;
         }
         
         EnvironmentReader.mergeEnvironment(libProperties, myProps, true);

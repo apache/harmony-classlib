@@ -712,3 +712,81 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
 
   return result;
 }
+
+JNIEXPORT jint JNICALL
+Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
+(JNIEnv *env, jobject thiz, jobject fd, jobjectArray buffers, jintArray offset, jintArray counts, jint length) {
+
+  PORT_ACCESS_FROM_ENV(env);
+
+  jobject buffer;
+  jobject* toBeReleasedBuffers;
+  jint *noffset;
+  jboolean isDirectBuffer = JNI_FALSE;
+  jint result;
+  jclass byteBufferClass;
+  struct iovec* vect;
+  int i;
+
+  hysocket_t socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fd);
+
+  if (!hysock_socketIsValid(socketP)) {
+    throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
+    return (jint) 0;
+  }
+
+  vect = (struct iovec*) hymem_allocate_memory(sizeof(struct iovec) * length);
+  if (vect == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    return 0;
+  }
+
+  toBeReleasedBuffers = (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
+  if (toBeReleasedBuffers == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    return 0;
+  }
+
+  byteBufferClass = HARMONY_CACHE_GET (env, CLS_java_nio_DirectByteBuffer);
+  noffset = (*env)->GetIntArrayElements(env, offset, NULL);
+
+  for (i = 0; i < length; ++i) {
+    jint *cts;
+    buffer = (*env)->GetObjectArrayElement(env, buffers, i);
+    isDirectBuffer = (*env)->IsInstanceOf(env, buffer, byteBufferClass);
+    if (isDirectBuffer) {
+      vect[i].iov_base =  (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer) + noffset[i];
+      toBeReleasedBuffers[i] = NULL;
+    } else {
+      vect[i].iov_base = (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL) + noffset[i];
+      toBeReleasedBuffers[i] = buffer;
+    }
+    cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
+    vect[i].iov_len = cts[i];
+    (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
+  }
+
+
+  result = writev(SOCKET_CAST (socketP), vect, length);
+
+  for (i = 0; i < length; ++i) {
+    if (toBeReleasedBuffers[i] != NULL) {
+      (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i], vect[i].iov_base - noffset[i], JNI_ABORT);
+    }
+  }
+
+  (*env)->ReleaseIntArrayElements(env, offset, noffset, JNI_ABORT);
+
+  hymem_free_memory(toBeReleasedBuffers);
+  hymem_free_memory(vect);
+
+  if (0 > result) {
+      if (errno == EAGAIN) {
+          return 0;
+      }
+    throwJavaNetSocketException(env, result);
+    return (jint) 0;  // Ignored, exception takes precedence
+  }
+
+  return (jint) result;
+}

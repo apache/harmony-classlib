@@ -28,5 +28,6 @@ OSLIBS += -lpthread
 MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
 DLLNAME = ../libhythr$(HY_SHLIB_SUFFIX)
 EXPNAME = HYTHR_0.2
+HY_CAN_LINK_DEBUG=no
 
 include $(HY_HDK)/build/make/rules.mk

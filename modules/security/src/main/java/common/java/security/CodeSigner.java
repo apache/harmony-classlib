@@ -67,6 +67,7 @@ public final class CodeSigner implements Serializable {
      * @return {@code true} if the specified object is equal to this {@code
      *         CodeSigner}, otherwise {@code false}.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -110,6 +111,7 @@ public final class CodeSigner implements Serializable {
      * @see Object#equals(Object)
      * @see CodeSigner#equals(Object)
      */
+    @Override
     public int hashCode() {
         if (hash == 0) {
             hash = signerCertPath.hashCode()
@@ -125,6 +127,7 @@ public final class CodeSigner implements Serializable {
      *
      * @return a printable representation for this {@code CodeSigner}.
      */
+    @Override
     public String toString() {
         // There is no any special reason for '256' here, it's taken abruptly
         StringBuilder buf = new StringBuilder(256);

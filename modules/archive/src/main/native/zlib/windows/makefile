@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hyzlib
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 ZLIB_DIST=..\..\zlib_dist\# Path to zlib

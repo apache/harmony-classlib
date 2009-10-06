@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.harmony.security.Util;
 import org.apache.harmony.security.fortress.Engine;
@@ -362,12 +363,12 @@ public final class Security {
             return null;
         }
         java.util.List<Provider> result = Services.getProvidersList();
-        Set keys = filter.entrySet();
-        Map.Entry entry;
-        for (Iterator it = keys.iterator(); it.hasNext();) {
-            entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-            String val = (String) entry.getValue();
+        Set<Entry<String, String>> keys = filter.entrySet();
+        Map.Entry<String, String> entry;
+        for (Iterator<Entry<String, String>> it = keys.iterator(); it.hasNext();) {
+            entry = it.next();
+            String key = entry.getKey();
+            String val = entry.getValue();
             String attribute = null;
             int i = key.indexOf(' ');
             int j = key.indexOf('.');
@@ -401,7 +402,7 @@ public final class Security {
             Provider p;
             for (int k = 0; k < result.size(); k++) {
                 try {
-                    p = (Provider) result.get(k);
+                    p = result.get(k);
                 } catch (IndexOutOfBoundsException e) {
                     break;
                 }
@@ -413,9 +414,8 @@ public final class Security {
         }
         if (result.size() > 0) {
             return result.toArray(new Provider[result.size()]);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

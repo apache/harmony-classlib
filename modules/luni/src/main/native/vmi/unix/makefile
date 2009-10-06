@@ -24,5 +24,6 @@ MDLLIBFILES = $(LIBPATH)libhypool.a
 
 DLLNAME = ../libvmi$(HY_SHLIB_SUFFIX)
 EXPNAME = VMI_0.1
+HY_CAN_LINK_DEBUG=no
 
 include $(HY_HDK)/build/make/rules.mk

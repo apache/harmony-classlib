@@ -155,4 +155,12 @@ public class ProtocolVersion {
         }
         return false;
     }
+    
+    /**
+     * Returns the hash of the receiver.
+     */
+    @Override
+    public int hashCode() {
+        return version[0] + version[1];
+    }
 }

@@ -136,6 +136,7 @@ public abstract class Signer extends Identity {
      *
      * @return a printable representation for this {@code Signer}.
      */
+    @Override
     public String toString() {
         String s = "[Signer]" + getName(); //$NON-NLS-1$
         if (getScope() != null) {

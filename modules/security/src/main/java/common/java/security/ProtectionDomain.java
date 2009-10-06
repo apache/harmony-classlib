@@ -211,6 +211,7 @@ public class ProtectionDomain {
      *
      * @return a printable representation for this {@code ProtectionDomain}.
      */
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(200);
         buf.append("ProtectionDomain\n"); //$NON-NLS-1$

@@ -56,16 +56,36 @@ class ArrayPersistenceDelegate extends PersistenceDelegate {
 
             Object oldValue = Array.get(oldInstance, i);
             Object newValue = Array.get(newInstance, i);
+            if (!deepEquals(oldValue, newValue)) {
+                Statement s = new Statement(oldInstance, "set", //$NON-NLS-1$
+                                            new Object[] { new Integer(i), oldValue });
+                out.writeStatement(s);
+            }
+        }
+    }
 
-            if (oldValue != null && !oldValue.equals(newValue)
-                    || oldValue == null && newValue != null) {
-                if (nullValue == null || !nullValue.equals(oldValue)) {
-                    Statement s = new Statement(oldInstance, "set", //$NON-NLS-1$
-                            new Object[] { new Integer(i), oldValue });
-
-                    out.writeStatement(s);
+    private boolean deepEquals(Object oldInstance, Object newInstance) {
+        if (oldInstance == newInstance) {
+            return true;
+        }
+        if (null == oldInstance || null == newInstance) {
+            return false;
+        }
+        // oldInstnace != newInstance
+        if (oldInstance.equals(newInstance)) {
+            return true;
+        } else if (oldInstance.getClass().isArray() && newInstance.getClass().isArray()) {
+            int length = Array.getLength(oldInstance);
+            for (int i = 0; i < length; ++i) {
+                Object oldValue = Array.get(oldInstance, i);
+                Object newValue = Array.get(newInstance, i);
+                if (!deepEquals(oldValue, newValue)) {
+                    return false;
                 }
             }
+            return true;
+        } else {
+            return false;
         }
     }
 

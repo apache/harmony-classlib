@@ -31,7 +31,7 @@ endif
 MDLLIBFILES += $(LIBPATH)libhypool.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-DLLNAME=../libaccessors$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libaccessors$(HY_SHLIB_SUFFIX)
 EXPNAME=HYMISC_0.1
 
 include $(HY_HDK)/build/make/rules.mk

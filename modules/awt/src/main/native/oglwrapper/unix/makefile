@@ -29,7 +29,7 @@ MDLLIBFILES += $(LIBPATH)libhypool.a \
 
 OSLIBS += $(STDCLIBS)
 
-DLLNAME=../liboglwrapper$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)liboglwrapper$(HY_SHLIB_SUFFIX)
 EXPNAME=HYOGLWRAPPER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

@@ -52,7 +52,6 @@ public class Finished extends Message {
             throws IOException {
         if (length == 12 || length == 36) {
             data = in.read(length);
-            length = data.length;
         } else {
             fatalAlert(AlertProtocol.DECODE_ERROR, "DECODE ERROR: incorrect Finished");
         }

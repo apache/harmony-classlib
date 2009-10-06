@@ -28,16 +28,17 @@ import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocket;
 
-import org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnection;
+import org.apache.harmony.luni.internal.net.www.protocol.http.HttpURLConnectionImpl;
 import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * HttpsURLConnection implementation.
  */
-public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
+public class HttpsURLConnectionImpl extends HttpsURLConnection {
 
     // Https engine to be wrapped
     private final HttpsEngine httpsEngine;
@@ -45,12 +46,12 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     // SSLSocket to be used for connection
     private SSLSocket sslSocket;
 
-    protected HttpsURLConnection(URL url, int port) {
+    protected HttpsURLConnectionImpl(URL url, int port) {
         super(url);
         httpsEngine = new HttpsEngine(url, port);
     }
 
-    protected HttpsURLConnection(URL url, int port, Proxy proxy) {
+    protected HttpsURLConnectionImpl(URL url, int port, Proxy proxy) {
         super(url);
         httpsEngine = new HttpsEngine(url, port, proxy);
     }
@@ -345,7 +346,7 @@ public class HttpsURLConnection extends javax.net.ssl.HttpsURLConnection {
     /**
      * HttpsEngine
      */
-    private class HttpsEngine extends HttpURLConnection {
+    private class HttpsEngine extends HttpURLConnectionImpl {
 
         // In case of using proxy this field indicates
         // if it is a SSL Tunnel establishing stage

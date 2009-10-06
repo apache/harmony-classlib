@@ -44,7 +44,7 @@ MDLLIBFILES += $(MDLLIBZLIB) \
 
 OSLIBS += $(STDCLIBS) $(XLIBS)
 
-DLLNAME=../libgl$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libgl$(HY_SHLIB_SUFFIX)
 EXPNAME=HYGL_0.1
 
 include $(HY_HDK)/build/make/rules.mk

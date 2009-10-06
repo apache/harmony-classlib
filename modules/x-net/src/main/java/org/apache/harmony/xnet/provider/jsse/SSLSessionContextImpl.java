@@ -93,11 +93,11 @@ public class SSLSessionContextImpl implements SSLSessionContext {
         timeout = seconds * 1000;
 
         // Check timeouts and remove expired sessions
-        SSLSessionImpl ses;
         for (Enumeration<IdKey> en = sessions.keys(); en.hasMoreElements();) {
-            ses = (sessions.get(en.nextElement()));
+            IdKey key = en.nextElement();
+            SSLSessionImpl ses = (sessions.get(key));
             if (!ses.isValid()) {
-                sessions.remove(ses.getId());
+                sessions.remove(key);
             }
         }
     }

@@ -31,11 +31,12 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += $(LIBPATH)libhypool.a \
-	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX) ../../fontlib/libFL$(HY_LINKLIB_SUFFIX)
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX) \
+	$(DLLPATH)libFL$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(XLIBS)
 
-DLLNAME=../liblinuxfont$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)liblinuxfont$(HY_SHLIB_SUFFIX)
 EXPNAME=HYLINUXFONT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

@@ -104,14 +104,15 @@ public class KeyFactory {
      * @throws IllegalArgumentException
      *             if {@code provider} is {@code null} or empty.
      */
+    @SuppressWarnings("nls")
     public static KeyFactory getInstance(String algorithm, String provider)
                                 throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("security.02"));
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException(Messages.getString("security.03", provider));  //$NON-NLS-1$ //$NON-NLS-2$
+            throw new NoSuchProviderException(Messages.getString("security.03", provider));
         }
         return getInstance(algorithm, p);    
     }
@@ -195,6 +196,9 @@ public class KeyFactory {
 
     /**
      * Returns the key specification for the specified key.
+     * 
+     * @param <T>
+     *            The key type
      * 
      * @param key
      *            the key from which the specification is requested.
