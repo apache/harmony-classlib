@@ -1855,7 +1855,7 @@ public class SocketChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
      */
-    public void test_wrtieLjava_nio_ByteBuffer_Blocking() throws IOException {
+    public void test_writeLjava_nio_ByteBuffer_Blocking() throws IOException {
         // initialize write content
         ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
         for (int i = 0; i < CAPACITY_NORMAL; i++) {
@@ -1905,7 +1905,7 @@ public class SocketChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.SocketChannel#write(ByteBuffer)
      */
-    public void test_wrtieLjava_nio_ByteBuffer_NonBlocking() throws Exception {
+    public void test_writeLjava_nio_ByteBuffer_NonBlocking() throws Exception {
         // initialize write content
         ByteBuffer writeContent = ByteBuffer.allocate(CAPACITY_NORMAL);
         for (int i = 0; i < CAPACITY_NORMAL; i++) {
