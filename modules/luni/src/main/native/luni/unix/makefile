@@ -38,7 +38,7 @@ BUILDFILES = \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
 	$(SHAREDSUB)OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
-	OSNetworkSystemLinux.o $(HY_OS)/OSResourcesMonitor.o hyenv.o 
+	OSNetworkSystemLinux.o hyenv.o 
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
@@ -47,7 +47,7 @@ endif
 MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-DLLNAME = ../libhyluni$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhyluni$(HY_SHLIB_SUFFIX)
 EXPNAME = HYLUNI_0.1
 
 include $(HY_HDK)/build/make/rules.mk

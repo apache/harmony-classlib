@@ -2061,6 +2061,16 @@ public class DNSContext implements DirContext, Cloneable {
     }
 
     /**
+     * Returns the hash of the context.
+     * 
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return contextName.hashCode();
+    }
+
+    /**
      * @param name
      *            composite name to process
      * @return root context of the namespace to that the target object belongs

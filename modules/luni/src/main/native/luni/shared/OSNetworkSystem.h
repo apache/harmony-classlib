@@ -466,6 +466,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeDirect
   (JNIEnv *, jobject, jobject, jlong, jint);
 
+/*
+ * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
+ * Method:    writev
+ * Signature: (Ljava/io/FileDescriptor;[Ljava/lang/Object;[I[II)I
+ */
+JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
+  (JNIEnv *, jobject, jobject, jobjectArray, jintArray, jintArray, jint);
+
 #ifdef __cplusplus
 }
 #endif

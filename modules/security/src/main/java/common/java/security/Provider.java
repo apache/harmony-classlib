@@ -143,6 +143,7 @@ public abstract class Provider extends Properties {
      *
      * @return a printable representation for this {@code Provider}.
      */
+    @Override
     public String toString() {
         return name + " version " + version; //$NON-NLS-1$
     }
@@ -160,6 +161,7 @@ public abstract class Provider extends Properties {
      *             if a {@code SecurityManager} is installed and the caller does
      *             not have permission to invoke this method.
      */
+    @Override
     public synchronized void clear() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -189,6 +191,7 @@ public abstract class Provider extends Properties {
         servicesChanged();
     }
 
+    @Override
     public synchronized void load(InputStream inStream) throws IOException {
         Properties tmp = new Properties();
         tmp.load(inStream);
@@ -209,6 +212,7 @@ public abstract class Provider extends Properties {
      *             if a {@code SecurityManager} is installed and the caller does
      *             not have permission to invoke this method.
      */
+    @Override
     public synchronized void putAll(Map<?,?> t) {
 
         // Implementation note:
@@ -249,14 +253,17 @@ public abstract class Provider extends Properties {
         }
     }
 
+    @Override
     public synchronized Set<Map.Entry<Object,Object>> entrySet() {
         return Collections.unmodifiableSet(super.entrySet());
     }
 
+    @Override
     public Set<Object> keySet() {
         return Collections.unmodifiableSet(super.keySet());
     }
 
+    @Override
     public Collection<Object> values() {
         return Collections.unmodifiableCollection(super.values());
     }
@@ -280,6 +287,7 @@ public abstract class Provider extends Properties {
      *             if a {@code SecurityManager} is installed and the caller does
      *             not have permission to invoke this method.
      */
+    @Override
     public synchronized Object put(Object key, Object value) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -320,6 +328,7 @@ public abstract class Provider extends Properties {
      *             if a {@code SecurityManager} is installed and the caller does
      *             not have the permission to invoke this method.
      */
+    @Override
     public synchronized Object remove(Object key) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -361,15 +370,14 @@ public abstract class Provider extends Properties {
             alg = getPropertyIgnoreCase("Alg.Alias." + servAlg); //$NON-NLS-1$
             if (alg != null) {
                 servAlg = serv + "." + alg; //$NON-NLS-1$
-                prop = getPropertyIgnoreCase(servAlg); //$NON-NLS-1$
+                prop = getPropertyIgnoreCase(servAlg);
             }
         }
         if (prop != null) {
             if (attribute == null) {
                 return true;
-            } else {
-                return checkAttribute(servAlg, attribute, val); //$NON-NLS-1$
             }
+            return checkAttribute(servAlg, attribute, val);
         }
         return false;
     }
@@ -835,11 +843,12 @@ public abstract class Provider extends Properties {
     // These attributes should be placed in each Provider object: 
     // Provider.id name, Provider.id version, Provider.id info, 
     // Provider.id className
+    @SuppressWarnings("nls")
     private void putProviderInfo() {
-        super.put("Provider.id name", null != name ? name : "null"); //$NON-NLS-1$
-		super.put("Provider.id version", versionString); //$NON-NLS-1$
-		super.put("Provider.id info", null != info ? info : "null"); //$NON-NLS-1$
-        super.put("Provider.id className", this.getClass().getName()); //$NON-NLS-1$
+        super.put("Provider.id name", null != name ? name : "null");
+		super.put("Provider.id version", versionString);
+		super.put("Provider.id info", null != info ? info : "null");
+        super.put("Provider.id className", this.getClass().getName());
     }
 
     // Searches for the property with the specified key in the provider
@@ -1044,27 +1053,26 @@ public abstract class Provider extends Properties {
                     throw new NoSuchAlgorithmException(Messages.getString("security.199", //$NON-NLS-1$
                             type, algorithm), e);
                 }
-            } else {
-                if (!supportsParameter(constructorParameter)) {
-                    throw new InvalidParameterException(
-                            Messages.getString("security.12", type)); //$NON-NLS-1$
-                }
+            }
+            if (!supportsParameter(constructorParameter)) {
+                throw new InvalidParameterException(
+                        Messages.getString("security.12", type)); //$NON-NLS-1$
+            }
 
-                Class[] parameterTypes = new Class[1];
-                Object[] initargs = { constructorParameter };
-                try {
-                    if (Util.equalsIgnoreCase(type,"CertStore")) { //$NON-NLS-1$
-                        parameterTypes[0] = Class
-                                .forName("java.security.cert.CertStoreParameters"); //$NON-NLS-1$
-                    } else {
-                        parameterTypes[0] = constructorParameter.getClass();
-                    }
-                    return implementation.getConstructor(parameterTypes)
-                            .newInstance(initargs);
-                } catch (Exception e) {
-                    throw new NoSuchAlgorithmException(Messages.getString("security.199", //$NON-NLS-1$
-                            type, algorithm), e);
+            Class[] parameterTypes = new Class[1];
+            Object[] initargs = { constructorParameter };
+            try {
+                if (Util.equalsIgnoreCase(type,"CertStore")) { //$NON-NLS-1$
+                    parameterTypes[0] = Class
+                            .forName("java.security.cert.CertStoreParameters"); //$NON-NLS-1$
+                } else {
+                    parameterTypes[0] = constructorParameter.getClass();
                 }
+                return implementation.getConstructor(parameterTypes)
+                        .newInstance(initargs);
+            } catch (Exception e) {
+                throw new NoSuchAlgorithmException(Messages.getString("security.199", //$NON-NLS-1$
+                        type, algorithm), e);
             }
         }
 
@@ -1087,6 +1095,7 @@ public abstract class Provider extends Properties {
          *
          * @return a printable representation for this {@code Service}.
          */
+        @Override
         public String toString() {
             String result = "Provider " + provider.getName() + " Service " //$NON-NLS-1$ //$NON-NLS-2$
                     + type + "." + algorithm + " " + className; //$NON-NLS-1$ //$NON-NLS-2$

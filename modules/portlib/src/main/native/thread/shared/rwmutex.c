@@ -49,7 +49,7 @@ hythread_rwmutex_init (hythread_rwmutex_t * handle, UDATA flags,
                        const char *name)
 {
   RWMutex *mutex = (RWMutex *) malloc (sizeof (RWMutex));
-  hythread_monitor_init_with_name (&mutex->syncMon, 0, (char *) name);
+  hythread_monitor_init_with_name (&mutex->syncMon, 0, name);
   mutex->status = 0;
   mutex->writer = 0;
 

@@ -26,9 +26,12 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <unistd.h>
+#include <string.h>
 #include "vmi.h"
 #include "OSMemory.h"
 #include "IMemorySystem.h"
+#include "exceptions.h"
+#include "hyport.h"
 
 #ifdef ZOS
 #define FD_BIAS 1000
@@ -154,7 +157,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
   (JNIEnv * env, jobject thiz, jlong fd, jlong alignment, jlong size, jint mmode)
 {
-  //PORT_ACCESS_FROM_ENV (env);
+  PORT_ACCESS_FROM_ENV (env);
   void *mapAddress = NULL;
   int prot, flags;
 
@@ -174,12 +177,15 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
 	flags = MAP_PRIVATE;
         break;
       default:
+    throwJavaIoIOException(env, "Map mode not recognised");
         return -1;
     }
 
   mapAddress = mmap(0, (size_t)(size&0x7fffffff), prot, flags, fd-FD_BIAS, (off_t)(alignment&0x7fffffff));
   if (mapAddress == MAP_FAILED)
     {
+      hyerror_set_last_error(errno, HYPORT_ERROR_OPFAILED);
+      throwJavaIoIOException(env, hyerror_last_error_message());
       return -1;
     }
   return (jlong) ((IDATA)mapAddress);

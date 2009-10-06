@@ -211,11 +211,16 @@ public abstract class InputStream extends Object implements Closeable {
         }
         long skipped = 0;
         int toRead = n < 4096 ? (int) n : 4096;
-        if (skipBuf == null || skipBuf.length < toRead) {
-            skipBuf = new byte[toRead];
+        // We are unsynchronized, so take a local copy of the skipBuf at some
+        // point in time.
+        byte[] localBuf = skipBuf;
+        if (localBuf == null || localBuf.length < toRead) {
+            // May be lazily written back to the static. No matter if it
+            // overwrites somebody else's store.
+            skipBuf = localBuf = new byte[toRead];
         }
         while (skipped < n) {
-            int read = read(skipBuf, 0, toRead);
+            int read = read(localBuf, 0, toRead);
             if (read == -1) {
                 return skipped;
             }

@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=hyluni
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
@@ -36,8 +36,7 @@ BUILDFILES = \
   $(SHAREDSUB)filedesc.obj $(SHAREDSUB)timezone.obj \
   OSFileSystemWin32.obj hyenv.obj\
   $(SHAREDSUB)OSFileSystem.obj OSMemoryWin32.obj $(SHAREDSUB)OSMemory.obj \
-  $(SHAREDSUB)OSNetworkSystem.obj OSNetworkSystemWin32.obj \
-  OSResourcesMonitorWin32.obj
+  $(SHAREDSUB)OSNetworkSystem.obj OSNetworkSystemWin32.obj
 
 VIRTFILES = hyluni.res
 

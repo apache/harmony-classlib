@@ -74,6 +74,7 @@ typedef struct LUNIJniIDCache
   /* additional IDs for luni and nio */
   jclass CLS_java_lang_Long;
   jclass CLS_java_net_Inet6Address;
+  jclass CLS_java_nio_DirectByteBuffer;
   jfieldID FID_java_lang_Long_value;
   jmethodID MID_java_net_InetAddress_init;
 } LUNIJniIDCache;

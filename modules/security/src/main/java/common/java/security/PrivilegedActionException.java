@@ -71,6 +71,7 @@ public class PrivilegedActionException extends Exception {
      * @return the exception that was thrown by a
      *         {@code PrivilegedExceptionAction}.
      */
+    @Override
     public Throwable getCause() {
         return exception;
     }
@@ -82,6 +83,7 @@ public class PrivilegedActionException extends Exception {
      * @return a printable representation for this {@code
      *         PrivilegedActionException}.
      */
+    @Override
     public String toString() {
         String s = getClass().getName();
         return exception == null ? s : s + ": " + exception; //$NON-NLS-1$

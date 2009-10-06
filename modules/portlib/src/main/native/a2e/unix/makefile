@@ -25,7 +25,7 @@ BUILDFILES = sysTranslate.o atoe.o atoe_utils.o
 
 MDLLIBFILES =
 
-DLLNAME = ../libhya2e$(HY_SHLIB_SUFFIX)
+DLLNAME = $(DLLPATH)libhya2e$(HY_SHLIB_SUFFIX)
 LIBNAME = $(LIBPATH)libhya2e.a
 
 include $(HY_HDK)/build/make/rules.mk

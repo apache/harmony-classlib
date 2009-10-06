@@ -2000,7 +2000,7 @@ hythread_monitor_wait_timed (hythread_monitor_t monitor, I_64 millis,
  * 
  */
 UDATA *VMCALL
-hythread_global (char *name)
+hythread_global (const char *name)
 {
   HyThreadGlobal *global;
   hythread_library_t lib = GLOBAL_DATA (default_library);

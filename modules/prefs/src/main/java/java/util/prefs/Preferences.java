@@ -35,12 +35,12 @@ import org.apache.harmony.prefs.internal.nls.Messages;
  * in an implementation-dependent back-end.
  * <p>
  * Every node has one name and one unique absolute path following the same
- * notational conventions as directories in a file system. The root node's
- * name is "", and other node name strings cannot contain the slash character
- * and cannot be empty. The root node's absolute path is "/", and all other
- * nodes' absolute paths are constructed in the standard way: &lt;parent's
- * absolute path&gt; + "/" + &lt;node's name&gt;. Since the set of nodes forms a
- * tree with the root node at its base, all absolute paths start with the slash
+ * notational conventions as directories in a file system. The root node's name
+ * is "", and other node name strings cannot contain the slash character and
+ * cannot be empty. The root node's absolute path is "/", and all other nodes'
+ * absolute paths are constructed in the standard way: &lt;parent's absolute
+ * path&gt; + "/" + &lt;node's name&gt;. Since the set of nodes forms a tree
+ * with the root node at its base, all absolute paths start with the slash
  * character. Every node has one relative path to each of its ancestors. The
  * relative path doesn't start with slash: it equals the node's absolute path
  * with leading substring removed corresponding to the ancestor's absolute path
@@ -50,38 +50,41 @@ import org.apache.harmony.prefs.internal.nls.Messages;
  * preference update method calls may return immediately instead of blocking.
  * The {@code flush()} and {@code sync()} methods force the back-end to
  * synchronously perform all pending updates, but the implementation is
- * permitted to perform the modifications on the underlying back-end data
- * at any time between the moment the request is made and the moment the
- * {@code flush()} or {@code sync()} method returns.
- * Please note that if JVM exit normally, the implementation must assure all
- * modifications are persisted implicitly.
+ * permitted to perform the modifications on the underlying back-end data at any
+ * time between the moment the request is made and the moment the {@code
+ * flush()} or {@code sync()} method returns. Please note that if the JVM exits
+ * normally, the implementation must assure all modifications are persisted
+ * implicitly.
  * <p>
- * When invoking a method that retrieves preferences, the user must provide
- * a default value. The default value is returned when the preferences cannot
- * be found or the back-end is unavailable. Some other methods will throw
- * {@code BackingStoreException} when the back-end is unavailable.
+ * When invoking a method that retrieves preferences, the user must provide a
+ * default value. The default value is returned when the preferences cannot be
+ * found or the back-end is unavailable. Some other methods will throw {@code
+ * BackingStoreException} when the back-end is unavailable.
  * </p>
  * <p>
  * Preferences can be exported to and imported from an XML files. These
  * documents must have an XML DOCTYPE declaration:
- * <pre>{@code
- * <!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd">
- * }</pre>
- * This system URI is not really accessed by network, it is only a
- * identification string. Visit the DTD location to see the actual format
- * permitted.
+ * 
+ * <pre>
+ * &#064;code
+ * &lt;!DOCTYPE preferences SYSTEM &quot;http://java.sun.com/dtd/preferences.dtd&quot;&gt;
+ * }
+ * </pre>
+ * 
+ * This system URI is not accessed, it is only a identification string for
+ * verifying parsers. Visit the DTD location to see the actual format permitted.
  * <p>
  * There must be a concrete {@code PreferencesFactory} type for every concrete
- * {@code Preferences} type developed. Every J2SE implementation must provide a
+ * {@code Preferences} type developed. Every implementation must provide a
  * default implementation for every supported platform, and must also provide a
  * means of replacing the default implementation. This implementation uses the
- * system property {@code java.util.prefs.PreferencesFactory} to detemine which
+ * system property {@code java.util.prefs.PreferencesFactory} to determine which
  * preferences implementation to use.
  * <p>
  * The methods of this class are thread-safe. If multiple JVMs are using the
  * same back-end concurrently, the back-end won't be corrupted, but no other
  * behavior guarantees are made.
- *
+ * 
  * @see PreferencesFactory
  * 
  * @since 1.4
@@ -102,10 +105,10 @@ public abstract class Preferences {
      */
     public static final int MAX_VALUE_LENGTH = 8192;
 
-    //permission
+    // permission
     private static final RuntimePermission PREFS_PERM = new RuntimePermission("preferences"); //$NON-NLS-1$
 
-    //factory used to get user/system prefs root
+    // factory used to get user/system prefs root
     private static final PreferencesFactory factory;
 
     // default provider factory name for Windows
@@ -132,7 +135,7 @@ public abstract class Preferences {
             // only comparing ASCII, so assume english locale
             osName = (osName == null ? null : osName.toLowerCase(Locale.ENGLISH));
 
-            if (osName != null && osName.startsWith("windows")) {
+            if (osName != null && osName.startsWith("windows")) { //$NON-NLS-1$
                 factoryClassName = DEFAULT_FACTORY_NAME_WIN;
             } else {
                 factoryClassName = DEFAULT_FACTORY_NAME_UNIX;
@@ -477,10 +480,11 @@ public abstract class Preferences {
      *             if {@code RuntimePermission("preferences")} is denied by a
      *             SecurityManager.
      */
-    public static void importPreferences (InputStream istream) throws InvalidPreferencesFormatException, IOException {
+    public static void importPreferences(InputStream istream)
+            throws InvalidPreferencesFormatException, IOException {
         checkSecurity();
-        if(null == istream){
-            // prefs.0=Inputstream cannot be null\!
+        if (null == istream) {
+            // prefs.0=Input stream cannot be null
             throw new MalformedURLException(Messages.getString("prefs.0")); //$NON-NLS-1$
         }
         XMLParser.importPrefs(istream);
@@ -859,13 +863,12 @@ public abstract class Preferences {
         return factory.systemRoot();
     }
 
-    //check the RuntimePermission("preferences")
+    // check the RuntimePermission("preferences")
     private static void checkSecurity() {
         SecurityManager manager = System.getSecurityManager();
-        if(null != manager){
+        if (null != manager) {
             manager.checkPermission(PREFS_PERM);
         }
-
     }
 
     /**
@@ -888,18 +891,18 @@ public abstract class Preferences {
      *             if the {@code RuntimePermission("preferences")} is denied by
      *             a SecurityManager.
      */
-    public static Preferences userNodeForPackage (Class<?> c) {
+    public static Preferences userNodeForPackage(Class<?> c) {
         checkSecurity();
         return factory.userRoot().node(getNodeName(c));
     }
 
-    //parse node's absolute path from class instance
-    private static String getNodeName(Class<?> c){
+    // parse node's absolute path from class instance
+    private static String getNodeName(Class<?> c) {
         Package p = c.getPackage();
-        if(null == p){
+        if (null == p) {
             return "/<unnamed>"; //$NON-NLS-1$
         }
-        return "/"+p.getName().replace('.', '/'); //$NON-NLS-1$
+        return "/" + p.getName().replace('.', '/'); //$NON-NLS-1$
     }
 
     /**

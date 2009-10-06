@@ -19,3 +19,4 @@ XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft -lXext -lXtst
 ASFLAGS += -a64
 LDFLAGS += -m64
 OSLIBS += -ldl
+HY_CAN_LINK_DEBUG = yes

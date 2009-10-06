@@ -25,7 +25,7 @@
 #include "IMemorySystem.h"
 #include "exceptions.h"
 
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mallocNative
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
   (JNIEnv * env, jobject thiz, jlong size)
 {
   PORT_ACCESS_FROM_ENV (env);
@@ -66,10 +66,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByteArr
   (JNIEnv * env, jobject thiz, jlong address, jbyteArray byteArray,
    jint offset, jint length)
 {
-  jboolean isCopy;
-  jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
-  memcpy (bytes + offset, (const void *) ((IDATA) address), (size_t) length);
-  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
+  (*env)->SetByteArrayRegion(env, byteArray, offset, length, (jbyte *) ((IDATA) address));
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArray
@@ -77,10 +74,10 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setByteArr
    jint offset, jint length)
 {
   jboolean isCopy;
-  jbyte *bytes = (*env)->GetByteArrayElements (env, byteArray, &isCopy);
+  jbyte *bytes = (*env)->GetPrimitiveArrayCritical(env, byteArray, &isCopy);
   memcpy ((void *) ((IDATA) address),
 	  (const jbyte *) ((IDATA) bytes + offset), (size_t) length);
-  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, JNI_ABORT);
+  (*env)->ReleasePrimitiveArrayCritical(env, byteArray, bytes, JNI_ABORT);
 }
 
 JNIEXPORT jbyte JNICALL Java_org_apache_harmony_luni_platform_OSMemory_getByte

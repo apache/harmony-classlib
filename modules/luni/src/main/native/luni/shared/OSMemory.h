@@ -43,10 +43,10 @@ extern "C"
     (JNIEnv *, jclass);
 /*
  * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    mallocNative
+ * Method:    malloc
  * Signature: (J)J
  */
-  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mallocNative
+  JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
     (JNIEnv *, jobject, jlong);
 /*
  * Class:     org_apache_harmony_luni_platform_OSMemory

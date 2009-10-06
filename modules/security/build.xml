@@ -50,19 +50,6 @@
     <target name="build-native" depends="build-native-all" />
     <target name="build-native-all" if="native.present" >
         <make dir="src/main/native/security/${hy.os.family}" />
-
-        <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="src/main/native/security">
-                <include name="*${shlib.suffix}*"/>
-                <include name="*${progdb.suffix}*" if="is.windows" />
-                <exclude name="*${manifest.suffix}"/>
-            </fileset>
-            <!-- Copy link exports file on z/OS -->
-            <fileset dir="src/main/native/security/${hy.os.family}">
-                <include name="*${linklib.suffix}*" if="is.zos" />
-            </fileset>
-        </copy>
     </target>
     
     <target name="clean-java" depends="class-patternset">
@@ -109,6 +96,13 @@
                 </fileset>
             </bootclasspath>
         </javac>
+    </target>
+
+    <target name="findbugs" depends="build-jar">
+        <run-findBugs
+            jarFile="${hy.jdk}/jre/lib/boot/security.jar"
+            excludeFilter="make/findbugs-exclude-filter.xml"
+            outputFile="${findBugs.report}/security.xml"/>
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">

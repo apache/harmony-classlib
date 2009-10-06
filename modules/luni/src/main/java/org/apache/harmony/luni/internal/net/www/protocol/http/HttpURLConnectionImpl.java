@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.Authenticator;
 import java.net.CacheRequest;
 import java.net.CacheResponse;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -58,7 +59,7 @@ import org.apache.harmony.luni.util.PriviAction;
  * such as connecting, sending request and getting the content from the remote
  * server.
  */
-public class HttpURLConnection extends java.net.HttpURLConnection {
+public class HttpURLConnectionImpl extends HttpURLConnection {
     private static final String POST = "POST"; //$NON-NLS-1$
 
     private static final String GET = "GET"; //$NON-NLS-1$
@@ -542,7 +543,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @param url
      *            URL The URL this connection is connecting
      */
-    protected HttpURLConnection(URL url) {
+    protected HttpURLConnectionImpl(URL url) {
         this(url, 80);
     }
 
@@ -554,7 +555,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @param port
      *            int The default connection port
      */
-    protected HttpURLConnection(URL url, int port) {
+    protected HttpURLConnectionImpl(URL url, int port) {
         super(url);
         defaultPort = port;
         reqHeader = (Header) defaultReqHeader.clone();
@@ -582,7 +583,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
      * @param proxy
      *            Proxy The proxy which is used to make the connection
      */
-    protected HttpURLConnection(URL url, int port, Proxy proxy) {
+    protected HttpURLConnectionImpl(URL url, int port, Proxy proxy) {
         this(url, port);
         this.proxy = proxy;
     }

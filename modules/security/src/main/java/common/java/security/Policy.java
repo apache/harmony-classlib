@@ -114,8 +114,8 @@ public abstract class Policy {
             if (total == null) {
                 total = inherent;
             } else if (inherent != null) {
-                for (Enumeration en = inherent.elements(); en.hasMoreElements();) {
-                    total.add((Permission)en.nextElement());
+                for (Enumeration<Permission> en = inherent.elements(); en.hasMoreElements();) {
+                    total.add(en.nextElement());
                 }
             }
             if (total != null && total.implies(permission)) {
@@ -152,7 +152,7 @@ public abstract class Policy {
      // In case of any error, including undefined provider name, 
      // returns new instance of org.apache.harmony.security.FilePolicy provider. 
     private static Policy getDefaultProvider() {
-        final String defaultClass = (String) AccessController
+        final String defaultClass = AccessController
                 .doPrivileged(new PolicyUtils.SecurityPropertyAccessor(
                         POLICY_PROVIDER));
         if (defaultClass == null) {

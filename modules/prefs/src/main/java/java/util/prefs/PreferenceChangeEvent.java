@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.EventObject;
 
 /**
@@ -30,10 +29,10 @@ import java.util.EventObject;
  * Please note that although the class is marked as {@code Serializable} by
  * inheritance from {@code EventObject}, this type is not intended to be serialized
  * so the serialization methods do nothing but throw a {@code NotSerializableException}.
- * 
+ *
  * @see java.util.prefs.Preferences
  * @see java.util.prefs.PreferenceChangeListener
- * 
+ *
  * @since 1.4
  */
 public class PreferenceChangeEvent extends EventObject {
@@ -48,7 +47,7 @@ public class PreferenceChangeEvent extends EventObject {
 
     /**
      * Construct a new {@code PreferenceChangeEvent} instance.
-     * 
+     *
      * @param p
      *            the {@code Preferences} instance that fired this event; this object is
      *            considered as the event's source.
@@ -67,7 +66,7 @@ public class PreferenceChangeEvent extends EventObject {
 
     /**
      * Gets the key of the changed preference.
-     * 
+     *
      * @return the changed preference's key.
      */
     public String getKey() {
@@ -77,7 +76,7 @@ public class PreferenceChangeEvent extends EventObject {
     /**
      * Gets the new value of the changed preference or {@code null} if the
      * preference has been removed.
-     * 
+     *
      * @return the new value of the changed preference or {@code null} if the
      *         preference has been removed.
      */
@@ -87,7 +86,7 @@ public class PreferenceChangeEvent extends EventObject {
 
     /**
      * Gets the {@code Preferences} instance that fired this event.
-     * 
+     *
      * @return the {@code Preferences} instance that fired this event.
      */
     public Preferences getNode() {
@@ -95,7 +94,7 @@ public class PreferenceChangeEvent extends EventObject {
     }
 
     /**
-     * This method always throws a <code>NotSerializableException</code>,
+     * This method always throws a {@code NotSerializableException},
      * because this object cannot be serialized,
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -103,7 +102,7 @@ public class PreferenceChangeEvent extends EventObject {
     }
 
     /**
-     * This method always throws a <code>NotSerializableException</code>,
+     * This method always throws a {@code NotSerializableException},
      * because this object cannot be serialized,
      */
     private void readObject(ObjectInputStream in) throws IOException{

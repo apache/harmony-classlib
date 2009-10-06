@@ -345,6 +345,8 @@
     <property name="tests.resources.hdk.dir"
               value="${tests.hdk.dir}/resources" />
 
+    <property name="findBugs.report" location="../../build/findbugs_report" />
+
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
@@ -367,6 +369,7 @@ Harmony test properties:
     hy.test.timeout = ${hy.test.timeout}
     hy.test.vm.name = ${hy.test.vm.name}
     hy.test.vmargs = ${hy.test.vmargs}
+    findbugs.available = ${findbugs.available}
 
 Harmony platform properties:
 
@@ -898,6 +901,46 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
         <sequential>
             <delete file="${hy.hdk}/build/ant/patternsets/@{module}.txt" />
         </sequential>
+    </macrodef>
+
+    <macrodef name="run-findBugs">
+       <attribute name="outputFile"/>
+       <attribute name="excludeFilter"/>
+       <attribute name="jarFile"/>
+       <sequential>
+           <!-- Find and define findbugs task -->
+           <property name="findbugs.home" location="${basedir}/../../depends/oss/findbugs-1.3.9"/>
+           <available
+               classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+               classpath="${findbugs.home}/lib/findbugs-ant.jar"
+               property="findbugs.available"/>
+           <taskdef
+               name="findbugs"
+               classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+               classpath="${findbugs.home}/lib/findbugs-ant.jar"
+               onerror="ignore"/>
+          <fail message="FindBugs is unavailable" unless="findbugs.available"/>
+
+          <!-- Run findbugs using the attributes given -->
+          <dirname file="@{outputFile}" property="@{outputFile}.dir" />
+          <mkdir dir="${@{outputFile}.dir}" />
+          <findbugs home="${findbugs.home}"
+            output="xml"
+            outputFile="@{outputFile}"
+            excludeFilter="@{excludeFilter}"
+            jvmargs="-Xmx512M"
+            workhard="true">
+            <auxClasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </auxClasspath>
+            <sourcePath path="src/main/java" />
+            <sourcePath path="src/main/java/common" />
+            <sourcePath path="src/main/java/${hy.os.family}" />
+            <class location="@{jarFile}" />
+        </findbugs>
+       </sequential>
     </macrodef>
 
 </project>

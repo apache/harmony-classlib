@@ -21,7 +21,8 @@ include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)hythread.o
 
-DLLNAME = ../libhythr$(HY_SHLIB_SUFFIX)
+DLLNAME = $(LIBPATH)libhythr$(HY_SHLIB_SUFFIX)
+DBGPATH = $(LIBPATH)
 EXPNAME = HYTHR_0.2
 
 include $(HY_HDK)/build/make/rules.mk

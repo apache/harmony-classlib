@@ -77,6 +77,7 @@ public class DigestOutputStream extends FilterOutputStream {
      * @throws IOException
      *             if writing to the stream causes a {@code IOException}
      */
+    @Override
     public void write(int b) throws IOException {
         // update digest only if digest functionality is on
         if (isOn) {
@@ -99,6 +100,7 @@ public class DigestOutputStream extends FilterOutputStream {
      * @throws IOException
      *             if writing to the stream causes an {@code IOException}.
      */
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         // update digest only if digest functionality is on
         if (isOn) {
@@ -126,6 +128,7 @@ public class DigestOutputStream extends FilterOutputStream {
      *
      * @return a printable representation for this {@code DigestOutputStream}.
      */
+    @Override
     public String toString() {
         return super.toString() + ", " + digest.toString() + //$NON-NLS-1$
             (isOn ? ", is on" : ", is off"); //$NON-NLS-1$ //$NON-NLS-2$

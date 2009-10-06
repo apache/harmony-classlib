@@ -18,7 +18,7 @@ APPVER = 5.0
 !include <$(HY_HDK)\build\make\defines.mak>
 
 LIBBASE=fontlib
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 

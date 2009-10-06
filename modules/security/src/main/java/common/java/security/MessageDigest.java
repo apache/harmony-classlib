@@ -80,11 +80,9 @@ public abstract class MessageDigest extends MessageDigestSpi {
                 result.algorithm = algorithm;
                 result.provider = engine.provider;
                 return result;
-            } else {
-                result = new MessageDigestImpl((MessageDigestSpi) engine.spi,
-                        engine.provider, algorithm);
-                return result;
             }
+            return new MessageDigestImpl((MessageDigestSpi) engine.spi,
+                    engine.provider, algorithm);
         }
     }
 
@@ -151,11 +149,10 @@ public abstract class MessageDigest extends MessageDigestSpi {
                 result.algorithm = algorithm;
                 result.provider = provider;
                 return result;
-            } else {
-                result = new MessageDigestImpl((MessageDigestSpi) engine.spi,
-                        provider, algorithm);
-                return result;
             }
+            result = new MessageDigestImpl((MessageDigestSpi) engine.spi,
+                    provider, algorithm);
+            return result;
         }
     }
 
@@ -280,6 +277,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * 
      * @return a printable representation for this {@code MessageDigest}
      */
+    @Override
     public String toString() {
         return "MESSAGE DIGEST " + algorithm; //$NON-NLS-1$
     }
@@ -347,12 +345,12 @@ public abstract class MessageDigest extends MessageDigestSpi {
         }
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         if (this instanceof Cloneable) {
             return super.clone();
-        } else {
-            throw new CloneNotSupportedException();
         }
+        throw new CloneNotSupportedException();
     }
 
     /**
@@ -384,38 +382,44 @@ public abstract class MessageDigest extends MessageDigestSpi {
         }
 
         // engineReset() implementation
+        @Override
         protected void engineReset() {
             spiImpl.engineReset();
         }
 
         // engineDigest() implementation
+        @Override
         protected byte[] engineDigest() {
             return spiImpl.engineDigest();
         }
 
         // engineGetDigestLength() implementation
+        @Override
         protected int engineGetDigestLength() {
             return spiImpl.engineGetDigestLength();
         }
 
         // engineUpdate() implementation
+        @Override
         protected void engineUpdate(byte arg0) {
             spiImpl.engineUpdate(arg0);
         }
 
         // engineUpdate() implementation
+        @Override
         protected void engineUpdate(byte[] arg0, int arg1, int arg2) {
             spiImpl.engineUpdate(arg0, arg1, arg2);
         }
 
         // Returns a clone if the spiImpl is cloneable
+        @Override
         public Object clone() throws CloneNotSupportedException {
             if (spiImpl instanceof Cloneable) {
                 MessageDigestSpi spi = (MessageDigestSpi) spiImpl.clone();
                 return new MessageDigestImpl(spi, getProvider(), getAlgorithm());
-            } else {
-                throw new CloneNotSupportedException();
             }
+            
+            throw new CloneNotSupportedException();
         }
     }
 }

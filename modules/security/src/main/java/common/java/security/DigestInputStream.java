@@ -78,6 +78,7 @@ public class DigestInputStream extends FilterInputStream {
      * @throws IOException
      *             if reading the source stream causes an {@code IOException}.
      */
+    @Override
     public int read() throws IOException {
         // read the next byte
         int byteRead = in.read();
@@ -110,6 +111,7 @@ public class DigestInputStream extends FilterInputStream {
      * @throws IOException
      *             if reading the source stream causes an {@code IOException}
      */
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         // read next up to len bytes
         int bytesRead = in.read(b, off, len);
@@ -141,6 +143,7 @@ public class DigestInputStream extends FilterInputStream {
      *
      * @return a printable representation for this {@code DigestInputStream}.
      */
+    @Override
     public String toString() {
         return super.toString() + ", " + digest.toString() + //$NON-NLS-1$
             (isOn ? ", is on" : ", is off"); //$NON-NLS-1$ //$NON-NLS-2$

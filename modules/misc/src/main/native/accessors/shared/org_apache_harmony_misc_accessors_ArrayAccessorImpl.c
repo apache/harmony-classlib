@@ -63,29 +63,29 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_stat
  * Method:    staticUnpin<Type>ArrayNoCopy
  * Signature: (Ljava/lang/Object;J)V
  */
-#define pinFunctions(TypeArray, TypeArrayNoCopy, TypeArrayElements, typeArray, t) \
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticPin##TypeArray \
+#define pinFunctions(Type, t) \
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticPin##Type##Array \
 (JNIEnv *env, jclass clss, jobject array) { \
     jboolean isCopy; \
-    return addr2jlong((*env)->Get##TypeArrayElements(env, (typeArray)array, &isCopy)); \
+    return addr2jlong((*env)->Get##Type##ArrayElements(env, (t##Array)array, &isCopy)); \
 } \
-JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##TypeArray \
+JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##Type##Array \
 (JNIEnv *env, jclass clss, jobject array, jlong addr) { \
-  (*env)->Release##TypeArrayElements(env, (typeArray)array, jlong2addr(t, addr), 0); \
+  (*env)->Release##Type##ArrayElements(env, (t##Array)array, jlong2addr(t, addr), 0); \
 } \
-JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##TypeArrayNoCopy \
+JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_staticUnpin##Type##ArrayNoCopy \
 (JNIEnv *env, jclass clss, jobject array, jlong addr) { \
-  (*env)->Release##TypeArrayElements(env, (typeArray)array, jlong2addr(t, addr), JNI_ABORT); \
+  (*env)->Release##Type##ArrayElements(env, (t##Array)array, jlong2addr(t, addr), JNI_ABORT); \
 }
 
-pinFunctions(ByteArray, ByteArrayNoCopy, ByteArrayElements, jbyteArray, jbyte)
-pinFunctions(CharArray, CharArrayNoCopy, CharArrayElements, jcharArray, jchar)
-pinFunctions(ShortArray, ShortArrayNoCopy, ShortArrayElements, jshortArray, jshort)
-pinFunctions(IntArray, IntArrayNoCopy, IntArrayElements, jintArray, jint)
-pinFunctions(LongArray, LongArrayNoCopy, LongArrayElements, jlongArray, jlong)
-pinFunctions(BooleanArray, BooleanArrayNoCopy, BooleanArrayElements, jbooleanArray, jboolean)
-pinFunctions(FloatArray, FloatArrayNoCopy, FloatArrayElements, jfloatArray, jfloat)
-pinFunctions(DoubleArray, DoubleArrayNoCopy, DoubleArrayElements, jdoubleArray, jdouble)
+pinFunctions(Byte, jbyte)
+pinFunctions(Char, jchar)
+pinFunctions(Short, jshort)
+pinFunctions(Int, jint)
+pinFunctions(Long, jlong)
+pinFunctions(Boolean, jboolean)
+pinFunctions(Float, jfloat)
+pinFunctions(Double, jdouble)
 
 
 
@@ -96,29 +96,29 @@ pinFunctions(DoubleArray, DoubleArrayNoCopy, DoubleArrayElements, jdoubleArray, 
  * Method:    setElement
  * Signature: ([TIT)V
  */
-#define setGetFunctions(TI, TIT, t, typeArray) \
- JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_getElement___3##TI \
-  (JNIEnv *env, jobject obj, typeArray array, jint index) { \
+#define setGetFunctions(T, t) \
+ JNIEXPORT t JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_getElement___3##T##I \
+  (JNIEnv *env, jobject obj, t##Array array, jint index) { \
     t* ptr = (t*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, NULL); \
     t res = ptr[index]; \
     (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, ptr, 0); \
     return res; \
   } \
- JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_setElement___3##TIT \
-(JNIEnv *env, jobject obj, typeArray array, jint index, t value) { \
+ JNIEXPORT void JNICALL Java_org_apache_harmony_misc_accessors_ArrayAccessor_setElement___3##T##I##T \
+(JNIEnv *env, jobject obj, t##Array array, jint index, t value) { \
     t* ptr = (t*)(*env)->GetPrimitiveArrayCritical(env, (jarray)array, NULL); \
     ptr[index] = value; \
     (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, ptr, 0); \
 }
 
-setGetFunctions(BI, BIB, jbyte, jbyteArray);
-setGetFunctions(ZI, ZIZ, jboolean, jbooleanArray);
-setGetFunctions(SI, SIS, jshort, jshortArray);
-setGetFunctions(CI, CIC, jchar, jcharArray);
-setGetFunctions(II, III, jint, jintArray);
-setGetFunctions(JI, JIJ, jlong, jlongArray);
-setGetFunctions(FI, FIF, jfloat, jfloatArray);
-setGetFunctions(DI, DID, jdouble, jdoubleArray);
+setGetFunctions(B, jbyte);
+setGetFunctions(Z, jboolean);
+setGetFunctions(S, jshort);
+setGetFunctions(C, jchar);
+setGetFunctions(I, jint);
+setGetFunctions(J, jlong);
+setGetFunctions(F, jfloat);
+setGetFunctions(D, jdouble);
 
 /*
  * Class:     org_apache_harmony_misc_accessors_ArrayAccessor

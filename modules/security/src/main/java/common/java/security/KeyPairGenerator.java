@@ -92,11 +92,10 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
                 result.algorithm = algorithm;
                 result.provider = engine.provider;
                 return result;
-            } else {
-                result = new KeyPairGeneratorImpl((KeyPairGeneratorSpi) engine.spi,
-                        engine.provider, algorithm);
-                return result;
             }
+            result = new KeyPairGeneratorImpl((KeyPairGeneratorSpi) engine.spi,
+                    engine.provider, algorithm);
+            return result;
         }
     }
 
@@ -158,11 +157,10 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
                 result.algorithm = algorithm;
                 result.provider = provider;
                 return result;
-            } else {
-                result = new KeyPairGeneratorImpl((KeyPairGeneratorSpi) engine.spi,
-                        provider, algorithm);
-                return result;
             }
+            result = new KeyPairGeneratorImpl((KeyPairGeneratorSpi) engine.spi,
+                    provider, algorithm);
+            return result;
         }
     }
 
@@ -222,6 +220,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
      *
      * @return a new unique {@code KeyPair} each time this method is called
      */
+    @Override
     public KeyPair generateKeyPair() {
         return null;
     }
@@ -235,6 +234,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
      * @param random
      *            the source of randomness
      */
+    @Override
     public void initialize(int keysize, SecureRandom random) {
     }
 
@@ -249,6 +249,7 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
      * @throws InvalidAlgorithmParameterException
      *             if the specified parameters are not supported
      */
+    @Override
     public void initialize(AlgorithmParameterSpec param, SecureRandom random)
             throws InvalidAlgorithmParameterException {
     }
@@ -276,18 +277,21 @@ public abstract class KeyPairGenerator extends KeyPairGeneratorSpi {
 
         // implementation of initialize(int keysize, SecureRandom random)
         // using corresponding spi initialize() method
+        @Override
         public void initialize(int keysize, SecureRandom random) {
             spiImpl.initialize(keysize, random);
         }
 
         // implementation of generateKeyPair()
         // using corresponding spi generateKeyPair() method
+        @Override
         public KeyPair generateKeyPair() {
             return spiImpl.generateKeyPair();
         }
 
         // implementation of initialize(int keysize, SecureRandom random)
         // using corresponding spi initialize() method
+        @Override
         public void initialize(AlgorithmParameterSpec param, SecureRandom random)
                 throws InvalidAlgorithmParameterException {
             spiImpl.initialize(param, random);

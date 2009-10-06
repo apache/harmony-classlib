@@ -104,6 +104,7 @@ public abstract class BasicPermission extends Permission implements
      * @return {@code true} if the specified object is equal to this {@code
      *         BasicPermission}, otherwise {@code false}.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -124,6 +125,7 @@ public abstract class BasicPermission extends Permission implements
      * @see Object#equals(Object)
      * @see BasicPermission#equals(Object)
      */
+    @Override
     public int hashCode() {
         return getName().hashCode();
     }
@@ -134,6 +136,7 @@ public abstract class BasicPermission extends Permission implements
      *
      * @return an empty string.
      */
+    @Override
     public String getActions() {
         return ""; //$NON-NLS-1$
     }
@@ -146,6 +149,7 @@ public abstract class BasicPermission extends Permission implements
      * @return {@code true} if the specified permission is implied by this
      *         permission, {@code false} otherwise.
      */
+    @Override
     public boolean implies(Permission permission) {
         if (permission != null && permission.getClass() == this.getClass()) {
             return nameImplies(getName(), permission.getName());
@@ -195,6 +199,7 @@ public abstract class BasicPermission extends Permission implements
      * @return an empty {@link PermissionCollection} for holding permissions.
      * @see BasicPermissionCollection
      */
+    @Override
     public PermissionCollection newPermissionCollection() {
         return new BasicPermissionCollection();
     }

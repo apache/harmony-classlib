@@ -191,6 +191,16 @@ Compiling and archiving test classes ...
         <ant antfile="make/build-test.xml" inheritall="false" target="test-jar-modules"/>
     </target>
 
+    <target name="findbugs" depends="-init-hdk"
+            description="Runs FindBugs on all modules">
+        <echo>
+========================================
+Finding bugs in all class libraries...
+========================================
+</echo>
+        <ant antfile="make/build-test.xml" inheritall="false" target="findbugs"/>
+    </target>
+
     <!-- ================================= 
           target: doc             
          ================================= -->

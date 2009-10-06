@@ -129,12 +129,7 @@ final class OSMemory implements IMemorySystem {
 	 * @throws OutOfMemoryError
 	 *             if the request cannot be satisfied.
 	 */
-	public long malloc(long length) throws OutOfMemoryError
-    {
-        OSResourcesMonitor.ensurePhysicalMemoryCapacity();
-        return mallocNative(length);  
-    }
-    private native long mallocNative(long length) throws OutOfMemoryError;
+	public native long malloc(long length) throws OutOfMemoryError;
 
 	/**
 	 * Deallocates space for a memory block that was previously allocated by a
@@ -551,10 +546,8 @@ final class OSMemory implements IMemorySystem {
 
 	public long mmap(long fileDescriptor, long alignment, long size,
 			int mapMode) throws IOException {
+                // No need to check mmapImpl return as it throws IOException in error cases
 		long address = mmapImpl(fileDescriptor, alignment, size, mapMode);
-		if (address == -1) {
-			throw new IOException();
-		}
 		return address;
 	}
 

@@ -33,7 +33,7 @@ public class InvalidPreferencesFormatException extends Exception {
      * @param s
      *            the detailed exception message.
      */
-    public InvalidPreferencesFormatException (String s) {
+    public InvalidPreferencesFormatException(String s) {
         super(s);
     }
 
@@ -46,18 +46,18 @@ public class InvalidPreferencesFormatException extends Exception {
      * @param t
      *            the nested {@code Throwable}.
      */
-    public InvalidPreferencesFormatException (String s, Throwable t) {
-        super(s,t);
+    public InvalidPreferencesFormatException(String s, Throwable t) {
+        super(s, t);
     }
 
     /**
      * Constructs a new {@code InvalidPreferencesFormatException} instance with
      * a nested {@code Throwable}.
-     *
+     * 
      * @param t
      *            the nested {@code Throwable}.
      */
-    public InvalidPreferencesFormatException (Throwable t) {
+    public InvalidPreferencesFormatException(Throwable t) {
         super(t);
     }
 }

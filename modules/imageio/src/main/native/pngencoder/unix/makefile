@@ -39,7 +39,7 @@ ifeq ($(HY_OS),zos)
 MDLLIBFILES += $(MDLLIBZLIB)
 endif
 
-DLLNAME=../libpngencoder$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libpngencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYPNGENCODER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

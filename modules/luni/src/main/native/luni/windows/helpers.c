@@ -35,7 +35,6 @@
 #include "hysock.h"
 
 int platformReadLink (char *link);
-jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);
 void setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP);
 jint getPlatformDatagramNominalSize (JNIEnv * env, hysocket_t socketP);
 I_32 getPlatformRoots (char *rootStrings);
@@ -194,54 +193,6 @@ setPlatformFileLength (JNIEnv * env, IDATA descriptor, jlong newLength)
   if (result == INVALID_FILE_SIZE && (GetLastError ()) != NO_ERROR)
     return 0;
   return SetEndOfFile ((HANDLE) descriptor);
-}
-
-jbyteArray
-getPlatformPath (JNIEnv * env, jbyteArray path)
-{
-  char buffer[256];
-  jbyteArray answer = NULL;
-  jsize length = (*env)->GetArrayLength (env, path);
-  jbyte *lpath = (*env)->GetByteArrayElements (env, path, 0);
-
-  if (lpath != NULL)
-    {
-      if (length >= 2 && lpath[1] == ':')
-        {
-          char next = lpath[2];
-          int drive = tolower (lpath[0]) - 'a' + 1;
-          if ((next == 0 || (lpath[2] != '/' && next != '\\')) && drive >= 1
-            && drive <= 26)
-            {
-              int buflen = 2, needSlash;
-              if (_getdcwd (drive, buffer, sizeof (buffer)) != NULL)
-                {
-                  buflen = strlen (buffer);
-                  if (buffer[buflen - 1] == '\\')
-                    buflen--;
-                }
-              needSlash = length > 2 || buflen < 3;
-              answer =
-                (*env)->NewByteArray (env,
-                buflen + length - (needSlash ? 1 : 2));
-              if (answer != NULL)
-                {
-                  /* Copy drive and colon */
-                  (*env)->SetByteArrayRegion (env, answer, 0, 2, lpath);
-                  if (buflen > 2)
-                    (*env)->SetByteArrayRegion (env, answer, 2, buflen - 2,
-                    buffer + 2);
-                  if (needSlash)
-                    (*env)->SetByteArrayRegion (env, answer, buflen, 1, "\\");
-                  if (length > 2)
-                    (*env)->SetByteArrayRegion (env, answer, buflen + 1,
-                    length - 2, lpath + 2);
-                }
-            }
-        }
-      (*env)->ReleaseByteArrayElements (env, path, lpath, JNI_ABORT);
-    }
-  return answer;
 }
 
 UDATA

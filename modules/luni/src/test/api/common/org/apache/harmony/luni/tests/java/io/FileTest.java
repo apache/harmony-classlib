@@ -1073,11 +1073,29 @@ public class FileTest extends TestCase {
             assertTrue("Absolute returned false", (f.isAbsolute() && !f1
                     .isAbsolute())
                     || (!f.isAbsolute() && f1.isAbsolute()));
+
+            assertTrue(new File("C:/").isAbsolute());
+            assertTrue(new File("f:/").isAbsolute());
+            assertTrue(new File("f:\\").isAbsolute());
+            assertFalse(new File("f:").isAbsolute());
+            assertFalse(new File("K:").isAbsolute());
+            assertTrue(new File("\\\\").isAbsolute());
+            assertTrue(new File("\\\\\\").isAbsolute());
+            assertTrue(new File("\\\\hello").isAbsolute());
+            assertFalse(new File("\\").isAbsolute());
+            assertFalse(new File("/").isAbsolute());
         } else {
             File f = new File("/test");
             File f1 = new File("\\test");
             assertTrue("Absolute returned false", f.isAbsolute());
             assertFalse("Absolute returned true", f1.isAbsolute());
+            assertTrue(new File("//test").isAbsolute());
+            assertFalse(new File("test").isAbsolute());
+            assertFalse(new File("c:/").isAbsolute());
+            assertFalse(new File("c:\\").isAbsolute());
+            assertFalse(new File("c:").isAbsolute());
+            assertFalse(new File("\\").isAbsolute());
+            assertFalse(new File("\\\\").isAbsolute());
         }
         assertTrue("Non-Absolute returned true", !new File("../test")
                 .isAbsolute());

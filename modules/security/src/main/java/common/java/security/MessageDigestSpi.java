@@ -148,6 +148,7 @@ public abstract class MessageDigestSpi {
      */
     protected abstract void engineReset();
     
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

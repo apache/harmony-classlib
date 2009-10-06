@@ -47,7 +47,6 @@ public class Time extends Date {
      * @param theSecond
      *            a value in the range {@code [0,59]}.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Time(int theHour, int theMinute, int theSecond) {
         super(70, 0, 1, theHour, theMinute, theSecond);
@@ -72,7 +71,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getDate() {
@@ -86,7 +84,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getDay() {
@@ -100,7 +97,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getMonth() {
@@ -114,7 +110,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getYear() {
@@ -127,7 +122,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setDate(int i) {
@@ -140,7 +134,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setMonth(int i) {
@@ -153,7 +146,6 @@ public class Time extends Date {
      * @throws IllegalArgumentException
      *             if this method is called.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setYear(int i) {
@@ -182,6 +174,7 @@ public class Time extends Date {
      *         format: {@code HH:mm:ss}
      */
     @Override
+    @SuppressWarnings("deprecation")
     public String toString() {
         StringBuilder sb = new StringBuilder(8);
 

@@ -45,31 +45,41 @@ $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 
 !ifdef DLLNAME
 $(DLLNAME): $(LIBNAME)
+	-mkdir $(DBGPATH)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
 	/NODEFAULTLIB:libcmt /NODEFAULTLIB:libc /FORCE:UNRESOLVED \
 	-entry:_DllMainCRTStartup$(DLLENTRY) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
 	$(COMMENT) \
-	-subsystem:windows -out:$@ -map:$*.map \
+	-subsystem:windows -out:$@ \
+	-map:$(LIBPATH)$(*F).map -pdb:$(DBGPATH)$(*F).pdb \
+        -manifestfile:$(LIBPATH)$(*F).manifest \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
 	kernel32.lib  msvcrt.lib ws2_32.lib advapi32.lib user32.lib gdi32.lib \
 	comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
-	if exist $(DLLNAME).manifest \
-		mt -manifest $(DLLNAME).manifest -outputresource:$(DLLNAME);#2
+	if exist $(LIBPATH)$(*F).manifest \
+            mt -manifest $(LIBPATH)$(*F).manifest -outputresource:$(DLLNAME);#2
+        -del $(LIBPATH)$(*F).manifest >nul 2>&1
 !endif
 
 !ifdef EXENAME
 $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
+	-mkdir $(DBGPATH)
 	link /NOLOGO $(EXEFLAGS) /debug /opt:icf /opt:ref $(VMLINK) \
-	-out:$(EXENAME) -machine:$(CPU) setargv.obj  \
+	-out:$(EXENAME) -pdb:$(DBGPATH)$(*F).pdb \
+        -manifestfile:$(LIBPATH)$(*F).manifest \
+	-machine:$(CPU) setargv.obj  \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(EXEDLLFILES)
-	if exist $(EXENAME).manifest \
-		mt -manifest $(EXENAME).manifest -outputresource:$(EXENAME);#1
+	if exist $(LIBPATH)$(*F).manifest \
+            mt -manifest $(LIBPATH)$(*F).manifest -outputresource:$(EXENAME);#1
+        -del $(LIBPATH)$(*F).manifest >nul 2>&1
 !endif
 
 clean:
     -del $(BUILDFILES) *.res *.pdb \
              $(LIBNAME) $(LIBNAME:.lib=.exp) \
-             $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
-			 $(DLLNAME).manifest \
-             $(EXENAME) $(EXENAME:.exe=.pdb) $(EXENAME).manifest \
+                        $(LIBNAME:.lib=.map) \
+			$(LIBNAME:.lib=.manifest) \
+             $(DLLNAME) $(DBGPATH)$(LIBBASE).pdb \
+             $(EXENAME) $(DBGPATH)$(EXEBASE).pdb \
+                        $(LIBPATH)$(EXEBASE).manifest \
              $(CLEANFILES) >nul 2>&1

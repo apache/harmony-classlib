@@ -17,6 +17,8 @@
 
 package org.apache.harmony.luni.internal.reflect;
 
+import java.util.Arrays;
+
 class ProxyNameAndTypeCache {
     int[][] keyTable;
 
@@ -87,13 +89,15 @@ class ProxyNameAndTypeCache {
     }
 
     @Override
+    @SuppressWarnings("nls")
     public String toString() {
         int max = size();
         StringBuilder buf = new StringBuilder();
         buf.append("{");
         for (int i = 0; i < max; ++i) {
             if (keyTable[i] != null) {
-                buf.append(keyTable[i]).append("->").append(valueTable[i]);
+                buf.append(Arrays.toString(keyTable[i]));
+                buf.append("->").append(valueTable[i]);
             }
             if (i < max) {
                 buf.append(", ");

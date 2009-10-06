@@ -308,11 +308,11 @@ public abstract class SignatureSpi {
     protected abstract Object engineGetParameter(String param)
             throws InvalidParameterException;
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
         if (this instanceof Cloneable) {
             return super.clone();
-        } else {
-            throw new CloneNotSupportedException();
         }
+        throw new CloneNotSupportedException();
     }
 }

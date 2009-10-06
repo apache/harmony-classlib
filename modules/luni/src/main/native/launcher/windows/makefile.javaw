@@ -19,7 +19,8 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=$(EXEPATH)javaw.exe
+EXEBASE=javaw
+EXENAME=$(EXEPATH)$(EXEBASE).exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \

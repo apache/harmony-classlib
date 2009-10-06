@@ -95,9 +95,10 @@ public abstract class PermissionCollection implements Serializable {
      * 
      * @return a printable representation for this {@code PermissionCollection}.
      */
+    @Override
     public String toString() {
-        List elist = new ArrayList(100);
-        Enumeration elenum = elements();
+        List<String> elist = new ArrayList<String>(100);
+        Enumeration<Permission> elenum = elements();
         String superStr = super.toString();
         int totalLength = superStr.length() + 5;
         if (elenum != null) {

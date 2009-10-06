@@ -18,7 +18,7 @@
 JPEG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\jpeg-$(HY_JPEG_VER)\# avoid continuation
 
 LIBBASE=jpegdecoder
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 

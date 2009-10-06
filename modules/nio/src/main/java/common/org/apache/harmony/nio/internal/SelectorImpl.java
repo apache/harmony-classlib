@@ -140,7 +140,7 @@ final class SelectorImpl extends AbstractSelector {
     protected void implCloseSelector() throws IOException {
         wakeup();
         synchronized (this) {
-            synchronized (keysSet) {
+            synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
                     doCancel();
                     for (SelectionKey sk : keys) {
@@ -369,7 +369,7 @@ final class SelectorImpl extends AbstractSelector {
     void modKey(SelectionKey sk) {
         // TODO: update indexes rather than recreate the key
         synchronized (this) {
-            synchronized (keysSet) {
+            synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
                     delKey(sk);
                     int newIndex = addKey(sk);
@@ -390,7 +390,7 @@ final class SelectorImpl extends AbstractSelector {
             throw new IllegalSelectorException();
         }
         synchronized (this) {
-            synchronized (keysSet) {
+            synchronized (unmodifiableKeys) {
 
                 // create the key
                 SelectionKey sk = new SelectionKeyImpl(channel, operations,
@@ -464,7 +464,7 @@ final class SelectorImpl extends AbstractSelector {
     private int selectInternal(long timeout) throws IOException {
         closeCheck();
         synchronized (this) {
-            synchronized (keysSet) {
+            synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
                     doCancel();
                     int[] readyChannels = null;

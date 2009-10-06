@@ -344,6 +344,7 @@ public abstract class Identity implements Principal, Serializable {
      * @return {@code true} if the specified object is equal to this {@code
      *         Identity}, otherwise {@code false}.
      */
+    @Override
     public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -383,6 +384,7 @@ public abstract class Identity implements Principal, Serializable {
      * @see Object#equals(Object)
      * @see Identity#equals(Object)
      */
+    @Override
     public int hashCode() {
         int hash = 0;
         if (name != null) {
@@ -410,14 +412,16 @@ public abstract class Identity implements Principal, Serializable {
      *             if a {@code SecurityManager} is installed and the caller does
      *             not have permission to invoke this method.
      */
+    @Override
+    @SuppressWarnings("nls")
     public String toString() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkSecurityAccess("printIdentity"); //$NON-NLS-1$
+            sm.checkSecurityAccess("printIdentity");
         }
-        String s = (this.name == null? "" : this.name);
+        String s = (this.name == null ? "" : this.name);
         if (scope != null) {
-            s += " [" + scope.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            s += " [" + scope.getName() + "]";
         }
         return s;
     }

@@ -62,6 +62,7 @@ final class BasicPermissionCollection extends PermissionCollection {
      * 
      * @see java.security.PermissionCollection#add(java.security.Permission)
      */
+    @Override
     public void add(Permission permission) {
         if (isReadOnly()) {
             throw new SecurityException(Messages.getString("security.15")); //$NON-NLS-1$
@@ -98,6 +99,7 @@ final class BasicPermissionCollection extends PermissionCollection {
     /**
      * Returns enumeration of contained elements.
      */
+    @Override
     public Enumeration<Permission> elements() {
         return Collections.enumeration(items.values());
     }
@@ -111,6 +113,7 @@ final class BasicPermissionCollection extends PermissionCollection {
      *            the permission to check.
      * @see Permission
      */
+    @Override
     public boolean implies(Permission permission) {
         if (permission == null || permission.getClass() != permClass) {
             return false;

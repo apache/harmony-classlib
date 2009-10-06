@@ -32,7 +32,7 @@ MDLLIBFILES += $(LIBPATH)libhypool.a \
 
 OSLIBS += $(STDCLIBS) $(XLIBS)
 
-DLLNAME=../libX11Wrapper$(HY_SHLIB_SUFFIX)
+DLLNAME=$(DLLPATH)libX11Wrapper$(HY_SHLIB_SUFFIX)
 EXPNAME=HYX11WRAPPER_0.1
 
 include $(HY_HDK)/build/make/rules.mk
