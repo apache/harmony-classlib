@@ -768,18 +768,17 @@ public abstract class GenericURLContext implements Context {
 
                 if (next > length) {
                     // jndi.2B=Invalid URL format: {0}
-                    new IllegalArgumentException(Messages.getString(
+                    throw new IllegalArgumentException(Messages.getString(
                             "jndi.2B", str)); //$NON-NLS-1$
-                }
+               }
 
                 try {
                     bytes[index++] = (byte) Integer.parseInt(str.substring(i,
                             next), 16);
                 } catch (NumberFormatException e) {
-                    throw (IllegalArgumentException)
                     // jndi.2B=Invalid URL format: {0}
-                    new IllegalArgumentException(Messages.getString(
-                            "jndi.2B", str)).initCause(e); //$NON-NLS-1$
+                    throw (IllegalArgumentException) new IllegalArgumentException(
+                            Messages.getString("jndi.2B", str)).initCause(e); //$NON-NLS-1$
                 }
 
                 i = next;
