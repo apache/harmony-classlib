@@ -557,6 +557,14 @@ public class CipherSuite {
         }
         return false;
     }
+    
+    /**
+     * Returns the hash for this instance.
+     */
+    @Override
+    public int hashCode() {
+        return cipherSuiteCode[0] + cipherSuiteCode[1];
+    }
 
     /**
      * Returns cipher algorithm name
