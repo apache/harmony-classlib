@@ -31,4 +31,14 @@
 		<Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
 	</Match>
 
+	<!-- These are trace methods that are unused here. -->
+	<Match>
+		<Class name="org.apache.harmony.beans.Command" />
+		<Or>
+			<Method name="pr" />
+			<Method name="prn" />
+		</Or>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+	</Match>
+
 </FindBugsFilter>
