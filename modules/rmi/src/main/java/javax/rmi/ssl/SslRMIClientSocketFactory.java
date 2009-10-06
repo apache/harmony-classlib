@@ -72,7 +72,11 @@ public class SslRMIClientSocketFactory implements RMIClientSocketFactory,
         return soc;
     }
 
+    @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         return this.getClass().equals(obj.getClass());
     }
 
