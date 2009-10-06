@@ -721,7 +721,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 
   jobject buffer;
   jobject* toBeReleasedBuffers;
-  jint *cts;
   jint *noffset;
   jboolean isDirectBuffer = JNI_FALSE;
   jint result;
@@ -751,9 +750,8 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
   byteBufferClass = HARMONY_CACHE_GET (env, CLS_java_nio_DirectByteBuffer);
   noffset = (*env)->GetIntArrayElements(env, offset, NULL);
 
-  cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
-
   for (i = 0; i < length; ++i) {
+    jint *cts;
     buffer = (*env)->GetObjectArrayElement(env, buffers, i);
     isDirectBuffer = (*env)->IsInstanceOf(env, buffer, byteBufferClass);
     if (isDirectBuffer) {
@@ -763,10 +761,11 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
       vect[i].iov_base = (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL) + noffset[i];
       toBeReleasedBuffers[i] = buffer;
     }
+    cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
     vect[i].iov_len = cts[i];
+    (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
   }
 
-  (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
 
   result = writev(SOCKET_CAST (socketP), vect, length);
 
