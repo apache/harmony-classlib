@@ -94,10 +94,10 @@ public abstract class SSLInputStream extends InputStream {
      * Reads and returns uint64 value.
      */
     public long readUint64() throws IOException {
-        return (read() << 56) | (read() << 48)
-              | (read() << 40) | (read() << 32)
-              | (read() << 24) | (read() << 16)
-              | (read() << 8) | (read() & 0x00FF);
+        return ((long) read() << 56) | ((long) read() << 48)
+                | ((long) read() << 40) | ((long) read() << 32)
+                | (read() << 24) | (read() << 16) | (read() << 8)
+                | (read() & 0x00FF);
     }
 
     /**
