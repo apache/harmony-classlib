@@ -309,5 +309,12 @@
 		<Bug code="IA" />
 	</Match>
 
+	<!-- JarURLConnectionImpl needs to handle URLs -->
+	<Match>
+		<Class
+			name="org.apache.harmony.luni.internal.net.www.protocol.jar.JarURLConnectionImpl" />
+		<Bug pattern="DMI_COLLECTION_OF_URLS" />
+	</Match>
+
 </FindBugsFilter>
 
