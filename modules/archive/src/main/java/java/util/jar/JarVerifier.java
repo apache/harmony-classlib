@@ -117,7 +117,6 @@ class JarVerifier {
          *             if the digest value stored in the manifest does <i>not</i>
          *             agree with the decrypted digest as recovered from the
          *             <code>.SF</code> file.
-         * @see #initEntry(String)
          */
         void verify() {
             byte[] d = digest.digest();
@@ -375,7 +374,7 @@ class JarVerifier {
      * Associate this verifier with the specified {@link Manifest} object.
      * 
      * @param mf
-     *            a <code>java.util.jar.Manifest</code> object.
+     *            a {@code java.util.jar.Manifest} object.
      */
     void setManifest(Manifest mf) {
         man = mf;
@@ -385,7 +384,7 @@ class JarVerifier {
      * Returns a <code>boolean</code> indication of whether or not the
      * associated jar file is signed.
      * 
-     * @return <code>true</code> if the jar is signed, <code>false</code>
+     * @return {@code true} if the JAR is signed, {@code false}
      *         otherwise.
      */
     boolean isSignedJar() {

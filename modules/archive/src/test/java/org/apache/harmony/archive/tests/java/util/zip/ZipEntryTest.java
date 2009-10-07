@@ -18,10 +18,26 @@ package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import tests.support.resource.Support_Resources;
 
 public class ZipEntryTest extends junit.framework.TestCase {
+
+    public byte[] getAllBytesFromStream(InputStream is) throws IOException {
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        byte[] buf = new byte[512];
+        int iRead;
+        int off;
+        while (is.available() > 0) {
+            iRead = is.read(buf, 0, buf.length);
+            if (iRead > 0) bs.write(buf, 0, iRead);
+        }
+        return bs.toByteArray();
+    }
+
 	// zip file hyts_ZipFile.zip must be included as a resource
 	java.util.zip.ZipEntry zentry;
 
@@ -435,7 +451,6 @@ public class ZipEntryTest extends junit.framework.TestCase {
     protected void setUp() {
 		java.io.File f = null;
 		try {
-			byte[] rbuf = new byte[2000];
 			// Create a local copy of the file since some tests want to alter
 			// information.
 			f = new java.io.File(tempFileName);
@@ -446,8 +461,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
 			java.io.InputStream is = Support_Resources
 					.getStream("hyts_ZipFile.zip");
 			java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
-			rbuf = new byte[is.available()];
-			is.read(rbuf, 0, rbuf.length);
+            byte[] rbuf = getAllBytesFromStream(is);
 			fos.write(rbuf, 0, rbuf.length);
 			is.close();
 			fos.close();

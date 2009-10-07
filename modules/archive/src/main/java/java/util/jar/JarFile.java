@@ -17,6 +17,9 @@
 
 package java.util.jar;
 
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -49,12 +52,16 @@ public class JarFile extends ZipFile {
 
     JarVerifier verifier;
 
+    private boolean closed = false;
+
     static final class JarFileInputStream extends FilterInputStream {
         private long count;
 
         private ZipEntry zipEntry;
 
         private JarVerifier.VerifierEntry entry;
+
+        private boolean done = false;
 
         JarFileInputStream(InputStream is, ZipEntry ze,
                 JarVerifier.VerifierEntry e) {
@@ -66,6 +73,9 @@ public class JarFile extends ZipFile {
 
         @Override
         public int read() throws IOException {
+            if (done) {
+                return -1;
+            }
             if (count > 0) {
                 int r = super.read();
                 if (r != -1) {
@@ -75,16 +85,22 @@ public class JarFile extends ZipFile {
                     count = 0;
                 }
                 if (count == 0) {
+                    done = true;
                     entry.verify();
                 }
                 return r;
             } else {
+                done = true;
+                entry.verify();
                 return -1;
             }
         }
 
         @Override
         public int read(byte[] buf, int off, int nbytes) throws IOException {
+            if (done) {
+                return -1;
+            }
             if (count > 0) {
                 int r = super.read(buf, off, nbytes);
                 if (r != -1) {
@@ -98,12 +114,23 @@ public class JarFile extends ZipFile {
                     count = 0;
                 }
                 if (count == 0) {
+                    done = true;
                     entry.verify();
                 }
                 return r;
             } else {
+                done = true;
+                entry.verify();
                 return -1;
             }
+        }
+
+        @Override
+        public int available() throws IOException {
+            if (done) {
+                return 0;
+            }
+            return super.available();
         }
 
         @Override
@@ -252,6 +279,21 @@ public class JarFile extends ZipFile {
         return (JarEntry) getEntry(name);
     }
 
+    private byte[] getAllBytesFromStreamAndClose(InputStream is) throws IOException {
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        try {
+            byte[] buf = new byte[1024];
+            while (is.available() > 0) {
+                int iRead = is.read(buf, 0, buf.length);
+                if (iRead > 0)
+                    bs.write(buf, 0, iRead);
+            }
+        } finally {
+            is.close();
+        }
+        return bs.toByteArray();
+    }
+
     /**
      * Returns the {@code Manifest} object associated with this {@code JarFile}
      * or {@code null} if no MANIFEST entry exists.
@@ -264,17 +306,17 @@ public class JarFile extends ZipFile {
      * @see Manifest
      */
     public Manifest getManifest() throws IOException {
+        if (closed) {
+            throw new IllegalStateException("JarFile has been closed.");
+        }
         if (manifest != null) {
             return manifest;
         }
         try {
             InputStream is = super.getInputStream(manifestEntry);
             if (verifier != null) {
-                byte[] buf = new byte[is.available()];
-                is.mark(buf.length);
-                is.read(buf, 0, buf.length);
-                is.reset();
-                verifier.addMetaEntry(manifestEntry.getName(), buf);
+                verifier.addMetaEntry(manifestEntry.getName(), getAllBytesFromStreamAndClose(is));
+                is = super.getInputStream(manifestEntry);
             }
             try {
                 manifest = new Manifest(is, verifier != null);
@@ -289,7 +331,7 @@ public class JarFile extends ZipFile {
     }
 
     private void readMetaEntries() throws IOException {
-        ZipEntry[] metaEntries = getMetaEntriesImpl(null);
+        ZipEntry[] metaEntries = getMetaEntriesImpl();
         int dirLength = META_DIR.length();
 
         boolean signed = false;
@@ -316,12 +358,7 @@ public class JarFile extends ZipFile {
                                 entryName.length() - 4, ".RSA", 0, 4))) { //$NON-NLS-1$
                     signed = true;
                     InputStream is = super.getInputStream(entry);
-                    byte[] buf = new byte[is.available()];
-                    try {
-                        is.read(buf, 0, buf.length);
-                    } finally {
-                        is.close();
-                    }
+                    byte[] buf = getAllBytesFromStreamAndClose(is);
                     verifier.addMetaEntry(entryName, buf);
                 }
             }
@@ -394,6 +431,34 @@ public class JarFile extends ZipFile {
         return je;
     }
 
-    private native ZipEntry[] getMetaEntriesImpl(byte[] buf);
+    private ZipEntry[] getMetaEntriesImpl() {
+        List<ZipEntry> list = new ArrayList<ZipEntry>();
 
+        Enumeration<? extends ZipEntry> allEntries = entries();
+        while (allEntries.hasMoreElements()) {
+            ZipEntry ze = allEntries.nextElement();
+            if (ze.getName().startsWith("META-INF/") && ze.getName().length() > 9) {
+                list.add(ze);
+            }
+        }
+        if (list.size() != 0) {
+            ZipEntry[] result = new ZipEntry[list.size()];
+            list.toArray(result);
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Closes this {@code JarFile}.
+     *
+     * @throws IOException
+     *             if an error occurs.
+     */
+    @Override
+    public void close() throws IOException {
+        super.close();
+        closed = true;
+    }
 }

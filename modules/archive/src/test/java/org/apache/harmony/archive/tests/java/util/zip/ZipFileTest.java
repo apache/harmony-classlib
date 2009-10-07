@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -29,6 +30,18 @@ import tests.support.Support_PlatformFile;
 import tests.support.resource.Support_Resources;
 
 public class ZipFileTest extends junit.framework.TestCase {
+
+    public byte[] getAllBytesFromStream(InputStream is) throws IOException {
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        byte[] buf = new byte[512];
+        int iRead;
+        int off;
+        while (is.available() > 0) {
+            iRead = is.read(buf, 0, buf.length);
+            if (iRead > 0) bs.write(buf, 0, iRead);
+        }
+        return bs.toByteArray();
+    }
 
 	// the file hyts_zipFile.zip in setup must be included as a resource
 	private String tempFileName;
@@ -254,10 +267,12 @@ public class ZipFileTest extends junit.framework.TestCase {
         assertEquals(rbuf1.length, r1);
         r2 = is.read(rbuf2);
         assertEquals(rbuf2.length, r2);
-        
-        is.reset();
-        r2 = is.read(rbuf2);
-        assertEquals(rbuf2.length, r2);
+
+        try {
+            is.reset();
+            fail();
+        } catch (IOException expected) {
+        }
         is.close();
 
         // read a compressed entry
@@ -266,18 +281,21 @@ public class ZipFileTest extends junit.framework.TestCase {
         is = zfile.getInputStream(zentry2);
         r1 = is.read(rbuf3);
         assertEquals(4183, r1);
-        is.reset();
-        
-        r1 = is.read(rbuf3);
-        assertEquals(4183, r1);
+        try {
+            is.reset();
+            fail();
+        } catch (IOException expected) {
+        }
         is.close();
 
         is = zfile.getInputStream(zentry2);
         r1 = is.read(rbuf3, 0, 3000);
         assertEquals(3000, r1);
-        is.reset();
-        r1 = is.read(rbuf3, 0, 3000);
-        assertEquals(3000, r1);
+        try {
+            is.reset();
+            fail();
+        } catch (IOException expected) {
+        }
         is.close();
     }
     
@@ -296,11 +314,13 @@ public class ZipFileTest extends junit.framework.TestCase {
         r = is.read(rbuf1);
         assertEquals(8, r);
         assertEquals(-1, is.read());
-        
-        is.reset();
-        r = is.read(rbuf2);
-        assertEquals(8, r);
-        assertEquals(-1, is.read());
+
+        try {
+            is.reset();
+            fail();
+        } catch (IOException expected) {
+        }
+
         is.close();
 
         // read a compressed entry
@@ -313,11 +333,13 @@ public class ZipFileTest extends junit.framework.TestCase {
         r = is.read(rbuf3);
         assertEquals(1183, r);
         assertEquals(-1, is.read());
-        
-        is.reset();
-        r = is.read(rbuf3);
-        assertEquals(1183, r);
-        assertEquals(-1, is.read());
+
+        try {
+            is.reset();
+            fail();
+        } catch (IOException expected) {
+        }
+
         is.close();
     }
 
@@ -328,7 +350,6 @@ public class ZipFileTest extends junit.framework.TestCase {
 	@Override
     protected void setUp() {
 		try {
-			byte[] rbuf = new byte[2000];
 			// Create a local copy of the file since some tests want to alter
 			// information.
 			tempFileName = System.getProperty("user.dir");
@@ -346,8 +367,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 			f.delete();
 			InputStream is = Support_Resources.getStream("hyts_ZipFile.zip");
 			FileOutputStream fos = new FileOutputStream(f);
-			rbuf = new byte[is.available()];
-			is.read(rbuf, 0, rbuf.length);
+            byte[] rbuf = getAllBytesFromStream(is);
 			fos.write(rbuf, 0, rbuf.length);
 			is.close();
 			fos.close();

@@ -92,10 +92,11 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 
     private long writeLong(long i) throws IOException {
         // Write out the long value as an unsigned int
-        out.write((int) (i & 0xFF));
-        out.write((int) (i >> 8) & 0xFF);
-        out.write((int) (i >> 16) & 0xFF);
-        out.write((int) (i >> 24) & 0xFF);
+        int unsigned = (int) i;
+        out.write(unsigned & 0xFF);
+        out.write((unsigned >> 8) & 0xFF);
+        out.write((unsigned >> 16) & 0xFF);
+        out.write((unsigned >> 24) & 0xFF);
         return i;
     }
 

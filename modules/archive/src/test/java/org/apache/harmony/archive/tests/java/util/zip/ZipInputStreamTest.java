@@ -207,4 +207,39 @@ public class ZipInputStreamTest extends TestCase {
             // Expected
         }
     }
+
+    public void test_available() throws Exception {
+
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "hyts_ZipFile.zip");
+        File fl = new File(resources, "hyts_ZipFile.zip");
+        FileInputStream fis = new FileInputStream(fl);
+
+        ZipInputStream zis1 = new ZipInputStream(fis);
+        ZipEntry entry = zis1.getNextEntry();
+        assertNotNull("No entry in the archive.", entry);
+        long entrySize = entry.getSize();
+        assertTrue("Entry size was < 1", entrySize > 0);
+        int i = 0;
+        while (zis1.available() > 0) {
+            zis1.skip(1);
+            i++;
+        }
+        if (i != entrySize) {
+            fail("ZipInputStream.available or ZipInputStream.skip does not " +
+                    "working properly. Only skipped " + i +
+                    " bytes instead of " + entrySize);
+        }
+        assertEquals(0, zis1.skip(1));
+        assertEquals(0, zis1.available());
+        zis1.closeEntry();
+        assertEquals(1, zis.available());
+        zis1.close();
+        try {
+            zis1.available();
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
 }

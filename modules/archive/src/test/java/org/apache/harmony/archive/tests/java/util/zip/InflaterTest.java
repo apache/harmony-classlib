@@ -19,6 +19,7 @@ package org.apache.harmony.archive.tests.java.util.zip;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.zip.Adler32;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.DataFormatException;
@@ -314,6 +315,41 @@ public class InflaterTest extends junit.framework.TestCase {
 				0, outPutInf[emptyArray.length]);
 	}
 
+    public void test_inflate$B1() {
+        byte codedData[] = {
+                120, -38, 75, -54, 73, -52, 80, 40, 46, 41, -54, -52, 75, 87,
+                72, -50, -49, 43, 73, -52, -52, 43, 86, 72, 2, 10, 34, 99,
+                -123, -60, -68, 20, -80, 32, 0, -101, -69, 17, 84};
+        String codedString = "blah string contains blahblahblahblah and blah";
+
+        Inflater infl1 = new Inflater();
+        Inflater infl2 = new Inflater();
+
+        byte[] result = new byte[100];
+        int decLen = 0;
+
+        infl1.setInput(codedData, 0, codedData.length);
+        try {
+            decLen = infl1.inflate(result);
+        } catch (DataFormatException e) {
+            fail("Unexpected DataFormatException");
+        }
+
+        infl1.end();
+        assertEquals(codedString, new String(result, 0, decLen));
+        codedData[5] = 0;
+
+        infl2.setInput(codedData, 0, codedData.length);
+        try {
+            decLen = infl2.inflate(result);
+            fail("Expected DataFormatException");
+        } catch (DataFormatException e) {
+            // expected
+        }
+
+        infl2.end();
+    }
+
 	/**
 	 * @tests java.util.zip.Inflater#inflate(byte[], int, int)
 	 */
@@ -360,6 +396,41 @@ public class InflaterTest extends junit.framework.TestCase {
 		}
 		assertEquals("out of bounds error did not get caught", 1, r);
 	}
+
+    public void test_inflate$BII1() {
+        byte codedData[] = {
+                120, -38, 75, -54, 73, -52, 80, 40, 46, 41, -54, -52, 75, 87,
+                72, -50, -49, 43, 73, -52, -52, 43, 86, 72, 2, 10, 34, 99,
+                -123, -60, -68, 20, -80, 32, 0, -101, -69, 17, 84};
+        String codedString = "blah string";
+
+        Inflater infl1 = new Inflater();
+        Inflater infl2 = new Inflater();
+
+        byte[] result = new byte[100];
+        int decLen = 0;
+
+        infl1.setInput(codedData, 0, codedData.length);
+        try {
+            decLen = infl1.inflate(result, 10, 11);
+        } catch (DataFormatException e) {
+            fail("Unexpected DataFormatException");
+        }
+
+        infl1.end();
+        assertEquals(codedString, new String(result, 10, decLen));
+        codedData[5] = 0;
+
+        infl2.setInput(codedData, 0, codedData.length);
+        try {
+            decLen = infl2.inflate(result, 10, 11);
+            fail("Expected DataFormatException");
+        } catch (DataFormatException e) {
+            // expected
+        }
+
+        infl2.end();
+    }
 
 	/**
 	 * @tests java.util.zip.Inflater#Inflater()
@@ -712,17 +783,249 @@ public class InflaterTest extends junit.framework.TestCase {
         byte[] b = new byte[1024];
         assertEquals(0, inflater.inflate(b));
         inflater.end();
-        
+
         // Regression for HARMONY-2510
         inflater = new Inflater();
-        byte[] input = new byte[] { -1 };
-        inflater.setInput(input);
+        inflater.setInput(new byte[] { -1 });
         try {
             inflater.inflate(b);
-            fail("should throw DataFormateException");
+
+            // The RI detects malformed data on the malformed input { -1 }. Both
+            // this implementation and the native zlib API return "need input"
+            // on that data. This is an error if the stream is exhausted, but
+            // not one that results in an exception in the Inflater API.
+            assertTrue(inflater.needsInput());
         } catch (DataFormatException e) {
             // expected
-        }       
-    }   
-    
+        }
+
+        inflater = new Inflater();
+        inflater.setInput(new byte[] { -1, -1, -1 });
+        try {
+            inflater.inflate(b);
+        } catch (DataFormatException e) {
+            // expected
+        }
+    }
+
+    public void testSetDictionary$B() throws Exception {
+        int i = 0;
+        String inputString = "blah string contains blahblahblahblah and blah";
+        String dictionary1 = "blah";
+        String dictionary2 = "1234";
+
+        byte[] outputNo = new byte[100];
+        byte[] output1 = new byte[100];
+        byte[] output2 = new byte[100];
+        Deflater defDictNo = new Deflater(9);
+        Deflater defDict1 = new Deflater(9);
+        Deflater defDict2 = new Deflater(9);
+
+        defDict1.setDictionary(dictionary1.getBytes());
+        defDict2.setDictionary(dictionary2.getBytes());
+
+        defDictNo.setInput(inputString.getBytes());
+        defDict1.setInput(inputString.getBytes());
+        defDict2.setInput(inputString.getBytes());
+
+        defDictNo.finish();
+        defDict1.finish();
+        defDict2.finish();
+
+        int dataLenNo = defDictNo.deflate(outputNo);
+        int dataLen1 = defDict1.deflate(output1);
+        int dataLen2 = defDict2.deflate(output2);
+
+        boolean passNo1 = false;
+        boolean passNo2 = false;
+        boolean pass12 = false;
+
+        for (i = 0; i < (dataLenNo < dataLen1 ? dataLenNo : dataLen1); i++) {
+            if (outputNo[i] != output1[i]) {
+                passNo1 = true;
+                break;
+            }
+        }
+        for (i = 0; i < (dataLenNo < dataLen1 ? dataLenNo : dataLen2); i++) {
+            if (outputNo[i] != output2[i]) {
+                passNo2 = true;
+                break;
+            }
+        }
+        for (i = 0; i < (dataLen1 < dataLen2 ? dataLen1 : dataLen2); i++) {
+            if (output1[i] != output2[i]) {
+                pass12 = true;
+                break;
+            }
+        }
+
+        assertTrue(
+                "Compressed data the same for stream with dictionary and without it.",
+                passNo1);
+        assertTrue(
+                "Compressed data the same for stream with dictionary and without it.",
+                passNo2);
+        assertTrue(
+                "Compressed data the same for stream with different dictionaries.",
+                pass12);
+
+        Inflater inflNo = new Inflater();
+        Inflater infl1 = new Inflater();
+        Inflater infl2 = new Inflater();
+
+        byte[] result = new byte[100];
+        int decLen;
+
+        inflNo.setInput(outputNo, 0, dataLenNo);
+        decLen = inflNo.inflate(result);
+
+        assertFalse(inflNo.needsDictionary());
+        inflNo.end();
+        assertEquals(inputString, new String(result, 0, decLen));
+
+        infl1.setInput(output1, 0, dataLen1);
+        decLen = infl1.inflate(result);
+
+        assertTrue(infl1.needsDictionary());
+        infl1.setDictionary(dictionary1.getBytes());
+        decLen = infl1.inflate(result);
+        infl1.end();
+        assertEquals(inputString, new String(result, 0, decLen));
+
+        infl2.setInput(output2, 0, dataLen2);
+        decLen = infl2.inflate(result);
+
+        assertTrue(infl2.needsDictionary());
+        infl2.setDictionary(dictionary2.getBytes());
+        decLen = infl2.inflate(result);
+        infl2.end();
+        assertEquals(inputString, new String(result, 0, decLen));
+
+
+        inflNo = new Inflater();
+        infl1 = new Inflater();
+        inflNo.setInput(outputNo, 0, dataLenNo);
+        try {
+            infl1.setDictionary(dictionary1.getBytes());
+            fail("IllegalArgumentException expected.");
+        } catch (IllegalArgumentException ee) {
+            // expected.
+        }
+        inflNo.end();
+
+        infl1.setInput(output1, 0, dataLen1);
+        decLen = infl1.inflate(result);
+
+        assertTrue(infl1.needsDictionary());
+        try {
+            infl1.setDictionary(dictionary2.getBytes());
+            fail("IllegalArgumentException expected.");
+        } catch (IllegalArgumentException ee) {
+            // expected.
+        }
+        infl1.end();
+    }
+
+    public void testSetDictionary$BII() throws Exception {
+        int i = 0;
+        String inputString = "blah string contains blahblahblahblah and blah";
+        String dictionary1 = "blah";
+        String dictionary2 = "blahblahblah";
+
+        byte[] output1 = new byte[100];
+        byte[] output2 = new byte[100];
+        byte[] output3 = new byte[100];
+
+        Deflater defDict1 = new Deflater(9);
+        Deflater defDict2 = new Deflater(9);
+        Deflater defDict3 = new Deflater(9);
+
+        defDict1.setDictionary(dictionary1.getBytes());
+        defDict2.setDictionary(dictionary2.getBytes());
+        defDict3.setDictionary(dictionary2.getBytes(), 4, 4);
+
+        defDict1.setInput(inputString.getBytes());
+        defDict2.setInput(inputString.getBytes());
+        defDict3.setInput(inputString.getBytes());
+
+        defDict1.finish();
+        defDict2.finish();
+        defDict3.finish();
+
+        int dataLen1 = defDict1.deflate(output1);
+        int dataLen2 = defDict2.deflate(output2);
+        int dataLen3 = defDict3.deflate(output3);
+
+        boolean pass12 = false;
+        boolean pass23 = false;
+        boolean pass13 = true;
+
+        for (i = 0; i < (dataLen1 < dataLen2 ? dataLen1 : dataLen2); i++) {
+            if (output1[i] != output2[i]) {
+                pass12 = true;
+                break;
+            }
+        }
+        for (i = 0; i < (dataLen2 < dataLen3 ? dataLen2 : dataLen3); i++) {
+            if (output2[i] != output3[i]) {
+                pass23 = true;
+                break;
+            }
+        }
+        for (i = 0; i < (dataLen1 < dataLen3 ? dataLen1 : dataLen3); i++) {
+            if (output1[i] != output3[i]) {
+                pass13 = false;
+                break;
+            }
+        }
+
+        assertTrue(
+                "Compressed data the same for stream with different dictionaries.",
+                pass12);
+        assertTrue(
+                "Compressed data the same for stream with different dictionaries.",
+                pass23);
+        assertTrue(
+                "Compressed data the differs for stream with the same dictionaries.",
+                pass13);
+
+        Inflater infl1 = new Inflater();
+        Inflater infl2 = new Inflater();
+        Inflater infl3 = new Inflater();
+
+        byte[] result = new byte[100];
+        int decLen;
+
+        infl1.setInput(output1, 0, dataLen1);
+        decLen = infl1.inflate(result);
+
+        assertTrue(infl1.needsDictionary());
+        infl1.setDictionary(dictionary2.getBytes(), 4, 4);
+        decLen = infl1.inflate(result);
+        infl1.end();
+        assertEquals(inputString, new String(result, 0, decLen));
+
+        infl2.setInput(output2, 0, dataLen2);
+        decLen = infl2.inflate(result);
+
+        assertTrue(infl2.needsDictionary());
+        try {
+            infl2.setDictionary(dictionary1.getBytes());
+            fail("IllegalArgumentException expected.");
+        } catch (IllegalArgumentException ee) {
+            // expected
+        }
+        infl2.end();
+
+        infl3.setInput(output3, 0, dataLen3);
+        decLen = infl3.inflate(result);
+
+        assertTrue(infl3.needsDictionary());
+        infl3.setDictionary(dictionary1.getBytes());
+        decLen = infl3.inflate(result);
+        infl3.end();
+        assertEquals(inputString, new String(result, 0, decLen));
+
+    }
+
 }

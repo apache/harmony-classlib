@@ -47,15 +47,11 @@ public class Inflater {
 
     private boolean finished; // Set by the inflateImpl native
 
-    private boolean gotFirstHeaderByte;
-
     int inLength;
 
     int inRead;
 
     private boolean needsDictionary; // Set by the inflateImpl native
-
-    private boolean pass_magic_number_check = true;
 
     private long streamHandle = -1;
 
@@ -78,13 +74,12 @@ public class Inflater {
      */
     public Inflater(boolean noHeader) {
         streamHandle = createStream(noHeader);
-        gotFirstHeaderByte = noHeader;
     }
 
     private native long createStream(boolean noHeader1);
 
     /**
-     * Release any resources associated with this Inflater. Any unused
+     * Release any resources associated with this {@code Inflater}. Any unused
      * input/output is discarded. This is also called by the finalize method.
      */
     public synchronized void end() {
@@ -164,9 +159,9 @@ public class Inflater {
 
     /**
      * Returns the number of bytes of current input remaining to be read by the
-     * inflater
+     * inflater.
      * 
-     * @return Number of bytes of unread input.
+     * @return the number of bytes of unread input.
      */
     public synchronized int getRemaining() {
         return inLength - inRead;
@@ -238,32 +233,32 @@ public class Inflater {
     public synchronized int inflate(byte[] buf, int off, int nbytes)
             throws DataFormatException {
         // avoid int overflow, check null buf
-        if (off <= buf.length && nbytes >= 0 && off >= 0
-                && buf.length - off >= nbytes) {
-            if (nbytes == 0)
-                return 0;
-
-            if (streamHandle == -1) {
-                throw new IllegalStateException();
-            }
-
-            if (!pass_magic_number_check) {
-                throw new DataFormatException();
-            }
-
-            if (needsInput()) {
-                return 0;
-            }
-
-            boolean neededDict = needsDictionary;
-            needsDictionary = false;
-            int result = inflateImpl(buf, off, nbytes, streamHandle);
-            if (needsDictionary && neededDict) {
-                throw new DataFormatException(Messages.getString("archive.27")); //$NON-NLS-1$
-            }
-            return result;
+        if (off > buf.length || nbytes < 0 || off < 0
+                || buf.length - off < nbytes) {
+            throw new ArrayIndexOutOfBoundsException();
         }
-        throw new ArrayIndexOutOfBoundsException();
+
+        if (nbytes == 0) {
+            return 0;
+        }
+
+        if (streamHandle == -1) {
+            throw new IllegalStateException();
+        }
+
+        if (needsInput()) {
+            return 0;
+        }
+
+        boolean neededDict = needsDictionary;
+        needsDictionary = false;
+        int result = inflateImpl(buf, off, nbytes, streamHandle);
+        if (needsDictionary && neededDict) {
+            throw new DataFormatException(
+                    Messages.getString("archive.27")); //$NON-NLS-1$
+        }
+
+        return result;
     }
 
     private native synchronized int inflateImpl(byte[] buf, int off,
@@ -394,11 +389,6 @@ public class Inflater {
             setInputImpl(buf, off, nbytes, streamHandle);
         } else {
             throw new ArrayIndexOutOfBoundsException();
-        }
-
-        if (!gotFirstHeaderByte && nbytes > 0) {
-            pass_magic_number_check = (buf[off] == MAGIC_NUMBER);
-            gotFirstHeaderByte = true;
         }
     }
 

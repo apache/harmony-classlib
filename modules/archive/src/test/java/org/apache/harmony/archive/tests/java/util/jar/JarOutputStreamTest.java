@@ -19,11 +19,13 @@ package org.apache.harmony.archive.tests.java.util.jar;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import tests.support.Support_Exec;
 import tests.support.resource.Support_Resources;
@@ -97,6 +99,53 @@ public class JarOutputStreamTest extends junit.framework.TestCase {
 			outputJar.delete();
 		}
 	}
+
+    public void test_JarOutputStreamLjava_io_OutputStreamLjava_util_jar_Manifest()
+            throws IOException {
+        File fooJar = File.createTempFile("hyts_", ".jar");
+        File barZip = File.createTempFile("hyts_", ".zip");
+
+        FileOutputStream fos = new FileOutputStream(fooJar);
+
+        Manifest man = new Manifest();
+        Attributes att = man.getMainAttributes();
+        att.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+        att.put(Attributes.Name.MAIN_CLASS, "foo.bar.execjartest.Foo");
+        att.put(Attributes.Name.CLASS_PATH, barZip.getName());
+
+        fos.close();
+        try {
+            new JarOutputStream(fos, man);
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
+
+    public void test_JarOutputStreamLjava_io_OutputStream() throws IOException {
+        File fooJar = File.createTempFile("hyts_", ".jar");
+
+        FileOutputStream fos = new FileOutputStream(fooJar);
+        ZipEntry ze = new ZipEntry("Test");
+
+        try {
+            JarOutputStream joutFoo = new JarOutputStream(fos);
+            joutFoo.putNextEntry(ze);
+            joutFoo.write(33);
+        } catch (IOException ee) {
+            fail("IOException is not expected");
+        }
+
+        fos.close();
+        fooJar.delete();
+        try {
+            JarOutputStream joutFoo = new JarOutputStream(fos);
+            joutFoo.putNextEntry(ze);
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
 
 	@Override
     protected void setUp() {

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 
@@ -103,6 +104,41 @@ public class CheckedInputStreamTest extends TestCase {
         // System.out.print(checkIn.getChecksum().getValue());
         assertEquals("checkSum value is not correct", 2235765342L, checkIn.getChecksum()
                 .getValue());
+        checkInput.close();
+    }
+
+    public void test_read() throws Exception {
+        // testing that the return by skip is valid
+        InputStream checkInput = Support_Resources
+                .getStream("hyts_checkInput.txt");
+        CheckedInputStream checkIn = new CheckedInputStream(checkInput,
+                new CRC32());
+        checkIn.read();
+        checkIn.close();
+        try {
+            checkIn.read();
+            fail("IOException expected.");
+        } catch (IOException ee) {
+            // expected
+        }
+        checkInput.close();
+    }
+
+    public void test_read$byteII() throws Exception {
+        // testing that the return by skip is valid
+        InputStream checkInput = Support_Resources
+                .getStream("hyts_checkInput.txt");
+        CheckedInputStream checkIn = new CheckedInputStream(checkInput,
+                new CRC32());
+        byte buff[] = new byte[50];
+        checkIn.read(buff, 10, 5);
+        checkIn.close();
+        try {
+            checkIn.read(buff, 10, 5);
+            fail("IOException expected.");
+        } catch (IOException ee) {
+            // expected
+        }
         checkInput.close();
     }
 }
