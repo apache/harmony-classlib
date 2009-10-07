@@ -109,14 +109,24 @@ public class SecretKeySpecTest extends TestCase {
         try {
             new SecretKeySpec(key, offset, key.length, algorithm);
             fail("An IllegalArgumentException should be thrown "
-                    + "in the case of null key.");
+                    + "when offset and len specify an invalid chunk of key.");
         } catch (IllegalArgumentException e) {
         }
 
         try {
             new SecretKeySpec(key, -1, key.length, algorithm);
-            fail("An IllegalArgumentException should be thrown "
-                    + "in the case of null key.");
+            fail("An ArrayIndexOutOfBoundsxception should be thrown "
+                    + "in the case of negative offset.");
+        } catch (IllegalArgumentException e) {
+            fail("Not expected IllegalArgumentException was thrown.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+
+        // Regression test for HARMONY-6347
+        try {
+            new SecretKeySpec(key, -1, key.length+2, algorithm);
+            fail("An ArrayIndexOutOfBoundsxception should be thrown "
+                    + "in the case of negative offset.");
         } catch (IllegalArgumentException e) {
             fail("Not expected IllegalArgumentException was thrown.");
         } catch (ArrayIndexOutOfBoundsException e) {

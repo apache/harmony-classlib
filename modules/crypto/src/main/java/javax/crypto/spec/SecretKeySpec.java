@@ -103,6 +103,9 @@ public class SecretKeySpec implements SecretKey, KeySpec, Serializable {
         if (len < 0) {
             throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.36")); //$NON-NLS-1$
         }
+        if (offset < 0) {
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("crypto.33")); //$NON-NLS-1$
+        }
         if ((key.length - offset < len)) {
             throw new IllegalArgumentException(Messages.getString("crypto.37")); //$NON-NLS-1$
         }
