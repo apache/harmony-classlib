@@ -75,11 +75,16 @@ $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !endif
 
 clean:
-    -del $(BUILDFILES) *.res *.pdb \
-             $(LIBNAME) $(LIBNAME:.lib=.exp) \
-                        $(LIBNAME:.lib=.map) \
-			$(LIBNAME:.lib=.manifest) \
-             $(DLLNAME) $(DBGPATH)$(LIBBASE).pdb \
-             $(EXENAME) $(DBGPATH)$(EXEBASE).pdb \
-                        $(LIBPATH)$(EXEBASE).manifest \
-             $(CLEANFILES) >nul 2>&1
+    -del $(BUILDFILES) >nul 2>&1
+    -del *.res >nul 2>&1
+    -del *.pdb >nul 2>&1
+    -del $(LIBNAME) >nul 2>&1
+    -del $(LIBNAME:.lib=.exp) >nul 2>&1
+    -del $(LIBNAME:.lib=.map) >nul 2>&1
+    -del $(LIBNAME:.lib=.manifest) >nul 2>&1
+    -del $(DLLNAME) >nul 2>&1
+    -del $(DBGPATH)$(LIBBASE).pdb >nul 2>&1
+    -del $(EXENAME) >nul 2>&1
+    -del $(DBGPATH)$(EXEBASE).pdb >nul 2>&1
+    -del $(LIBPATH)$(EXEBASE).manifest >nul 2>&1
+    -del $(CLEANFILES) >nul 2>&1
