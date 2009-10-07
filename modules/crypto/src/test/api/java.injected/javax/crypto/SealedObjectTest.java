@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.Key;
+import java.security.InvalidKeyException;
 import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -219,6 +220,16 @@ public class SealedObjectTest extends TestCase {
         cipher.init(Cipher.DECRYPT_MODE, key);
         assertEquals("The returned object does not equals to the "
                 + "original object.", secret, so.getObject(key, provider));
+    }
+
+    // Regression test for HARMONY-6347
+    public void testGetObject4() throws Exception {
+        try {
+            new SealedObject("secret string",
+                             new NullCipher()).getObject((Key)null);
+            fail("NullPointerException should be thrown when key is null");
+        } catch (NullPointerException e) {
+        }
     }
 
 }
