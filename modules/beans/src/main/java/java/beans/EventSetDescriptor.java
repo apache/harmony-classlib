@@ -339,9 +339,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
     private Method findAddRemoveListnerMethodWithLessCheck(
             Class<?> sourceClass, String methodName)
             throws IntrospectionException {
-        String expectedListenerTypeName = listenerType.getName();
-        expectedListenerTypeName = expectedListenerTypeName
-                .substring(expectedListenerTypeName.lastIndexOf('.') + 1);
         Method method = null;
         Method[] methods = sourceClass.getMethods();
         for (Method m : methods) {
