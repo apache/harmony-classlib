@@ -393,7 +393,7 @@ public class ZipFile implements ZipConstants {
         public int read(byte[] b, int off, int len) throws IOException {
             synchronized (mSharedRaf) {
                 mSharedRaf.seek(mOffset);
-                if (mOffset + len > mLength) {
+                if (len > mLength - mOffset) {
                     len = (int) (mLength - mOffset);
                 }
                 int count = mSharedRaf.read(b, off, len);
