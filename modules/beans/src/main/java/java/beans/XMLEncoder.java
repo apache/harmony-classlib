@@ -48,8 +48,6 @@ public class XMLEncoder extends Encoder {
 	 * Every object written by the encoder has a record.
 	 */
 	private static class Record {
-		boolean born = false;
-
 		// The expression by which the object is created or obtained.
 		Expression exp = null;
 
