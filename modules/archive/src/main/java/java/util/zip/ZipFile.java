@@ -408,7 +408,7 @@ public class ZipFile implements ZipConstants {
 
         @Override
         public long skip(long n) throws IOException {
-            if (mOffset + n > mLength) {
+            if (n > mLength - mOffset) {
                 n = mLength - mOffset;
             }
             mOffset += n;
