@@ -137,7 +137,7 @@ public class JarFile extends ZipFile {
         @Override
         public long skip(long nbytes) throws IOException {
             long cnt = 0, rem = 0;
-            byte[] buf = new byte[4096];
+            byte[] buf = new byte[(int)Math.min(nbytes, 2048L)];
             while (cnt < nbytes) {
                 int x = read(buf, 0,
                         (rem = nbytes - cnt) > buf.length ? buf.length

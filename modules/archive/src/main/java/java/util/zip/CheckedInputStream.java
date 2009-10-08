@@ -114,7 +114,7 @@ public class CheckedInputStream extends java.io.FilterInputStream {
             return 0;
         }
         long skipped = 0;
-        byte[] b = new byte[2048];
+        byte[] b = new byte[(int)Math.min(nbytes, 2048L)];
         int x, v;
         while (skipped != nbytes) {
             x = in.read(b, 0,

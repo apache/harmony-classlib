@@ -229,7 +229,7 @@ public class InflaterInputStream extends FilterInputStream {
     public long skip(long nbytes) throws IOException {
         if (nbytes >= 0) {
             if (buf == null) {
-                buf = new byte[BUF_SIZE];
+                buf = new byte[(int)Math.min(nbytes, BUF_SIZE)];
             }
             long count = 0, rem = 0;
             while (count < nbytes) {

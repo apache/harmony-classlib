@@ -373,7 +373,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
         }
 
         long skipped = 0;
-        byte[] b = new byte[1024];
+        byte[] b = new byte[(int)Math.min(value, 2048L)];
         while (skipped != value) {
             long rem = value - skipped;
             int x = read(b, 0, (int) (b.length > rem ? rem : b.length));
