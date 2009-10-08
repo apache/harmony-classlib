@@ -283,7 +283,7 @@ public class SegmentHeader {
     private void parseArchiveFileCounts(InputStream in) throws IOException,
             Pack200Exception {
         if (options.hasArchiveFileCounts()) {
-            setArchiveSize(decodeScalar("archive_size_hi", in, Codec.UNSIGNED5) << 32
+            setArchiveSize((long)decodeScalar("archive_size_hi", in, Codec.UNSIGNED5) << 32
                     | decodeScalar("archive_size_lo", in, Codec.UNSIGNED5));
             archiveSizeOffset = in.available();
             setSegmentsRemaining(decodeScalar("archive_next_count", in,
