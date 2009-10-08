@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,7 +84,7 @@ public class Manifest implements Cloneable {
     /**
      * Creates a new {@code Manifest} instance using the attributes obtained
      * from the input stream.
-     * 
+     *
      * @param is
      *            {@code InputStream} to parse for attributes.
      * @throws IOException
@@ -98,7 +98,7 @@ public class Manifest implements Cloneable {
     /**
      * Creates a new {@code Manifest} instance. The new instance will have the
      * same attributes as those found in the parameter {@code Manifest}.
-     * 
+     *
      * @param man
      *            {@code Manifest} instance to obtain attributes from.
      */
@@ -129,7 +129,7 @@ public class Manifest implements Cloneable {
     /**
      * Returns the {@code Attributes} associated with the parameter entry
      * {@code name}.
-     * 
+     *
      * @param name
      *            the name of the entry to obtain {@code Attributes} from.
      * @return the Attributes for the entry or {@code null} if the entry does
@@ -142,7 +142,7 @@ public class Manifest implements Cloneable {
     /**
      * Returns a map containing the {@code Attributes} for each entry in the
      * {@code Manifest}.
-     * 
+     *
      * @return the map of entry attributes.
      */
     public Map<String, Attributes> getEntries() {
@@ -164,7 +164,7 @@ public class Manifest implements Cloneable {
 
     /**
      * Returns the main {@code Attributes} of the {@code JarFile}.
-     * 
+     *
      * @return main {@code Attributes} associated with the source {@code
      *         JarFile}.
      */
@@ -175,7 +175,7 @@ public class Manifest implements Cloneable {
     /**
      * Creates a copy of this {@code Manifest}. The returned {@code Manifest}
      * will equal the {@code Manifest} from which it was cloned.
-     * 
+     *
      * @return a copy of this instance.
      */
     @Override
@@ -186,7 +186,7 @@ public class Manifest implements Cloneable {
     /**
      * Writes out the attribute information of the receiver to the specified
      * {@code OutputStream}.
-     * 
+     *
      * @param os
      *            The {@code OutputStream} to write to.
      * @throws IOException
@@ -199,7 +199,7 @@ public class Manifest implements Cloneable {
     /**
      * Constructs a new {@code Manifest} instance obtaining attribute
      * information from the specified input stream.
-     * 
+     *
      * @param is
      *            The {@code InputStream} to read from.
      * @throws IOException
@@ -234,12 +234,12 @@ public class Manifest implements Cloneable {
         im.initEntries(entries, chunks);
         im = null;
     }
-    
+
     /*
      * Helper to read the entire contents of the manifest from the
      * given input stream.  Usually we can do this in a single read
      * but we need to account for 'infinite' streams, by ensuring we
-     * have a line feed within a reasonable number of characters. 
+     * have a line feed within a reasonable number of characters.
      */
     private byte[] readFully(InputStream is) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -272,10 +272,10 @@ public class Manifest implements Cloneable {
         }
         return false;
     }
-    
+
     /**
      * Returns the hash code for this instance.
-     * 
+     *
      * @return this {@code Manifest}'s hashCode.
      */
     @Override
@@ -287,7 +287,7 @@ public class Manifest implements Cloneable {
      * Determines if the receiver is equal to the parameter object. Two {@code
      * Manifest}s are equal if they have identical main attributes as well as
      * identical entry attributes.
-     * 
+     *
      * @param o
      *            the object to compare against.
      * @return {@code true} if the manifests are equal, {@code false} otherwise
@@ -321,7 +321,7 @@ public class Manifest implements Cloneable {
     /**
      * Writes out the attribute information of the specified manifest to the
      * specified {@code OutputStream}
-     * 
+     *
      * @param manifest
      *            the manifest to write out.
      * @param out

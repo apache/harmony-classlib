@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ import java.util.Iterator;
  * Use {@code ZipOutputStream} if you want to create an archive.
  * <p>
  * A temporary ZIP file can be marked for automatic deletion upon closing it.
- * 
+ *
  * @see ZipEntry
  * @see ZipOutputStream
  */
@@ -67,7 +67,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Constructs a new {@code ZipFile} with the specified file.
-     * 
+     *
      * @param file
      *            the file to read from.
      * @throws ZipException
@@ -83,7 +83,7 @@ public class ZipFile implements ZipConstants {
      * Opens a file as <i>ZIP-archive</i>. "mode" must be {@code OPEN_READ} or
      * {@code OPEN_DELETE} . The latter sets the "delete on exit" flag through a
      * file.
-     * 
+     *
      * @param file
      *            the ZIP file to read.
      * @param mode
@@ -117,7 +117,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Opens a ZIP archived file.
-     * 
+     *
      * @param name
      *            the name of the ZIP file.
      * @throws IOException
@@ -134,7 +134,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Closes this ZIP file. This method is idempotent.
-     * 
+     *
      * @throws IOException
      *             if an IOException occurs.
      */
@@ -168,7 +168,7 @@ public class ZipFile implements ZipConstants {
     /**
      * Returns an enumeration of the entries. The entries are listed in the
      * order in which they appear in the ZIP archive.
-     * 
+     *
      * @return the enumeration of the entries.
      * @throws IllegalStateException if this ZIP file has been closed.
      */
@@ -191,7 +191,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Gets the ZIP entry with the specified name from this {@code ZipFile}.
-     * 
+     *
      * @param entryName
      *            the name of the entry in the ZIP file.
      * @return a {@code ZipEntry} or {@code null} if the entry name does not
@@ -213,7 +213,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Returns an input stream on the data of the specified {@code ZipEntry}.
-     * 
+     *
      * @param entry
      *            the ZipEntry.
      * @return an input stream of the data contained in the {@code ZipEntry}.
@@ -256,7 +256,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Gets the file name of this {@code ZipFile}.
-     * 
+     *
      * @return the file name of this {@code ZipFile}.
      */
     public String getName() {
@@ -265,7 +265,7 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Returns the number of {@code ZipEntries} in this {@code ZipFile}.
-     * 
+     *
      * @return the number of entries in this file.
      * @throws IllegalStateException if this ZIP file has been closed.
      */
@@ -282,7 +282,7 @@ public class ZipFile implements ZipConstants {
      * most 64K, plus we have 18 bytes for the end-of-central-dir stuff
      * itself, plus apparently sometimes people throw random junk on the end
      * just for the fun of it.
-     *  
+     *
      * <p>This is all a little wobbly.  If the wrong value ends up in the EOCD
      * area, we're hosed. This appears to be the way that everybody handles
      * it though, so we're in good company if this fails.

@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.apache.harmony.archive.internal.nls.Messages;
  * The typical usage of a {@code Inflater} outside this package consists of a
  * specific call to one of its constructors before being passed to an instance
  * of {@code InflaterInputStream}.
- * 
+ *
  * @see InflaterInputStream
  * @see Deflater
  */
@@ -103,7 +103,7 @@ public class Inflater {
      * stream. If deflated bytes remain and {@code needsInput()} returns {@code
      * true} this method will return {@code false}. This method should be
      * called after all deflated input is supplied to the {@code Inflater}.
-     * 
+     *
      * @return {@code true} if all input has been inflated, {@code false}
      *         otherwise.
      */
@@ -114,7 +114,7 @@ public class Inflater {
     /**
      * Returns the <i>Adler32</i> checksum of either all bytes inflated, or the
      * checksum of the preset dictionary if one has been supplied.
-     * 
+     *
      * @return The <i>Adler32</i> checksum associated with this
      *         {@code Inflater}.
      */
@@ -160,7 +160,7 @@ public class Inflater {
     /**
      * Returns the number of bytes of current input remaining to be read by the
      * inflater.
-     * 
+     *
      * @return the number of bytes of unread input.
      */
     public synchronized int getRemaining() {
@@ -170,7 +170,7 @@ public class Inflater {
     /**
      * Returns total number of bytes of input read by the {@code Inflater}. The
      * result value is limited by {@code Integer.MAX_VALUE}.
-     * 
+     *
      * @return the total number of bytes read.
      */
     public synchronized int getTotalIn() {
@@ -187,7 +187,7 @@ public class Inflater {
     /**
      * Returns total number of bytes written to the output buffer by the {@code
      * Inflater}. The result value is limited by {@code Integer.MAX_VALUE}.
-     * 
+     *
      * @return the total bytes of output data written.
      */
     public synchronized int getTotalOut() {
@@ -203,7 +203,7 @@ public class Inflater {
 
     /**
      * Inflates bytes from current input and stores them in {@code buf}.
-     * 
+     *
      * @param buf
      *            the buffer where decompressed data bytes are written.
      * @return the number of bytes inflated.
@@ -218,7 +218,7 @@ public class Inflater {
     /**
      * Inflates up to n bytes from the current input and stores them in {@code
      * buf} starting at {@code off}.
-     * 
+     *
      * @param buf
      *            the buffer to write inflated bytes to.
      * @param off
@@ -270,7 +270,7 @@ public class Inflater {
      * determine whether a dictionary is required. If so {@code setDictionary()}
      * should be called with the appropriate dictionary prior to calling {@code
      * inflate()}.
-     * 
+     *
      * @return {@code true} if a preset dictionary is required for inflation.
      * @see #setDictionary(byte[])
      * @see #setDictionary(byte[], int, int)
@@ -281,7 +281,7 @@ public class Inflater {
 
     /**
      * Indicates that input has to be passed to the inflater.
-     * 
+     *
      * @return {@code true} if {@code setInput} has to be called before
      *         inflation can proceed.
      * @see #setInput(byte[])
@@ -310,7 +310,7 @@ public class Inflater {
      * Sets the preset dictionary to be used for inflation to {@code buf}.
      * {@code needsDictionary()} can be called to determine whether the current
      * input was deflated using a preset dictionary.
-     * 
+     *
      * @param buf
      *            The buffer containing the dictionary bytes.
      * @see #needsDictionary
@@ -326,7 +326,7 @@ public class Inflater {
      * The dictionary should be set if the {@link #inflate(byte[])} returned
      * zero bytes inflated and {@link #needsDictionary()} returns
      * <code>true</code>.
-     * 
+     *
      * @param buf
      *            the buffer containing the dictionary data bytes.
      * @param off
@@ -354,7 +354,7 @@ public class Inflater {
     /**
      * Sets the current input to to be decrompressed. This method should only be
      * called if {@code needsInput()} returns {@code true}.
-     * 
+     *
      * @param buf
      *            the input buffer.
      * @see #needsInput
@@ -368,7 +368,7 @@ public class Inflater {
      * {@code off} and ending at {@code nbytes - 1} where data is written after
      * decompression. This method should only be called if {@code needsInput()}
      * returns {@code true}.
-     * 
+     *
      * @param buf
      *            the input buffer.
      * @param off

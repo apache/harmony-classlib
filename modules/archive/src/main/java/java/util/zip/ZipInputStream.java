@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -195,7 +195,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     /**
      * Reads the next entry from this {@code ZipInputStream} or {@code null} if
      * no more entries are present.
-     * 
+     *
      * @return the next {@code ZipEntry} contained in the input stream.
      * @throws IOException
      *             if an {@code IOException} occurs.
@@ -292,7 +292,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     /**
      * Reads up to the specified number of uncompressed bytes into the buffer
      * starting at the offset.
-     * 
+     *
      * @param buffer
      *            a byte array
      * @param start
@@ -359,7 +359,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 
     /**
      * Skips up to the specified number of bytes in the current ZIP entry.
-     * 
+     *
      * @param value
      *            the number of bytes to skip.
      * @return the number of bytes skipped.
@@ -387,7 +387,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 
     /**
      * Returns 0 if the {@code EOF} has been reached, otherwise returns 1.
-     * 
+     *
      * @return 0 after {@code EOF} of current entry, 1 otherwise.
      * @throws IOException
      *             if an IOException occurs.

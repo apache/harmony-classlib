@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import org.apache.harmony.archive.util.Util;
 /**
  * {@code JarFile} is used to read jar entries and their associated data from
  * jar files.
- * 
+ *
  * @see JarInputStream
  * @see JarEntry
  */
@@ -152,7 +152,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of the specified file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @throws IOException
@@ -164,7 +164,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of the specified file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @param verify
@@ -182,7 +182,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @param verify
@@ -204,7 +204,7 @@ public class JarFile extends ZipFile {
     /**
      * Create a new {@code JarFile} from the contents of the file specified by
      * filename.
-     * 
+     *
      * @param filename
      *            the file name referring to the JAR file.
      * @throws IOException
@@ -218,7 +218,7 @@ public class JarFile extends ZipFile {
     /**
      * Create a new {@code JarFile} from the contents of the file specified by
      * {@code filename}.
-     * 
+     *
      * @param filename
      *            the file name referring to the JAR file.
      * @param verify
@@ -237,7 +237,7 @@ public class JarFile extends ZipFile {
     /**
      * Return an enumeration containing the {@code JarEntrys} contained in this
      * {@code JarFile}.
-     * 
+     *
      * @return the {@code Enumeration} containing the JAR entries.
      * @throws IllegalStateException
      *             if this {@code JarFile} is closed.
@@ -270,7 +270,7 @@ public class JarFile extends ZipFile {
     /**
      * Return the {@code JarEntry} specified by its name or {@code null} if no
      * such entry exists.
-     * 
+     *
      * @param name
      *            the name of the entry in the JAR file.
      * @return the JAR entry defined by the name.
@@ -298,7 +298,7 @@ public class JarFile extends ZipFile {
     /**
      * Returns the {@code Manifest} object associated with this {@code JarFile}
      * or {@code null} if no MANIFEST entry exists.
-     * 
+     *
      * @return the MANIFEST.
      * @throws IOException
      *             if an error occurs reading the MANIFEST file.
@@ -372,7 +372,7 @@ public class JarFile extends ZipFile {
     /**
      * Return an {@code InputStream} for reading the decompressed contents of
      * ZIP entry.
-     * 
+     *
      * @param ze
      *            the ZIP entry to be read.
      * @return the input stream to read from.
@@ -416,7 +416,7 @@ public class JarFile extends ZipFile {
     /**
      * Return the {@code JarEntry} specified by name or {@code null} if no such
      * entry exists.
-     * 
+     *
      * @param name
      *            the name of the entry in the JAR file.
      * @return the ZIP entry extracted.

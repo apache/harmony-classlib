@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.apache.harmony.archive.internal.nls.Messages;
  * (see <a href="http://www.gzip.org/algorithm.txt">specification</a>).
  * Basically it wraps the {@code Inflater} class and takes care of the
  * buffering.
- * 
+ *
  * @see Inflater
  * @see DeflaterOutputStream
  */
@@ -67,7 +67,7 @@ public class InflaterInputStream extends FilterInputStream {
      * InputStream} from which the compressed data is to be read from. Default
      * settings for the {@code Inflater} and internal buffer are be used. In
      * particular the Inflater expects a ZLIB header from the input stream.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      */
@@ -78,7 +78,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * This constructor lets you pass a specifically initialized Inflater,
      * for example one that expects no ZLIB header.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      * @param inf
@@ -91,7 +91,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * This constructor lets you specify both the {@code Inflater} as well as
      * the internal buffer size to be used.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      * @param inf
@@ -113,7 +113,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Reads a single byte of decompressed data.
-     * 
+     *
      * @return the byte read.
      * @throws IOException
      *             if an error occurs reading the byte.
@@ -130,7 +130,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Reads up to {@code nbytes} of decompressed data and stores it in
      * {@code buffer} starting at {@code off}.
-     * 
+     *
      * @param buffer
      *            the buffer to write data to.
      * @param off
@@ -218,7 +218,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Skips up to n bytes of uncompressed data.
-     * 
+     *
      * @param nbytes
      *            the number of bytes to skip.
      * @return the number of uncompressed bytes skipped.
@@ -276,7 +276,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Closes the input stream.
-     * 
+     *
      * @throws IOException
      *             If an error occurs closing the input stream.
      */
@@ -293,7 +293,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Marks the current position in the stream. This implementation overrides
      * the super type implementation to do nothing at all.
-     * 
+     *
      * @param readlimit
      *            of no use.
      */
@@ -318,7 +318,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Returns whether the receiver implements {@code mark} semantics. This type
      * does not support {@code mark()}, so always responds {@code false}.
-     * 
+     *
      * @return false, always
      */
     @Override

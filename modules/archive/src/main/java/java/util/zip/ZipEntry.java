@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -61,7 +61,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Constructs a new {@code ZipEntry} with the specified name.
-     * 
+     *
      * @param name
      *            the name of the ZIP entry.
      * @throws IllegalArgumentException
@@ -79,7 +79,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the comment for this {@code ZipEntry}.
-     * 
+     *
      * @return the comment for this {@code ZipEntry}, or {@code null} if there
      *         is no comment. If we're reading an archive with
      *         {@code ZipInputStream} the comment is not available.
@@ -90,7 +90,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the compressed size of this {@code ZipEntry}.
-     * 
+     *
      * @return the compressed size, or -1 if the compressed size has not been
      *         set.
      */
@@ -100,7 +100,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the checksum for this {@code ZipEntry}.
-     * 
+     *
      * @return the checksum, or -1 if the checksum has not been set.
      */
     public long getCrc() {
@@ -109,7 +109,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the extra information for this {@code ZipEntry}.
-     * 
+     *
      * @return a byte array containing the extra information, or {@code null} if
      *         there is none.
      */
@@ -119,7 +119,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the compression method for this {@code ZipEntry}.
-     * 
+     *
      * @return the compression method, either {@code DEFLATED}, {@code STORED}
      *         or -1 if the compression method has not been set.
      */
@@ -129,7 +129,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the name of this {@code ZipEntry}.
-     * 
+     *
      * @return the entry name.
      */
     public String getName() {
@@ -138,7 +138,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the uncompressed size of this {@code ZipEntry}.
-     * 
+     *
      * @return the uncompressed size, or {@code -1} if the size has not been
      *         set.
      */
@@ -148,7 +148,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the last modification time of this {@code ZipEntry}.
-     * 
+     *
      * @return the last modification time as the number of milliseconds since
      *         Jan. 1, 1970.
      */
@@ -166,7 +166,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Determine whether or not this {@code ZipEntry} is a directory.
-     * 
+     *
      * @return {@code true} when this {@code ZipEntry} is a directory, {@code
      *         false} otherwise.
      */
@@ -176,7 +176,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the comment for this {@code ZipEntry}.
-     * 
+     *
      * @param string
      *            the comment for this entry.
      */
@@ -190,7 +190,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the compressed size for this {@code ZipEntry}.
-     * 
+     *
      * @param value
      *            the compressed size (in bytes).
      */
@@ -200,7 +200,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the checksum for this {@code ZipEntry}.
-     * 
+     *
      * @param value
      *            the checksum for this entry.
      * @throws IllegalArgumentException
@@ -216,7 +216,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the extra information for this {@code ZipEntry}.
-     * 
+     *
      * @param data
      *            a byte array containing the extra information.
      * @throws IllegalArgumentException
@@ -232,7 +232,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the compression method for this {@code ZipEntry}.
-     * 
+     *
      * @param value
      *            the compression method, either {@code DEFLATED} or {@code
      *            STORED}.
@@ -248,7 +248,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the uncompressed size of this {@code ZipEntry}.
-     * 
+     *
      * @param value
      *            the uncompressed size for this entry.
      * @throws IllegalArgumentException
@@ -264,7 +264,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Sets the modification time of this {@code ZipEntry}.
-     * 
+     *
      * @param value
      *            the modification time as the number of milliseconds since Jan.
      *            1, 1970.
@@ -288,7 +288,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Returns the string representation of this {@code ZipEntry}.
-     * 
+     *
      * @return the string representation of this {@code ZipEntry}.
      */
     @Override
@@ -299,7 +299,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
     /**
      * Constructs a new {@code ZipEntry} using the values obtained from {@code
      * ze}.
-     * 
+     *
      * @param ze
      *            the {@code ZipEntry} from which to obtain values.
      */
@@ -319,7 +319,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Returns a shallow copy of this entry.
-     * 
+     *
      * @return a copy of this entry.
      */
     @Override
@@ -329,7 +329,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Returns the hash code for this {@code ZipEntry}.
-     * 
+     *
      * @return the hash code of the entry.
      */
     @Override

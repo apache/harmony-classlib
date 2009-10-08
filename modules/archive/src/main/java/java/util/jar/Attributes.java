@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -274,7 +274,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Constructs an {@code Attributes} instance obtaining keys and values from
      * the parameter {@code attrib}.
-     * 
+     *
      * @param attrib
      *            The attributes to obtain entries from.
      */
@@ -286,7 +286,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Constructs an {@code Attributes} instance with initial capacity of size
      * {@code size}.
-     * 
+     *
      * @param size
      *            Initial size of this {@code Attributes} instance.
      */
@@ -303,7 +303,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Determines whether this {@code Attributes} contains the specified key.
-     * 
+     *
      * @param key
      *            The key to search for.
      * @return {@code true} if the key is found, {@code false} otherwise.
@@ -314,7 +314,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Determines whether this {@code Attributes} contains the specified value.
-     * 
+     *
      * @param value
      *            the value to search for.
      * @return {@code true} if the value is found, {@code false} otherwise.
@@ -326,7 +326,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Returns a set containing map entries for each of the key/value pair
      * contained in this {@code Attributes}.
-     * 
+     *
      * @return a set of Map.Entry's
      */
     public Set<Map.Entry<Object, Object>> entrySet() {
@@ -335,7 +335,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Returns the value associated with the parameter key.
-     * 
+     *
      * @param key
      *            the key to search for.
      * @return Object associated with key, or {@code null} if key does not
@@ -347,7 +347,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Determines whether this {@code Attributes} contains any keys.
-     * 
+     *
      * @return {@code true} if one or more keys exist, {@code false} otherwise.
      */
     public boolean isEmpty() {
@@ -357,7 +357,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Returns a {@code Set} containing all the keys found in this {@code
      * Attributes}.
-     * 
+     *
      * @return a {@code Set} of all keys.
      */
     public Set<Object> keySet() {
@@ -366,7 +366,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Stores key/value pairs in this {@code Attributes}.
-     * 
+     *
      * @param key
      *            the key to associate with value.
      * @param value
@@ -385,7 +385,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Stores all the key/value pairs in the argument in this {@code
      * Attributes}.
-     * 
+     *
      * @param attrib
      *            the associations to store (must be of type {@code
      *            Attributes}).
@@ -400,7 +400,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Deletes the key/value pair with key {@code key} from this {@code
      * Attributes}.
-     * 
+     *
      * @param key
      *            the key to remove.
      * @return the values associated with the removed key, {@code null} if not
@@ -413,7 +413,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Returns the number of key/value pairs associated with this {@code
      * Attributes}.
-     * 
+     *
      * @return the size of this {@code Attributes}.
      */
     public int size() {
@@ -445,7 +445,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Returns the hash code of this {@code Attributes}.
-     * 
+     *
      * @return the hash code of this object.
      */
     @Override
@@ -457,7 +457,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      * Determines if this {@code Attributes} and the parameter {@code
      * Attributes} are equal. Two {@code Attributes} instances are equal if they
      * contain the same keys and values.
-     * 
+     *
      * @param obj
      *            the object with which this {@code Attributes} is compared.
      * @return {@code true} if the {@code Attributes} are equal, {@code false}
@@ -477,7 +477,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Returns the value associated with the parameter {@code Attributes.Name}
      * key.
-     * 
+     *
      * @param name
      *            the key to obtain the value for.
      * @return the {@code String} associated with name, or {@code null} if name
@@ -489,7 +489,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
     /**
      * Returns the string associated with the parameter name.
-     * 
+     *
      * @param name
      *            the key to obtain the value for.
      * @return the string associated with name, or {@code null} if name is not a
@@ -502,7 +502,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     /**
      * Stores the value {@code val} associated with the key {@code name} in this
      * {@code Attributes}.
-     * 
+     *
      * @param name
      *            the key to store.
      * @param val

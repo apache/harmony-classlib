@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -112,7 +112,7 @@ class JarVerifier {
          * digests from the .SF file. This indicates the validity of the
          * signing, not the integrity of the file, as it's digest must be
          * calculated and verified when its contents are read.
-         * 
+         *
          * @throws SecurityException
          *             if the digest value stored in the manifest does <i>not</i>
          *             agree with the decrypted digest as recovered from the
@@ -132,7 +132,7 @@ class JarVerifier {
 
     /**
      * Constructs and returns a new instance of {@code JarVerifier}.
-     * 
+     *
      * @param name
      *            the name of the JAR file being verified.
      */
@@ -145,7 +145,7 @@ class JarVerifier {
      * stream. This method constructs and returns a new {@link VerifierEntry}
      * which contains the certificates used to sign the entry and its hash value
      * as specified in the JAR MANIFEST format.
-     * 
+     *
      * @param name
      *            the name of an entry in a JAR file which is <b>not</b> in the
      *            {@code META-INF} directory.
@@ -225,7 +225,7 @@ class JarVerifier {
      * entry in the {@code META-INF} directory including the manifest
      * file itself. Files associated with the signing of a JAR would also be
      * added to this collection.
-     * 
+     *
      * @param name
      *            the name of the file located in the {@code META-INF}
      *            directory.
@@ -240,7 +240,7 @@ class JarVerifier {
     /**
      * If the associated JAR file is signed, check on the validity of all of the
      * known signatures.
-     * 
+     *
      * @return {@code true} if the associated JAR is signed and an internal
      *         check verifies the validity of the signature(s). {@code false} if
      *         the associated JAR file has no entries at all in its {@code
@@ -372,7 +372,7 @@ class JarVerifier {
 
     /**
      * Associate this verifier with the specified {@link Manifest} object.
-     * 
+     *
      * @param mf
      *            a {@code java.util.jar.Manifest} object.
      */
@@ -383,7 +383,7 @@ class JarVerifier {
     /**
      * Returns a <code>boolean</code> indication of whether or not the
      * associated jar file is signed.
-     * 
+     *
      * @return {@code true} if the JAR is signed, {@code false}
      *         otherwise.
      */
@@ -433,7 +433,7 @@ class JarVerifier {
      * Returns all of the {@link java.security.cert.Certificate} instances that
      * were used to verify the signature on the JAR entry called
      * {@code name}.
-     * 
+     *
      * @param name
      *            the name of a JAR entry.
      * @return an array of {@link java.security.cert.Certificate}.
@@ -449,7 +449,7 @@ class JarVerifier {
     /**
      * Remove all entries from the internal collection of data held about each
      * JAR entry in the {@code META-INF} directory.
-     * 
+     *
      * @see #addMetaEntry(String, byte[])
      */
     void removeMetaEntries() {
@@ -460,7 +460,7 @@ class JarVerifier {
      * Returns a {@code Vector} of all of the
      * {@link java.security.cert.Certificate}s that are associated with the
      * signing of the named signature file.
-     * 
+     *
      * @param signatureFileName
      *            the name of a signature file.
      * @param certificates
