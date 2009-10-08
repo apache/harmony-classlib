@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
@@ -381,6 +380,7 @@ public class ZipFile implements ZipConstants {
             return (mOffset < mLength ? 1 : 0);
         }
 
+        @Override
         public int read() throws IOException {
             if (read(singleByteBuf, 0, 1) == 1) {
                 return singleByteBuf[0] & 0XFF;
@@ -389,10 +389,13 @@ public class ZipFile implements ZipConstants {
             }
         }
 
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             synchronized (mSharedRaf) {
                 mSharedRaf.seek(mOffset);
-                if (mOffset + len > mLength) len = (int) (mLength - mOffset);
+                if (mOffset + len > mLength) {
+                    len = (int) (mLength - mOffset);
+                }
                 int count = mSharedRaf.read(b, off, len);
                 if (count > 0) {
                     mOffset += count;
