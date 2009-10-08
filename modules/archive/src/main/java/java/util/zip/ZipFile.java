@@ -382,11 +382,11 @@ public class ZipFile implements ZipConstants {
 
         @Override
         public int read() throws IOException {
-            int count = read(singleByteBuf, 0, 1); 
-            if (count == 1) {
-                return singleByteBuf[0] & 0xFF;
+            if (read(singleByteBuf, 0, 1) == 1) {
+                return singleByteBuf[0] & 0XFF;
+            } else {
+                return -1;
             }
-            return count;
         }
 
         @Override
@@ -399,14 +399,16 @@ public class ZipFile implements ZipConstants {
                 int count = mSharedRaf.read(b, off, len);
                 if (count > 0) {
                     mOffset += count;
+                    return count;
+                } else {
+                    return -1;
                 }
-                return count;
             }
         }
 
         @Override
         public long skip(long n) throws IOException {
-            if (n > mLength - mOffset) {
+            if (mOffset + n > mLength) {
                 n = mLength - mOffset;
             }
             mOffset += n;
