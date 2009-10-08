@@ -285,8 +285,9 @@ public class JarFile extends ZipFile {
             byte[] buf = new byte[1024];
             while (is.available() > 0) {
                 int iRead = is.read(buf, 0, buf.length);
-                if (iRead > 0)
+                if (iRead > 0) {
                     bs.write(buf, 0, iRead);
+                }
             }
         } finally {
             is.close();
