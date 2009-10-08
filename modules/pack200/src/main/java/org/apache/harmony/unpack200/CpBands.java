@@ -553,13 +553,13 @@ public class CpBands extends BandSet {
             if(index != null) {
             	return cpUTF8Value(index.intValue());
             }
-// TODO: mapSignature is not filled anywhere
-//            if(searchForIndex) {
-//            	index = (Integer)mapSignature.get(string);
-//            }
+            /* TODO: mapSignature is not filled anywhere
+            if(searchForIndex) {
+                index = (Integer)mapSignature.get(string);
+            }
             if(index != null) {
             	return cpSignatureValue(index.intValue());
-            }
+            }*/
             cputf8 = new CPUTF8(string, -1);
             stringsToCPUTF8.put(string, cputf8);
         }
