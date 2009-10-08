@@ -28,6 +28,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.archive.util.Util;
 
 /**
@@ -308,7 +309,7 @@ public class JarFile extends ZipFile {
      */
     public Manifest getManifest() throws IOException {
         if (closed) {
-            throw new IllegalStateException("JarFile has been closed.");
+            throw new IllegalStateException(Messages.getString("archive.35")); //$NON-NLS-1$
         }
         if (manifest != null) {
             return manifest;
@@ -438,7 +439,8 @@ public class JarFile extends ZipFile {
         Enumeration<? extends ZipEntry> allEntries = entries();
         while (allEntries.hasMoreElements()) {
             ZipEntry ze = allEntries.nextElement();
-            if (ze.getName().startsWith("META-INF/") && ze.getName().length() > 9) {
+            if (ze.getName().startsWith("META-INF/") && //$NON-NLS-1$
+                    ze.getName().length() > 9) {
                 list.add(ze);
             }
         }
