@@ -280,20 +280,40 @@ public class JarFile extends ZipFile {
         return (JarEntry) getEntry(name);
     }
 
-    private byte[] getAllBytesFromStreamAndClose(InputStream is) throws IOException {
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+    /*
+     * Drains the entire content from the given input stream and returns it as a
+     * byte[]. The stream is closed after being drained, or if an IOException
+     * occurs.
+     */
+    private byte[] getAllBytesFromStreamAndClose(InputStream is)
+            throws IOException {
         try {
-            byte[] buf = new byte[1024];
-            while (is.available() > 0) {
-                int iRead = is.read(buf, 0, buf.length);
-                if (iRead > 0) {
-                    bs.write(buf, 0, iRead);
+            // Initial read
+            byte[] buffer = new byte[1024];
+            int count = is.read(buffer);
+            int nextByte = is.read();
+
+            // Did we get it all in one read?
+            if (nextByte == -1) {
+                byte[] dest = new byte[count];
+                System.arraycopy(buffer, 0, dest, 0, count);
+                return dest;
+            }
+
+            // Requires additional reads
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
+            baos.write(buffer, 0, count);
+            baos.write(nextByte);
+            while (true) {
+                count = is.read(buffer);
+                if (count == -1) {
+                    return baos.toByteArray();
                 }
+                baos.write(buffer, 0, count);
             }
         } finally {
             is.close();
         }
-        return bs.toByteArray();
     }
 
     /**

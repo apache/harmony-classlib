@@ -242,20 +242,34 @@ public class Manifest implements Cloneable {
      * have a line feed within a reasonable number of characters.
      */
     private byte[] readFully(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8192];
+        // Initial read
+        byte[] buffer = new byte[4096];
+        int count = is.read(buffer);
+        int nextByte = is.read();
 
+        // Did we get it all in one read?
+        if (nextByte == -1) {
+            byte[] dest = new byte[count];
+            System.arraycopy(buffer, 0, dest, 0, count);
+            return dest;
+        }
+
+        // Does it look like a manifest?
+        if (!containsLine(buffer, count)) {
+            // archive.2E=Manifest is too long
+            throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
+        }
+
+        // Requires additional reads
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
+        baos.write(buffer, 0, count);
+        baos.write(nextByte);
         while (true) {
-            int count = is.read(buffer);
+            count = is.read(buffer);
             if (count == -1) {
-                // TODO: Do we need to copy this, or can we live with junk at the end?
                 return baos.toByteArray();
             }
             baos.write(buffer, 0, count);
-
-            if (!containsLine(buffer, count)) {
-                throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
-            }
         }
     }
 
