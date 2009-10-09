@@ -115,6 +115,13 @@ public class Manifest implements Cloneable {
         }
         read(is);
     }
+    
+    Manifest(byte[] buf, boolean readChunks) throws IOException {
+        if (readChunks) {
+            chunks = new HashMap<String, Chunk>();
+        }
+        initFromBytes(buf);
+    }
 
     /**
      * Resets the both the main attributes as well as the entry attributes
@@ -226,6 +233,13 @@ public class Manifest implements Cloneable {
             buf[buf.length - 1] = '\n';
         }
 
+        initFromBytes(buf);
+    }
+
+    void initFromBytes(byte[] buf) throws IOException {
+        if (buf.length == 0) {
+            return;
+        }
         // Attributes.Name.MANIFEST_VERSION is not used for
         // the second parameter for RI compatibility
         im = new InitManifest(buf, mainAttributes, null);
