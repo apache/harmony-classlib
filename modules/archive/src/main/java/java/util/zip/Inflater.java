@@ -36,8 +36,6 @@ import org.apache.harmony.archive.internal.nls.Messages;
  */
 public class Inflater {
 
-    private static final byte MAGIC_NUMBER = 120;
-
     static {
         oneTimeInitialization();
     }
