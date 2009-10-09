@@ -45,10 +45,13 @@ public class JarFile extends ZipFile {
      */
     public static final String MANIFEST_NAME = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
+    // The directory containing the manifest.
     static final String META_DIR = "META-INF/"; //$NON-NLS-1$
 
+    // The manifest after it has been read from the JAR.
     private Manifest manifest;
 
+    // The entry for the MANIFEST.MF file before it is read.
     private ZipEntry manifestEntry;
 
     JarVerifier verifier;
@@ -213,7 +216,6 @@ public class JarFile extends ZipFile {
      */
     public JarFile(String filename) throws IOException {
         this(filename, true);
-
     }
 
     /**
@@ -329,6 +331,7 @@ public class JarFile extends ZipFile {
      */
     public Manifest getManifest() throws IOException {
         if (closed) {
+            // archive.35=JarFile has been closed
             throw new IllegalStateException(Messages.getString("archive.35")); //$NON-NLS-1$
         }
         if (manifest != null) {
@@ -341,39 +344,48 @@ public class JarFile extends ZipFile {
                 verifier.addMetaEntry(manifestEntry.getName(), buffer);
             }
             manifest = new Manifest(buffer, verifier != null);
-            manifestEntry = null;
+            manifestEntry = null;  // Can discard the entry now.
         } catch (NullPointerException e) {
             manifestEntry = null;
         }
         return manifest;
     }
 
+    /**
+     * Called by the JarFile constructors, this method reads the contents of the
+     * file's META-INF/ directory and picks out the MANIFEST.MF file and
+     * verifier signature files if they exist. Any signature files found are
+     * registered with the verifier.
+     * 
+     * @throws IOException
+     *             if there is a problem reading the jar file entries.
+     */
     private void readMetaEntries() throws IOException {
+        // Get all meta directory entries
         ZipEntry[] metaEntries = getMetaEntriesImpl();
-        int dirLength = META_DIR.length();
+        if (metaEntries == null) {
+            verifier = null;
+            return;
+        }
 
         boolean signed = false;
 
-        if (null != metaEntries) {
-            for (ZipEntry entry : metaEntries) {
-                String entryName = entry.getName();
-                if (manifestEntry == null
-                        && manifest == null
-                        && Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                dirLength, MANIFEST_NAME, dirLength,
-                                MANIFEST_NAME.length() - dirLength)) {
-                    manifestEntry = entry;
-                    if (verifier == null) {
-                        break;
-                    }
-                } else if (verifier != null
-                        && entryName.length() > dirLength
-                        && (Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                entryName.length() - 3, ".SF", 0, 3) //$NON-NLS-1$
-                                || Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                        entryName.length() - 4, ".DSA", 0, 4) //$NON-NLS-1$
-                        || Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                entryName.length() - 4, ".RSA", 0, 4))) { //$NON-NLS-1$
+        for (ZipEntry entry : metaEntries) {
+            String entryName = entry.getName();
+            // Is this the entry for META-INF/MANIFEST.MF ?
+            if (manifestEntry == null
+                    && Util.asciiEqualsIgnoreCase(MANIFEST_NAME, entryName)) {
+                manifestEntry = entry;
+                // If there is no verifier then we don't need to look any further.
+                if (verifier == null) {
+                    break;
+                }
+            } else {
+                // Is this an entry that the verifier needs?
+                if (verifier != null
+                        && (Util.asciiEndsWithIgnoreCase(entryName, ".SF")
+                                || Util.asciiEndsWithIgnoreCase(entryName, ".DSA")
+                                || Util.asciiEndsWithIgnoreCase(entryName, ".RSA"))) {
                     signed = true;
                     InputStream is = super.getInputStream(entry);
                     byte[] buf = getAllBytesFromStreamAndClose(is);
@@ -381,6 +393,8 @@ public class JarFile extends ZipFile {
                 }
             }
         }
+
+        // If there were no signature files, then no verifier work to do.
         if (!signed) {
             verifier = null;
         }
@@ -449,24 +463,28 @@ public class JarFile extends ZipFile {
         return je;
     }
 
+    /**
+     * Returns all the ZipEntry's that relate to files in the
+     * JAR's META-INF directory.
+     *
+     * @return the list of ZipEntry's or {@code null} if there are none.
+     */
     private ZipEntry[] getMetaEntriesImpl() {
-        List<ZipEntry> list = new ArrayList<ZipEntry>();
-
+        List<ZipEntry> list = new ArrayList<ZipEntry>(8);
         Enumeration<? extends ZipEntry> allEntries = entries();
         while (allEntries.hasMoreElements()) {
             ZipEntry ze = allEntries.nextElement();
-            if (ze.getName().startsWith("META-INF/") && //$NON-NLS-1$
-                    ze.getName().length() > 9) {
+            if (ze.getName().startsWith(META_DIR)
+                    && ze.getName().length() > META_DIR.length()) {
                 list.add(ze);
             }
         }
-        if (list.size() != 0) {
-            ZipEntry[] result = new ZipEntry[list.size()];
-            list.toArray(result);
-            return result;
-        } else {
+        if (list.size() == 0) {
             return null;
         }
+        ZipEntry[] result = new ZipEntry[list.size()];
+        list.toArray(result);
+        return result;
     }
 
     /**

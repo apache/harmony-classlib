@@ -225,7 +225,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         }
 
         /**
-         * returns whether the argument provided is the same as the attribute
+         * Returns whether the argument provided is the same as the attribute
          * name.
          *
          * @return if the attribute names correspond.
@@ -239,7 +239,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
                 return false;
             }
 
-            return Util.equalsIgnoreCase(name, ((Name) object).name);
+            return Util.asciiEqualsIgnoreCase(name, ((Name) object).name);
         }
 
         /**
