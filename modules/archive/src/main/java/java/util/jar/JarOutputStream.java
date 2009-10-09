@@ -63,7 +63,6 @@ public class JarOutputStream extends ZipOutputStream {
      * @throws IOException
      *             if an error occurs creating the {@code JarOutputStream}.
      */
-    @SuppressWarnings("unused")
     public JarOutputStream(OutputStream os) throws IOException {
         super(os);
     }
