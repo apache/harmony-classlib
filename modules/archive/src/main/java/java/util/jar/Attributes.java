@@ -164,7 +164,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         public static final Name IMPLEMENTATION_URL = new Name(
                 "Implementation-URL"); //$NON-NLS-1$
 
-        static final Name NAME = new Name("Name");
+        static final Name NAME = new Name("Name"); //$NON-NLS-1$
 
         /**
          * A String which must satisfy the following EBNF grammar to specify an
@@ -218,7 +218,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         @Override
         public String toString() {
             try {
-                return new String(name, "ISO-8859-1");
+                return new String(name, "ISO-8859-1"); //$NON-NLS-1$
             } catch (UnsupportedEncodingException iee) {
                 throw new InternalError(iee.getLocalizedMessage());
             }
