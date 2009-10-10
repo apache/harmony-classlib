@@ -272,12 +272,8 @@ public class ScrollStateController extends ComponentAdapter implements
         int compSize = 0;
         int adjSize = (isVertical ? scrollable.getAdjustableWidth()
                                  : scrollable.getAdjustableHeight());
-        if (comp != null) {
-            Dimension prefSize = scrollable.getSize();
-            compSize = isVertical ? prefSize.height
-                                 : prefSize.width;
-        }
-        return ((spSize < compSize) &&
-                (spOtherSize > adjSize + GAP));
+        Dimension prefSize = scrollable.getSize();
+        compSize = isVertical ? prefSize.height : prefSize.width;
+        return ((spSize < compSize) && (spOtherSize > adjSize + GAP));
     }
 }
