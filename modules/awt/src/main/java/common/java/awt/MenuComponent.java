@@ -31,6 +31,7 @@ import javax.accessibility.AccessibleStateSet;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.state.MenuItemState;
 import org.apache.harmony.awt.state.MenuState;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public abstract class MenuComponent implements Serializable {
     private static final long serialVersionUID = -4536902356223894379L;
@@ -434,27 +435,15 @@ public abstract class MenuComponent implements Serializable {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
-    public MenuComponentPeer getPeer() throws org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return null;
+    public MenuComponentPeer getPeer() throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
     protected final Object getTreeLock() {
         return toolkit.awtTreeLock;
     }
 
-    @SuppressWarnings("deprecation")
     @Deprecated
     public boolean postEvent(Event e) {
         toolkit.lockAWT();
@@ -633,7 +622,7 @@ public abstract class MenuComponent implements Serializable {
     }
 
     /**
-     * @return The sub-menu of currently selecetd item, 
+     * @return The sub-menu of currently selected item, 
      * or null if such a sub-menu is not available 
      */
     Menu getSelectedSubmenu() {
@@ -720,7 +709,7 @@ public abstract class MenuComponent implements Serializable {
     }
 
     /**
-     * @return - the menu bar which is the root of crrent menu's hierarchy;
+     * @return - the menu bar which is the root of current menu's hierarchy;
      * or null if the hierarchy root is not a menu bar 
      */
     MenuBar getMenuBar() {
@@ -745,7 +734,7 @@ public abstract class MenuComponent implements Serializable {
     /**
      * Determine the clip region when menu selection is changed 
      * from index1 to index2
-     * @param index1 - old selected intem
+     * @param index1 - old selected item
      * @param index2 - new selected item
      * @return - the region to repaint
      */
