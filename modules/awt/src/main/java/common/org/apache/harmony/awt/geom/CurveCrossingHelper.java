@@ -200,9 +200,9 @@ public class CurveCrossingHelper {
         		for (int k = 0; k < ipCount; k++) {
                     IntersectPoint ip = null;
                     if (!containsPoint(points[2*k], points[2*k + 1])) {
-                        for (Iterator iter = isectPoints.iterator(); 
+                        for (Iterator<IntersectPoint> iter = isectPoints.iterator(); 
                                     iter.hasNext(); ) {
-                    	    ip = (IntersectPoint)iter.next();
+                    	    ip = iter.next();
                             if ((begIndex1 == ip.getBegIndex(true)) && 
                             	(endIndex1 == ip.getEndIndex(true))) {
                             	
@@ -303,8 +303,8 @@ public class CurveCrossingHelper {
     private boolean containsPoint(double x, double y) {
     	IntersectPoint ipoint;
     	
-    	for (Iterator i = isectPoints.iterator(); i.hasNext(); ) {
-        	ipoint = (IntersectPoint)i.next();
+    	for (Iterator<IntersectPoint> i = isectPoints.iterator(); i.hasNext(); ) {
+        	ipoint = i.next();
         	
         	if ((Math.abs(ipoint.getX() - x) < Math.pow(10, -6)) && 
         		(Math.abs(ipoint.getY() - y) < Math.pow(10, -6))) {
