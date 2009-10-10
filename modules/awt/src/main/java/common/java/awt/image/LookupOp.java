@@ -190,7 +190,6 @@ public class LookupOp implements BufferedImageOp, RasterOp {
 
         BufferedImage finalDst = null;
         if (dst == null) {
-            finalDst = dst;
             dst = createCompatibleDestImage(src, null);
         } else {
             if (src.getWidth() != dst.getWidth()){
