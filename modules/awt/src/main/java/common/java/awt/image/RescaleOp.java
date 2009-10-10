@@ -289,7 +289,6 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
 
         BufferedImage finalDst = null;
         if (dst == null) {
-            finalDst = dst;
             dst = createCompatibleDestImage(src, srcCM);
         } else if (!srcCM.equals(dst.getColorModel())) {
             // Treat BufferedImage.TYPE_INT_RGB and BufferedImage.TYPE_INT_ARGB as same
