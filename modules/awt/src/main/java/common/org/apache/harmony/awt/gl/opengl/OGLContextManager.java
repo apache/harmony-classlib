@@ -20,11 +20,12 @@
 package org.apache.harmony.awt.gl.opengl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface OGLContextManager {
     public static class OffscreenBufferObject {
         private static final int MAX_CACHED_BUFFERS = 10;
-        private static final ArrayList availableBuffers = new ArrayList();
+        private static final List<OffscreenBufferObject> availableBuffers = new ArrayList<OffscreenBufferObject>();
 
         public final long id;
         public final int width;
@@ -42,7 +43,7 @@ public interface OGLContextManager {
 
         public static final OffscreenBufferObject getCachedBuffer(int w, int h, OGLContextManager config) {
             for (int i = 0; i < availableBuffers.size(); i++) { // First try to find cached pbuffer
-                OffscreenBufferObject pbuffer = (OffscreenBufferObject) availableBuffers.get(i);
+                OffscreenBufferObject pbuffer = availableBuffers.get(i);
                 if (pbuffer.width >= w && pbuffer.height >= h && pbuffer.config == config) {
                     availableBuffers.remove(i);
                     return pbuffer;
@@ -60,7 +61,7 @@ public interface OGLContextManager {
 
             // Try to find smaller pbuffer in the cache and replace it
             for (int i=0; i<availableBuffers.size(); i++) {
-                OffscreenBufferObject cached = (OffscreenBufferObject) availableBuffers.get(i);
+                OffscreenBufferObject cached = availableBuffers.get(i);
                 if (
                         cached.width < pbuffer.width ||
                         cached.height < pbuffer.height ||
@@ -78,7 +79,7 @@ public interface OGLContextManager {
 
         public static final void clearCache() {
             for (int i=0; i<availableBuffers.size(); i++) {
-                OffscreenBufferObject cached = (OffscreenBufferObject) availableBuffers.get(i);
+                OffscreenBufferObject cached = availableBuffers.get(i);
                 cached.config.freeOffscreenBuffer(cached.id, cached.hdc);
             }
             availableBuffers.clear();
