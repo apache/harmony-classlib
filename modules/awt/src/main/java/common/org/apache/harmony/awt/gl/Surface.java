@@ -192,8 +192,7 @@ public abstract class Surface implements Transparency{
     }
     
     public int[] getDirtyRegions(){
-        if(dirtyRegions != null) return dirtyRegions.rect;
-        else return null;
+        return (dirtyRegions == null ? null : dirtyRegions.rect);
     }
 
     /**
