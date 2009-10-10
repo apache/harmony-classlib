@@ -115,6 +115,7 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         DEFAULT_BWD_KS = Collections.unmodifiableSet(s);
     }
 
+    @SuppressWarnings("unchecked")
     public KeyboardFocusManager() {
         traversalKeys = new Set[4];
         traversalKeys[0] = DEFAULT_FWD_KS;
@@ -214,7 +215,6 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Set<AWTKeyStroke> getDefaultFocusTraversalKeys(int id) {
         checkTraversalKeyId(id, 3);
 
@@ -613,10 +613,8 @@ public abstract class KeyboardFocusManager implements KeyEventDispatcher, KeyEve
         //        }
         wnd.setRequestedFocus(c);
         setFocus(c, wnd, true, actualPrevFocusOwner, temporary, callCB);
-        if (wnd != null) {
-            wnd.setFocusOwner(c);
-            wnd.setRequestedFocus(null);
-        }
+        wnd.setFocusOwner(c);
+        wnd.setRequestedFocus(null);
         return true;
     }
 
