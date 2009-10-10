@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.11.4.3 $
  */
 package java.rmi.server;
 
@@ -38,7 +37,6 @@ import org.apache.harmony.rmi.server.ExportManager;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.11.4.3 $
  */
 public class UnicastRemoteObject extends RemoteServer {
 

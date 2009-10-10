@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -30,7 +29,6 @@ import org.apache.harmony.rmi.common.RMIProperties;
  * Contains constants usable by RMI HTTP proxy access classes.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 interface ProxyConstants extends RMIProperties {
 

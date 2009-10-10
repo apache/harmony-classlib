@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.client;
 
@@ -46,7 +45,6 @@ import org.apache.harmony.rmi.transport.RMIProtocolConstants;
  * RMI protocol type etc.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public abstract class ClientConnection implements RMIProtocolConstants {
 

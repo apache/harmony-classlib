@@ -16,7 +16,6 @@
  */
 /**
  * @author Dennis Ushakov
- * @version $Revision$
  */
 
 package javax.swing.plaf.metal;

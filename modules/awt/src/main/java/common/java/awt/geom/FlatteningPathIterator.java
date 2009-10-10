@@ -16,7 +16,6 @@
  */
 /**
  * @author Denis M. Kishenko
- * @version $Revision$
  */
 package java.awt.geom;
 

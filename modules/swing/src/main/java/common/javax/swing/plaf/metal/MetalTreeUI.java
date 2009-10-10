@@ -16,7 +16,6 @@
  */
 /**
 * @author Sergey Burlak
-* @version $Revision$
 */
 package javax.swing.plaf.metal;
 

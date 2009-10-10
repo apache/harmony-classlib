@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.transport;
  * Constants for RMI Transport Protocol.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public interface RMIProtocolConstants {
 

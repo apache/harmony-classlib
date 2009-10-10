@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.8 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -111,7 +110,6 @@ import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
  * </UL>
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.8 $
  */
 public class Rmid extends RemoteServer implements ActivationSystem,
         ActivationMonitor, Activator, RmidMBean {

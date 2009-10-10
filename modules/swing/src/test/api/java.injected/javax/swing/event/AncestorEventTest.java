@@ -16,7 +16,6 @@
  */
 /**
  * @author Anton Avtamonov, Alexander T. Simbirtsev
- * @version $Revision$
  */
 package javax.swing.event;
 

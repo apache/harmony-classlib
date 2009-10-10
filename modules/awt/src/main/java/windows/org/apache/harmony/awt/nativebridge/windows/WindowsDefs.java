@@ -16,7 +16,6 @@
  */
 /**
 * @author Rustem V. Rafikov
-* @version $Revision$
  */
 package org.apache.harmony.awt.nativebridge.windows;
 public interface WindowsDefs {

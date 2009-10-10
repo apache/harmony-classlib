@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 
 package org.apache.harmony.jndi.provider.dns;
@@ -35,7 +34,6 @@ import junit.framework.TestSuite;
  * Test class to test 
  * <code>org.apache.harmony.jndi.provider.dns.DNSNameParser</code> class. 
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class DNSNameParserTest extends TestCase {
 

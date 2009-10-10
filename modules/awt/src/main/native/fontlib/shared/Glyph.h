@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev, Viskov Nikolay 
- * @version $Revision$
  */
 #ifndef __SHARED_GLYPH_CLASS_H
 #define __SHARED_GLYPH_CLASS_H

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -29,7 +28,6 @@ import java.security.PrivilegedAction;
  * Action for obtaining properties holding long values.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class GetLongPropAction implements PrivilegedAction {
 

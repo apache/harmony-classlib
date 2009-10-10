@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov, Anton Avtamonov
- * @version $Revision$
  */
 package org.apache.harmony.awt;
 

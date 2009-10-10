@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 package java.util.regex;
 
@@ -26,7 +25,6 @@ package java.util.regex;
  * and quantifiers.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 abstract class SpecialToken {
     

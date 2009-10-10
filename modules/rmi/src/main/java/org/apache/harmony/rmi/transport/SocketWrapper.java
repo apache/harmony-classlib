@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -36,7 +35,6 @@ import java.net.SocketException;
  * It just translates all requests to the underlying socket.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class SocketWrapper extends Socket {
 

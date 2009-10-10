@@ -16,7 +16,6 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
  */
 package javax.swing.text;
 
@@ -27,7 +26,6 @@ public interface Highlighter {
 
     /**
      * @author Evgeniya G. Maenkova
-     * @version $Revision$
      */
     interface Highlight {
         int getEndOffset();
@@ -39,7 +37,6 @@ public interface Highlighter {
 
     /**
      * @author Evgeniya G. Maenkova
-     * @version $Revision$
      */
     interface HighlightPainter {
         void paint(final Graphics g, final int p1, final int p2,

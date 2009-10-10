@@ -17,7 +17,6 @@
 
 /**
 * @author Vera Y. Petrashkova
-* @version $Revision$
 */
 
 package org.apache.harmony.xnet.tests.javax.net.ssl.serialization;

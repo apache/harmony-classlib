@@ -16,7 +16,6 @@
  */
 /** 
  * @author Intel, Gregory Shimansky
- * @version $Revision: 1.1.2.1.4.3 $
  */  
 
 #ifndef _JNI_TYPES_H_

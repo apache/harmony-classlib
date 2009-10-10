@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 package java.rmi.dgc;
 
@@ -31,7 +30,6 @@ import java.rmi.server.ObjID;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 public interface DGC extends Remote {
 

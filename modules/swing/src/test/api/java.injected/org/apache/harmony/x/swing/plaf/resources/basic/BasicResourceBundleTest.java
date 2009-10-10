@@ -18,7 +18,6 @@
 
 /**
  * @author Sergey Burlak
- * @version $Revision$
  */
 
 package org.apache.harmony.x.swing.plaf.resources.basic;

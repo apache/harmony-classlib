@@ -16,7 +16,6 @@
  */
 /**
  * @author ivstolya
- * @version $Revision$
  */
 package java.awt.image;
 

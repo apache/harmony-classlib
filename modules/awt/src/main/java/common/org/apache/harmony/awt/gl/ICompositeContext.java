@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl;
 

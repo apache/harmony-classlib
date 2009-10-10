@@ -17,7 +17,6 @@
 
 /**
  * @author Alexey A. Ivanov, Anton Avtamonov
- * @version $Revision$
  */
 package javax.swing;
 

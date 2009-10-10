@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Represents multiline version of the dollar sign.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class MultiLineEOLSet extends AbstractSet {
    

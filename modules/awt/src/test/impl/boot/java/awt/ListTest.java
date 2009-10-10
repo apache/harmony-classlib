@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev
- * @version $Revision$
  */
 package java.awt;
 import java.awt.event.*;

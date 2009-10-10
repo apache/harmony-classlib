@@ -17,7 +17,6 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
  */
 package org.apache.harmony.beans.tests.support;
 
@@ -27,7 +26,6 @@ import java.beans.SimpleBeanInfo;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
  */
 
 public class GrannyBeanBeanInfo extends SimpleBeanInfo {

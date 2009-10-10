@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -34,7 +33,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * This class cannot be instantiated.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 final class RmicUtil implements RmicConstants {
 

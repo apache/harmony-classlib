@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.10.2.3 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Composite (i.e. {n,m}) quantifier node for groups ("(X){n,m}")
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.10.2.3 $
  */
 class CompositeGroupQuantifierSet extends GroupQuantifierSet {
     

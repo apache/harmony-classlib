@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov
- * @version $Revision$
  */
 #include <windows.h>
 

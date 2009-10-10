@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.remoteref;
 
@@ -34,7 +33,6 @@ import org.apache.harmony.rmi.transport.Endpoint;
 /**
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  *
  * ActivatableServerRef
  */

@@ -16,7 +16,6 @@
  */
 /** 
  * @author Aleksei V. Ivaschenko 
- * @version $Revision: 1.3 $ 
  */ 
 
 package org.apache.harmony.x.print;

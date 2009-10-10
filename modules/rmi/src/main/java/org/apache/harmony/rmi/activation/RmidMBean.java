@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.activation;
  * Management interface for RMID tool.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
  */
 interface RmidMBean {
 }

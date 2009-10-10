@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov, Alexey A. Petrenko, Oleg V. Khaschansky
- * @version $Revision$
  */
 package org.apache.harmony.awt.wtk;
 

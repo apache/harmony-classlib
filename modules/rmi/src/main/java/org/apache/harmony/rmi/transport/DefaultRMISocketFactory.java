@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -51,7 +50,6 @@ import org.apache.harmony.rmi.transport.tcp.DirectRMISocketFactory;
  * the attempt fails it tries HTTP-through sockets.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class DefaultRMISocketFactory extends RMISocketFactory
         implements Serializable, RMIProperties {

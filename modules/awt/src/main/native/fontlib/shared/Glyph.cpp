@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev, Viskov Nikolay 
- * @version $Revision$
  */
 #include "Glyph.h"
 

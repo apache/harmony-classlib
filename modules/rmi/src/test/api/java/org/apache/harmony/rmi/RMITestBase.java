@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 package org.apache.harmony.rmi;
 
@@ -43,7 +42,6 @@ import junit.framework.TestCase;
  * Base class for RMI unit tests.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 public abstract class RMITestBase extends TestCase {
 

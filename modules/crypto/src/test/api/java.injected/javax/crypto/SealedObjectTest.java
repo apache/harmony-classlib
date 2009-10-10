@@ -17,7 +17,6 @@
 
 /**
 * @author Alexander Y. Kleymenov
-* @version $Revision$
 */
 
 package javax.crypto;

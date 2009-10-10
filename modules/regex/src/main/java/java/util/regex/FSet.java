@@ -17,14 +17,12 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
 /**
  * The node which marks end of the particular group.
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class FSet extends AbstractSet {
     

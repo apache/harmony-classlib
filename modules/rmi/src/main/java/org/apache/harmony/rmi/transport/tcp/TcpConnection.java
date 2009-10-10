@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.tcp;
 
@@ -43,7 +42,6 @@ import org.apache.harmony.rmi.transport.Endpoint;
  * Direct socket connection.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class TcpConnection extends ClientConnection {
 

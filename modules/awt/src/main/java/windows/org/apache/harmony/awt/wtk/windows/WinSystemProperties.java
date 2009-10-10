@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov, Dmitry A. Durnev
- * @version $Revision$
  */
 package org.apache.harmony.awt.wtk.windows;
 

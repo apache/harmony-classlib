@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.14.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Base class for quantifiers.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.14.2.2 $
  */
 abstract class QuantifierSet extends AbstractSet {
     

@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexander T. Simbirtsev
- * @version $Revision$
  */
 package org.apache.harmony.x.swing.text.html.form;
 

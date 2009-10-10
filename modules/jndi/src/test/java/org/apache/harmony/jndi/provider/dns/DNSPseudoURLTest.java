@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 
 package org.apache.harmony.jndi.provider.dns;
@@ -28,7 +27,6 @@ import junit.framework.TestCase;
 /**
  * <code>org.apache.harmony.jndi.provider.dns.DNSPseudoURL</code> unit test.
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 public class DNSPseudoURLTest extends TestCase {
 

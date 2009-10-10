@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.21.2.2 $
  */
 package java.util.regex;
 
@@ -29,7 +28,6 @@ import org.apache.harmony.regex.internal.nls.Messages;
  * The purpose of this class is to break given pattern into RE tokens; 
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.21.2.2 $
  */
 class Lexer {
 

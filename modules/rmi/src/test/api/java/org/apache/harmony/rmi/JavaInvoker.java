@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 package org.apache.harmony.rmi;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.common.SubProcess;
  * More methods running VM in various configurations are welcome.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  *
  * @todo    Probably in future should be replaced by VM-specific calls
  *          allowing to create VM without using heavy and system-dependent

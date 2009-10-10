@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -26,7 +25,6 @@ package java.util.regex;
  * 
  * @see java.util.regex.LeafSet
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class ReluctantQuantifierSet extends LeafQuantifierSet {
 

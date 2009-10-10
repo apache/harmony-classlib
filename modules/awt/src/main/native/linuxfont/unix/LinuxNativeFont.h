@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  *
  */
 #ifndef _Included_LinuxNativeFont

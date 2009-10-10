@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi;
 
@@ -59,7 +58,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Default implementation of RMIClassLoaderSpi.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class DefaultRMIClassLoaderSpi extends RMIClassLoaderSpi
         implements LoaderHandler {

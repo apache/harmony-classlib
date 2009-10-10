@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.6 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -32,7 +31,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Representation of a Java Compiler.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.6 $
  */
 public abstract class JavaCompiler implements RMIProperties {
 

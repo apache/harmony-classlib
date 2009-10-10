@@ -18,7 +18,6 @@
 
 <!--
 Author:  Maxim V. Berkultsev
-Version: $Revision: 1.1.6.3 $
 -->
 <java version="${version}" class="java.beans.XMLDecoder">
 

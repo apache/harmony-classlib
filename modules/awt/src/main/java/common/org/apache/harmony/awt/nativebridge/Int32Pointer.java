@@ -16,7 +16,6 @@
  */
 /**
  * @author Sergey V. Kuksenko
- * @version $Revision$
  */
 package org.apache.harmony.awt.nativebridge;
 

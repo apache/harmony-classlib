@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -36,7 +35,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Allows for execution of external applications as subprocesses.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  *
  * @todo    Check with <code>ProcessBuilder</code> for Java 5.0.
  */

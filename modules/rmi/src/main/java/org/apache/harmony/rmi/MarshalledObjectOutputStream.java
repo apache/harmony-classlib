@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
  * java.rmi.MarshalledObject class.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.1 $
  *
  * @see RMIObjectOutputStream
  */

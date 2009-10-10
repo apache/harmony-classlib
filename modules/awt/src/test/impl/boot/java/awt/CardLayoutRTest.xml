@@ -18,7 +18,6 @@
 <!DOCTYPE Test SYSTEM "test.dtd">
 <!--
 Author:  Dmitry A. Durnev
-Version: $Revision$
 -->
 <Test
        ID="CardLayoutRTest"

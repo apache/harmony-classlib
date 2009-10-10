@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev
- * @version $Revision$
  */
 #ifndef __CURVE_H__
 #define __CURVE_H__

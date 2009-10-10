@@ -16,7 +16,6 @@
  */
 /**
 * @author Alexey V. Varlamov
-* @version $Revision$
 */
 
 package org.apache.harmony.security.tests;

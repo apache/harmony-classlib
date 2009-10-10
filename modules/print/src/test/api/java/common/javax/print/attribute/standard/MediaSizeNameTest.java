@@ -16,7 +16,6 @@
  */
 /** 
  * @author Elena V. Sayapina 
- * @version $Revision: 1.3 $ 
  */ 
  
 package javax.print.attribute.standard;

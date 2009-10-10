@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov
- * @version $Revision$
  */
 package org.apache.harmony.awt.nativebridge.windows;
 

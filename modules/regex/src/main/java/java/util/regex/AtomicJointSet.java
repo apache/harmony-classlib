@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 package java.util.regex;
 
@@ -28,7 +27,6 @@ import java.util.ArrayList;
  * this match become unchangeable till the end of the match.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 class AtomicJointSet extends NonCapJointSet {
     

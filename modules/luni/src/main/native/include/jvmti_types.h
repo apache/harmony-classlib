@@ -16,7 +16,6 @@
  */
 /** 
 * @author Gregory Shimansky
-* @version $Revision: 1.1.2.1.4.4 $
 */  
 #ifndef _JVMTI_TYPES_H_
 #define _JVMTI_TYPES_H_

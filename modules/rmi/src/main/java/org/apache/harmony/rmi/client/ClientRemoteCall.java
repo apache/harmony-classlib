@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.client;
 
@@ -46,7 +45,6 @@ import org.apache.harmony.rmi.transport.RMIProtocolConstants;
  * RemoteCall implementation used by UnicastRef on client's side.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class ClientRemoteCall implements RemoteCall, RMIProtocolConstants {
 

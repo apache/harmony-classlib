@@ -16,7 +16,6 @@
  */
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 package javax.imageio;
 
@@ -25,7 +24,6 @@ import java.awt.image.BufferedImage;
 
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 public class ImageReadParam extends IIOParam {
 

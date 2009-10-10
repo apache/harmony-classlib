@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.2 $
  */
 package java.rmi.server;
 
@@ -27,7 +26,6 @@ package java.rmi.server;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.2 $
  */
 public class ServerNotActiveException extends Exception {
 

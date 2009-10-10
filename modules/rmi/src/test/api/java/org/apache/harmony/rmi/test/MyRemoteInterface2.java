@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.test;
 
@@ -28,7 +27,6 @@ import java.rmi.RemoteException;
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public interface MyRemoteInterface2 extends Remote {
 

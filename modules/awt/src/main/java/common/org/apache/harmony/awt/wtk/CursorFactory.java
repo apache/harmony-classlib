@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev
- * @version $Revision$
  */
 package org.apache.harmony.awt.wtk;
 

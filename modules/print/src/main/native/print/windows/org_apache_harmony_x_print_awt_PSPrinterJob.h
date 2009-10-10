@@ -21,7 +21,6 @@
  */
 /** 
  * @author Alexey A. Petrenko 
- * @version $Revision: 1.3 $ 
  */ 
 
 #include <jni.h>

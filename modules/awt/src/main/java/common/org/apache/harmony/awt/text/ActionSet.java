@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexander T. Simbirtsev, Evgeniya G. Maenkova
- * @version $Revision$
  */
 
 package org.apache.harmony.awt.text;

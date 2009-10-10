@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 package java.util.regex;
 
@@ -27,7 +26,6 @@ import java.util.ArrayList;
  * Negative look behind node.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 class NegativeLookBehind extends AtomicJointSet {
     

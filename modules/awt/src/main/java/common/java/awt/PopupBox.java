@@ -17,7 +17,6 @@
 /**
  * @author Pavel Dolgov
  *
- * @version $Revision$
  */
 
 package java.awt;

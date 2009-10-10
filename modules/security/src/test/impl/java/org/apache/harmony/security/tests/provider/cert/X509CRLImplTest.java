@@ -16,7 +16,6 @@
  */
 /**
 * @author Alexander Y. Kleymenov
-* @version $Revision$
 */
 
 package org.apache.harmony.security.tests.provider.cert;

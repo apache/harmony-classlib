@@ -16,7 +16,6 @@
  */
 /**
  * @author Evgueni V. Brevnov
- * @version $Revision$
  */
 
 package org.apache.harmony.awt;

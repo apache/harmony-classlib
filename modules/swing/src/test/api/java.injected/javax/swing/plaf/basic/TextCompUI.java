@@ -16,7 +16,6 @@
  */
 /**
  * @author Evgeniya G. Maenkova
- * @version $Revision$
  * Created on 22.11.2004
 
  */

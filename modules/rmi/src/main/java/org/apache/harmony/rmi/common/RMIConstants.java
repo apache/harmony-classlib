@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.5 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -28,7 +27,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
 /**
  * The constants of the RMI and Activation framework.
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.5 $
  */
 public interface RMIConstants {
     /*

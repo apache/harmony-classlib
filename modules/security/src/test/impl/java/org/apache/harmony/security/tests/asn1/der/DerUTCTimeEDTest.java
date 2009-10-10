@@ -17,7 +17,6 @@
 
 /**
 * @author Vladimir N. Molotkov
-* @version $Revision$
 */
 
 package org.apache.harmony.security.tests.asn1.der;

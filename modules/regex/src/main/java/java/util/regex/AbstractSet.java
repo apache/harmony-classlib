@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.12.2.2 $
  */
 package java.util.regex;
 
@@ -26,7 +25,6 @@ package java.util.regex;
  * Note: All the classes representing nodes has set prefix;
  *    
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.12.2.2 $
  */
 abstract class AbstractSet {
     

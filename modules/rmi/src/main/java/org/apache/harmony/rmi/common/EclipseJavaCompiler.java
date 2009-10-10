@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -30,7 +29,6 @@ import java.lang.reflect.InvocationTargetException;
  * executed with a simple Java call.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class EclipseJavaCompiler extends MethodJavaCompiler {
 

@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 package org.apache.harmony.jndi.provider.dns;
 
@@ -36,7 +35,6 @@ import junit.framework.TestSuite;
 /**
  * <code>org.apache.harmony.jndi.provider.dns.DNSContext</class> class unit test. 
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 public class DNSContextTest extends TestCase {
 

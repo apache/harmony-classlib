@@ -16,7 +16,6 @@
  */
 /**
 * @author Yuri A. Kropachev
-* @version $Revision$
 */
 
 

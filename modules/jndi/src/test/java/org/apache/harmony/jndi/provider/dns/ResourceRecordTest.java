@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 
 package org.apache.harmony.jndi.provider.dns;
@@ -29,7 +28,6 @@ import junit.framework.TestCase;
  * Unit test for testing
  * <code>org.apache.harmony.jndi.provider.dns.ResourceRecord</code> class.
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.5 $
  * 
  * TODO add testcase(s)
  */

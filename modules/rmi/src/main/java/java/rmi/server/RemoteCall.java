@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.1 $
  */
 package java.rmi.server;
 
@@ -32,7 +31,6 @@ import java.io.StreamCorruptedException;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.1 $
  * @deprecated This interface is no longer required by RMI framework since v1.2.
  *  It is only used by the deprecated methods of
  *  {@link java.rmi.server.RemoteRef} class.

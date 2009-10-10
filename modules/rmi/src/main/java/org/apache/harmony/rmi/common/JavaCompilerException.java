@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.common;
  * General exception for Java Compiler classes.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public class JavaCompilerException extends Exception {
 

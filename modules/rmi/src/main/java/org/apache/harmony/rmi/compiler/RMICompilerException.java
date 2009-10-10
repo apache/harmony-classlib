@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.compiler;
  * Basic exception for RMI Compiler operations.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class RMICompilerException extends Exception {
 

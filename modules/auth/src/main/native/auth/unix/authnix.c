@@ -17,7 +17,6 @@
 
 /**
  * @author Alexander V. Astapchuk
- * @version $Revision$
  */
 #if defined( _WINDOWS)
 #include <windows.h>

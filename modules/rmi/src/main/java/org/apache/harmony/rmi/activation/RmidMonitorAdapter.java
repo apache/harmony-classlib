@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -40,7 +39,6 @@ import java.util.Hashtable;
  * The parent class for all RMID monitors.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 public class RmidMonitorAdapter implements RmidMonitor {
 

@@ -17,7 +17,6 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
  */
 package org.apache.harmony.beans.tests.support;
 
@@ -25,7 +24,6 @@ import java.util.EventListener;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.3 $
  */
 
 public interface MisprintListenerr extends EventListener {

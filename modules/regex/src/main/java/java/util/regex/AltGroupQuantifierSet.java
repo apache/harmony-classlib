@@ -17,14 +17,12 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.9.2.2 $
  */
 package java.util.regex;
 
 /**
  * Represents "?" quantifier over composite sets.
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.9.2.2 $
  */
 class AltGroupQuantifierSet extends GroupQuantifierSet {
 

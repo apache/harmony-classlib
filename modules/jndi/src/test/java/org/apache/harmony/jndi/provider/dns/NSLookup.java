@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 
 package org.apache.harmony.jndi.provider.dns;
@@ -36,7 +35,6 @@ import javax.naming.directory.InitialDirContext;
 /**
  * Simple NS lookup utility.
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class NSLookup {
     

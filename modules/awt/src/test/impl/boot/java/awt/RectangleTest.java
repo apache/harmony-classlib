@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev, Denis M. Kishenko
- * @version $Revision$
  */
 package java.awt;
 

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Node accepting any character including line terminators.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 class DotAllSet extends JointSet {
 

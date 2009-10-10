@@ -17,7 +17,6 @@
 
 /**
 * @author Alexander V. Esin
-* @version $Revision$
 */
 
 package org.apache.harmony.auth.tests.javax.security.auth.x500.serialization;

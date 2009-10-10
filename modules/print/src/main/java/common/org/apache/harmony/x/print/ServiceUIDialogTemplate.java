@@ -16,7 +16,6 @@
  */
 /** 
  * @author Irina A. Arkhipets 
- * @version $Revision: 1.3 $ 
  */ 
 
 /*

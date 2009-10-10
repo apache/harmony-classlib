@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.15.2.2 $
  */
 package java.util.regex;
 
@@ -30,7 +29,6 @@ import org.apache.harmony.regex.internal.nls.Messages;
  * Note: probably it might make sense to combine this class with Matcher.
  *  
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.15.2.2 $
  */
 class MatchResultImpl implements MatchResult {
 

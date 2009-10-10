@@ -16,7 +16,6 @@
  */
 /**
  * @author Anton Avtamonov, Alexey A. Ivanov
- * @version $Revision$
  */
 package org.apache.harmony.x.swing.text.html.cssparser.metamodel;
 

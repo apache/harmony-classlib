@@ -17,7 +17,6 @@
 
 /**
 * @author Alexander V. Esin
-* @version $Revision$
 */
 
 package org.apache.harmony.security.x501;

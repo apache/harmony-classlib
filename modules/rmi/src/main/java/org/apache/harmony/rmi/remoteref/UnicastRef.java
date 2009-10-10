@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.remoteref;
 
@@ -53,7 +52,6 @@ import org.apache.harmony.rmi.transport.RMIProtocolConstants;
  * Implementation of handle for remote objects.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class UnicastRef extends RemoteRefBase {
 

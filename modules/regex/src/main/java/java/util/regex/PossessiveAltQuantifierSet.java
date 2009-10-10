@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Possessive ? quantifier node.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class PossessiveAltQuantifierSet extends AltQuantifierSet {
 

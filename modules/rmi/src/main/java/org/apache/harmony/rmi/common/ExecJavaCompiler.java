@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -29,7 +28,6 @@ import java.io.IOException;
  * This class represents a Java Compiler executed as an external program.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public class ExecJavaCompiler extends JavaCompiler {
 

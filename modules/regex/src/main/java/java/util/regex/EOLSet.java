@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Represents node accepting single character.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 final class EOLSet extends AbstractSet {
     

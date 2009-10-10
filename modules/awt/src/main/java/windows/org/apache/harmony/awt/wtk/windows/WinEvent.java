@@ -16,7 +16,6 @@
  */
 /**
  * @author Michael Danilov
- * @version $Revision$
  */
 package org.apache.harmony.awt.wtk.windows;
 

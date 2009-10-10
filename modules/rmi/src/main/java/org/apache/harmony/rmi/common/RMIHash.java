@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -43,7 +42,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Generates class and method hash codes necessary for RMI.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public final class RMIHash {
 

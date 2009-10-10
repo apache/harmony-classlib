@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 package java.util.regex;
 
@@ -26,7 +25,6 @@ package java.util.regex;
  * different types returns true;
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 class WordBoundary extends AbstractSet {
 

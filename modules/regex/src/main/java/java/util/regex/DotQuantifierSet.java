@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 package java.util.regex;
 
@@ -27,7 +26,6 @@ package java.util.regex;
  * the construction from this point.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 class DotQuantifierSet extends QuantifierSet {
     

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Node representing previous match (\G).
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.4.2.2 $
  */
 class PreviousMatch extends AbstractSet {
 
