@@ -165,7 +165,7 @@ public class RenderingHints implements Map<Object, Object>, Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Map)) {
+        if (!(o instanceof Map<?, ?>)) {
             return false;
         }
 
