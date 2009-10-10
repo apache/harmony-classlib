@@ -292,13 +292,14 @@ public final class JobAttributes implements Cloneable {
     public void setPageRanges(int[][] pr) {
         // awt.157=Invalid value for pageRanges
         String msg = Messages.getString("awt.157"); //$NON-NLS-1$
-        int n1 = 0;
-        int n2 = 0;
-        int prl = pr.length;
 
         if(pr == null) {
             throw new IllegalArgumentException(msg);
         }
+        
+        int n1 = 0;
+        int n2 = 0;
+        int prl = pr.length;
 
         for(int k = 0; k < prl; k++) {
             if(pr[k] == null || pr[k].length != 2
