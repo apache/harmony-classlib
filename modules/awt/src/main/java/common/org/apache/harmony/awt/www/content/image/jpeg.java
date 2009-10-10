@@ -27,6 +27,7 @@ import org.apache.harmony.awt.gl.image.URLDecodingImageSource;
  * image/jpeg content handler.
  */
 public class jpeg extends ContentHandler {
+    @Override
     public Object getContent(URLConnection conn) throws IOException {
         return new URLDecodingImageSource(conn.getURL());
     }

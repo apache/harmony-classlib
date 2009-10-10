@@ -27,6 +27,7 @@ import org.apache.harmony.awt.gl.image.URLDecodingImageSource;
  * image/png content handler.
  */
 public class png extends ContentHandler {
+    @Override
     public Object getContent(URLConnection conn) throws IOException {
         return new URLDecodingImageSource(conn.getURL());
     }
