@@ -145,8 +145,8 @@ public class CrossingHelper {
         	areaOfEdge1 = 1;
         }
  
-        for (Iterator iter = edges.iterator(); iter.hasNext(); ) {
-        	edge = (Edge) iter.next();
+        for (Iterator<Edge> iter = edges.iterator(); iter.hasNext(); ) {
+        	edge = iter.next();
         	
             if (edge.areaNumber == 0) {
                 x3 = coords1[2* edge.begIndex];
@@ -200,8 +200,8 @@ public class CrossingHelper {
                 }
      
                 IntersectPoint ip;
-                for (Iterator i = isectPoints.iterator(); i.hasNext(); ) {
-                	ip = (IntersectPoint)i.next();
+                for (Iterator<IntersectPoint> i = isectPoints.iterator(); i.hasNext(); ) {
+                	ip = i.next();
                 	
                     if ((initBegin == ip.getBegIndex(true)) && 
                     	(initEnd == ip.getEndIndex(true))) {
@@ -287,8 +287,8 @@ public class CrossingHelper {
     public boolean containsPoint(double[] point) {
     	IntersectPoint ipoint;
     	
-    	for (Iterator i = isectPoints.iterator(); i.hasNext(); ) {
-        	ipoint = (IntersectPoint)i.next();
+    	for (Iterator<IntersectPoint> i = isectPoints.iterator(); i.hasNext(); ) {
+        	ipoint = i.next();
         	
         	if (ipoint.getX() == point[0] && ipoint.getY() == point[1]) {
         		return true;
@@ -309,18 +309,18 @@ public class CrossingHelper {
         return -1;
     }
 
-    private static class Edge {
-        int begIndex;
-        int endIndex;
-        int areaNumber;
+    private static final class Edge {
+        final int begIndex;
+        final int endIndex;
+        final int areaNumber;
 
-        public Edge(int begIndex, int endIndex, int areaNumber) {
+        Edge(int begIndex, int endIndex, int areaNumber) {
             this.begIndex = begIndex;
             this.endIndex = endIndex;
             this.areaNumber = areaNumber;
         }
 
-        public boolean reverseCompare (int begIndex, int endIndex) {
+        boolean reverseCompare (int begIndex, int endIndex) {
             return this.begIndex == endIndex && this.endIndex == begIndex;
         }
     }
