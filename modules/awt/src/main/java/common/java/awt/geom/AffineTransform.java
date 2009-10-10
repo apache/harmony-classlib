@@ -492,7 +492,7 @@ public class AffineTransform implements Cloneable, Serializable {
 
     public Point2D deltaTransform(Point2D src, Point2D dst) {
         if (dst == null) {
-            if (dst instanceof Point2D.Double) {
+            if (src instanceof Point2D.Double) {
                 dst = new Point2D.Double();
             } else {
                 dst = new Point2D.Float();
