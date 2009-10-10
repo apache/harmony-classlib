@@ -83,20 +83,6 @@ public class FontMetricsImpl extends FontMetrics  {
         this.maxAscent = ascent;
         this.maxDescent = descent;
         this.maxAdvance = lm.getLogicalMaxCharWidth();
-//        initWidths();
-    }
-
-    /**
-     * Initialize the array of the first 256 chars' advance widths
-     * of the Font describing this FontMetricsImpl object.
-     */
-    private void initWidths(){
-
-        this.widths = new int[256];
-        for (int chr=0; chr < 256; chr++){
-            widths[chr] = (int)(getFontPeer().charWidth((char)chr)*scaleX);
-        }
-
     }
 
     /**
@@ -179,7 +165,6 @@ public class FontMetricsImpl extends FontMetrics  {
      * Returns the maximum descent of the Font describing this 
      * FontMetricsImpl object.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getMaxDecent() {
