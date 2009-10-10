@@ -233,7 +233,6 @@ public class DragSource implements Serializable {
         startDrag(trigger, dragCursor, transferable, dsl, null);
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends DragGestureRecognizer> T createDragGestureRecognizer(
             Class<T> recognizerAbstractClass, Component c, int actions, DragGestureListener dgl) {
 
