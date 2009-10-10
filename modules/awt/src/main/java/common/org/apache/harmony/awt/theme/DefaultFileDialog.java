@@ -19,8 +19,21 @@
  */
 package org.apache.harmony.awt.theme;
 
-import java.awt.*;
-
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Canvas;
+import java.awt.Choice;
+import java.awt.Dimension;
+import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Label;
+import java.awt.List;
+import java.awt.Panel;
+import java.awt.SystemColor;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -29,8 +42,6 @@ import java.io.File;
 
 import org.apache.harmony.awt.ChoiceStyle;
 import org.apache.harmony.awt.ComponentInternals;
-
-
 
 /**
  * DefaultFileDialog
@@ -182,8 +193,8 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     private void fillLists() {
         clearLists();
         updateFilter();
-        File curFolder = new File(path.getText());
-        if ((curFolder != null) && curFolder.isDirectory()) {
+        final File curFolder = new File(path.getText());
+        if (curFolder.isDirectory()) {
             File[] allFiles = curFolder.listFiles(fileDialog.getFilenameFilter());
             int count = allFiles.length;
             for (int i = 0; i < count; i++) {
