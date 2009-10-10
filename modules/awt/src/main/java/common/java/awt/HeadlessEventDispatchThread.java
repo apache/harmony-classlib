@@ -34,6 +34,7 @@ final class HeadlessEventDispatchThread extends EventDispatchThread  {
         }
     }
     
+    @Override
     void runModalLoop(ModalContext context) {
         long lastPaintTime = System.currentTimeMillis();
         while (!shutdownPending && (context == null || context.isModalLoopRunning())) {
