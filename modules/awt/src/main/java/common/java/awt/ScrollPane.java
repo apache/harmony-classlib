@@ -256,7 +256,6 @@ public class ScrollPane extends Container implements Accessible {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void layout() {
