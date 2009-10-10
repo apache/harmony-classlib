@@ -57,7 +57,6 @@ Export-Package: java.awt,
  org.apache.harmony.awt.gl,
  org.apache.harmony.awt.gl.image,
  org.apache.harmony.awt.gl.windows,
- org.apache.harmony.awt.www.content.image,
  org.apache.harmony.awt.nativebridge,
  org.apache.harmony.awt.nativebridge.windows,
  org.apache.harmony.awt.text
