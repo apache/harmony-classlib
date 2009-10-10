@@ -20,9 +20,7 @@
 package org.apache.harmony.awt.gl;
 
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.peer.FontPeer;
-
 import java.io.IOException;
 
 import org.apache.harmony.awt.wtk.GraphicsFactory;
