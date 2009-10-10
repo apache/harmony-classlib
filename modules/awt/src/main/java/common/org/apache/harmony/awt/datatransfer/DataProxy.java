@@ -57,9 +57,9 @@ import org.apache.harmony.awt.internal.nls.Messages;
  */
 public final class DataProxy implements Transferable {
     
-    public static final Class[] unicodeTextClasses = 
+    public static final Class<?>[] unicodeTextClasses = 
             { String.class, Reader.class, CharBuffer.class, char[].class }; 
-    public static final Class[] charsetTextClasses = 
+    public static final Class<?>[] charsetTextClasses = 
               { byte[].class, ByteBuffer.class, InputStream.class };
     
     private final DataProvider data;
