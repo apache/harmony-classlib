@@ -45,7 +45,7 @@ public class TextField extends TextComponent {
 
         @Override
         public AccessibleStateSet getAccessibleStateSet() {
-            AccessibleStateSet set = super.getAccessibleStateSet();
+            final AccessibleStateSet set = super.getAccessibleStateSet();
             set.add(AccessibleState.SINGLE_LINE);
             return set;
         }
@@ -72,9 +72,9 @@ public class TextField extends TextComponent {
          */
         public BoundedRangeModel getHorizontalVisibility() {
             if (boundedRangeModel == null) {
-                int prefWidth = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS);
-                int value = getMaxScrollOffset();
-                int max = Math.max(prefWidth, value);
+                final int prefWidth = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS);
+                final int value = getMaxScrollOffset();
+                final int max = Math.max(prefWidth, value);
                 boundedRangeModel = new DefaultBoundedRangeModel(value, max - value, 0, max);
                 boundedRangeModel.addChangeListener(new ChangeListener() {
                     public void stateChanged(ChangeEvent e) {
@@ -225,15 +225,11 @@ public class TextField extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Dimension minimumSize(int columns) {
         toolkit.lockAWT();
         try {
-            Dimension minSize = calcSize(columns);
+            final Dimension minSize = calcSize(columns);
             if (minSize == null) {
                 return super.minimumSize();
             }
@@ -247,17 +243,13 @@ public class TextField extends TextComponent {
      * Calculates minimum size required for <code>cols</code> columns
      */
     private Dimension calcSize(int cols) {
-        FontMetrics fm = getFontMetrics(getFont());
+        final FontMetrics fm = getFontMetrics(getFont());
         if ((fm == null) || !isDisplayable()) {
             return null;
         }
         return new Dimension(fm.charWidth('_') * cols + 6, fm.getHeight() + 6);
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension minimumSize() {
@@ -274,7 +266,7 @@ public class TextField extends TextComponent {
 
     @Override
     protected String paramString() {
-        /* The format is based on 1.5 release behavior 
+        /* The format is based on 1.5 release behavior
          * which can be revealed by the following code:
          * 
          * TextField tf = new TextField();
@@ -293,15 +285,11 @@ public class TextField extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Dimension preferredSize(int columns) {
         toolkit.lockAWT();
         try {
-            Dimension prefSize = calcSize(columns);
+            final Dimension prefSize = calcSize(columns);
             if (prefSize == null) {
                 return super.preferredSize();
             }
@@ -311,10 +299,6 @@ public class TextField extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension preferredSize() {
@@ -414,7 +398,7 @@ public class TextField extends TextComponent {
     }
 
     protected void processActionEvent(ActionEvent e) {
-        for (ActionListener listener : actionListeners.getUserListeners()) {
+        for (final ActionListener listener : actionListeners.getUserListeners()) {
             switch (e.getID()) {
                 case ActionEvent.ACTION_PERFORMED:
                     listener.actionPerformed(e);
@@ -434,8 +418,8 @@ public class TextField extends TextComponent {
      */
     @Override
     View createView() {
-        TextFactory factory = TextFactory.getTextFactory();
-        View v = factory.createPasswordView(document.getDefaultRootElement());
+        final TextFactory factory = TextFactory.getTextFactory();
+        final View v = factory.createPasswordView(document.getDefaultRootElement());
         return v;
     }
 
@@ -464,13 +448,13 @@ public class TextField extends TextComponent {
      */
     @Override
     void scrollRectToVisible(Rectangle r) {
-        int x = r.x;
-        Insets insets = getTextFieldKit().getInsets();
-        BoundedRangeModel brm = getTextFieldKit().getHorizontalVisibility();
-        int oldValue = brm.getValue();
-        int width = getModelRect().width;
+        final int x = r.x;
+        final Insets insets = getTextFieldKit().getInsets();
+        final BoundedRangeModel brm = getTextFieldKit().getHorizontalVisibility();
+        final int oldValue = brm.getValue();
+        final int width = getModelRect().width;
         if (x > width - insets.right) {
-            int newVal = oldValue + (x - width + insets.right) + 2;
+            final int newVal = oldValue + (x - width + insets.right) + 2;
             brm.setValue(newVal);
             repaint();
         }
@@ -495,11 +479,11 @@ public class TextField extends TextComponent {
      * client area size.
      */
     final int getMaxScrollOffset() {
-        Insets ins = getNativeInsets();
-        int prefWidth = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS)
-                + ins.left + ins.right;
-        int width = getWidth();
-        int diff = prefWidth - width;
+        final Insets ins = getNativeInsets();
+        final int prefSpanX = (int) rootViewContext.getView().getPreferredSpan(View.X_AXIS);
+        final int prefWidth = prefSpanX + ins.left + ins.right;
+        final int width = getWidth();
+        final int diff = prefWidth - width;
         return (diff >= 0) ? diff + 1 : 0;
     }
 
