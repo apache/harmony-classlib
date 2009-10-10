@@ -21,8 +21,6 @@
 package java.awt;
 
 import java.awt.image.BufferedImage;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Locale;
 
 import org.apache.harmony.awt.ContextStorage;
@@ -38,13 +36,13 @@ public abstract class GraphicsEnvironment {
     public static GraphicsEnvironment getLocalGraphicsEnvironment() {
         synchronized(ContextStorage.getContextLock()) {
             if (ContextStorage.getGraphicsEnvironment() == null) {
-                if (isHeadless()) {                    
-                    ContextStorage.setGraphicsEnvironment(new HeadlessGraphicsEnvironment());                    
+                if (isHeadless()) {
+                    ContextStorage.setGraphicsEnvironment(new HeadlessGraphicsEnvironment());
                 } else {
-                    CommonGraphics2DFactory g2df =
-                            (CommonGraphics2DFactory) Toolkit.getDefaultToolkit().getGraphicsFactory();
-                    
-                    ContextStorage.setGraphicsEnvironment( 
+                    final CommonGraphics2DFactory g2df =
+                        (CommonGraphics2DFactory) Toolkit.getDefaultToolkit().getGraphicsFactory();
+
+                    ContextStorage.setGraphicsEnvironment(
                             g2df.createGraphicsEnvironment(ContextStorage.getWindowFactory())
                     );
                 }
@@ -60,9 +58,9 @@ public abstract class GraphicsEnvironment {
 
     public static boolean isHeadless() {
         if (isHeadless == null) {
-            isHeadless = "true".equals(org.apache.harmony.awt.Utils.getSystemProperty("java.awt.headless")); //$NON-NLS-1$ //$NON-NLS-2$
+            isHeadless = Boolean.valueOf(org.apache.harmony.awt.Utils.getSystemProperty("java.awt.headless")); //$NON-NLS-1$ 
         }
-        
+
         return isHeadless.booleanValue();
     }
 
@@ -71,7 +69,7 @@ public abstract class GraphicsEnvironment {
     }
 
     public Point getCenterPoint() throws HeadlessException {
-        Rectangle mwb = getMaximumWindowBounds();
+        final Rectangle mwb = getMaximumWindowBounds();
         return new Point(mwb.width >> 1, mwb.height >> 1);
     }
 
