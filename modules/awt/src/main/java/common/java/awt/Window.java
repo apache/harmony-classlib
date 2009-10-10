@@ -26,25 +26,26 @@ import java.awt.image.BufferStrategy;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
+
 import org.apache.harmony.awt.AWTPermissionCollection;
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.im.InputMethodContext;
 import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.wtk.NativeWindow;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public class Window extends Container implements Accessible {
     private static final long serialVersionUID = 4497834738069338734L;
@@ -270,29 +271,12 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    public void createBufferStrategy(int a0) throws org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-        }
-        return;
+    public void createBufferStrategy(int a0) throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
-    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException, org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); // TODO: //$NON-NLS-1$
-                                                                        // implement
-        }
-        return;
+    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException, NotImplementedException {
+        throw new NotImplementedException();
     }
 
     public void dispose() {
@@ -345,17 +329,8 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    public BufferStrategy getBufferStrategy() throws org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); // TODO: //$NON-NLS-1$
-                                                                        // implement
-        }
-        return null;
+    public BufferStrategy getBufferStrategy() throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
     @Override
@@ -429,11 +404,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
-    @SuppressWarnings("deprecation")
     @Override
     public void hide() {
         toolkit.lockAWT();
@@ -506,10 +477,6 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public boolean postEvent(Event evt) {
@@ -522,11 +489,7 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
-    @SuppressWarnings("deprecation")
     @Override
     public void show() {
         toolkit.lockAWT();
@@ -596,10 +559,6 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public void applyResourceBundle(ResourceBundle rb) {
         toolkit.lockAWT();
@@ -610,9 +569,6 @@ public class Window extends Container implements Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void applyResourceBundle(String rbName) {
         toolkit.lockAWT();
