@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 package java.rmi.dgc;
 
@@ -29,7 +28,6 @@ import java.io.Serializable;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 public final class Lease implements Serializable {
     private static final long serialVersionUID = -5713411624328831948L;

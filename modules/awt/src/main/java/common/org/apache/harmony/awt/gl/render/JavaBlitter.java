@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  * Created on 18.11.2005
  *
  */
@@ -34,14 +33,13 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-import org.apache.harmony.awt.gl.ImageSurface;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.XORComposite;
 import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
- * Java implenetation of the Blitter interface. Using when we can't 
+ * Java implementation of the Blitter interface. Using when we can't 
  * draw images natively.
  */
 public class JavaBlitter implements Blitter {

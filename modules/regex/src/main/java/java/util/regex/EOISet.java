@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Represents end of input '\z', i.e. matches only character after the last one;
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 class EOISet extends AbstractSet {
 

@@ -16,7 +16,6 @@
  */
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  */
 package java.awt.color;
 
@@ -548,8 +547,6 @@ public class ICC_Profile implements Serializable {
      * @return
      */
     private static FileInputStream tryPath(String path, String fileName) {
-        FileInputStream fiStream = null;
-
         if (path == null) {
             return null;
         }
@@ -559,14 +556,10 @@ public class ICC_Profile implements Serializable {
         while (st.hasMoreTokens()) {
             String pathEntry = st.nextToken();
             try {
-                fiStream = new FileInputStream(pathEntry + File.separatorChar + fileName);
-                if (fiStream != null) {
-                    return fiStream;
-                }
+                return new FileInputStream(pathEntry + File.separatorChar + fileName);
             } catch (FileNotFoundException e) {}
         }
-
-        return fiStream;
+        return null;
     }
 
     public static ICC_Profile getInstance(String fileName) throws IOException {
@@ -575,18 +568,13 @@ public class ICC_Profile implements Serializable {
         FileInputStream fiStream = AccessController.doPrivileged(
                 new PrivilegedAction<FileInputStream>() {
                     public FileInputStream run() {
-                        FileInputStream fiStream = null;
-
                         // Open absolute path
                         try {
-                            fiStream = new FileInputStream(fName);
-                            if (fiStream != null) {
-                                return fiStream;
-                            }
+                            return new FileInputStream(fName);
                         } catch (FileNotFoundException e) {}
 
                         // Check java.iccprofile.path entries
-                        fiStream = tryPath(org.apache.harmony.awt.Utils.getSystemProperty("java.iccprofile.path"), fName); //$NON-NLS-1$
+                        FileInputStream fiStream = tryPath(org.apache.harmony.awt.Utils.getSystemProperty("java.iccprofile.path"), fName); //$NON-NLS-1$
                         if (fiStream != null) {
                             return fiStream;
                         }
@@ -897,6 +885,7 @@ public class ICC_Profile implements Serializable {
         return 0;
     }
 
+    @SuppressWarnings("null")
     float getGamma(int tagSignature) {
         short[] dataTRC = null;
         float gamma = getGammaOrTRC(tagSignature, dataTRC);
@@ -908,6 +897,7 @@ public class ICC_Profile implements Serializable {
         throw new ProfileDataException(Messages.getString("awt.166")); //$NON-NLS-1$
     }
 
+    @SuppressWarnings("null")
     short[] getTRC(int tagSignature) {
         short[] dataTRC = null;
         getGammaOrTRC(tagSignature, dataTRC);

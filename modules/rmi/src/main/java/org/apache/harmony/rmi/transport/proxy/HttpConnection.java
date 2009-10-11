@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -38,7 +37,6 @@ import org.apache.harmony.rmi.transport.Endpoint;
  * HTTP proxy connection.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class HttpConnection extends ClientConnection
         implements ProxyConstants {

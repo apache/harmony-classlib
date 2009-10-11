@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  * Created on 10.11.2005
  *
  */
@@ -193,8 +192,7 @@ public abstract class Surface implements Transparency{
     }
     
     public int[] getDirtyRegions(){
-        if(dirtyRegions != null) return dirtyRegions.rect;
-        else return null;
+        return (dirtyRegions == null ? null : dirtyRegions.rect);
     }
 
     /**

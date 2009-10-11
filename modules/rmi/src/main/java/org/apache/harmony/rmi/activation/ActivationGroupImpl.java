@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -50,7 +49,6 @@ import org.apache.harmony.rmi.transport.RMIObjectInputStream;
  * The implementation of ActivationGroup.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 public class ActivationGroupImpl extends ActivationGroup {
 

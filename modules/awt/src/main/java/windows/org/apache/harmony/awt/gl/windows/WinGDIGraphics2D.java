@@ -16,7 +16,6 @@
  */
 /**
  * @author Vladimir A. Strigun
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl.windows;
 

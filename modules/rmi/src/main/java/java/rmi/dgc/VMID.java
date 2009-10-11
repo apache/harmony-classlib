@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.2 $
  */
 package java.rmi.dgc;
 
@@ -37,7 +36,6 @@ import java.util.Arrays;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.2 $
  */
 public final class VMID implements Serializable {
     private static final long serialVersionUID = -538642295484486218L;

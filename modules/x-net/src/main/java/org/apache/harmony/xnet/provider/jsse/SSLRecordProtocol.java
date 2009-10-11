@@ -56,24 +56,24 @@ public class SSLRecordProtocol {
      * Maximum length of allowed plain data fragment 
      * as specified by TLS specification.
      */
-    protected static int MAX_DATA_LENGTH = 16384; // 2^14
+    protected static final int MAX_DATA_LENGTH = 16384; // 2^14
     /**
      * Maximum length of allowed compressed data fragment
      * as specified by TLS specification.
      */
-    protected static int MAX_COMPRESSED_DATA_LENGTH
+    protected static final int MAX_COMPRESSED_DATA_LENGTH
                                     = MAX_DATA_LENGTH + 1024;
     /**
      * Maximum length of allowed ciphered data fragment
      * as specified by TLS specification.
      */
-    protected static int MAX_CIPHERED_DATA_LENGTH
+    protected static final int MAX_CIPHERED_DATA_LENGTH
                                     = MAX_COMPRESSED_DATA_LENGTH + 1024;
     /** 
      * Maximum length of ssl record. It is counted as:
      * type(1) + version(2) + length(2) + MAX_CIPHERED_DATA_LENGTH
      */
-    protected static int MAX_SSL_PACKET_SIZE
+    protected static final int MAX_SSL_PACKET_SIZE
                                     = MAX_CIPHERED_DATA_LENGTH + 5;
     // the SSL session used for connection
     private SSLSessionImpl session;

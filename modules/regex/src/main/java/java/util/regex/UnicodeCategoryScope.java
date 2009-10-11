@@ -17,14 +17,12 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.5.2.2 $
  */
 package java.util.regex;
 
 /**
  * Unicode category scope (i.e IsL, IsM, ...)
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.5.2.2 $
  */
 class UnicodeCategoryScope extends UnicodeCategory {
 

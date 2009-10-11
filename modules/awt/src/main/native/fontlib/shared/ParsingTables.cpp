@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev
- * @version $Revision$
  */
 #include <stdio.h>
 #include <memory.h>

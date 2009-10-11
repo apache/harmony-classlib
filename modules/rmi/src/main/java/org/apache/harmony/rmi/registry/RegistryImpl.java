@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.registry;
 
@@ -52,7 +51,6 @@ import org.apache.harmony.rmi.server.ServerConnectionManager;
  * objects with well-known ObjID numbers.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class RegistryImpl extends RemoteServer implements Registry {
 

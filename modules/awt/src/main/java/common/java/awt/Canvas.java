@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev
- * @version $Revision$
  */
 package java.awt;
 
@@ -24,6 +23,8 @@ import java.awt.image.BufferStrategy;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
+
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public class Canvas extends Component implements Accessible {
     private static final long serialVersionUID = -2284879212465893870L;
@@ -74,28 +75,12 @@ public class Canvas extends Component implements Accessible {
         }
     }
 
-    public void createBufferStrategy(int a0) throws org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return;
+    public void createBufferStrategy(int a0) throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
-    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException, org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return;
+    public void createBufferStrategy(int a0, BufferCapabilities a1) throws AWTException, NotImplementedException {
+        throw new NotImplementedException();
     }
 
     @Override
@@ -103,16 +88,8 @@ public class Canvas extends Component implements Accessible {
         return super.getAccessibleContext();
     }
 
-    public BufferStrategy getBufferStrategy() throws org.apache.harmony.luni.util.NotImplementedException {
-        toolkit.lockAWT();
-        try {
-        } finally {
-            toolkit.unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return null;
+    public BufferStrategy getBufferStrategy() throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
     @Override

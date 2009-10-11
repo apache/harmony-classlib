@@ -218,14 +218,14 @@ public final class Inet4Address extends InetAddress {
      */
     @Override
     public String getHostAddress() {
-        String hostAddress = ""; //$NON-NLS-1$
+        final StringBuilder hostAddress = new StringBuilder();
         for (int i = 0; i < 4; i++) {
-            hostAddress += ipaddress[i] & 255;
+            hostAddress.append(ipaddress[i] & 255);
             if (i != 3) {
-                hostAddress += "."; //$NON-NLS-1$
+                hostAddress.append('.');
             }
         }
-        return hostAddress;
+        return hostAddress.toString();
     }
 
     /**

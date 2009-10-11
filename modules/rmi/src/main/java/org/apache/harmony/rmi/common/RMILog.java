@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -38,7 +37,6 @@ import java.util.logging.StreamHandler;
  * Class containing all RMI logging functionality.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.4 $
  */
 public class RMILog implements RMIProperties {
 

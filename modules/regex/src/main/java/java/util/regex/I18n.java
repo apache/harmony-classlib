@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.1.2.3 $
  */
 
 package java.util.regex;
@@ -29,7 +28,6 @@ import java.text.MessageFormat;
  * real internationalization utility.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.1.2.3 $
  * 
  */
 class I18n {

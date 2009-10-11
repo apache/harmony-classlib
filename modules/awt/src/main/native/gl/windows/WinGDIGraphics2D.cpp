@@ -16,7 +16,6 @@
  */
 /**
  * @author Vladimir A. Strigun
- * @version $Revision$
  */
 #include <jni.h>
 

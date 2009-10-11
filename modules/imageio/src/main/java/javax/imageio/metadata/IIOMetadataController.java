@@ -16,13 +16,11 @@
  */
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 package javax.imageio.metadata;
 
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 public interface IIOMetadataController {
 

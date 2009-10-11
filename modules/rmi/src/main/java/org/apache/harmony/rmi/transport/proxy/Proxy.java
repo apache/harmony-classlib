@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -44,7 +43,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * of that instance called each time new connection is established.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public final class Proxy implements ProxyConstants {
 

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -26,7 +25,6 @@ package java.util.regex;
  * next node and normal quantifiers could be treated as greedy and possessive.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class UnifiedQuantifierSet extends LeafQuantifierSet {
     

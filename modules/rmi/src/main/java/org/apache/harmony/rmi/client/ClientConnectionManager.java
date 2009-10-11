@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.client;
 
@@ -48,7 +47,6 @@ import org.apache.harmony.rmi.transport.tcp.TcpConnection;
  * opened connections so the client could reuse them.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public final class ClientConnectionManager {
 

@@ -16,7 +16,6 @@
  */
 /**
 * @author Boris V. Kuznetsov
-* @version $Revision$
 */
 
 package org.apache.harmony.security.tests.support;

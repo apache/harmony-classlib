@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -39,7 +38,6 @@ import java.net.URLClassLoader;
  * of what class and method must be used.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public class MethodJavaCompiler extends JavaCompiler {
 

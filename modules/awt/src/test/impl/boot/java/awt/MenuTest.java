@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov
- * @version $Revision$
  */
 /*
  * Created on 15.02.2005

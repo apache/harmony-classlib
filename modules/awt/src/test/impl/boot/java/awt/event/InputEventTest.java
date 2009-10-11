@@ -16,7 +16,6 @@
  */
 /**
  * @author Michael Danilov
- * @version $Revision$
  */
 package java.awt.event;
 

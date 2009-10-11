@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.remoteref;
 
@@ -49,7 +48,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * the Remote Reference to the active object.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  *
  * ActivatableRef
  */

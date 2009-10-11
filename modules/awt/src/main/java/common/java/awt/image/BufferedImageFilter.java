@@ -18,7 +18,6 @@
  */
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  */
 
 package java.awt.image;

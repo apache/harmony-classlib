@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
  */
 package javax.imageio.event;
 

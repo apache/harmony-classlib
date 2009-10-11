@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov
- * @version $Revision$
  */
 #ifndef _WIN_DATA_TRANSFER_H_
 #define _WIN_DATA_TRANSFER_H_

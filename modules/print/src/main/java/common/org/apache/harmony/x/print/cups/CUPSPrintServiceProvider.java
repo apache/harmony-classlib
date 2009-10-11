@@ -16,7 +16,6 @@
  */
 /** 
  * @author Igor A. Pyankov 
- * @version $Revision: 1.3 $ 
  */ 
 
 package org.apache.harmony.x.print.cups;

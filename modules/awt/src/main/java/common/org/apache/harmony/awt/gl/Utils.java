@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexey A. Petrenko, Igor V. Stolyarov
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl;
 

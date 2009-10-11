@@ -17,14 +17,12 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
 /**
  * Reluctant version of composite(i.e. {n,m}) quantifier set over leaf nodes.
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class ReluctantCompositeQuantifierSet extends CompositeQuantifierSet {
     

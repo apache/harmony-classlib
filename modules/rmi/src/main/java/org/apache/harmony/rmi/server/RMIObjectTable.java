@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -32,7 +31,6 @@ import java.rmi.server.ObjID;
  * RMIReference to the object's implementation.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 final class RMIObjectTable {
 

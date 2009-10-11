@@ -16,7 +16,6 @@
  */
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 package javax.imageio.event;
 
@@ -26,7 +25,6 @@ import javax.imageio.ImageReader;
 
 /**
  * @author Sergey I. Salishev
- * @version $Revision: 1.2 $
  */
 public interface IIOReadUpdateListener extends EventListener {
 

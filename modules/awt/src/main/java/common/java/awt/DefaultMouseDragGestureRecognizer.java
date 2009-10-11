@@ -26,6 +26,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 class DefaultMouseDragGestureRecognizer extends MouseDragGestureRecognizer {
+    private static final long serialVersionUID = 1L;
+
     private boolean active;
 
     protected DefaultMouseDragGestureRecognizer(DragSource ds, Component c, int act,

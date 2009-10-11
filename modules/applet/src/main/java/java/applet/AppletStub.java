@@ -16,7 +16,6 @@
  */
 /** 
  * @author Pavel Dolgov
- * @version $Revision: 1.3 $
  */  
 package java.applet;
 

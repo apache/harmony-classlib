@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexander T. Simbirtsev, Anton Avtamonov
- * @version $Revision$
  */
 package org.apache.harmony.x.swing;
 

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 package java.util.regex;
 
@@ -28,7 +27,6 @@ import java.util.BitSet;
  * documentation for more details.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 class CharClass extends AbstractCharClass {
 

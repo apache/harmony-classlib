@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.7 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.common;
  * Interface containing names of all supported RMI properties.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.7 $
  */
 public interface RMIProperties {
 

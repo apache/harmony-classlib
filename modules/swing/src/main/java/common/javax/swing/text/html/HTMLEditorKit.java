@@ -16,7 +16,6 @@
  */
 /**
 * @author Vadim L. Bogdanov, Alexander T. Simbirtsev
-* @version $Revision$
 */
 package javax.swing.text.html;
 

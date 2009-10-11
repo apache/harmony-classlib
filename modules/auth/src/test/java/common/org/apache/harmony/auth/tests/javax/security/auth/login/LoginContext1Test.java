@@ -17,7 +17,6 @@
 
 /**
 * @author Alexander V. Astapchuk
-* @version $Revision$
 */
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;

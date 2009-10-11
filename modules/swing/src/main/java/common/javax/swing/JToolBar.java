@@ -16,7 +16,6 @@
  */
 /**
  * @author Vadim L. Bogdanov, Anton Avtamonov
- * @version $Revision$
  */
 package javax.swing;
 

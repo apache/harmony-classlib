@@ -16,7 +16,6 @@
  */
 /**
  * @author Viskov Nikolay 
- * @version $Revision$
  */
 #ifndef __TYPE_1_ENCODED_VALUE_CLASS_H
 #define __TYPE_1_ENCODED_VALUE_CLASS_H

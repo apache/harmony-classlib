@@ -16,7 +16,6 @@
  */
 /**
  * @author Viskov Nikolay 
- * @version $Revision$
  */
 #include "EncodedValue.h"
 #include <stdio.h>

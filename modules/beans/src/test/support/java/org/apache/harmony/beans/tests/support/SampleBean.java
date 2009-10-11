@@ -17,7 +17,6 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
  */
 package org.apache.harmony.beans.tests.support;
 
@@ -27,7 +26,6 @@ import java.util.Vector;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.3.6.3 $
  */
 
 public class SampleBean {

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 package java.util.regex;
 
@@ -32,7 +31,6 @@ package java.util.regex;
  * @see Matcher#toMatchResult()
  *
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 public interface MatchResult {
 

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.6.4.3 $
  */
 package java.rmi.server;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.common.RMIProperties;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.6.4.3 $
  */
 public final class ObjID implements Serializable {
 

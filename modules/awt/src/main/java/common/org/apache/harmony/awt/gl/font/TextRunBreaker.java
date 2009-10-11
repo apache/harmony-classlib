@@ -16,7 +16,6 @@
  */
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  *
  */
 
@@ -221,12 +220,11 @@ public class TextRunBreaker implements Cloneable {
             // Find appropriate font or place GraphicAttribute there
 
             // 1. Try to pick up CHAR_REPLACEMENT (compatibility)
-            Object value = (GraphicAttribute)
-                    attributes.get(TextAttribute.CHAR_REPLACEMENT);
+            Object value = attributes.get(TextAttribute.CHAR_REPLACEMENT);
 
             if (value == null) {
                 // 2. Try to Get FONT
-                value = (Font)attributes.get(TextAttribute.FONT);
+                value = attributes.get(TextAttribute.FONT);
 
                 if (value == null) {
                     // 3. Try to create font from FAMILY

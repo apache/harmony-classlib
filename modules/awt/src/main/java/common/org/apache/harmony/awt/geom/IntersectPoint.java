@@ -19,9 +19,9 @@ package org.apache.harmony.awt.geom;
 
 // the class represents the intersect point of two edges
 public class IntersectPoint {
-    //	 the edge begin number of first line 
+    //  the edge begin number of first line
     private int begIndex1;
-    //  the edge end number of first line 
+    //  the edge end number of first line
     private int endIndex1;
     // the edge rule of first figure
     private int rule1;
@@ -29,24 +29,24 @@ public class IntersectPoint {
     private int ruleIndex1;
     // the parameter value of edge1
     private double param1;
-    //  the edge begin number of second line 
+    //  the edge begin number of second line
     private int begIndex2;
-    //  the edge end number of second line 
+    //  the edge end number of second line
     private int endIndex2;
     //  the edge rule of second figure
     private int rule2;
     //  the index of the second figure rules array
     private int ruleIndex2;
     //  the absciss coordinate of the point
-    private double x;
+    private final double x;
     //  the ordinate coordinate of the point
-    private double y;
-//  the parameter value of edge2
+    private final double y;
+    //  the parameter value of edge2
     private double param2;
 
     public IntersectPoint(int begIndex1, int endIndex1,
-                          int begIndex2, int endIndex2,
-                          double x, double y) {
+            int begIndex2, int endIndex2,
+            double x, double y) {
         this.begIndex1 = begIndex1;
         this.endIndex1 = endIndex1;
         this.begIndex2 = begIndex2;
@@ -55,9 +55,9 @@ public class IntersectPoint {
         this.y = y;
     }
 
-    public IntersectPoint (int begIndex1, int endIndex1, int rule1, int ruleIndex1, 
-                           int begIndex2, int endIndex2, int rule2, int ruleIndex2,
-                           double x, double y, double param1, double param2) {
+    public IntersectPoint (int begIndex1, int endIndex1, int rule1, int ruleIndex1,
+            int begIndex2, int endIndex2, int rule2, int ruleIndex2,
+            double x, double y, double param1, double param2) {
         this.begIndex1 = begIndex1;
         this.endIndex1 = endIndex1;
         this.rule1 = rule1;
@@ -73,45 +73,25 @@ public class IntersectPoint {
     }
 
     public int getBegIndex(boolean isCurrentArea) {
-        if (isCurrentArea) {
-            return begIndex1;
-        } else {
-            return begIndex2;
-        }
+        return isCurrentArea ? begIndex1 : begIndex2;
     }
 
     public int getEndIndex(boolean isCurrentArea) {
-        if (isCurrentArea) {
-            return endIndex1;
-        } else {
-            return endIndex2;
-        }
+        return isCurrentArea ? endIndex1 : endIndex2;
     }
 
     public int getRuleIndex(boolean isCurrentArea) {
-        if (isCurrentArea) {
-            return ruleIndex1;
-        } else {
-            return ruleIndex2;
-        }
+        return isCurrentArea ? ruleIndex1 : ruleIndex2;
     }
-    
+
     public double getParam(boolean isCurrentArea) {
-        if (isCurrentArea) {
-            return param1;
-        } else {
-            return param2;
-        }
+        return isCurrentArea ? param1 : param2;
     }
-    
+
     public int getRule(boolean isCurrentArea) {
-        if (isCurrentArea) {
-            return rule1;
-        } else {
-            return rule2;
-        }
+        return isCurrentArea ? rule1 : rule2;
     }
-    
+
     public double getX() {
         return x;
     }
@@ -119,19 +99,19 @@ public class IntersectPoint {
     public double getY() {
         return y;
     }
-    
+
     public void setBegIndex1(int begIndex) {
         this.begIndex1 = begIndex;
     }
-    
+
     public void setEndIndex1(int endIndex) {
         this.endIndex1 = endIndex;
     }
-    
+
     public void setBegIndex2(int begIndex) {
         this.begIndex2 = begIndex;
     }
-    
+
     public void setEndIndex2(int endIndex) {
         this.endIndex2 = endIndex;
     }

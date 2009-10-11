@@ -17,13 +17,11 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.2 $
  */
 package org.apache.harmony.beans.tests.support;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.2 $
  */
 
 public class StandardBean2 {

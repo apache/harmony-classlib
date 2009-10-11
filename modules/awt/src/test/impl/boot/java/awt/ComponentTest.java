@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev
- * @version $Revision$
  */
 /*
  * Created on 29.09.2004

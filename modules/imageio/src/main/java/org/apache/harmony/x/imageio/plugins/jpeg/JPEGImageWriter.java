@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
  */
 package org.apache.harmony.x.imageio.plugins.jpeg;
 
@@ -38,7 +37,6 @@ import java.awt.color.ColorSpace;
 
 /**
  * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
  */
 public class JPEGImageWriter extends ImageWriter {
 

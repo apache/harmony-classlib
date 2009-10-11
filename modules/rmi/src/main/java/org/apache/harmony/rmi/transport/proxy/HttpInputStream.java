@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -36,7 +35,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * InputStream for HTTP connections. Unwraps data from HTTP packets.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class HttpInputStream extends FilterInputStream
         implements ProxyConstants {

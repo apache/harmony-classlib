@@ -17,7 +17,6 @@
 
 /**
  * @author Sergey A. Krivenko
- * @version $Revision: 1.4.4.2 $
  */
 package java.beans.beancontext;
 

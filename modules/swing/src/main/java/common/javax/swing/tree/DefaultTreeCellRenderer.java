@@ -16,7 +16,6 @@
  */
 /**
  * @author Anton Avtamonov
- * @version $Revision$
  */
 package javax.swing.tree;
 

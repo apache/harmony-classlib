@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -35,7 +34,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Factory class to create RmidMonitors.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 class RmidMonitorFactory {
 

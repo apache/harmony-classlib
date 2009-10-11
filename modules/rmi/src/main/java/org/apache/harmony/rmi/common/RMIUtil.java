@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -53,7 +52,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * This class cannot be instantiated.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public final class RMIUtil {
 

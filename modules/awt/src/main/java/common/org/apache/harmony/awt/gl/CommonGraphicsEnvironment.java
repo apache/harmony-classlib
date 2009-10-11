@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexey A. Petrenko, Oleg V. Khaschansky
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl;
 
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.harmony.awt.gl.font.FontManager;
-import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 import org.apache.harmony.awt.gl.image.BufferedImageGraphics2D;
 
 /**

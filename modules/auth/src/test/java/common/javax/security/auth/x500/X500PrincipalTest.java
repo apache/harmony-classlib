@@ -17,7 +17,6 @@
 
 /**
  * @author Alexander V. Esin
- * @version $Revision$
  */
 
 package javax.security.auth.x500;

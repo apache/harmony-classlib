@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -29,7 +28,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Launcher engine for RMI Compiler.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.5 $
  */
 public final class Main implements RmicConstants {
 

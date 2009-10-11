@@ -60,8 +60,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -96,6 +94,7 @@ import org.apache.harmony.awt.wtk.ShutdownWatchdog;
 import org.apache.harmony.awt.wtk.Synchronizer;
 import org.apache.harmony.awt.wtk.WTK;
 import org.apache.harmony.awt.wtk.WindowFactory;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public abstract class Toolkit {
     private static final String RECOURCE_PATH = "org.apache.harmony.awt.resources.AWTProperties"; //$NON-NLS-1$
@@ -692,16 +691,8 @@ public abstract class Toolkit {
         };
     }
 
-    protected LightweightPeer createComponent(Component a0) throws org.apache.harmony.luni.util.NotImplementedException {
-        lockAWT();
-        try {
-        } finally {
-            unlockAWT();
-        }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return null;
+    protected LightweightPeer createComponent(Component a0) throws NotImplementedException {
+        throw new NotImplementedException();
     }
 
     public Image createImage(byte[] imagedata) {

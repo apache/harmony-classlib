@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -47,7 +46,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * It is made package protected for security reasons.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 class DGCImpl implements DGC {
 

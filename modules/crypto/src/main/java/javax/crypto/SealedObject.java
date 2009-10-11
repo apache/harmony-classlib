@@ -17,7 +17,6 @@
 
 /**
 * @author Alexander Y. Kleymenov
-* @version $Revision$
 */
 
 package javax.crypto;
@@ -155,6 +154,10 @@ public class SealedObject implements Serializable {
     public final Object getObject(Key key)
                 throws IOException, ClassNotFoundException,
                        NoSuchAlgorithmException, InvalidKeyException {
+        if (key == null) {
+            throw new NullPointerException(
+                    Messages.getString("crypto.05"));
+        }
         try {
             Cipher cipher = Cipher.getInstance(sealAlg);
             if ((paramsAlg != null) && (paramsAlg.length() != 0)) {

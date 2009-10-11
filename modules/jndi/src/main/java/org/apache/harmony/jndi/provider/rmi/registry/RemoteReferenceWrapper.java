@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 
 package org.apache.harmony.jndi.provider.rmi.registry;

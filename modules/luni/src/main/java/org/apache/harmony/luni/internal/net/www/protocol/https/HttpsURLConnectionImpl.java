@@ -365,7 +365,7 @@ public class HttpsURLConnectionImpl extends HttpsURLConnection {
             if (connected) {
                 return;
             }
-            if (usingProxy() && !makingSSLTunnel) {
+            if (super.usingProxy() && !makingSSLTunnel) {
                 // SSL Tunnel through the proxy was not established yet, do so
                 makingSSLTunnel = true;
                 // first - make the connection
@@ -403,7 +403,7 @@ public class HttpsURLConnectionImpl extends HttpsURLConnection {
 
         @Override
         protected String requestString() {
-            if (usingProxy()) {
+            if (super.usingProxy()) {
                 if (makingSSLTunnel) {
                     // we are making the SSL Tunneling, return remotehost:port
                     int port = url.getPort();

@@ -16,7 +16,6 @@
  */
 /** 
  * @author Pavel Dolgov
- * @version $Revision$
  */
 package java.awt;
 
@@ -28,6 +27,8 @@ import java.awt.event.ActionEvent;
 final class EventQueueThread extends Thread {
 
     private static final class StopThreadEvent extends ActionEvent {
+        private static final long serialVersionUID = 1L;
+
         StopThreadEvent(Thread thread) {
             super(thread, ACTION_PERFORMED, "stopThread"); //$NON-NLS-1$
         }

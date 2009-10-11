@@ -507,10 +507,6 @@ public class Container extends Component {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void deliverEvent(Event evt) {
@@ -729,10 +725,6 @@ public class Container extends Component {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension minimumSize() {
@@ -765,10 +757,6 @@ public class Container extends Component {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension preferredSize() {
@@ -883,7 +871,6 @@ public class Container extends Component {
 
     @Deprecated
     @Override
-    @SuppressWarnings("deprecation")
     public void layout() {
         toolkit.lockAWT();
         try {
@@ -897,7 +884,6 @@ public class Container extends Component {
 
     @Deprecated
     @Override
-    @SuppressWarnings("deprecation")
     public Component locate(int x, int y) {
         toolkit.lockAWT();
         try {

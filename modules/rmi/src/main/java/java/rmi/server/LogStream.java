@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  */
 package java.rmi.server;
 
@@ -33,7 +32,6 @@ import java.util.Hashtable;
  * Note: this class is not used by RMI runtime.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  * @deprecated No replacement. This class is deprecated since Java v1.2. 
  */
 @Deprecated

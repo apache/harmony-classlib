@@ -17,7 +17,6 @@
 
 /**
  * @author Anton Avtamonov, Rustem Rafikov
- * @version $Revision$
  */
 package org.apache.harmony.x.swing.filechooser.windows;
 

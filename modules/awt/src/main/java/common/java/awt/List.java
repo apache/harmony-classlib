@@ -790,9 +790,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void clear() {
         toolkit.lockAWT();
@@ -926,10 +923,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension minimumSize() {
@@ -944,9 +937,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Dimension minimumSize(int rows) {
         toolkit.lockAWT();
@@ -957,9 +947,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public Dimension preferredSize(int rows) {
         toolkit.lockAWT();
@@ -970,10 +957,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension preferredSize() {
@@ -999,9 +982,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void addItem(String item) {
         toolkit.lockAWT();
@@ -1013,9 +993,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         return;
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void addItem(String item, int index) {
         toolkit.lockAWT();
@@ -1027,9 +1004,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         return;
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean allowsMultipleSelections() {
         toolkit.lockAWT();
@@ -1040,9 +1014,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public int countItems() {
         toolkit.lockAWT();
@@ -1053,9 +1024,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void delItem(int position) {
         toolkit.lockAWT();
@@ -1066,9 +1034,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void delItems(int start, int end) {
         toolkit.lockAWT();
@@ -1217,9 +1182,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public boolean isSelected(int pos) {
         toolkit.lockAWT();
@@ -1305,9 +1267,6 @@ public class List extends Component implements ItemSelectable, Accessible {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void setMultipleSelections(boolean mm) {
         toolkit.lockAWT();

@@ -67,7 +67,9 @@ public class SslRMIServerSocketFactory implements RMIServerSocketFactory {
             throw new IllegalArgumentException(e);
         } finally {
             try {
-                soc.close();
+                if (soc != null) {
+                    soc.close();
+                }
             } catch (IOException e) {
             }
         }

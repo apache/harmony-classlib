@@ -17,7 +17,6 @@
 
 /**
  * @author Vadim Bogdanov
- * @version $Revision$
  */
 package javax.swing.plaf.metal;
 

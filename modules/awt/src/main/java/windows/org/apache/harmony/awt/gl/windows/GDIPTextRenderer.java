@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl.windows;
 
@@ -38,7 +37,6 @@ import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  *
  * TextRenderer that works by means of GDI+ calls.
  */

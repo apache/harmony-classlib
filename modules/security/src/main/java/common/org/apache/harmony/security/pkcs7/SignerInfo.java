@@ -17,7 +17,6 @@
 
 /**
 * @author Boris Kuznetsov
-* @version $Revision$
 */
 package org.apache.harmony.security.pkcs7;
 

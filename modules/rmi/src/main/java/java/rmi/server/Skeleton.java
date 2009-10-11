@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  */
 package java.rmi.server;
 
@@ -29,7 +28,6 @@ import java.rmi.Remote;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  * @deprecated Skeletons are not used by RMI framework since Java v1.2
  */
 @Deprecated

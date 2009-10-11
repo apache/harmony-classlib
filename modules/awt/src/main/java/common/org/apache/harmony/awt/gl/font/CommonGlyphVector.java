@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl.font;
 
@@ -33,6 +32,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.apache.harmony.awt.internal.nls.Messages;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 /**
  * GlyphVector implementation
@@ -422,11 +422,7 @@ public class CommonGlyphVector extends GlyphVector {
      */
     @Override
     public GlyphJustificationInfo getGlyphJustificationInfo(int glyphIndex) {
-        // TODO : Find out the source of Justification info
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
-        }
-        return null;
+        throw new NotImplementedException();
     }
 
     /**

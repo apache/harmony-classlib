@@ -21,6 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -158,6 +160,42 @@ public class InflaterInputStreamTest extends TestCase {
 		}
 	}
 
+    public void testAvailableNonEmptySource() throws Exception {
+        // this byte[] is a deflation of these bytes: { 1, 3, 4, 6 }
+        byte[] deflated = { 72, -119, 99, 100, 102, 97, 3, 0, 0, 31, 0, 15, 0 };
+        InputStream in = new InflaterInputStream(new ByteArrayInputStream(deflated));
+        // InflaterInputStream.available() returns either 1 or 0, even though
+        // that contradicts the behavior defined in InputStream.available()
+        assertEquals(1, in.read());
+        assertEquals(1, in.available());
+        assertEquals(3, in.read());
+        assertEquals(1, in.available());
+        assertEquals(4, in.read());
+        assertEquals(1, in.available());
+        assertEquals(6, in.read());
+        assertEquals(0, in.available());
+        assertEquals(-1, in.read());
+        assertEquals(-1, in.read());
+    }
+
+    public void testAvailableSkip() throws Exception {
+        // this byte[] is a deflation of these bytes: { 1, 3, 4, 6 }
+        byte[] deflated = { 72, -119, 99, 100, 102, 97, 3, 0, 0, 31, 0, 15, 0 };
+        InputStream in = new InflaterInputStream(new ByteArrayInputStream(deflated));
+        assertEquals(1, in.available());
+        assertEquals(4, in.skip(4));
+        assertEquals(0, in.available());
+    }
+
+    public void testAvailableEmptySource() throws Exception {
+        // this byte[] is a deflation of the empty file
+        byte[] deflated = { 120, -100, 3, 0, 0, 0, 0, 1 };
+        InputStream in = new InflaterInputStream(new ByteArrayInputStream(deflated));
+        assertEquals(-1, in.read());
+        assertEquals(-1, in.read());
+        assertEquals(0, in.available());
+    }
+
 	/**
 	 * @tests java.util.zip.InflaterInputStream#read(byte[], int, int)
 	 */
@@ -191,6 +229,39 @@ public class InflaterInputStreamTest extends TestCase {
             // expected;
         }
 	}
+
+    public void test_read$BII2() throws IOException {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_manifest.jar");
+        FileInputStream fis = new FileInputStream(new File(resources,
+                "Broken_manifest.jar"));
+        InflaterInputStream iis = new InflaterInputStream(fis);
+        byte[] outBuf = new byte[530];
+
+        iis.close();
+        try {
+            iis.read(outBuf, 0, 5);
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected.
+        }
+    }
+
+    public void test_read$BII3() throws IOException {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_manifest.jar");
+        FileInputStream fis = new FileInputStream(new File(resources,
+                "Broken_manifest.jar"));
+        InflaterInputStream iis = new InflaterInputStream(fis);
+        byte[] outBuf = new byte[530];
+
+        try {
+            iis.read();
+            fail("IOException expected.");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.util.zip.InflaterInputStream#reset()
@@ -310,19 +381,16 @@ public class InflaterInputStreamTest extends TestCase {
 		InputStream is = Support_Resources.getStream("hyts_available.tst");
 		InflaterInputStream iis = new InflaterInputStream(is);
 
-		int available;
-		int read;
-		for (int i = 0; i < 11; i++) {
-			read = iis.read();
-			available = iis.available();
-			if (read == -1) {
-                assertEquals("Bytes Available Should Return 0 ",
-						0, available);
+        int available;
+        for (int i = 0; i < 11; i++) {
+            iis.read();
+            available = iis.available();
+            if (available == 0) {
+                assertEquals("Expected no more bytes to read", -1, iis.read());
             } else {
-                assertEquals("Bytes Available Should Return 1.",
-						1, available);
+                assertEquals("Bytes Available Should Return 1.", 1, available);
             }
-		}
+        }
 
 		iis.close();
 		try {

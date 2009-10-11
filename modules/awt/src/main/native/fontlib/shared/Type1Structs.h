@@ -16,7 +16,6 @@
  */
 /**
  * @author Viskov Nikolay 
- * @version $Revision$
  */
 
 #ifndef __TYPE_1_STRUCTS_H

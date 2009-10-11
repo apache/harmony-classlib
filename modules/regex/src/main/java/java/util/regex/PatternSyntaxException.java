@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 package java.util.regex;
 
@@ -34,7 +33,6 @@ import org.apache.harmony.regex.internal.nls.Messages;
  * @see Pattern#compile(java.lang.String,int)
  *
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 public class PatternSyntaxException extends IllegalArgumentException {
     

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -48,7 +47,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * client-side and server-side socket factories.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class Endpoint {
 

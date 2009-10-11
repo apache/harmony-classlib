@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -29,7 +28,6 @@ import java.security.PrivilegedAction;
  * Action for privileged Threads interruption.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class InterruptThreadAction implements PrivilegedAction {
 

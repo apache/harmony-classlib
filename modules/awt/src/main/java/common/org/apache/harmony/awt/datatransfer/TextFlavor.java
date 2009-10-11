@@ -16,7 +16,6 @@
  */
 /** 
  * @author Pavel Dolgov
- * @version $Revision$
  */
 package org.apache.harmony.awt.datatransfer;
 
@@ -32,10 +31,10 @@ import java.nio.CharBuffer;
  */
 public class TextFlavor {
 
-    public static final Class[] unicodeTextClasses = { 
+    public static final Class<?>[] unicodeTextClasses = { 
             String.class, Reader.class, CharBuffer.class, char[].class };
 
-    public static final Class[] charsetTextClasses = { 
+    public static final Class<?>[] charsetTextClasses = { 
             InputStream.class, ByteBuffer.class, byte[].class };
     
     public static void addUnicodeClasses(SystemFlavorMap fm,

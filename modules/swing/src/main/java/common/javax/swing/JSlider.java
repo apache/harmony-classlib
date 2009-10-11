@@ -17,7 +17,6 @@
 
 /**
  * @author Sergey Burlak
- * @version $Revision$
  */
 
 package javax.swing;

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.test;
 
@@ -30,7 +29,6 @@ import java.lang.reflect.Method;
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 public class MyInvocationHandler implements InvocationHandler, Serializable {
 

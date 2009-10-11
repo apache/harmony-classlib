@@ -17,7 +17,6 @@
 
 /**
 * @author Aleksei Y. Semenov
-* @version $Revision$
 */
 
 package java.security;

@@ -17,7 +17,6 @@
 
 /**
  * @author Anton Avtamonov, Sergey Burlak, Vadim Bogdanov, Alexander Simbirtsev
- * @version $Revision$
  */
 
 package javax.swing.plaf.metal;

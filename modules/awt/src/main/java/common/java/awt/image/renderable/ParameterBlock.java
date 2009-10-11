@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
 package java.awt.image.renderable;
 
@@ -120,6 +119,7 @@ public class ParameterBlock implements Cloneable, Serializable {
         return replica;
     }
 
+    @SuppressWarnings("unchecked")
     public Class[] getParamClasses() {
         int count = parameters.size();
         Class paramClasses[] = new Class[count];

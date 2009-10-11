@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -47,7 +46,6 @@ import org.apache.harmony.rmi.transport.tcp.TcpServerConnection;
  * them.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class ServerConnectionManager implements Runnable {
 

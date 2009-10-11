@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Back reference node, i.e. \1-9;
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.11.2.2 $
  */
 class BackReferenceSet extends CIBackReferenceSet {
 

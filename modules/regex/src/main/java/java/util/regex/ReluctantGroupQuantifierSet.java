@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.9.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Relactant version of the group quantifier set.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.9.2.2 $
  */
 class ReluctantGroupQuantifierSet extends GroupQuantifierSet {
 

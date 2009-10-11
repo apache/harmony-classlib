@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -39,7 +38,6 @@ import org.apache.harmony.rmi.transport.RMIObjectOutputStream;
  * package protected access to ClientDGC implementation.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public abstract class RemoteRefBase implements RemoteRef {
 

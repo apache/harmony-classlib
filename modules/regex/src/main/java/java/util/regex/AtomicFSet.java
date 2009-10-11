@@ -17,13 +17,11 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 package java.util.regex;
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 class AtomicFSet extends FSet {
     

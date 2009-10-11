@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev
- * @version $Revision$
  */
 #ifndef __TTFONT_H__
 #define __TTFONT_H__

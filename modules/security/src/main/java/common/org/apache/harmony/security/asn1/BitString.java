@@ -17,7 +17,6 @@
 
 /**
 * @author Alexey V. Varlamov, Stepan M. Mishura
-* @version $Revision$
 */
 
 package org.apache.harmony.security.asn1;

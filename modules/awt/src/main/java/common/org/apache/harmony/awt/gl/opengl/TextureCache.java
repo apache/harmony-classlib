@@ -17,7 +17,6 @@
 
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  */
 
 package org.apache.harmony.awt.gl.opengl;

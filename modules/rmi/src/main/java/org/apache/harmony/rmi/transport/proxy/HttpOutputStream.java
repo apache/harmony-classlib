@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -39,7 +38,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * It sends data only once, wrapped into HTTP response.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class HttpOutputStream extends ByteArrayOutputStream
         implements ProxyConstants {

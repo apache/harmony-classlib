@@ -375,6 +375,9 @@ public final class PrivateCredentialPermission extends Permission {
         // Checks two CredOwner objects for equality. 
         @Override
         public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
             return principalClass.equals(((CredOwner) obj).principalClass)
                     && principalName.equals(((CredOwner) obj).principalName);
         }

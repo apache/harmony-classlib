@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.test;
 
@@ -29,7 +28,6 @@ import java.rmi.server.UnicastRemoteObject;
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class MyRemoteObject1 extends UnicastRemoteObject
         implements MyRemoteInterface1 {

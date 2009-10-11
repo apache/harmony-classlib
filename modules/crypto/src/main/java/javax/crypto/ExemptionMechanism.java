@@ -367,12 +367,4 @@ public class ExemptionMechanism {
         generated = true;
         return len;
     }
-
-    /**
-     * Frees the references to the key used to initialize this instance.
-     */
-    @Override
-    protected void finalize() {
-        initKey = null;
-    }
 }

@@ -17,7 +17,6 @@
 
 /**
  * @author Anton Avtamonov, Sergey Burlak
- * @version $Revision$
  */
 
 package javax.swing.filechooser;

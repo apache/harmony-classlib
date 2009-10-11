@@ -16,7 +16,6 @@
  */
 /**
 * @author Maxim V. Makarov
-* @version $Revision$
 */
 
 package javax.security.auth;

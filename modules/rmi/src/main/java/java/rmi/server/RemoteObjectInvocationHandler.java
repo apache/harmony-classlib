@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.3 $
  */
 package java.rmi.server;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.3 $
  */
 public class RemoteObjectInvocationHandler extends RemoteObject
         implements InvocationHandler {

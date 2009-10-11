@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.transport.SocketWrapper;
  * and forwards the HTTP requests to {@link HttpInboundSocket}.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 public class HttpServerSocket extends ServerSocket implements ProxyConstants {
 

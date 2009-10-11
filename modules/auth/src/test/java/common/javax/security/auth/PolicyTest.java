@@ -17,7 +17,6 @@
 
 /**
 * @author Alexey V. Varlamov
-* @version $Revision$
 */
 
 package javax.security.auth;

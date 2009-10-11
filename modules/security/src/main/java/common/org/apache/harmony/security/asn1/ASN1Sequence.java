@@ -17,7 +17,6 @@
 
 /**
 * @author Vladimir N. Molotkov, Stepan M. Mishura
-* @version $Revision$
 */
 
 package org.apache.harmony.security.asn1;
