@@ -30,11 +30,11 @@ public class ReferenceQueue<T> {
     
     private Reference<? extends T>[] references;
 
-	private int head;
+    private int head;
     
     private int tail;
 
-	private boolean empty;
+    private boolean empty;
     
     /**
      * Constructs a new instance of this class.
@@ -52,33 +52,33 @@ public class ReferenceQueue<T> {
         return new Reference[size];
     }
 
-	/**
+    /**
      * Returns the next available reference from the queue, removing it in the
      * process. Does not wait for a reference to become available.
      *
      * @return the next available reference, or {@code null} if no reference is
      *         immediately available
-	 */
-	public Reference<? extends T> poll() {
-		Reference<? extends T> ref;
+     */
+    public Reference<? extends T> poll() {
+        Reference<? extends T> ref;
 
-		synchronized (this) {
-			if (empty) {
-				return null;
-			}
-			ref = references[head++];
-			ref.dequeue();
-			if (head == references.length) {
-				head = 0;
-			}
-			if (head == tail) {
-				empty = true;
-			}
-		}
-		return ref;
-	}
+        synchronized (this) {
+            if (empty) {
+                return null;
+            }
+            ref = references[head++];
+            ref.dequeue();
+            if (head == references.length) {
+                head = 0;
+            }
+            if (head == tail) {
+                empty = true;
+            }
+        }
+        return ref;
+    }
 
-	/**
+    /**
      * Returns the next available reference from the queue, removing it in the
      * process. Waits indefinitely for a reference to become available.
      *
@@ -86,12 +86,12 @@ public class ReferenceQueue<T> {
      *
      * @throws InterruptedException
      *             if the blocking call was interrupted for some reason
-	 */
-	public Reference<? extends T> remove() throws InterruptedException {
-		return remove(0L);
-	}
+     */
+    public Reference<? extends T> remove() throws InterruptedException {
+        return remove(0L);
+    }
 
-	/**
+    /**
      * Returns the next available reference from the queue, removing it in the
      * process. Waits for a reference to become available or the given timeout
      * period to elapse, whichever happens first.
@@ -106,45 +106,45 @@ public class ReferenceQueue<T> {
      *             if the wait period is negative.
      * @throws InterruptedException
      *             if the blocking call was interrupted for some reason
-	 */
-	public Reference<? extends T> remove(long timeout) throws IllegalArgumentException,
-			InterruptedException {
-		if (timeout < 0) {
-			throw new IllegalArgumentException();
-		}
+     */
+    public Reference<? extends T> remove(long timeout) throws IllegalArgumentException,
+            InterruptedException {
+        if (timeout < 0) {
+            throw new IllegalArgumentException();
+        }
 
-		Reference<? extends T> ref;
-		synchronized (this) {
-			if (empty) {
-				wait(timeout);
-				if (empty) {
-					return null;
-				}
-			}
-			ref = references[head++];
-			ref.dequeue();
-			if (head == references.length) {
-				head = 0;
-			}
-			if (head == tail) {
-				empty = true;
-			} else {
-				notifyAll();
-			}
-		}
-		return ref;
-	}
+        Reference<? extends T> ref;
+        synchronized (this) {
+            if (empty) {
+                wait(timeout);
+                if (empty) {
+                    return null;
+                }
+            }
+            ref = references[head++];
+            ref.dequeue();
+            if (head == references.length) {
+                head = 0;
+            }
+            if (head == tail) {
+                empty = true;
+            } else {
+                notifyAll();
+            }
+        }
+        return ref;
+    }
 
-	/**
-	 * Enqueue the reference object on the receiver.
-	 *
-	 * @param reference
-	 *            reference object to be enqueued.
-	 * @return boolean true if reference is enqueued. false if reference failed
-	 *         to enqueue.
-	 */
+    /**
+     * Enqueue the reference object on the receiver.
+     *
+     * @param reference
+     *            reference object to be enqueued.
+     * @return boolean true if reference is enqueued. false if reference failed
+     *         to enqueue.
+     */
     boolean enqueue(Reference<? extends T> reference) {
-		synchronized (this) {
+        synchronized (this) {
             if (!empty && head == tail) {
                 /* Queue is full - grow */
                 int newQueueSize = (int) (references.length * 1.10);
@@ -165,5 +165,5 @@ public class ReferenceQueue<T> {
             notifyAll();
         }
         return true;
-	}
+    }
 }
