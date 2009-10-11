@@ -23,6 +23,11 @@
     -->
 
 <FindBugsFilter>
+    <!-- Public semaphore in ReferenceQueue is okay -->
+    <Match>
+        <Class name="java.lang.ref.ReferenceQueue"></Class>
+        <Bug pattern="PS_PUBLIC_SEMAPHORES"></Bug>
+    </Match>
 
     <!-- Number classes should be able to call Number constructors -->
     <Match>
