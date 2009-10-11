@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.3 $
  */
 package java.rmi.server;
 
@@ -32,7 +31,6 @@ import java.io.Serializable;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.3 $
  */
 public final class UID implements Serializable {
 

@@ -16,7 +16,6 @@
  */
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  */
 /*
  * Created on 18.01.2005
@@ -28,8 +27,6 @@ import java.awt.image.ImageConsumer;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ConcurrentModificationException;
 import java.util.Hashtable;
 import java.util.Iterator;

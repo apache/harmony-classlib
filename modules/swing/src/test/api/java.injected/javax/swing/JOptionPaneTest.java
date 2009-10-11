@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexander T. Simbirtsev
- * @version $Revision$
  * Created on 04.05.2005
 
  */

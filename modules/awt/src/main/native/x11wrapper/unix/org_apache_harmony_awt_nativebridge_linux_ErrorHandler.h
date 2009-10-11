@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem Rafikov
- * @version $Revision$
  */
 
 #include <jni.h>

@@ -26,9 +26,24 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.dnd.peer.DragSourceContextPeer;
 import java.awt.im.InputMethodHighlight;
 import java.awt.image.ColorModel;
-import java.awt.peer.*;
-import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
+import java.awt.peer.ButtonPeer;
+import java.awt.peer.CheckboxMenuItemPeer;
+import java.awt.peer.CheckboxPeer;
+import java.awt.peer.ChoicePeer;
+import java.awt.peer.DialogPeer;
+import java.awt.peer.FileDialogPeer;
+import java.awt.peer.FramePeer;
+import java.awt.peer.LabelPeer;
+import java.awt.peer.ListPeer;
+import java.awt.peer.MenuBarPeer;
+import java.awt.peer.MenuItemPeer;
+import java.awt.peer.MenuPeer;
+import java.awt.peer.PopupMenuPeer;
+import java.awt.peer.ScrollPanePeer;
+import java.awt.peer.ScrollbarPeer;
+import java.awt.peer.TextAreaPeer;
+import java.awt.peer.TextFieldPeer;
+import java.awt.peer.WindowPeer;
 import java.util.Map;
 import java.util.Properties;
 
@@ -63,6 +78,7 @@ final class HeadlessToolkit extends ToolkitImpl {
         throw new HeadlessException();
     }
 
+    @Override
     public Cursor createCustomCursor(Image img, Point hotSpot, String name)
     throws HeadlessException {
         throw new HeadlessException();

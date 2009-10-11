@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -47,7 +46,6 @@ import org.apache.harmony.rmi.server.ExportManager;
  *     of their stubs
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class RMIObjectOutputStream extends ObjectOutputStream {
 

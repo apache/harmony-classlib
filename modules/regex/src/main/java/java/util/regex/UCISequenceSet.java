@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Node accepting substrings in unicode case insensitive manner.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 class UCISequenceSet extends LeafSet {
     

@@ -16,7 +16,6 @@
  */
 /**
  * @author Anton Luht, Alexander T. Simbirtsev
- * @version $Revision$
  */
 package javax.swing;
 

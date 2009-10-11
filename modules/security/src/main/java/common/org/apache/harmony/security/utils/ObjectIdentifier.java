@@ -16,7 +16,6 @@
  */
 /**
 * @author Alexander V. Esin, Stepan M. Mishura
-* @version $Revision$
 */
 
 package org.apache.harmony.security.utils;

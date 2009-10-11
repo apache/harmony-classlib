@@ -17,7 +17,6 @@
 
 /**
 * @author Vladimir N. Molotkov, Alexander Y. Kleymenov
-* @version $Revision$
 */
 
 package org.apache.harmony.security.x509;

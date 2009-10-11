@@ -16,7 +16,6 @@
  */
 /**
  * @author Denis M. Kishenko
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl;
 

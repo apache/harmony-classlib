@@ -250,10 +250,9 @@ public class Font implements Serializable {
         if (!FontManager.IS_FONTLIB) {
             //TODO implement true code point support 
             return canDisplay((char)i);
-        } else {
-            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
-            return peer.canDisplay(peer.getUnicodeByIndex(i));
         }
+        FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+        return peer.canDisplay(peer.getUnicodeByIndex(i));
     }
 
     public int canDisplayUpTo(char[] text, int start, int limit) {
@@ -963,13 +962,12 @@ public class Font implements Serializable {
             }
             
             return ((FLFontManager)FontManager.getInstance()).embedFont(fontFile.getAbsolutePath(), fontFormat);
-        } else {
-            InputStream is = new FileInputStream(fontFile);
-            try {
-                return createFont(fontFormat, is);
-            } finally {
-                is.close();
-            }
+        }
+        InputStream is = new FileInputStream(fontFile);
+        try {
+            return createFont(fontFormat, is);
+        } finally {
+            is.close();
         }
     }
     

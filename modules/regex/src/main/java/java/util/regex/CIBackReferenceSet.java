@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 package java.util.regex;
 
@@ -28,7 +27,6 @@ import org.apache.harmony.regex.internal.nls.Messages;
  * Case Insensitive back reference node;
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.8.2.2 $
  */
 class CIBackReferenceSet extends JointSet {
 

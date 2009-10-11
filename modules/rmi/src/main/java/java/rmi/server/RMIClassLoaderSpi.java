@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 package java.rmi.server;
 
@@ -29,7 +28,6 @@ import java.net.MalformedURLException;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.4.4.1 $
  */
 public abstract class RMIClassLoaderSpi {
 

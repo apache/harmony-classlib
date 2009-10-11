@@ -17,7 +17,6 @@
 
 /**
 * @author Boris V. Kuznetsov
-* @version $Revision$
 */
 
 package java.security;

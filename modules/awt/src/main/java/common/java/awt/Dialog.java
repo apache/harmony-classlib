@@ -212,7 +212,6 @@ public class Dialog extends Window {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void hide() {
@@ -234,7 +233,6 @@ public class Dialog extends Window {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void show() {

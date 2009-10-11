@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.5.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Unicode category (i.e. Ll, Lu).
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.5.2.2 $
  */
 class UnicodeCategory extends AbstractCharClass {
 

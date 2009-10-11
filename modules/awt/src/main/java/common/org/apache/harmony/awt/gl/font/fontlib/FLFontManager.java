@@ -27,7 +27,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.harmony.awt.gl.font.CompositeFont;
 import org.apache.harmony.awt.gl.font.FontManager;
@@ -36,7 +36,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
 
 public class FLFontManager extends FontManager {
     
-    private ArrayList<Font> allFonts = new ArrayList<Font>(); 
+    private List<Font> allFonts = new ArrayList<Font>(); 
     
     static {
         org.apache.harmony.awt.Utils.loadLibrary("FL");
@@ -53,6 +53,7 @@ public class FLFontManager extends FontManager {
         initManager();
         
         addPath(new File(org.apache.harmony.awt.Utils.getSystemProperty("java.home") + "/lib/fonts/"));
+        // TODO this doesn't seem very portable - perhaps we should check WINDIR
         addPath(new File("C:\\WINNT\\Fonts"));
         addPath(new File("/usr/X11R6/lib/X11/fonts/Type1/"));
         addPath(new File("/usr/X11R6/lib/X11/fonts/truetype/"));
@@ -390,9 +391,8 @@ public class FLFontManager extends FontManager {
             if ((new File(path)).canRead()) {
                 //awt.9B=Can't create font - bad font data
                 throw new FontFormatException ( Messages.getString("awt.9B") ); //$NON-NLS-1$                        
-            } else {
-                throw new IOException();
             }
+            throw new IOException();
         }
         
         allFonts.add(newFont);
@@ -425,6 +425,7 @@ public class FLFontManager extends FontManager {
      * @return platform dependent FontPeer implementation created from 
      * the specified parameters
      */
+    @Override
     public FontPeer getFontPeer(String fontName, int _fontStyle, int size) {
         
         //updateFontsTable();
@@ -471,6 +472,7 @@ public class FLFontManager extends FontManager {
      * @param style style of the font
      * @param size size of the font
      */
+    @Override
     public FontPeer getDefaultFont(int style, int size){
         
         FontPeer peer = null;

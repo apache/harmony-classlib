@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -34,7 +33,6 @@ import org.apache.harmony.rmi.transport.SocketWrapper;
  * Inbound HTTP socket wrapper.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 public class HttpInboundSocket extends SocketWrapper {
 

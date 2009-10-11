@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,9 @@
 
 package java.util.jar;
 
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -25,12 +28,13 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.archive.util.Util;
 
 /**
  * {@code JarFile} is used to read jar entries and their associated data from
  * jar files.
- * 
+ *
  * @see JarInputStream
  * @see JarEntry
  */
@@ -41,13 +45,18 @@ public class JarFile extends ZipFile {
      */
     public static final String MANIFEST_NAME = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
+    // The directory containing the manifest.
     static final String META_DIR = "META-INF/"; //$NON-NLS-1$
 
+    // The manifest after it has been read from the JAR.
     private Manifest manifest;
 
+    // The entry for the MANIFEST.MF file before it is read.
     private ZipEntry manifestEntry;
 
     JarVerifier verifier;
+
+    private boolean closed = false;
 
     static final class JarFileInputStream extends FilterInputStream {
         private long count;
@@ -55,6 +64,8 @@ public class JarFile extends ZipFile {
         private ZipEntry zipEntry;
 
         private JarVerifier.VerifierEntry entry;
+
+        private boolean done = false;
 
         JarFileInputStream(InputStream is, ZipEntry ze,
                 JarVerifier.VerifierEntry e) {
@@ -66,6 +77,9 @@ public class JarFile extends ZipFile {
 
         @Override
         public int read() throws IOException {
+            if (done) {
+                return -1;
+            }
             if (count > 0) {
                 int r = super.read();
                 if (r != -1) {
@@ -75,16 +89,22 @@ public class JarFile extends ZipFile {
                     count = 0;
                 }
                 if (count == 0) {
+                    done = true;
                     entry.verify();
                 }
                 return r;
             } else {
+                done = true;
+                entry.verify();
                 return -1;
             }
         }
 
         @Override
         public int read(byte[] buf, int off, int nbytes) throws IOException {
+            if (done) {
+                return -1;
+            }
             if (count > 0) {
                 int r = super.read(buf, off, nbytes);
                 if (r != -1) {
@@ -98,18 +118,29 @@ public class JarFile extends ZipFile {
                     count = 0;
                 }
                 if (count == 0) {
+                    done = true;
                     entry.verify();
                 }
                 return r;
             } else {
+                done = true;
+                entry.verify();
                 return -1;
             }
         }
 
         @Override
+        public int available() throws IOException {
+            if (done) {
+                return 0;
+            }
+            return super.available();
+        }
+
+        @Override
         public long skip(long nbytes) throws IOException {
             long cnt = 0, rem = 0;
-            byte[] buf = new byte[4096];
+            byte[] buf = new byte[(int)Math.min(nbytes, 2048L)];
             while (cnt < nbytes) {
                 int x = read(buf, 0,
                         (rem = nbytes - cnt) > buf.length ? buf.length
@@ -125,7 +156,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of the specified file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @throws IOException
@@ -137,7 +168,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of the specified file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @param verify
@@ -155,7 +186,7 @@ public class JarFile extends ZipFile {
 
     /**
      * Create a new {@code JarFile} using the contents of file.
-     * 
+     *
      * @param file
      *            the JAR file as {@link File}.
      * @param verify
@@ -177,7 +208,7 @@ public class JarFile extends ZipFile {
     /**
      * Create a new {@code JarFile} from the contents of the file specified by
      * filename.
-     * 
+     *
      * @param filename
      *            the file name referring to the JAR file.
      * @throws IOException
@@ -185,13 +216,12 @@ public class JarFile extends ZipFile {
      */
     public JarFile(String filename) throws IOException {
         this(filename, true);
-
     }
 
     /**
      * Create a new {@code JarFile} from the contents of the file specified by
      * {@code filename}.
-     * 
+     *
      * @param filename
      *            the file name referring to the JAR file.
      * @param verify
@@ -210,7 +240,7 @@ public class JarFile extends ZipFile {
     /**
      * Return an enumeration containing the {@code JarEntrys} contained in this
      * {@code JarFile}.
-     * 
+     *
      * @return the {@code Enumeration} containing the JAR entries.
      * @throws IllegalStateException
      *             if this {@code JarFile} is closed.
@@ -243,7 +273,7 @@ public class JarFile extends ZipFile {
     /**
      * Return the {@code JarEntry} specified by its name or {@code null} if no
      * such entry exists.
-     * 
+     *
      * @param name
      *            the name of the entry in the JAR file.
      * @return the JAR entry defined by the name.
@@ -252,10 +282,46 @@ public class JarFile extends ZipFile {
         return (JarEntry) getEntry(name);
     }
 
+    /*
+     * Drains the entire content from the given input stream and returns it as a
+     * byte[]. The stream is closed after being drained, or if an IOException
+     * occurs.
+     */
+    private byte[] getAllBytesFromStreamAndClose(InputStream is)
+            throws IOException {
+        try {
+            // Initial read
+            byte[] buffer = new byte[1024];
+            int count = is.read(buffer);
+            int nextByte = is.read();
+
+            // Did we get it all in one read?
+            if (nextByte == -1) {
+                byte[] dest = new byte[count];
+                System.arraycopy(buffer, 0, dest, 0, count);
+                return dest;
+            }
+
+            // Requires additional reads
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
+            baos.write(buffer, 0, count);
+            baos.write(nextByte);
+            while (true) {
+                count = is.read(buffer);
+                if (count == -1) {
+                    return baos.toByteArray();
+                }
+                baos.write(buffer, 0, count);
+            }
+        } finally {
+            is.close();
+        }
+    }
+
     /**
      * Returns the {@code Manifest} object associated with this {@code JarFile}
      * or {@code null} if no MANIFEST entry exists.
-     * 
+     *
      * @return the MANIFEST.
      * @throws IOException
      *             if an error occurs reading the MANIFEST file.
@@ -264,68 +330,71 @@ public class JarFile extends ZipFile {
      * @see Manifest
      */
     public Manifest getManifest() throws IOException {
+        if (closed) {
+            // archive.35=JarFile has been closed
+            throw new IllegalStateException(Messages.getString("archive.35")); //$NON-NLS-1$
+        }
         if (manifest != null) {
             return manifest;
         }
         try {
             InputStream is = super.getInputStream(manifestEntry);
+            byte[] buffer = getAllBytesFromStreamAndClose(is);
             if (verifier != null) {
-                byte[] buf = new byte[is.available()];
-                is.mark(buf.length);
-                is.read(buf, 0, buf.length);
-                is.reset();
-                verifier.addMetaEntry(manifestEntry.getName(), buf);
+                verifier.addMetaEntry(manifestEntry.getName(), buffer);
             }
-            try {
-                manifest = new Manifest(is, verifier != null);
-            } finally {
-                is.close();
-            }
-            manifestEntry = null;
+            manifest = new Manifest(buffer, verifier != null);
+            manifestEntry = null;  // Can discard the entry now.
         } catch (NullPointerException e) {
             manifestEntry = null;
         }
         return manifest;
     }
 
+    /**
+     * Called by the JarFile constructors, this method reads the contents of the
+     * file's META-INF/ directory and picks out the MANIFEST.MF file and
+     * verifier signature files if they exist. Any signature files found are
+     * registered with the verifier.
+     * 
+     * @throws IOException
+     *             if there is a problem reading the jar file entries.
+     */
     private void readMetaEntries() throws IOException {
-        ZipEntry[] metaEntries = getMetaEntriesImpl(null);
-        int dirLength = META_DIR.length();
+        // Get all meta directory entries
+        ZipEntry[] metaEntries = getMetaEntriesImpl();
+        if (metaEntries == null) {
+            verifier = null;
+            return;
+        }
 
         boolean signed = false;
 
-        if (null != metaEntries) {
-            for (ZipEntry entry : metaEntries) {
-                String entryName = entry.getName();
-                if (manifestEntry == null
-                        && manifest == null
-                        && Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                dirLength, MANIFEST_NAME, dirLength,
-                                MANIFEST_NAME.length() - dirLength)) {
-                    manifestEntry = entry;
-                    if (verifier == null) {
-                        break;
-                    }
-                } else if (verifier != null
-                        && entryName.length() > dirLength
-                        && (Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                entryName.length() - 3, ".SF", 0, 3) //$NON-NLS-1$
-                                || Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                        entryName.length() - 4, ".DSA", 0, 4) //$NON-NLS-1$
-                        || Util.ASCIIIgnoreCaseRegionMatches(entryName,
-                                entryName.length() - 4, ".RSA", 0, 4))) { //$NON-NLS-1$
+        for (ZipEntry entry : metaEntries) {
+            String entryName = entry.getName();
+            // Is this the entry for META-INF/MANIFEST.MF ?
+            if (manifestEntry == null
+                    && Util.asciiEqualsIgnoreCase(MANIFEST_NAME, entryName)) {
+                manifestEntry = entry;
+                // If there is no verifier then we don't need to look any further.
+                if (verifier == null) {
+                    break;
+                }
+            } else {
+                // Is this an entry that the verifier needs?
+                if (verifier != null
+                        && (Util.asciiEndsWithIgnoreCase(entryName, ".SF")
+                                || Util.asciiEndsWithIgnoreCase(entryName, ".DSA")
+                                || Util.asciiEndsWithIgnoreCase(entryName, ".RSA"))) {
                     signed = true;
                     InputStream is = super.getInputStream(entry);
-                    byte[] buf = new byte[is.available()];
-                    try {
-                        is.read(buf, 0, buf.length);
-                    } finally {
-                        is.close();
-                    }
+                    byte[] buf = getAllBytesFromStreamAndClose(is);
                     verifier.addMetaEntry(entryName, buf);
                 }
             }
         }
+
+        // If there were no signature files, then no verifier work to do.
         if (!signed) {
             verifier = null;
         }
@@ -334,7 +403,7 @@ public class JarFile extends ZipFile {
     /**
      * Return an {@code InputStream} for reading the decompressed contents of
      * ZIP entry.
-     * 
+     *
      * @param ze
      *            the ZIP entry to be read.
      * @return the input stream to read from.
@@ -378,7 +447,7 @@ public class JarFile extends ZipFile {
     /**
      * Return the {@code JarEntry} specified by name or {@code null} if no such
      * entry exists.
-     * 
+     *
      * @param name
      *            the name of the entry in the JAR file.
      * @return the ZIP entry extracted.
@@ -394,6 +463,39 @@ public class JarFile extends ZipFile {
         return je;
     }
 
-    private native ZipEntry[] getMetaEntriesImpl(byte[] buf);
+    /**
+     * Returns all the ZipEntry's that relate to files in the
+     * JAR's META-INF directory.
+     *
+     * @return the list of ZipEntry's or {@code null} if there are none.
+     */
+    private ZipEntry[] getMetaEntriesImpl() {
+        List<ZipEntry> list = new ArrayList<ZipEntry>(8);
+        Enumeration<? extends ZipEntry> allEntries = entries();
+        while (allEntries.hasMoreElements()) {
+            ZipEntry ze = allEntries.nextElement();
+            if (ze.getName().startsWith(META_DIR)
+                    && ze.getName().length() > META_DIR.length()) {
+                list.add(ze);
+            }
+        }
+        if (list.size() == 0) {
+            return null;
+        }
+        ZipEntry[] result = new ZipEntry[list.size()];
+        list.toArray(result);
+        return result;
+    }
 
+    /**
+     * Closes this {@code JarFile}.
+     *
+     * @throws IOException
+     *             if an error occurs.
+     */
+    @Override
+    public void close() throws IOException {
+        super.close();
+        closed = true;
+    }
 }

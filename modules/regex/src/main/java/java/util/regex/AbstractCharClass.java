@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 package java.util.regex;
 
@@ -32,7 +31,6 @@ import java.util.ListResourceBundle;
  * constructed by lexer.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 abstract class AbstractCharClass extends SpecialToken {
     protected boolean alt;

@@ -31,8 +31,6 @@ public class PropertyEditorSupport implements PropertyEditor {
 
     List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
-    Object oldValue = null;
-
     Object newValue = null;
 
     public PropertyEditorSupport(Object source) {
@@ -71,7 +69,6 @@ public class PropertyEditorSupport implements PropertyEditor {
     }
 
     public void setValue(Object value) {
-        this.oldValue = this.newValue;
         this.newValue = value;
         firePropertyChange();
     }

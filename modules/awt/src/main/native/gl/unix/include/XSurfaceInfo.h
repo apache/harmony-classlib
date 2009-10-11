@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
 #ifndef __XSURFACE_H__
 #define __XSURFACE_H__

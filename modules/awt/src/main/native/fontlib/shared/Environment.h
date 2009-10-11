@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev, Viskov Nikolay 
- * @version $Revision$
  */
 #ifndef __GRAPHICS_ENVIRONMENT_H__
 #define __GRAPHICS_ENVIRONMENT_H__

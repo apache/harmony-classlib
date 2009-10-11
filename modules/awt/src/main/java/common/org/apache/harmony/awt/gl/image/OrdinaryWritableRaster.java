@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
 /*
  * Created on 30.09.2004

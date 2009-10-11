@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.2 $
  */
 package java.rmi.server;
 
@@ -39,7 +38,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * This class could not be instantiated.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.2 $
  */
 public class RMIClassLoader {
 

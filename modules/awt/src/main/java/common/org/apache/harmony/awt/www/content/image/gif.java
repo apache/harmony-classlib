@@ -27,6 +27,7 @@ import org.apache.harmony.awt.gl.image.URLDecodingImageSource;
  * image/gif content handler.
  */
 public class gif extends ContentHandler {
+    @Override
     public Object getContent(URLConnection conn) throws IOException {
         return new URLDecodingImageSource(conn.getURL());
     }

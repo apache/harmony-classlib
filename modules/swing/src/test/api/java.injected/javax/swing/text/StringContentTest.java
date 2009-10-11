@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexey A. Ivanov, Roman I. Chernyatchik
- * @version $Revision$
  */
 package javax.swing.text;
 

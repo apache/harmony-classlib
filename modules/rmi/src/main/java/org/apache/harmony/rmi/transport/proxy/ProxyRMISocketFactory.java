@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -32,7 +31,6 @@ import java.rmi.server.RMISocketFactory;
  * Template of a socket factory for proxy connections.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public abstract class ProxyRMISocketFactory extends RMISocketFactory
         implements Serializable {

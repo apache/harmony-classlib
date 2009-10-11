@@ -16,7 +16,6 @@
  */
 /**
  * @author Igor A. Pyankov
- * @version $Revision$
  */
 package java.awt.print;
 

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi;
 
@@ -43,7 +42,6 @@ import junit.framework.TestSuite;
  * Unit test for RMI Registry.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class RegistryTest extends RMITestBase {
 

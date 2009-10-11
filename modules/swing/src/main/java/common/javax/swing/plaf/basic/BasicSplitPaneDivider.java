@@ -17,7 +17,6 @@
 
 /**
  * @author Anton Avtamonov
- * @version $Revision$
  */
 
 package javax.swing.plaf.basic;

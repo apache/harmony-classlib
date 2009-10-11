@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -28,7 +27,6 @@ package org.apache.harmony.rmi.common;
  * RMI hash for some class or method.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class RMIHashException extends Exception {
 

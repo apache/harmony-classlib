@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl.font;
 
@@ -374,8 +373,8 @@ public abstract class FontPeerImpl implements FontPeer{
         if (frc != null){
             AffineTransform at = frc.getTransform();
             return at.createTransformedShape(maxCharBounds).getBounds2D();
-        } else 
-            return maxCharBounds;
+        }
+        return maxCharBounds;
     }
 
     /**

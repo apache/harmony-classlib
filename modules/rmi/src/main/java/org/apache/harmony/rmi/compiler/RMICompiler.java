@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -41,7 +40,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Core class of RMI Compiler.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  *
  * @todo    Implement IDL/IIOP support.
  */

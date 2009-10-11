@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei Y. Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 
 package org.apache.harmony.jndi.provider.dns;
@@ -29,7 +28,6 @@ import java.lang.reflect.Field;
 /**
  * Contains several utility methods. Is used from unit tests.
  * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class TestMgr {
     

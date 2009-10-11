@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
  */
 package javax.imageio;
 
@@ -173,5 +172,10 @@ public class ImageTypeSpecifier {
             rt = colorModel.equals(ts.colorModel) && sampleModel.equals(ts.sampleModel);
         }
         return rt;
+    }
+
+    @Override
+    public int hashCode() {
+        return colorModel.hashCode() + sampleModel.hashCode();
     }
 }

@@ -484,18 +484,11 @@ public class TextArea extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
     @Deprecated
     public void insertText(String str, int pos) {
         insert(str, pos);
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension minimumSize() {
@@ -510,10 +503,6 @@ public class TextArea extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Dimension minimumSize(int rows, int columns) {
         toolkit.lockAWT();
@@ -558,10 +547,6 @@ public class TextArea extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public Dimension preferredSize() {
@@ -576,10 +561,6 @@ public class TextArea extends TextComponent {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Dimension preferredSize(int rows, int columns) {
         toolkit.lockAWT();

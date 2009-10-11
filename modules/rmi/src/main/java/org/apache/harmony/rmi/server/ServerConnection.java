@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -56,7 +55,6 @@ import org.apache.harmony.rmi.transport.RMIProtocolConstants;
  * remote call itself.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public abstract class ServerConnection
         implements RMIProtocolConstants, Runnable {

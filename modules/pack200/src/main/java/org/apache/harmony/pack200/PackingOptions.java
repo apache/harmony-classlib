@@ -183,7 +183,7 @@ public class PackingOptions {
             // Need to escape backslashes for replaceAll(), which uses regex
             fileSeparator += "\\";
         }
-        passFileName.replaceAll(fileSeparator, "/");
+        passFileName = passFileName.replaceAll(fileSeparator, "/");
         passFiles.add(passFileName);
     }
 

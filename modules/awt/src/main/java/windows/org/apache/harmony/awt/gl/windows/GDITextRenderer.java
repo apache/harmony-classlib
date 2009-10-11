@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  */
 package org.apache.harmony.awt.gl.windows;
 

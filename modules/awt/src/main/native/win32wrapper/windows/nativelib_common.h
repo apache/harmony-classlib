@@ -16,7 +16,6 @@
  */
 /**
  * @author Sergey Kuksenko
- * @version $Revision$
  */
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H

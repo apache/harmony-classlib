@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -33,7 +32,6 @@ import java.util.Hashtable;
  * Monitor interface for RMID.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.4 $
  */
 public interface RmidMonitor {
 

@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev
- * @version $Revision$
  */
 #include "TTCurve.h"
 #include "memory.h"

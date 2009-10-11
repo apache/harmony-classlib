@@ -136,7 +136,6 @@ class ToolkitImpl extends Toolkit {
      * @param font specified Font
      * @return FontMetrics object corresponding to the specified Font object
      */
-    @SuppressWarnings("deprecation")
     @Override
     @Deprecated
     public FontMetrics getFontMetrics(Font font) {
@@ -389,7 +388,6 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     @Deprecated
     public String[] getFontList() {
@@ -401,7 +399,6 @@ class ToolkitImpl extends Toolkit {
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     @Deprecated
     protected FontPeer getFontPeer(String a0, int a1) {

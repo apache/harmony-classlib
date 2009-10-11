@@ -691,7 +691,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                         foundIndex = node.right_idx;
                         int low = left_idx + 1, mid = 0, high = right_idx - 1;
                         while (low <= high) {
-                            mid = (low + high) >> 1;
+                            mid = (low + high) >>> 1;
                             result = backingMap.cmp(object, key, keys[mid]);
                             if (result > 0) {
                                 low = mid + 1;
@@ -843,7 +843,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                         foundIndex = left_idx;
                         int low = left_idx + 1, mid = 0, high = right_idx - 1;
                         while (low <= high) {
-                            mid = (low + high) >> 1;
+                            mid = (low + high) >>> 1;
                             result = backingMap.cmp(object, key, keys[mid]);
                             if (result > 0) {
                                 foundNode = node;
@@ -3886,7 +3886,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                 } else { /* search in node */
                     int low = left_idx + 1, mid = 0, high = right_idx - 1;
                     while (low <= high) {
-                        mid = (low + high) >> 1;
+                        mid = (low + high) >>> 1;
                         result = cmp(object, keyK, keys[mid]);
                         if (result > 0) {
                             low = mid + 1;
@@ -4345,7 +4345,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                 } else { /* search in node */
                     int low = left_idx + 1, mid = 0, high = right_idx - 1;
                     while (low <= high) {
-                        mid = (low + high) >> 1;
+                        mid = (low + high) >>> 1;
                         result = cmp(object, keyK, keys[mid]);
                         if (result > 0) {
                             low = mid + 1;
@@ -4514,7 +4514,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                 } else { /* search in node */
                     int low = left_idx + 1, mid = 0, high = right_idx - 1;
                     while (low <= high) {
-                        mid = (low + high) >> 1;
+                        mid = (low + high) >>> 1;
                         result = cmp(object, keyK, keys[mid]);
                         if (result > 0) {
                             low = mid + 1;
@@ -4910,7 +4910,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                 } else { /*search in node*/
                     int low = left_idx + 1, mid = 0, high = right_idx - 1;
                     while (low <= high) {
-                        mid = (low + high) >> 1;
+                        mid = (low + high) >>> 1;
                         result = cmp(object, keyK, keys[mid]);
                         if (result > 0) {
                             low = mid + 1;

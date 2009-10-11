@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov, Michael Danilov
- * @version $Revision$
  */
 package org.apache.harmony.awt.theme;
 

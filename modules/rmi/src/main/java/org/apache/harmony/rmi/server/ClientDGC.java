@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -58,7 +57,6 @@ import org.apache.harmony.rmi.transport.Endpoint;
  * It is made package protected for security reasons.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 class ClientDGC {
 

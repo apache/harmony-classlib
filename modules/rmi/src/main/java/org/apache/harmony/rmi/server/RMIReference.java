@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -35,7 +34,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * storing exported rmi objects.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class RMIReference extends WeakReference {
 

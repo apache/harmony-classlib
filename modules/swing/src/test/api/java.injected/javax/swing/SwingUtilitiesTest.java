@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexander T. Simbirtsev
- * @version $Revision$
  * Created on 12.10.2004
  * * Window - Preferences - Java - Code Style - Code Templates
  *

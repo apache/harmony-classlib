@@ -16,7 +16,6 @@
  */
 /**
  * @author Pavel Dolgov
- * @version $Revision: 1.2 $
  */
 package org.apache.harmony.applet;
 

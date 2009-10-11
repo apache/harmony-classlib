@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -48,7 +47,6 @@ import java.security.PrivilegedAction;
  *      internal threads by using Thread.enumerate() static method.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class CreateThreadAction implements PrivilegedAction {
     /*

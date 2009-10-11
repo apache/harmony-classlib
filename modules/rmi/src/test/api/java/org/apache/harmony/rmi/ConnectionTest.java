@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 package org.apache.harmony.rmi;
 
@@ -52,7 +51,6 @@ import junit.framework.TestSuite;
  * Unit test for RMI.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class ConnectionTest extends RMITestBase {
 

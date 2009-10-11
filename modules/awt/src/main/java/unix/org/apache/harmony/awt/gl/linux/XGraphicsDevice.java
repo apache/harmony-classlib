@@ -16,7 +16,6 @@
  */
 /**
  * @author Oleg V. Khaschansky
- * @version $Revision$
  *
  * @date: Nov 15, 2005
  */

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.6.4.2 $
  */
 package java.rmi.server;
 
@@ -33,7 +32,6 @@ import java.rmi.RemoteException;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.6.4.2 $
  */
 public interface RemoteRef extends Externalizable {
 

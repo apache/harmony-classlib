@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.activation;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.activation;
  * Holds the ID of the node object and its state.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.3 $
  */
 public class NodeInfo {
 

@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * Line terminator factory
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.3.2.2 $
  */
 abstract class AbstractLineTerminator {
     static AbstractLineTerminator unixLT = null;

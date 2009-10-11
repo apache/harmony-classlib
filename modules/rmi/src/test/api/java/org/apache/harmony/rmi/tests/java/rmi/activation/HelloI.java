@@ -18,7 +18,6 @@
 
 /**
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.tests.java.rmi.activation;
 
@@ -30,7 +29,6 @@ import java.rmi.RemoteException;
  * The RMI Hello World application interface.
  *
  * @author  Victor A. Martynov
- * @version $Revision: 1.1.2.2 $
  */
 public interface HelloI extends Remote {
 

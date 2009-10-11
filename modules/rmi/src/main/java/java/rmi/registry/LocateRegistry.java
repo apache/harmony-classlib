@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.3 $
  */
 package java.rmi.registry;
 
@@ -41,7 +40,6 @@ import org.apache.harmony.rmi.remoteref.UnicastRef2;
  * This class could not be instantiated.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.8.4.3 $
  */
 public final class LocateRegistry {
 

@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev, Viskov Nikolay 
- * @version $Revision$
  */
 #ifndef __FONT_H__
 #define __FONT_H__

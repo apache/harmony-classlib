@@ -17,7 +17,6 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 package java.util.regex;
 
@@ -25,7 +24,6 @@ package java.util.regex;
  * This class represents ASCII case insensitive character sequences.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.6.2.2 $
  */
 class CISequenceSet extends LeafSet {
 	

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.server;
 
@@ -43,7 +42,6 @@ import org.apache.harmony.rmi.remoteref.UnicastServerRef;
  * should be made package protected.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.3 $
  */
 public class ExportManager {
 

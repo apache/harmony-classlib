@@ -16,7 +16,6 @@
  */
 /** 
  * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
  */ 
 
 package javax.print;

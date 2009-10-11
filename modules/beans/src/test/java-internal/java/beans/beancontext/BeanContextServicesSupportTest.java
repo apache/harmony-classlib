@@ -17,7 +17,6 @@
 
 /**
  * @author Sergey A. Krivenko
- * @version $Revision: 1.5.2.2 $
  */
 package java.beans.beancontext;
 
@@ -32,7 +31,6 @@ import junit.framework.TestSuite;
  * <p>
  * 
  * @author Sergey A. Krivenko
- * @version $Revision: 1.5.2.2 $
  */
 
 public class BeanContextServicesSupportTest extends TestCase {

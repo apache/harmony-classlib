@@ -38,8 +38,6 @@ final public class FLGlyph extends Glyph {
     */
 
     FLGlyph(char c, long fontPeerPointer, int size) {
-//        System.out.println("create glyph char " + (new Integer(c)).intValue() + " " + c + " size " + size + " pfont " + fontPeerPointer);
-        
         glChar = c;
         glyphPointer = initGlyph(c, size, fontPeerPointer);
     }
@@ -95,17 +93,14 @@ final public class FLGlyph extends Glyph {
     }
 
     @Override
-    public Shape initOutline(char arg0) {        
+    public Shape initOutline(char arg0) {
         return initOutline();
     }
     
+    @Override
     public GlyphMetrics getGlyphMetrics(){
         if (glMetrics == null) {
-            //System.out.println("getGlyphMetrics");
             float[] metrics = getGlyphMetrics(glyphPointer);
-            
-//            System.out.println("x = " + metrics[0] + ", y = " + metrics[1]);
-//            System.out.println("after x = " + Math.round(metrics[0]) + ", y = " + Math.round(metrics[1]));
             
             this.glMetrics = new GlyphMetrics(
                     true, 
@@ -114,18 +109,13 @@ final public class FLGlyph extends Glyph {
                     //new Rectangle2D.Double(initOutline().getBounds2D().getMinX(), initOutline().getBounds2D().getMinY(), initOutline().getBounds2D().getMaxX() + 5, initOutline().getBounds2D().getMaxY()),                    
                     initOutline().getBounds2D(),//new Rectangle2D.Float(metrics[2], -metrics[5]-1,metrics[4]- metrics[2] + 1, metrics[5] - metrics[3] + 1),
                     GlyphMetrics.STANDARD);
-            
-            /*System.out.println("GlyphMetrics length " + metrics.length + " glyph " + new Integer(glChar));
-            for (int i = 0; i < metrics.length; i ++) {
-                System.out.println(metrics[i]);
-            }*/
         }
         
         return glMetrics;
     }
     
+    @Override
     public GlyphMetrics getGlyphPointMetrics(){ 
-        //System.out.println("getGlyphPointMetrics");
         return glPointMetrics = getGlyphMetrics();
     }
     

@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -43,7 +42,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * Generates RMI stub code for a particular class.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 final class ClassStub implements RmicConstants {
 

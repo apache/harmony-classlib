@@ -16,7 +16,6 @@
  */
 /**
  * @author Alexey A. Petrenko
- * @version $Revision$
  */
 #if !defined __GL_GDIPLUS_H__
 #define __GL_GDIPLUS_H__

@@ -17,7 +17,6 @@
  
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
 #include <math.h>
 

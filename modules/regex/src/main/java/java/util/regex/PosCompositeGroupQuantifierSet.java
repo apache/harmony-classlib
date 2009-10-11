@@ -17,14 +17,12 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 package java.util.regex;
 
 /**
  * Possessive composite (i.e. {n,m}) quantifier node over groups.
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
  */
 class PosCompositeGroupQuantifierSet extends CompositeGroupQuantifierSet {
 

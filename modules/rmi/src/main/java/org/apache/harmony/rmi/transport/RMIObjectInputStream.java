@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport;
 
@@ -42,7 +41,6 @@ import org.apache.harmony.kernel.vm.VM;
  * deserialization for RMI calls.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class RMIObjectInputStream extends ObjectInputStream {
 

@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.tcp;
 
@@ -35,7 +34,6 @@ import java.rmi.server.RMISocketFactory;
  * RMISocketFactory implementation for direct connections.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  *
  * @see RMISocketFactory;
  */

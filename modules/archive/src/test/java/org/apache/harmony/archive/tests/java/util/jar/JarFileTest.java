@@ -65,6 +65,18 @@ public class JarFileTest extends TestCase {
 
     private File resources;
 
+    private final String jarName = "hyts_patch.jar"; // a 'normal' jar file
+
+    private final String entryName = "foo/bar/A.class";
+
+    private final String emptyEntryJar = "EmptyEntries_signed.jar";
+
+    private final String emptyEntry1 = "subfolder/internalSubset01.js";
+
+    private final String emptyEntry2 = "svgtest.js";
+
+    private final String emptyEntry3 = "svgunit.js";
+
     @Override
     protected void setUp() {
         resources = Support_Resources.createTempFolder();
@@ -119,6 +131,72 @@ public class JarFileTest extends TestCase {
             enumeration.nextElement();
             fail("nextElement() did not detect closed jar file");
         } catch (IllegalStateException e) {
+        }
+    }
+
+    public void test_getEntryLjava_lang_String() throws IOException {
+        try {
+            Support_Resources.copyFile(resources, null, jarName);
+            JarFile jarFile = new JarFile(new File(resources, jarName));
+            assertEquals("Error in returned entry", 311, jarFile.getEntry(
+                    entryName).getSize());
+            jarFile.close();
+        } catch (Exception e) {
+            fail("Exception during test: " + e.toString());
+        }
+
+        Support_Resources.copyFile(resources, null, jarName);
+        JarFile jarFile = new JarFile(new File(resources, jarName));
+        Enumeration<JarEntry> enumeration = jarFile.entries();
+        assertTrue(enumeration.hasMoreElements());
+        while (enumeration.hasMoreElements()) {
+            JarEntry je = enumeration.nextElement();
+            jarFile.getEntry(je.getName());
+        }
+
+        enumeration = jarFile.entries();
+        assertTrue(enumeration.hasMoreElements());
+        JarEntry je = enumeration.nextElement();
+        try {
+            jarFile.close();
+            jarFile.getEntry(je.getName());
+            // fail("IllegalStateException expected.");
+        } catch (IllegalStateException ee) { // Per documentation exception
+            // may be thrown.
+            // expected
+        }
+    }
+
+    public void test_getJarEntryLjava_lang_String() throws IOException {
+        try {
+            Support_Resources.copyFile(resources, null, jarName);
+            JarFile jarFile = new JarFile(new File(resources, jarName));
+            assertEquals("Error in returned entry", 311, jarFile.getJarEntry(
+                    entryName).getSize());
+            jarFile.close();
+        } catch (Exception e) {
+            fail("Exception during test: " + e.toString());
+        }
+
+        Support_Resources.copyFile(resources, null, jarName);
+        JarFile jarFile = new JarFile(new File(resources, jarName));
+        Enumeration<JarEntry> enumeration = jarFile.entries();
+        assertTrue(enumeration.hasMoreElements());
+        while (enumeration.hasMoreElements()) {
+            JarEntry je = enumeration.nextElement();
+            jarFile.getJarEntry(je.getName());
+        }
+
+        enumeration = jarFile.entries();
+        assertTrue(enumeration.hasMoreElements());
+        JarEntry je = enumeration.nextElement();
+        try {
+            jarFile.close();
+            jarFile.getJarEntry(je.getName());
+            // fail("IllegalStateException expected.");
+        } catch (IllegalStateException ee) { // Per documentation exception
+            // may be thrown.
+            // expected
         }
     }
 
@@ -310,7 +388,7 @@ public class JarFileTest extends TestCase {
         jar = new JarFile(signedFile);
         entry = jar.getJarEntry(JAR4_SIGNED_ENTRY);
         in = jar.getInputStream(entry);
-        in.read(new byte[(int) entry.getSize() - 1]);
+        readExactly(in, (int) entry.getSize() - 1);
         assertNull(entry.getCertificates());
         in.read();
         assertNotNull(entry.getCertificates());
@@ -320,7 +398,7 @@ public class JarFileTest extends TestCase {
         entry = jar.getJarEntry(JAR4_SIGNED_ENTRY);
         entry.setSize(entry.getSize() - 1);
         in = jar.getInputStream(entry);
-        in.read(new byte[(int) entry.getSize() - 1]);
+        readExactly(in, (int) entry.getSize() - 1);
         assertNull(entry.getCertificates());
         try {
             in.read();
@@ -329,6 +407,19 @@ public class JarFileTest extends TestCase {
             // desired
         }
         assertEquals(-1, in.read());
+    }
+
+    /**
+     * Performs as many read() calls as necessary to read {@code numBytes} from
+     * the stream. Should the stream exhaust early, this method will fail.
+     */
+    private void readExactly(InputStream in, int numBytes) throws IOException {
+        byte[] buffer = new byte[1024];
+        while (numBytes > 0) {
+            int read = in.read(buffer, 0, Math.min(numBytes, 1024));
+            assertTrue(read != -1);
+            numBytes -= read;
+        }
     }
 
     /*
@@ -550,5 +641,24 @@ public class JarFileTest extends TestCase {
         is = jf.getInputStream(new JarEntry("invalid"));
         assertNull(is);
         jf.close(); 
+    }
+
+    public void testJarVerificationEmptyEntry() throws IOException {
+        Support_Resources.copyFile(resources, null, emptyEntryJar);
+        File f = new File(resources, emptyEntryJar);
+
+        JarFile jarFile = new JarFile(f);
+
+        ZipEntry zipEntry = jarFile.getJarEntry(emptyEntry1);
+        int res = jarFile.getInputStream(zipEntry).read(new byte[100], 0, 100);
+        assertEquals("Wrong length of empty jar entry", -1, res);
+
+        zipEntry = jarFile.getJarEntry(emptyEntry2);
+        res = jarFile.getInputStream(zipEntry).read(new byte[100], 0, 100);
+        assertEquals("Wrong length of empty jar entry", -1, res);
+
+        zipEntry = jarFile.getJarEntry(emptyEntry3);
+        res = jarFile.getInputStream(zipEntry).read();
+        assertEquals("Wrong length of empty jar entry", -1, res);
     }
 }

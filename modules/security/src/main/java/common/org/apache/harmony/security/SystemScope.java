@@ -17,7 +17,6 @@
 
 /**
 * @author Aleksei Y. Semenov
-* @version $Revision$
 */
 
 package org.apache.harmony.security;

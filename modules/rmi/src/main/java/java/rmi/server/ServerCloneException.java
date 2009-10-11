@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.2 $
  */
 package java.rmi.server;
 
@@ -29,7 +28,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.2 $
  */
 public class ServerCloneException extends CloneNotSupportedException {
 

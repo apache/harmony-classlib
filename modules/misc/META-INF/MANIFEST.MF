@@ -17,7 +17,7 @@ Import-Package: java.io,
  java.nio,
  java.security,
  java.util,
- org.apache.harmony.awt.nativebridge,
+ org.apache.harmony.awt.nativebridge;hy_usage=test;resolution:=optional,
  org.apache.harmony.kernel.vm
 Export-Package: org.apache.harmony.misc,
  org.apache.harmony.misc.accessors

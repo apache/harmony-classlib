@@ -17,7 +17,6 @@
  
 /**
  * @author Igor V. Stolyarov
- * @version $Revision$
  */
  
 #ifndef __GDI_BLITTER__

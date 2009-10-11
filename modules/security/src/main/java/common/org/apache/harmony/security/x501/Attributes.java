@@ -16,7 +16,6 @@
  */
 /**
 * @author Stepan M. Mishura
-* @version $Revision$
 */
 
 package org.apache.harmony.security.x501;

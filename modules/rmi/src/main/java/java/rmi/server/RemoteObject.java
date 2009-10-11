@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.10.4.3 $
  */
 package java.rmi.server;
 
@@ -40,7 +39,6 @@ import org.apache.harmony.rmi.server.ExportManager;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.10.4.3 $
  */
 public abstract class RemoteObject implements Remote, Serializable {
 

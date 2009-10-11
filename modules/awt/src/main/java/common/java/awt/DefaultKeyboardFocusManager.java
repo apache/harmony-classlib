@@ -18,11 +18,8 @@
 package java.awt;
 
 import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
@@ -452,7 +449,7 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
             // associated KEY_TYPED event,
             // will be consumed, and will not be dispatched to any Component
 
-            Set[] sets = { back, forward, up, down };
+            Set<?>[] sets = { back, forward, up, down };
             consume(e, sets);
 
             if (back.contains(ks)) {

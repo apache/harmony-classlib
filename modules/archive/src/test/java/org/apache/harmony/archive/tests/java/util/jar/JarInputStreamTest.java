@@ -390,4 +390,25 @@ public class JarInputStreamTest extends junit.framework.TestCase {
         jin.close();
     }    
 
+    public void test_getNextEntry() throws Exception {
+        File resources = Support_Resources.createTempFolder();
+        Support_Resources.copyFile(resources, null, "Broken_entry.jar");
+        InputStream is = Support_Resources.getStream("Broken_entry.jar");
+        JarInputStream jis = new JarInputStream(is, false);
+        jis.getNextEntry();
+        try {
+            jis.getNextEntry();
+            fail("ZipException expected");
+        } catch (ZipException ee) {
+            // expected
+        }
+
+        try {
+            jis.close();  // Android throws exception here, already!
+            jis.getNextEntry();  // But RI here, only!
+            fail("IOException expected");
+        } catch (IOException ee) {
+            // expected
+        }
+    }
 }

@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem Rafikov
- * @version $Revision$
  */
 package org.apache.harmony.awt.nativebridge;
 

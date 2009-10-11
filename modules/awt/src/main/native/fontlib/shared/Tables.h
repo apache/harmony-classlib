@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitriy S. Matveev
- * @version $Revision$
  */
 #ifndef __TABLES_H__
 #define __TABLES_H__

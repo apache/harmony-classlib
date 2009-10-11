@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi;
 
@@ -36,7 +35,6 @@ import junit.framework.TestSuite;
  * Unit test for java.rmi.MarshalledObject class.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.1 $
  */
 public class MarshalledObjectTest extends TestCase {
 

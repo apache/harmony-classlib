@@ -288,7 +288,7 @@ public class IcTuple {
     }
 
     public boolean equals(Object object) {
-        if (object.getClass() != this.getClass()) {
+        if ((object == null) || (object.getClass() != this.getClass())) {
             return false;
         }
         IcTuple compareTuple = (IcTuple) object;

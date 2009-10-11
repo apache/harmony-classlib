@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.common;
 
@@ -37,7 +36,6 @@ import java.util.Vector;
  * <em>inverse</em> flag was set in constructor) are removed from the list.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public final class ClassList {
 

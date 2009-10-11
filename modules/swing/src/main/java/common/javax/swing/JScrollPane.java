@@ -17,7 +17,6 @@
 
 /**
  * @author Sergey Burlak, Anton Avtamonov
- * @version $Revision$
  */
 
 package javax.swing;

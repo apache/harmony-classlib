@@ -1,13 +1,13 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.apache.harmony.archive.internal.nls.Messages;
  * (see <a href="http://www.gzip.org/algorithm.txt">specification</a>).
  * Basically it wraps the {@code Inflater} class and takes care of the
  * buffering.
- * 
+ *
  * @see Inflater
  * @see DeflaterOutputStream
  */
@@ -53,6 +53,11 @@ public class InflaterInputStream extends FilterInputStream {
 
     boolean closed;
 
+    /**
+     * True if this stream's last byte has been returned to the user. This
+     * could be because the underlying stream has been exhausted, or if errors
+     * were encountered while inflating that stream.
+     */
     boolean eof;
 
     static final int BUF_SIZE = 512;
@@ -62,7 +67,7 @@ public class InflaterInputStream extends FilterInputStream {
      * InputStream} from which the compressed data is to be read from. Default
      * settings for the {@code Inflater} and internal buffer are be used. In
      * particular the Inflater expects a ZLIB header from the input stream.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      */
@@ -73,7 +78,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * This constructor lets you pass a specifically initialized Inflater,
      * for example one that expects no ZLIB header.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      * @param inf
@@ -86,7 +91,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * This constructor lets you specify both the {@code Inflater} as well as
      * the internal buffer size to be used.
-     * 
+     *
      * @param is
      *            the {@code InputStream} to read data from.
      * @param inf
@@ -108,7 +113,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Reads a single byte of decompressed data.
-     * 
+     *
      * @return the byte read.
      * @throws IOException
      *             if an error occurs reading the byte.
@@ -125,7 +130,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Reads up to {@code nbytes} of decompressed data and stores it in
      * {@code buffer} starting at {@code off}.
-     * 
+     *
      * @param buffer
      *            the buffer to write data to.
      * @param off
@@ -155,41 +160,45 @@ public class InflaterInputStream extends FilterInputStream {
             return 0;
         }
 
-        if (inf.finished()) {
-            eof = true;
+        if (eof) {
             return -1;
         }
 
         // avoid int overflow, check null buffer
-        if (off <= buffer.length && nbytes >= 0 && off >= 0
-                && buffer.length - off >= nbytes) {
-            do {
-                if (inf.needsInput()) {
-                    fill();
-                }
-                int result;
-                try {
-                    result = inf.inflate(buffer, off, nbytes);
-                } catch (DataFormatException e) {
-                    if (len == -1) {
-                        throw new EOFException();
-                    }
-                    throw (IOException) (new IOException().initCause(e));
-                }
+        if (off > buffer.length || nbytes < 0 || off < 0
+                || buffer.length - off < nbytes) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        do {
+            if (inf.needsInput()) {
+                fill();
+            }
+            // Invariant: if reading returns -1 or throws, eof must be true.
+            // It may also be true if the next read() should return -1.
+            try {
+                int result = inf.inflate(buffer, off, nbytes);
+                eof = inf.finished();
                 if (result > 0) {
                     return result;
-                } else if (inf.finished()) {
-                    eof = true;
+                } else if (eof) {
                     return -1;
                 } else if (inf.needsDictionary()) {
+                    eof = true;
                     return -1;
                 } else if (len == -1) {
+                    eof = true;
                     throw new EOFException();
                     // If result == 0, fill() and try again
                 }
-            } while (true);
-        }
-        throw new ArrayIndexOutOfBoundsException();
+            } catch (DataFormatException e) {
+                eof = true;
+                if (len == -1) {
+                    throw new EOFException();
+                }
+                throw (IOException) (new IOException().initCause(e));
+            }
+        } while (true);
     }
 
     /**
@@ -209,7 +218,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Skips up to n bytes of uncompressed data.
-     * 
+     *
      * @param nbytes
      *            the number of bytes to skip.
      * @return the number of uncompressed bytes skipped.
@@ -219,13 +228,15 @@ public class InflaterInputStream extends FilterInputStream {
     @Override
     public long skip(long nbytes) throws IOException {
         if (nbytes >= 0) {
+            if (buf == null) {
+                buf = new byte[(int)Math.min(nbytes, BUF_SIZE)];
+            }
             long count = 0, rem = 0;
             while (count < nbytes) {
                 int x = read(buf, 0,
                         (rem = nbytes - count) > buf.length ? buf.length
                                 : (int) rem);
                 if (x == -1) {
-                    eof = true;
                     return count;
                 }
                 count += x;
@@ -236,9 +247,18 @@ public class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Returns whether data can be read from this stream.
-     * 
-     * @return 0 if this stream has been closed, 1 otherwise.
+     * Returns 0 when when this stream has exhausted its input; and 1 otherwise.
+     * A result of 1 does not guarantee that further bytes can be returned,
+     * with or without blocking.
+     *
+     * <p>Although consistent with the RI, this behavior is inconsistent with
+     * {@link InputStream#available()}, and violates the <a
+     * href="http://en.wikipedia.org/wiki/Liskov_substitution_principle">Liskov
+     * Substitution Principle</a>. This method should not be used.
+     *
+     * @return 0 if no further bytes are available. Otherwise returns 1,
+     *         which suggests (but does not guarantee) that additional bytes are
+     *         available.
      * @throws IOException
      *             If an error occurs.
      */
@@ -256,7 +276,7 @@ public class InflaterInputStream extends FilterInputStream {
 
     /**
      * Closes the input stream.
-     * 
+     *
      * @throws IOException
      *             If an error occurs closing the input stream.
      */
@@ -273,7 +293,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Marks the current position in the stream. This implementation overrides
      * the super type implementation to do nothing at all.
-     * 
+     *
      * @param readlimit
      *            of no use.
      */
@@ -298,7 +318,7 @@ public class InflaterInputStream extends FilterInputStream {
     /**
      * Returns whether the receiver implements {@code mark} semantics. This type
      * does not support {@code mark()}, so always responds {@code false}.
-     * 
+     *
      * @return false, always
      */
     @Override

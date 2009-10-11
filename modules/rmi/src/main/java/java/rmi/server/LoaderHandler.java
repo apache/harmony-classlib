@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  */
 package java.rmi.server;
 
@@ -30,7 +29,6 @@ import java.net.URL;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.3.4.2 $
  * @deprecated This interface was being used by previous versions of RMI.
  *     It should not be used anymore. There is no replacement.
  */

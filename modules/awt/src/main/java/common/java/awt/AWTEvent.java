@@ -16,7 +16,6 @@
  */
 /**
  * @author Dmitry A. Durnev, Michael Danilov
- * @version $Revision$
  */
 package java.awt;
 

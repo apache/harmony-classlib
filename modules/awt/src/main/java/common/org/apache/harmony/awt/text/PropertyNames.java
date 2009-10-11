@@ -17,7 +17,6 @@
 
 /**
  * @author Alexey A. Ivanov
- * @version $Revision$
  */
 package org.apache.harmony.awt.text;
 

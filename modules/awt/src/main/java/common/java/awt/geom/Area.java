@@ -234,7 +234,8 @@ public class Area implements Shape, Cloneable {
 		return new Area(t.createTransformedShape(this));
 	}
 
-	public Object clone() {
+	@Override
+    public Object clone() {
 		Area area = new Area();
 		copy(this, area);
 		return area;

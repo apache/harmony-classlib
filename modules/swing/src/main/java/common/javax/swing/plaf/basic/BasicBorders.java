@@ -17,7 +17,6 @@
 
 /**
  * @author Alexander T. Simbirtsev
- * @version $Revision$
  */
 
 package javax.swing.plaf.basic;

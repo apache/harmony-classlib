@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem V. Rafikov
- * @version $Revision: 1.2 $
  */
 package org.apache.harmony.x.imageio.plugins.jpeg;
 

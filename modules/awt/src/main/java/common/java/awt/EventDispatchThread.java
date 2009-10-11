@@ -16,7 +16,6 @@
  */
 /**
  * @author Michael Danilov, Pavel Dolgov
- * @version $Revision$
  */
 package java.awt;
 
@@ -26,6 +25,8 @@ import org.apache.harmony.awt.wtk.NativeEventQueue;
 class EventDispatchThread extends Thread  {
     
     private static final class MarkerEvent extends AWTEvent {
+        private static final long serialVersionUID = 1L;
+
         MarkerEvent(Object source, int id) {
             super(source, id);
         }

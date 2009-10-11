@@ -18,14 +18,12 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.test;
 
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class MyException extends Exception {
 

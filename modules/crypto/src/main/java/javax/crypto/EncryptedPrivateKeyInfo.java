@@ -17,7 +17,6 @@
 
 /**
 * @author Vladimir N. Molotkov, Stepan M. Mishura
-* @version $Revision$
 */
 
 package javax.crypto;

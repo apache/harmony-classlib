@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.3 $
  */
 package java.rmi.server;
 
@@ -35,7 +34,6 @@ import org.apache.harmony.rmi.server.ServerConnectionManager;
  * @com.intel.drl.spec_ref
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.7.4.3 $
  */
 public abstract class RemoteServer extends RemoteObject {
 

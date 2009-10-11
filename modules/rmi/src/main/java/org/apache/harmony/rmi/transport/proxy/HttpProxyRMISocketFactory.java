@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.transport.proxy;
 
@@ -37,7 +36,6 @@ import org.apache.harmony.rmi.internal.nls.Messages;
  * for client and {@link HttpServerSocket} for server sockets.
  *
  * @author  Mikhail A. Markov, Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class HttpProxyRMISocketFactory extends ProxyRMISocketFactory
         implements ProxyConstants  {

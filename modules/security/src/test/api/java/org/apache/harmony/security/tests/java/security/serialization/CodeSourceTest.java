@@ -16,7 +16,6 @@
  */
 /**
 * @author Alexander V. Astapchuk
-* @version $Revision$
 */
 
 package org.apache.harmony.security.tests.java.security.serialization;

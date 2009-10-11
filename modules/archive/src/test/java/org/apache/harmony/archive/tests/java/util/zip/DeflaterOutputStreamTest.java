@@ -32,6 +32,8 @@ import junit.framework.TestCase;
 public class DeflaterOutputStreamTest extends TestCase {
 
     private class MyDeflaterOutputStream extends DeflaterOutputStream {
+        boolean deflateFlag = false;
+
         MyDeflaterOutputStream(OutputStream out) {
             super(out);
         }
@@ -48,8 +50,13 @@ public class DeflaterOutputStreamTest extends TestCase {
             return buf;
         }
 
-        void myDeflate() throws IOException {
-            deflate();
+        protected void deflate() throws IOException {
+            deflateFlag = true;
+            super.deflate();
+        }
+
+        boolean getDaflateFlag() {
+            return deflateFlag;
         }
     }
 
@@ -168,21 +175,22 @@ public class DeflaterOutputStreamTest extends TestCase {
      * @tests java.util.zip.DeflaterOutputStream#close()
      */
     public void test_close() throws Exception {
-        File f1 = new File("close.tst");
-        FileOutputStream fos = new FileOutputStream(f1);
-        DeflaterOutputStream dos = new DeflaterOutputStream(fos);
-        byte byteArray[] = { 1, 3, 4, 6 };
-        dos.write(byteArray);
+        File f1 = File.createTempFile("close", ".tst");
 
-        FileInputStream fis = new FileInputStream(f1);
-        InflaterInputStream iis = new InflaterInputStream(fis);
+        InflaterInputStream iis = new InflaterInputStream(new FileInputStream(f1));
         try {
             iis.read();
             fail("EOFException Not Thrown");
         } catch (EOFException e) {
         }
 
+        FileOutputStream fos = new FileOutputStream(f1);
+        DeflaterOutputStream dos = new DeflaterOutputStream(fos);
+        byte byteArray[] = {1, 3, 4, 6};
+        dos.write(byteArray);
         dos.close();
+
+        iis = new InflaterInputStream(new FileInputStream(f1));
 
         // Test to see if the finish method wrote the bytes to the file.
         assertEquals("Incorrect Byte Returned.", 1, iis.read());
@@ -378,5 +386,17 @@ public class DeflaterOutputStreamTest extends TestCase {
         }
 
         f2.delete();
+    }
+
+    public void test_deflate() throws Exception {
+        File f1 = File.createTempFile("writeI1", ".tst");
+        FileOutputStream fos = new FileOutputStream(f1);
+        MyDeflaterOutputStream dos = new MyDeflaterOutputStream(fos);
+        assertFalse(dos.getDaflateFlag());
+        for (int i = 0; i < 3; i++) {
+            dos.write(i);
+        }
+        assertTrue(dos.getDaflateFlag());
+        dos.close();
     }
 }

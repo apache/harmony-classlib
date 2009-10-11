@@ -38,6 +38,7 @@ import java.lang.ref.SoftReference;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.harmony.awt.gl.Surface;
@@ -55,16 +56,16 @@ public class OGLTextRenderer extends TextRenderer {
     private static final TextureCache tx = TextureCache.getInstance();
     private static final GL gl = GL.getInstance();
     
-    private static final HashSet ESCAPE = new HashSet<Character>();
+    private static final Set<Character> ESCAPE = new HashSet<Character>();
     static {
-        ESCAPE.add(new Character('\n'));
-        ESCAPE.add(new Character('\r'));
-        ESCAPE.add(new Character('\t'));
+        ESCAPE.add(Character.valueOf('\n'));
+        ESCAPE.add(Character.valueOf('\r'));
+        ESCAPE.add(Character.valueOf('\t'));
     }
     
-    private static final Hashtable intHash2glyphHash = new SoftHashtable();   
+    private static final SoftHashtable intHash2glyphHash = new SoftHashtable();   
     
-    private static final Vector toDel = new Vector<Integer>();
+    private static final Vector<Integer> toDel = new Vector<Integer>();
     
     private static final Color INVISIBLE_COLOR = new Color(0,0,0,(float)0);
     
@@ -81,7 +82,7 @@ public class OGLTextRenderer extends TextRenderer {
                 null
         );
         
-        int[] masColors = new int[]{ (int)0x000000, color.getRGB()};
+        int[] masColors = new int[]{ 0x000000, color.getRGB()};
         
         IndexColorModel colorModel = new IndexColorModel(1, 2, masColors, 0,true,0,DataBuffer.TYPE_BYTE);  
 
@@ -100,16 +101,15 @@ public class OGLTextRenderer extends TextRenderer {
      * @param x start X position to draw
      * @param y start Y position to draw
      */
+    @Override
     public void drawString(Graphics2D g, String str, float x, float y) {        
-        char[] input = str.toCharArray();
-        Character ch;
-        Glyph glyph;
-        DLInfo info;
+        final char[] input = str.toCharArray();
         GlyphMetrics glMetrics;
         Color col = g.getColor();
         Font font = g.getFont();        
         int length = str.length();
-        FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
+        @SuppressWarnings("deprecation")
+        final FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
         AffineTransform fontAT = (AffineTransform)font.getTransform().clone();
         Point.Float pos = new Point.Float();
         Paint paint = g.getPaint(); 
@@ -131,24 +131,27 @@ public class OGLTextRenderer extends TextRenderer {
         hash.append(getFactor(g.getTransform()));
         hash.append(paint);
         hash.append(isAntialias);
-        Integer intHash = new Integer(hash.hashCode());
+        Integer intHash = Integer.valueOf(hash.hashCode());
         
         GlyphHashtable glyphHash = 
-            intHash2glyphHash.containsKey(intHash) ? 
-                    (GlyphHashtable) intHash2glyphHash.get(intHash) : null;
+            (GlyphHashtable) (intHash2glyphHash.containsKey(intHash) ? 
+                intHash2glyphHash.get(intHash) : null);
         if ( glyphHash == null) {
             glyphHash = new GlyphHashtable();
-            intHash2glyphHash. put(intHash, glyphHash);
+            intHash2glyphHash.put(intHash, glyphHash);
         }
         
-        activateVars();        
+        activateVars();
         
         for (int i = 0; i - length < 0; i ++) {
-            ch = new Character(input[i]);
-            if (ESCAPE.contains(ch)) continue;
-            glyph = peer.getGlyph(input[i]);
+            final char c = input[i];
+            final Character ch = Character.valueOf(c);
+            if (ESCAPE.contains(ch)) { 
+                continue;
+            }
+            final Glyph glyph = peer.getGlyph(input[i]);
             
-            if (ch == ' ') {
+            if (c == ' ') {
                 glMetrics = glyph.getGlyphPointMetrics();
                 gl.glTranslated(
                         glMetrics.getAdvanceX(),
@@ -158,7 +161,7 @@ public class OGLTextRenderer extends TextRenderer {
                 continue;
             }
             
-            info = glyphHash.containsKey(ch) ? (DLInfo)glyphHash.get(ch) : null;
+            final DLInfo info = glyphHash.containsKey(ch) ? (DLInfo)glyphHash.get(ch) : null;
             
             if (info == null || !info.isValid()) {
                 createColorGlyphDL(g, glyph, glyphHash, font, ch, col, isAntialias);
@@ -167,16 +170,10 @@ public class OGLTextRenderer extends TextRenderer {
             }            
             
             glMetrics = glyph.getGlyphPointMetrics();
-            gl.glTranslated(
-                    glMetrics.getAdvanceX(),
-                    glMetrics.getAdvanceY(),
-                    0
-            );            
-            
+            gl.glTranslated(glMetrics.getAdvanceX(), glMetrics.getAdvanceY(), 0);
         }
         deactivateVars();
         cleanLists();
-        
     }
 
     /**
@@ -187,14 +184,14 @@ public class OGLTextRenderer extends TextRenderer {
      * @param x start X position to draw
      * @param y start Y position to draw
      */
+    @Override
     public void drawGlyphVector(Graphics2D g, GlyphVector gv, float x, float y) {
-        Character ch;
-        DLInfo info;
         Color col = g.getColor();
         Glyph[] input = ((CommonGlyphVector)gv).vector;        
         Font font = gv.getFont();
         int length = gv.getNumGlyphs();
-        FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
+        @SuppressWarnings("deprecation")
+        final FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
         AffineTransform fontAT = (AffineTransform)font.getTransform().clone();
         Point.Float pos = new Point.Float();
         boolean isAntialias = g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING) == RenderingHints.VALUE_TEXT_ANTIALIAS_ON;   
@@ -218,8 +215,8 @@ public class OGLTextRenderer extends TextRenderer {
         Integer intHash = new Integer(hash.hashCode());
         
         GlyphHashtable glyphHash = 
-            intHash2glyphHash.containsKey(intHash) ? 
-                    (GlyphHashtable) intHash2glyphHash.get(intHash) : null;
+            (GlyphHashtable) (intHash2glyphHash.containsKey(intHash) ? 
+                intHash2glyphHash.get(intHash) : null);
         if ( glyphHash == null) {
             glyphHash = new GlyphHashtable();
             intHash2glyphHash. put(intHash, glyphHash);
@@ -228,11 +225,14 @@ public class OGLTextRenderer extends TextRenderer {
         fontAT = (AffineTransform) font.getTransform().clone();
         activateVars();
         for (int i = 0; i - length < 0; i ++) {
-            ch = new Character(input[i].getChar());
+            final char c = input[i].getChar();
+            final Character ch = Character.valueOf(c);
             
-            if (ch == ' ') continue;
+            if (c == ' ') {
+                continue;
+            }
             
-            info = glyphHash.containsKey(ch) ? (DLInfo)glyphHash.get(ch) : null;            
+            final DLInfo info = glyphHash.containsKey(ch) ? (DLInfo)glyphHash.get(ch) : null;
             try {
                 fontAT.inverseTransform(gv.getGlyphPosition(i), pos);
             } catch (NoninvertibleTransformException e) {                
@@ -240,9 +240,9 @@ public class OGLTextRenderer extends TextRenderer {
             
             gl.glTranslated(pos.x, pos.y, 0);
             if (info == null || !info.isValid()) {                
-                createColorGlyphDL(g, input[i], glyphHash, font, ch, col, isAntialias);                
+                createColorGlyphDL(g, input[i], glyphHash, font, ch, col, isAntialias);
             } else {                
-                gl.glCallList(info.getDL());     
+                gl.glCallList(info.getDL());
             }                   
             gl.glTranslated(-pos.x, -pos.y, 0);
         }     
@@ -265,7 +265,8 @@ public class OGLTextRenderer extends TextRenderer {
              
         double texSize = getFactor(g.getTransform());
         
-        Glyph newGlyph = ((FontPeerImpl)(font.deriveFont(
+        @SuppressWarnings("deprecation")
+        final Glyph newGlyph = ((FontPeerImpl)(font.deriveFont(
                 (float)(font.getSize2D() * texSize))).getPeer())
                 .getGlyph(ch.charValue()); 
         
@@ -343,8 +344,8 @@ public class OGLTextRenderer extends TextRenderer {
     private void cleanLists() {
         synchronized(toDel) {
             if (!toDel.isEmpty()) {            
-                 for (Iterator iter = toDel.iterator(); iter.hasNext();) {
-                    int element = ((Integer)iter.next()).intValue();                
+                 for (Iterator<Integer> iter = toDel.iterator(); iter.hasNext();) {
+                    int element = iter.next().intValue();                
                     if (gl.glIsList(element) == GLDefs.GL_TRUE) {    
 
                         gl.glDeleteLists(element, 1);    
@@ -376,60 +377,67 @@ public class OGLTextRenderer extends TextRenderer {
         gl.glDisable(GLDefs.GL_TEXTURE_2D);
     }
     
-    private static final class SoftHashtable extends Hashtable { 
+    private static final class SoftHashtable extends Hashtable<Integer, Object> { 
+        private static final long serialVersionUID = 1L;
 
-        public Object put(Object key,Object obj) { 
-            SoftReference ref = (SoftReference)super.put(key,new SoftReference(obj)); 
+        @Override
+        public Object put(Integer key, Object obj) { 
+            @SuppressWarnings("unchecked")
+            final SoftReference<GlyphHashtable> ref = (SoftReference<GlyphHashtable>)super.put(key, new SoftReference<GlyphHashtable>((GlyphHashtable) obj)); 
             return ref == null ? null : ref.get(); 
         }
-
+        
+        @Override
         public Object get(Object key) { 
-            SoftReference ref = (SoftReference)super.get(key); 
+            @SuppressWarnings("unchecked")
+            final SoftReference<GlyphHashtable> ref = (SoftReference<GlyphHashtable>)super.get(key); 
             return ref == null ? null : ref.get(); 
         } 
 
+        @Override
         public Object remove(Object key) { 
-            SoftReference ref = (SoftReference)super.remove(key); 
+            @SuppressWarnings("unchecked")
+            final SoftReference<GlyphHashtable> ref = (SoftReference<GlyphHashtable>)super.remove(key); 
             return ref == null ? null : ref.get();
         } 
     }
     
-    private static final class GlyphHashtable extends Hashtable { 
+    private static final class GlyphHashtable extends Hashtable<Character, DLInfo> { 
+        private static final long serialVersionUID = 1L;
+
+        @Override
         public void finalize() throws Throwable {
             super.finalize();
             synchronized(toDel) {
-                for (Iterator i = this.values().iterator(); i.hasNext();) {
-                    toDel.add(new Integer(((DLInfo) i.next()).getDL()));                
+                for (Iterator<DLInfo> i = this.values().iterator(); i.hasNext();) {
+                    toDel.add(Integer.valueOf(i.next().getDL()));
                 }
             }
         }        
     }
     
     private static final class DLInfo {
-        private int dl;
-        private Surface srf;
-        public DLInfo(int dl, Surface srf) {
+        private final int dl;
+        private final Surface srf;
+
+        DLInfo(int dl, Surface srf) {
             this.dl = dl;
             this.srf = srf;
-        }      
-        
-        public int getDL() {
+        }
+
+        int getDL() {
             return dl;
         }
-        
-        public Surface getSrf() {
-            return srf;
-        }
-        
-        public boolean isValid() {                
+
+        boolean isValid() {
             if (tx.findTexture(srf) == null) {
                 synchronized (toDel) {
-                    toDel.add(new Integer(dl));
+                    toDel.add(Integer.valueOf(dl));
                 }
                 return false;
             }
-            
-            return gl.glIsList(dl) == GLDefs.GL_TRUE;            
+
+            return gl.glIsList(dl) == GLDefs.GL_TRUE;
         }
     }
 

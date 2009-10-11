@@ -16,7 +16,6 @@
  */
 /**
  * @author Ilya S. Okomin
- * @version $Revision$
  *
  */
 #include <X11/Xft/Xft.h>

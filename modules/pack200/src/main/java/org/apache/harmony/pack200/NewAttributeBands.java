@@ -194,20 +194,21 @@ public class NewAttributeBands extends BandSet {
 
     private LayoutElement readNextLayoutElement(StringReader stream)
             throws IOException {
-        char nextChar = (char)stream.read();
+        int nextChar = stream.read();
         if (nextChar == -1) {
             return null;
         }
+
         switch (nextChar) {
         // Integrals
         case 'B':
         case 'H':
         case 'I':
         case 'V':
-            return new Integral(new String(new char[] { nextChar }));
+            return new Integral(new String(new char[] { (char)nextChar }));
         case 'S':
         case 'F':
-            return new Integral(new String(new char[] { nextChar,
+            return new Integral(new String(new char[] { (char)nextChar,
                     (char) stream.read() }));
         case 'P':
             stream.mark(1);
@@ -266,7 +267,7 @@ public class NewAttributeBands extends BandSet {
             // Reference
         case 'K':
         case 'R':
-            String string = "" + nextChar + (char) stream.read();
+            String string = "" + (char)nextChar + (char) stream.read();
             char nxt = (char) stream.read();
             string += nxt;
             if (nxt == 'N') {

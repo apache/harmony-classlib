@@ -17,7 +17,6 @@
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.2 $
  */
 package org.apache.harmony.beans.tests.support;
 
@@ -25,7 +24,6 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * @author Maxim V. Berkultsev
- * @version $Revision: 1.2.6.2 $
  */
 
 public class OtherEditor extends PropertyEditorSupport {

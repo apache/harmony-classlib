@@ -18,7 +18,6 @@
 
 /**
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 package org.apache.harmony.rmi.remoteref;
 
@@ -35,7 +34,6 @@ import org.apache.harmony.rmi.transport.Endpoint;
  * Handle of remote objects using custom client socket factory.
  *
  * @author  Mikhail A. Markov
- * @version $Revision: 1.1.2.2 $
  */
 public class UnicastRef2 extends UnicastRef {
 

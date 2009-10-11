@@ -17,7 +17,6 @@
 
 /**
 * @author Maxim V. Makarov
-* @version $Revision$
 */
 
 package org.apache.harmony.auth.tests.javax.security.auth.login;

@@ -16,7 +16,6 @@
  */
 /**
  * @author Rustem Rafikov
- * @version $Revision$
  */
 
 #include "org_apache_harmony_awt_nativebridge_linux_ErrorHandler.h"

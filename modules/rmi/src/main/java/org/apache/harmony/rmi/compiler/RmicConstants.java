@@ -18,7 +18,6 @@
 
 /**
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 package org.apache.harmony.rmi.compiler;
 
@@ -27,7 +26,6 @@ package org.apache.harmony.rmi.compiler;
  * This interface contains various useful constants for RMI Compiler.
  *
  * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.1 $
  */
 interface RmicConstants {
 
