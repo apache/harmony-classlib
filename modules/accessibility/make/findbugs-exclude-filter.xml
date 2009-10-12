@@ -33,5 +33,22 @@
         <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL" />
     </Match> 
 
+    <!--
+        toString(String) calls are required for these instances, 
+        from HARMONY-6008 ([classlib] Fix japi found differences between harmony 
+        and spec)
+    -->
+    <Match>
+        <Class name="javax.accessibility.AccessibleAction" />
+        <Method name="&lt;clinit&gt;" />
+        <Bug pattern="DM_STRING_CTOR" />
+    </Match>
+    <Match>
+        <Class name="javax.accessibility.AccessibleRelation" />
+        <Method name="&lt;clinit&gt;" />
+        <Bug pattern="DM_STRING_CTOR" />
+    </Match> 
+
+
 </FindBugsFilter>
 
