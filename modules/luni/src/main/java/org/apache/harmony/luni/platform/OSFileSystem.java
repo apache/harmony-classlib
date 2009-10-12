@@ -35,124 +35,124 @@ class OSFileSystem implements IFileSystem {
     }
 
     private OSFileSystem() {
-		super();
-	}
+        super();
+    }
 
-	private final void validateLockArgs(int type, long start, long length) {
-		if ((type != IFileSystem.SHARED_LOCK_TYPE)
-				&& (type != IFileSystem.EXCLUSIVE_LOCK_TYPE)) {
-			throw new IllegalArgumentException("Illegal lock type requested."); //$NON-NLS-1$
-		}
+    private final void validateLockArgs(int type, long start, long length) {
+        if ((type != IFileSystem.SHARED_LOCK_TYPE)
+                && (type != IFileSystem.EXCLUSIVE_LOCK_TYPE)) {
+            throw new IllegalArgumentException("Illegal lock type requested."); //$NON-NLS-1$
+        }
 
-		// Start position
-		if (start < 0) {
-			throw new IllegalArgumentException(
-					"Lock start position must be non-negative"); //$NON-NLS-1$
-		}
+        // Start position
+        if (start < 0) {
+            throw new IllegalArgumentException(
+                    "Lock start position must be non-negative"); //$NON-NLS-1$
+        }
 
-		// Length of lock stretch
-		if (length < 0) {
-			throw new IllegalArgumentException(
-					"Lock length must be non-negative"); //$NON-NLS-1$
-		}
-	}
+        // Length of lock stretch
+        if (length < 0) {
+            throw new IllegalArgumentException(
+                    "Lock length must be non-negative"); //$NON-NLS-1$
+        }
+    }
 
-	private native int lockImpl(long fileDescriptor, long start, long length,
-			int type, boolean wait);
+    private native int lockImpl(long fileDescriptor, long start, long length,
+            int type, boolean wait);
 
-	/**
-	 * Returns the granularity for virtual memory allocation.
-	 * Note that this value for Windows differs from the one for the
-	 * page size (64K and 4K respectively).
-	 */
-	public native int getAllocGranularity() throws IOException;
+    /**
+     * Returns the granularity for virtual memory allocation.
+     * Note that this value for Windows differs from the one for the
+     * page size (64K and 4K respectively).
+     */
+    public native int getAllocGranularity() throws IOException;
 
-	public boolean lock(long fileDescriptor, long start, long length, int type,
-			boolean waitFlag) throws IOException {
-		// Validate arguments
-		validateLockArgs(type, start, length);
-		int result = lockImpl(fileDescriptor, start, length, type, waitFlag);
-		return result != -1;
-	}
+    public boolean lock(long fileDescriptor, long start, long length, int type,
+            boolean waitFlag) throws IOException {
+        // Validate arguments
+        validateLockArgs(type, start, length);
+        int result = lockImpl(fileDescriptor, start, length, type, waitFlag);
+        return result != -1;
+    }
 
-	private native int unlockImpl(long fileDescriptor, long start, long length);
+    private native int unlockImpl(long fileDescriptor, long start, long length);
 
-	public void unlock(long fileDescriptor, long start, long length)
-			throws IOException {
-		// Validate arguments
-		validateLockArgs(IFileSystem.SHARED_LOCK_TYPE, start, length);
-		int result = unlockImpl(fileDescriptor, start, length);
-		if (result == -1) {
-			throw new IOException();
-		}
-	}
+    public void unlock(long fileDescriptor, long start, long length)
+            throws IOException {
+        // Validate arguments
+        validateLockArgs(IFileSystem.SHARED_LOCK_TYPE, start, length);
+        int result = unlockImpl(fileDescriptor, start, length);
+        if (result == -1) {
+            throw new IOException();
+        }
+    }
 
-	private native int fflushImpl(long fd, boolean metadata);
+    private native int fflushImpl(long fd, boolean metadata);
 
-	public void fflush(long fileDescriptor, boolean metadata)
-			throws IOException {
-		int result = fflushImpl(fileDescriptor, metadata);
-		if (result == -1) {
-			throw new IOException();
-		}
-	}
+    public void fflush(long fileDescriptor, boolean metadata)
+            throws IOException {
+        int result = fflushImpl(fileDescriptor, metadata);
+        if (result == -1) {
+            throw new IOException();
+        }
+    }
 
-	/*
-	 * File position seeking.
-	 */
+    /*
+     * File position seeking.
+     */
 
-	private native long seekImpl(long fd, long offset, int whence);
+    private native long seekImpl(long fd, long offset, int whence);
 
-	public long seek(long fileDescriptor, long offset, int whence)
-			throws IOException {
-		long pos = seekImpl(fileDescriptor, offset, whence);
-		if (pos == -1) {
-			throw new IOException();
-		}
-		return pos;
-	}
+    public long seek(long fileDescriptor, long offset, int whence)
+            throws IOException {
+        long pos = seekImpl(fileDescriptor, offset, whence);
+        if (pos == -1) {
+            throw new IOException();
+        }
+        return pos;
+    }
 
-	/*
-	 * Direct read/write APIs work on addresses.
-	 */
-	private native long readDirectImpl(long fileDescriptor, long address,
-			int offset, int length);
+    /*
+     * Direct read/write APIs work on addresses.
+     */
+    private native long readDirectImpl(long fileDescriptor, long address,
+            int offset, int length);
 
-	public long readDirect(long fileDescriptor, long address, int offset,
-			int length) throws IOException {
-		long bytesRead = readDirectImpl(fileDescriptor, address, offset, length);
-		if (bytesRead < -1) {
-			throw new IOException();
-		}
-		return bytesRead;
-	}
+    public long readDirect(long fileDescriptor, long address, int offset,
+            int length) throws IOException {
+        long bytesRead = readDirectImpl(fileDescriptor, address, offset, length);
+        if (bytesRead < -1) {
+            throw new IOException();
+        }
+        return bytesRead;
+    }
 
-	private native long writeDirectImpl(long fileDescriptor, long address,
-			int offset, int length);
+    private native long writeDirectImpl(long fileDescriptor, long address,
+            int offset, int length);
 
-	public long writeDirect(long fileDescriptor, long address, int offset,
-			int length) throws IOException {
-		long bytesWritten = writeDirectImpl(fileDescriptor, address, offset,
-				length);
-		if (bytesWritten < 0) {
-			throw new IOException();
-		}
-		return bytesWritten;
-	}
+    public long writeDirect(long fileDescriptor, long address, int offset,
+            int length) throws IOException {
+        long bytesWritten = writeDirectImpl(fileDescriptor, address, offset,
+                length);
+        if (bytesWritten < 0) {
+            throw new IOException();
+        }
+        return bytesWritten;
+    }
 
-	/*
-	 * Indirect read/writes work on byte[]'s
-	 */
-	private native long readImpl(long fileDescriptor, byte[] bytes, int offset,
-			int length);
+    /*
+     * Indirect read/writes work on byte[]'s
+     */
+    private native long readImpl(long fileDescriptor, byte[] bytes, int offset,
+            int length);
 
-	public long read(long fileDescriptor, byte[] bytes, int offset, int length)
-			throws IOException {
-		if (bytes == null) {
-			throw new NullPointerException();
-		}
-		long bytesRead = readImpl(fileDescriptor, bytes, offset, length);
-		if (bytesRead < -1) {
+    public long read(long fileDescriptor, byte[] bytes, int offset, int length)
+            throws IOException {
+        if (bytes == null) {
+            throw new NullPointerException();
+        }
+        long bytesRead = readImpl(fileDescriptor, bytes, offset, length);
+        if (bytesRead < -1) {
                         /*
                          * TODO: bytesRead is never less than -1 so this code
                          * does nothing?
@@ -161,81 +161,81 @@ class OSFileSystem implements IFileSystem {
                          * any other cases.  But the other cases have been
                          * ignored until now so fixing this could break things
                          */
-			throw new IOException();
-		}
-		return bytesRead;
-	}
+            throw new IOException();
+        }
+        return bytesRead;
+    }
 
-	private native long writeImpl(long fileDescriptor, byte[] bytes,
-			int offset, int length);
+    private native long writeImpl(long fileDescriptor, byte[] bytes,
+            int offset, int length);
 
-	public long write(long fileDescriptor, byte[] bytes, int offset, int length)
-			throws IOException {
-		long bytesWritten = writeImpl(fileDescriptor, bytes, offset, length);
-		if (bytesWritten < 0) {
-			throw new IOException();
-		}
-		return bytesWritten;
-	}
+    public long write(long fileDescriptor, byte[] bytes, int offset, int length)
+            throws IOException {
+        long bytesWritten = writeImpl(fileDescriptor, bytes, offset, length);
+        if (bytesWritten < 0) {
+            throw new IOException();
+        }
+        return bytesWritten;
+    }
 
-	/*
-	 * Scatter/gather calls.
-	 */
-	public long readv(long fileDescriptor, long[] addresses, int[] offsets,
-			int[] lengths, int size) throws IOException {
-		long bytesRead = readvImpl(fileDescriptor, addresses, offsets, lengths,
-				size);
-		if (bytesRead < -1) {
-			throw new IOException();
-		}
-		return bytesRead;
-	}
+    /*
+     * Scatter/gather calls.
+     */
+    public long readv(long fileDescriptor, long[] addresses, int[] offsets,
+            int[] lengths, int size) throws IOException {
+        long bytesRead = readvImpl(fileDescriptor, addresses, offsets, lengths,
+                size);
+        if (bytesRead < -1) {
+            throw new IOException();
+        }
+        return bytesRead;
+    }
 
-	private native long readvImpl(long fileDescriptor, long[] addresses,
-			int[] offsets, int[] lengths, int size);
+    private native long readvImpl(long fileDescriptor, long[] addresses,
+            int[] offsets, int[] lengths, int size);
 
-	public long writev(long fileDescriptor, long[] addresses, int[] offsets,
-			int[] lengths, int size) throws IOException {
-		long bytesWritten = writevImpl(fileDescriptor, addresses, offsets,
-				lengths, size);
-		if (bytesWritten < 0) {
-			throw new IOException();
-		}
-		return bytesWritten;
-	}
+    public long writev(long fileDescriptor, long[] addresses, int[] offsets,
+            int[] lengths, int size) throws IOException {
+        long bytesWritten = writevImpl(fileDescriptor, addresses, offsets,
+                lengths, size);
+        if (bytesWritten < 0) {
+            throw new IOException();
+        }
+        return bytesWritten;
+    }
 
-	private native long writevImpl(long fileDescriptor, long[] addresses,
-			int[] offsets, int[] lengths, int size);
+    private native long writevImpl(long fileDescriptor, long[] addresses,
+            int[] offsets, int[] lengths, int size);
 
-	private native int closeImpl(long fileDescriptor);
+    private native int closeImpl(long fileDescriptor);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.harmony.luni.platform.IFileSystem#close(long)
-	 */
-	public void close(long fileDescriptor) throws IOException {
-		int rc = closeImpl(fileDescriptor);
-		if (rc == -1) {
-			throw new IOException();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.luni.platform.IFileSystem#close(long)
+     */
+    public void close(long fileDescriptor) throws IOException {
+        int rc = closeImpl(fileDescriptor);
+        if (rc == -1) {
+            throw new IOException();
+        }
+    }
 
-	public void truncate(long fileDescriptor, long size) throws IOException {
-		int rc = truncateImpl(fileDescriptor, size);
-		if (rc < 0) {
-			throw new IOException();
-		}
-	}
+    public void truncate(long fileDescriptor, long size) throws IOException {
+        int rc = truncateImpl(fileDescriptor, size);
+        if (rc < 0) {
+            throw new IOException();
+        }
+    }
 
-	private native int truncateImpl(long fileDescriptor, long size);
+    private native int truncateImpl(long fileDescriptor, long size);
 
-	public long open(byte[] fileName, int mode) throws FileNotFoundException {
-		if (fileName == null) {
-			throw new NullPointerException();
-		}
-		long handler = openImpl(fileName, mode);
-		if (handler < 0) {
+    public long open(byte[] fileName, int mode) throws FileNotFoundException {
+        if (fileName == null) {
+            throw new NullPointerException();
+        }
+        long handler = openImpl(fileName, mode);
+        if (handler < 0) {
                     try {
                         throw new FileNotFoundException(new String(fileName, "UTF-8"));
                     } catch (java.io.UnsupportedEncodingException e) {
@@ -244,40 +244,40 @@ class OSFileSystem implements IFileSystem {
                         e.initCause(fnfe);
                         throw new AssertionError(e);
                     }
-		}
-		return handler;
-	}
+        }
+        return handler;
+    }
 
-	private native long openImpl(byte[] fileName, int mode);
+    private native long openImpl(byte[] fileName, int mode);
 
-	public long transfer(long fileHandler, FileDescriptor socketDescriptor,
-			long offset, long count) throws IOException {
-		long result = transferImpl(fileHandler, socketDescriptor, offset, count);
-		if (result < 0)
-			throw new IOException();
-		return result;
-	}
+    public long transfer(long fileHandler, FileDescriptor socketDescriptor,
+            long offset, long count) throws IOException {
+        long result = transferImpl(fileHandler, socketDescriptor, offset, count);
+        if (result < 0)
+            throw new IOException();
+        return result;
+    }
 
-	private native long transferImpl(long fileHandler,
-			FileDescriptor socketDescriptor, long offset, long count);
+    private native long transferImpl(long fileHandler,
+            FileDescriptor socketDescriptor, long offset, long count);
 
-	public long ttyAvailable() throws IOException {
-		long nChar = ttyAvailableImpl();
-		if (nChar < 0) {
-			throw new IOException();
-		}
-		return nChar;
-	}
+    public long ttyAvailable() throws IOException {
+        long nChar = ttyAvailableImpl();
+        if (nChar < 0) {
+            throw new IOException();
+        }
+        return nChar;
+    }
 
-	private native long ttyAvailableImpl();
+    private native long ttyAvailableImpl();
 
-	public long ttyRead(byte[] bytes, int offset, int length) throws IOException {
-		long nChar = ttyReadImpl(bytes, offset, length);
-		if (nChar < 0) {
-			throw new IOException();
-		}
-		return nChar;
-	}
+    public long ttyRead(byte[] bytes, int offset, int length) throws IOException {
+        long nChar = ttyReadImpl(bytes, offset, length);
+        if (nChar < 0) {
+            throw new IOException();
+        }
+        return nChar;
+    }
 
-	private native long ttyReadImpl(byte[] bytes, int offset, int length);
+    private native long ttyReadImpl(byte[] bytes, int offset, int length);
 }

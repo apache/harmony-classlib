@@ -31,33 +31,33 @@ import java.nio.channels.Channel;
  */
 public interface INetworkSystem {
 
-	/*
-	 * Socket connect Step start
-	 */
-	public final int SOCKET_CONNECT_STEP_START = 0;
+    /*
+     * Socket connect Step start
+     */
+    public final int SOCKET_CONNECT_STEP_START = 0;
 
-	/*
-	 * Socket connect Step check
-	 */
-	public final int SOCKET_CONNECT_STEP_CHECK = 1;
+    /*
+     * Socket connect Step check
+     */
+    public final int SOCKET_CONNECT_STEP_CHECK = 1;
 
-	/*
-	 * socket accept
-	 */
-	public void accept(FileDescriptor fdServer, SocketImpl newSocket,
-			FileDescriptor fdnewSocket, int timeout) throws IOException;
+    /*
+     * socket accept
+     */
+    public void accept(FileDescriptor fdServer, SocketImpl newSocket,
+            FileDescriptor fdnewSocket, int timeout) throws IOException;
 
-	public void bind(FileDescriptor aFD, InetAddress inetAddress, int port)
-			throws SocketException;
+    public void bind(FileDescriptor aFD, InetAddress inetAddress, int port)
+            throws SocketException;
 
-	public int read(FileDescriptor aFD, byte[] data, int offset, int count,
-			int timeout) throws IOException;
+    public int read(FileDescriptor aFD, byte[] data, int offset, int count,
+            int timeout) throws IOException;
     
     public int readDirect(FileDescriptor aFD, long address, int count,
             int timeout) throws IOException;
 
-	public int write(FileDescriptor fd, byte[] data, int offset, int count)
-			throws IOException;
+    public int write(FileDescriptor fd, byte[] data, int offset, int count)
+            throws IOException;
     
     public int writeDirect(FileDescriptor fd, long address, int count)
             throws IOException;
@@ -65,152 +65,152 @@ public interface INetworkSystem {
     public int writev(FileDescriptor fd, Object[] buffers, int[] offsets,
             int[] counts, int length) throws IOException;
 
-	public void setNonBlocking(FileDescriptor aFD, boolean block)
-			throws IOException;
+    public void setNonBlocking(FileDescriptor aFD, boolean block)
+            throws IOException;
 
-	public int connect(FileDescriptor aFD, int trafficClass,
-			InetAddress inetAddress, int port) throws IOException;
+    public int connect(FileDescriptor aFD, int trafficClass,
+            InetAddress inetAddress, int port) throws IOException;
 
-	public int connectWithTimeout(FileDescriptor aFD, int timeout,
-			int trafficClass, InetAddress hostname, int port, int step,
-			Long context) throws IOException;
+    public int connectWithTimeout(FileDescriptor aFD, int timeout,
+            int trafficClass, InetAddress hostname, int port, int step,
+            Long context) throws IOException;
 
-	public int sendDatagram(FileDescriptor fd, byte[] data, int offset,
-			int length, int port, boolean bindToDevice, int trafficClass,
-			InetAddress inetAddress) throws IOException;
+    public int sendDatagram(FileDescriptor fd, byte[] data, int offset,
+            int length, int port, boolean bindToDevice, int trafficClass,
+            InetAddress inetAddress) throws IOException;
     
     public int sendDatagramDirect(FileDescriptor fd, long address, int offset,
             int length, int port, boolean bindToDevice, int trafficClass,
             InetAddress inetAddress) throws IOException;
 
-	public int receiveDatagram(FileDescriptor aFD, DatagramPacket packet,
-			byte[] data, int offset, int length, int receiveTimeout,
-			boolean peek) throws IOException;
+    public int receiveDatagram(FileDescriptor aFD, DatagramPacket packet,
+            byte[] data, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException;
     
     public int receiveDatagramDirect(FileDescriptor aFD, DatagramPacket packet,
             long address, int offset, int length, int receiveTimeout,
             boolean peek) throws IOException;
 
-	public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
-			byte[] data, int offset, int length, int receiveTimeout,
-			boolean peek) throws IOException;
+    public int recvConnectedDatagram(FileDescriptor aFD, DatagramPacket packet,
+            byte[] data, int offset, int length, int receiveTimeout,
+            boolean peek) throws IOException;
     
     public int recvConnectedDatagramDirect(FileDescriptor aFD,
             DatagramPacket packet, long address, int offset, int length,
             int receiveTimeout, boolean peek) throws IOException;
     
-	public int peekDatagram(FileDescriptor aFD, InetAddress sender,
-			int receiveTimeout) throws IOException;
+    public int peekDatagram(FileDescriptor aFD, InetAddress sender,
+            int receiveTimeout) throws IOException;
 
-	public int sendConnectedDatagram(FileDescriptor fd, byte[] data,
-			int offset, int length, boolean bindToDevice) throws IOException;
+    public int sendConnectedDatagram(FileDescriptor fd, byte[] data,
+            int offset, int length, boolean bindToDevice) throws IOException;
     
     public int sendConnectedDatagramDirect(FileDescriptor fd, long address,
             int offset, int length, boolean bindToDevice) throws IOException;
 
-	public void disconnectDatagram(FileDescriptor aFD) throws SocketException;
+    public void disconnectDatagram(FileDescriptor aFD) throws SocketException;
 
-	public void createDatagramSocket(FileDescriptor aFD, boolean preferIPv4Stack)
-			throws SocketException;
+    public void createDatagramSocket(FileDescriptor aFD, boolean preferIPv4Stack)
+            throws SocketException;
 
-	public void connectDatagram(FileDescriptor aFD, int port, int trafficClass,
-			InetAddress inetAddress) throws SocketException;
+    public void connectDatagram(FileDescriptor aFD, int port, int trafficClass,
+            InetAddress inetAddress) throws SocketException;
 
-	/**
-	 * @deprecated Use {@link #read(FileDescriptor, byte[], int, int, int)}
-	 */
-	@Deprecated
-	public int receiveStream(FileDescriptor aFD, byte[] data, int offset,
-			int count, int timeout) throws IOException;
+    /**
+     * @deprecated Use {@link #read(FileDescriptor, byte[], int, int, int)}
+     */
+    @Deprecated
+    public int receiveStream(FileDescriptor aFD, byte[] data, int offset,
+            int count, int timeout) throws IOException;
 
-	public void shutdownInput(FileDescriptor descriptor) throws IOException;
+    public void shutdownInput(FileDescriptor descriptor) throws IOException;
 
-	public void shutdownOutput(FileDescriptor descriptor) throws IOException;
+    public void shutdownOutput(FileDescriptor descriptor) throws IOException;
 
-	public boolean supportsUrgentData(FileDescriptor fd);
+    public boolean supportsUrgentData(FileDescriptor fd);
 
-	public void sendUrgentData(FileDescriptor fd, byte value);
+    public void sendUrgentData(FileDescriptor fd, byte value);
 
-	public int availableStream(FileDescriptor aFD) throws SocketException;
+    public int availableStream(FileDescriptor aFD) throws SocketException;
 
-	public void acceptStreamSocket(FileDescriptor fdServer,
-			SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
-			throws IOException;
+    public void acceptStreamSocket(FileDescriptor fdServer,
+            SocketImpl newSocket, FileDescriptor fdnewSocket, int timeout)
+            throws IOException;
 
-	public void createServerStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
+    public void createServerStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
             throws SocketException;
 
     public void createStreamSocket(FileDescriptor aFD, boolean preferIPv4Stack)
             throws SocketException;
     
-	public void listenStreamSocket(FileDescriptor aFD, int backlog)
-			throws SocketException;
+    public void listenStreamSocket(FileDescriptor aFD, int backlog)
+            throws SocketException;
 
-	public void connectStreamWithTimeoutSocket(FileDescriptor aFD, int aport,
-			int timeout, int trafficClass, InetAddress inetAddress)
-			throws IOException;
+    public void connectStreamWithTimeoutSocket(FileDescriptor aFD, int aport,
+            int timeout, int trafficClass, InetAddress inetAddress)
+            throws IOException;
 
-	public int sendDatagram2(FileDescriptor fd, byte[] data, int offset,
-			int length, int port, InetAddress inetAddress) throws IOException;
+    public int sendDatagram2(FileDescriptor fd, byte[] data, int offset,
+            int length, int port, InetAddress inetAddress) throws IOException;
 
-	public InetAddress getSocketLocalAddress(FileDescriptor aFD,
-			boolean preferIPv6Addresses);
+    public InetAddress getSocketLocalAddress(FileDescriptor aFD,
+            boolean preferIPv6Addresses);
 
     public int[] select(FileDescriptor[] readFDs,
             FileDescriptor[] writeFDs, long timeout)
             throws SocketException;
 
-	/*
-	 * Query the IP stack for the local port to which this socket is bound.
-	 * 
-	 * @param aFD the socket descriptor @param preferIPv6Addresses address
-	 * preference for nodes that support both IPv4 and IPv6 @return int the
-	 * local port to which the socket is bound
-	 */
-	public int getSocketLocalPort(FileDescriptor aFD,
-			boolean preferIPv6Addresses);
+    /*
+     * Query the IP stack for the local port to which this socket is bound.
+     * 
+     * @param aFD the socket descriptor @param preferIPv6Addresses address
+     * preference for nodes that support both IPv4 and IPv6 @return int the
+     * local port to which the socket is bound
+     */
+    public int getSocketLocalPort(FileDescriptor aFD,
+            boolean preferIPv6Addresses);
 
-	/*
-	 * Query the IP stack for the nominated socket option.
-	 * 
-	 * @param aFD the socket descriptor @param opt the socket option type
-	 * @return the nominated socket option value
-	 * 
-	 * @throws SocketException if the option is invalid
-	 */
-	public Object getSocketOption(FileDescriptor aFD, int opt)
-			throws SocketException;
+    /*
+     * Query the IP stack for the nominated socket option.
+     * 
+     * @param aFD the socket descriptor @param opt the socket option type
+     * @return the nominated socket option value
+     * 
+     * @throws SocketException if the option is invalid
+     */
+    public Object getSocketOption(FileDescriptor aFD, int opt)
+            throws SocketException;
 
-	/*
-	 * Set the nominated socket option in the IP stack.
-	 * 
-	 * @param aFD the socket descriptor @param opt the option selector @param
-	 * optVal the nominated option value
-	 * 
-	 * @throws SocketException if the option is invalid or cannot be set
-	 */
-	public void setSocketOption(FileDescriptor aFD, int opt, Object optVal)
-			throws SocketException;
+    /*
+     * Set the nominated socket option in the IP stack.
+     * 
+     * @param aFD the socket descriptor @param opt the option selector @param
+     * optVal the nominated option value
+     * 
+     * @throws SocketException if the option is invalid or cannot be set
+     */
+    public void setSocketOption(FileDescriptor aFD, int opt, Object optVal)
+            throws SocketException;
 
-	public int getSocketFlags();
+    public int getSocketFlags();
 
-	/*
-	 * Close the socket in the IP stack.
-	 * 
-	 * @param aFD the socket descriptor
-	 */
-	public void socketClose(FileDescriptor aFD) throws IOException;
+    /*
+     * Close the socket in the IP stack.
+     * 
+     * @param aFD the socket descriptor
+     */
+    public void socketClose(FileDescriptor aFD) throws IOException;
 
-	public InetAddress getHostByAddr(byte[] addr) throws UnknownHostException;
+    public InetAddress getHostByAddr(byte[] addr) throws UnknownHostException;
 
-	public InetAddress getHostByName(String addr, boolean preferIPv6Addresses)
-			throws UnknownHostException;
+    public InetAddress getHostByName(String addr, boolean preferIPv6Addresses)
+            throws UnknownHostException;
 
-	public void setInetAddress(InetAddress sender, byte[] address);
-	
-	public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);
-	
-	public Channel inheritedChannel();
+    public void setInetAddress(InetAddress sender, byte[] address);
+    
+    public boolean isReachableByICMP(InetAddress dest,InetAddress source,int ttl,int timeout);
+    
+    public Channel inheritedChannel();
     
     public void oneTimeInitialization(boolean jcl_supports_ipv6);
 }
