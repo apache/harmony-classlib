@@ -69,5 +69,12 @@
 		<Bug code="EI2" />
 	</Match>
 
+	<!-- Intended to compare strings as == here. -->
+	<Match>
+		<Class name="org.apache.harmony.archive.util.Util" />
+		<Method name="asciiEqualsIgnoreCase" />
+		<Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ" />
+	</Match>
+
 </FindBugsFilter>
 
