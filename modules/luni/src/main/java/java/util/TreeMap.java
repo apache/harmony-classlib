@@ -886,10 +886,12 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                         if (backingMap.cmp(object,  endKey, lastKeyNode.keys[lastKeyIndex]) != 0) {
                             return lastKeyNode.keys[lastKeyIndex];
                         } else {
+						        // according to subMap, it excludes the last element 
                             if (lastKeyIndex != lastKeyNode.left_idx) {
                                 object = backingMap.comparator == null ? toComparable((K) startKey)
                                         : null;
-                                if (backingMap.cmp(object,  startKey, lastKeyNode.keys[lastKeyIndex-1]) < 0){
+							    // check if the element is smaller than the startkey, there's no lastkey
+                                if (backingMap.cmp(object,  startKey, lastKeyNode.keys[lastKeyIndex-1]) <= 0){
                                     return lastKeyNode.keys[lastKeyIndex - 1];
                                 }
                             } else {
@@ -1244,9 +1246,12 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                 from = minimum(subMap.backingMap.root);
                 fromIndex = from != null ? from.left_idx : 0;
             }
+            if (from == null){
+                return new BoundedKeyIterator<K, V>(null, 0, subMap.backingMap, null, 0);
+            }
             if (!subMap.hasEnd) {
-                return new UnboundedKeyIterator<K, V>(subMap.backingMap, from,
-                        from == null ? 0 : from.right_idx - fromIndex);
+                return new UnboundedKeyIterator<K, V>(subMap.backingMap,
+                        from, from == null ? 0 : from.right_idx - fromIndex);
             }
             subMap.setLastKey();
             Node<K, V> to = subMap.lastKeyNode;
@@ -1256,11 +1261,14 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
                     + (subMap.lastKeyNode != null
                             && (!subMap.lastKeyNode.keys[subMap.lastKeyIndex].equals(subMap.endKey)) ? 1
                             : 0);
-            if (to != null
-                    && toIndex > to.right_idx) {
+            if (subMap.lastKeyNode != null && toIndex > subMap.lastKeyNode.right_idx){
                 to = to.next;
                 toIndex = to != null ? to.left_idx : 0;
             }
+            // no intial nor end key, return a unbounded iterator
+            if (to == null) {
+                return new UnboundedKeyIterator(subMap.backingMap, from,fromIndex);
+            } else 
             return new BoundedKeyIterator<K, V>(from, from == null ? 0
                     : fromIndex, subMap.backingMap, to,
                     to == null ? 0 : toIndex);
@@ -1295,6 +1303,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
             } else {
                 from = minimum(subMap.backingMap.root);
                 fromIndex = from != null ? from.left_idx : 0;
+            }
+            if (from == null){
+                return new BoundedEntryIterator<K, V>(null, 0, subMap.backingMap, null, 0);
             }
             if (!subMap.hasEnd) {
                 return new UnboundedEntryIterator<K, V>(subMap.backingMap,
@@ -4088,7 +4099,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
             foundNode = null;
         }
         if (foundNode != null){
-            return null;// createEntry(foundNode, foundIndex);
+            return createEntry(foundNode, foundIndex);
         }
         return null;
     }
