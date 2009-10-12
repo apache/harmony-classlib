@@ -19,11 +19,11 @@ package javax.accessibility;
 
 
 public class AccessibleRelation extends AccessibleBundle {
-    public static final String LABEL_FOR = new String("labelFor"); //$NON-NLS-1$
-    public static final String LABELED_BY = new String("labeledBy"); //$NON-NLS-1$
-    public static final String MEMBER_OF = new String("memberOf"); //$NON-NLS-1$
-    public static final String CONTROLLER_FOR = new String("controllerFor"); //$NON-NLS-1$
-    public static final String CONTROLLED_BY = new String("controlledBy"); //$NON-NLS-1$
+    public static final String LABEL_FOR = "labelFor"; //$NON-NLS-1$
+    public static final String LABELED_BY = "labeledBy"; //$NON-NLS-1$
+    public static final String MEMBER_OF = "memberOf"; //$NON-NLS-1$
+    public static final String CONTROLLER_FOR = "controllerFor"; //$NON-NLS-1$
+    public static final String CONTROLLED_BY = "controlledBy"; //$NON-NLS-1$
     public static final String FLOWS_TO = "flowsTo"; //$NON-NLS-1$
     public static final String FLOWS_FROM = "flowsFrom"; //$NON-NLS-1$
     public static final String SUBWINDOW_OF = "subwindowOf"; //$NON-NLS-1$
