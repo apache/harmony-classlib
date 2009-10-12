@@ -224,17 +224,9 @@ public class InflaterOutputStreamTest extends TestCase {
      * @tests java.util.zip.InflaterOutputStream#write(int)
      */
     public void test_write_I_Illegal() throws IOException {
-        // write error compression (ZIP) format
-        InflaterOutputStream ios = new InflaterOutputStream(os);
-        try {
-            ios.write(-1);
-            fail("Should throw ZipException");
-        } catch (ZipException e) {
-            // expected
-        }        
 
         // write after close
-        ios = new InflaterOutputStream(os);
+        InflaterOutputStream ios = new InflaterOutputStream(os);
         ios.close();
         try {
             ios.write(-1);
