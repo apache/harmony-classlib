@@ -861,7 +861,7 @@ public class TreeMapTest extends junit.framework.TestCase {
     /**
      * @tests java.util.TreeMap#subMap()
      */
-    public void test_subMap_Iterator() {
+    public void test_subMap_Iterator2() {
         TreeMap<String, String> map = new TreeMap<String, String>();
 
         String[] keys = { "1", "2", "3" };
