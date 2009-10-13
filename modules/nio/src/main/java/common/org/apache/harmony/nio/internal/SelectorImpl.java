@@ -494,12 +494,23 @@ final class SelectorImpl extends AbstractSelector {
 
                     Arrays.fill(flags, 0);
 
-                    doCancel();
-
-                    if (selected != 0) {
-                        return selectedKeys.size();
+                    Set<SelectionKey> cancelledKeys = cancelledKeys();
+                    synchronized (cancelledKeys) {
+                        if (cancelledKeys.size() > 0) {
+                            for (SelectionKey currentkey : cancelledKeys) {
+                                delKey(currentkey);
+                                mutableKeys.remove(currentkey);
+                                deregister((AbstractSelectionKey) currentkey);
+                                if (mutableSelectedKeys.remove(currentkey)) {
+                                    selected--;
+                                }
+                            }
+                            cancelledKeys.clear();
+                        }
+                        limitCapacity();
                     }
-                    return 0;
+
+                    return selected;
                 }
             }
         }
