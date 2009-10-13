@@ -120,4 +120,11 @@ public class DNSNameParser implements NameParser {
         return false;
     }
 
+    /**
+     * Return the hashcode of the receiver.
+     */
+    @Override
+    public int hashCode() {
+        return 1;
+    }
 }
