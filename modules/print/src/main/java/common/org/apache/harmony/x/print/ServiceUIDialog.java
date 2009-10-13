@@ -631,7 +631,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
                  * case. If default Copies value is null - I suppose that default 
                  * and supported value is 1 Copy only. 
                 */
-                supported = new CopiesSupported( (defaul == null)
+                supported = new CopiesSupported( (defaul != null)
                         ? defaul.getValue()
                         : 1);
             }
