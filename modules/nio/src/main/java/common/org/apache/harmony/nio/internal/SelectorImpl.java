@@ -496,7 +496,10 @@ final class SelectorImpl extends AbstractSelector {
 
                     doCancel();
 
-                    return selected;
+                    if (selected != 0) {
+                        return selectedKeys.size();
+                    }
+                    return 0;
                 }
             }
         }

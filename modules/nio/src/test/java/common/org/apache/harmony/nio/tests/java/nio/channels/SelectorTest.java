@@ -398,6 +398,7 @@ public class SelectorTest extends TestCase {
         thread.start();
         do {
             assertEquals(0, selector.select(5000)); // blocks
+            assertEquals(0, selector.selectedKeys().size());
         } while (!complete.get()); // avoid spurious interrupts
         assertFalse(key.isValid());
 
