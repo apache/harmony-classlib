@@ -166,7 +166,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
 
     // State of dialog:
     public static final int APPROVE_PRINT = 1;    // OK button was pressed
-    public static final int CANSEL_PRINT = -1;    // Cancel button was pressed
+    public static final int CANCEL_PRINT = -1;    // Cancel button was pressed
     public static final int SETUP_ERROR = 2;      // Dialog Setup was finished with 
                                                   // error, dialog can not be shown
     public static final int SETUP_OK = 3;         // Dialog setup was OK, 
@@ -463,7 +463,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
         
         printDialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                dialogResult = CANSEL_PRINT;
+                dialogResult = CANCEL_PRINT;
             }
         });
     }
@@ -1617,7 +1617,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
      */
     class cancelButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            dialogResult = CANSEL_PRINT;
+            dialogResult = CANCEL_PRINT;
             printDialog.hide();
         }
     } /* End of cancelButtonListener */
