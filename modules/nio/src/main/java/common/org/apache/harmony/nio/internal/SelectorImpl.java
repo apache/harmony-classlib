@@ -23,6 +23,10 @@ import java.nio.channels.IllegalSelectorException;
 import java.nio.channels.Pipe;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
+import static java.nio.channels.SelectionKey.OP_ACCEPT;
+import static java.nio.channels.SelectionKey.OP_CONNECT;
+import static java.nio.channels.SelectionKey.OP_READ;
+import static java.nio.channels.SelectionKey.OP_WRITE;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
@@ -44,6 +48,10 @@ import org.apache.harmony.luni.platform.Platform;
  */
 final class SelectorImpl extends AbstractSelector {
 
+    private static final int[] EMPTY_INT_ARRAY = new int[0];
+
+    private static final int ACCEPT_OR_READ = OP_ACCEPT | OP_READ;
+
     private static final int MOCK_WRITEBUF_SIZE = 1;
 
     private static final int MOCK_READBUF_SIZE = 8;
@@ -58,31 +66,31 @@ final class SelectorImpl extends AbstractSelector {
 
     private static final int SELECT_NOW = 0;
 
-    /*
-     * keysLock is used to brief synchronization when get selectionKeys snapshot
-     * before selection.
+    /**
+     * Used to synchronize when a key's interest ops change.
      */
     private static class KeysLock {}
     final Object keysLock = new KeysLock();
 
     private SelectionKey[] keys = new SelectionKey[1];
 
-    private final Set<SelectionKey> keysSet = new HashSet<SelectionKey>();
+    private final Set<SelectionKey> mutableKeys = new HashSet<SelectionKey>();
 
+    /**
+     * The unmodifiable set of keys as exposed to the user. This object is used
+     * for synchronization.
+     */
     private Set<SelectionKey> unmodifiableKeys = Collections
-            .unmodifiableSet(keysSet);
+            .<SelectionKey>unmodifiableSet(mutableKeys);
 
-    private final Set<SelectionKey> selectedKeys = new HashSet<SelectionKey>();
+    private final Set<SelectionKey> mutableSelectedKeys = new HashSet<SelectionKey>();
 
-    private Set<SelectionKey> unaddableSelectedKeys = new UnaddableSet<SelectionKey>(
-            selectedKeys);
-
-    // sink and source are used by wakeup()
-    private Pipe.SinkChannel sink;
-
-    private Pipe.SourceChannel source;
-
-    private FileDescriptor sourcefd;
+    /**
+     * The unmodifiable set of selectable keys as seen by the user. This object
+     * is used for synchronization.
+     */
+    private final Set<SelectionKey> selectedKeys
+            = new UnaddableSet<SelectionKey>(mutableSelectedKeys);
 
     private FileDescriptor[] readableFDs;
 
@@ -101,6 +109,22 @@ final class SelectorImpl extends AbstractSelector {
     private int[] readableFDsToKeys;
 
     private int[] writableFDsToKeys;
+
+    /**
+     * Selection flags that define the ready ops on the ready keys. When not
+     * actively selecting, all elements are 0. Corresponds to the ready keys
+     * set.
+     */
+    private int[] flags = EMPTY_INT_ARRAY;
+
+    /**
+     * A mock channel is used to signal wakeups. Whenever the selector should
+     * stop blocking on a select(), a byte is written to the sink and will be
+     * picked up in source by the selecting thread.
+     */
+    private Pipe.SinkChannel sink;
+    private Pipe.SourceChannel source;
+    private FileDescriptor sourcefd;
 
     public SelectorImpl(SelectorProvider selectorProvider) {
         super(selectorProvider);
@@ -143,10 +167,8 @@ final class SelectorImpl extends AbstractSelector {
             synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
                     doCancel();
-                    for (SelectionKey sk : keys) {
-                        if (sk != null) {
-                            deregister((AbstractSelectionKey) sk);
-                        }
+                    for (SelectionKey sk : mutableKeys) {
+                        deregister((AbstractSelectionKey) sk);
                     }
                 }
             }
@@ -391,15 +413,13 @@ final class SelectorImpl extends AbstractSelector {
         }
         synchronized (this) {
             synchronized (unmodifiableKeys) {
-
                 // create the key
-                SelectionKey sk = new SelectionKeyImpl(channel, operations,
-                        attachment, this);
-
-                int index = addKey(sk);
-                ((SelectionKeyImpl) sk).setIndex(index);
-
-                return sk;
+                SelectionKeyImpl selectionKey = new SelectionKeyImpl(
+                        channel, operations, attachment, this);
+                int index = addKey(selectionKey);
+                selectionKey.setIndex(index);
+                mutableKeys.add(selectionKey);
+                return selectionKey;
             }
         }
     }
@@ -410,18 +430,6 @@ final class SelectorImpl extends AbstractSelector {
     @Override
     public synchronized Set<SelectionKey> keys() {
         closeCheck();
-
-        keysSet.clear();
-
-        if (keys.length != lastKeyIndex + 1) {
-            SelectionKey[] chompedKeys = new SelectionKey[lastKeyIndex + 1];
-            System.arraycopy(keys, 0, chompedKeys, 0, lastKeyIndex + 1);
-            keysSet.addAll(Arrays.asList(chompedKeys));
-        } else {
-            keysSet.addAll(Arrays.asList(keys));
-        }
-
-        keysSet.remove(source.keyFor(this));
         return unmodifiableKeys;
     }
 
@@ -467,70 +475,50 @@ final class SelectorImpl extends AbstractSelector {
             synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
                     doCancel();
-                    int[] readyChannels = null;
                     boolean isBlock = (SELECT_NOW != timeout);
                     prepareChannels();
+                    boolean success;
                     try {
                         if (isBlock) {
                             begin();
                         }
-                        readyChannels = Platform.getNetworkSystem().select(
-                                readableFDs, writableFDs, timeout);
+                        success = Platform.getNetworkSystem().select(
+                                readableFDs, writableFDs, readableKeysCount, writableKeysCount, timeout, flags);
                     } finally {
                         if (isBlock) {
                             end();
                         }
                     }
-                    return processSelectResult(readyChannels);
+
+                    int selected = success ? processSelectResult() : 0;
+
+                    Arrays.fill(flags, 0);
+
+                    doCancel();
+
+                    return selected;
                 }
             }
         }
-    }
-
-    private boolean isConnected(SelectionKeyImpl key) {
-        SelectableChannel channel = key.channel();
-        if (channel instanceof SocketChannel) {
-            return ((SocketChannel) channel).isConnected();
-        }
-        return true;
     }
 
     /*
      * Prepares and adds channels to list for selection
      */
     private void prepareChannels() {
-
-        // chomp the arrays if needed
-
-        if (readableFDs.length != readableKeysCount) {
-            FileDescriptor[] chompedReadableFDs = new FileDescriptor[readableKeysCount];
-            System.arraycopy(readableFDs, 0, chompedReadableFDs, 0,
-                    readableKeysCount);
-            readableFDs = chompedReadableFDs;
-        }
-
-        if (writableFDs.length != writableKeysCount) {
-            FileDescriptor[] chompedWriteableFDs = new FileDescriptor[writableKeysCount];
-            System.arraycopy(writableFDs, 0, chompedWriteableFDs, 0,
-                    writableKeysCount);
-            writableFDs = chompedWriteableFDs;
+        if (flags.length < readableKeysCount + writableKeysCount) {
+            flags = new int[readableKeysCount + writableKeysCount];
         }
 
     }
 
-    /*
-     * Analyses selected channels and adds keys of ready channels to
-     * selectedKeys list.
-     * 
-     * readyChannels are encoded as concatenated array of flags for readable
-     * channels followed by writable channels.
+    /**
+     * Updates the key ready ops and selected key set with data from the flags
+     * array.
      */
-    private int processSelectResult(int[] readyChannels) throws IOException {
-        if (0 == readyChannels.length) {
-            return 0;
-        }
+    private int processSelectResult() throws IOException {
         // if the mock channel is selected, read the content.
-        if (READABLE == readyChannels[0]) {
+        if (READABLE == flags[0]) {
             ByteBuffer readbuf = ByteBuffer.allocate(MOCK_READBUF_SIZE);
             while (source.read(readbuf) > 0) {
                 readbuf.flip();
@@ -538,47 +526,44 @@ final class SelectorImpl extends AbstractSelector {
         }
         int selected = 0;
 
-        for (int i = 1; i < readyChannels.length; i++) {
+        for (int i = 1; i < flags.length; i++) {
+            if (flags[i] == NA) {
+                continue;
+            }
+            SelectionKeyImpl key = (SelectionKeyImpl) (i >= readableKeysCount ? keys[writableFDsToKeys[i
+                    - readableKeysCount]]
+                    : keys[readableFDsToKeys[i]]);
 
-            if (readyChannels[i] != NA) {
-                SelectionKeyImpl key = (SelectionKeyImpl) (i >= readableKeysCount ? keys[writableFDsToKeys[i
-                        - readableKeysCount]]
-                        : keys[readableFDsToKeys[i]]);
+            if (null == key) {
+                continue;
+            }
 
-                if (null == key) {
-                    continue;
-                }
+            int ops = key.interestOpsNoCheck();
+            int selectedOp = 0;
 
-                int ops = key.interestOps();
-                int selectedOp = 0;
-
-                switch (readyChannels[i]) {
-
-                    case READABLE:
-                        selectedOp = (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)
-                                & ops;
-                        break;
-                    case WRITEABLE:
-                        if (isConnected(key)) {
-                            selectedOp = SelectionKey.OP_WRITE & ops;
-                        } else {
-                            selectedOp = SelectionKey.OP_CONNECT & ops;
-                        }
-                        break;
-                }
-
-                if (0 != selectedOp) {
-                    boolean isOldSelectedKey = selectedKeys.contains(key);
-                    if (isOldSelectedKey && key.readyOps() != selectedOp) {
-                        key.setReadyOps(key.readyOps() | selectedOp);
-                        selected++;
-                    } else if (!isOldSelectedKey) {
-                        key.setReadyOps(selectedOp);
-                        selectedKeys.add(key);
-                        selected++;
+            switch (flags[i]) {
+                case READABLE:
+                    selectedOp = ACCEPT_OR_READ & ops;
+                    break;
+                case WRITEABLE:
+                    if (key.isConnected()) {
+                        selectedOp = OP_WRITE & ops;
+                    } else {
+                        selectedOp = OP_CONNECT & ops;
                     }
-                }
+                    break;
+            }
 
+            if (0 != selectedOp) {
+                boolean wasSelected = mutableSelectedKeys.contains(key);
+                if (wasSelected && key.readyOps() != selectedOp) {
+                    key.setReadyOps(key.readyOps() | selectedOp);
+                    selected++;
+                } else if (!wasSelected) {
+                    key.setReadyOps(selectedOp);
+                    mutableSelectedKeys.add(key);
+                    selected++;
+                }
             }
         }
 
@@ -591,7 +576,7 @@ final class SelectorImpl extends AbstractSelector {
     @Override
     public synchronized Set<SelectionKey> selectedKeys() {
         closeCheck();
-        return unaddableSelectedKeys;
+        return selectedKeys;
     }
 
     /*
@@ -603,11 +588,12 @@ final class SelectorImpl extends AbstractSelector {
             if (cancelledKeys.size() > 0) {
                 for (SelectionKey currentkey : cancelledKeys) {
                     delKey(currentkey);
+                    mutableKeys.remove(currentkey);
                     deregister((AbstractSelectionKey) currentkey);
-                    selectedKeys.remove(currentkey);
+                    mutableSelectedKeys.remove(currentkey);
                 }
+                cancelledKeys.clear();
             }
-            cancelledKeys.clear();
             limitCapacity();
         }
     }
@@ -627,7 +613,7 @@ final class SelectorImpl extends AbstractSelector {
 
     private static class UnaddableSet<E> implements Set<E> {
 
-        private Set<E> set;
+        private final Set<E> set;
 
         UnaddableSet(Set<E> set) {
             this.set = set;
