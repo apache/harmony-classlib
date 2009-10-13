@@ -165,19 +165,19 @@ import org.apache.harmony.x.print.attributes.MediaMargins;
 public class ServiceUIDialog extends ServiceUIDialogTemplate {
 
     // State of dialog:
-    public static int APPROVE_PRINT = 1;    // OK button was pressed
-    public static int CANSEL_PRINT = -1;    // Cancel button was pressed
-    public static int SETUP_ERROR = 2;      // Dialog Setup was finished with 
-                                            // error, dialog can not be shown
-    public static int SETUP_OK = 3;         // Dialog setup was OK, 
-                                            // you can show the dialog
-    int dialogResult = 0;                   // Current dialog status
+    public static final int APPROVE_PRINT = 1;    // OK button was pressed
+    public static final int CANSEL_PRINT = -1;    // Cancel button was pressed
+    public static final int SETUP_ERROR = 2;      // Dialog Setup was finished with 
+                                                  // error, dialog can not be shown
+    public static final int SETUP_OK = 3;         // Dialog setup was OK, 
+                                                  // you can show the dialog
+    int dialogResult = 0;                         // Current dialog status
     
     // Dialog type:
-    public static int PRINT_DIALOG = 1;     // Dialog for PrintService selecting,
-                                            // all dialog tabs are visible 
-    public static int PAGE_DIALOG = 2;      // Page setup dialog:
-                                            // only PageSetup dialog tab is visible
+    public static final int PRINT_DIALOG = 1;     // Dialog for PrintService selecting,
+                                                  // all dialog tabs are visible 
+    public static final int PAGE_DIALOG = 2;      // Page setup dialog:
+                                                  // only PageSetup dialog tab is visible
     private int dialogType = PRINT_DIALOG;  // dialog type
     
     PrintService [] services = null;        // Print services array for the choice
