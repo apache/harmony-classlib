@@ -116,7 +116,7 @@ public class ProviderConstants {
     public static final int DEFAULT_LOOKUP_ATTR_CLASS = IN_CLASS;
     public static final int DEFAULT_MAX_THREADS = 7;
     
-    public static DNSName ROOT_ZONE_NAME_OBJ = null;
+    public static final DNSName ROOT_ZONE_NAME_OBJ;
     
     // public static final String LOGGER_NAME =
     //        "org.apache.harmony.jndi.provider.dns";
@@ -162,10 +162,12 @@ public class ProviderConstants {
         rrClassNames[ANY_QCLASS] = "*"; //$NON-NLS-1$
 
         // Root zone name
+        DNSName root = null;
         try {
-            ROOT_ZONE_NAME_OBJ = (DNSName) ((new DNSNameParser()).parse(".")); //$NON-NLS-1$
+            root = (DNSName) ((new DNSNameParser()).parse(".")); //$NON-NLS-1$
         } catch (InvalidNameException e) {
             // ignore
         }
+        ROOT_ZONE_NAME_OBJ = root;
     }
 }
