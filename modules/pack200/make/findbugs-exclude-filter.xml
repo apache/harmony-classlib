@@ -31,7 +31,16 @@
         <Class name="org.apache.harmony.unpack200.BcBands" />
         <Method name="read" />
         <Bug pattern="SF_SWITCH_FALLTHROUGH" />
-    </Match> 
+    </Match>
+
+	<!--
+        Our cache is testing String with ==
+    -->
+	<Match>
+		<Class name="org.apache.harmony.unpack200.SegmentConstantPoolArrayCache" />
+		<Method name="indexesForArrayKey" />
+		<Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ" />
+	</Match> 
 
 </FindBugsFilter>
 
