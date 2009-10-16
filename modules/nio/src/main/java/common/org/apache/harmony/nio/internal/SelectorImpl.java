@@ -72,7 +72,7 @@ final class SelectorImpl extends AbstractSelector {
     private static class KeysLock {}
     final Object keysLock = new KeysLock();
 
-    private SelectionKey[] keys = new SelectionKey[1];
+    private SelectionKeyImpl[] keys = new SelectionKeyImpl[1];
 
     private final Set<SelectionKey> mutableKeys = new HashSet<SelectionKey>();
 
@@ -144,7 +144,7 @@ final class SelectorImpl extends AbstractSelector {
 
             // register sink channel
             readableFDs[0] = sourcefd;
-            keys[0] = source.keyFor(this);
+            keys[0] = (SelectionKeyImpl) source.keyFor(this);
 
             // index it
             keysToReadableFDs[0] = 0;
@@ -178,7 +178,7 @@ final class SelectorImpl extends AbstractSelector {
     private void ensureCommonCapacity(int c) {
         // TODO: rewrite array handling as some internal class
         if (c >= keys.length) {
-            SelectionKey[] newKeys = new SelectionKey[(keys.length + 1) << 1];
+            SelectionKeyImpl[] newKeys = new SelectionKeyImpl[(keys.length + 1) << 1];
             System.arraycopy(keys, 0, newKeys, 0, keys.length);
             keys = newKeys;
         }
@@ -244,7 +244,7 @@ final class SelectorImpl extends AbstractSelector {
      *            key to add
      * @return index in the storage
      */
-    private int addKey(SelectionKey sk) {
+    private int addKey(SelectionKeyImpl sk) {
 
         lastKeyIndex++;
         int c = lastKeyIndex;
@@ -299,8 +299,8 @@ final class SelectorImpl extends AbstractSelector {
      * @param sk
      *            key to delete
      */
-    private void delKey(SelectionKey sk) {
-        int index = ((SelectionKeyImpl) sk).getIndex();
+    private void delKey(SelectionKeyImpl sk) {
+        int index = sk.getIndex();
 
         // === deleting the key and FDs
 
@@ -331,7 +331,7 @@ final class SelectorImpl extends AbstractSelector {
             keys[lastKeyIndex] = null;
 
             // update key index
-            ((SelectionKeyImpl) keys[index]).setIndex(index);
+            keys[index].setIndex(index);
 
             // the key in the new position references the same FDs
             keysToReadableFDs[index] = keysToReadableFDs[lastKeyIndex];
@@ -393,9 +393,10 @@ final class SelectorImpl extends AbstractSelector {
         synchronized (this) {
             synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
-                    delKey(sk);
-                    int newIndex = addKey(sk);
-                    ((SelectionKeyImpl)sk).setIndex(newIndex);
+                    SelectionKeyImpl ski = (SelectionKeyImpl) sk;
+                    delKey(ski);
+                    int newIndex = addKey(ski);
+                    ski.setIndex(newIndex);
                 }
             }
         }
@@ -498,7 +499,7 @@ final class SelectorImpl extends AbstractSelector {
                     synchronized (cancelledKeys) {
                         if (cancelledKeys.size() > 0) {
                             for (SelectionKey currentkey : cancelledKeys) {
-                                delKey(currentkey);
+                                delKey((SelectionKeyImpl)currentkey);
                                 mutableKeys.remove(currentkey);
                                 deregister((AbstractSelectionKey) currentkey);
                                 if (mutableSelectedKeys.remove(currentkey)) {
@@ -544,9 +545,9 @@ final class SelectorImpl extends AbstractSelector {
             if (flags[i] == NA) {
                 continue;
             }
-            SelectionKeyImpl key = (SelectionKeyImpl) (i >= readableKeysCount ? keys[writableFDsToKeys[i
+            SelectionKeyImpl key = i >= readableKeysCount ? keys[writableFDsToKeys[i
                     - readableKeysCount]]
-                    : keys[readableFDsToKeys[i]]);
+                    : keys[readableFDsToKeys[i]];
 
             if (null == key) {
                 continue;
@@ -594,14 +595,14 @@ final class SelectorImpl extends AbstractSelector {
     }
 
     /*
-     * Assumes calling thread holds locks on 'this', 'keysSet', and 'selectedKeys'. 
+     * Assumes calling thread holds locks on 'this', 'unmodifiableKeys', and 'selectedKeys'.
      */
     private void doCancel() {
         Set<SelectionKey> cancelledKeys = cancelledKeys();
         synchronized (cancelledKeys) {
             if (cancelledKeys.size() > 0) {
                 for (SelectionKey currentkey : cancelledKeys) {
-                    delKey(currentkey);
+                    delKey((SelectionKeyImpl)currentkey);
                     mutableKeys.remove(currentkey);
                     deregister((AbstractSelectionKey) currentkey);
                     mutableSelectedKeys.remove(currentkey);
