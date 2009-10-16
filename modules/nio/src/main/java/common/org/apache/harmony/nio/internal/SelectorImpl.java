@@ -244,7 +244,7 @@ final class SelectorImpl extends AbstractSelector {
      *            key to add
      * @return index in the storage
      */
-    private int addKey(SelectionKeyImpl sk) {
+    private void addKey(SelectionKeyImpl sk) {
 
         lastKeyIndex++;
         int c = lastKeyIndex;
@@ -288,8 +288,7 @@ final class SelectorImpl extends AbstractSelector {
 
             writableKeysCount++;
         }
-
-        return c;
+        sk.setIndex(c);
     }
 
     /**
@@ -395,8 +394,7 @@ final class SelectorImpl extends AbstractSelector {
                 synchronized (selectedKeys) {
                     SelectionKeyImpl ski = (SelectionKeyImpl) sk;
                     delKey(ski);
-                    int newIndex = addKey(ski);
-                    ski.setIndex(newIndex);
+                    addKey(ski);
                 }
             }
         }
@@ -417,8 +415,7 @@ final class SelectorImpl extends AbstractSelector {
                 // create the key
                 SelectionKeyImpl selectionKey = new SelectionKeyImpl(
                         channel, operations, attachment, this);
-                int index = addKey(selectionKey);
-                selectionKey.setIndex(index);
+                addKey(selectionKey);
                 mutableKeys.add(selectionKey);
                 return selectionKey;
             }
