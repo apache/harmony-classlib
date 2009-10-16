@@ -465,7 +465,7 @@ public class XMLDecoder {
             } else if ("byte".equals(tag)) {
                 return Byte.valueOf(value);
             } else if ("char".equals(tag)) {
-                return new Character(value.charAt(0));
+                return Character.valueOf(value.charAt(0));
             } else if ("double".equals(tag)) {
                 return Double.valueOf(value);
             } else if ("float".equals(tag)) {
