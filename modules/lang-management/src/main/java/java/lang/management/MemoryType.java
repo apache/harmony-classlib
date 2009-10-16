@@ -30,25 +30,17 @@ public enum MemoryType {
      * Heap memory type.
      * </p>
      */
-    HEAP,
+    HEAP {
+        @Override
+        public String toString() { return "Heap memory"; }
+    },
     /**
      * <p>
      * Non-heap memory type.
      * </p>
      */
-    NON_HEAP;
-
-    @Override
-    public String toString() {
-        String result = null;
-        switch (this) {
-            case HEAP:
-                result = "Heap memory";
-                break;
-            case NON_HEAP:
-                result = "Non-heap memory";
-                break;
-        }
-        return result;
-    }
+    NON_HEAP {
+        @Override
+        public String toString() { return "Non-heap memory"; }
+    };
 }
