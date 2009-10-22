@@ -119,7 +119,13 @@ public class UnixSocketTest extends TestCase {
 
     public void test_getOutputStream() throws Exception {
         // Regression test for HARMONY-2934
-        Socket socket = new Socket("127.0.0.1", 0, false);
+        // Port 0 is not allowed to be used in connect() on some platforms, 
+        // get a free port here
+        ServerSocket ss = new ServerSocket(0);
+        int port = ss.getLocalPort();
+        ss.close();
+        
+        Socket socket = new Socket("127.0.0.1", port, false);
         OutputStream o = socket.getOutputStream();
         try {
             o.write(1);
