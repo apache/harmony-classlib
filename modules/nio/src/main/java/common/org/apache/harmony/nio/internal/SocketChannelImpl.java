@@ -277,15 +277,11 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
             finished = (CONNECT_SUCCESS == result);
             isBound = finished;
         } catch (IOException e) {
-            if (e instanceof ConnectException && !isBlocking()) {
-                status = SOCKET_STATUS_PENDING;
-            } else {
-                if (isOpen()) {
-                    close();
-                    finished = true;
-                }
-                throw e;
+            if (isOpen()) {
+                close();
+                finished = true;
             }
+            throw e;
         } finally {
             if (isBlocking()) {
                 end(finished);
