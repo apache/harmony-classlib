@@ -21,8 +21,6 @@
 #include "vmi.h"
 #include "exceptions.h"
 
-/* DIR_SEPARATOR is defined in hycomp.h */
-#define jclSeparator DIR_SEPARATOR
 void ioh_convertToPlatform (char *path);
 
 #endif /* iohelp_h */
