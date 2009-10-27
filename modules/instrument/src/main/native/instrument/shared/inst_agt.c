@@ -210,7 +210,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 #ifndef HY_ZIP_API
 	retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, (unsigned char*)result, size);
 #else /* HY_ZIP_API */
-	retval = zipFuncs->zip_getZipEntryData(VMI, &zipFile, &zipEntry, result, size);
+	retval = zipFuncs->zip_getZipEntryData(VMI, &zipFile, &zipEntry, (unsigned char*)result, size);
 #endif /* HY_ZIP_API */
 	if(retval){
 #ifndef HY_ZIP_API
