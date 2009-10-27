@@ -413,7 +413,7 @@ GIF_RETVAL loadColorTable(JNIEnv *env, jobject jColorTable, GifDecoder *decoder)
 */
 GIF_RETVAL skipData(GifDecoder *decoder) {
   int dataSize;
-  while(dataSize = *(decoder->inputPtr)) {  
+  while((dataSize = *(decoder->inputPtr))) {  
     if(dataSize + 1 > decoder->bytesInBuffer) // Need to load more data, suspending
       return STATUS_BUFFER_EMPTY;
     
@@ -435,7 +435,7 @@ GIF_RETVAL skipData(GifDecoder *decoder) {
 */
 GIF_RETVAL readComment(JNIEnv *env, GifDecoder *decoder) {
   int dataSize;
-  while(dataSize = *(decoder->inputPtr)) {  
+  while((dataSize = *(decoder->inputPtr))) {  
     if(dataSize + 1 > decoder->bytesInBuffer) // Need to load more data, suspending
       return STATUS_BUFFER_EMPTY;
     

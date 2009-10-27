@@ -352,7 +352,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
       JOCTET *tmp;
       glDecompress->srcMgr.buffer_size += MAX_BUFFER;
 
-      if(tmp = realloc(glDecompress->srcMgr.jpeg_buffer, glDecompress->srcMgr.buffer_size)) {        
+      if((tmp = realloc(glDecompress->srcMgr.jpeg_buffer, glDecompress->srcMgr.buffer_size))) {        
         glDecompress->srcMgr.jpeg_buffer = tmp;
               
         freeInJpegBuffer = 

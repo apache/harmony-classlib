@@ -270,7 +270,7 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
 
 char* strlower(char * str){
      char *temp = str;
-     while(*temp = tolower(*temp))
+     while((*temp = tolower(*temp)))
          temp++;
      return str;
 }
