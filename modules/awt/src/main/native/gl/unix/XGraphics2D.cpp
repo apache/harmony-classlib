@@ -243,7 +243,7 @@ jint dash_offset, jbyteArray dashes, jint len)
     return ret;
 }
 
-JNIEXPORT jint JNICALL 
+JNIEXPORT void JNICALL 
 Java_org_apache_harmony_awt_gl_linux_XGraphics2D_flush
 (JNIEnv *env, jobject obj, jlong display)
 {
