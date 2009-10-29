@@ -711,13 +711,13 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                       location="${module.temp.dir}/ant" />
             <property name="junit.java.io.tmpdir"
                       location="${module.temp.dir}/tmpdir" />
-            <property name="junit.user.dir"
+            <property name="junit.user.home"
                       location="${module.temp.dir}/user" />
             
             <mkdir dir="${tests.output}" /> 
             <mkdir dir="${junit.tempdir}" />
             <mkdir dir="${junit.java.io.tmpdir}" />
-            <mkdir dir="${junit.user.dir}" />
+            <mkdir dir="${junit.user.home}" />
 
             <prepare-exclude-list moduleName="@{module}" dir="${test.excludes.dir}" result="${test.exclude.file}" />
             <junit fork="yes" 
@@ -732,9 +732,7 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                    jvm="${test.jre.home}/bin/java">
 
                 <jvmarg line="-Djava.io.tmpdir=${junit.java.io.tmpdir}" />
-                <!-- TOFIX: I'd like to do this but it breaks a few tests
-                    <jvmarg line="-Duser.dir=${junit.user.dir}" />
-                    -->
+                <jvmarg line="-Duser.home=${junit.user.home}" />
 
                 <classpath>
                     <fileset dir="${target.dir}">
