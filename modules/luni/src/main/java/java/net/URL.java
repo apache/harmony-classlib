@@ -705,7 +705,9 @@ public final class URL implements java.io.Serializable {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null && proxy.type() != Proxy.Type.DIRECT) {
             InetSocketAddress pAddress = (InetSocketAddress) proxy.address();
-            sm.checkConnect(pAddress.getHostName(), pAddress.getPort());
+            String pHostName = pAddress.isUnresolved() ? pAddress.getHostName()
+                    : pAddress.getAddress().getHostAddress();
+            sm.checkConnect(pHostName, pAddress.getPort());
         }
 
         return strmHandler.openConnection(this, proxy);
