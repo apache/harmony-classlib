@@ -512,6 +512,10 @@ public class InetAddress extends Object implements Serializable {
             return InetAddress.LOOPBACK.getHostAddress();
         }
         if (isHostName(host)) {
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                sm.checkConnect(host, -1);
+            }
             return lookupHostByName(host).getHostAddress();
         }
         return host;
