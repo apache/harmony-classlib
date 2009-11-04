@@ -296,12 +296,16 @@ public abstract class MessageDigest extends MessageDigestSpi {
         if (digesta.length != digestb.length) {
             return false;
         }
+        // No early return is allowed to avoid timing attack
+        // We have to return false until all elements are compared 
+        // to keep the computing time constant
+        boolean result = true;
         for (int i = 0; i < digesta.length; i++) {
             if (digesta[i] != digestb[i]) {
-                return false;
+                result = false;
             }
         }
-        return true;
+        return result;
     }
 
     /**
