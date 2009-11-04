@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
@@ -40,6 +41,9 @@ public class Statement {
     private String methodName;
 
     private Object[] arguments;
+    
+    // cache used methods of specified target class to accelerate method search
+    private static WeakHashMap<Class, Method[]> cache = new WeakHashMap<Class, Method[]>();
     
     // the special method name donating constructors
     static final String CONSTRUCTOR_NAME = "new"; //$NON-NLS-1$
@@ -330,7 +334,15 @@ public class Statement {
     static Method findMethod(Class<?> targetClass, String methodName, Object[] arguments,
             boolean methodIsStatic) throws NoSuchMethodException {
         Class<?>[] argClasses = getClasses(arguments);
-        Method[] methods = targetClass.getMethods();
+        Method[] methods = null;
+        
+        if(cache.containsKey(targetClass)){
+            methods = cache.get(targetClass);
+        }else{
+            methods = targetClass.getMethods();
+            cache.put(targetClass, methods);
+        }
+        
         ArrayList<Method> foundMethods = new ArrayList<Method>();
         Method[] foundMethodsArr;
         for (Method method : methods) {
