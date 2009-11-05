@@ -159,7 +159,7 @@ public final class SocketPermission extends Permission implements Serializable {
         }
         SocketPermission sp = (SocketPermission) other;
         if (!hostName.equalsIgnoreCase(sp.hostName)) {
-            if (getIPString() == null || !ipString.equalsIgnoreCase(sp.getIPString())) {
+            if (getIPString(true) == null || !ipString.equalsIgnoreCase(sp.getIPString(true))) {
                 return false;
             }
         }
@@ -379,10 +379,10 @@ public final class SocketPermission extends Permission implements Serializable {
         return actions = sb.substring(1, sb.length());
     }
 
-    private String getIPString() {
+    private String getIPString(boolean isCheck) {
         if (!resolved) {
             try {
-                ipString = InetAddress.getHostNameInternal(hostName);
+                ipString = InetAddress.getHostNameInternal(hostName, isCheck);
             } catch (UnknownHostException e) {
                 // ignore
             }
@@ -483,7 +483,7 @@ public final class SocketPermission extends Permission implements Serializable {
         }
         // The ipString may not be the same, some hosts resolve to
         // multiple ips
-        return (getIPString() != null && ipString.equals(sp.getIPString()))
+        return (getIPString(false) != null && ipString.equals(sp.getIPString(false)))
                 || hostName.equals(sp.hostName);
     }
 

@@ -507,14 +507,16 @@ public class InetAddress extends Object implements Serializable {
      */
     static native String getHostNameImpl();
 
-    static String getHostNameInternal(String host) throws UnknownHostException {
+    static String getHostNameInternal(String host, boolean isCheck) throws UnknownHostException {
         if (host == null || 0 == host.length()) {
             return InetAddress.LOOPBACK.getHostAddress();
         }
         if (isHostName(host)) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkConnect(host, -1);
+            if (isCheck) {
+                SecurityManager sm = System.getSecurityManager();
+                if (sm != null) {
+                    sm.checkConnect(host, -1);
+                }
             }
             return lookupHostByName(host).getHostAddress();
         }
