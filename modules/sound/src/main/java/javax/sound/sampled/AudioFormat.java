@@ -206,21 +206,25 @@ public class AudioFormat {
         
     }
 
+    @Override
+    @SuppressWarnings("nls")
     public String toString() {
 
         String ch;
         switch (channels) {
         case 1:
-            ch = "mono,"; //$NON-NLS-1$
+            ch = "mono,";
             break;
         case 2:
-            ch = "stereo,"; //$NON-NLS-1$
+            ch = "stereo,";
+            break;
         default:
-            ch = channels + " channels, "; //$NON-NLS-1$
-        }       
+            ch = channels + " channels, ";
+        }
 
-        return encoding + " " + sampleRate + " Hz, " + sampleSizeInBits + " bit, " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            + ch + frameSize + " bytes/frame, " + frameRate + " frames/second"; //$NON-NLS-1$ //$NON-NLS-2$
+        return encoding + " " + sampleRate + " Hz, " + sampleSizeInBits
+                + " bit, " + ch + frameSize + " bytes/frame, " + frameRate
+                + " frames/second";
     }
     
 }
