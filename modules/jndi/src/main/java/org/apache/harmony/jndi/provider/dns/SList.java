@@ -292,15 +292,6 @@ class SList {
         return null;
     }
 
-    /**
-     * Clears the SLIST.
-     */
-    void clear() {
-        synchronized (zones) {
-            zones = new Hashtable<String, Vector<Entry>>();
-        }
-    }
-
     // --- managing local list of servers ---
 
     // since the list of servers is add-only entity a write synchronization
