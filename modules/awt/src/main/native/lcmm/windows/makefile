@@ -38,6 +38,5 @@ MDLLIBFILES = $(MDLLIBFILES) \
   $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LCMS_DIR)lcms$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
-COMMENT=/comment:"LCMM Wrapper native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>
