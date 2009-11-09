@@ -17,17 +17,16 @@
 
 package java.util.logging;
 
-import org.apache.harmony.logging.internal.nls.Messages;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
  * Loggers are used to log records to certain outputs, including file, console,
