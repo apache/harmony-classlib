@@ -707,7 +707,10 @@ public class PrintStream extends FilterOutputStream implements Appendable,
         }
         try {
             out.write(oneByte);
-            if (autoflush && (oneByte & 0xFF) == '\n') {
+            int b = oneByte & 0xFF;
+            // 0x0A is ASCII newline, 0x15 is EBCDIC newline.
+            boolean isNewline = b == 0x0A || b == 0x15; 
+            if (autoflush && isNewline) {
                 flush();
             }
         } catch (IOException e) {
