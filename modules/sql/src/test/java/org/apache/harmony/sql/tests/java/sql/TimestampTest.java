@@ -280,6 +280,7 @@ public class TimestampTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void testGetMinutes() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         for (int i = 0; i < TIME_ARRAY.length; i++) {
             Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(MINUTES_ARRAY[i], theTimestamp.getMinutes());
@@ -292,6 +293,7 @@ public class TimestampTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void testGetSeconds() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         for (int i = 0; i < TIME_ARRAY.length; i++) {
             Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(SECONDS_ARRAY[i], theTimestamp.getSeconds());
