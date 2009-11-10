@@ -549,7 +549,7 @@ public class Timer {
             throw new IllegalArgumentException();
         }
         long delay = when.getTime() - System.currentTimeMillis();
-        scheduleImpl(task, delay < 0 ? 0 : delay, period, true);
+        scheduleImpl(task, delay, period, true);
     }
 
     /*
