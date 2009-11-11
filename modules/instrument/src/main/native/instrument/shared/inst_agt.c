@@ -191,7 +191,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	retval = zip_getZipEntry(privatePortLibrary, &zipFile, &zipEntry, "META-INF/MANIFEST.MF", TRUE);
 #else /* HY_ZIP_API */
 	zipFuncs->zip_initZipEntry(VMI, &zipEntry);
-	retval = zipFuncs->zip_getZipEntry(VMI, &zipFile, &zipEntry, "META-INF/MANIFEST.MF", TRUE);
+	retval = zipFuncs->zip_getZipEntry(VMI, &zipFile, &zipEntry, "META-INF/MANIFEST.MF", ZIP_FLAG_READ_DATA_POINTER);
 #endif /* HY_ZIP_API */
 	if (retval) {
 #ifndef HY_ZIP_API
