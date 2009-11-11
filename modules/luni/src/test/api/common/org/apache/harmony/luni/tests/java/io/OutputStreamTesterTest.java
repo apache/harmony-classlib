@@ -65,7 +65,7 @@ public class OutputStreamTesterTest {
         suite.addTest(new FilterOutputStreamTester().createTests());
         suite.addTest(new DataOutputStreamTester().createTests());
         suite.addTest(new ObjectOutputStreamTester().createTests());
-        suite.addTest(new PrintStreamTester().createTests());
+        suite.addTest(new PrintStreamTester().setExceptionSuppressed(true).createTests());
 
         return suite;
     }

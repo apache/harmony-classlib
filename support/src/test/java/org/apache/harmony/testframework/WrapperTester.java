@@ -30,6 +30,8 @@ import java.io.OutputStream;
  */
 public abstract class WrapperTester {
 
+    private boolean exceptionsSuppressed;
+
     /**
      * Creates a new output stream that receives one stream of bytes, optionally
      * transforms it, and emits another stream of bytes to {@code delegate}.
@@ -42,11 +44,28 @@ public abstract class WrapperTester {
      */
     public abstract byte[] decode(byte[] delegateBytes) throws Exception;
 
+    /**
+     * Configures whether the wrapper is expected to suppress exceptions thrown
+     * by the underlying stream. This is the case for wrappers like {@code
+     * PrintWriter}, that reports errors using an API method.
+     */
+    public WrapperTester setExceptionSuppressed(boolean suppressExceptions) {
+        this.exceptionsSuppressed = suppressExceptions;
+        return this;
+    }
+
     public final TestSuite createTests() {
         TestSuite result = new TestSuite();
         result.addTest(new WrapperSinkTester().createTests());
-        result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaFlush"));
-        result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaClose"));
+
+        if (exceptionsSuppressed) {
+            result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaFlushSuppressed"));
+            result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaCloseSuppressed"));
+        } else {
+            result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaFlush"));
+            result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaClose"));
+        }
+
         return result;
     }
 
@@ -75,6 +94,24 @@ public abstract class WrapperTester {
 
         private WrapperTestCase(String name) {
             super(name);
+        }
+
+        public void wrapperTestFlushThrowsViaFlushSuppressed() throws Exception {
+            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
+            OutputStream o = create(delegate);
+            o.write(new byte[] { 8, 6, 7, 5 });
+            o.write(new byte[] { 3, 0, 9 });
+            o.flush();
+            assertTrue(delegate.flushed);
+        }
+
+        public void wrapperTestFlushThrowsViaCloseSuppressed() throws Exception {
+            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
+            OutputStream o = create(delegate);
+            o.write(new byte[] { 8, 6, 7, 5 });
+            o.write(new byte[] { 3, 0, 9 });
+            o.close();
+            assertTrue(delegate.flushed);
         }
 
         public void wrapperTestFlushThrowsViaFlush() throws Exception {

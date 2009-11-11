@@ -55,13 +55,28 @@ public class FilterOutputStream extends OutputStream {
      */
     @Override
     public void close() throws IOException {
+        Exception thrown = null;
         try {
             flush();
-        } catch (IOException e) {
-            // Ignored
+        } catch (Exception e) {
+            thrown = e;
         }
-        /* Make sure we clean up this stream if exception fires */
-        out.close();
+
+        try {
+            out.close();
+        } catch (Exception e) {
+            if (thrown != null) {
+                thrown = e;
+            }
+        }
+
+        if (thrown != null) {
+            if (thrown instanceof IOException) {
+                throw (IOException) thrown;
+            } else {
+                throw (RuntimeException) thrown;
+            }
+        }
     }
 
     /**
