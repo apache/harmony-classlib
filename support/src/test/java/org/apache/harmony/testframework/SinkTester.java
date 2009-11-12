@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.junit.Assert;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
 
@@ -29,6 +30,8 @@ import java.util.Random;
  * adapts streams that collects untransformed bytes so that they may be tested.
  */
 public abstract class SinkTester {
+
+    private boolean throwsExceptions = true;
 
     /**
      * Creates a new output stream ready to receive an arbitrary number of
@@ -44,6 +47,16 @@ public abstract class SinkTester {
      */
     public abstract byte[] getBytes() throws Exception;
 
+    /**
+     * Configures whether the stream is expected to throw exceptions when an
+     * error is encountered. Classes like {@code PrintStream} report errors via
+     * an API method instead.
+     */
+    public SinkTester setThrowsExceptions(boolean throwsExceptions) {
+        this.throwsExceptions = throwsExceptions;
+        return this;
+    }
+
     public final TestSuite createTests() {
         TestSuite result = new TestSuite();
         result.addTest(new SinkTestCase("sinkTestNoWriting"));
@@ -52,6 +65,11 @@ public abstract class SinkTester {
         result.addTest(new SinkTestCase("sinkTestWriteArray"));
         result.addTest(new SinkTestCase("sinkTestWriteOffset"));
         result.addTest(new SinkTestCase("sinkTestWriteLargeArray"));
+
+        if (throwsExceptions) {
+            result.addTest(new SinkTestCase("sinkTestWriteAfterClose"));
+        }
+
         return result;
     }
 
@@ -160,6 +178,22 @@ public abstract class SinkTester {
             out.close();
 
             Assert.assertArrayEquals(expected, getBytes());
+        }
+
+        public void sinkTestWriteAfterClose() throws Exception {
+            byte[] expectedBytes = { 5, 6 };
+            OutputStream out = create();
+
+            out.write(expectedBytes);
+            out.close();
+
+            try {
+                out.write(new byte[] { 7, 3, 4, 5 });
+                fail("expected already closed exception");
+            } catch (IOException expected) {
+            }
+
+            Assert.assertArrayEquals(expectedBytes, getBytes());
         }
 
         // adding a new test? Don't forget to update createTests().

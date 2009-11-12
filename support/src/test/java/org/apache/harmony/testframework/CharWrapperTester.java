@@ -20,36 +20,36 @@ package org.apache.harmony.testframework;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  * Tests behaviour common to wrapping and filtering implementations of {@link
- * OutputStream}.
+ * Writer}.
  */
-public abstract class WrapperTester {
+public abstract class CharWrapperTester {
 
     private boolean throwsExceptions = true;
 
     /**
-     * Creates a new output stream that receives one stream of bytes, optionally
-     * transforms it, and emits another stream of bytes to {@code delegate}.
+     * Creates a new output stream that receives one stream of chars, optionally
+     * transforms it, and emits another stream of chars to {@code delegate}.
      */
-    public abstract OutputStream create(OutputStream delegate) throws Exception;
+    public abstract Writer create(Writer delegate) throws Exception;
 
     /**
-     * Decodes the bytes received by the delegate into their original form: the
-     * bytes originally received by this wrapper.
+     * Decodes the chars received by the delegate into their original form: the
+     * chars originally received by this wrapper.
      */
-    public abstract byte[] decode(byte[] delegateBytes) throws Exception;
+    public abstract char[] decode(char[] delegateChars) throws Exception;
 
     /**
-     * Configures whether the stream is expected to throw exceptions when an
-     * error is encountered. Classes like {@code PrintStream} report errors via
+     * Configures whether the writer is expected to throw exceptions when an
+     * error is encountered. Classes like {@code PrintWriter} report errors via
      * an API method instead.
      */
-    public WrapperTester setThrowsExceptions(boolean throwsExceptions) {
+    public CharWrapperTester setThrowsExceptions(boolean throwsExceptions) {
         this.throwsExceptions = throwsExceptions;
         return this;
     }
@@ -75,20 +75,20 @@ public abstract class WrapperTester {
         return getClass().getName();
     }
 
-    private class WrapperSinkTester extends SinkTester {
-        private ByteArrayOutputStream delegate;
+    private class WrapperSinkTester extends CharSinkTester {
+        private StringWriter delegate;
 
-        @Override public OutputStream create() throws Exception {
-            delegate = new ByteArrayOutputStream();
-            return WrapperTester.this.create(delegate);
+        @Override public Writer create() throws Exception {
+            delegate = new StringWriter();
+            return CharWrapperTester.this.create(delegate);
         }
 
-        @Override public byte[] getBytes() throws Exception {
-            return WrapperTester.this.decode(delegate.toByteArray());
+        @Override public char[] getChars() throws Exception {
+            return CharWrapperTester.this.decode(delegate.toString().toCharArray());
         }
 
         @Override public String toString() {
-            return WrapperTester.this.toString();
+            return CharWrapperTester.this.toString();
         }
     }
 
@@ -99,31 +99,31 @@ public abstract class WrapperTester {
         }
 
         public void wrapperTestFlushThrowsViaFlushSuppressed() throws Exception {
-            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
-            OutputStream o = create(delegate);
-            o.write(new byte[] { 8, 6, 7, 5 });
-            o.write(new byte[] { 3, 0, 9 });
+            FailOnFlushWriter delegate = new FailOnFlushWriter();
+            Writer o = create(delegate);
+            o.write("BUT");
+            o.write("TERS");
             o.flush();
             assertTrue(delegate.flushed);
         }
 
         public void wrapperTestFlushThrowsViaCloseSuppressed() throws Exception {
-            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
-            OutputStream o = create(delegate);
-            o.write(new byte[] { 8, 6, 7, 5 });
-            o.write(new byte[] { 3, 0, 9 });
+            FailOnFlushWriter delegate = new FailOnFlushWriter();
+            Writer o = create(delegate);
+            o.write("BUT");
+            o.write("TERS");
             o.close();
             assertTrue(delegate.flushed);
         }
 
         public void wrapperTestFlushThrowsViaFlush() throws Exception {
-            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
+            FailOnFlushWriter delegate = new FailOnFlushWriter();
 
-            OutputStream o = create(delegate);
+            Writer o = create(delegate);
             try {
                 // any of these is permitted to flush
-                o.write(new byte[] { 8, 6, 7, 5 });
-                o.write(new byte[] { 3, 0, 9 });
+                o.write("BUT");
+                o.write("TERS");
                 o.flush();
                 assertTrue(delegate.flushed);
                 fail("flush exception ignored");
@@ -133,13 +133,13 @@ public abstract class WrapperTester {
         }
 
         public void wrapperTestFlushThrowsViaClose() throws Exception {
-            FailOnFlushOutputStream delegate = new FailOnFlushOutputStream();
+            FailOnFlushWriter delegate = new FailOnFlushWriter();
 
-            OutputStream o = create(delegate);
+            Writer o = create(delegate);
             try {
                 // any of these is permitted to flush
-                o.write(new byte[] { 8, 6, 7, 5 });
-                o.write(new byte[] { 3, 0, 9 });
+                o.write("BUT");
+                o.write("TERS");
                 o.close();
                 assertTrue(delegate.flushed);
                 fail("flush exception ignored");
@@ -148,7 +148,7 @@ public abstract class WrapperTester {
             }
 
             try {
-                o.write(new byte[] { 4, 4, 5 });
+                o.write("BARK");
                 fail("expected already closed exception");
             } catch (IOException expected) {
             }
@@ -157,15 +157,16 @@ public abstract class WrapperTester {
         // adding a new test? Don't forget to update createTests().
 
         @Override public String getName() {
-            return WrapperTester.this.toString() + ":" + super.getName();
+            return CharWrapperTester.this.toString() + ":" + super.getName();
         }
 
-        private class FailOnFlushOutputStream extends ByteArrayOutputStream {
+        private class FailOnFlushWriter extends Writer {
             boolean flushed = false;
+
+            @Override public void write(char[] buf, int offset, int count) throws IOException {}
 
             @Override public void close() throws IOException {
                 flush();
-                super.close();
             }
 
             @Override public void flush() throws IOException {
@@ -173,7 +174,6 @@ public abstract class WrapperTester {
                     flushed = true;
                     throw new IOException("Flush failed");
                 }
-                super.flush();
             }
         }
     }

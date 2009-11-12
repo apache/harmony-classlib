@@ -65,12 +65,12 @@ public class OutputStreamTesterTest {
         suite.addTest(new FilterOutputStreamTester().createTests());
         suite.addTest(new DataOutputStreamTester().createTests());
         suite.addTest(new ObjectOutputStreamTester().createTests());
-        suite.addTest(new PrintStreamTester().setExceptionSuppressed(true).createTests());
+        suite.addTest(new PrintStreamTester().setThrowsExceptions(false).createTests());
 
         return suite;
     }
 
-    public static class FileOutputStreamSinkTester extends SinkTester {
+    private static class FileOutputStreamSinkTester extends SinkTester {
 
         private final boolean append;
         private File file;
@@ -86,7 +86,7 @@ public class OutputStreamTesterTest {
         }
 
         public byte[] getBytes() throws IOException {
-            return Streams.bytesFromStream(new FileInputStream(file));
+            return Streams.streamToBytes(new FileInputStream(file));
         }
     }
 
@@ -185,7 +185,7 @@ public class OutputStreamTesterTest {
         }
 
         public byte[] decode(byte[] delegateBytes) throws Exception {
-            return Streams.bytesFromStream(new ObjectInputStream(
+            return Streams.streamToBytes(new ObjectInputStream(
                     new ByteArrayInputStream(delegateBytes)));
         }
     }

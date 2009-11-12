@@ -20,16 +20,19 @@ package tests.support;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringWriter;
 
 /**
  * Utility methods for working with byte and character streams.
  */
 public class Streams {
+    private Streams() {}
 
     /**
      * Drains the stream into a byte array and returns the result.
      */
-    public static byte[] bytesFromStream(InputStream source) throws IOException {
+    public static byte[] streamToBytes(InputStream source) throws IOException {
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int count;
@@ -37,5 +40,18 @@ public class Streams {
             out.write(buffer, 0, count);
         }
         return out.toByteArray();
+    }
+
+    /**
+     * Drains the stream into a string and returns the result.
+     */
+    public static String streamToString(Reader fileReader) throws IOException {
+        char[] buffer = new char[1024];
+        StringWriter out = new StringWriter();
+        int count;
+        while ((count = fileReader.read(buffer)) != -1) {
+            out.write(buffer, 0, count);
+        }
+        return out.toString();
     }
 }

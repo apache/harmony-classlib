@@ -1,1 +1,3 @@
 org/apache/harmony/luni/tests/java/net/ExcludedProxyTest.java
+org/apache/harmony/luni/tests/java/io/OutputStreamTesterTest.java
+org/apache/harmony/luni/tests/java/io/WriterTesterTest.java
