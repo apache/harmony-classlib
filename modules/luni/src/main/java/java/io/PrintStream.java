@@ -232,10 +232,13 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      * @see #setError()
      */
     public boolean checkError() {
-        if (out != null) {
-            flush();
+        OutputStream delegate = out;
+        if (delegate == null) {
+            return ioError;
         }
-        return ioError;
+
+        flush();
+        return ioError || delegate.checkError();
     }
 
     /**
