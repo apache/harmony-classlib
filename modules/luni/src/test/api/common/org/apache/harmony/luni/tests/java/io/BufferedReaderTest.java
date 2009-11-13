@@ -528,8 +528,8 @@ public class BufferedReaderTest extends TestCase {
     public void test_reset_IOException() throws Exception {
         int[] expected = new int[] { '1', '2', '3', '4', '5', '6', '7', '8',
                 '9', '0', -1 };
-        br = new BufferedReader(new Support_StringReader("1234567890"));
-        br.mark(10);
+        br = new BufferedReader(new Support_StringReader("1234567890"), 9);
+        br.mark(9);
         for (int i = 0; i < 11; i++) {
             assertEquals(expected[i], br.read());
         }

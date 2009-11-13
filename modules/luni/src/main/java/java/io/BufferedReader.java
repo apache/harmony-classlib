@@ -278,11 +278,8 @@ public class BufferedReader extends Reader {
             if (isClosed()) {
                 throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
             }
-            if (buffer == null) {
-                throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
-            }
-            if ((offset | length) < 0 || offset > buffer.length - length) {
-                throw new IndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+            if (offset < 0 || offset > buffer.length - length || length < 0) {
+                throw new IndexOutOfBoundsException();
             }
             int outstanding = length;
             while (outstanding > 0) {
