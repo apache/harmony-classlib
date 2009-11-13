@@ -67,6 +67,8 @@ public abstract class CharSinkTester {
 
         if (throwsExceptions) {
             result.addTest(new SinkTestCase("sinkTestWriteAfterClose"));
+        } else {
+            result.addTest(new SinkTestCase("sinkTestWriteAfterCloseSuppressed"));
         }
 
         return result;
@@ -182,6 +184,13 @@ public abstract class CharSinkTester {
             }
 
             Assert.assertArrayEquals(expectedChars, getChars());
+        }
+
+        public void sinkTestWriteAfterCloseSuppressed() throws Exception {
+            Writer out = create();
+            out.write("EF".toCharArray());
+            out.close();
+            out.write("GCDE".toCharArray()); // no exception expected!
         }
 
         // adding a new test? Don't forget to update createTests().

@@ -52,8 +52,8 @@ public class WriterTesterTest {
         // sink tests
         suite.addTest(new FileWriterCharSinkTester(true).createTests());
         suite.addTest(new FileWriterCharSinkTester(false).createTests());
-        suite.addTest(new CharArrayWriterCharSinkTester().createTests());
-        suite.addTest(new StringWriterCharSinkTester().createTests());
+        suite.addTest(new CharArrayWriterCharSinkTester().setThrowsExceptions(false).createTests());
+        suite.addTest(new StringWriterCharSinkTester().setThrowsExceptions(false).createTests());
         suite.addTest(new PipedWriterCharSinkTester().createTests());
 
         // wrapper tests

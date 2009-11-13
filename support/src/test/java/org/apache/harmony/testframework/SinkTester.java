@@ -68,6 +68,8 @@ public abstract class SinkTester {
 
         if (throwsExceptions) {
             result.addTest(new SinkTestCase("sinkTestWriteAfterClose"));
+        } else {
+            result.addTest(new SinkTestCase("sinkTestWriteAfterCloseSuppressed"));
         }
 
         return result;
@@ -194,6 +196,13 @@ public abstract class SinkTester {
             }
 
             Assert.assertArrayEquals(expectedBytes, getBytes());
+        }
+
+        public void sinkTestWriteAfterCloseSuppressed() throws Exception {
+            OutputStream out = create();
+            out.write(new byte[] { 5, 6 });
+            out.close();
+            out.write(new byte[] { 7, 3, 4, 5 }); // no exception expected!
         }
 
         // adding a new test? Don't forget to update createTests().

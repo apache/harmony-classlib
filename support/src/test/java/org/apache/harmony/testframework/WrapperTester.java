@@ -63,9 +63,11 @@ public abstract class WrapperTester {
         if (throwsExceptions) {
             result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaFlush"));
             result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaClose"));
+            result.addTest(new WrapperTestCase("wrapperTestCloseThrows"));
         } else {
             result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaFlushSuppressed"));
             result.addTest(new WrapperTestCase("wrapperTestFlushThrowsViaCloseSuppressed"));
+            result.addTest(new WrapperTestCase("wrapperTestCloseThrowsSuppressed"));
         }
 
         return result;
@@ -76,15 +78,15 @@ public abstract class WrapperTester {
     }
 
     private class WrapperSinkTester extends SinkTester {
-        private ByteArrayOutputStream delegate;
+        private ClosableByteArrayOutputStream delegate;
 
         @Override public OutputStream create() throws Exception {
-            delegate = new ByteArrayOutputStream();
+            delegate = new ClosableByteArrayOutputStream();
             return WrapperTester.this.create(delegate);
         }
 
         @Override public byte[] getBytes() throws Exception {
-            return WrapperTester.this.decode(delegate.toByteArray());
+            return WrapperTester.this.decode(delegate.bytesOut.toByteArray());
         }
 
         @Override public String toString() {
@@ -96,6 +98,10 @@ public abstract class WrapperTester {
 
         private WrapperTestCase(String name) {
             super(name);
+        }
+
+        @Override public String getName() {
+            return WrapperTester.this.toString() + ":" + super.getName();
         }
 
         public void wrapperTestFlushThrowsViaFlushSuppressed() throws Exception {
@@ -154,27 +160,73 @@ public abstract class WrapperTester {
             }
         }
 
-        // adding a new test? Don't forget to update createTests().
-
-        @Override public String getName() {
-            return WrapperTester.this.toString() + ":" + super.getName();
+        public void wrapperTestCloseThrows() throws Exception {
+            FailOnCloseOutputStream delegate = new FailOnCloseOutputStream();
+            OutputStream o = create(delegate);
+            try {
+                o.close();
+                assertTrue(delegate.closed);
+                fail("close exception ignored");
+            } catch (IOException expected) {
+                assertEquals("Close failed" , expected.getMessage());
+            }
         }
 
-        private class FailOnFlushOutputStream extends ByteArrayOutputStream {
-            boolean flushed = false;
+        public void wrapperTestCloseThrowsSuppressed() throws Exception {
+            FailOnCloseOutputStream delegate = new FailOnCloseOutputStream();
+            OutputStream o = create(delegate);
+            o.close();
+            assertTrue(delegate.closed);
+        }
 
-            @Override public void close() throws IOException {
-                flush();
-                super.close();
-            }
+        // adding a new test? Don't forget to update createTests().
+    }
 
-            @Override public void flush() throws IOException {
-                if (!flushed) {
-                    flushed = true;
-                    throw new IOException("Flush failed");
-                }
-                super.flush();
+    private static class ClosableByteArrayOutputStream extends OutputStream {
+        private final ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        private boolean closed = false;
+
+        @Override public void close() throws IOException {
+            closed = true;
+        }
+
+        @Override public void write(int oneByte) throws IOException {
+            if (closed) {
+                throw new IOException();
             }
+            bytesOut.write(oneByte);
+        }
+    }
+
+    private static class FailOnFlushOutputStream extends OutputStream {
+        boolean flushed = false;
+        boolean closed = false;
+
+        @Override public void write(int oneByte) throws IOException {
+            if (closed) {
+                throw new IOException("Already closed");
+            }
+        }
+
+        @Override public void close() throws IOException {
+            closed = true;
+            flush();
+        }
+
+        @Override public void flush() throws IOException {
+            if (!flushed) {
+                flushed = true;
+                throw new IOException("Flush failed");
+            }
+        }
+    }
+
+    private static class FailOnCloseOutputStream extends ByteArrayOutputStream {
+        boolean closed = false;
+
+        @Override public void close() throws IOException {
+            closed = true;
+            throw new IOException("Close failed");
         }
     }
 }
