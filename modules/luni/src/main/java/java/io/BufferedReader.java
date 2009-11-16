@@ -337,6 +337,17 @@ public class BufferedReader extends Reader {
     }
 
     /**
+     * Peeks at the next input character, refilling the buffer if necessary. If
+     * this character is a newline character ("\n"), it is discarded.
+     */
+    final void chompNewline() throws IOException {
+        if ((pos != end || fillBuf() != -1)
+                && buf[pos] == '\n') {
+            pos++;
+        }
+    }
+
+    /**
      * Returns the next line of text available from this reader. A line is
      * represented by zero or more characters followed by {@code '\n'},
      * {@code '\r'}, {@code "\r\n"} or the end of the reader. The string does
