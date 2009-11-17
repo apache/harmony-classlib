@@ -302,7 +302,6 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
 		*pos++ = 0;
 		options = (char *)hymem_allocate_memory(sizeof(char) * (strlen(pos)+1));
 		strcpy(options, pos);
-		hymem_free_memory(pos);
 	}
 	jar_name =agent_cpy;
 
