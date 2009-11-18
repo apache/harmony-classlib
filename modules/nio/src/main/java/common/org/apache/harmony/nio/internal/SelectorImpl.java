@@ -166,6 +166,8 @@ final class SelectorImpl extends AbstractSelector {
         synchronized (this) {
             synchronized (unmodifiableKeys) {
                 synchronized (selectedKeys) {
+                    sink.close();
+                    source.close();
                     doCancel();
                     for (SelectionKey sk : mutableKeys) {
                         deregister((AbstractSelectionKey) sk);
