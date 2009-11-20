@@ -15,60 +15,61 @@
  *  limitations under the License.
  */
 
-/**
-* @author Alexey V. Varlamov
-*/
-
 package org.apache.harmony.security.tests.java.security;
+
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 /**
  * Tests for <code>PermissionCollection</code>
- * 
  */
-
 public class PermissionCollection_ImplTest extends TestCase {
     // Bare extension to instantiate abstract PermissionCollection class
-    private static final class RealPermissionCollection extends PermissionCollection
-    {
-        final private Collection col; 
-        public RealPermissionCollection(Collection col)
-        {
-            this.col = col;            
+    private static final class RealPermissionCollection extends
+            PermissionCollection {
+        final private Collection col;
+
+        public RealPermissionCollection(Collection<Permission> col) {
+            this.col = col;
         }
-        
-        public void add(Permission permission) {}
-        
-        public Enumeration elements() 
-        {
+
+        public void add(Permission permission) {
+        }
+
+        public Enumeration<Permission> elements() {
             return col == null ? null : Collections.enumeration(col);
         }
-        
-        public boolean implies(Permission permission) 
-        {
+
+        public boolean implies(Permission permission) {
             return false;
         }
     }
-    
+
     /** Test toString() transformation with different elements. */
-    public void testToString()
-    {
+    public void testToString() {
         // no elements
         PermissionCollection pc = new RealPermissionCollection(null);
-        String superString = pc.getClass().getName() + "@" + Integer.toHexString(pc.hashCode());
-        assertEquals("no elements", superString + " (\n)\n", pc.toString());
-        
+        try {
+            assertNotNull("No elements", pc.toString());
+        } catch (NullPointerException e) {
+            // Allowed
+        }
+
         // several elements
-        pc = new RealPermissionCollection(Arrays.asList(new Object[]{"aaa", "bbb", "ccc"}));
-        superString = pc.getClass().getName() + "@" + Integer.toHexString(pc.hashCode());
-        assertEquals("several elements", superString + " (\n aaa\n bbb\n ccc\n)\n", pc.toString());
+        List<Permission> bpList = new ArrayList<Permission>();
+        bpList.add(new RuntimePermission("aaa"));
+        bpList.add(new RuntimePermission("bbb"));
+        bpList.add(new RuntimePermission("ccc"));
+        String pcString = new RealPermissionCollection(bpList).toString();
+        assertTrue("Failed to find aaa", pcString.contains("aaa"));
+        assertTrue("Failed to find bbb", pcString.contains("bbb"));
+        assertTrue("Failed to find ccc", pcString.contains("ccc"));
     }
-   
 }
