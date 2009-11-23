@@ -115,19 +115,6 @@ public class DeflaterOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Writes any unwritten compressed data to the underlying stream and flushes
-     * the underlying stream.
-     *
-     * @throws IOException
-     *             If an error occurs during writing.
-     */
-    @Override public void flush() throws IOException {
-        int count = def.deflate(buf, 0, buf.length, Deflater.Z_SYNC_FLUSH);
-        out.write(buf, 0, count);
-        out.flush();
-    }
-
-    /**
      * Writes any unwritten compressed data to the underlying stream, the closes
      * all underlying streams. This stream can no longer be used after close()
      * has been called.

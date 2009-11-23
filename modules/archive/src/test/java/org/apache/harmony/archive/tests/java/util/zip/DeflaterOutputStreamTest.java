@@ -23,8 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
@@ -400,20 +398,5 @@ public class DeflaterOutputStreamTest extends TestCase {
         }
         assertTrue(dos.getDaflateFlag());
         dos.close();
-    }
-
-    public void testFlush() throws IOException {
-        PipedOutputStream pout = new PipedOutputStream();
-        PipedInputStream pin = new PipedInputStream(pout);
-        DeflaterOutputStream out = new DeflaterOutputStream(pout);
-        InflaterInputStream in = new InflaterInputStream(pin);
-
-        out.write(1);
-        out.write(2);
-        out.write(3);
-        out.flush();
-        assertEquals(1, in.read()); // without flush, this blocks forever!!
-        assertEquals(2, in.read());
-        assertEquals(3, in.read());
     }
 }
