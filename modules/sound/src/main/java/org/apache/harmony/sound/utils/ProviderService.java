@@ -17,6 +17,7 @@
 
 package org.apache.harmony.sound.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -144,9 +145,7 @@ public class ProviderService {
                             try {
                                 InputStream in = urls.nextElement()
                                         .openStream();
-                                bytes = new byte[in.available()];
-                                in.read(bytes);
-                                in.close();
+                                bytes = getAllBytesFromStreamAndClose(in);
                             } catch (IOException e) {
                                 continue;
                             }
@@ -172,6 +171,42 @@ public class ProviderService {
 
     public static Properties getSoundProperties() {
         return devices;
+    }
+    
+    /*
+     * Drains the entire content from the given input stream and returns it as a
+     * byte[]. The stream is closed after being drained, or if an IOException
+     * occurs.
+     */
+    private static byte[] getAllBytesFromStreamAndClose(InputStream is)
+            throws IOException {
+        try {
+            // Initial read
+            byte[] buffer = new byte[512];
+            int count = is.read(buffer);
+            int nextByte = is.read();
+
+            // Did we get it all in one read?
+            if (nextByte == -1) {
+                byte[] dest = new byte[count];
+                System.arraycopy(buffer, 0, dest, 0, count);
+                return dest;
+            }
+
+            // Requires additional reads
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
+            baos.write(buffer, 0, count);
+            baos.write(nextByte);
+            while (true) {
+                count = is.read(buffer);
+                if (count == -1) {
+                    return baos.toByteArray();
+                }
+                baos.write(buffer, 0, count);
+            }
+        } finally {
+            is.close();
+        }
     }
 
 }
