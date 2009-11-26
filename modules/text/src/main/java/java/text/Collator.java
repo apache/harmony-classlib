@@ -157,21 +157,13 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
 
     static {
         // CACHE_SIZE includes key and value, so needs to be double
-        String cacheSize = AccessController
-                .doPrivileged(new PrivilegedAction<String>() {
-                    public String run() {
-                        return System.getProperty("collator.cache"); //$NON-NLS-1$
+        Integer value = AccessController
+                .doPrivileged(new PrivilegedAction<Integer>() {
+                    public Integer run() {
+                        return Integer.getInteger("collator.cache"); //$NON-NLS-1$
                     }
                 });
-        if (cacheSize != null) {
-            try {
-                CACHE_SIZE = Integer.parseInt(cacheSize);
-            } catch (NumberFormatException e) {
-                CACHE_SIZE = 6;
-            }
-        } else {
-            CACHE_SIZE = 6;
-        }
+        CACHE_SIZE = value == null ? 6 : value.intValue();
     }
 
     private static Vector<Collator> cache = new Vector<Collator>(CACHE_SIZE);

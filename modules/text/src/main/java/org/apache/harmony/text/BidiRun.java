@@ -47,9 +47,19 @@ public class BidiRun {
 
     @Override
     public boolean equals(Object o) {
-        return o == null || o.getClass() != BidiRun.class ? false
-                : this.start == ((BidiRun) o).start
-                        && this.limit == ((BidiRun) o).limit
-                        && this.level == ((BidiRun) o).level;
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof BidiRun)) {
+            return false;
+        }
+        BidiRun other = (BidiRun) o;
+        return start == other.start && limit == other.limit
+                && level == other.level;
+    }
+    
+    @Override
+    public int hashCode() {
+        return start ^ limit ^ level;
     }
 }

@@ -165,19 +165,19 @@ import org.apache.harmony.x.print.attributes.MediaMargins;
 public class ServiceUIDialog extends ServiceUIDialogTemplate {
 
     // State of dialog:
-    public static int APPROVE_PRINT = 1;    // OK button was pressed
-    public static int CANSEL_PRINT = -1;    // Cancel button was pressed
-    public static int SETUP_ERROR = 2;      // Dialog Setup was finished with 
-                                            // error, dialog can not be shown
-    public static int SETUP_OK = 3;         // Dialog setup was OK, 
-                                            // you can show the dialog
-    int dialogResult = 0;                   // Current dialog status
+    public static final int APPROVE_PRINT = 1;    // OK button was pressed
+    public static final int CANCEL_PRINT = -1;    // Cancel button was pressed
+    public static final int SETUP_ERROR = 2;      // Dialog Setup was finished with 
+                                                  // error, dialog can not be shown
+    public static final int SETUP_OK = 3;         // Dialog setup was OK, 
+                                                  // you can show the dialog
+    int dialogResult = 0;                         // Current dialog status
     
     // Dialog type:
-    public static int PRINT_DIALOG = 1;     // Dialog for PrintService selecting,
-                                            // all dialog tabs are visible 
-    public static int PAGE_DIALOG = 2;      // Page setup dialog:
-                                            // only PageSetup dialog tab is visible
+    public static final int PRINT_DIALOG = 1;     // Dialog for PrintService selecting,
+                                                  // all dialog tabs are visible 
+    public static final int PAGE_DIALOG = 2;      // Page setup dialog:
+                                                  // only PageSetup dialog tab is visible
     private int dialogType = PRINT_DIALOG;  // dialog type
     
     PrintService [] services = null;        // Print services array for the choice
@@ -463,7 +463,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
         
         printDialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent event) {
-                dialogResult = CANSEL_PRINT;
+                dialogResult = CANCEL_PRINT;
             }
         });
     }
@@ -631,7 +631,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
                  * case. If default Copies value is null - I suppose that default 
                  * and supported value is 1 Copy only. 
                 */
-                supported = new CopiesSupported( (defaul == null)
+                supported = new CopiesSupported( (defaul != null)
                         ? defaul.getValue()
                         : 1);
             }
@@ -1617,7 +1617,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
      */
     class cancelButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            dialogResult = CANSEL_PRINT;
+            dialogResult = CANCEL_PRINT;
             printDialog.hide();
         }
     } /* End of cancelButtonListener */

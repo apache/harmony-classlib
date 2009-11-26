@@ -21,6 +21,7 @@ import java.security.AccessController;
 
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.SneakyThrow;
 
 /**
  * Wraps an existing {@link Writer} and <em>buffers</em> the output. Expensive
@@ -95,11 +96,29 @@ public class BufferedWriter extends Writer {
     @Override
     public void close() throws IOException {
         synchronized (lock) {
-            if (!isClosed()) {
+            if (isClosed()) {
+                return;
+            }
+
+            Throwable thrown = null;
+            try {
                 flushInternal();
+            } catch (Throwable e) {
+                thrown = e;
+            }
+            buf = null;
+
+            try {
                 out.close();
-                buf = null;
-                out = null;
+            } catch (Throwable e) {
+                if (thrown == null) {
+                    thrown = e;
+                }
+            }
+            out = null;
+
+            if (thrown != null) {
+                SneakyThrow.sneakyThrow(thrown);
             }
         }
     }

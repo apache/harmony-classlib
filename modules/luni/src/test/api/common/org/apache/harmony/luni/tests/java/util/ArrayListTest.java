@@ -124,28 +124,32 @@ public class ArrayListTest extends junit.framework.TestCase {
             alist.add(-1, new Object());
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.add(-1, null);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.add(alist.size() + 1, new Object());
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.add(alist.size() + 1, null);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -229,6 +233,8 @@ public class ArrayListTest extends junit.framework.TestCase {
             obj.addAll((int) -1, (Collection) null);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         // Regression for HARMONY-5705
@@ -296,14 +302,16 @@ public class ArrayListTest extends junit.framework.TestCase {
             obj.addAll(-1, obj);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             obj.addAll(obj.size() + 1, obj);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
@@ -317,13 +325,16 @@ public class ArrayListTest extends junit.framework.TestCase {
             obj.addAll(obj.size() + 1, null);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             obj.addAll((int) -1, (Collection) null);
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -547,6 +558,8 @@ public class ArrayListTest extends junit.framework.TestCase {
             alist.get(8765);
             fail("Failed to throw expected exception for index > size");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -603,7 +616,8 @@ public class ArrayListTest extends junit.framework.TestCase {
             mylist.removeRange(0, 1);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         int[] data = { 1, 2, 3 };
@@ -619,28 +633,32 @@ public class ArrayListTest extends junit.framework.TestCase {
             mylist.removeRange(-1, 1);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             mylist.removeRange(0, -1);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             mylist.removeRange(1, 0);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             mylist.removeRange(2, 1);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
     
@@ -656,6 +674,8 @@ public class ArrayListTest extends junit.framework.TestCase {
             alist.remove(999);
             fail("Failed to throw exception when index out of range");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         ArrayList myList = (ArrayList) (((ArrayList) (alist)).clone());
@@ -683,11 +703,15 @@ public class ArrayListTest extends junit.framework.TestCase {
             l.remove(-1);
             fail("-1 should cause exception");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
         try {
             l.remove(0);
             fail("0 should case exception");
         } catch (IndexOutOfBoundsException e) {
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
 
@@ -713,28 +737,32 @@ public class ArrayListTest extends junit.framework.TestCase {
             alist.set(-1, obj);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.set(alist.size(), obj);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.set(-1, null);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
 
         try {
             alist.set(alist.size(), null);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // Excepted
+            // Expected
+            assertNotNull(e.getMessage());
         }
     }
 

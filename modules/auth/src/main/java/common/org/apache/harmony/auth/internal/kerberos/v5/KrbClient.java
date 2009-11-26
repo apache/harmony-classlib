@@ -157,14 +157,12 @@ public class KrbClient {
                 throw new KerberosException(Messages.getString(
                         "auth.52", errMsg.getErrorCode())); //$NON-NLS-1$
             } else {
-                new KerberosException(); //FIXME
+                throw new KerberosException(); //FIXME
             }
 
         } catch (IOException e) {
-            new KerberosException(e.getMessage()); //FIXME 
+            throw new KerberosException(e.getMessage()); //FIXME 
         }
-
-        return null;
     }
 
     public static KDCReply doTGS() throws KerberosException {

@@ -31,4 +31,16 @@
 		<Bug code="IS" />
 	</Match>
 
+	<!--
+		We realize that the invocation always invokes unsupported operation.
+	-->
+	<Match>
+		<Class name="java.nio.MappedByteBufferAdapter" />
+		<Or>
+			<Method name="protectedArray" />
+			<Method name="protectedArrayOffset" />
+		</Or>
+		<Bug pattern="DMI_UNSUPPORTED_METHOD" />
+	</Match>
+
 </FindBugsFilter>

@@ -588,10 +588,27 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_connectWithTimeout
                                     HY_PORT_SOCKET_STEP_START, &context);
       break;
     case SOCKET_CONNECT_STEP_CHECK:
-
-      result =
-        hysock_connect_with_timeout(socketP, &sockaddrP, timeout,
+      if (timeout == -1) {
+            /* Blocking connect, so loop for a reasonable amount of time, then
+             * throw a ConnectException if we still fail to connect. This matches
+             * the behaviour of the RI with a similar timeout.
+             */
+            int i = 0;
+            for (; i<1000; i++) {
+                result = hysock_connect_with_timeout(socketP, &sockaddrP, 100,
                                     HY_PORT_SOCKET_STEP_CHECK, &context);
+                if (0 == result) {
+                    break;
+                }
+            }
+            if (0 != result) {
+                throwJavaNetConnectException(env, result);
+                return result;
+            }
+        } else {
+            result = hysock_connect_with_timeout(socketP, &sockaddrP, timeout,
+                                    HY_PORT_SOCKET_STEP_CHECK, &context);
+        }
       break;
     }
 

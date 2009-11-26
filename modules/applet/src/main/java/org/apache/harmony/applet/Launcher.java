@@ -39,8 +39,8 @@ public final class Launcher implements Callback {
     private final Panel placeholder;
     private final Label status;
     
-    private final int appletId = 1;
-    private final int documentId = 2;
+    private static final int appletId = 1;
+    private static final int documentId = 2;
     
     private URL codeBase;
     private String className;

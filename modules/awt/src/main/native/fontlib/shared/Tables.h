@@ -167,7 +167,7 @@ typedef struct
 	fshort ascender;	             /* typographic ascent */
 	fshort descender;             /* typographic descent */
 	fshort line_gap;              /* typographic line gap */
-	ufshort advance_width_max;    /* Maximum advance width value in ‘hmtx’ table */
+	ufshort advance_width_max;    /* Maximum advance width value in 'hmtx' table */
 	fshort min_left_sidebearing;
 	fshort min_right_sidebearing; /* Min(aw - lsb - (xMax - xMin)) */
 	fshort xMaxExtent;            /* Max(lsb + (xMax - xMin)) */

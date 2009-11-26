@@ -38,7 +38,7 @@ class ArrayPersistenceDelegate extends PersistenceDelegate {
         Class<?> componentType = oldInstance.getClass().getComponentType();
 
         return new Expression(oldInstance, Array.class, "newInstance", //$NON-NLS-1$
-                new Object[] { componentType, new Integer(length) });
+                new Object[] { componentType, Integer.valueOf(length) });
     }
 
     @Override
@@ -58,7 +58,7 @@ class ArrayPersistenceDelegate extends PersistenceDelegate {
             Object newValue = Array.get(newInstance, i);
             if (!deepEquals(oldValue, newValue)) {
                 Statement s = new Statement(oldInstance, "set", //$NON-NLS-1$
-                                            new Object[] { new Integer(i), oldValue });
+                                            new Object[] { Integer.valueOf(i), oldValue });
                 out.writeStatement(s);
             }
         }

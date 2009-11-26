@@ -244,18 +244,38 @@ public class ProtectionDomain {
 
         if (dynamicPerms) {
             if (Policy.isSet()) {
-                PermissionCollection perms;
-                perms = Policy.getAccessiblePolicy().getPermissions(this);
-                if (perms == null) {
-                    buf.append("\t\t<no dynamic permissions>\n"); //$NON-NLS-1$
+                if (canGetPolicy()) {
+                    PermissionCollection perms;
+                    perms = Policy.getAccessiblePolicy().getPermissions(this);
+                    if (perms == null) {
+                        buf.append("\t\t<no dynamic permissions>\n"); //$NON-NLS-1$
+                    } else {
+                        buf.append("\t\tdynamic: ").append(perms.toString()) //$NON-NLS-1$
+                                .append("\n"); //$NON-NLS-1$
+                    }
                 } else {
-                    buf.append("\t\tdynamic: ").append(perms.toString()) //$NON-NLS-1$
-                            .append("\n"); //$NON-NLS-1$
+                    buf.append("\t\t<no rights to retrieve dynamic permissions>\n"); //$NON-NLS-1$
                 }
             } else {
                 buf.append("\t\t<no dynamic permissions>\n"); //$NON-NLS-1$
             }
         }
         return buf.toString();
+    }
+    
+    /*
+     * Returns true if the caller has permission to retrieve the current
+     * security policy settings, or false if not.
+     */
+    private boolean canGetPolicy() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            try {
+                sm.checkPermission(Policy.GET_POLICY);
+            } catch (SecurityException e) {
+                return false;
+            }
+        }
+        return true;
     }
 }

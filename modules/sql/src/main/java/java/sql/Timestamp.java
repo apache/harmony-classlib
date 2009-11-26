@@ -204,7 +204,7 @@ public class Timestamp extends Date {
             return 1;
         }
         
-        if(this.getNanos() > 0){
+        if (this.getNanos() % 1000000 > 0) {
             return 1;
         }
         return 0;

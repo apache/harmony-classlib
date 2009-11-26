@@ -32,6 +32,5 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
 DLLBASE=0x11500000
-COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

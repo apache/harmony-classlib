@@ -24,6 +24,8 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 
+import org.apache.harmony.luni.internal.nls.Messages;
+
 /**
  * ArrayList is an implementation of {@link List}, backed by an array. All
  * optional operations adding, removing, and replacing are supported. The
@@ -128,7 +130,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
             }
             array[lastIndex++] = object;
         } else {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException(
+                    // luni.0A=Index: {0}, Size: {1}
+                    Messages.getString("luni.0A", //$NON-NLS-1$
+                            Integer.valueOf(location),
+                            Integer.valueOf(lastIndex - firstIndex)));
         }
 
         modCount++;
@@ -169,7 +175,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     public boolean addAll(int location, Collection<? extends E> collection) {
         int size = lastIndex - firstIndex;
         if (location < 0 || location > size) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException(
+                    // luni.0A=Index: {0}, Size: {1}
+                    Messages.getString("luni.0A", //$NON-NLS-1$
+                            Integer.valueOf(location),
+                            Integer.valueOf(lastIndex - firstIndex)));
         }
         if (this == collection) {
             collection = (ArrayList)clone();
@@ -322,7 +332,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
         if (0 <= location && location < (lastIndex - firstIndex)) {
             return array[firstIndex + location];
         }
-        throw new IndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException(
+                // luni.0A=Index: {0}, Size: {1}
+                Messages.getString("luni.0A", //$NON-NLS-1$
+                        Integer.valueOf(location),
+                        Integer.valueOf(lastIndex - firstIndex)));
     }
 
     private void growAtEnd(int required) {
@@ -486,7 +500,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
                 firstIndex = lastIndex = 0;
             }
         } else {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException(
+                    // luni.0A=Index: {0}, Size: {1}
+                    Messages.getString("luni.0A", //$NON-NLS-1$
+                            Integer.valueOf(location),
+                            Integer.valueOf(lastIndex - firstIndex)));
         }
 
         modCount++;
@@ -536,7 +554,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
             }
             modCount++;
         } else {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException(
+                    // luni.0B=Array index out of range: {0}
+                    Messages.getString("luni.0B", //$NON-NLS-1$
+                            lastIndex - firstIndex - end));
         }
     }
 
@@ -559,7 +580,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
             array[firstIndex + location] = object;
             return result;
         }
-        throw new IndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException(
+                // luni.0A=Index: {0}, Size: {1}
+                Messages.getString("luni.0A", //$NON-NLS-1$
+                        Integer.valueOf(location),
+                        Integer.valueOf(lastIndex - firstIndex)));
     }
 
     /**

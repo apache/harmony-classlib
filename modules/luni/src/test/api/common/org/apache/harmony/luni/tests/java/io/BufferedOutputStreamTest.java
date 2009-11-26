@@ -328,9 +328,9 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 
         try {
             bos.write(byteArray, -1, -1);
-            fail("should throw ArrayIndexOutOfBoundsException");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // expected
+            fail();
+        } catch (Exception e) {
+            // expected IOException. RI throws IndexOutOfBoundsException
         }
     }
 
@@ -663,11 +663,6 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
         buffos.flush();
 
         buffos.close();
-
-        buffos.write(Integer.MIN_VALUE);
-        buffos.write(Integer.MAX_VALUE);
-        buffos.write(buffer, 0, 10);
-        buffos.flush();
     }
 
     public void test_write_Scenario1() throws IOException {
@@ -751,8 +746,6 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
             assertEquals(buffer2[i], byteArrayis.read());
         }
 
-        buffos.close();
-
         byte[] buffer3 = new byte[] { 'e', 'f', 'g', 'h', 'i' };
         buffos.write(buffer3, 0, 5);
         byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
@@ -778,6 +771,8 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
         byteArrayis = new ByteArrayInputStream(byteArrayos.toByteArray());
         assertEquals("Bytes not written after flush", 21, byteArrayis
                 .available());
+
+        buffos.close();
     }
 
     public void test_write_Scenario3() throws IOException {

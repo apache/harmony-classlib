@@ -17,10 +17,12 @@
 
 package javax.accessibility;
 
+@SuppressWarnings("nls")
 public interface AccessibleAction {
-    static final String TOGGLE_EXPAND = new String("toggle expand"); //$NON-NLS-1$
-    static final String INCREMENT = new String("increment"); //$NON-NLS-1$
-    static final String DECREMENT = new String("decrement"); //$NON-NLS-1$
+    // Calls to new String(String) here are required - see HARMONY-6008
+    static final String TOGGLE_EXPAND = new String("toggle expand");
+    static final String INCREMENT = new String("increment");
+    static final String DECREMENT = new String("decrement");
 
     int getAccessibleActionCount();
 

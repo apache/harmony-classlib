@@ -49,7 +49,6 @@ $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
 	/NODEFAULTLIB:libcmt /NODEFAULTLIB:libc /FORCE:UNRESOLVED \
 	-entry:_DllMainCRTStartup$(DLLENTRY) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
-	$(COMMENT) \
 	-subsystem:windows -out:$@ \
 	-map:$(LIBPATH)$(*F).map -pdb:$(DBGPATH)$(*F).pdb \
         -manifestfile:$(LIBPATH)$(*F).manifest \

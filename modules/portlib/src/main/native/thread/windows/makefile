@@ -36,6 +36,5 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 MDLLIBFILES = $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x11500000
-COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2006 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

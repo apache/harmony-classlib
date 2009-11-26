@@ -345,9 +345,9 @@ searchSystemPath (char *filename, char **result)
         {                       /* empty path entry */
           continue;
         }
-      if (sdir = opendir (temp))
+      if ((sdir = opendir (temp)))
         {
-          while (dirEntry = readdir (sdir))
+          while ((dirEntry = readdir (sdir)))
             {
               if (!strcmp (dirEntry->d_name, filename))
                 {

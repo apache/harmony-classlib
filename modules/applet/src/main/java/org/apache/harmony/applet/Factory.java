@@ -54,11 +54,11 @@ final class Factory {
     }
 
     void remove(Document doc) {
-        documents.remove(new Integer(doc.id));
+        documents.remove(Integer.valueOf(doc.id));
     }
 
     void dispose(int id) {
-        Proxy p = allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(Integer.valueOf(id));
         if (p == null) {
             return;
         }
@@ -70,7 +70,7 @@ final class Factory {
     Document getDocument(URL docBase, int docId) {
         synchronized(documents) {
             Document doc;
-            Integer objDocId = new Integer(docId);
+            Integer objDocId = Integer.valueOf(docId);
             doc = documents.get(objDocId);
             if (doc == null) {
                 doc = new Document(this, docBase, docId);
@@ -99,28 +99,28 @@ final class Factory {
     }
     
     void start(int id) {
-        Proxy p = allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(Integer.valueOf(id));
         if (p != null) {
             p.start();
         }
     }
     
     void stop(int id) {
-        Proxy p = allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(Integer.valueOf(id));
         if (p != null) {
             p.stop();
         }
     }
     
     void init(int id) {
-        Proxy p = allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(Integer.valueOf(id));
         if (p != null) {
             p.init();
         }
     }
     
     void destroy(int id) {
-        Proxy p = allProxies.get(new Integer(id));
+        Proxy p = allProxies.get(Integer.valueOf(id));
         if (p != null) {
             p.destroy();
         }
@@ -139,11 +139,11 @@ final class Factory {
     }
 
     void add(Proxy p) {
-        allProxies.put(new Integer(p.params.id), p);
+        allProxies.put(Integer.valueOf(p.params.id), p);
     }
     
     void remove(Proxy p) {
-        allProxies.remove(new Integer(p.params.id));
+        allProxies.remove(Integer.valueOf(p.params.id));
     }
     
     void dump() {

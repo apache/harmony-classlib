@@ -292,15 +292,6 @@ class SList {
         return null;
     }
 
-    /**
-     * Clears the SLIST.
-     */
-    void clear() {
-        synchronized (zones) {
-            zones = new Hashtable<String, Vector<Entry>>();
-        }
-    }
-
     // --- managing local list of servers ---
 
     // since the list of servers is add-only entity a write synchronization
@@ -500,12 +491,14 @@ class SList {
          */
         @Override
         public boolean equals(Object obj) {
-            SList.Server srv = null;
-
+            if (this == obj) {
+                return true;
+            }
             if (!(obj instanceof SList.Server)) {
                 return false;
             }
-            srv = (SList.Server) obj;
+
+            SList.Server srv = (SList.Server) obj;
             if (serverIP == null || srv.getIP() == null) {
                 if (this.getName() == null || srv.getName() == null) {
                     return false;
@@ -515,6 +508,14 @@ class SList {
             }
             return this.getIP().equals(srv.getIP())
                     && this.getPort() == srv.getPort();
+        }
+        
+        /**
+         * Returns the hash code of the receiver.
+         */
+        @Override
+        public int hashCode() {
+            return getIP().hashCode() + getPort();
         }
 
         /**

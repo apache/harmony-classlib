@@ -1939,8 +1939,8 @@ public class SocketTest extends SocketTestCase {
     @SuppressWarnings("deprecation")
     public void test_shutdownInput() throws IOException {
         ServerSocket server = new ServerSocket(0);
-        Socket client = new Socket(InetAddress.getLocalHost(), server
-                .getLocalPort());
+        int port = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), port);
 
         Socket worker = server.accept();
         worker.setTcpNoDelay(true);
@@ -1963,7 +1963,9 @@ public class SocketTest extends SocketTestCase {
         server.close();
 
         // Regression test for HARMONY-2944
-        Socket s = new Socket("0.0.0.0", 0, false);
+        // Port 0 is not allowed to be used in connect() on some platforms, 
+        // Since server has been closed here, so the port is free now
+        Socket s = new Socket("0.0.0.0", port, false);
         s.shutdownInput();
         try {
             s.shutdownInput();
@@ -1980,8 +1982,8 @@ public class SocketTest extends SocketTestCase {
     @SuppressWarnings("deprecation")
     public void test_shutdownOutput() throws IOException {
         ServerSocket server = new ServerSocket(0);
-        Socket client = new Socket(InetAddress.getLocalHost(), server
-                .getLocalPort());
+        int port = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), port);
 
         Socket worker = server.accept();
         OutputStream theOutput = worker.getOutputStream();
@@ -2003,7 +2005,9 @@ public class SocketTest extends SocketTestCase {
         server.close();
 
         // Regression test for HARMONY-2944
-        Socket s = new Socket("0.0.0.0", 0, false);
+        // Port 0 is not allowed to be used in connect() on some platforms, 
+        // Since server has been closed here, so the port is free now
+        Socket s = new Socket("0.0.0.0", port, false);
         s.shutdownOutput();
         try {
             s.shutdownOutput();

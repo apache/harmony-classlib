@@ -375,11 +375,15 @@ public final class PrivateCredentialPermission extends Permission {
         // Checks two CredOwner objects for equality. 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
+            if (obj == this) {
+                return true;
             }
-            return principalClass.equals(((CredOwner) obj).principalClass)
-                    && principalName.equals(((CredOwner) obj).principalName);
+            if (obj instanceof CredOwner) {
+                CredOwner that = (CredOwner) obj;
+                return principalClass.equals(that.principalClass)
+                    && principalName.equals(that.principalName);
+            }
+            return false;
         }
 
         // Returns the hash code value for this object.

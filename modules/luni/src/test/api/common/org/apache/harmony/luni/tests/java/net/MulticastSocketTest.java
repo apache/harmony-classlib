@@ -29,6 +29,7 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import tests.support.Support_NetworkInterface;
@@ -367,7 +368,7 @@ public class MulticastSocketTest extends SocketTestCase {
 		int groupPort = ports[0];
 		int serverPort = ports[1];
 
-                Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
+        Enumeration<NetworkInterface> theInterfaces = NetworkInterface.getNetworkInterfaces();
 
         // first validate that we handle a null group ok
         mss = new MulticastSocket(groupPort);
@@ -463,38 +464,47 @@ public class MulticastSocketTest extends SocketTestCase {
                 NetworkInterface loopbackInterface = NetworkInterface
                         .getByInetAddress(InetAddress.getByName("127.0.0.1"));
 
+                boolean anyLoop = networkInterface1.equals(loopbackInterface) || networkInterface2.equals(loopbackInterface);
+                
+                ArrayList<NetworkInterface> realInterfaces = new ArrayList<NetworkInterface>();
                 theInterfaces = NetworkInterface.getNetworkInterfaces();
                 while (theInterfaces.hasMoreElements()) {
-
-                    NetworkInterface thisInterface = (NetworkInterface) theInterfaces
-                            .nextElement();
+                    NetworkInterface thisInterface = (NetworkInterface) theInterfaces.nextElement();
                     if (thisInterface.getInetAddresses().hasMoreElements()
                             && (Support_NetworkInterface
-                                    .useInterface(thisInterface) == true)) {
+                                    .useInterface(thisInterface) == true)){
+                        realInterfaces.add(thisInterface);
+                    }
+                }
+                
+                for (int i = 0; i < realInterfaces.size(); i++) {
+                    final int SECOND = 1;
+                    NetworkInterface thisInterface = realInterfaces.get(i);
+                   
                         // get the first address on the interface
 
                         // start server which is joined to the group and has
                         // only asked for packets on this interface
-                        Enumeration addresses = thisInterface
-                                .getInetAddresses();
+                        Enumeration<InetAddress> addresses = thisInterface.getInetAddresses();
 
                         NetworkInterface sendingInterface = null;
-                        boolean isLoopback = false;
                         if (addresses.hasMoreElements()) {
-                            InetAddress firstAddress = (InetAddress) addresses
-                                    .nextElement();
-                            if (firstAddress.isLoopbackAddress()) {
-                                isLoopback = true;
-                            }
+                            InetAddress firstAddress = (InetAddress) addresses.nextElement();
                             if (firstAddress instanceof Inet4Address) {
                                 group = InetAddress.getByName("224.0.0.4");
-                                if (networkInterface1.equals(NetworkInterface
-                                        .getByInetAddress(InetAddress
-                                                .getByName("127.0.0.1")))) {
-                                    sendingInterface = networkInterface2;
+                                if (anyLoop) {
+                                    if (networkInterface1.equals(loopbackInterface)) {
+                                        sendingInterface = networkInterface2;
+                                    } else {
+                                        sendingInterface = networkInterface1;
+                                    }
                                 } else {
-                                    sendingInterface = networkInterface1;
+                                    if(i == SECOND){
+                                        sendingInterface = networkInterface2;
+                                    } else {
+                                        sendingInterface = networkInterface1;
                                 }
+                               }
                             } else {
                                 // if this interface only seems to support
                                 // IPV6 addresses
@@ -502,12 +512,6 @@ public class MulticastSocketTest extends SocketTestCase {
                                         .getByName("FF01:0:0:0:0:0:2:8001");
                                 sendingInterface = IPV6networkInterface1;
                             }
-                        }
-
-                        InetAddress useAddress = null;
-                        addresses = sendingInterface.getInetAddresses();
-                        if (addresses.hasMoreElements()) {
-                            useAddress = (InetAddress) addresses.nextElement();
                         }
 
                         ports = Support_PortManager.getNextPortsForUDP(2);
@@ -522,8 +526,6 @@ public class MulticastSocketTest extends SocketTestCase {
                         // Now send out a package on interface
                         // networkInterface 1. We should
                         // only see the packet if we send it on interface 1
-                        InetSocketAddress theAddress = new InetSocketAddress(
-                                useAddress, groupPort);
                         mss = new MulticastSocket(groupPort);
                         mss.setNetworkInterface(sendingInterface);
                         msg = "Hello World - Again" + thisInterface.getName();
@@ -544,7 +546,7 @@ public class MulticastSocketTest extends SocketTestCase {
 
                         server.stopServer();
                     }
-                }
+                
 
                 // validate that we can join the same address on two
                 // different interfaces but not on the same interface

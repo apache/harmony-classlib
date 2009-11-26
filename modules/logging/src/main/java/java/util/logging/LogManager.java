@@ -123,24 +123,17 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * named as ".level".
  * <p>
  * All methods on this type can be taken as being thread safe.
- *
  */
 public class LogManager {
-    /*
-     * ------------------------------------------------------------------- Class
-     * variables
-     * -------------------------------------------------------------------
-     */
 
-    // The line separator of the underlying OS
-    // Use privileged code to read the line.separator system property
+    /** The line separator of the underlying OS. */
     private static final String lineSeparator = getPrivilegedSystemProperty("line.separator"); //$NON-NLS-1$
 
-    // The shared logging permission
+    /** The shared logging permission. */
     private static final LoggingPermission perm = new LoggingPermission(
             "control", null); //$NON-NLS-1$
 
-    // the singleton instance
+    /** The singleton instance. */
     static LogManager manager;
 
     /**
@@ -151,7 +144,7 @@ public class LogManager {
     /**
      * Get the {@code LoggingMXBean} instance. this implementation always throws
      * an UnsupportedOperationException.
-     * 
+     *
      * @return the {@code LoggingMXBean} instance
      */
     public static LoggingMXBean getLoggingMXBean() {
@@ -188,10 +181,10 @@ public class LogManager {
     // FIXME: use weak reference to avoid heap memory leak
     private Hashtable<String, Logger> loggers;
 
-    // the configuration properties
+    /** The configuration properties */
     private Properties props;
 
-    // the property change listener
+    /** the property change listener */
     private PropertyChangeSupport listeners;
 
     static {
@@ -230,7 +223,7 @@ public class LogManager {
     /**
      * Default constructor. This is not public because there should be only one
      * {@code LogManager} instance, which can be get by
-     * {@code LogManager.getLogManager(}. This is protected so that
+     * {@code LogManager.getLogManager()}. This is protected so that
      * application can subclass the object.
      */
     protected LogManager() {
@@ -265,7 +258,7 @@ public class LogManager {
      * that it is trusted to modify the configuration for logging framework. If
      * the check passes, just return, otherwise {@code SecurityException}
      * will be thrown.
-     * 
+     *
      * @throws SecurityException
      *             if there is a security manager in operation and the invoker
      *             of this method does not have the required security permission
@@ -288,7 +281,7 @@ public class LogManager {
      * unexpectedly garbage collected it is necessary for <i>applications</i>
      * to maintain references to them.
      * </p>
-     * 
+     *
      * @param logger
      *            the logger to be added.
      * @return true if the given logger is added into the namespace
@@ -314,17 +307,17 @@ public class LogManager {
             parentName = parentName.substring(0, lastSeparator);
             parent = loggers.get(parentName);
             if (parent != null) {
-                logger.internalSetParent(parent);
+                setParent(logger, parent);
                 break;
             } else if (getProperty(parentName + ".level") != null || //$NON-NLS-1$
                     getProperty(parentName + ".handlers") != null) { //$NON-NLS-1$
                 parent = Logger.getLogger(parentName);
-                logger.internalSetParent(parent);
+                setParent(logger, parent);
                 break;
             }
         }
         if (parent == null && null != (parent = loggers.get(""))) { //$NON-NLS-1$
-            logger.internalSetParent(parent);
+            setParent(logger, parent);
         }
 
         // find children
@@ -344,7 +337,7 @@ public class LogManager {
                 });
                 if (null != oldParent) {
                     // -- remove from old parent as the parent has been changed
-                    oldParent.removeChild(child);
+                    oldParent.children.remove(child);
                 }
             }
         }
@@ -352,7 +345,7 @@ public class LogManager {
 
     /**
      * Get the logger with the given name.
-     * 
+     *
      * @param name
      *            name of logger
      * @return logger with given name, or {@code null} if nothing is found.
@@ -363,7 +356,7 @@ public class LogManager {
 
     /**
      * Get a {@code Enumeration} of all registered logger names.
-     * 
+     *
      * @return enumeration of registered logger names
      */
     public synchronized Enumeration<String> getLoggerNames() {
@@ -372,7 +365,7 @@ public class LogManager {
 
     /**
      * Get the global {@code LogManager} instance.
-     * 
+     *
      * @return the global {@code LogManager} instance
      */
     public static LogManager getLogManager() {
@@ -381,7 +374,7 @@ public class LogManager {
 
     /**
      * Get the value of property with given name.
-     * 
+     *
      * @param name
      *            the name of property
      * @return the value of property
@@ -396,7 +389,7 @@ public class LogManager {
      * <p>
      * Notice : No {@code PropertyChangeEvent} are fired.
      * </p>
-     * 
+     *
      * @throws IOException
      *             if any IO related problems happened.
      * @throws SecurityException
@@ -472,6 +465,13 @@ public class LogManager {
         reset();
         props.load(ins);
 
+        // The RI treats the root logger as special. For compatibility, always
+        // update the root logger's handlers.
+        Logger root = loggers.get("");
+        if (root != null) {
+            root.setManager(this);
+        }
+
         // parse property "config" and apply setting
         String configs = props.getProperty("config"); //$NON-NLS-1$
         if (null != configs) {
@@ -499,7 +499,7 @@ public class LogManager {
      * <p>
      * Notice : No {@code PropertyChangeEvent} are fired.
      * </p>
-     * 
+     *
      * @param ins
      *            the input stream
      * @throws IOException
@@ -520,12 +520,12 @@ public class LogManager {
      * level is set to null, except the root logger's level is set to
      * {@code Level.INFO}.
      * </p>
-     * 
+     *
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
      *             not have the required permissions to perform this action.
      */
-    public void reset() {
+    public synchronized void reset() {
         checkAccess();
         props = new Properties();
         Enumeration<String> names = getLoggerNames();
@@ -545,12 +545,12 @@ public class LogManager {
     /**
      * Add a {@code PropertyChangeListener}, which will be invoked when
      * the properties are reread.
-     * 
+     *
      * @param l
      *            the {@code PropertyChangeListener} to be added.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
-     *             not have the required permissions to perform this action
+     *             not have the required permissions to perform this action.
      */
     public void addPropertyChangeListener(PropertyChangeListener l) {
         if (l == null) {
@@ -563,15 +563,77 @@ public class LogManager {
     /**
      * Remove a {@code PropertyChangeListener}, do nothing if the given
      * listener is not found.
-     * 
+     *
      * @param l
      *            the {@code PropertyChangeListener} to be removed.
      * @throws SecurityException
      *             if security manager exists and it determines that caller does
-     *             not have the required permissions to perform this action
+     *             not have the required permissions to perform this action.
      */
     public void removePropertyChangeListener(PropertyChangeListener l) {
         checkAccess();
         listeners.removePropertyChangeListener(l);
+    }
+
+    /**
+     * Returns a named logger associated with the supplied resource bundle.
+     *
+     * @param resourceBundleName the resource bundle to associate, or null for
+     *      no associated resource bundle.
+     */
+    synchronized Logger getOrCreate(String name, String resourceBundleName) {
+        Logger result = getLogger(name);
+        if (result == null) {
+            result = new Logger(name, resourceBundleName);
+            addLogger(result);
+        }
+        return result;
+    }
+
+
+    /**
+     * Sets the parent of this logger in the namespace. Callers must first
+     * {@link #checkAccess() check security}.
+     *
+     * @param newParent
+     *            the parent logger to set.
+     */
+    synchronized void setParent(Logger logger, Logger newParent) {
+        logger.parent = newParent;
+
+        if (logger.levelObjVal == null) {
+            setLevelRecursively(logger, null);
+        }
+        newParent.children.add(logger);
+    }
+
+    /**
+     * Sets the level on {@code logger} to {@code newLevel}. Any child loggers
+     * currently inheriting their level from {@code logger} will be updated
+     * recursively.
+     *
+     * @param newLevel the new minimum logging threshold. If null, the logger's
+     *      parent level will be used; or {@code Level.INFO} for loggers with no
+     *      parent.
+     */
+    synchronized void setLevelRecursively(Logger logger, Level newLevel) {
+        int previous = logger.levelIntVal;
+        logger.levelObjVal = newLevel;
+
+        if (newLevel == null) {
+            logger.levelIntVal = logger.parent != null
+                    ? logger.parent.levelIntVal
+                    : Level.INFO.intValue();
+        } else {
+            logger.levelIntVal = newLevel.intValue();
+        }
+
+        if (previous != logger.levelIntVal) {
+            for (Logger child : logger.children) {
+                if (child.levelObjVal == null) {
+                    setLevelRecursively(child, null);
+                }
+            }
+        }
     }
 }

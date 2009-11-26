@@ -46,7 +46,7 @@ public abstract class Policy {
             "setPolicy"); //$NON-NLS-1$
 
     // The SecurityPermission required to get current Policy.
-    private static final SecurityPermission GET_POLICY = new SecurityPermission(
+    static final SecurityPermission GET_POLICY = new SecurityPermission(
             "getPolicy"); //$NON-NLS-1$
 
     // The policy currently in effect. 

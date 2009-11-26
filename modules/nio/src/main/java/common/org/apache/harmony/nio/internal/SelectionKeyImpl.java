@@ -20,15 +20,14 @@ import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.AbstractSelectionKey;
 
-/*
+/**
  * Default implementation of SelectionKey
  */
 final class SelectionKeyImpl extends AbstractSelectionKey {
-
-    static int stHash;
 
     private AbstractSelectableChannel channel;
 
@@ -42,7 +41,6 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
 
     public SelectionKeyImpl(AbstractSelectableChannel channel, int operations,
             Object attachment, SelectorImpl selector) {
-        super();
         this.channel = channel;
         interestOps = operations;
         this.selector = selector;
@@ -57,6 +55,12 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
     @Override
     public int interestOps() {
         checkValid();
+        synchronized (selector.keysLock) {
+            return interestOps;
+        }
+    }
+
+    int interestOpsNoCheck() {
         synchronized (selector.keysLock) {
             return interestOps;
         }
@@ -105,5 +109,14 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         if (!isValid()) {
             throw new CancelledKeyException();
         }
+    }
+
+    /**
+     * Returns true if the channel for this key is connected. If the channel
+     * does not need connecting, this always return true.
+     */
+    boolean isConnected() {
+        return !(channel instanceof SocketChannel) 
+                || ((SocketChannel) channel).isConnected();
     }
 }

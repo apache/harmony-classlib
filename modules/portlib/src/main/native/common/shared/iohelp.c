@@ -34,18 +34,16 @@ ioh_convertToPlatform (char *path)
   while (*pathIndex != '\0')
     {
       if ((*pathIndex == '\\' || *pathIndex == '/')
-          && (*pathIndex != jclSeparator))
-        *pathIndex = jclSeparator;
+          && (*pathIndex != DIR_SEPARATOR))
+        *pathIndex = DIR_SEPARATOR;
       pathIndex++;
     }
 
-  /* Remove duplicate separators */
-  if (jclSeparator == '/')
-    return;                     /* Do not do POSIX platforms */
+#if !(DIR_SEPARATOR == '/')
 
   /* Remove duplicate initial separators */
   pathIndex = path;
-  while ((*pathIndex != '\0') && (*pathIndex == jclSeparator))
+  while ((*pathIndex != '\0') && (*pathIndex == DIR_SEPARATOR))
     {
       pathIndex++;
     }
@@ -68,5 +66,6 @@ ioh_convertToPlatform (char *path)
         }
     }
   /* This will have to handle extra \'s but currently doesn't */
+#endif
 
 }

@@ -35,7 +35,7 @@ public final class BooleanEditor extends PropertyEditorSupport {
             throw new NullPointerException();
         }
         if(text.equalsIgnoreCase("true") || text.equalsIgnoreCase("false")){
-            setValue(new Boolean(text));
+            setValue(Boolean.valueOf(text));
         }else{
             throw new IllegalArgumentException(text);
         }

@@ -473,9 +473,9 @@ zipCache_addToFileList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
 
   if (zce->chunkActiveDir == dirEntry)
     {
-      if (entry =
+      if ((entry =
           (HyZipFileEntry *) zipCache_reserveEntry (chunk, sizeof (*entry),
-                                                    nameSize + 1))
+                                                    nameSize + 1)))
         {
           /* add to end of existing entry */
           zce->chunkActiveDir->fileList->entryCount++;

@@ -56,16 +56,17 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
     public void test_impliesLjava_security_Permission() throws Exception{
 
         // Look for the tests classpath
-        URL classURL = this.getClass().getProtectionDomain().getCodeSource()
-                .getLocation();
+        URL classURL = this.getClass().getProtectionDomain().getCodeSource().getLocation();
         assertNotNull("Could not get this class' location", classURL);
 
         File policyFile = Support_GetLocal.createTempFile(".policy");
         policyFile.deleteOnExit();
 
         URL signedBKS = getResourceURL("PermissionCollection/signedBKS.jar");
+        String signedBKSPath = new File(signedBKS.getFile()).getCanonicalPath();
+        signedBKSPath = signedBKSPath.replace('\\', '/');
         URL keystoreBKS = getResourceURL("PermissionCollection/keystore.bks");
-        
+
         // Create the policy file (and save the existing one if any)
         FileOutputStream fileOut = null;
         try {
@@ -74,45 +75,50 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
             StringBuilder towrite = new StringBuilder();
             towrite.append("grant {");
             towrite.append(linebreak);
-            towrite.append("permission java.io.FilePermission \"");
-            towrite.append(signedBKS.getFile());
+            towrite.append("    permission java.io.FilePermission \"");
+            towrite.append(signedBKSPath);
             towrite.append("\", \"read\";");
             towrite.append(linebreak);
-            towrite.append("permission java.lang.RuntimePermission \"getProtectionDomain\";");
+            towrite.append("    permission java.lang.RuntimePermission \"getProtectionDomain\";");
             towrite.append(linebreak);
-            towrite.append("permission java.security.SecurityPermission \"getPolicy\";");
+            towrite.append("    permission java.security.SecurityPermission \"getPolicy\";");
             towrite.append(linebreak);
             towrite.append("};");
+            towrite.append(linebreak);
             towrite.append(linebreak);
             towrite.append("grant codeBase \"");
             towrite.append(signedBKS.toExternalForm());
             towrite.append("\" signedBy \"eleanor\" {");
             towrite.append(linebreak);
-            towrite.append("permission java.io.FilePermission \"test1.txt\", \"write\";");
+            towrite.append("    permission java.io.FilePermission \"test1.txt\", \"write\";");
             towrite.append(linebreak);
-            towrite.append("permission mypackage.MyPermission \"essai\", signedBy \"eleanor,dylan\";");
+            towrite.append("    permission mypackage.MyPermission \"essai\", signedBy \"eleanor,dylan\";");
             towrite.append(linebreak);
             towrite.append("};");
+            towrite.append(linebreak);
             towrite.append(linebreak);
             towrite.append("grant codeBase \"");
             towrite.append(signedBKS.toExternalForm());
             towrite.append("\" signedBy \"eleanor\" {");
             towrite.append(linebreak);
-            towrite.append("permission java.io.FilePermission \"test2.txt\", \"write\";");
+            towrite.append("    permission java.io.FilePermission \"test2.txt\", \"write\";");
             towrite.append(linebreak);
             towrite.append("};");
+            towrite.append(linebreak);
             towrite.append(linebreak);
             towrite.append("grant codeBase \"");
             towrite.append(classURL.toExternalForm());
             towrite.append("\" {");
             towrite.append(linebreak);
-            towrite.append("permission java.security.AllPermission;");
+            towrite.append("    permission java.security.AllPermission;");
             towrite.append(linebreak);
             towrite.append("};");
             towrite.append(linebreak);
+            towrite.append(linebreak);
             towrite.append("keystore \"");
             towrite.append(keystoreBKS.toExternalForm());
-            towrite.append("\",\"BKS\";");            
+            towrite.append("\",\"BKS\";");
+            towrite.append(linebreak);
             fileOut.write(towrite.toString().getBytes());
             fileOut.flush();
         } finally {
@@ -122,14 +128,12 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         }
 
         // Copy mypermissionBKS.jar to the user directory so that it can be put
-        // in
-        // the classpath
+        // in the classpath.
         File jarFile = null;
         FileOutputStream fout = null;
         InputStream jis = null;
         try {
-            jis = Support_Resources
-                    .getResourceStream("PermissionCollection/mypermissionBKS.jar");
+            jis = Support_Resources.getResourceStream("PermissionCollection/mypermissionBKS.jar");
             jarFile = Support_GetLocal.createTempFile(".jar");
             jarFile.deleteOnExit();
             fout = new FileOutputStream(jarFile);
@@ -163,12 +167,10 @@ public class PermissionCollectionTest extends junit.framework.TestCase {
         StringTokenizer resultTokenizer = new StringTokenizer(result, ",");
 
         // Check the test result from the new VM process
-        assertEquals("Permission should be granted", "false", resultTokenizer
-                .nextToken());
-        assertEquals("signed Permission should be granted", "false",
-                resultTokenizer.nextToken());
-        assertEquals("Permission should not be granted", "false",
-                resultTokenizer.nextToken());
+        assertEquals("Permission should be granted for test1.txt", "true", resultTokenizer.nextToken());
+        assertEquals("Signed Permission should be granted for my permission", "true", resultTokenizer.nextToken());
+        assertEquals("signed Permission should be granted for text2.txt", "true", resultTokenizer.nextToken());
+        assertEquals("Permission should not be granted for text3.txt", "false", resultTokenizer.nextToken());
     }
 
     /**

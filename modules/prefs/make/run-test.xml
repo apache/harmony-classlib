@@ -36,6 +36,7 @@
         <run-selected-hdk-tests module="prefs" jar="prefs_tests.jar">
             <excludeorinclude>
                 <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.class" unless="test.case" />
+                <exclude name="org/apache/harmony/prefs/tests/java/util/prefs/PreferencesProviderTest.class" unless="test.case" />
                 <include name="**/*Test.class" unless="test.case"/>
             </excludeorinclude>
         </run-selected-hdk-tests>
@@ -43,6 +44,14 @@
             <excludeorinclude>
                 <include name="org/apache/harmony/prefs/tests/java/util/prefs/FilePreferencesImplTest.class" unless="test.case" />
             </excludeorinclude>
+        </run-selected-hdk-tests>
+        <run-selected-hdk-tests module="prefs" jar="prefs_tests.jar">
+            <excludeorinclude>
+                <include name="org/apache/harmony/prefs/tests/java/util/prefs/PreferencesProviderTest.class" unless="test.case" />
+            </excludeorinclude>
+            <junit-elements>
+                <classpath location="resources/config" />
+            </junit-elements>
         </run-selected-hdk-tests>
     </target>
     

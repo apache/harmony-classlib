@@ -202,6 +202,13 @@
         <Bug code="DLS" />
     </Match>
 
+    <!-- Spec says this field is not set by deserialization -->
+    <Match>
+        <Class name="java.util.EventObject" />
+        <Field name="source" />
+        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+    </Match>
+
     <!--
         GregorianCalendar.equals does not need to check for null because it
         delegates to its superclass, which does

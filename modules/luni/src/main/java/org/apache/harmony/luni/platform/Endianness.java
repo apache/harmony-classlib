@@ -22,34 +22,34 @@ package org.apache.harmony.luni.platform;
  * 
  */
 public final class Endianness {
-	/**
-	 * Private mapping mode (equivalent to copy on write).
-	 */
-	public static final Endianness BIG_ENDIAN = new Endianness("BIG_ENDIAN"); //$NON-NLS-1$
+    /**
+     * Private mapping mode (equivalent to copy on write).
+     */
+    public static final Endianness BIG_ENDIAN = new Endianness("BIG_ENDIAN"); //$NON-NLS-1$
 
-	/**
-	 * Read-only mapping mode.
-	 */
-	public static final Endianness LITTLE_ENDIAN = new Endianness(
-			"LITTLE_ENDIAN"); //$NON-NLS-1$
+    /**
+     * Read-only mapping mode.
+     */
+    public static final Endianness LITTLE_ENDIAN = new Endianness(
+            "LITTLE_ENDIAN"); //$NON-NLS-1$
 
-	// The string used to display the mapping mode.
-	private final String displayName;
+    // The string used to display the mapping mode.
+    private final String displayName;
 
-	/*
-	 * Private constructor prevents others creating new Endians.
-	 */
-	private Endianness(String displayName) {
-		super();
-		this.displayName = displayName;
-	}
+    /*
+     * Private constructor prevents others creating new Endians.
+     */
+    private Endianness(String displayName) {
+        super();
+        this.displayName = displayName;
+    }
 
-	/**
-	 * Answers a string version of the endianness
-	 * 
-	 * @return the mode string.
-	 */
-	public String toString() {
-		return displayName;
-	}
+    /**
+     * Answers a string version of the endianness
+     * 
+     * @return the mode string.
+     */
+    public String toString() {
+        return displayName;
+    }
 }
