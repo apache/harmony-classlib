@@ -44,7 +44,7 @@ class PrimitiveWrapperPersistenceDelegate extends PersistenceDelegate {
     protected Expression instantiate(Object oldInstance, Encoder enc) {
         if (oldInstance instanceof Character) {
             return new Expression(oldInstance, oldInstance.toString(),
-                    "charAt", new Object[] { new Integer(0) }); //$NON-NLS-1$
+                    "charAt", new Object[] { Integer.valueOf(0) }); //$NON-NLS-1$
         }
         return new Expression(oldInstance, oldInstance.getClass(),
                 "new", new Object[] { oldInstance //$NON-NLS-1$

@@ -16,8 +16,11 @@
 
 package java.util.prefs;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.security.AccessController;
@@ -124,6 +127,10 @@ public abstract class Preferences {
             }
         });
 
+        if (factoryClassName == null) {
+            factoryClassName = readProviderFromFile();
+        }
+
         // set default provider
         if (factoryClassName == null) {
             String osName = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -152,6 +159,45 @@ public abstract class Preferences {
             // prefs.10=Cannot initiate PreferencesFactory: {0}. Caused by {1}
             throw new InternalError(Messages.getString("prefs.10", factoryClassName, e));   //$NON-NLS-1$
         }
+    }
+
+    private static String readProviderFromFile() throws InternalError {
+        ClassLoader systemLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return ClassLoader.getSystemClassLoader();
+            }
+        });
+
+        if (systemLoader != null) {
+            InputStream in = systemLoader.getResourceAsStream("META-INF/services/java.util.prefs.PreferencesFactory"); //$NON-NLS-1$
+            if (in != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line = null;
+                try {
+                    while ((line = reader.readLine()) != null) {
+                        int index = line.indexOf("#"); //$NON-NLS-1$
+                        // Trim comments
+                        if (index != -1) {
+                            line = line.substring(0, index);
+                        }
+                        String trimedName = line.trim();
+                        if (!"".equals(trimedName)) { //$NON-NLS-1$
+                            return trimedName;
+                        }
+                    }
+                } catch (IOException e) {
+                    // prefs.11=Load provider configuration file faild: {0}
+                    throw new InternalError(Messages.getString("prefs.11", e));   //$NON-NLS-1$
+                } finally {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**

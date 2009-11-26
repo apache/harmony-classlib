@@ -43,13 +43,14 @@ public class Support_PermissionCollection {
 		PermissionCollection coll = Policy.getPolicy().getPermissions(pd);
 		Class<?> myPermission = Class.forName("mypackage.MyPermission");
 		BasicPermission myperm = (BasicPermission) myPermission.newInstance();
-		System.out.println(coll.implies(new java.io.FilePermission("test1.txt",
-				"write"))
+		System.out.println(
+		        coll.implies(new java.io.FilePermission("test1.txt", "write"))
 				+ ","
 				+ coll.implies(myperm)
+                + ","
+                + coll.implies(new java.io.FilePermission("test2.txt", "write"))
 				+ ","
-				+ coll
-						.implies(new java.io.FilePermission("test2.txt",
-								"write")) + ",");
+				+ coll.implies(new java.io.FilePermission("test3.txt", "read"))
+				+ ",");
 	}
 }

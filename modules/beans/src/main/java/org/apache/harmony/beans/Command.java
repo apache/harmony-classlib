@@ -303,7 +303,7 @@ public class Command {
                                 statements = new Statement[operations.size()];
                             }
                             statements[i] = new Statement(getResultValue(),
-                                    "set", new Object[] { new Integer(i), //$NON-NLS-1$
+                                    "set", new Object[] { Integer.valueOf(i), //$NON-NLS-1$
                                             cmd.getResultValue() });
                             if ((i + 1) == operations.size()) {
                                 for (int j = 0; j < operations.size(); ++j) {
@@ -529,7 +529,7 @@ public class Command {
                                 "beans.43", //$NON-NLS-1$
                                 data));
                     }
-                    addArgument(new Argument(char.class, new Character(data
+                    addArgument(new Argument(char.class, Character.valueOf(data
                             .charAt(0))), 0);
                 } else {
                     addArgument(new Argument(String.class, data), 0);
@@ -542,7 +542,7 @@ public class Command {
                 int length = hasAttr("length") ? Integer //$NON-NLS-1$
                         .parseInt(getAttr("length")) : getArgumentsNumber(); //$NON-NLS-1$
                 copyArgumentsToCommands();
-                addArgument(new Argument(int.class, new Integer(length)), 0);
+                addArgument(new Argument(int.class, Integer.valueOf(length)), 0);
             } else if (hasAttr("property")) { //$NON-NLS-1$
                 String propertyValue = getAttr("property"); //$NON-NLS-1$
                 if (hasAttr("index")) { //$NON-NLS-1$

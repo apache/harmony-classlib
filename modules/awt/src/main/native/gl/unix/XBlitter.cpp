@@ -33,6 +33,7 @@ int error_handler(Display *display, XErrorEvent *myerr){
     char msg[1024];
     XGetErrorText(display, myerr->error_code, msg, 1024);
     fprintf(stderr, "Error code: %d, Error message: %s\n", myerr->error_code, msg);
+    return 0;
 }
 
 /*

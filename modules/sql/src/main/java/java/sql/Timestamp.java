@@ -193,8 +193,22 @@ public class Timestamp extends Date {
      *             if the supplied object is not a {@code Timestamp} object.
      */
     @Override
-    public int compareTo(Date theObject) throws ClassCastException {
-        return this.compareTo((Timestamp) theObject);
+    public int compareTo(Date theObject) {
+        if(theObject instanceof Timestamp){
+            return this.compareTo((Timestamp)theObject);
+        }
+        
+        if (this.getTime() < theObject.getTime()) {
+            return -1;
+        }
+        if (this.getTime() > theObject.getTime()) {
+            return 1;
+        }
+        
+        if (this.getNanos() % 1000000 > 0) {
+            return 1;
+        }
+        return 0;
     }
 
     /**

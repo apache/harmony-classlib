@@ -25,22 +25,22 @@ package org.apache.harmony.luni.platform;
  */
 public interface IMemorySpy {
 
-	public void alloc(PlatformAddress address);
+    public void alloc(PlatformAddress address);
 
-	// Has a veto: true == do free,false = don't
-	public boolean free(PlatformAddress address);
+    // Has a veto: true == do free,false = don't
+    public boolean free(PlatformAddress address);
 
-	public void rangeCheck(PlatformAddress address, int offset, int length)
-			throws IndexOutOfBoundsException;
+    public void rangeCheck(PlatformAddress address, int offset, int length)
+            throws IndexOutOfBoundsException;
 
-	/**
-	 * Requests that the given address is freed automatically when it becomes
-	 * garbage. If the address is alredy freed, or has not been notified as
-	 * allocated via this memory spy, then this call has no effect and completes
-	 * quietly.
-	 * 
-	 * @param address
-	 *            the address to be freed.
-	 */
-	public void autoFree(PlatformAddress address);
+    /**
+     * Requests that the given address is freed automatically when it becomes
+     * garbage. If the address is alredy freed, or has not been notified as
+     * allocated via this memory spy, then this call has no effect and completes
+     * quietly.
+     * 
+     * @param address
+     *            the address to be freed.
+     */
+    public void autoFree(PlatformAddress address);
 }

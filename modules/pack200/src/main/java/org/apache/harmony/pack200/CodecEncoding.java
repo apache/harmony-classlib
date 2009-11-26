@@ -226,10 +226,11 @@ public class CodecEncoding {
     public static int[] getSpecifier(Codec codec, Codec defaultForBand) {
         // lazy initialization
         if(canonicalCodecsToSpecifiers == null) {
-            canonicalCodecsToSpecifiers = new HashMap();
+            HashMap reverseMap = new HashMap(canonicalCodec.length);
             for (int i = 0; i < canonicalCodec.length; i++) {
-                canonicalCodecsToSpecifiers.put(canonicalCodec[i], new Integer(i));
+                reverseMap.put(canonicalCodec[i], new Integer(i));
             }
+            canonicalCodecsToSpecifiers = reverseMap;
         }
 
         if(canonicalCodecsToSpecifiers.containsKey(codec)) {

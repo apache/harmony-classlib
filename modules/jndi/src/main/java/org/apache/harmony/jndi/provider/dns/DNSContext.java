@@ -312,20 +312,32 @@ public class DNSContext implements DirContext, Cloneable {
      * @param name
      *            name of newly created context in the ancestor context
      */
-    @SuppressWarnings("unchecked")
     DNSContext(DNSContext ancestorCtx, DNSName name) {
-        this.contextName = (DNSName) name.clone();
-        this.nameParser = ancestorCtx.nameParser;
-        this.environment = (Hashtable<Object, Object>) ancestorCtx.environment
-                .clone();
-        this.resolver = ancestorCtx.resolver;
-        this.authoritative = ancestorCtx.authoritative;
-        this.lookupAttrType = ancestorCtx.lookupAttrType;
-        this.lookupAttrClass = ancestorCtx.lookupAttrClass;
-        this.recursion = ancestorCtx.recursion;
-        this.timeoutInitial = ancestorCtx.timeoutInitial;
-        this.timeoutRetries = ancestorCtx.timeoutRetries;
-        this.maxThreads = ancestorCtx.maxThreads;
+        super();
+        initialize(ancestorCtx, name);
+    }
+
+    /**
+     * Initialize all private properties from the given context.
+     * 
+     * @param ancestorCtx
+     *            an ancestor context to read all internal properties from
+     * @param name
+     *            name of newly created context in the ancestor context
+     */
+    @SuppressWarnings("unchecked")
+    private void initialize(DNSContext ancestorCtx, DNSName name) {
+        contextName = (DNSName) name.clone();
+        nameParser = ancestorCtx.nameParser;
+        environment = (Hashtable<Object, Object>) ancestorCtx.environment.clone();
+        resolver = ancestorCtx.resolver;
+        authoritative = ancestorCtx.authoritative;
+        lookupAttrType = ancestorCtx.lookupAttrType;
+        lookupAttrClass = ancestorCtx.lookupAttrClass;
+        recursion = ancestorCtx.recursion;
+        timeoutInitial = ancestorCtx.timeoutInitial;
+        timeoutRetries = ancestorCtx.timeoutRetries;
+        maxThreads = ancestorCtx.maxThreads;
     }
 
     /**
@@ -2037,7 +2049,15 @@ public class DNSContext implements DirContext, Cloneable {
      */
     @Override
     public Object clone() {
-        return new DNSContext(this, contextName);
+        DNSContext clone;
+        try {
+            clone = (DNSContext)super.clone();
+        } catch (CloneNotSupportedException e) {
+            // impossible
+            return null;
+        }
+        clone.initialize(this, contextName);
+        return clone;
     }
 
     /**

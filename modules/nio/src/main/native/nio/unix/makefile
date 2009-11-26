@@ -22,7 +22,7 @@ include $(HY_HDK)/build/make/defines.mk
 BUILDFILES = \
 	../shared/DirectBufferUtil.o ../shared/AddressUtil.o
 ifeq ($(HY_OS),linux)
-BUILDFILES += ../unix/EpollSelectorImpl.o
+BUILDFILES += EpollSelectorImpl.o
 endif
 
 ifneq ($(HY_ZIP_API),true)

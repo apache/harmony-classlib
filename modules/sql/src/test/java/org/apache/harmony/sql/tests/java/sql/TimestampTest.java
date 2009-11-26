@@ -280,6 +280,7 @@ public class TimestampTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void testGetMinutes() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         for (int i = 0; i < TIME_ARRAY.length; i++) {
             Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(MINUTES_ARRAY[i], theTimestamp.getMinutes());
@@ -292,6 +293,7 @@ public class TimestampTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void testGetSeconds() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         for (int i = 0; i < TIME_ARRAY.length; i++) {
             Timestamp theTimestamp = new Timestamp(TIME_ARRAY[i]);
             assertEquals(SECONDS_ARRAY[i], theTimestamp.getSeconds());
@@ -642,22 +644,17 @@ public class TimestampTest extends TestCase {
             assertEquals(0, theTimestamp.compareTo(theTimestamp2));
         } // end for
 
-        Date nastyTest = new Date();
-        Timestamp theTimestamp = new Timestamp(TIME_ARRAY[1]);
-        try {
-            theTimestamp.compareTo(nastyTest);
-            // It throws ClassCastException in JDK 1.5.0_06 but in 1.5.0_07 it
-            // does not throw the expected exception.
-            fail("testCompareToObject: Did not get expected ClassCastException");
-        } catch (ClassCastException e) {
-            // Should get here
-            /*
-             * System.out.println("testCompareToObject: ClassCastException as
-             * expected"); System.out.println("Exception message: " +
-             * e.getMessage());
-             */
-        } // end try
-
+        Timestamp timestamp = new Timestamp(1000000);
+        Date date = new Date(1000000);
+        
+        assertEquals(0, timestamp.compareTo(date));
+        timestamp.setNanos(10);
+        assertEquals(1, timestamp.compareTo(date));
+        
+        long time = System.currentTimeMillis();
+        Date date2 = new Date(time);
+        Timestamp timestamp2 = new Timestamp(date2.getTime());
+        assertEquals(0, timestamp2.compareTo(date2));
     } // end method testcompareToObject
 
     /**

@@ -967,7 +967,7 @@ JNIEXPORT jobjectArray JNICALL
         free(fontList);
 
         throwNPException(env, "Not enough memory to create families list");
-        return (jlong)(IDATA)NULL;
+        return (jobjectArray)NULL;
     }
 
     for (i = 0;i < numFonts;i++){

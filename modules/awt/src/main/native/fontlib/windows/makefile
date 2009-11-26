@@ -46,6 +46,5 @@ MDLLIBFILES = $(MDLLIBFILES) \
   $(LIBPATH)hyzlib.lib 
 
 DLLBASE=0x13300000
-COMMENT=/comment:"FontLib native code. (c) Copyright 2005, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

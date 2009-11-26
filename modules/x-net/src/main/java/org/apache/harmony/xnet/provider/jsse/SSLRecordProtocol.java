@@ -456,8 +456,8 @@ public class SSLRecordProtocol {
     }
 
     /**
-     * Shutdownes the protocol. It will be impossiblke to use the instance
-     * after the calling of this method.
+     * Shutdown the protocol. It will be impossible to use the 
+     * instance after the calling of this method. 
      */
     protected void shutdown() {
         session = null;
@@ -474,8 +474,8 @@ public class SSLRecordProtocol {
             activeReadState.shutdown();
         }
         activeReadState = null;
-        if (activeReadState != null) {
-            activeReadState.shutdown();
+        if (activeWriteState != null) {
+            activeWriteState.shutdown();
         }
         activeWriteState = null;
     }

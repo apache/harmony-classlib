@@ -63,7 +63,7 @@ ifeq ($(HY_CAN_LINK_DEBUG),yes)
 		mv $@.dbg $(DBGPATH)$(@F).dbg
 endif
 ifeq ($(HY_OS),zos)
-	mv $(basename $(DLLNAME))$(HY_LINKLIB_SUFFIX) $(LIBPATH)
+	mv $(notdir $(basename $(DLLNAME)))$(HY_LINKLIB_SUFFIX) $(LIBPATH)
 endif
 
 $(EXENAME): $(BUILDFILES) $(MDLLIBFILES)

@@ -762,7 +762,7 @@ public class SimpleDateFormat extends DateFormat {
                 dateFormatField = Field.YEAR;
                 int year = calendar.get(Calendar.YEAR);
                 if (count < 4) {
-                    appendNumber(buffer, 2, year %= 100);
+                    appendNumber(buffer, 2, year % 100);
                 } else {
                     appendNumber(buffer, count, year);
                 }

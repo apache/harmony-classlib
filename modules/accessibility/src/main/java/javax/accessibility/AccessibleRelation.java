@@ -18,31 +18,33 @@
 package javax.accessibility;
 
 
+@SuppressWarnings("nls")
 public class AccessibleRelation extends AccessibleBundle {
-    public static final String LABEL_FOR = new String("labelFor"); //$NON-NLS-1$
-    public static final String LABELED_BY = new String("labeledBy"); //$NON-NLS-1$
-    public static final String MEMBER_OF = new String("memberOf"); //$NON-NLS-1$
-    public static final String CONTROLLER_FOR = new String("controllerFor"); //$NON-NLS-1$
-    public static final String CONTROLLED_BY = new String("controlledBy"); //$NON-NLS-1$
-    public static final String FLOWS_TO = "flowsTo"; //$NON-NLS-1$
-    public static final String FLOWS_FROM = "flowsFrom"; //$NON-NLS-1$
-    public static final String SUBWINDOW_OF = "subwindowOf"; //$NON-NLS-1$
-    public static final String PARENT_WINDOW_OF = "parentWindowOf"; //$NON-NLS-1$
-    public static final String EMBEDS = "embeds"; //$NON-NLS-1$
-    public static final String EMBEDDED_BY = "embeddedBy"; //$NON-NLS-1$
-    public static final String CHILD_NODE_OF = "childNodeOf"; //$NON-NLS-1$
-    public static final String LABEL_FOR_PROPERTY = "labelForProperty"; //$NON-NLS-1$
-    public static final String LABELED_BY_PROPERTY = "labeledByProperty"; //$NON-NLS-1$
-    public static final String MEMBER_OF_PROPERTY = "memberOfProperty"; //$NON-NLS-1$
-    public static final String CONTROLLER_FOR_PROPERTY = "controllerForProperty"; //$NON-NLS-1$
-    public static final String CONTROLLED_BY_PROPERTY = "controlledByProperty"; //$NON-NLS-1$
-    public static final String FLOWS_TO_PROPERTY = "flowsToProperty"; //$NON-NLS-1$
-    public static final String FLOWS_FROM_PROPERTY = "flowsFromProperty"; //$NON-NLS-1$
-    public static final String SUBWINDOW_OF_PROPERTY = "subwindowOfProperty"; //$NON-NLS-1$
-    public static final String PARENT_WINDOW_OF_PROPERTY = "parentWindowOfProperty"; //$NON-NLS-1$
-    public static final String EMBEDS_PROPERTY = "embedsProperty"; //$NON-NLS-1$
-    public static final String EMBEDDED_BY_PROPERTY = "embeddedByProperty"; //$NON-NLS-1$
-    public static final String CHILD_NODE_OF_PROPERTY = "childNodeOfProperty"; //$NON-NLS-1$
+    // Calls to new String(String) here are required - see HARMONY-6008
+    public static final String LABEL_FOR = new String("labelFor");
+    public static final String LABELED_BY = new String("labeledBy");
+    public static final String MEMBER_OF = new String("memberOf");
+    public static final String CONTROLLER_FOR = new String("controllerFor");
+    public static final String CONTROLLED_BY = new String("controlledBy");
+    public static final String FLOWS_TO = "flowsTo";
+    public static final String FLOWS_FROM = "flowsFrom";
+    public static final String SUBWINDOW_OF = "subwindowOf";
+    public static final String PARENT_WINDOW_OF = "parentWindowOf";
+    public static final String EMBEDS = "embeds";
+    public static final String EMBEDDED_BY = "embeddedBy";
+    public static final String CHILD_NODE_OF = "childNodeOf";
+    public static final String LABEL_FOR_PROPERTY = "labelForProperty";
+    public static final String LABELED_BY_PROPERTY = "labeledByProperty";
+    public static final String MEMBER_OF_PROPERTY = "memberOfProperty";
+    public static final String CONTROLLER_FOR_PROPERTY = "controllerForProperty";
+    public static final String CONTROLLED_BY_PROPERTY = "controlledByProperty";
+    public static final String FLOWS_TO_PROPERTY = "flowsToProperty";
+    public static final String FLOWS_FROM_PROPERTY = "flowsFromProperty";
+    public static final String SUBWINDOW_OF_PROPERTY = "subwindowOfProperty";
+    public static final String PARENT_WINDOW_OF_PROPERTY = "parentWindowOfProperty";
+    public static final String EMBEDS_PROPERTY = "embedsProperty";
+    public static final String EMBEDDED_BY_PROPERTY = "embeddedByProperty";
+    public static final String CHILD_NODE_OF_PROPERTY = "childNodeOfProperty";
 
     private Object[] targets;
 

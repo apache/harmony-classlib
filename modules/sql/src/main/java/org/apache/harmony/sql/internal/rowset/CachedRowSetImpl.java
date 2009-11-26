@@ -149,7 +149,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private boolean isNotifyListener = true;
 
-    protected static Map<Integer, Class<?>> TYPE_MAPPING = initialTypeMapping();
+    protected static final Map<Integer, Class<?>> TYPE_MAPPING = initialTypeMapping();
 
     public static final String PROVIDER_ID = "Apache Harmony HYOptimisticProvider"; //$NON-NLS-1$
 

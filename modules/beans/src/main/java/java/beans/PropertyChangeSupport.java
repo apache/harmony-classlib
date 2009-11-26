@@ -137,7 +137,7 @@ public class PropertyChangeSupport implements Serializable {
 
         if (oldValue != newValue) {
             fireIndexedPropertyChange(propertyName, index,
-                    new Integer(oldValue), new Integer(newValue));
+                    Integer.valueOf(oldValue), Integer.valueOf(newValue));
         }
     }
 

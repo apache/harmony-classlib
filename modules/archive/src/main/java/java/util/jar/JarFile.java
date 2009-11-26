@@ -339,11 +339,15 @@ public class JarFile extends ZipFile {
         }
         try {
             InputStream is = super.getInputStream(manifestEntry);
-            byte[] buffer = getAllBytesFromStreamAndClose(is);
             if (verifier != null) {
-                verifier.addMetaEntry(manifestEntry.getName(), buffer);
+                verifier.addMetaEntry(manifestEntry.getName(), getAllBytesFromStreamAndClose(is));
+                is = super.getInputStream(manifestEntry);
             }
-            manifest = new Manifest(buffer, verifier != null);
+            try {
+                manifest = new Manifest(is, verifier != null);
+            } finally {
+                is.close();
+            }
             manifestEntry = null;  // Can discard the entry now.
         } catch (NullPointerException e) {
             manifestEntry = null;

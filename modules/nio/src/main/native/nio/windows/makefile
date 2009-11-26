@@ -41,6 +41,5 @@ MDLLIBFILES = $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX) \
   $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000
-COMMENT=/comment:"nio component native code. (c) Copyright 1991, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

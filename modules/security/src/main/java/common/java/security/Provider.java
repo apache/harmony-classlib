@@ -193,6 +193,10 @@ public abstract class Provider extends Properties {
 
     @Override
     public synchronized void load(InputStream inStream) throws IOException {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkSecurityAccess("putProviderProperty." + name); //$NON-NLS-1$
+        }
         Properties tmp = new Properties();
         tmp.load(inStream);
         myPutAll(tmp);

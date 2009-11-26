@@ -426,7 +426,7 @@ public class XmlReaderImpl extends CachedRowSetReader implements XmlReader {
 
         private int parseInt(String value) throws SQLException {
             if (value == null) {
-                new SQLException(Messages.getString("rowset.27", value)); //$NON-NLS-1$
+                throw new SQLException(Messages.getString("rowset.27", value)); //$NON-NLS-1$
             }
 
             try {

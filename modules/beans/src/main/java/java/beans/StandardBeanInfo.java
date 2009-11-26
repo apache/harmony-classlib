@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.TooManyListenersException;
 
 class StandardBeanInfo extends SimpleBeanInfo {
@@ -621,10 +621,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
         // Put the properties found into the PropertyDescriptor array
         ArrayList<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 
-        Iterator<String> keys = propertyTable.keySet().iterator();
-        while (keys.hasNext()) {
-            String propertyName = keys.next();
-            HashMap table = propertyTable.get(propertyName);
+        for (Map.Entry<String, HashMap> entry : propertyTable.entrySet()) {
+            String propertyName = entry.getKey();
+            HashMap table = entry.getValue();
             if (table == null) {
                 continue;
             }
@@ -848,8 +847,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
             return;
         }
 
-        for (String key : propertyTable.keySet()) {
-            HashMap<String, Object> table = propertyTable.get(key);
+        for (Map.Entry<String, HashMap> entry : propertyTable.entrySet()) {
+            HashMap<String, Object> table = entry.getValue();
             ArrayList<Method> getters = (ArrayList<Method>) table.get(STR_GETTERS);
             ArrayList<Method> setters = (ArrayList<Method>) table.get(STR_SETTERS);
 
@@ -1074,10 +1073,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
         }
 
         ArrayList<EventSetDescriptor> eventList = new ArrayList<EventSetDescriptor>();
-        Iterator<String> keys = eventTable.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            HashMap table = eventTable.get(key);
+        for (Map.Entry<String, HashMap> entry : eventTable.entrySet()) {
+            HashMap table = entry.getValue();
             Method add = (Method) table.get(PREFIX_ADD);
             Method remove = (Method) table.get(PREFIX_REMOVE);
 
@@ -1089,7 +1086,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             Class<?> listenerType = (Class) table.get("listenerType"); //$NON-NLS-1$
             Method[] listenerMethods = (Method[]) table.get("listenerMethods"); //$NON-NLS-1$
             EventSetDescriptor eventSetDescriptor = new EventSetDescriptor(
-                    decapitalize(key), listenerType, listenerMethods, add,
+                    decapitalize(entry.getKey()), listenerType, listenerMethods, add,
                     remove, get);
 
             eventSetDescriptor.setUnicast(table.get("isUnicast") != null); //$NON-NLS-1$

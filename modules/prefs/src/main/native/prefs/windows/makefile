@@ -39,6 +39,5 @@ MDLLIBFILES = \
 MDLLIBFILES = $(MDLLIBFILES) \
   $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13300000
-COMMENT=/comment:"Preferences component native code. (c) Copyright 1993, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

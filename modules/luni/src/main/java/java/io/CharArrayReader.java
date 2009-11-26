@@ -54,7 +54,6 @@ public class CharArrayReader extends Reader {
      *            the char array from which to read.
      */
     public CharArrayReader(char[] buf) {
-        super(buf);
         this.buf = buf;
         this.count = buf.length;
     }
@@ -75,8 +74,13 @@ public class CharArrayReader extends Reader {
      *             {@code offset} is greater than the size of {@code buf} .
      */
     public CharArrayReader(char[] buf, int offset, int length) {
-        super(buf);
-        if (offset < 0 || offset > buf.length || length < 0) {
+        /*
+         * The spec of this constructor is broken. In defining the legal values
+         * of offset and length, it doesn't consider buffer's length. And to be
+         * compatible with the broken spec, we must also test whether
+         * (offset + length) overflows.
+         */
+        if (offset < 0 || offset > buf.length || length < 0 || offset + length < 0) {
             throw new IllegalArgumentException();
         }
         this.buf = buf;
@@ -84,7 +88,8 @@ public class CharArrayReader extends Reader {
         this.markedPos = offset;
 
         /* This is according to spec */
-        this.count = this.pos + length < buf.length ? length : buf.length;
+        int bufferLength = buf.length;
+        this.count = offset + length < bufferLength ? length : bufferLength;
     }
 
     /**

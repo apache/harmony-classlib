@@ -94,7 +94,7 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
   if (length >= 1 && pathCopy[length - 1] != '\\'
       && pathCopy[length - 1] != '/')
     {
-      pathCopy[length] = jclSeparator;
+      pathCopy[length] = DIR_SEPARATOR;
       length++;
     }
   pathCopy[length] = '\0';

@@ -853,9 +853,10 @@ public class ManagementUtils {
 
         CompositeData result = null;
         String[] names = { "init", "used", "committed", "max" };
-        Object[] values = { new Long(usage.getInit()),
-                new Long(usage.getUsed()), new Long(usage.getCommitted()),
-                new Long(usage.getMax()) };
+        Object[] values = { Long.valueOf(usage.getInit()),
+                Long.valueOf(usage.getUsed()),
+                Long.valueOf(usage.getCommitted()),
+                Long.valueOf(usage.getMax()) };
         CompositeType cType = getMemoryUsageCompositeType();
         try {
             result = new CompositeDataSupport(cType, names, values);
@@ -905,9 +906,9 @@ public class ManagementUtils {
 
         CompositeData result = null;
         String[] names = { "poolName", "usage", "count" };
-        Object[] values = { new String(info.getPoolName()),
+        Object[] values = { info.getPoolName(),
                 toMemoryUsageCompositeData(info.getUsage()),
-                new Long(info.getCount()) };
+                Long.valueOf(info.getCount()) };
         CompositeType cType = getMemoryNotificationInfoCompositeType();
         try {
             result = new CompositeDataSupport(cType, names, values);
@@ -967,20 +968,19 @@ public class ManagementUtils {
                 "waitedCount", "waitedTime", "lockName", "lockOwnerId",
                 "lockOwnerName", "stackTrace" };
         Object[] values = {
-                new Long(info.getThreadId()),
-                new String(info.getThreadName()),
-                new String(info.getThreadState().name()),
-                new Boolean(info.isSuspended()),
-                new Boolean(info.isInNative()),
-                new Long(info.getBlockedCount()),
-                new Long(info.getBlockedTime()),
-                new Long(info.getWaitedCount()),
-                new Long(info.getWaitedTime()),
-                info.getLockName() != null ? new String(info.getLockName())
-                        : null,
-                new Long(info.getLockOwnerId()),
-                info.getLockOwnerName() != null ? new String(info
-                        .getLockOwnerName()) : null, stArray };
+                Long.valueOf(info.getThreadId()),
+                info.getThreadName(),
+                info.getThreadState().name(),
+                Boolean.valueOf(info.isSuspended()),
+                Boolean.valueOf(info.isInNative()),
+                Long.valueOf(info.getBlockedCount()),
+                Long.valueOf(info.getBlockedTime()),
+                Long.valueOf(info.getWaitedCount()),
+                Long.valueOf(info.getWaitedTime()),
+                info.getLockName(),
+                Long.valueOf(info.getLockOwnerId()),
+                info.getLockOwnerName(), 
+                stArray };
         CompositeType cType = getThreadInfoCompositeType();
         try {
             result = new CompositeDataSupport(cType, names, values);
@@ -1011,12 +1011,12 @@ public class ManagementUtils {
 
         // A file name of null is permissable
         String fileName = element.getFileName();
-        String fileNameValue = (fileName == null) ? null : new String(fileName);
 
-        Object[] values = { new String(element.getClassName()),
-                new String(element.getMethodName()), fileNameValue,
-                new Integer(element.getLineNumber()),
-                new Boolean(element.isNativeMethod()) };
+        Object[] values = { element.getClassName(),
+                element.getMethodName(), 
+                fileName,
+                Integer.valueOf(element.getLineNumber()),
+                Boolean.valueOf(element.isNativeMethod()) };
         CompositeType cType = getStackTraceElementCompositeType();
         try {
             result = new CompositeDataSupport(cType, names, values);
@@ -1401,12 +1401,11 @@ public class ManagementUtils {
 
             // Take each entry out of the input propsMap, put it into a new
             // instance of CompositeData and put into the TabularType
-            Set<String> keys = propsMap.keySet();
-            for (Iterator<String> iter = keys.iterator(); iter.hasNext();) {
-                String propKey = iter.next();
-                String propVal = propsMap.get(propKey);
+            Set<Map.Entry<String,String>> entrySet = propsMap.entrySet();
+            for (Iterator<Map.Entry<String, String>> iter = entrySet.iterator(); iter.hasNext();) {
+                Map.Entry<String,String> entry = iter.next();
                 result.put(new CompositeDataSupport(rowType, rtItemNames,
-                        new String[] { propKey, propVal }));
+                        new String[] { entry.getKey(), entry.getValue() }));
             }// end for
         } catch (OpenDataException e) {
             if (ManagementUtils.VERBOSE_MODE) {
