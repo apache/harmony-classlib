@@ -1495,6 +1495,23 @@ public class Arrays {
         }
         return equals((short[]) e1, (short[]) e2);
     }
+    
+    private static boolean isSame(double double1, double double2) {
+        // This method is required as Double.NaN == Double.NaN will return false.
+        long d1, d2;
+        long NaNbits = Double.doubleToLongBits(Double.NaN);
+        if ((d1 = Double.doubleToLongBits(double1)) == NaNbits) {
+            if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if ((d2 = Double.doubleToLongBits(double2)) == NaNbits) {
+            return false;
+        } else {
+            return double1 == double2;
+        }
+    }
 
     private static boolean lessThan(double double1, double double2) {
         // A slightly specialized version of
@@ -1896,7 +1913,7 @@ public class Arrays {
         c = d = end - 1;
         while (true) {
             while (b <= c && !lessThan(partionValue, array[b])) {
-                if (array[b] == partionValue) {
+                if (isSame(array[b], partionValue)) {
                     temp = array[a];
                     array[a++] = array[b];
                     array[b] = temp;
@@ -1904,7 +1921,7 @@ public class Arrays {
                 b++;
             }
             while (c >= b && !lessThan(array[c], partionValue)) {
-                if (array[c] == partionValue) {
+                if (isSame(array[c], partionValue)) {
                     temp = array[c];
                     array[c] = array[d];
                     array[d--] = temp;
