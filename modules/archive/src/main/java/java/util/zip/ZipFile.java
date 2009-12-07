@@ -247,7 +247,8 @@ public class ZipFile implements ZipConstants {
             rafstrm.skip(entry.nameLen + localExtraLenOrWhatever);
             rafstrm.mLength = rafstrm.mOffset + entry.compressedSize;
             if (entry.compressionMethod == ZipEntry.DEFLATED) {
-                return new InflaterInputStream(rafstrm, new Inflater(true));
+                int bufSize = Math.max(1024, (int)Math.min(entry.getSize(), 65535L));
+                return new ZipInflaterInputStream(rafstrm, new Inflater(true), bufSize, entry);
             } else {
                 return rafstrm;
             }
@@ -413,6 +414,31 @@ public class ZipFile implements ZipConstants {
             }
             mOffset += n;
             return n;
+        }
+    }
+    
+    static class ZipInflaterInputStream extends InflaterInputStream {
+
+        ZipEntry entry;
+        long bytesRead = 0;
+
+        public ZipInflaterInputStream(InputStream is, Inflater inf, int bsize, ZipEntry entry) {
+            super(is, inf, bsize);
+            this.entry = entry;
+        }
+
+        @Override
+        public int read(byte[] buffer, int off, int nbytes) throws IOException {
+            int i = super.read(buffer, off, nbytes);
+            if (i != -1) {
+                bytesRead += i;
+            }
+            return i;
+        }
+
+        @Override
+        public int available() throws IOException {
+            return super.available() == 0 ? 0 : (int) (entry.getSize() - bytesRead);
         }
     }
 }
