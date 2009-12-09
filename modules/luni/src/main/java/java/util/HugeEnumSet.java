@@ -159,21 +159,17 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
     
     @Override
     protected void complement() {
-        if (0 != enums.length) {
-            bitsIndex = enums.length / BIT_IN_LONG;
+        size = 0;
+        for (int i = 0, length = bits.length; i < length; i++) {
+            long b = ~bits[i];
 
-            size = 0;
-            int bitCount = 0;
-            for (int i = 0; i <= bitsIndex; i++) {
-                bits[i] = ~bits[i];
-                bitCount = Long.bitCount(bits[i]);
-                size += bitCount;
+            // zero out unused bits on the last element
+            if (i == length - 1) {
+                b &= -1L >>> (BIT_IN_LONG - (enums.length % BIT_IN_LONG));
             }
-            bits[bitsIndex] &= (-1l >>> (BIT_IN_LONG - enums.length
-                    % BIT_IN_LONG));
-            size -= bitCount;
-            bitCount = Long.bitCount(bits[bitsIndex]);
-            size += bitCount;
+
+            size += Long.bitCount(b);
+            bits[i] = b;
         }
     }
     
