@@ -339,9 +339,9 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
     str_support_redefine = read_attribute(vm, manifest, lwrmanifest,"can-redefine-classes");
     if(NULL != str_support_redefine){
         support_redefine = str2bol(str_support_redefine);
-        gsupport_redefine |= support_redefine;
         hymem_free_memory(str_support_redefine);
     }
+    gsupport_redefine &= support_redefine;
 
     //add bootclasspath
 
@@ -362,6 +362,10 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
     PORT_ACCESS_FROM_JAVAVM(vm);
     VMI_ACCESS_FROM_JAVAVM(vm);
+    jvmtiError jvmti_err;
+    JNIEnv *env = NULL;
+    static jvmtiEnv *jvmti;
+    jvmtiCapabilities updatecapabilities;
     jint err = (*vm)->GetEnv(vm, (void **)&jnienv, JNI_VERSION_1_2);
     if(JNI_OK != err){
         return err;
@@ -371,8 +375,6 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         jvmtiCapabilities capabilities;
         jvmtiError jvmti_err;
         jvmtiEventCallbacks callbacks;
-        JNIEnv *env = NULL;
-        static jvmtiEnv *jvmti;
 
         gdata = hymem_allocate_memory(sizeof(AgentData));
 
@@ -383,15 +385,10 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         }
         gdata->jvmti = jvmti;
 
-        //set prerequisite capabilities for classfileloadhook, redefine, and VMInit event
-        memset(&capabilities, 0, sizeof(capabilities));
-        capabilities.can_generate_all_class_hook_events=1;
-        capabilities.can_redefine_classes = 1;
-        //FIXME VM doesnot support the capbility right now.
-        //capabilities.can_redefine_any_class = 1;
-        jvmti_err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
-        check_jvmti_error(env, jvmti_err,
-                          "Cannot add JVMTI capabilities.");
+        //get JVMTI potential capabilities
+        jvmti_err = (*jvmti)->GetPotentialCapabilities(jvmti, &capabilities);
+        check_jvmti_error(env, jvmti_err, "Cannot get JVMTI potential capabilities.");
+        gsupport_redefine = (capabilities.can_redefine_classes == 1);
 
         //set events callback function
         (void)memset(&callbacks, 0, sizeof(callbacks));
@@ -405,7 +402,18 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         check_jvmti_error(env, jvmti_err, "Cannot set JVMTI VMInit event notification mode.");
     }
 
-    return Parse_Options(vm,jnienv, gdata->jvmti,options);
+    err = Parse_Options(vm,jnienv, gdata->jvmti,options);
+
+    //update capabilities JVMTI
+    memset(&updatecapabilities, 0, sizeof(updatecapabilities));
+    updatecapabilities.can_generate_all_class_hook_events = 1;
+    updatecapabilities.can_redefine_classes = gsupport_redefine;
+    //FIXME VM doesnot support the capbility right now.
+    //capabilities.can_redefine_any_class = 1;
+    jvmti_err = (*jvmti)->AddCapabilities(jvmti, &updatecapabilities);
+    check_jvmti_error(env, jvmti_err, "Cannot add JVMTI capabilities.");
+
+    return err;
 }
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM *vm){
