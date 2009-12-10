@@ -29,6 +29,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.harmony.luni.util.InputStreamHelper;
 import org.apache.harmony.rmi.DefaultRMIClassLoaderSpi;
 import org.apache.harmony.rmi.internal.nls.Messages;
 
@@ -210,9 +211,7 @@ public class RMIClassLoader {
             // resource not found
             return null;
         }
-        Object obj = null;
-        byte[] buf = new byte[in.available()];
-        in.read(buf);
+        byte[] buf = InputStreamHelper.readFullyAndClose(in);
         String str = new String(buf, "UTF-8"); //$NON-NLS-1$
         StringTokenizer tok = new StringTokenizer(str, "\n\r"); //$NON-NLS-1$
 

@@ -23,6 +23,7 @@ Import-Package: java.io,
  javax.net,
  javax.net.ssl,
  org.apache.harmony.kernel.vm,
+ org.apache.harmony.luni.util,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: java.rmi,
  java.rmi.activation,
