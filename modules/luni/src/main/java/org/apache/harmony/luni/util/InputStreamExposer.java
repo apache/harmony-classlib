@@ -28,7 +28,7 @@ import java.security.PrivilegedAction;
 /**
  * The class contains static {@link java.io.InputStream} utilities.
  */
-public class InputStreamHelper {
+public class InputStreamExposer {
 
     /**
      * Provides access to a protected underlying buffer of
@@ -47,9 +47,9 @@ public class InputStreamHelper {
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 try {
-                    f[0] = ByteArrayInputStream.class.getDeclaredField("buf"); //$NON-NLS-1$
+                    f[0] = ByteArrayInputStream.class.getDeclaredField("buf");
                     f[0].setAccessible(true);
-                    f[1] = ByteArrayInputStream.class.getDeclaredField("pos"); //$NON-NLS-1$
+                    f[1] = ByteArrayInputStream.class.getDeclaredField("pos");
                     f[1].setAccessible(true);
                 } catch (NoSuchFieldException nsfe) {
                     throw new InternalError(nsfe.getLocalizedMessage());
@@ -59,43 +59,6 @@ public class InputStreamHelper {
         });
         BAIS_BUF = f[0];
         BAIS_POS = f[1];
-    }
-
-    /**
-     * The extension of <code>ByteArrayInputStream</code> which exposes an
-     * underlying buffer.
-     */
-    static class ExposedByteArrayInputStream extends ByteArrayInputStream {
-
-        /**
-         * @see java.io.ByteArrayInputStream(byte[])
-         */
-        public ExposedByteArrayInputStream(byte buf[]) {
-            super(buf);
-        }
-
-        /**
-         * @see java.io.ByteArrayInputStream(byte[], int, int)
-         */
-        public ExposedByteArrayInputStream(byte buf[], int offset, int length) {
-            super(buf, offset, length);
-        }
-
-        /**
-         * Reads the whole stream and returns the stream snapshot.
-         */
-        public synchronized byte[] expose() {
-            if (pos == 0 && count == buf.length) {
-                skip(count);
-                return buf;
-            }
-
-            final int available = available();
-            final byte[] buffer = new byte[available];
-            System.arraycopy(buf, pos, buffer, 0, available);
-            skip(available);
-            return buffer;
-        }
     }
 
     /**
@@ -136,11 +99,9 @@ public class InputStreamHelper {
      * @param is
      *            the stream to be read.
      * @return the snapshot wrapping the buffer where the bytes are read to.
-     * @throws UnsupportedOperationException
-     *             if the input stream data cannot be exposed
+     * @throws UnsupportedOperationException if the input stream data cannot be exposed
      */
-    public static byte[] expose(InputStream is) throws IOException,
-            UnsupportedOperationException {
+    public static byte[] expose(InputStream is) throws IOException, UnsupportedOperationException {
         if (is instanceof ExposedByteArrayInputStream) {
             return ((ExposedByteArrayInputStream) is).expose();
         }
@@ -151,49 +112,5 @@ public class InputStreamHelper {
 
         // We don't know how to do this
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Reads all the bytes from the given input stream.
-     * 
-     * Calls read multiple times on the given input stream until it receives an
-     * end of file marker. Returns the combined results as a byte array. Note
-     * that this method may block if the underlying stream read blocks.
-     * 
-     * @param is
-     *            the input stream to be read.
-     * @return the content of the stream as a byte array.
-     * @throws IOException
-     *             if a read error occurs.
-     */
-    public static byte[] readFullyAndClose(InputStream is) throws IOException {
-
-        try {
-            // Initial read
-            byte[] buffer = new byte[1024];
-            int count = is.read(buffer);
-            int nextByte = is.read();
-
-            // Did we get it all in one read?
-            if (nextByte == -1) {
-                byte[] dest = new byte[count];
-                System.arraycopy(buffer, 0, dest, 0, count);
-                return dest;
-            }
-
-            // Requires additional reads
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
-            baos.write(buffer, 0, count);
-            baos.write(nextByte);
-            while (true) {
-                count = is.read(buffer);
-                if (count == -1) {
-                    return baos.toByteArray();
-                }
-                baos.write(buffer, 0, count);
-            }
-        } finally {
-            is.close();
-        }
     }
 }

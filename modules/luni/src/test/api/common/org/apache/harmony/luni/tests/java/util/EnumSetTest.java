@@ -137,25 +137,6 @@ public class EnumSetTest extends TestCase {
         }
     }
 
-    public void testRemoveIteratorRemoveFromHugeEnumSet() {
-        EnumSet<HugeEnumCount> set = EnumSet.noneOf(HugeEnumCount.class);
-        set.add(HugeEnumCount.NO64);
-        set.add(HugeEnumCount.NO65);
-        set.add(HugeEnumCount.NO128);
-        Iterator<HugeEnumCount> iterator = set.iterator();
-        assertTrue(iterator.hasNext());
-        assertEquals(HugeEnumCount.NO64, iterator.next());
-        assertTrue(iterator.hasNext());
-        iterator.remove();
-        assertEquals(HugeEnumCount.NO65, iterator.next());
-        assertTrue(iterator.hasNext());
-        assertEquals(HugeEnumCount.NO128, iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(EnumSet.of(HugeEnumCount.NO65, HugeEnumCount.NO128), set);
-        iterator.remove();
-        assertEquals(EnumSet.of(HugeEnumCount.NO65), set);
-    }
-
     /**
      * @tests java.util.EnumSet#allOf(java.lang.Class)
      */
@@ -1239,21 +1220,21 @@ public class EnumSetTest extends TestCase {
         Set<EnumWithInnerClass> setWithInnerClass = EnumSet
                 .allOf(EnumWithInnerClass.class);
         result = set.retainAll(setWithInnerClass);
-        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertTrue("Should return true", result); //$NON-NLS-1$
         assertEquals("Size of set should be 0", 0, set.size()); //$NON-NLS-1$
 
         setWithInnerClass = EnumSet.noneOf(EnumWithInnerClass.class);
         result = set.retainAll(setWithInnerClass);
-        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertTrue("Should return true", result); //$NON-NLS-1$
 
         Set<EmptyEnum> emptySet = EnumSet.allOf(EmptyEnum.class);
         result = set.retainAll(emptySet);
-        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertTrue("Should return true", result); //$NON-NLS-1$
 
         Set<EnumWithAllInnerClass> setWithAllInnerClass = EnumSet
                 .allOf(EnumWithAllInnerClass.class);
         result = set.retainAll(setWithAllInnerClass);
-        assertFalse("Should return false", result); //$NON-NLS-1$
+        assertTrue("Should return true", result); //$NON-NLS-1$
 
         set.add(EnumFoo.a);
         result = set.retainAll(setWithInnerClass);
@@ -1333,17 +1314,17 @@ public class EnumSetTest extends TestCase {
         Set<HugeEnumWithInnerClass> hugeSetWithInnerClass = EnumSet
                 .allOf(HugeEnumWithInnerClass.class);
         result = hugeSet.retainAll(hugeSetWithInnerClass);
-        assertFalse(result);
+        assertTrue(result);
         assertEquals(0, hugeSet.size());
 
         hugeSetWithInnerClass = EnumSet.noneOf(HugeEnumWithInnerClass.class);
         result = hugeSet.retainAll(hugeSetWithInnerClass);
-        assertFalse(result);
+        assertTrue(result);
 
         Set<HugeEnumWithInnerClass> hugeSetWithAllInnerClass = EnumSet
                 .allOf(HugeEnumWithInnerClass.class);
         result = hugeSet.retainAll(hugeSetWithAllInnerClass);
-        assertFalse(result);
+        assertTrue(result);
 
         hugeSet.add(HugeEnum.a);
         result = hugeSet.retainAll(hugeSetWithInnerClass);

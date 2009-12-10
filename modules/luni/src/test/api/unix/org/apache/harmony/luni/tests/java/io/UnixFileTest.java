@@ -24,8 +24,7 @@ import junit.framework.TestCase;
 
 public class UnixFileTest extends TestCase {
 
-    public void test_getCanonicalPath() throws IOException,
-                                               InterruptedException {
+    public void test_getCanonicalPath() throws IOException {
         File tmpFolder1 = new File("folder1");
         tmpFolder1.mkdirs();
         tmpFolder1.deleteOnExit();
@@ -43,8 +42,7 @@ public class UnixFileTest extends TestCase {
         tmpFolder4.deleteOnExit();
 
         // make a link to folder1/folder2
-        Process ln = Runtime.getRuntime().exec("ln -s folder1/folder2 folder2");
-        ln.waitFor();
+        Runtime.getRuntime().exec("ln -s folder1/folder2 folder2");
         File linkFile = new File("folder2");
         linkFile.deleteOnExit();
 

@@ -160,9 +160,6 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
 
     @SuppressWarnings("unchecked")
      private static <T> Comparable<T> toComparable(T obj) {
-        if (obj == null) {
-            throw new NullPointerException();
-        }
         return (Comparable) obj;
     }
 

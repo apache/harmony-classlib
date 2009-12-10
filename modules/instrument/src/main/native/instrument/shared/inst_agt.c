@@ -206,7 +206,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 
     /* read bytes */
     size = zipEntry.uncompressedSize;
-    result = (char *)hymem_allocate_memory(size*sizeof(char) + 1);
+    result = (char *)hymem_allocate_memory(size*sizeof(char));
 #ifndef HY_ZIP_API
     retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, (unsigned char*)result, size);
 #else /* HY_ZIP_API */
@@ -223,7 +223,6 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
         return NULL;
     }
 
-    result[size] = '\0';
     /* free resource */
 #ifndef HY_ZIP_API
     zip_freeZipEntry(privatePortLibrary, &zipEntry);
@@ -244,7 +243,6 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
     char *pos;
     char *end;
     char *value;
-    char *tmp;
     int length;
     PORT_ACCESS_FROM_JAVAVM(vm);
 
@@ -255,46 +253,18 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
     pos = manifest+ (strstr(lwrmanifest,target) - lwrmanifest);
     pos += strlen(target)+2;//": "
     end = strchr(pos, '\n');
-
-    while (end != NULL && *(end + 1) == ' ') {
-        end = strchr(end + 1, '\n');
-    }
-
     if(NULL == end){
         end = manifest + strlen(manifest);
     }
-
+    /* in windows, has '\r\n' in the end of line, omit '\r' */
+    if (*(end - 1) == '\r'){
+        end--;
+    }
     length = end - pos;
 
     value = (char *)hymem_allocate_memory(sizeof(char)*(length+1));
-    tmp = value;
-
-    end = strchr(pos, '\n');
-    while (end != NULL && *(end + 1) == ' ') {
-        /* in windows, has '\r\n' in the end of line, omit '\r' */
-        if (*(end - 1) == '\r') {
-            strncpy(tmp, pos, end - 1 - pos);
-            tmp += end - 1 - pos;
-            pos = end + 2;
-        } else {
-            strncpy(tmp, pos, end - pos);
-            tmp += end - pos;
-            pos = end + 2;
-        }
-        end = strchr(end + 1, '\n');
-    }
-
-    if (NULL == end) {
-        strcpy(tmp, pos);
-    } else {
-        /* in windows, has '\r\n' in the end of line, omit '\r' */
-        if (*(end - 1) == '\r') {
-            end--;
-        }
-        strncpy(tmp, pos, end - pos);
-        *(tmp + (end - pos)) = '\0';
-    }
-
+    strncpy(value, pos, length);
+    *(value+length) = '\0';
     return value;
 }
 
@@ -346,11 +316,7 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
     check_jvmti_error(env, (*jvmti)->GetSystemProperty(jvmti,"java.class.path",&classpath),"Failed to get classpath.");
     classpath_cpy = (char *)hymem_allocate_memory((sizeof(char)*(strlen(classpath)+strlen(jar_name)+2)));
     strcpy(classpath_cpy,classpath);
-#if defined(WIN32) || defined(WIN64)
     strcat(classpath_cpy,";");
-#else
-    strcat(classpath_cpy,":");
-#endif
     strcat(classpath_cpy,jar_name);
     check_jvmti_error(env, (*jvmti)->SetSystemProperty(jvmti, "java.class.path",classpath_cpy),"Failed to set classpath.");
     hymem_free_memory(classpath_cpy);
@@ -373,9 +339,9 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
     str_support_redefine = read_attribute(vm, manifest, lwrmanifest,"can-redefine-classes");
     if(NULL != str_support_redefine){
         support_redefine = str2bol(str_support_redefine);
+        gsupport_redefine |= support_redefine;
         hymem_free_memory(str_support_redefine);
     }
-    gsupport_redefine &= support_redefine;
 
     //add bootclasspath
 
@@ -396,10 +362,6 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
 JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
     PORT_ACCESS_FROM_JAVAVM(vm);
     VMI_ACCESS_FROM_JAVAVM(vm);
-    jvmtiError jvmti_err;
-    JNIEnv *env = NULL;
-    static jvmtiEnv *jvmti;
-    jvmtiCapabilities updatecapabilities;
     jint err = (*vm)->GetEnv(vm, (void **)&jnienv, JNI_VERSION_1_2);
     if(JNI_OK != err){
         return err;
@@ -409,6 +371,8 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         jvmtiCapabilities capabilities;
         jvmtiError jvmti_err;
         jvmtiEventCallbacks callbacks;
+        JNIEnv *env = NULL;
+        static jvmtiEnv *jvmti;
 
         gdata = hymem_allocate_memory(sizeof(AgentData));
 
@@ -419,10 +383,15 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         }
         gdata->jvmti = jvmti;
 
-        //get JVMTI potential capabilities
-        jvmti_err = (*jvmti)->GetPotentialCapabilities(jvmti, &capabilities);
-        check_jvmti_error(env, jvmti_err, "Cannot get JVMTI potential capabilities.");
-        gsupport_redefine = (capabilities.can_redefine_classes == 1);
+        //set prerequisite capabilities for classfileloadhook, redefine, and VMInit event
+        memset(&capabilities, 0, sizeof(capabilities));
+        capabilities.can_generate_all_class_hook_events=1;
+        capabilities.can_redefine_classes = 1;
+        //FIXME VM doesnot support the capbility right now.
+        //capabilities.can_redefine_any_class = 1;
+        jvmti_err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
+        check_jvmti_error(env, jvmti_err,
+                          "Cannot add JVMTI capabilities.");
 
         //set events callback function
         (void)memset(&callbacks, 0, sizeof(callbacks));
@@ -436,18 +405,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
         check_jvmti_error(env, jvmti_err, "Cannot set JVMTI VMInit event notification mode.");
     }
 
-    err = Parse_Options(vm,jnienv, gdata->jvmti,options);
-
-    //update capabilities JVMTI
-    memset(&updatecapabilities, 0, sizeof(updatecapabilities));
-    updatecapabilities.can_generate_all_class_hook_events = 1;
-    updatecapabilities.can_redefine_classes = gsupport_redefine;
-    //FIXME VM doesnot support the capbility right now.
-    //capabilities.can_redefine_any_class = 1;
-    jvmti_err = (*jvmti)->AddCapabilities(jvmti, &updatecapabilities);
-    check_jvmti_error(env, jvmti_err, "Cannot add JVMTI capabilities.");
-
-    return err;
+    return Parse_Options(vm,jnienv, gdata->jvmti,options);
 }
 
 JNIEXPORT void JNICALL Agent_OnUnload(JavaVM *vm){

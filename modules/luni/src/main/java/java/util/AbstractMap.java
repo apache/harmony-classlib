@@ -133,22 +133,19 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                 return false;
             }
 
+            Iterator<Map.Entry<K, V>> it = entrySet().iterator();
+
             try {
-                for (Entry<K, V> entry : entrySet()) {
+                while (it.hasNext()) {
+                    Entry<K, V> entry = it.next();
                     K key = entry.getKey();
-                    V mine = entry.getValue();
-                    Object theirs = map.get(key);
-                    if (mine == null) {
-                        if (theirs != null || !map.containsKey(key)) {
-                            return false;
-                        }
-                    } else if (!mine.equals(theirs)) {
+                    V value = entry.getValue();
+                    Object obj = map.get(key);
+                    if( null != obj && (!obj.equals(value)) || null == obj && obj != value) {
                         return false;
                     }
                 }
-            } catch (NullPointerException ignored) {
-                return false;
-            } catch (ClassCastException ignored) {
+            } catch (ClassCastException cce) {
                 return false;
             }
             return true;

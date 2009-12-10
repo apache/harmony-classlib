@@ -35,10 +35,9 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
 
     private static final long serialVersionUID = -2479143000061671589L;
 
-    /** Keys are this set's elements. Values are always Boolean.TRUE */
-    private transient SortedMap<E, Object> backingMap;
+    private transient SortedMap<E, E> backingMap;
 
-    private TreeSet(SortedMap<E, Object> map) {
+    private TreeSet(SortedMap<E, E> map) {
         this.backingMap = map;
     }
 
@@ -47,7 +46,7 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
      * ordering.
      */
     public TreeSet() {
-        backingMap = new TreeMap<E, Object>();
+        backingMap = new TreeMap<E, E>();
     }
 
     /**
@@ -74,7 +73,7 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
      *            the comparator to use.
      */
     public TreeSet(Comparator<? super E> comparator) {
-        backingMap = new TreeMap<E, Object>(comparator);
+        backingMap = new TreeMap<E, E>(comparator);
     }
 
     /**
@@ -108,7 +107,7 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
      */
     @Override
     public boolean add(E object) {
-        return backingMap.put(object, Boolean.TRUE) == null;
+        return backingMap.put(object, object) == null;
     }
 
     /**
@@ -154,10 +153,10 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
         try {
             TreeSet<E> clone = (TreeSet<E>) super.clone();
             if (backingMap instanceof TreeMap) {
-                clone.backingMap = (SortedMap<E, Object>) ((TreeMap<E, Object>) backingMap)
+                clone.backingMap = (SortedMap<E, E>) ((TreeMap<E, E>) backingMap)
                         .clone();
             } else {
-                clone.backingMap = new TreeMap<E, Object>(backingMap);
+                clone.backingMap = new TreeMap<E, E>(backingMap);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -374,14 +373,14 @@ public class TreeSet<E> extends AbstractSet<E> implements SortedSet<E>,
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
         stream.defaultReadObject();
-        TreeMap<E, Object> map = new TreeMap<E, Object>(
-                (Comparator<? super E>) stream.readObject());
+        TreeMap<E, E> map = new TreeMap<E, E>((Comparator<? super E>) stream
+                .readObject());
         int size = stream.readInt();
         if (size > 0) {
-            TreeMap.Node<E, Object> lastNode = null;
+            TreeMap.Node<E,E> lastNode = null;
             for(int i=0; i<size; i++) {
                 E elem = (E)stream.readObject();
-                lastNode = map.addToLast(lastNode,elem, Boolean.TRUE);
+                lastNode = map.addToLast(lastNode,elem,elem);
             }
         }
         backingMap = map;

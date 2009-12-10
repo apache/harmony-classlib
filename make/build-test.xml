@@ -27,20 +27,6 @@
     <property name="tests.output" location="build/test_report" />
     <import file="${basedir}/make/properties.xml" />
 
-    <property name="gen.report" value="true" />
-    <condition property="do.full.report" value="true">
-        <and>
-            <equals arg1="${gen.report}" arg2="true" />
-            <not><equals arg1="${short.report}" arg2="true" /></not>
-        </and>
-    </condition>
-    <condition property="do.short.report" value="true">
-        <and>
-            <equals arg1="${gen.report}" arg2="true" />
-            <equals arg1="${short.report}" arg2="true" />
-        </and>
-    </condition>
-
     <property name="tests.support.output" location="build/test_support" />
     <property name="support.dir" location="support"/>
     <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
@@ -85,7 +71,7 @@
 
     <property name="report.dir" value="${tests.output}/html"/>
 
-    <target name="full-report" if="do.full.report" >
+    <target name="full-report" unless="short.report" >
         <delete dir="${report.dir}" />
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}">
@@ -99,7 +85,7 @@
         <echo message="The test report is in ${display-location}"/>
     </target>
 
-    <target name="short-report" if="do.short.report">
+    <target name="short-report" if="short.report" >
         <delete dir="${report.dir}" />
         <junitreport todir="${tests.output}">
             <fileset dir="${tests.output}" includes="TEST*-*.xml">
