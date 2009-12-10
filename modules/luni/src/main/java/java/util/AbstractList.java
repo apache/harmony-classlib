@@ -36,53 +36,48 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     protected transient int modCount;
 
     private class SimpleListIterator implements Iterator<E> {
-        int pos = -1;
-
-        int expectedModCount;
-
+        int numLeft = size();
+        int expectedModCount = modCount;
         int lastPosition = -1;
 
-        SimpleListIterator() {
-            super();
-            expectedModCount = modCount;
-        }
-
         public boolean hasNext() {
-            return pos + 1 < size();
+            return numLeft > 0;
         }
 
         public E next() {
-            if (expectedModCount == modCount) {
-                try {
-                    E result = get(pos + 1);
-                    lastPosition = ++pos;
-                    return result;
-                } catch (IndexOutOfBoundsException e) {
-                    throw new NoSuchElementException();
-                }
-            }
-            throw new ConcurrentModificationException();
-        }
-
-        public void remove() {
-            if (this.lastPosition == -1) {
-                throw new IllegalStateException();
-            }
-
             if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
             }
 
             try {
+                int index = size() - numLeft;
+                E result = get(index);
+                lastPosition = index;
+                numLeft--;
+                return result;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
+        }
+
+        public void remove() {
+            if (lastPosition == -1) {
+                throw new IllegalStateException();
+            }
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+
+            try {
+                if (lastPosition == size() - numLeft) {
+                    numLeft--; // we're removing after a call to previous()
+                }
                 AbstractList.this.remove(lastPosition);
             } catch (IndexOutOfBoundsException e) {
                 throw new ConcurrentModificationException();
             }
             
             expectedModCount = modCount;
-            if (pos == lastPosition) {
-                pos--;
-            }
             lastPosition = -1;
         }
     }
@@ -90,66 +85,63 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
     private final class FullListIterator extends SimpleListIterator implements
             ListIterator<E> {
         FullListIterator(int start) {
-            super();
-            if (0 <= start && start <= size()) {
-                pos = start - 1;
-            } else {
+            if (start < 0 || start > numLeft) {
                 throw new IndexOutOfBoundsException();
             }
+            numLeft -= start;
         }
 
         public void add(E object) {
-            if (expectedModCount == modCount) {
-                try {
-                    AbstractList.this.add(pos + 1, object);
-                } catch (IndexOutOfBoundsException e) {
-                    throw new NoSuchElementException();
-                }
-                pos++;
-                lastPosition = -1;
-                if (modCount != expectedModCount) {
-                    expectedModCount = modCount;
-                }
-            } else {
+            if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
+            }
+
+            try {
+                AbstractList.this.add(size() - numLeft, object);
+                expectedModCount = modCount;
+                lastPosition = -1;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
             }
         }
 
         public boolean hasPrevious() {
-            return pos >= 0;
+            return numLeft < size();
         }
 
         public int nextIndex() {
-            return pos + 1;
+            return size() - numLeft;
         }
 
         public E previous() {
-            if (expectedModCount == modCount) {
-                try {
-                    E result = get(pos);
-                    lastPosition = pos;
-                    pos--;
-                    return result;
-                } catch (IndexOutOfBoundsException e) {
-                    throw new NoSuchElementException();
-                }
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
             }
-            throw new ConcurrentModificationException();
+
+            try {
+                int index = size() - numLeft - 1;
+                E result = get(index);
+                numLeft++;
+                lastPosition = index;
+                return result;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
         }
 
         public int previousIndex() {
-            return pos;
+            return size() - numLeft - 1;
         }
 
         public void set(E object) {
-            if (expectedModCount == modCount) {
-                try {
-                    AbstractList.this.set(lastPosition, object);
-                } catch (IndexOutOfBoundsException e) {
-                    throw new IllegalStateException();
-                }
-            } else {
+            if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
+            }
+
+            try {
+                AbstractList.this.set(lastPosition, object);
+            } catch (IndexOutOfBoundsException e) {
+                throw new IllegalStateException();
             }
         }
     }
