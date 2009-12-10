@@ -35,11 +35,12 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
 
     private static final long serialVersionUID = -2479143000061671589L;
 
-    transient NavigableMap<E, E> backingMap;
+    /** Keys are this set's elements. Values are always Boolean.TRUE */
+    transient NavigableMap<E, Object> backingMap;
 
     transient NavigableSet<E> descendingSet;
 
-    TreeSet(NavigableMap<E, E> map) {
+    TreeSet(NavigableMap<E, Object> map) {
         backingMap = map;
     }
 
@@ -48,7 +49,7 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
      * ordering.
      */
     public TreeSet() {
-        backingMap = new TreeMap<E, E>();
+        backingMap = new TreeMap<E, Object>();
     }
 
     /**
@@ -75,7 +76,7 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
      *            the comparator to use.
      */
     public TreeSet(Comparator<? super E> comparator) {
-        backingMap = new TreeMap<E, E>(comparator);
+        backingMap = new TreeMap<E, Object>(comparator);
     }
 
     /**
@@ -109,7 +110,7 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
      */
     @Override
     public boolean add(E object) {
-        return backingMap.put(object, object) == null;
+        return backingMap.put(object, Boolean.TRUE) == null;
     }
 
     /**
@@ -155,10 +156,10 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
         try {
             TreeSet<E> clone = (TreeSet<E>) super.clone();
             if (backingMap instanceof TreeMap) {
-                clone.backingMap = (NavigableMap<E, E>) ((TreeMap<E, E>) backingMap)
+                clone.backingMap = (NavigableMap<E, Object>) ((TreeMap<E, Object>) backingMap)
                         .clone();
             } else {
-                clone.backingMap = new TreeMap<E, E>(backingMap);
+                clone.backingMap = new TreeMap<E, Object>(backingMap);
             }
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -286,7 +287,7 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
      * @since 1.6
      */
     public E pollFirst() {
-        Map.Entry<E, E> entry = backingMap.pollFirstEntry();
+        Map.Entry<E, Object> entry = backingMap.pollFirstEntry();
         return (null == entry) ? null : entry.getKey();
     }
 
@@ -297,7 +298,7 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
      * @since 1.6
      */
     public E pollLast() {
-        Map.Entry<E, E> entry = backingMap.pollLastEntry();
+        Map.Entry<E, Object> entry = backingMap.pollLastEntry();
         return (null == entry) ? null : entry.getKey();
     }
 
@@ -493,14 +494,14 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
         stream.defaultReadObject();
-        TreeMap<E, E> map = new TreeMap<E, E>((Comparator<? super E>) stream
-                .readObject());
+        TreeMap<E, Object> map = new TreeMap<E, Object>(
+                (Comparator<? super E>) stream.readObject());
         int size = stream.readInt();
         if (size > 0) {
-            TreeMap.Node<E,E> lastNode = null;
+            TreeMap.Node<E, Object> lastNode = null;
             for(int i=0; i<size; i++) {
                 E elem = (E)stream.readObject();
-                lastNode = map.addToLast(lastNode,elem,elem);
+                lastNode = map.addToLast(lastNode,elem, Boolean.TRUE);
             }
         }
         backingMap = map;

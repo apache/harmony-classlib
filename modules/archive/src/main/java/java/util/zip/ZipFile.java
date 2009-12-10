@@ -368,7 +368,6 @@ public class ZipFile implements ZipConstants {
         RandomAccessFile mSharedRaf;
         long mOffset;
         long mLength;
-        private byte[] singleByteBuf = new byte[1];
 
         public RAFStream(RandomAccessFile raf, long pos) throws IOException {
             mSharedRaf = raf;
@@ -383,6 +382,7 @@ public class ZipFile implements ZipConstants {
 
         @Override
         public int read() throws IOException {
+            byte[] singleByteBuf = new byte[1];
             if (read(singleByteBuf, 0, 1) == 1) {
                 return singleByteBuf[0] & 0XFF;
             } else {

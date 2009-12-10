@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.harmony.archive.internal.nls.Messages;
-import org.apache.harmony.luni.util.InputStreamExposer;
+import org.apache.harmony.luni.util.InputStreamHelper;
 import org.apache.harmony.luni.util.ThreadLocalCache;
 
 /**
@@ -209,7 +209,7 @@ public class Manifest implements Cloneable {
         byte[] buf;
         // Try to read get a reference to the bytes directly
         try {
-            buf = InputStreamExposer.expose(is);
+            buf = InputStreamHelper.expose(is);
         } catch (UnsupportedOperationException uoe) {
             buf = readFully(is);
         }
