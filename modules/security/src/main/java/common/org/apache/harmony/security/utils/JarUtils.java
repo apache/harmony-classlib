@@ -38,7 +38,6 @@ import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.harmony.luni.util.InputStreamHelper;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.internal.nls.Messages;
 import org.apache.harmony.security.pkcs7.ContentInfo;
@@ -145,7 +144,8 @@ public class JarUtils {
         // Otherwise, compute the message digest on the data.
         List atr = sigInfo.getAuthenticatedAttributes();
 
-        byte[] sfBytes = InputStreamHelper.readFullyAndClose(signature);
+        byte[] sfBytes = new byte[signature.available()];
+        signature.read(sfBytes);
 
         if (atr == null) {
             sig.update(sfBytes);    

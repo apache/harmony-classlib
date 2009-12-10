@@ -55,9 +55,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements
 
             try {
                 return size() == s.size() && containsAll(s);
-            } catch (NullPointerException ignored) {
-                return false;
-            } catch (ClassCastException ignored) {
+            } catch (ClassCastException cce) {
                 return false;
             }
         }

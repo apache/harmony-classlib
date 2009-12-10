@@ -20,7 +20,6 @@ package java.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 
@@ -190,25 +189,14 @@ public class Collections {
     @SuppressWarnings("unchecked")
     public static final Map EMPTY_MAP = new EmptyMap();
 
-    /**
-     * This class is a singleton so that equals() and hashCode() work properly.
-     */
     private static final class ReverseComparator<T> implements Comparator<T>,
             Serializable {
-
-        private static final ReverseComparator<Object> INSTANCE
-                = new ReverseComparator<Object>();
-
         private static final long serialVersionUID = 7207038068494060240L;
 
         @SuppressWarnings("unchecked")
         public int compare(T o1, T o2) {
             Comparable<T> c2 = (Comparable<T>) o2;
             return c2.compareTo(o1);
-        }
-
-        private Object readResolve() throws ObjectStreamException {
-            return INSTANCE;
         }
     }
 
@@ -225,18 +213,6 @@ public class Collections {
 
         public int compare(T o1, T o2) {
             return comparator.compare(o2, o1);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof ReverseComparatorWithComparator
-                    && ((ReverseComparatorWithComparator) o).comparator
-                            .equals(comparator);
-        }
-
-        @Override
-        public int hashCode() {
-            return ~comparator.hashCode();
         }
     }
 
@@ -377,17 +353,34 @@ public class Collections {
                         }
 
                         public Map.Entry<K, V> next() {
-                            if (!hasNext) {
-                                throw new NoSuchElementException();
-                            }
+                            if (hasNext) {
+                                hasNext = false;
+                                return new Map.Entry<K, V>() {
+                                    @Override
+                                    public boolean equals(Object object) {
+                                        return contains(object);
+                                    }
 
-                            hasNext = false;
-                            return new MapEntry<K, V>(k, v) {
-                                @Override
-                                public V setValue(V value) {
-                                    throw new UnsupportedOperationException();
-                                }
-                            };
+                                    public K getKey() {
+                                        return k;
+                                    }
+
+                                    public V getValue() {
+                                        return v;
+                                    }
+
+                                    @Override
+                                    public int hashCode() {
+                                        return (k == null ? 0 : k.hashCode())
+                                                ^ (v == null ? 0 : v.hashCode());
+                                    }
+
+                                    public V setValue(V value) {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                };
+                            }
+                            throw new NoSuchElementException();
                         }
 
                         public void remove() {
@@ -1692,12 +1685,6 @@ public class Collections {
      */
     public static <T> T max(Collection<? extends T> collection,
             Comparator<? super T> comparator) {
-        if (comparator == null) {
-            @SuppressWarnings("unchecked") // null comparator? T is comparable
-            T result = (T) max((Collection<Comparable>) collection);
-            return result;
-        }
-
         Iterator<? extends T> it = collection.iterator();
         T max = it.next();
         while (it.hasNext()) {
@@ -1748,12 +1735,6 @@ public class Collections {
      */
     public static <T> T min(Collection<? extends T> collection,
             Comparator<? super T> comparator) {
-        if (comparator == null) {
-            @SuppressWarnings("unchecked") // null comparator? T is comparable
-            T result = (T) min((Collection<Comparable>) collection);
-            return result;
-        }
-
         Iterator<? extends T> it = collection.iterator();
         T min = it.next();
         while (it.hasNext()) {
@@ -1813,9 +1794,8 @@ public class Collections {
      * @see Comparable
      * @see Serializable
      */
-    @SuppressWarnings("unchecked")
     public static <T> Comparator<T> reverseOrder() {
-        return (Comparator) ReverseComparator.INSTANCE;
+        return new ReverseComparator<T>();
     }
 
     /**
@@ -1835,9 +1815,6 @@ public class Collections {
     public static <T> Comparator<T> reverseOrder(Comparator<T> c) {
         if (c == null) {
             return reverseOrder();
-        }
-        if (c instanceof ReverseComparatorWithComparator) {
-            return ((ReverseComparatorWithComparator<T>) c).comparator;
         }
         return new ReverseComparatorWithComparator<T>(c);
     }
@@ -2684,8 +2661,8 @@ public class Collections {
      *            class of object that should be
      * @return specified object
      */
-    static <E> E checkType(E obj, Class<? extends E> type) {
-        if (obj != null && !type.isInstance(obj)) {
+    static <E> E checkType(E obj, Class<E> type) {
+        if (!type.isInstance(obj)) {
             // luni.05=Attempt to insert {0} element into collection with
             // element type {1}
             throw new ClassCastException(Messages.getString(
@@ -3022,11 +2999,20 @@ public class Collections {
          */
         @SuppressWarnings("unchecked")
         public boolean addAll(Collection<? extends E> c1) {
-            Object[] array = c1.toArray();
-            for (Object o : array) {
-                checkType(o, type);
+            int size = c1.size();
+            if (size == 0) {
+                return false;
             }
-            return c.addAll((List<E>) Arrays.asList(array));
+            E[] arr = (E[]) new Object[size];
+            Iterator<? extends E> it = c1.iterator();
+            for (int i = 0; i < size; i++) {
+                arr[i] = checkType(it.next(), type);
+            }
+            boolean added = false;
+            for (int i = 0; i < size; i++) {
+                added |= c.add(arr[i]);
+            }
+            return added;
         }
 
         /**
@@ -3172,11 +3158,16 @@ public class Collections {
          */
         @SuppressWarnings("unchecked")
         public boolean addAll(int index, Collection<? extends E> c1) {
-            Object[] array = c1.toArray();
-            for (Object o : array) {
-                checkType(o, type);
+            int size = c1.size();
+            if (size == 0) {
+                return false;
             }
-            return l.addAll(index, (List<E>) Arrays.asList(array));
+            E[] arr = (E[]) new Object[size];
+            Iterator<? extends E> it = c1.iterator();
+            for (int i = 0; i < size; i++) {
+                arr[i] = checkType(it.next(), type);
+            }
+            return l.addAll(index, Arrays.asList(arr));
         }
 
         /**

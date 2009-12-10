@@ -5465,9 +5465,6 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
 
     @SuppressWarnings("unchecked")
     private static <T> Comparable<T> toComparable(T obj) {
-        if (obj == null) {
-            throw new NullPointerException();
-        }
         return (Comparable<T>) obj;
     }
 
