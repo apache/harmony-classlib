@@ -206,7 +206,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 
     /* read bytes */
     size = zipEntry.uncompressedSize;
-    result = (char *)hymem_allocate_memory(size*sizeof(char));
+    result = (char *)hymem_allocate_memory(size*sizeof(char) + 1);
 #ifndef HY_ZIP_API
     retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, (unsigned char*)result, size);
 #else /* HY_ZIP_API */
@@ -223,6 +223,7 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
         return NULL;
     }
 
+    result[size] = '\0';
     /* free resource */
 #ifndef HY_ZIP_API
     zip_freeZipEntry(privatePortLibrary, &zipEntry);
@@ -243,6 +244,7 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
     char *pos;
     char *end;
     char *value;
+    char *tmp;
     int length;
     PORT_ACCESS_FROM_JAVAVM(vm);
 
@@ -253,18 +255,46 @@ char* read_attribute(JavaVM *vm, char *manifest,char *lwrmanifest, const char * 
     pos = manifest+ (strstr(lwrmanifest,target) - lwrmanifest);
     pos += strlen(target)+2;//": "
     end = strchr(pos, '\n');
+
+    while (end != NULL && *(end + 1) == ' ') {
+        end = strchr(end + 1, '\n');
+    }
+
     if(NULL == end){
         end = manifest + strlen(manifest);
     }
-    /* in windows, has '\r\n' in the end of line, omit '\r' */
-    if (*(end - 1) == '\r'){
-        end--;
-    }
+
     length = end - pos;
 
     value = (char *)hymem_allocate_memory(sizeof(char)*(length+1));
-    strncpy(value, pos, length);
-    *(value+length) = '\0';
+    tmp = value;
+
+    end = strchr(pos, '\n');
+    while (end != NULL && *(end + 1) == ' ') {
+        /* in windows, has '\r\n' in the end of line, omit '\r' */
+        if (*(end - 1) == '\r') {
+            strncpy(tmp, pos, end - 1 - pos);
+            tmp += end - 1 - pos;
+            pos = end + 2;
+        } else {
+            strncpy(tmp, pos, end - pos);
+            tmp += end - pos;
+            pos = end + 2;
+        }
+        end = strchr(end + 1, '\n');
+    }
+
+    if (NULL == end) {
+        strcpy(tmp, pos);
+    } else {
+        /* in windows, has '\r\n' in the end of line, omit '\r' */
+        if (*(end - 1) == '\r') {
+            end--;
+        }
+        strncpy(tmp, pos, end - pos);
+        *(tmp + (end - pos)) = '\0';
+    }
+
     return value;
 }
 
@@ -316,7 +346,11 @@ jint Parse_Options(JavaVM *vm, JNIEnv *env, jvmtiEnv *jvmti,  const char *agent)
     check_jvmti_error(env, (*jvmti)->GetSystemProperty(jvmti,"java.class.path",&classpath),"Failed to get classpath.");
     classpath_cpy = (char *)hymem_allocate_memory((sizeof(char)*(strlen(classpath)+strlen(jar_name)+2)));
     strcpy(classpath_cpy,classpath);
+#if defined(WIN32) || defined(WIN64)
     strcat(classpath_cpy,";");
+#else
+    strcat(classpath_cpy,":");
+#endif
     strcat(classpath_cpy,jar_name);
     check_jvmti_error(env, (*jvmti)->SetSystemProperty(jvmti, "java.class.path",classpath_cpy),"Failed to set classpath.");
     hymem_free_memory(classpath_cpy);
