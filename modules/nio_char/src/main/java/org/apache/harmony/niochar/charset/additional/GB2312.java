@@ -295,6 +295,7 @@ public class GB2312 extends Charset {
                                 }else{
                                     if(c < 0x008E) {
                                         bb.put((byte)c);
+                                        bbRemaining--;
                                     } else {
                                         int index = (int)c >> 8;
                                         index = encodeIndex[index];
