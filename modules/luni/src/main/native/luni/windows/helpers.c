@@ -62,7 +62,7 @@ static void unmangle (JNIEnv * env, LPWSTR data);
 I_32 getPlatformAttribute (JNIEnv * env, char *path, DWORD attribute);
 typedef enum {
 	OPERSTAT,
-	IFTYPE,
+	INTERFACETYPE,
 	FLAGS,
 	MTU
 }FLAGTYPE;
@@ -734,7 +734,7 @@ getPlatformNetworkInterfaceAttribute(JNIEnv * env, FLAGTYPE type , jint jindex, 
 					case OPERSTAT:
 						isSet = ((AdapterAddresses->OperStatus & flag) == flag);
 						break;
-					case IFTYPE:
+					case INTERFACETYPE:
 						if(flag == IF_TYPE_PPP && isIPv6)
 							isSet = ((AdapterAddresses->IfType & IF_TYPE_TUNNEL) == IF_TYPE_TUNNEL);
 						else
@@ -769,12 +769,12 @@ getPlatformIsUp(JNIEnv * env, jstring ifname, jint jindex)
 
 jboolean getPlatformIsLoopback(JNIEnv * env, jstring ifname, jint jindex)
 {
-	return getPlatformNetworkInterfaceAttribute(env,IFTYPE,jindex,IF_TYPE_SOFTWARE_LOOPBACK);
+	return getPlatformNetworkInterfaceAttribute(env,INTERFACETYPE,jindex,IF_TYPE_SOFTWARE_LOOPBACK);
 }
 
 jboolean getPlatformIsPoint2Point(JNIEnv * env, jstring ifname, jint jindex)
 {
-	return getPlatformNetworkInterfaceAttribute(env,IFTYPE,jindex,IF_TYPE_PPP);
+	return getPlatformNetworkInterfaceAttribute(env,INTERFACETYPE,jindex,IF_TYPE_PPP);
 }
 
 
