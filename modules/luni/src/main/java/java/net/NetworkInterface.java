@@ -88,8 +88,11 @@ public final class NetworkInterface extends Object {
         this.name = name;
         this.displayName = displayName;
         this.interfaceIndex = interfaceIndex;
-        for (int i = 0; i < addresses.length; i++) {
-            this.addresses.add(addresses[i]);
+   
+        if(addresses != null){
+            for (int i = 0; i < addresses.length; i++) {
+                this.addresses.add(addresses[i]);
+            }
         }
     }
 
