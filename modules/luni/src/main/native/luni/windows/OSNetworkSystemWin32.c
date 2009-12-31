@@ -64,8 +64,8 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
   U_32 time_sec = (U_32)timeout/1000;
   U_32 time_msec = (U_32)(timeout%1000)*1000;
 
-  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  fdset_write =	hymem_allocate_memory(sizeof (struct hyfdset_struct));
+  fdset_read = hymem_allocate_memory(sizeof (hyfdset_struct));
+  fdset_write = hymem_allocate_memory(sizeof (hyfdset_struct));
 
   FD_ZERO (&fdset_read->handle);
   FD_ZERO (&fdset_write->handle);
@@ -180,7 +180,7 @@ selectRead (JNIEnv * env, hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   hyfdset_t fdset_read;
   I_32 result = 0;
 
-  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
+  fdset_read = hymem_allocate_memory(sizeof (hyfdset_struct));
   FD_ZERO (&fdset_read->handle);
 
   if (hysocketP->flags & SOCKET_IPV4_OPEN_MASK) {
