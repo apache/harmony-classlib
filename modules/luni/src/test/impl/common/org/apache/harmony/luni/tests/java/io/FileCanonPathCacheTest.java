@@ -95,6 +95,20 @@ public class FileCanonPathCacheTest extends TestCase {
         assertNull(FileCanonPathCache.get(file5.getAbsolutePath()));
     }
 
+    public void testTimeout03() throws Exception {
+        FileCanonPathCache.setTimeout(10);
+        File file = new File("1");
+        FileCanonPathCache.put(file.getAbsolutePath(), file.getAbsolutePath());
+        file = new File("2");
+        FileCanonPathCache.put(file.getAbsolutePath(), file.getAbsolutePath());
+        file = new File("3");
+        FileCanonPathCache.put(file.getAbsolutePath(), file.getAbsolutePath());
+        Thread.sleep(100);
+        FileCanonPathCache.get(file.getAbsolutePath());
+        assertNull(FileCanonPathCache.get(new File("1").getAbsolutePath()));
+        assertNull(FileCanonPathCache.get(new File("2").getAbsolutePath()));
+    }
+
     public void testCacheFull() throws Exception {
         int cacheSize = FileCanonPathCache.CACHE_SIZE;
         File[] files = new File[cacheSize];
