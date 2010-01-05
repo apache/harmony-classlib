@@ -1496,6 +1496,26 @@ public class Arrays {
         return equals((short[]) e1, (short[]) e2);
     }
 
+    private static boolean isSame(double double1, double double2) {
+        // Simple case
+        if (double1 == double2 && 0.0d != double1) {
+            return true;
+        }
+
+        // Deal with NaNs
+        if (Double.isNaN(double1)) {
+            return Double.isNaN(double2);
+        }
+        if (Double.isNaN(double2)) {
+            return false;
+        }
+
+        // Deal with +0.0 and -0.0
+        long d1 = Double.doubleToRawLongBits(double1);
+        long d2 = Double.doubleToRawLongBits(double2);
+        return d1 == d2;
+    }
+
     private static boolean lessThan(double double1, double double2) {
         // A slightly specialized version of
         // Double.compare(double1, double2) < 0.
@@ -1524,6 +1544,26 @@ public class Arrays {
         return d1 < d2;
     }
 
+    private static boolean isSame(float float1, float float2) {
+        // Simple case
+        if (float1 == float2 && 0.0d != float1) {
+            return true;
+        }
+
+        // Deal with NaNs
+        if (Float.isNaN(float1)) {
+            return Float.isNaN(float2);
+        }
+        if (Float.isNaN(float2)) {
+            return false;
+        }
+
+        // Deal with +0.0 and -0.0
+        int f1 = Float.floatToRawIntBits(float1);
+        int f2 = Float.floatToRawIntBits(float2);
+        return f1 == f2;
+    }
+    
     private static boolean lessThan(float float1, float float2) {
         // A slightly specialized version of Float.compare(float1, float2) < 0.
 
@@ -1896,7 +1936,7 @@ public class Arrays {
         c = d = end - 1;
         while (true) {
             while (b <= c && !lessThan(partionValue, array[b])) {
-                if (array[b] == partionValue) {
+                if (isSame(array[b], partionValue)) {
                     temp = array[a];
                     array[a++] = array[b];
                     array[b] = temp;
@@ -1904,7 +1944,7 @@ public class Arrays {
                 b++;
             }
             while (c >= b && !lessThan(array[c], partionValue)) {
-                if (array[c] == partionValue) {
+                if (isSame(array[c], partionValue)) {
                     temp = array[c];
                     array[c] = array[d];
                     array[d--] = temp;
@@ -2009,7 +2049,7 @@ public class Arrays {
         c = d = end - 1;
         while (true) {
             while (b <= c && !lessThan(partionValue, array[b])) {
-                if (array[b] == partionValue) {
+                if (isSame(array[b], partionValue)) {
                     temp = array[a];
                     array[a++] = array[b];
                     array[b] = temp;
@@ -2017,7 +2057,7 @@ public class Arrays {
                 b++;
             }
             while (c >= b && !lessThan(array[c], partionValue)) {
-                if (array[c] == partionValue) {
+                if (isSame(array[c], partionValue)) {
                     temp = array[c];
                     array[c] = array[d];
                     array[d--] = temp;
