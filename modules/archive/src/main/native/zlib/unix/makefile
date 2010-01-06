@@ -22,7 +22,7 @@ HY_CFG=release
 
 include $(HY_HDK)/build/make/defines.mk
 
-HYRELEASECFLAGS = -O3
+HYRELEASECFLAGS = -O2
 
 # Further performance improvement on x86 and x86_64
 ifneq (,$(findstring x86,$(HY_ARCH)))
