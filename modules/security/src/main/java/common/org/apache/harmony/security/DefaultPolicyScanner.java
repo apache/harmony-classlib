@@ -309,7 +309,8 @@ public class DefaultPolicyScanner {
             case StreamTokenizer.TT_WORD:
                 if (Util.equalsIgnoreCase("permission", st.sval)) { //$NON-NLS-1$
                     PermissionEntry pe = new PermissionEntry();
-                    if (st.nextToken() == StreamTokenizer.TT_WORD) {
+                    int tok = st.nextToken();
+                    if (tok == StreamTokenizer.TT_WORD || tok == '"') {
                         pe.klass = st.sval;
                         if (st.nextToken() == '"') {
                             pe.name = st.sval;
