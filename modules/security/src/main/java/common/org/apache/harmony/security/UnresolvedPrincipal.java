@@ -52,7 +52,7 @@ public final class UnresolvedPrincipal implements Principal {
     private final String name;
 
     /**
-     * Constructs a a new definition of a Principal with specified
+     * Constructs a new definition of a Principal with specified
      * parameters. 
      * @param klass fully qualified class name, may be wildcard
      * @param name name of principal, may be wildcard
