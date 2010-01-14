@@ -304,6 +304,41 @@ public class PropertiesTest extends junit.framework.TestCase {
         }
     }
 
+    public void test_propertyNames_sequence() {
+        Properties parent = new Properties();
+        parent.setProperty("parent.a.key", "parent.a.value");
+        parent.setProperty("parent.b.key", "parent.b.value");
+
+        Enumeration<?> names = parent.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties current = new Properties(parent);
+        current.setProperty("current.a.key", "current.a.value");
+        current.setProperty("current.b.key", "current.b.value");
+
+        names = current.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties child = new Properties(current);
+        child.setProperty("child.a.key", "child.a.value");
+        child.setProperty("child.b.key", "child.b.value");
+
+        names = child.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("child.b.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("child.a.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+    }
+
     /**
 
      * @tests java.util.Properties#save(java.io.OutputStream, java.lang.String)
