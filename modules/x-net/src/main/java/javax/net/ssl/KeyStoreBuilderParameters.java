@@ -27,7 +27,7 @@ import java.security.KeyStore;
  * {@code KeyStore.Builder}s.
  *
  * @since 1.5
- * @see KeyStore.Builder
+ * @see java.security.KeyStore.Builder
  */
 public class KeyStoreBuilderParameters implements ManagerFactoryParameters {
 
