@@ -17,10 +17,12 @@
 
 package org.apache.harmony.luni.tests.java.util;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
@@ -207,4 +209,67 @@ public class TimeZoneTest extends junit.framework.TestCase {
 
 	protected void tearDown() {
 	}
+	
+    /**
+     * @add test {@link java.util.TimeZone#getAvailableIDs(int)}
+     */
+    public void test_getAvailableIDs_I() {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
+        int rawoffset = tz.getRawOffset();
+        String[] ids = TimeZone.getAvailableIDs(rawoffset);
+        List<String> idList = Arrays.asList(ids);
+        assertTrue("Asia/shanghai and Hongkong should have the same rawoffset",
+                idList.contains("Hongkong"));        
+    }
+    
+    /**
+     * @add test {@link java.util.TimeZone#getDisplayName()}
+     */
+    public void test_getDisplayName() {
+        TimeZone defaultZone = TimeZone.getDefault();
+        Locale defaulLocal = Locale.getDefault();
+        String defaultName = defaultZone.getDisplayName();
+        String expectedName = defaultZone.getDisplayName(defaulLocal);
+        assertEquals(
+                "getDispalyName() did not return the default Locale suitable name",
+                expectedName, defaultName);
+    }
+
+    /**
+     * @add test {@link java.util.TimeZone#getDisplayName(boolean, int)}
+     */
+    public void test_getDisplayName_ZI() {
+        TimeZone defaultZone = TimeZone.getDefault();
+        Locale defaultLocale = Locale.getDefault();
+        String actualName = defaultZone.getDisplayName(false, TimeZone.LONG);
+        String expectedName = defaultZone.getDisplayName(false, TimeZone.LONG,
+                defaultLocale);
+        assertEquals(
+                "getDisplayName(daylight,style) did not return the default locale suitable name",
+                expectedName, actualName);
+    }
+
+    /**
+     * @add test {@link java.util.TimeZone#hasSameRules(TimeZone)}
+     */
+    public void test_hasSameRules_Ljava_util_TimeZone() {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
+        int offset = tz.getRawOffset();
+
+        String[] ids = TimeZone.getAvailableIDs(offset);
+        int i = 0;
+        if (ids.length != 0) {
+            while (true) {
+                if (!(ids[i].equalsIgnoreCase(tz.getID()))) {
+                    TimeZone sameZone = TimeZone.getTimeZone(ids[i]);
+                    assertTrue(tz.hasSameRules(sameZone));
+                    break;
+                } else {
+                    i++;
+                }
+            }
+        }
+        assertFalse("should return false when parameter is null", tz
+                .hasSameRules(null));
+    }
 }

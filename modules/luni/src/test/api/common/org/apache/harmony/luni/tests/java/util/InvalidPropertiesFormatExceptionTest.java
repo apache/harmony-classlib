@@ -36,4 +36,15 @@ public class InvalidPropertiesFormatExceptionTest extends
         }
     }
 
+    /**
+     * @tests {@link java.util.InvalidPropertiesFormatException#InvalidPropertiesFormatException(Throwable)}
+     */
+    public void test_Constructor_Ljava_lang_Throwable() {
+        Throwable throwable = new Throwable();
+        InvalidPropertiesFormatException exception = new InvalidPropertiesFormatException(
+                throwable);
+        assertEquals("the casue did not equals argument passed in constructor",
+                throwable, exception.getCause());
+    }
+
 }
