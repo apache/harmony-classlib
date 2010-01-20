@@ -468,7 +468,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
     }
 
     /**
-     * gets the internal data array
+     * gets the internal data array (or a new array if it is null)
      *
      * @return the data array
      */
@@ -722,6 +722,15 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index is " + index + ", size is " + size);
         }
+    }
+
+    /**
+     * gets the internal data array
+     *
+     * @return the data array
+     */
+    final E[] getArray() {
+        return arr;
     }
 
     /**
@@ -1171,4 +1180,5 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
             setData(back);
         }
     }
+
 }
