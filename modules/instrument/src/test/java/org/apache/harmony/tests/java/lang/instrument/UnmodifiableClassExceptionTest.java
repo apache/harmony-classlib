@@ -40,4 +40,15 @@ public class UnmodifiableClassExceptionTest extends TestCase {
         UnmodifiableClassException object = new UnmodifiableClassException();
         SerializationTest.verifyGolden(this, object);
     }
+    
+    /**
+     * @tests java.lang.instrument.UnmodifiableClassException#
+     *        UnmodifiableClassException(java.lang.String)}.
+     */
+    public void test_UnmodifiableClassException_LString() {
+        UnmodifiableClassException object = new UnmodifiableClassException(
+                "Some Error Message");
+        assertEquals("Wrong message from constructor(String)",
+                "Some Error Message", object.getMessage());
+    }
 }
