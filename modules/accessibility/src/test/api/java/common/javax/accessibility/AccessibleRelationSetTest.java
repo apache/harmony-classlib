@@ -42,12 +42,17 @@ public class AccessibleRelationSetTest extends TestCase {
     }
 
     public void testAccessibleRelationSet() {
-        assertNotNull(set.relations);
+        assertNotNull(set.toArray());
 
         try {
             new AccessibleRelationSet(null);
             fail("expected null pointer exception");
         } catch (NullPointerException e) {
+        }
+        AccessibleRelationSet set2 = new AccessibleRelationSet(relations);
+        for (AccessibleRelation re : relations) {
+            assertTrue("new set did not contain the relation", set2.contains(re
+                    .getKey()));
         }
     }
 
@@ -69,7 +74,7 @@ public class AccessibleRelationSetTest extends TestCase {
     }
 
     public void testNullOperations() {
-        set.relations = null;
+        set.clear();
         assertFalse("Empty set should not contain any item", set
                 .contains(AccessibleRelation.LABEL_FOR));
         assertNull("Empty set should not contain any item", set
@@ -77,7 +82,7 @@ public class AccessibleRelationSetTest extends TestCase {
         assertFalse("Empty set should not contain any item", set.remove(set
                 .get(AccessibleRelation.LABEL_FOR)));
         set.add(new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR));
-        set.relations = null;
+        set.clear();
         set.addAll(relations);
     }
 
@@ -90,11 +95,11 @@ public class AccessibleRelationSetTest extends TestCase {
         assertSame(relations[0], set.get(AccessibleRelation.CONTROLLED_BY));
         set.remove(set.get(AccessibleRelation.CONTROLLED_BY));
 
-        set.relations = null;
+        set.clear();
         set.addAll(relations);
         set.addAll(relations);
         assertEquals("Should not add duplicate items in addAll",
-                relations.length, set.relations.size());
+                relations.length, set.size());
     }
 
     public void testGet() {
@@ -106,7 +111,7 @@ public class AccessibleRelationSetTest extends TestCase {
 
     public void testClear() {
         set.clear();
-        assertEquals("Cleared array should be empty", 0, set.relations.size());
+        assertEquals("Cleared array should be empty", 0, set.size());
     }
 
     public void testRemove() {
@@ -124,7 +129,7 @@ public class AccessibleRelationSetTest extends TestCase {
                 "String representation should contain elements representation",
                 stateSetString.indexOf(relations[1].toString()) >= 0);
 
-        set.relations = null;
+        set.clear();
         set.toString();
     }
 
