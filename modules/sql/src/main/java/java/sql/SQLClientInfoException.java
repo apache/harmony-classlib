@@ -151,10 +151,10 @@ public class SQLClientInfoException extends SQLException {
      *            the Throwable object for the underlying reason this
      *            SQLException
      */
-    public SQLClientInfoException(String reason, String SQLState,
+    public SQLClientInfoException(String reason, String sqlState,
             int vendorCode, Map<String, ClientInfoStatus> failedProperties,
             Throwable cause) {
-        super(reason, SQLState, vendorCode, cause);
+        super(reason, sqlState, vendorCode, cause);
         this.failedProperties = failedProperties;
     }
 
@@ -171,9 +171,9 @@ public class SQLClientInfoException extends SQLException {
      *            the Map<String,ClientInfoStatus> object to use as the
      *            property values
      */
-    public SQLClientInfoException(String reason, String SQLState,
+    public SQLClientInfoException(String reason, String sqlState,
             Map<String, ClientInfoStatus> failedProperties) {
-        super(reason, SQLState);
+        super(reason, sqlState);
         this.failedProperties = failedProperties;
     }
 
@@ -187,15 +187,16 @@ public class SQLClientInfoException extends SQLException {
      *            the string to use as the Reason string
      * @param sqlState
      *            the string to use as the SQLState string
-     * @param vendorCode
-     *            the integer value for the error code
      * @param failedProperties
      *            the Map<String,ClientInfoStatus> object to use as the
      *            property values
+     * @param cause
+     *            the Throwable object for the underlying reason this
+     *            SQLException
      */
-    public SQLClientInfoException(String reason, String SQLState,
+    public SQLClientInfoException(String reason, String sqlState,
             Map<String, ClientInfoStatus> failedProperties, Throwable cause) {
-        super(reason, SQLState, cause);
+        super(reason, sqlState, cause);
         this.failedProperties = failedProperties;
     }
 

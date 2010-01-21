@@ -621,7 +621,7 @@ public interface RowSet extends ResultSet {
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
-    public void setBytes(String parametername, byte[] theByteArray)
+    public void setBytes(String parameterName, byte[] theByteArray)
             throws SQLException;
 
     /**
@@ -743,15 +743,14 @@ public interface RowSet extends ResultSet {
      * Sets the value of the specified parameter in the RowSet command with the
      * value of a supplied java.sql.Clob.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
-     * @param Clob
+     * @param parameterName
+     *            name for parameter
+     * @param theClob
      *            the specific Clob object
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
-    public void setClob(String parameterName, Clob x) throws SQLException;
+    public void setClob(String parameterName, Clob theClob) throws SQLException;
 
     /**
      * Sets the value of the specified parameter in the RowSet command with the
@@ -759,8 +758,9 @@ public interface RowSet extends ResultSet {
      * 
      * @param parameterName
      *            name for parameter
-     * @param theClob
-     *            the Clob value to set
+     * @param theReader
+     *            the Reader which contains the Unicode data to set into the
+     *            parameter
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -771,9 +771,8 @@ public interface RowSet extends ResultSet {
      * Sets the value of the specified parameter in the RowSet command with the
      * value of a supplied java.io.Reader.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
+     * @param parameterName
+     *            name for parameter
      * @param theReader
      *            the Reader which contains the Unicode data to set into the
      *            parameter
@@ -1087,8 +1086,9 @@ public interface RowSet extends ResultSet {
      * 
      * @param parameterName
      *            name for parameter
-     * @param theClob
-     *            the Clob value to set
+     * @param theReader
+     *            the Reader which contains the Unicode data to set into the
+     *            parameter
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -1099,9 +1099,8 @@ public interface RowSet extends ResultSet {
      * Sets the value of the specified parameter in the RowSet command with the
      * value of a supplied java.io.Reader.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
+     * @param parameterName
+     *            name for parameter
      * @param theReader
      *            the Reader which contains the Unicode data to set into the
      *            parameter
@@ -1115,13 +1114,13 @@ public interface RowSet extends ResultSet {
 
     /**
      * Sets the value of the specified parameter in the RowSet command with the
-     * value of a supplied java.sql.Clob.
+     * value of a supplied java.sql.NClob.
      * 
      * @param parameterIndex
      *            index of the parameter to set, where the first parameter has
      *            index = 1.
-     * @param theClob
-     *            the Clob value to set
+     * @param theNClob
+     *            the NClob value to set
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -1166,15 +1165,15 @@ public interface RowSet extends ResultSet {
      * Sets the value of the specified parameter in the RowSet command with the
      * value of a supplied java.sql.NClob.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
-     * @param value
-     *            the given NClob object
+     * @param parameterName
+     *            name for parameter
+     * @param theNClob
+     *            the NClob value to set
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
-    public void setNClob(String parameterName, NClob value) throws SQLException;
+    public void setNClob(String parameterName, NClob theNClob)
+            throws SQLException;
 
     /**
      * Sets the value of the specified parameter in the RowSet command with the
@@ -1182,8 +1181,9 @@ public interface RowSet extends ResultSet {
      * 
      * @param parameterName
      *            name for parameter
-     * @param theNClob
-     *            the NClob value to set
+     * @param theReader
+     *            the Reader which contains the Unicode data to set into the
+     *            parameter
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -1194,9 +1194,8 @@ public interface RowSet extends ResultSet {
      * Sets the value of the specified parameter in the RowSet command with the
      * value of a supplied java.io.Reader.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
+     * @param parameterName
+     *            name for parameter
      * @param theReader
      *            the Reader which contains the Unicode data to set into the
      *            parameter
@@ -1278,9 +1277,8 @@ public interface RowSet extends ResultSet {
      * NULL. This form of the <code>setNull</code> method should be used for
      * User Defined Types and REF parameters.
      * 
-     * @param parameterIndex
-     *            index of the parameter to set, where the first parameter has
-     *            index = 1.
+     * @param parameterName
+     *            name for parameter
      * @param sqlType
      *            the type of the parameter, as defined by java.sql.Types.
      * @throws SQLException
@@ -1696,13 +1694,13 @@ public interface RowSet extends ResultSet {
 
     /**
      * Sets the value of the specified parameter in the RowSet command to a
-     * supplied java.sql.Timestamp converting to an SQL TIMESTAMP value using a
-     * supplied Calendar.
+     * supplied java.sql.Timestamp converting to an SQL TIMESTAMP value
+     * using the system default {@code Calendar}.
      * 
      * @param parameterName
      *            name for parameter
-     * @param theCalendar
-     *            the Calendar to use in the conversion operation
+     * @param theTimestamp
+     *            the value to which the parameter is set
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -1717,6 +1715,7 @@ public interface RowSet extends ResultSet {
      * @param parameterName
      *            name for parameter
      * @param theTimestamp
+     *            the value to which the parameter is set
      * @param theCalendar
      *            the Calendar to use in the conversion operation
      * @throws SQLException
