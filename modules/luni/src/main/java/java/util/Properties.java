@@ -591,7 +591,7 @@ public class Properties extends Hashtable<Object, Object> {
 	 * @exception ClassCastException
 	 *                when the key or value of a mapping is not a String
 	 */
-	public synchronized void store(OutputStream out, String comments)
+	public synchronized void store(OutputStream out, String comment)
 			throws IOException {
 		if (lineSeparator == null) {
 			lineSeparator = AccessController
@@ -600,9 +600,9 @@ public class Properties extends Hashtable<Object, Object> {
 
 		StringBuilder buffer = new StringBuilder(200);
 		OutputStreamWriter writer = new OutputStreamWriter(out, "ISO8859_1"); //$NON-NLS-1$
-		if (comments != null) {
+		if (comment != null) {
             writer.write("#"); //$NON-NLS-1$
-            writer.write(comments);
+            writer.write(comment);
 			writer.write(lineSeparator); 
         }
         writer.write("#"); //$NON-NLS-1$
@@ -628,21 +628,21 @@ public class Properties extends Hashtable<Object, Object> {
      * 
      * @param writer
      *            the writer
-     * @param comments
+     * @param comment
      *            the comment
      * @throws IOException 
      *            if any I/O exception occurs
      * @since 1.6 
      */
-    public synchronized void store(Writer writer, String comments) throws IOException {
+    public synchronized void store(Writer writer, String comment) throws IOException {
         if (lineSeparator == null) {
             lineSeparator = AccessController
                     .doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
         }
         StringBuilder buffer = new StringBuilder(200);
-        if (comments != null) {
+        if (comment != null) {
             writer.write("#"); //$NON-NLS-1$
-            writer.write(comments);
+            writer.write(comment);
             writer.write(lineSeparator); 
         }
         writer.write("#"); //$NON-NLS-1$
