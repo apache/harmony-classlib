@@ -86,8 +86,8 @@ public class CookieManager extends CookieHandler {
      *            a CookiePolicy to be used by cookie manager
      *            ACCEPT_ORIGINAL_SERVER will be used if the arg is null.
      */
-    public CookieManager(CookieStore s, CookiePolicy cookiePolicy) {
-        store = s == null ? new CookieStoreImpl() : s;
+    public CookieManager(CookieStore store, CookiePolicy cookiePolicy) {
+        this.store = store == null ? new CookieStoreImpl() : store;
         policy = cookiePolicy == null ? CookiePolicy.ACCEPT_ORIGINAL_SERVER
                 : cookiePolicy;
     }

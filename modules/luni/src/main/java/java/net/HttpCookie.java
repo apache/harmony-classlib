@@ -438,14 +438,14 @@ public final class HttpCookie implements Cloneable {
      * @throws NullPointerException
      *             if the value of name is null
      */
-    public HttpCookie(String n, String v) {
-        String ntrim = n.trim(); // erase leading and trailing whitespaces
+    public HttpCookie(String name, String value) {
+        String ntrim = name.trim(); // erase leading and trailing whitespaces
         if (!isValidName(ntrim)) {
             throw new IllegalArgumentException(Msg.getString("KB002")); //$NON-NLS-1$
         }
 
-        name = ntrim;
-        value = v;
+        this.name = ntrim;
+        this.value = value;
     }
 
     private void attrToString(StringBuilder builder, String attrName,
@@ -697,8 +697,8 @@ public final class HttpCookie implements Cloneable {
      * @param discard
      *            the value for discard attribute
      */
-    public void setDiscard(boolean dis) {
-        discard = dis;
+    public void setDiscard(boolean discard) {
+        this.discard = discard;
     }
 
     /**
@@ -730,8 +730,8 @@ public final class HttpCookie implements Cloneable {
      * @param path
      *            the path to which this cookie is returned
      */
-    public void setPath(String p) {
-        path = p;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     /**
