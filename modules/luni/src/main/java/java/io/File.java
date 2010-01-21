@@ -1693,7 +1693,7 @@ public class File implements Serializable, Comparable<File> {
      *             If a security manager exists and
      *             SecurityManager.checkExec(java.lang.String) disallows read
      *             permission to this file object
-     * @see java.lang.SecurityManager#checkExec(FileDescriptor)
+     * @see java.lang.SecurityManager#checkExec(String)
      * 
      * @since 1.6
      */

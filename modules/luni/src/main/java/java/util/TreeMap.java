@@ -3745,8 +3745,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
      * @param comparator
      *            the comparator to compare keys with.
      */
-    public TreeMap(Comparator<? super K> theComparator) {
-        this.comparator = theComparator;
+    public TreeMap(Comparator<? super K> comparator) {
+        this.comparator = comparator;
     }
 
     /**

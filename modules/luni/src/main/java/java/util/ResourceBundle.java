@@ -1132,8 +1132,8 @@ public abstract class ResourceBundle {
          * a utility method to answer the name of a resource according to the
          * given bundleName and suffix
          * 
-         * @param baseName
-         *            the given base name
+         * @param bundleName
+         *            the given bundle name
          * @param suffix
          *            the suffix
          * @return the name of a resource according to the given bundleName and

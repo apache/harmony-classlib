@@ -72,7 +72,7 @@ public abstract class LocaleNameProvider extends LocaleServiceProvider {
 	 * Gets the localized name for the specified variant code and the specified
 	 * locale to display.
 	 * 
-	 * @param code
+	 * @param variant
 	 *            the variant code
 	 * @param locale
 	 *            the locale
