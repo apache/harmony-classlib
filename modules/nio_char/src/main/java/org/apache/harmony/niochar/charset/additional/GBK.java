@@ -339,6 +339,7 @@ public class GBK extends Charset {
                                 }else{
                                     if(c < 0x0080) {
                                         bb.put((byte)c);
+                                        bbRemaining--;
                                     } else {
                                         int index = (int)c >> 8;
                                         index = encodeIndex[index];

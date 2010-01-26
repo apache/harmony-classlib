@@ -293,7 +293,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String.offsetByCodePoints(int, int)'
      */
-    public void test_offsetByCodePointsII() throws Exception {
+    public void test_offsetByCodePoints_II() throws Exception {
         int result = new String("a\uD800\uDC00b").offsetByCodePoints(0, 2);
         assertEquals(3, result);
 

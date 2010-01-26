@@ -17,12 +17,17 @@
 
 package org.apache.harmony.luni.tests.java.lang.reflect;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.junit.Test;
 
 public class InvocationTargetExceptionTest extends junit.framework.TestCase {
 
@@ -239,6 +244,36 @@ public class InvocationTargetExceptionTest extends junit.framework.TestCase {
                 assertTrue("printStackTrace failed." + s.length(), s != null
                                 && s.length() > 400);
 	}
+
+    /**
+     * Test method for
+     * {@link java.lang.reflect.InvocationTargetException#InvocationTargetException(java.lang.Throwable, java.lang.String)}
+     *
+     */
+    @Test
+    public void testInvocationTargetExceptionThrowableString() {
+        Exception cause = null;
+        InvocationTargetException e = new InvocationTargetException(cause,
+                "SomeMessage");
+        assertNull(e.getCause());
+        assertEquals("Wrong Message", "SomeMessage", e.getMessage());
+    }
+
+    class MyInvocationTargetException extends InvocationTargetException {
+        private static final long serialVersionUID = 1L;
+    }
+
+    /**
+     * Test method for
+     * {@link java.lang.reflect.InvocationTargetException#InvocationTargetException()}
+     *
+     */
+    @Test
+    public void testInvocationTargetException() {
+        InvocationTargetException e = new MyInvocationTargetException();
+        assertNull(e.getCause());
+    }
+
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

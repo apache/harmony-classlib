@@ -17,9 +17,9 @@
 
 package java.util;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -34,18 +34,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.harmony.luni.internal.nls.Messages;
+import org.apache.harmony.luni.util.PriviAction;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.apache.harmony.luni.internal.nls.Messages;
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * A {@code Properties} object is a {@code Hashtable} where the keys and values
@@ -455,22 +453,16 @@ public class Properties extends Hashtable<Object, Object> {
      *         that this {@code Properties} object contains.
      */
     public Enumeration<?> propertyNames() {
-        if (defaults == null) {
-            return keys();
-        }
+        Hashtable<Object, Object> selected = new Hashtable<Object, Object>();
+        selectProperties(selected);
+        return selected.keys();
+    }
 
-        Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults
-                .size()
-                + size());
-        Enumeration<?> keys = defaults.propertyNames();
-        while (keys.hasMoreElements()) {
-            set.put(keys.nextElement(), set);
+    private void selectProperties(Hashtable<Object, Object> selected) {
+        if(defaults != null) {
+            defaults.selectProperties(selected);
         }
-        keys = keys();
-        while (keys.hasMoreElements()) {
-            set.put(keys.nextElement(), set);
-        }
-        return set.keys();
+        selected.putAll(this);
     }
 
     /**

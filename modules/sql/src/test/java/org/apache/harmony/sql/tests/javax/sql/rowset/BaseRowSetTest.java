@@ -296,6 +296,12 @@ public class BaseRowSetTest extends TestCase {
         assertEquals(0, baseRowSet.getMaxRows());
         baseRowSet.setFetchSize(3);
         assertEquals("The fetch size should be set to 3.", 3, baseRowSet.getFetchSize());
+        try {
+            baseRowSet.setFetchSize(-1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
     }
     
     private static final class BaseRowSetImpl extends BaseRowSet {

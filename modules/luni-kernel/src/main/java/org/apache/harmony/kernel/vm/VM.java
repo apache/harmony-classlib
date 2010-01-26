@@ -70,7 +70,8 @@ public final class VM {
      * </ul>
      *
      * @param depth the stack depth of the requested Class
-     * @return the Class at the specified depth
+     * @return the Class at the specified depth or null if depth is outside the
+     *         bounds of the stack
      * @see Class#getStackClasses
      */
     public static Class<?> getStackClass(int depth) {

@@ -32,8 +32,8 @@ public class ListResourceBundleTest extends junit.framework.TestCase {
 		String name = "tests.support.Support_TestResource";
 		Locale.setDefault(new Locale("en", "US"));
 		bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
-		Enumeration keys = bundle.getKeys();
-		Vector result = new Vector();
+		Enumeration<String> keys = bundle.getKeys();
+		Vector<String> result = new Vector<String>();
 		while (keys.hasMoreElements()) {
 			result.addElement(keys.nextElement());
 		}

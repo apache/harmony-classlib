@@ -430,4 +430,77 @@ public class AbstractListTest extends junit.framework.TestCase {
 
         holder.clear();
     }
+
+    /**
+     * @tests {@link java.util.AbstractList#indexOf(Object)}
+     */
+    public void test_indexOf_Ljava_lang_Object() {
+        AbstractList<Integer> list = new MockArrayList<Integer>();
+        Integer[] array = { 1, 2, 3, 4, 5 };
+        list.addAll(Arrays.asList(array));
+
+        assertEquals("find 0 in the list do not contain 0", -1, list
+                .indexOf(new Integer(0)));
+        assertEquals("did not return the right location of element 3", 2, list
+                .indexOf(new Integer(3)));
+        assertEquals("find null in the list do not contain null element", -1,
+                list.indexOf(null));
+        list.add(null);
+        assertEquals("did not return the right location of element null", 5,
+                list.indexOf(null));
+    }
+
+    /**
+     * @add tests {@link java.util.AbstractList#lastIndexOf(Object)}
+     */
+    public void test_lastIndexOf_Ljava_lang_Object() {
+        AbstractList<Integer> list = new MockArrayList<Integer>();
+        Integer[] array = { 1, 2, 3, 4, 5, 5, 4, 3, 2, 1 };
+        list.addAll(Arrays.asList(array));
+
+        assertEquals("find 6 in the list do not contain 6", -1, list
+                .lastIndexOf(new Integer(6)));
+        assertEquals("did not return the right location of element 4", 6, list
+                .lastIndexOf(new Integer(4)));
+        assertEquals("find null in the list do not contain null element", -1,
+                list.lastIndexOf(null));
+        list.add(null);
+        assertEquals("did not return the right location of element null", 10,
+                list.lastIndexOf(null));
+    }
+
+    /**
+     * @add tests {@link java.util.AbstractList#remove(int)}
+     * @add tests {@link java.util.AbstractList#set(int, Object)}
+     */
+    public void test_remove_I() {
+        class MockList<E> extends AbstractList<E> {
+            private ArrayList<E> list;
+
+            @Override
+            public E get(int location) {
+                return list.get(location);
+            }
+
+            @Override
+            public int size() {
+                return list.size();
+            }
+
+        }
+        AbstractList<Integer> list = new MockList<Integer>();
+        try {
+            list.remove(0);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            list.set(0, null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
 }

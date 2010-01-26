@@ -287,6 +287,16 @@ public class ProxyTest extends junit.framework.TestCase {
 
     }
 
+    class MyProxy extends Proxy{
+        private static final long serialVersionUID = 1L;
+
+        protected MyProxy(InvocationHandler h) {
+            super(h);
+        }
+    }
+
+
+
 	protected void setUp() {
 	}
 

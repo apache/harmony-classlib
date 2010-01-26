@@ -23,7 +23,7 @@ public class AccessibleRelationTest extends TestCase {
 
     public void testGetKey() {
         AccessibleRelation relation = new AccessibleRelation(AccessibleRelation.LABEL_FOR);
-        assertEquals(relation.key, relation.getKey());
+        assertEquals(AccessibleRelation.LABEL_FOR, relation.getKey());
     }
 
     public void testAccessibleRelation() {
@@ -51,5 +51,28 @@ public class AccessibleRelationTest extends TestCase {
         assertNotNull(relation.getTarget());
         assertEquals(1, relation.getTarget().length);
         assertNull(relation.getTarget()[0]);
+    }
+
+    /**
+     * @add tests
+     *      {@link javax.accessibility.AccessibleRelation#AccessibleRelation(String, Object)}
+     */
+    public void test_constructor_Ljava_lang_StringLjava_lang_Object() {
+        AccessibleRelation relation = new AccessibleRelation(
+                AccessibleRelation.LABEL_FOR, new String("test"));
+        assertEquals("target[0] did not equals to parameter passed in", "test",
+                (relation.getTarget()[0]).toString());
+    }
+
+    /**
+     * @add tests
+     *      {@link javax.accessibility.AccessibleRelation#AccessibleRelation(String, Object[])}
+     */
+    public void test_constructor_Ljava_lang_String$Ljava_lang_Object() {
+        AccessibleRelation relation = new AccessibleRelation("test",
+                new Object[2]);
+        assertEquals(2, relation.getTarget().length);
+        relation = new AccessibleRelation("test", null);
+        assertEquals(0, relation.getTarget().length);
     }
 }

@@ -32,6 +32,7 @@
 #include "vmi.h"
 #include "iohelp.h"
 #include "nethelp.h"
+#include "hysock.h"
 
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
@@ -41,14 +42,6 @@
 #else
 #define FD_BIAS 0
 #endif /* ZOS */
-
-typedef int OSSOCKET;
-typedef struct hysocket_struct
-{
-  OSSOCKET sock;
-  U_16 family;
-} hysocket_struct;
-
 
 /**
  * Lock the file identified by the given handle.

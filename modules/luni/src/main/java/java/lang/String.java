@@ -778,8 +778,9 @@ public final class String implements Serializable, Comparable<String>,
         }
         if (object instanceof String) {
             String s = (String) object;
-            if (count != s.count
-                    || (hashCode != s.hashCode && hashCode != 0 && s.hashCode != 0)) {
+            int hash = hashCode;  // Single read on hashCodes as they may change
+            int shash = s.hashCode;
+            if (count != s.count || (hash != shash && hash != 0 && shash != 0)) {
                 return false;
             }
             for (int i = 0; i < count; ++i) {

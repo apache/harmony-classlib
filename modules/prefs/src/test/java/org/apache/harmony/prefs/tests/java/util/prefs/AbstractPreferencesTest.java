@@ -1090,7 +1090,7 @@ public class AbstractPreferencesTest extends TestCase {
         byte[] result = out.toByteArray();
         ByteArrayInputStream in = new ByteArrayInputStream(result);
 
-        Document doc = parseXmlStream(in, true);
+        Document doc = parseXmlStream(in, false);
 
         // only output this node without parent and children
         String rootpath = "/preferences[@EXTERNAL_XML_VERSION='1.0']/root[@type='user']/node[@name='java']/node[@name='util']/node[@name='prefs']";
@@ -1116,6 +1116,7 @@ public class AbstractPreferencesTest extends TestCase {
         // Create a builder factory
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(validating);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
         // Create the builder and parse the file
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -1144,7 +1145,7 @@ public class AbstractPreferencesTest extends TestCase {
         byte[] result = out.toByteArray();
         // System.out.println(new String(result, "utf-8"));
         ByteArrayInputStream in = new ByteArrayInputStream(result);
-        Document doc = parseXmlStream(in, true);
+        Document doc = parseXmlStream(in, false);
 
         // only output this node and subtree without parent
         String rootpath = "/preferences[@EXTERNAL_XML_VERSION='1.0']/root[@type='user']/node[@name='java']/node[@name='util']/node[@name='prefs']";

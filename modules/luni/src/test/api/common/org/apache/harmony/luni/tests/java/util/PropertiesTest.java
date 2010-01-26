@@ -126,6 +126,8 @@ public class PropertiesTest extends junit.framework.TestCase {
         Properties myProps = new Properties();
         myProps.setProperty("Abba", "Cadabra");
         myProps.setProperty("Open", "Sesame");
+        myProps.setProperty("LongProperty",
+                "a long long long long long long long property");
         myProps.list(ps);
         ps.flush();
         String propList = baos.toString();
@@ -133,6 +135,16 @@ public class PropertiesTest extends junit.framework.TestCase {
                 propList.indexOf("Abba=Cadabra") >= 0);
         assertTrue("Property list innacurate",
                 propList.indexOf("Open=Sesame") >= 0);
+        assertTrue("property list do not conatins \"...\"", propList
+                .indexOf("...") != -1);
+
+        ps = null;
+        try {
+            myProps.list(ps);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**
@@ -144,6 +156,8 @@ public class PropertiesTest extends junit.framework.TestCase {
         Properties myProps = new Properties();
         myProps.setProperty("Abba", "Cadabra");
         myProps.setProperty("Open", "Sesame");
+        myProps.setProperty("LongProperty",
+                "a long long long long long long long property");
         myProps.list(pw);
         pw.flush();
         String propList = baos.toString();
@@ -151,6 +165,13 @@ public class PropertiesTest extends junit.framework.TestCase {
                 propList.indexOf("Abba=Cadabra") >= 0);
         assertTrue("Property list innacurate",
                 propList.indexOf("Open=Sesame") >= 0);
+        pw = null;
+        try {
+            myProps.list(pw);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**
@@ -286,7 +307,8 @@ public class PropertiesTest extends junit.framework.TestCase {
      * @tests java.util.Properties#propertyNames()
      */
     public void test_propertyNames() {
-        Enumeration names = tProps.propertyNames();
+        Properties myPro = new Properties(tProps);
+        Enumeration names = myPro.propertyNames();
         while (names.hasMoreElements()) {
             String p = (String) names.nextElement();
             assertTrue("Incorrect names returned", p.equals("test.prop")
@@ -302,6 +324,41 @@ public class PropertiesTest extends junit.framework.TestCase {
         } catch (NoSuchElementException e) {
             // Expected
         }
+    }
+
+    public void test_propertyNames_sequence() {
+        Properties parent = new Properties();
+        parent.setProperty("parent.a.key", "parent.a.value");
+        parent.setProperty("parent.b.key", "parent.b.value");
+
+        Enumeration<?> names = parent.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties current = new Properties(parent);
+        current.setProperty("current.a.key", "current.a.value");
+        current.setProperty("current.b.key", "current.b.value");
+
+        names = current.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties child = new Properties(current);
+        child.setProperty("child.a.key", "child.a.value");
+        child.setProperty("child.b.key", "child.b.value");
+
+        names = child.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("child.b.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("child.a.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
     }
 
     /**
@@ -398,6 +455,13 @@ public class PropertiesTest extends junit.framework.TestCase {
                 .getProperty("key2"));
         assertEquals("Failed to load correct properties", "value1", prop
                 .getProperty("key1"));
+        
+        try {
+            prop.loadFromXML(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /**
@@ -456,6 +520,13 @@ public class PropertiesTest extends junit.framework.TestCase {
             nextKey = (String) e.nextElement();
             assertTrue("Stored property list not equal to original", myProps2
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
+        }
+        
+        try {
+            myProps.storeToXML(out, null, null);
+            fail("should throw nullPointerException");
+        } catch (NullPointerException ne) {
+            // expected
         }
     }
 

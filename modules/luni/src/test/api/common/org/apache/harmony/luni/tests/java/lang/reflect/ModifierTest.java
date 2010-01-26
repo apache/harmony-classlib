@@ -28,7 +28,7 @@ public class ModifierTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.lang.reflect.Modifier()
-		// Does nothing
+		new Modifier();
 	}
 
 	/**
@@ -182,6 +182,12 @@ public class ModifierTest extends junit.framework.TestCase {
 						java.lang.reflect.Modifier.PUBLIC
 								+ java.lang.reflect.Modifier.ABSTRACT).equals(
 						"public abstract"));
+
+        int i = 0xFFF;
+        String modification = "public protected private abstract static final transient "
+                + "volatile synchronized native strictfp interface";
+        assertTrue("Returned incorrect string value", Modifier.toString(i)
+                .equals(modification));
 	}
 
     public void test_Constants_Value() {

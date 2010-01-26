@@ -205,7 +205,7 @@ public class LogManager {
                 try {
                     manager.readConfiguration();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
 
                 // if global logger has been initialized, set root as its parent
