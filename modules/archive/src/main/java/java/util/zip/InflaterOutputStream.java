@@ -78,7 +78,7 @@ public class InflaterOutputStream extends FilterOutputStream {
      * @param infl
      *            the Inflater used by the InflaterOutputStream to decompress
      *            data.
-     * @parm bufLen the size of the internal output buffer.
+     * @param bufLen the size of the internal output buffer.
      */
     public InflaterOutputStream(OutputStream out, Inflater infl, int bufLen) {
         super(out);
