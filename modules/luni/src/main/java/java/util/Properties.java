@@ -498,7 +498,7 @@ public class Properties extends Hashtable<Object, Object> {
     }
     
     /**
-     * Answers a set of keys in this property list whoes key and value are
+     * Answers a set of keys in this property list whose key and value are
      * strings.
      * 
      * @return a set of keys in the property list
@@ -575,7 +575,7 @@ public class Properties extends Hashtable<Object, Object> {
 	 * 
 	 * @param out
 	 *            the OutputStream
-	 * @param comment
+	 * @param comments
 	 *            the comment
 	 * @throws IOException 
 	 * 
