@@ -575,7 +575,7 @@ public class Properties extends Hashtable<Object, Object> {
 	 * 
 	 * @param out
 	 *            the OutputStream
-	 * @param comments
+	 * @param comment
 	 *            the comment
 	 * @throws IOException 
 	 * 
