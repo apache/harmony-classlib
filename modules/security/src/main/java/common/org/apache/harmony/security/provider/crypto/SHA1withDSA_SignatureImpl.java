@@ -72,7 +72,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
      * Initializes this signature object with PrivateKey object 
      * passed as argument to the method.
      *
-     * @params
+     * @param
      *    privateKey DSAPrivateKey object
      * @throws
      *    InvalidKeyException if privateKey is not DSAPrivateKey object
@@ -119,7 +119,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
      * Initializes this signature object with PublicKey object 
      * passed as argument to the method.
      *
-     * @params
+     * @param
      *    publicKey DSAPublicKey object
      * @throws
      *    InvalidKeyException if publicKey is not DSAPublicKey object
@@ -289,7 +289,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
     /**
      * Updates data to sign or to verify.
      *
-     * @params
+     * @param
      *    b byte to update
      * @throws
      *    SignatureException if object was not initialized for signing or verifying
@@ -302,11 +302,11 @@ public class SHA1withDSA_SignatureImpl extends Signature {
     /**
      * Updates data to sign or to verify.
      *
-     * @params
+     * @param
      *    b byte array containing bytes to update
-     * @params
+     * @param
      *    off offset in byte array to start from
-     * @params
+     * @param
      *    len number of bytes to use for updating
      * @throws
      *    SignatureException if object was not initialized for signing or verifying
@@ -392,7 +392,7 @@ public class SHA1withDSA_SignatureImpl extends Signature {
     /**
      * Verifies the signature bytes.
      *
-     * @params
+     * @param
      *    sigBytes byte array with signature bytes to verify.
      * @return
      *    true if signature bytes were verified, false otherwise
@@ -413,11 +413,11 @@ public class SHA1withDSA_SignatureImpl extends Signature {
     /**
      * Verifies the signature bytes.
      *
-     * @params
+     * @param
      *    sigBytes byte array with signature bytes to verify.
-     * @params
+     * @param
      *    offset index in sigBytes to start from
-     * @params
+     * @param
      *    length number of bytes allotted for signature
      * @return
      *    true if signature bytes were verified, false otherwise

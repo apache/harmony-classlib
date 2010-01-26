@@ -18,23 +18,15 @@
  * Win32 specific natives supporting the file system interface.
  */
 
-#if defined(_WINSOCKAPI_) && !defined(_WINSOCK2API_)
-#undef _WINSOCKAPI_
-#endif
+#include "vmi.h"
+#include "hysock.h"
+#include <mswsock.h>
 
 #include <windows.h>
 #include "nethelp.h"
 #include <stdio.h>
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
-
-typedef SOCKET OSSOCKET;
-typedef struct hysocket_struct
-{
-  OSSOCKET ipv4;
-  OSSOCKET ipv6;
-  U_8 flags;
-} hysocket_struct;
 
 /**
  * Lock the file identified by the given handle.

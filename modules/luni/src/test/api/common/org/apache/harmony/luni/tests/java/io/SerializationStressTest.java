@@ -58,6 +58,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.harmony.luni.util.InputStreamHelper;
+
 /**
  * Automated Test Suite for class java.io.ObjectOutputStream
  * 
@@ -658,33 +660,25 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 		assertTrue("resolved class 3", resolvedClasses[2] == Number.class);
 	}
 
-	public void test_reset() {
-		try {
-			oos.reset();
-			oos.writeObject("R");
-			oos.reset();
-			oos.writeByte(24);
-			oos.close();
+    public void test_reset() throws IOException, ClassNotFoundException {
+        oos.reset();
+        oos.writeObject("R");
+        oos.reset();
+        oos.writeByte(24);
+        oos.close();
 
-			DataInputStream dis = new DataInputStream(loadStream());
-			byte[] input = new byte[dis.available()];
-			dis.readFully(input);
-			byte[] result = new byte[] { (byte) 0xac, (byte) 0xed, (byte) 0,
-					(byte) 5, (byte) 0x79, (byte) 0x74, (byte) 0, (byte) 1,
-					(byte) 'R', (byte) 0x79, (byte) 0x77, (byte) 1, (byte) 24 };
-			assertTrue("incorrect output", Arrays.equals(input, result));
+        DataInputStream dis = new DataInputStream(loadStream());
+        byte[] input = InputStreamHelper.readFullyAndClose(dis);
+        byte[] result = new byte[] { (byte) 0xac, (byte) 0xed, (byte) 0,
+                (byte) 5, (byte) 0x79, (byte) 0x74, (byte) 0, (byte) 1,
+                (byte) 'R', (byte) 0x79, (byte) 0x77, (byte) 1, (byte) 24 };
+        assertTrue("incorrect output", Arrays.equals(input, result));
 
-			ois = new ObjectInputStreamSubclass(loadStream());
-			assertEquals("Wrong result from readObject()", "R", ois.readObject()
-					);
-			assertEquals("Wrong result from readByte()", 24, ois.readByte());
-			ois.close();
-		} catch (IOException e1) {
-			fail("IOException : " + e1.getMessage());
-		} catch (ClassNotFoundException e2) {
-			fail("ClassNotFoundException : " + e2.getMessage());
-		}
-	}
+        ois = new ObjectInputStreamSubclass(loadStream());
+        assertEquals("Wrong result from readObject()", "R", ois.readObject());
+        assertEquals("Wrong result from readByte()", 24, ois.readByte());
+        ois.close();
+    }
 
 	public void test_serialVersionUID(Class clazz, long svUID) throws Exception {
 		final String idWrong = "serialVersionUID is wrong for: ";

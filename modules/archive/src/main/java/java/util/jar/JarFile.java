@@ -17,19 +17,19 @@
 
 package java.util.jar;
 
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.harmony.archive.internal.nls.Messages;
 import org.apache.harmony.archive.util.Util;
+import org.apache.harmony.luni.util.InputStreamHelper;
 
 /**
  * {@code JarFile} is used to read jar entries and their associated data from
@@ -282,42 +282,6 @@ public class JarFile extends ZipFile {
         return (JarEntry) getEntry(name);
     }
 
-    /*
-     * Drains the entire content from the given input stream and returns it as a
-     * byte[]. The stream is closed after being drained, or if an IOException
-     * occurs.
-     */
-    private byte[] getAllBytesFromStreamAndClose(InputStream is)
-            throws IOException {
-        try {
-            // Initial read
-            byte[] buffer = new byte[1024];
-            int count = is.read(buffer);
-            int nextByte = is.read();
-
-            // Did we get it all in one read?
-            if (nextByte == -1) {
-                byte[] dest = new byte[count];
-                System.arraycopy(buffer, 0, dest, 0, count);
-                return dest;
-            }
-
-            // Requires additional reads
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(count * 2);
-            baos.write(buffer, 0, count);
-            baos.write(nextByte);
-            while (true) {
-                count = is.read(buffer);
-                if (count == -1) {
-                    return baos.toByteArray();
-                }
-                baos.write(buffer, 0, count);
-            }
-        } finally {
-            is.close();
-        }
-    }
-
     /**
      * Returns the {@code Manifest} object associated with this {@code JarFile}
      * or {@code null} if no MANIFEST entry exists.
@@ -340,7 +304,8 @@ public class JarFile extends ZipFile {
         try {
             InputStream is = super.getInputStream(manifestEntry);
             if (verifier != null) {
-                verifier.addMetaEntry(manifestEntry.getName(), getAllBytesFromStreamAndClose(is));
+                verifier.addMetaEntry(manifestEntry.getName(),
+                        InputStreamHelper.readFullyAndClose(is));
                 is = super.getInputStream(manifestEntry);
             }
             try {
@@ -392,7 +357,7 @@ public class JarFile extends ZipFile {
                                 || Util.asciiEndsWithIgnoreCase(entryName, ".RSA"))) {
                     signed = true;
                     InputStream is = super.getInputStream(entry);
-                    byte[] buf = getAllBytesFromStreamAndClose(is);
+                    byte[] buf = InputStreamHelper.readFullyAndClose(is);
                     verifier.addMetaEntry(entryName, buf);
                 }
             }

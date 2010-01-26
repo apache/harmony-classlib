@@ -76,4 +76,35 @@ public class AccessController2Test extends junit.framework.TestCase {
 
         }
     }
+
+    /**
+     * Test method tests the policy file with one of the entrie's
+     * permission_class_name surrounded with quotes.
+     * 
+     */
+    public void test_policyFileEntry_contains_Quotes1() throws Exception{
+        System.setProperty("java.security.policy", "resources/policyTest2.txt");
+        AccessController.checkPermission(new RuntimePermission("setSecurityManager"));
+    }
+    
+    /**
+     * Test method tests the policy file, one of the entrie's
+     * permission_class_name surrounded with quotes.
+     * 
+     */
+    public void test_policyFileEntry_contains_Quotes2() throws Exception{
+        class CustomSecurityMgr extends SecurityManager{
+            CustomSecurityMgr(){ }
+        }
+
+        System.setProperty("java.security.policy", "resources/policyTest2.txt");
+        SecurityManager security = System.getSecurityManager();
+        System.setSecurityManager(security);
+
+        // Setting the CustomSecurity Manager
+        SecurityManager customsecurity = new CustomSecurityMgr();
+        System.setSecurityManager(customsecurity);
+        customsecurity = System.getSecurityManager();
+        System.setSecurityManager(security);
+    }
 }

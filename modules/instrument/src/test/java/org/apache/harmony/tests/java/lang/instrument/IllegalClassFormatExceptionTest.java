@@ -40,4 +40,15 @@ public class IllegalClassFormatExceptionTest extends TestCase {
         IllegalClassFormatException object = new IllegalClassFormatException();
         SerializationTest.verifyGolden(this, object);        
     }
+    
+    /**
+     * @tests java.lang.instrument.IllegalClassFormatException#
+     *        IllegalClassFormatException(java.lang.String)}
+     */
+    public void test_IllegalClassFormatException_LString() {
+        IllegalClassFormatException object = new IllegalClassFormatException(
+                "Some Error Message");
+        assertEquals("Wrong message from constructor(String)",
+                "Some Error Message", object.getMessage());
+    }
 }

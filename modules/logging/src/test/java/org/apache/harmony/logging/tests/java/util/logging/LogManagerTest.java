@@ -19,6 +19,7 @@ package org.apache.harmony.logging.tests.java.util.logging;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -811,23 +812,46 @@ public class LogManagerTest extends TestCase {
         }
 
     }
-    
-    public void testValidConfigClass() throws Exception{
-        String oldProperty = System.getProperty("java.util.logging.config.class");
-        try{
-//            System.setProperty("java.util.logging.config.class", "org.apache.harmony.logging.tests.java.util.logging.LogManagerTest$ConfigClass");
-            System.setProperty("java.util.logging.config.class", this.getClass().getName()+"$ConfigClass");            
+
+    public void testValidConfigClass() throws Exception {
+        String oldPropertyValue = System
+                .getProperty("java.util.logging.config.class");
+        try {
+            System.setProperty("java.util.logging.config.class", this
+                    .getClass().getName()
+                    + "$ConfigClass");
             assertNull(manager.getLogger("testConfigClass.foo"));
-            
+
             manager.readConfiguration();
             assertNull(manager.getLogger("testConfigClass.foo"));
             Logger l = Logger.getLogger("testConfigClass.foo.child");
             assertSame(Level.FINEST, manager.getLogger("").getLevel());
-            assertEquals(0, manager.getLogger("").getHandlers().length);            
+            assertEquals(0, manager.getLogger("").getHandlers().length);
             assertEquals("testConfigClass.foo", l.getParent().getName());
-        }finally{
-            if(oldProperty != null){
-                System.setProperty("java.util.logging.config.class", oldProperty);
+        } finally {
+            Properties systemProperties = System.getProperties();
+            if (oldPropertyValue != null) {
+                systemProperties.setProperty(CONFIG_CLASS, oldPropertyValue);
+            } else {
+                systemProperties.remove(CONFIG_CLASS);
+            }
+        }
+    }
+
+    public void testNotExistConfigFile() throws Exception {
+        String oldPropertyValue = System.getProperty(CONFIG_FILE);
+        System.setProperty(CONFIG_FILE, "not.exist.config.file");
+        try {
+            LogManager.getLogManager().readConfiguration();
+            fail("should throw FileNotFoundException");
+        } catch (FileNotFoundException e) {
+            // Expected
+        } finally {
+            Properties systemProperties = System.getProperties();
+            if (oldPropertyValue != null) {
+                systemProperties.setProperty(CONFIG_FILE, oldPropertyValue);
+            } else {
+                systemProperties.remove(CONFIG_FILE);
             }
         }
     }

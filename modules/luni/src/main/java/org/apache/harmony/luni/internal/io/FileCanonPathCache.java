@@ -85,7 +85,7 @@ public class FileCanonPathCache {
                     String oldest = null;
                     do {
                         oldest = list.removeFirst();
-                        cache.remove(path);
+                        cache.remove(oldest);
                     } while (!path.equals(oldest));
                 }
             }

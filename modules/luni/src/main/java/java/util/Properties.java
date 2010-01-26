@@ -17,10 +17,10 @@
 
 package java.util;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,18 +38,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.harmony.luni.internal.nls.Messages;
+import org.apache.harmony.luni.util.PriviAction;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.apache.harmony.luni.internal.nls.Messages;
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * A {@code Properties} object is a {@code Hashtable} where the keys and values
@@ -494,9 +492,10 @@ public class Properties extends Hashtable<Object, Object> {
      *         that this {@code Properties} object contains.
      */
     public Enumeration<?> propertyNames() {
-        Hashtable<Object, Object> allProperties = getAllProperties();
-        return allProperties.keys();
-	}
+        Hashtable<Object, Object> selected = new Hashtable<Object, Object>();
+        selectProperties(selected);
+        return selected.keys();
+    }
     
     /**
      * Answers a set of keys in this property list whoes key and value are
@@ -507,14 +506,15 @@ public class Properties extends Hashtable<Object, Object> {
      * @since 1.6
      */    
     public Set<String> stringPropertyNames(){
-        Hashtable<Object, Object> allProperties = getAllProperties();       
-        Enumeration<?> keys = allProperties.keys();
+        Hashtable<Object, Object> selected = new Hashtable<Object, Object>();
+        selectProperties(selected);
+        Enumeration<?> keys = selected.keys();
         HashSet<String> set = new HashSet<String>();
         Object key, value;
         while (keys.hasMoreElements()) {
             key = keys.nextElement();
             if (key instanceof String) {
-                value = allProperties.get(key);
+                value = selected.get(key);
                 if (value instanceof String){
                     set.add((String)key);    
                 }
@@ -523,20 +523,11 @@ public class Properties extends Hashtable<Object, Object> {
         return Collections.unmodifiableSet(set);
     }
 
-    /*
-     * Add all of properties into the given allProperties hashtable including
-     * default properties
-     */
-    private Hashtable<Object, Object> getAllProperties() {
-        Hashtable<Object, Object> allProperties = new Hashtable<Object, Object>();
-        Properties properties = this;
-        Properties defaultProperties = null;
-        while (properties != null) {
-            defaultProperties = properties.defaults;
-            allProperties.putAll(properties);
-            properties = defaultProperties;
+    private void selectProperties(Hashtable<Object, Object> selected) {
+        if(defaults != null) {
+            defaults.selectProperties(selected);
         }
-        return allProperties;
+        selected.putAll(this);
     }
 
     /**

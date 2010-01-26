@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 public class PropertyResourceBundleTest extends junit.framework.TestCase {
@@ -162,4 +163,39 @@ public class PropertyResourceBundleTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+
+    /**
+     * @add tests {@link java.util.PropertyResourceBundle#Enumeration}
+     */
+    public void test_access$0_Enumberation() throws IOException {
+        class MockResourceBundle extends PropertyResourceBundle {
+            MockResourceBundle(java.io.InputStream stream) throws IOException {
+                super(stream);
+            }
+
+            @Override
+            protected void setParent(ResourceBundle bundle) {
+                super.setParent(bundle);
+            }
+        }
+
+        java.io.InputStream localStream = new java.io.ByteArrayInputStream(
+                "p3=three\np4=four".getBytes());
+        MockResourceBundle localPrb = new MockResourceBundle(localStream);
+        localPrb.setParent(prb);
+        Enumeration<String> keys = localPrb.getKeys();
+        Vector<String> contents = new Vector<String>();
+        while (keys.hasMoreElements()) {
+            contents.add(keys.nextElement());
+        }
+
+        assertEquals("did not get the right number of properties", 4, contents
+                .size());
+        assertTrue("did not get the parent property p1", contents
+                .contains("p1"));
+        assertTrue("did not get the parent property p2", contents
+                .contains("p2"));
+        assertTrue("did not get the local property p3", contents.contains("p3"));
+        assertTrue("did not get the local property p4", contents.contains("p4"));
+    }
 }

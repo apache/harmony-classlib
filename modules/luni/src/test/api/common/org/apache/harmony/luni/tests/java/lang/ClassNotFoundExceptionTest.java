@@ -17,9 +17,15 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 public class ClassNotFoundExceptionTest extends TestCase {
+    /**
+     * Thrown when an application tries to load in a class through its string
+     * name using the forName method in class Class.
+     */
 
 	/**
 	 * @tests java.lang.ClassNotFoundException#ClassNotFoundException()
@@ -39,4 +45,16 @@ public class ClassNotFoundExceptionTest extends TestCase {
         assertEquals("fixture", e.getMessage());
         assertNull(e.getCause());
 	}
+	
+    /**
+     * @tests java.lang.ClassNotFoundException#ClassNotFoundException(java.lang.String, java.lang.Throwable)
+     */
+    public void test_ClassNotFoundException_LString_LThrowable() {
+        IOException in = new IOException();
+        ClassNotFoundException e = new ClassNotFoundException("SomeMessage", in);
+        assertEquals("Wrong Exception", in, e.getException());
+        assertEquals("Wrong message", "SomeMessage", e.getMessage());
+        assertEquals("Wrong cause", in, e.getCause());
+    }
+
 }

@@ -912,9 +912,13 @@ public class ArraysTest extends junit.framework.TestCase {
 		double[] specials2 = new double[] { 0d, Double.POSITIVE_INFINITY, -0d,
 				Double.NEGATIVE_INFINITY, Double.MIN_VALUE, Double.NaN,
 				Double.MAX_VALUE };
+        double[] specials3 = new double[] { 0.0, Double.NaN, 1.0, 2.0, Double.NaN,
+                Double.NaN, 1.0, 3.0, -0.0};
 		double[] answer = new double[] { Double.NEGATIVE_INFINITY, -0d, 0d,
 				Double.MIN_VALUE, Double.MAX_VALUE, Double.POSITIVE_INFINITY,
 				Double.NaN };
+        double[] answer3 = new double[] { -0.0, 0.0, 1.0, 1.0, 2.0, 3.0, Double.NaN,
+                Double.NaN, Double.NaN };
 
 		Arrays.sort(specials1);
 		Object[] print1 = new Object[specials1.length];
@@ -929,6 +933,13 @@ public class ArraysTest extends junit.framework.TestCase {
 			print2[i] = new Double(specials2[i]);
 		assertTrue("specials sort incorrectly 2: " + Arrays.asList(print2),
 				Arrays.equals(specials2, answer));
+        
+        Arrays.sort(specials3);
+        Object[] print3 = new Object[specials3.length];
+        for (int i = 0; i < specials3.length; i++)
+            print3[i] = new Double(specials3[i]);
+        assertTrue("specials sort incorrectly 3: " + Arrays.asList(print3),
+                Arrays.equals(specials3, answer3));
 	}
 
 	/**
