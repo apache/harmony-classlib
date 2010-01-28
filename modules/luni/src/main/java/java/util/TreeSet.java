@@ -36,9 +36,9 @@ public class TreeSet<E> extends AbstractSet<E> implements NavigableSet<E>,
     private static final long serialVersionUID = -2479143000061671589L;
 
     /** Keys are this set's elements. Values are always Boolean.TRUE */
-    transient NavigableMap<E, Object> backingMap;
+    private transient NavigableMap<E, Object> backingMap;
 
-    transient NavigableSet<E> descendingSet;
+    private transient NavigableSet<E> descendingSet;
 
     TreeSet(NavigableMap<E, Object> map) {
         backingMap = map;
