@@ -4235,11 +4235,6 @@ public class IntrospectorTest extends TestCase {
         }
     }
 
-    /*
-     * SUN: GetterMixedClass1.isList()
-     * 
-     * IBM: GetterMixedClass1.isList(int)
-     */
     public void test_MixedBooleanSimpleClass1() throws Exception {
         BeanInfo info = Introspector
                 .getBeanInfo(MixedBooleanSimpleClass1.class);
@@ -4267,11 +4262,6 @@ public class IntrospectorTest extends TestCase {
 
     }
 
-    /*
-     * SUN: GetterMixedClass1.getList()
-     * 
-     * IBM: GetterMixedClass1.isList(int)
-     */
     public void test_MixedBooleanSimpleClass2() throws Exception {
         BeanInfo info = Introspector
                 .getBeanInfo(MixedBooleanSimpleClass2.class);
