@@ -292,12 +292,21 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 if (subIndexedType == null) {
                     // Same property type
                     if (subType != null && superType != null
+                            && subType.getName() != null
                             && subType.getName().equals(superType.getName())) {
-                        if ((subGet == null) && (superGet != null)) {
+                        if (superGet != null
+                                && (subGet == null || superGet.equals(subGet))) {
                             subDesc.setReadMethod(superGet);
                         }
-                        if ((subSet == null) && (superSet != null)) {
+                        if (superSet != null
+                                && (subSet == null || superSet.equals(subSet))) {
                             subDesc.setWriteMethod(superSet);
+                        }
+                        if (subType == boolean.class && subGet != null
+                                && superGet != null) {
+                            if (superGet.getName().startsWith(PREFIX_IS)) {
+                                subDesc.setReadMethod(superGet);
+                            }
                         }
                     } else { // Different type: type = getMethod
                         if ((subGet == null) && (superGet != null)) {
@@ -305,12 +314,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
                             subDesc.setReadMethod(superGet);
                         }
                     }
-                } else { // Sub is IndexedPropertyDescriptor
+                } else { // Sub is IndexedPropertyDescriptor and super is PropertyDescriptor
                     if (superType != null
                             && (superType.isArray())
                             && (superType.getComponentType().getName()
                                     .equals(subIndexedType.getName()))) {
-                        // same type
                         if ((subGet == null) && (superGet != null)) {
                             subDesc.setReadMethod(superGet);
                         }
@@ -318,6 +326,26 @@ class StandardBeanInfo extends SimpleBeanInfo {
                             subDesc.setWriteMethod(superSet);
                         }
                     } // different type do nothing
+                    // sub is indexed pd and super is normal pd
+                    if (subIndexedType == boolean.class
+                            && superType == boolean.class) {
+                        Method subIndexedSet = ((IndexedPropertyDescriptor) subDesc)
+                                .getIndexedWriteMethod();
+                        if (subGet == null && subSet == null
+                                && subIndexedSet != null && superGet != null) {
+                            try {
+                                subSet = beanClass.getDeclaredMethod(
+                                        subIndexedSet.getName(), boolean.class);
+                            } catch (Exception e) {
+                                // ignored
+                            }
+                            if (subSet != null) {
+                                // Cast sub into PropertyDescriptor
+                                subDesc = new PropertyDescriptor(propertyName,
+                                        superGet, subSet);
+                            }
+                        }
+                    }
                 }
                 subMap.put(propertyName, subDesc);
             } else { // Super is IndexedPropertyDescriptor
@@ -334,13 +362,62 @@ class StandardBeanInfo extends SimpleBeanInfo {
                             superDesc.setWriteMethod(subSet);
                         }
                         subMap.put(propertyName, superDesc);
-                    } else { // Different type do nothing
+                    } else {
+                        // subDesc is PropertyDescriptor
+                        // superDesc is IndexedPropertyDescriptor
+
+                        // fill null subGet or subSet method with superClass's
+                        if (subGet == null || subSet == null) {
+                            Class<?> beanSuperClass = beanClass.getSuperclass();
+                            String methodSuffix = capitalize(propertyName);
+                            Method method = null;
+                            if (subGet == null) {
+                                // subGet is null
+                                if (subType == boolean.class) {
+                                    try {
+                                        method = beanSuperClass
+                                                .getDeclaredMethod(PREFIX_IS
+                                                        + methodSuffix);
+                                    } catch (Exception e) {
+                                        // ignored
+                                    }
+                                } else {
+                                    try {
+                                        method = beanSuperClass
+                                                .getDeclaredMethod(PREFIX_GET
+                                                        + methodSuffix);
+                                    } catch (Exception e) {
+                                        // ignored
+                                    }
+                                }
+                                if (method != null
+                                        && !Modifier.isStatic(method
+                                                .getModifiers())
+                                        && method.getReturnType() == subType) {
+                                    ((PropertyDescriptor) value)
+                                            .setReadMethod(method);
+                                }
+                            } else {
+                                // subSet is null
+                                try {
+                                    method = beanSuperClass.getDeclaredMethod(
+                                            PREFIX_SET + methodSuffix, subType);
+                                } catch (Exception e) {
+                                    // ignored
+                                }
+                                if (method != null
+                                        && !Modifier.isStatic(method
+                                                .getModifiers())
+                                        && method.getReturnType() == void.class) {
+                                    ((PropertyDescriptor) value)
+                                            .setWriteMethod(method);
+                                }
+                            }
+                        }
                         subMap.put(propertyName, (PropertyDescriptor) value);
                     }
-
-                } else if (superIndexedType != null
-                        && subIndexedType.getName().equals(
-                                superIndexedType.getName())) {
+                } else if (subIndexedType.getName().equals(
+                        superIndexedType.getName())) {
                     // Sub is IndexedPropertyDescriptor and Same type
                     IndexedPropertyDescriptor subDesc = (IndexedPropertyDescriptor) value;
                     if ((subGet == null) && (superGet != null)) {
@@ -381,6 +458,23 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
         }
         return theDescs;
+    }
+
+    private String capitalize(String name) {
+        if (name == null) {
+            return null;
+        }
+        // The rule for decapitalize is that:
+        // If the first letter of the string is Upper Case, make it lower case
+        // UNLESS the second letter of the string is also Upper Case, in which case no
+        // changes are made.
+        if (name.length() == 0 || (name.length() > 1 && Character.isUpperCase(name.charAt(1)))) {
+            return name;
+        }
+        
+        char[] chars = name.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 
     private static void mergeAttributes(PropertyDescriptor subDesc,
@@ -561,12 +655,12 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
         // Get descriptors for the public methods
         MethodDescriptor[] methodDescriptors = introspectMethods();
+
         if (methodDescriptors == null) {
             return null;
         }
 
         ArrayList<MethodDescriptor> methodList = new ArrayList<MethodDescriptor>();
-
         // Loop over the methods found, looking for public non-static methods
         for (int index = 0; index < methodDescriptors.length; index++) {
             int modifiers = methodDescriptors[index].getMethod().getModifiers();
@@ -699,7 +793,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     @SuppressWarnings("unchecked")
     private static void introspectGet(Method theMethod,
-			HashMap<String, HashMap> propertyTable) {
+            HashMap<String, HashMap> propertyTable) {
 
         String methodName = theMethod.getName();
         int prefixLength = 0;
@@ -710,27 +804,27 @@ class StandardBeanInfo extends SimpleBeanInfo {
         ArrayList<Method> getters;
 
         if (methodName == null) {
-			return;
-		}
+            return;
+        }
 
         if (methodName.startsWith(PREFIX_GET)) {
-			prefixLength = PREFIX_GET.length();
-		}
+            prefixLength = PREFIX_GET.length();
+        }
 
-		if (methodName.startsWith(PREFIX_IS)) {
-			prefixLength = PREFIX_IS.length();
-		}
+        if (methodName.startsWith(PREFIX_IS)) {
+            prefixLength = PREFIX_IS.length();
+        }
 
-		if (prefixLength == 0) {
-			return;
-		}
+        if (prefixLength == 0) {
+            return;
+        }
 
-		propertyName = decapitalize(methodName.substring(prefixLength));
+        propertyName = decapitalize(methodName.substring(prefixLength));
 
         // validate property name
-		if (!isValidProperty(propertyName)) {
-			return;
-		}
+        if (!isValidProperty(propertyName)) {
+            return;
+        }
 
         // validate return type
         propertyType = theMethod.getReturnType();
@@ -739,27 +833,25 @@ class StandardBeanInfo extends SimpleBeanInfo {
             return;
         }
 
-		// isXXX return boolean
-		if (prefixLength == 2) {
-			if (!(propertyType == boolean.class)) {
-				return;
-			}
-		}
+        // isXXX return boolean
+        if (prefixLength == 2) {
+            if (!(propertyType == boolean.class)) {
+                return;
+            }
+        }
 
         // validate parameter types
         paramTypes = theMethod.getParameterTypes();
-		if (paramTypes.length > 1 ||
-                (paramTypes.length == 1 && paramTypes[0] != int.class)) {
-			return;
-		}
-
-        //
+        if (paramTypes.length > 1
+                || (paramTypes.length == 1 && paramTypes[0] != int.class)) {
+            return;
+        }
 
         table = propertyTable.get(propertyName);
-		if (table == null) {
-			table = new HashMap();
-			propertyTable.put(propertyName, table);
-		}
+        if (table == null) {
+            table = new HashMap();
+            propertyTable.put(propertyName, table);
+        }
 
         getters = (ArrayList<Method>) table.get(STR_GETTERS);
         if (getters == null) {
@@ -776,39 +868,39 @@ class StandardBeanInfo extends SimpleBeanInfo {
             HashMap<String, HashMap> propertyTable) {
 
         String methodName = theMethod.getName();
+        if (methodName == null) {
+            return;
+        }
         String propertyName;
         Class returnType;
         Class[] paramTypes;
+
+        // setter method should never return type other than void
+        returnType = theMethod.getReturnType();
+        if (returnType != void.class) {
+            return;
+        }
 
         if (methodName == null || !methodName.startsWith(PREFIX_SET)) {
             return;
         }
 
-        propertyName = decapitalize(methodName.substring(
-                PREFIX_SET.length()));
+        propertyName = decapitalize(methodName.substring(PREFIX_SET.length()));
 
         // validate property name
         if (!isValidProperty(propertyName)) {
             return;
         }
 
-        // validate return type
-        returnType = theMethod.getReturnType();
-
-//        if (!returnType.getName().equals(Void.TYPE.getName())) {
-        if (!(returnType == void.class)) {
-            return;
-        }
+        // It seems we do not need to validate return type
 
         // validate param types
         paramTypes = theMethod.getParameterTypes();
 
-        if (paramTypes.length == 0 || paramTypes.length > 2 ||
-                (paramTypes.length == 2 && paramTypes[0] != int.class)) {
+        if (paramTypes.length == 0 || paramTypes.length > 2
+                || (paramTypes.length == 2 && paramTypes[0] != int.class)) {
             return;
         }
-
-        //
 
         HashMap table = propertyTable.get(propertyName);
         if (table == null) {
@@ -835,8 +927,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
     }
 
     /**
-     * Checks and fixs all cases when several incompatible checkers /
-     * getters were specified for single property.
+     * Checks and fixs all cases when several incompatible checkers / getters
+     * were specified for single property.
+     * 
      * @param propertyTable
      * @throws IntrospectionException
      */
@@ -849,8 +942,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
         for (Map.Entry<String, HashMap> entry : propertyTable.entrySet()) {
             HashMap<String, Object> table = entry.getValue();
-            ArrayList<Method> getters = (ArrayList<Method>) table.get(STR_GETTERS);
-            ArrayList<Method> setters = (ArrayList<Method>) table.get(STR_SETTERS);
+            ArrayList<Method> getters = (ArrayList<Method>) table
+                    .get(STR_GETTERS);
+            ArrayList<Method> setters = (ArrayList<Method>) table
+                    .get(STR_SETTERS);
 
             Method normalGetter = null;
             Method indexedGetter = null;
@@ -869,24 +964,24 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
 
             // retrieve getters
-            for (Method getter: getters) {
+            for (Method getter : getters) {
                 // checks if it's a normal getter
-                if (getter.getParameterTypes() == null ||
-                        getter.getParameterTypes().length == 0) {
+                if (getter.getParameterTypes() == null
+                        || getter.getParameterTypes().length == 0) {
                     // normal getter found
-                    if (normalGetter == null ||
-                            getter.getName().startsWith(PREFIX_IS)) {
+                    if (normalGetter == null
+                            || getter.getName().startsWith(PREFIX_IS)) {
                         normalGetter = getter;
                     }
                 }
 
                 // checks if it's an indexed getter
-                if (getter.getParameterTypes() != null &&
-                        getter.getParameterTypes().length == 1 &&
-                        getter.getParameterTypes()[0] == int.class) {
+                if (getter.getParameterTypes() != null
+                        && getter.getParameterTypes().length == 1
+                        && getter.getParameterTypes()[0] == int.class) {
                     // indexed getter found
-                    if (indexedGetter == null ||
-                            getter.getName().startsWith(PREFIX_IS)) {
+                    if (indexedGetter == null
+                            || getter.getName().startsWith(PREFIX_IS)) {
                         indexedGetter = getter;
                     }
                 }
@@ -897,10 +992,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Now we will try to look for normal setter of the same type.
                 Class propertyType = normalGetter.getReturnType();
 
-                for (Method setter: setters) {
-                    if (setter.getParameterTypes().length == 1 &&
-                            propertyType.equals(setter.getParameterTypes()[0]))
-                    {
+                for (Method setter : setters) {
+                    if (setter.getParameterTypes().length == 1
+                            && propertyType
+                                    .equals(setter.getParameterTypes()[0])) {
                         normalSetter = setter;
                         break;
                     }
@@ -909,7 +1004,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Normal getter wasn't defined. Let's look for the last
                 // defined setter
 
-                for (Method setter: setters) {
+                for (Method setter : setters) {
                     if (setter.getParameterTypes().length == 1) {
                         normalSetter = setter;
                     }
@@ -921,11 +1016,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Now we will try to look for indexed setter of the same type.
                 Class propertyType = indexedGetter.getReturnType();
 
-                for (Method setter: setters) {
-                    if (setter.getParameterTypes().length == 2 &&
-                            setter.getParameterTypes()[0] == int.class &&
-                            propertyType.equals(setter.getParameterTypes()[1]))
-                    {
+                for (Method setter : setters) {
+                    if (setter.getParameterTypes().length == 2
+                            && setter.getParameterTypes()[0] == int.class
+                            && propertyType
+                                    .equals(setter.getParameterTypes()[1])) {
                         indexedSetter = setter;
                         break;
                     }
@@ -934,9 +1029,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Indexed getter wasn't defined. Let's look for the last
                 // defined indexed setter
 
-                for (Method setter: setters) {
-                    if (setter.getParameterTypes().length == 2 &&
-                            setter.getParameterTypes()[0] == int.class) {
+                for (Method setter : setters) {
+                    if (setter.getParameterTypes().length == 2
+                            && setter.getParameterTypes()[0] == int.class) {
                         indexedSetter = setter;
                     }
                 }
@@ -957,9 +1052,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
 
             // convert array-typed normal getters to indexed getters
-            if (normalGetter != null && normalGetter.getReturnType().isArray())
-            {
-                
+            if (normalGetter != null && normalGetter.getReturnType().isArray()) {
+
             }
 
             // RULES
@@ -969,8 +1063,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // RULE1
             // Both normal getter and setter of the same type were defined;
             // no indexed getter/setter *PAIR* of the other type defined
-            if (normalGetter != null && normalSetter != null &&
-                    (indexedGetter == null || indexedSetter == null)) {
+            if (normalGetter != null && normalSetter != null
+                    && (indexedGetter == null || indexedSetter == null)) {
                 table.put(STR_NORMAL, STR_VALID);
                 table.put(STR_NORMAL + PREFIX_GET, normalGetter);
                 table.put(STR_NORMAL + PREFIX_SET, normalSetter);
@@ -981,8 +1075,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // RULE2
             // normal getter and/or setter was defined; no indexed
             // getters & setters defined
-            if ((normalGetter != null || normalSetter != null) &&
-                    indexedGetter == null && indexedSetter == null) {
+            if ((normalGetter != null || normalSetter != null)
+                    && indexedGetter == null && indexedSetter == null) {
                 table.put(STR_NORMAL, STR_VALID);
                 table.put(STR_NORMAL + PREFIX_GET, normalGetter);
                 table.put(STR_NORMAL + PREFIX_SET, normalSetter);
@@ -993,34 +1087,155 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // RULE3
             // mix of normal / indexed getters and setters are defined. Types
             // are compatible
-            if ((normalGetter != null || normalSetter != null) &&
-                    (indexedGetter != null || indexedSetter != null) &&
-                    normalPropType.isArray() &&
-                    normalPropType.getComponentType() == indexedPropType) {
-                table.put(STR_NORMAL, STR_VALID);
-                table.put(STR_NORMAL + PREFIX_GET, normalGetter);
-                table.put(STR_NORMAL + PREFIX_SET, normalSetter);
-                table.put(STR_NORMAL + STR_PROPERTY_TYPE, normalPropType);
+            if ((normalGetter != null || normalSetter != null)
+                    && (indexedGetter != null || indexedSetter != null)) {
+                // (1)!A!B!C!D
+                if (normalGetter != null && normalSetter != null
+                        && indexedGetter != null && indexedSetter != null) {
+                    if (indexedGetter.getName().startsWith(PREFIX_GET)) {
+                        table.put(STR_NORMAL, STR_VALID);
+                        table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                        table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                        table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                normalPropType);
 
-                table.put(STR_INDEXED, STR_VALID);
-                table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
-                table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
-                table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+                        table.put(STR_INDEXED, STR_VALID);
+                        table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                        table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                        table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                                indexedPropType);
+                    } else {
+                        if (normalPropType != boolean.class
+                                && normalGetter.getName().startsWith(PREFIX_IS)) {
+                            table.put(STR_INDEXED, STR_VALID);
+                            table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                            table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                                    indexedPropType);
+                        } else {
+                            table.put(STR_NORMAL, STR_VALID);
+                            table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                            table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                            table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                    normalPropType);
+                        }
+                    }
+                    continue;
+                }
 
-                continue;
+                // (2)!AB!C!D
+                if (normalGetter != null && normalSetter == null
+                        && indexedGetter != null && indexedSetter != null) {
+                    table.put(STR_NORMAL, STR_VALID);
+                    table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                    table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                    table.put(STR_NORMAL + STR_PROPERTY_TYPE, normalPropType);
+
+                    table.put(STR_INDEXED, STR_VALID);
+                    if (indexedGetter.getName().startsWith(PREFIX_GET)) {
+                        table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                    }
+                    table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                    table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+                    continue;
+                }
+
+                // (3)A!B!C!D
+                if (normalGetter == null && normalSetter != null
+                        && indexedGetter != null && indexedSetter != null) {
+                    table.put(STR_INDEXED, STR_VALID);
+                    if (indexedGetter.getName().startsWith(PREFIX_GET)) {
+                        table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                    }
+                    table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                    table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+                    continue;
+                }
+
+                // (4)!AB!CD
+                if (normalGetter != null && normalSetter == null
+                        && indexedGetter != null && indexedSetter == null) {
+                    if (indexedGetter.getName().startsWith(PREFIX_GET)) {
+                        table.put(STR_NORMAL, STR_VALID);
+                        table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                        table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                        table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                normalPropType);
+
+                        table.put(STR_INDEXED, STR_VALID);
+                        table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                        table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                        table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                                indexedPropType);
+                    } else {
+                        table.put(STR_NORMAL, STR_VALID);
+                        table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                        table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                        table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                normalPropType);
+                    }
+                    continue;
+                }
+
+                // (5)A!B!CD
+                if (normalGetter == null && normalSetter != null
+                        && indexedGetter != null && indexedSetter == null) {
+                    if (indexedGetter.getName().startsWith(PREFIX_GET)) {
+                        table.put(STR_NORMAL, STR_VALID);
+                        table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                        table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                        table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                normalPropType);
+
+                        table.put(STR_INDEXED, STR_VALID);
+                        table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                        table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                        table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                                indexedPropType);
+                    } else {
+                        table.put(STR_NORMAL, STR_VALID);
+                        table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                        table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                        table.put(STR_NORMAL + STR_PROPERTY_TYPE,
+                                normalPropType);
+                    }
+                    continue;
+                }
+
+                // (6)!ABC!D
+                if (normalGetter != null && normalSetter == null
+                        && indexedGetter == null && indexedSetter != null) {
+                    table.put(STR_INDEXED, STR_VALID);
+                    table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                    table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                    table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+                    continue;
+                }
+
+                // (7)A!BC!D
+                if (normalGetter == null && normalSetter != null
+                        && indexedGetter == null && indexedSetter != null) {
+                    table.put(STR_INDEXED, STR_VALID);
+                    table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                    table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                    table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+                    continue;
+                }
             }
 
             // RULE4
             // no normal normal getter / setter.
             // Only indexed getter and/or setter is given
             // no normal setters / getters defined
-            if (normalSetter == null && normalGetter == null &&
-                    (indexedGetter != null || indexedSetter != null)) {
+            if (normalSetter == null && normalGetter == null
+                    && (indexedGetter != null || indexedSetter != null)) {
+                if (indexedGetter != null
+                        && indexedGetter.getName().startsWith(PREFIX_IS)) {
+                    continue;
+                }
                 table.put(STR_INDEXED, STR_VALID);
                 table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
                 table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
-                table.put(STR_INDEXED + STR_PROPERTY_TYPE,
-                        indexedPropType);
+                table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
                 continue;
             }
             
@@ -1069,7 +1284,6 @@ class StandardBeanInfo extends SimpleBeanInfo {
             introspectListenerMethods(PREFIX_REMOVE, theMethods[i].getMethod(),
                     eventTable);
             introspectGetListenerMethods(theMethods[i].getMethod(), eventTable);
-
         }
 
         ArrayList<EventSetDescriptor> eventList = new ArrayList<EventSetDescriptor>();
