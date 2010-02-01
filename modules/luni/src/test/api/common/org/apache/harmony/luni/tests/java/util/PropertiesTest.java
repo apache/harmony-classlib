@@ -956,6 +956,76 @@ public class PropertiesTest extends junit.framework.TestCase {
         assertEquals(1, props.size());
     }
 
+    public void test_SequentialpropertyNames() {
+        Properties parent = new Properties();
+        parent.setProperty("parent.a.key", "parent.a.value");
+        parent.setProperty("parent.b.key", "parent.b.value");
+
+        Enumeration<?> names = parent.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties current = new Properties(parent);
+        current.setProperty("current.a.key", "current.a.value");
+        current.setProperty("current.b.key", "current.b.value");
+
+        names = current.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+
+        Properties child = new Properties(current);
+        child.setProperty("child.a.key", "child.a.value");
+        child.setProperty("child.b.key", "child.b.value");
+
+        names = child.propertyNames();
+        assertEquals("parent.a.key", names.nextElement());
+        assertEquals("child.b.key", names.nextElement());
+        assertEquals("current.b.key", names.nextElement());
+        assertEquals("parent.b.key", names.nextElement());
+        assertEquals("child.a.key", names.nextElement());
+        assertEquals("current.a.key", names.nextElement());
+        assertFalse(names.hasMoreElements());
+    }
+
+    public void test_SequentialstringPropertyNames() {
+        Properties parent = new Properties();
+        parent.setProperty("parent.a.key", "parent.a.value");
+        parent.setProperty("parent.b.key", "parent.b.value");
+
+        Iterator<String> nameIterator = parent.stringPropertyNames().iterator();
+        assertEquals("parent.a.key", nameIterator.next());
+        assertEquals("parent.b.key", nameIterator.next());
+        assertFalse(nameIterator.hasNext());
+
+        Properties current = new Properties(parent);
+        current.setProperty("current.a.key", "current.a.value");
+        current.setProperty("current.b.key", "current.b.value");
+
+        nameIterator = current.stringPropertyNames().iterator();
+        assertEquals("parent.a.key", nameIterator.next());
+        assertEquals("current.b.key", nameIterator.next());
+        assertEquals("parent.b.key", nameIterator.next());
+        assertEquals("current.a.key", nameIterator.next());
+        assertFalse(nameIterator.hasNext());
+
+        Properties child = new Properties(current);
+        child.setProperty("child.a.key", "child.a.value");
+        child.setProperty("child.b.key", "child.b.value");
+
+        nameIterator = child.stringPropertyNames().iterator();
+        assertEquals("parent.a.key", nameIterator.next());
+        assertEquals("child.b.key", nameIterator.next());
+        assertEquals("current.b.key", nameIterator.next());
+        assertEquals("parent.b.key", nameIterator.next());
+        assertEquals("child.a.key", nameIterator.next());
+        assertEquals("current.a.key", nameIterator.next());
+        assertFalse(nameIterator.hasNext());
+    }
+
     /**
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.

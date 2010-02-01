@@ -493,10 +493,10 @@ public class Properties extends Hashtable<Object, Object> {
      */
     public Enumeration<?> propertyNames() {
         Hashtable<Object, Object> selected = new Hashtable<Object, Object>();
-        selectProperties(selected);
+        selectProperties(selected, false);
         return selected.keys();
     }
-    
+
     /**
      * Answers a set of keys in this property list whose key and value are
      * strings.
@@ -504,30 +504,39 @@ public class Properties extends Hashtable<Object, Object> {
      * @return a set of keys in the property list
      * 
      * @since 1.6
-     */    
-    public Set<String> stringPropertyNames(){
-        Hashtable<Object, Object> selected = new Hashtable<Object, Object>();
-        selectProperties(selected);
-        Enumeration<?> keys = selected.keys();
-        HashSet<String> set = new HashSet<String>();
+     */
+    public Set<String> stringPropertyNames() {
+        Hashtable<String, String> stringProperties = new Hashtable<String, String>();
+        selectProperties(stringProperties, true);
+        return Collections.unmodifiableSet(stringProperties.keySet());
+    }
+
+    /*
+     * Select properties including defaults according to requirements
+     */
+    private void selectProperties(Hashtable selectProperties,
+            final boolean isStringOnly) {
+        if (defaults != null) {
+            defaults.selectProperties(selectProperties, isStringOnly);
+        }
+
+        Enumeration<?> keys = keys();
         Object key, value;
         while (keys.hasMoreElements()) {
             key = keys.nextElement();
-            if (key instanceof String) {
-                value = selected.get(key);
-                if (value instanceof String){
-                    set.add((String)key);    
+            if (isStringOnly) {
+                // Only select property with string key and value
+                if (key instanceof String) {
+                    value = get(key);
+                    if (value instanceof String) {
+                        selectProperties.put(key, value);
+                    }
                 }
-            }           
+            } else {
+                value = get(key);
+                selectProperties.put(key, value);
+            }
         }
-        return Collections.unmodifiableSet(set);
-    }
-
-    private void selectProperties(Hashtable<Object, Object> selected) {
-        if(defaults != null) {
-            defaults.selectProperties(selected);
-        }
-        selected.putAll(this);
     }
 
     /**
