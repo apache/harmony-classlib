@@ -853,6 +853,32 @@ public class ExpressionTest extends TestCase {
         assertFalse(MockTarget.isCalled());
     }
 
+    public void testGetValue_newInstanceNormalMethod() throws Exception {
+        Expression expression = new Expression(new NormalTarget(),
+                "newInstance", new Object[0]);
+        assertEquals("Normal-Called", expression.getValue());
+    }
+
+    public void testGetValue_newInstanceStaticMethod() throws Exception {
+        Expression expression = new Expression(new StaticTarget(),
+                "newInstance", new Object[0]);
+        assertEquals("Static-Called", expression.getValue());
+    }
+
+    public class NormalTarget {
+
+        public String newInstance() {
+            return "Normal-Called";
+        }
+    }
+
+    public static class StaticTarget {
+
+        public static String newInstance() {
+            return "Static-Called";
+        }
+    }
+
     /*
      * Test the method getValue() with two equal specific methods.
      * 

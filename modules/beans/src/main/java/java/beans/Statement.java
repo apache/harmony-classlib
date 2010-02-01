@@ -135,7 +135,13 @@ public class Statement {
                     Constructor<?> constructor = findConstructor((Class)theTarget, theArguments);
                     result = constructor.newInstance(theArguments);
                 } else {
-                    throw new NoSuchMethodException(this.toString());
+                    if ("new".equals(theMethodName)) { //$NON-NLS-1$
+                        throw new NoSuchMethodException(this.toString());
+                    }
+                    // target class declares a public named "newInstance" method
+                    Method method = findMethod(theTarget.getClass(),
+                            theMethodName, theArguments, false);
+                    result = method.invoke(theTarget, theArguments);
                 }
             } else if (theMethodName.equals("newArray")) {//$NON-NLS-1$
                 // create a new array instance without length attribute
