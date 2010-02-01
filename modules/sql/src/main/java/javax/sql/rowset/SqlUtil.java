@@ -17,49 +17,33 @@
 
 package javax.sql.rowset;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.sql.Types;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 class SqlUtil {
-    /*
-     * FIXME:Validate column types is defined by java.sql.Types, current
-     * implementation is ugly, need to find an elegant and effient way to check
-     * all constants defined in java.util.sql.Types
-     */
+
     static void validateType(int type) throws SQLException {
-        switch (type) {
-        case Types.ARRAY:
-        case Types.BIGINT:
-        case Types.BINARY:
-        case Types.BIT:
-        case Types.BLOB:
-        case Types.BOOLEAN:
-        case Types.CHAR:
-        case Types.CLOB:
-        case Types.DATALINK:
-        case Types.DATE:
-        case Types.DECIMAL:
-        case Types.DISTINCT:
-        case Types.DOUBLE:
-        case Types.FLOAT:
-        case Types.INTEGER:
-        case Types.JAVA_OBJECT:
-        case Types.LONGVARBINARY:
-        case Types.LONGVARCHAR:
-        case Types.NULL:
-        case Types.NUMERIC:
-        case Types.OTHER:
-        case Types.REAL:
-        case Types.REF:
-        case Types.SMALLINT:
-        case Types.STRUCT:
-        case Types.TIME:
-        case Types.TIMESTAMP:
-        case Types.TINYINT:
-        case Types.VARBINARY:
-        case Types.VARCHAR:
-            return;
+        try {
+            int modifiers = -1;
+            Field[] fields = Types.class.getFields();
+            for (int index = 0; index < fields.length; index++) {
+                // field should be int type
+                if (int.class == fields[index].getType()) {
+                    modifiers = fields[index].getModifiers();
+                    // field should be static and final
+                    if (Modifier.isStatic(modifiers)
+                            && Modifier.isFinal(modifiers)) {
+                        if (type == fields[index].getInt(Types.class)) {
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // ignored: this should never happen
         }
         throw new SQLException(Messages.getString("sql.28")); //$NON-NLS-1$
     }

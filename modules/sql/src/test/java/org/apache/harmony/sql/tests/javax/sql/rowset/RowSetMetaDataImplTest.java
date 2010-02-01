@@ -826,6 +826,13 @@ public class RowSetMetaDataImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        try {
+            metaDataImpl.setColumnType(2, 59);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
     }
 
     /**
