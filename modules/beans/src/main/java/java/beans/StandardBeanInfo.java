@@ -308,10 +308,27 @@ class StandardBeanInfo extends SimpleBeanInfo {
                                 subDesc.setReadMethod(superGet);
                             }
                         }
-                    } else { // Different type: type = getMethod
-                        if ((subGet == null) && (superGet != null)) {
-                            subDesc.setWriteMethod(null);
-                            subDesc.setReadMethod(superGet);
+                    } else { // Different type
+                        if ((subGet == null || subSet == null)
+                                && (superGet != null)) {
+                            subDesc = new PropertyDescriptor(propertyName,
+                                    superGet, superSet);
+                            if (subGet != null) {
+                                String subGetName = subGet.getName();
+                                Method method = null;
+                                MethodDescriptor[] introspectMethods = introspectMethods();
+                                for (MethodDescriptor methodDesc : introspectMethods) {
+                                    method = methodDesc.getMethod();
+                                    if (method != subGet
+                                            && subGetName.equals(method
+                                                    .getName())
+                                            && method.getParameterTypes().length == 0
+                                            && method.getReturnType() == superType) {
+                                        subDesc.setReadMethod(method);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 } else { // Sub is IndexedPropertyDescriptor and super is PropertyDescriptor
