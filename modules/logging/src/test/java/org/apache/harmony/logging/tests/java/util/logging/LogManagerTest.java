@@ -814,11 +814,9 @@ public class LogManagerTest extends TestCase {
     }
 
     public void testValidConfigClass() throws Exception {
-        String oldPropertyValue = System
-                .getProperty("java.util.logging.config.class");
+        String oldPropertyValue = System.getProperty(CONFIG_CLASS);
         try {
-            System.setProperty("java.util.logging.config.class", this
-                    .getClass().getName()
+            System.setProperty(CONFIG_CLASS, this.getClass().getName()
                     + "$ConfigClass");
             assertNull(manager.getLogger("testConfigClass.foo"));
 
