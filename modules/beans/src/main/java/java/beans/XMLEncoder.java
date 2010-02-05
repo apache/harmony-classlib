@@ -836,7 +836,9 @@ public class XMLEncoder extends Encoder {
                 break;
             }
             
-            if (obj != null && obj.equals(value)) {
+            if (obj != null
+                    && (obj.getClass().isAssignableFrom(value.getClass()))
+                    && obj.equals(value)) {
                 n++;
 
                 if (n >= DEADLOCK_THRESHOLD) {

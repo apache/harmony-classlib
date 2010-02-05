@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -696,7 +697,7 @@ public class XMLEncoderTest extends TestCase {
     /**
      * The test checks that complex scenario store is correct
      */
-    public void testEncodingScenario() {
+    public void testEncodingScenario1() {
         XMLEncoder e = new XMLEncoder(System.out);
         e.setExceptionListener(new ExceptionListener() {
             public void exceptionThrown(Exception e) {
@@ -719,6 +720,47 @@ public class XMLEncoderTest extends TestCase {
         } finally {
             e.close();
         }
+    }
+
+    public static class MockClass {
+
+        private Date date = null;
+
+        public MockClass() {
+
+        }
+
+        public MockClass(Date date) {
+            this.date = date;
+        }
+
+        public boolean equals(Object obj) {
+            MockClass mockObj = (MockClass) obj;
+            if (date != null && mockObj.date != null) {
+                return date.equals(mockObj.date);
+            }
+            return false;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+    }
+
+    public void testEncodingScenario2() {
+        XMLEncoder xmlEncoder = new XMLEncoder(System.out);
+        xmlEncoder.setExceptionListener(new ExceptionListener() {
+            public void exceptionThrown(Exception e) {
+                fail("Exception " + e.getClass() + " is thrown: "
+                        + e.getMessage());
+            }
+        });
+
+        xmlEncoder.writeObject(new MockClass(new Date()));
     }
 
     /**
