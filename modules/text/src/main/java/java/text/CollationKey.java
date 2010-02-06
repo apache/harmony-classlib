@@ -78,11 +78,11 @@ package java.text;
  * @see Collator
  * @see RuleBasedCollator
  */
-public final class CollationKey implements Comparable<CollationKey> {
+public class CollationKey implements Comparable<CollationKey> {
 
-    private String source;
+    private final String source;
 
-    private com.ibm.icu.text.CollationKey icuKey;
+    private final com.ibm.icu.text.CollationKey icuKey;
 
     CollationKey(String source, com.ibm.icu.text.CollationKey key) {
         this.source = source;
