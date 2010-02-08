@@ -916,12 +916,6 @@ public class DatagramSocketTest extends SocketTestCase {
             }
         }
 
-        InetSocketAddress sa = InetSocketAddress.createUnresolved("localhost",
-                0);
-        // no exception expected for next line
-        new testDatagramSocket(new testDatagramSocketImpl())
-                .send(new DatagramPacket(new byte[272], 3, sa));
-
         // Regression test for Harmony-2938
         InetAddress i = InetAddress.getByName("127.0.0.1");
         DatagramSocket d = new DatagramSocket(0, i);
@@ -932,6 +926,16 @@ public class DatagramSocketTest extends SocketTestCase {
             // expected;
         } finally {
             d.close();
+        }
+
+        // Regression test for Harmony-6413
+        InetSocketAddress addr = InetSocketAddress.createUnresolved(
+                "localhost", 0);
+        try {
+            DatagramPacket dp = new DatagramPacket(new byte[272], 3, addr);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
         }
     }
     

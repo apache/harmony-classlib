@@ -330,6 +330,9 @@ public final class DatagramPacket {
                     "K0316", sockAddr == null ? null : sockAddr.getClass())); //$NON-NLS-1$
         }
         InetSocketAddress inetAddr = (InetSocketAddress) sockAddr;
+        if(inetAddr.isUnresolved()){
+            throw new IllegalArgumentException(Msg.getString("K0353"));
+        }
         port = inetAddr.getPort();
         address = inetAddr.getAddress();
     }
