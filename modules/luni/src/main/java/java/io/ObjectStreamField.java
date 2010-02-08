@@ -333,6 +333,10 @@ public class ObjectStreamField implements Comparable<Object> {
     }
 
     void resolve(ClassLoader loader) {
+        if (typeString == null && isPrimitive()){
+            // primitive type declared in a serializable class
+            typeString = String.valueOf(getTypeCode());
+        }
         if (typeString.length() == 1) {
             switch (typeString.charAt(0)) {
                 case 'I':
