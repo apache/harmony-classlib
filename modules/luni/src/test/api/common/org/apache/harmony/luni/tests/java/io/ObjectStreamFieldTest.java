@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.Date;
@@ -221,6 +222,22 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         assertEquals(1, objectStreamClass.getField("i").getOffset());
         assertEquals(2, objectStreamClass.getField("s").getOffset());
     }
+    
+
+    /* Write/serialize and read/de-serialize an object. */
+    public void test_ObjectWithPrimitiveField()
+        throws IOException, ClassNotFoundException {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final MyObjectOutputStream oos = new MyObjectOutputStream(baos);
+        oos.writeObject(new MockClass());
+        final byte[] bytes = baos.toByteArray();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        final MyObjectInputStream ois = new MyObjectInputStream(bais);
+        /* NullPointerException is thrown by the readObject call below. */
+        System.out.println("start");
+        ois.readObject();
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
@@ -325,5 +342,59 @@ class SerializableObject2 implements Serializable {
     private void readObject(ObjectInputStream in) throws NotActiveException,
             IOException, ClassNotFoundException {
         getField = in.readFields();
+    }
+}
+
+
+/* Primitive fields are necessary to cause the NullPointerException. */
+class MockClass implements Serializable {
+    String field1 = "field1";
+    String field2 = "field2";
+    int field3 = 333;
+    int field4 = 444;
+    String field5 = "field5";
+}
+
+
+/* Overrides writeClassDescriptor to store ObjectStreamClass in map. */
+class MyObjectOutputStream extends ObjectOutputStream {
+
+    static ObjectStreamClass descs;
+    
+    MyObjectOutputStream(OutputStream out)
+        throws IOException {
+        super(out);
+    }
+
+    @Override
+    protected void writeClassDescriptor(ObjectStreamClass desc)
+        throws IOException {
+        descs = desc;
+        final int id = 1;
+        /* Write ID of ObjectStreamClass. */
+        writeInt(id);
+    }
+}
+
+/* Overrides readClassDescriptor to get ObjectStreamClass from map. */
+class MyObjectInputStream extends ObjectInputStream {
+
+    MyObjectInputStream(InputStream in)
+        throws IOException {
+
+        super(in);
+    }
+
+    @Override
+    protected ObjectStreamClass readClassDescriptor()
+        throws IOException, ClassNotFoundException {
+
+        /* Read the ID and get the ObjectStreamClass from a map. */
+        final int id = readInt();
+        final ObjectStreamClass desc = MyObjectOutputStream.descs;
+        if (desc == null) {
+            throw new ClassNotFoundException("id not found: " + id);
+        }
+        return desc;
     }
 }
