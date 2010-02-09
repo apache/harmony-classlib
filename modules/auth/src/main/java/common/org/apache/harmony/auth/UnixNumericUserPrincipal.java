@@ -34,7 +34,7 @@ public class UnixNumericUserPrincipal implements Serializable, Principal {
 
     /**
      * Creates the object using a String representation of uid.
-     * @param id string representation of uid
+     * @param uid string representation of uid
      * throws NullPointerException if uid is null
      */
     public UnixNumericUserPrincipal(String uid) {

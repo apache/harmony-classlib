@@ -31,8 +31,8 @@ public class NTSidGroupPrincipal extends NTSid {
      * A constructor which takes group SID as its only argument. 
      * @param sid group SID
      */
-    public NTSidGroupPrincipal(String name) {
-        super(name);
+    public NTSidGroupPrincipal(String sid) {
+        super(sid);
     }
 
     /**
