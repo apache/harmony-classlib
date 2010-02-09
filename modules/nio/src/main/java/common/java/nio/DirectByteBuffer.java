@@ -244,7 +244,7 @@ abstract class DirectByteBuffer extends BaseByteBuffer implements DirectBuffer {
      * freed then operations requiring access to the memory will throw an
      * <code>IllegalStateException</code>.
      * <p>
-     * Note this is is possible that the memory is freed by code that reaches
+     * Note it is possible that the memory is freed by code that reaches
      * into the address and explicitly frees it 'beneath' us -- this is bad
      * form.
      * </p>
