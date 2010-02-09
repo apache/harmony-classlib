@@ -293,7 +293,7 @@ atoe_getenv(const char *name)
     }
 
     /* Get the EBCIDC value from the system */
-    e_name = a2e_string((char *)name);
+    e_name = a2e_string(name);
     e_value = getenv(e_name);
     free(e_name);
 
@@ -326,7 +326,7 @@ atoe_putenv(const char *envstr)
     int result;
 
     /* Set the system EBCDIC environment - don't free w_envstr as it's memory is held by the environment */
-    w_envstr = a2e_string((char *)envstr);
+    w_envstr = a2e_string(envstr);
     result = putenv(w_envstr);
 
     if (result == 0) {
@@ -360,7 +360,7 @@ atoe_perror( const char *string)
 {
     char *e;
 
-    e = a2e_string((char *)string);
+    e = a2e_string(string);
     perror(e);
 
     free(e);
@@ -437,7 +437,7 @@ atoe_open( const char *fname, int options, ...)
     /* See if the file needs to be tagged */
     tagFile = fileTagRequired(fname);
 
-    f = a2e_string((char *)fname);
+    f = a2e_string(fname);
 
     va_start(args,options);
 
@@ -479,7 +479,7 @@ atoe_tempnam( const char *dir, char *pfx)
 {
     char *tempfn = 0;
     char *a = 0;
-    char *d = a2e_string((char *)dir);
+    char *d = a2e_string(dir);
     char *p = a2e_string(pfx);
 
     if (( tempfn = tempnam(d,p)) == 0 ) {
@@ -508,7 +508,7 @@ atoe_stat( const char *pathname, struct stat *sbuf)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = stat(e,sbuf);
 
     free(e);
@@ -528,7 +528,7 @@ atoe_lstat( const char *pathname, struct stat *sbuf)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = lstat(e,sbuf);
 
     free(e);
@@ -552,7 +552,7 @@ atoe_fopen( const char *filename, char *mode)
 
     check_fcntl_init();                            
 
-    f = a2e_string((char *)filename);
+    f = a2e_string(filename);
     m = a2e_string(mode);
     outfp = fopen(f,m);
 
@@ -584,7 +584,7 @@ atoe_freopen(const char *filename, char *mode, FILE *stream)
 
     check_fcntl_init();                            
 
-    f = a2e_string((char *)filename);
+    f = a2e_string(filename);
     m = a2e_string(mode);
     outfp = freopen(f, m, stream);
 
@@ -614,7 +614,7 @@ atoe_mkdir( const char *pathname, mode_t mode)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = mkdir(e, mode);
 
     free(e);
@@ -634,7 +634,7 @@ atoe_remove( const char *pathname)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = remove(e);
 
     free(e);
@@ -778,7 +778,7 @@ atoe_unlink( const char *pathname)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = unlink(e);
 
     free(e);
@@ -799,7 +799,7 @@ atoe_rmdir( const char *pathname)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = rmdir(e);
 
     free(e);
@@ -820,7 +820,7 @@ atoe_access( const char *pathname, int how)
     int rc;
     char *e;
 
-    e = a2e_string((char *)pathname);
+    e = a2e_string(pathname);
     rc = access(e, how);
 
     free(e);
@@ -841,7 +841,7 @@ atoe_opendir( const char *dirname)
     DIR *dir;
     char *e;
 
-    e = a2e_string((char *)dirname);
+    e = a2e_string(dirname);
     dir = opendir(e);
 
     free(e);
@@ -885,7 +885,7 @@ atoe_realpath(const char *file_name, char *resolved_name)
     char e_resolved_name[MAXPATHLEN];
     char *e_file_name, *p;
 
-    e_file_name = a2e_string((char *)file_name);                   
+    e_file_name = a2e_string(file_name);                   
     p = realpath(e_file_name, e_resolved_name);                    
 
     if (p == NULL) return p;
@@ -904,12 +904,12 @@ atoe_realpath(const char *file_name, char *resolved_name)
  * returns     -
  *************************************************************************/
 int
-atoe_rename( const char *oldname, char *newname)
+atoe_rename(const char *oldname, const char *newname)
 {
     int rc;
     char *o,*n;
 
-    o = a2e_string((char *)oldname);
+    o = a2e_string(oldname);
     n = a2e_string(newname);
     rc = rename(o, n);
 
@@ -942,7 +942,7 @@ atoe_getpwnam(const char *name) {
     struct passwd *e_passwd;
     char *e_name;
 
-    e_name = a2e_string((char *)name);
+    e_name = a2e_string(name);
     e_passwd = getpwnam(e_name);
     free(e_name);
 
@@ -1251,8 +1251,8 @@ atoe_vsprintf(char *target, const char *ascii_chars, va_list args)
 int
 atoe_sscanf(const char *buffer, const char *format, va_list args)
 {
-    char *e_buffer = a2e_string((char *)buffer);
-    char *e_format = a2e_string((char *)format);
+    char *e_buffer = a2e_string(buffer);
+    char *e_format = a2e_string(format);
     int len = sscanf((const char *)e_buffer, (const char *)e_format, args);
     free(e_buffer);
     free(e_format);
@@ -1272,7 +1272,7 @@ atoe_strftime(char *buf, size_t buflen,
     size_t num;
     char *e,*a;
 
-    e = a2e_string((char *)format);
+    e = a2e_string(format);
     num = strftime(buf, buflen, e, timeptr);
     a = e2a(buf,num);
     memcpy(buf,a,num);
@@ -1355,7 +1355,7 @@ atoe_setlocale(int category, const char *locale)
 {
     char *eb, *result;
 
-    eb = a2e_string((char *)locale);
+    eb = a2e_string(locale);
     result = setlocale(category, eb) ;
 
     return e2a_string(result);
@@ -1411,7 +1411,7 @@ int atoe_strtol(const char * s, char ** p, int b)
     char * pebcdic;
     int  i;
 
-    sebcdic = a2e_string((char *)s);
+    sebcdic = a2e_string(s);
     i = strtol((const char *)sebcdic, &pebcdic, b);
     if (p != NULL) {
         *p = (char *)s + (pebcdic - sebcdic);
@@ -1433,7 +1433,7 @@ unsigned long atoe_strtoul(const char * s, char ** p, int b)
     char * pebcdic;
     unsigned long  i;
 
-    sebcdic = a2e_string((char *)s);
+    sebcdic = a2e_string(s);
     i = strtoul((const char *)sebcdic, &pebcdic, b);
     if (p != NULL) {
         *p = (char *)s + (pebcdic - sebcdic);
@@ -1455,7 +1455,7 @@ unsigned long long atoe_strtoull(const char * s, char ** p, int b)
     char * pebcdic;
     unsigned long long i;
 
-    sebcdic = a2e_string((char *)s);
+    sebcdic = a2e_string(s);
     i = strtoull((const char *)sebcdic, &pebcdic, b);
     if (p != NULL) {
         *p = (char *)s + (pebcdic - sebcdic);
@@ -2274,7 +2274,7 @@ key_t atoe_ftok(const char *pathname, int id)
     key_t key;
     char  *e;
 
-    e   = a2e_string((char *) pathname);
+    e   = a2e_string(pathname);
     key = ftok(e, id);
 
     free(e);

@@ -50,7 +50,7 @@
         void       atoe_perror    (const char*);
         int        atoe_printf    (const char*, ...);
         int        atoe_putchar   (int);
-        int        atoe_rename    (const char*, char*);
+        int        atoe_rename    (const char*, const char*);
         int        atoe_sprintf   (const char*, char*, ...);
         int        std_sprintf    (const char*, char*, ...);
         int        atoe_sscanf    (const char*, const char*, ...); 
