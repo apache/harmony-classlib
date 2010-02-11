@@ -119,7 +119,7 @@ public class ServerSocketChannelTest extends TestCase {
     // -------------------------------------------------------------------
 
     /*
-     * Test method for 'com.ibm.io.nio.ServerSocketChannelImpl.socket()'
+     * Test method for 'java.nio.channels.ServerSocketChannel.socket()'
      */
     public void testSocket_Block_BeforeClose() throws Exception {
         assertTrue(this.serverChannel.isOpen());
@@ -200,7 +200,7 @@ public class ServerSocketChannelTest extends TestCase {
     // -------------------------------------------------------------------
 
     /*
-     * Test method for 'com.ibm.io.nio.ServerSocketChannelImpl.accept()'
+     * Test method for 'java.nio.channels.ServerSocketChannel.accept()'
      */
 
     public void testAccept_Block_NotYetBound() throws IOException {
