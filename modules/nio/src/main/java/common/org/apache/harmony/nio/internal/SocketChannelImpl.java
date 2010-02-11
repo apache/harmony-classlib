@@ -47,7 +47,7 @@ import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.nio.internal.nls.Messages;
 import org.apache.harmony.nio.AddressUtil;
 import org.apache.harmony.nio.internal.nls.Messages;
 
@@ -910,7 +910,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 throws SocketException {
             checkOpen();
             if (size < 1) {
-                throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("nio.0E")); //$NON-NLS-1$
             }
             socketImpl
                     .setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
@@ -927,7 +927,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         public synchronized void setSendBufferSize(int size) throws SocketException {
             checkOpen();
             if (size < 1) {
-                throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("nio.0E")); //$NON-NLS-1$
             }
             socketImpl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
         }
@@ -936,7 +936,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         public void setSoLinger(boolean on, int timeout) throws SocketException {
             checkOpen();
             if (on && timeout < 0) {
-                throw new IllegalArgumentException(Msg.getString("K0045")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("nio.0F")); //$NON-NLS-1$
             }
             int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
             socketImpl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
@@ -946,7 +946,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         public synchronized void setSoTimeout(int timeout) throws SocketException {
             checkOpen();
             if (timeout < 0) {
-                throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("nio.10")); //$NON-NLS-1$
             }
             socketImpl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
         }
