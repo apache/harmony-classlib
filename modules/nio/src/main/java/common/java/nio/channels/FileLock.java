@@ -202,7 +202,7 @@ public abstract class FileLock {
         buffer.append(size);
         buffer.append(", shared=");
         buffer.append(Boolean.toString(shared));
-        buffer.append("]");
+        buffer.append(']');
         return buffer.toString();
     }
 }

@@ -1382,7 +1382,7 @@ public class DatagramChannelTest extends TestCase {
     public void testReceiveSend_8K() throws Exception {
         StringBuffer str8k = new StringBuffer();
         for (int i = 0; i < 8 * CAPACITY_1KB; i++) {
-            str8k.append("a");
+            str8k.append('a');
         }
         String str = str8k.toString();
         this.channel1.socket().bind(localAddr2);
@@ -1393,7 +1393,7 @@ public class DatagramChannelTest extends TestCase {
     public void testReceiveSend_64K() throws Exception {
         StringBuffer str64k = new StringBuffer();
         for (int i = 0; i < CAPACITY_64KB; i++) {
-            str64k.append("a");
+            str64k.append('a');
         }
         String str = str64k.toString();
         try {
