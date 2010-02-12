@@ -39,7 +39,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
@@ -221,16 +221,16 @@ public class JarURLConnectionImpl extends JarURLConnection {
     @Override
     public InputStream getInputStream() throws IOException {
         if (closed) {
-            // KA027=Inputstream of the JarURLConnection has been closed
-            throw new IllegalStateException(Msg.getString("KA027")); //$NON-NLS-1$
+            // luni.33=Inputstream of the JarURLConnection has been closed
+            throw new IllegalStateException(Messages.getString("luni.33")); //$NON-NLS-1$
         }
         connect();
         if (jarInput != null) {
             return jarInput;
         }
         if (jarEntry == null) {
-            // K00fc=Jar entry not specified
-            throw new IOException(Msg.getString("K00fc")); //$NON-NLS-1$
+            // luni.34=Jar entry not specified
+            throw new IOException(Messages.getString("luni.34")); //$NON-NLS-1$
         }
         return jarInput = new JarURLConnectionInputStream(jarFile
                 .getInputStream(jarEntry), jarFile);

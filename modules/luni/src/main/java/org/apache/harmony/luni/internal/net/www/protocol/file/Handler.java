@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This is the handler that is responsible for reading files from the file
@@ -66,8 +66,8 @@ public class Handler extends URLStreamHandler {
     public URLConnection openConnection(URL url, Proxy proxy)
             throws IOException {
         if (null == url) {
-            // K034b=url and proxy can not be null
-            throw new IllegalArgumentException(Msg.getString("K034b")); //$NON-NLS-1$
+            // luni.1B=url and proxy can not be null
+            throw new IllegalArgumentException(Messages.getString("luni.1B")); //$NON-NLS-1$
         }
 
         String host = url.getHost();

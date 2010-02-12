@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 public class Handler extends URLStreamHandler {
     /**
@@ -57,7 +57,7 @@ public class Handler extends URLStreamHandler {
     protected URLConnection openConnection(URL u, Proxy proxy)
             throws IOException {
         if (null == u || null == proxy) {
-            throw new IllegalArgumentException(Msg.getString("K034b")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.1B")); //$NON-NLS-1$
         }
         return new FtpURLConnection(u, proxy);
     }

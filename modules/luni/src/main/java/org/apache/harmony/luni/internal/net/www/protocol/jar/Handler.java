@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.URLUtil;
 
 public class Handler extends URLStreamHandler {
@@ -68,7 +68,7 @@ public class Handler extends URLStreamHandler {
             spec = ""; //$NON-NLS-1$
         }
         if (spec.indexOf("!/") == -1 && (file.indexOf("!/") == -1)) { //$NON-NLS-1$ //$NON-NLS-2$
-            throw new NullPointerException(Msg.getString("K01b6")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.32")); //$NON-NLS-1$
         }
         if (file.equals("")) {
             file = spec;

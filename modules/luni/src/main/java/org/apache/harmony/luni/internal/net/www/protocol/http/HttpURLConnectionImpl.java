@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.harmony.luni.util.Base64;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -175,12 +175,12 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
         public int read(byte[] buf, int offset, int length) throws IOException {
             // Force buf null check first, and avoid int overflow
             if (offset < 0 || offset > buf.length) {
-                // K002e=Offset out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+                // luni.12=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
             }
             if (length < 0 || buf.length - offset < length) {
-                // K0031=Length out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+                // luni.18=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
             }
             if (bytesRemaining <= 0) {
                 disconnect(false);
@@ -296,12 +296,12 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
         public int read(byte[] buf, int offset, int length) throws IOException {
             // Force buf null check first, and avoid int overflow
             if (offset > buf.length || offset < 0) {
-                // K002e=Offset out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+                // luni.12=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
             }
             if (length < 0 || buf.length - offset < length) {
-                // K0031=Length out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+                // luni.18=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
             }
             if (bytesRemaining <= 0) {
                 readChunkSize();
@@ -431,7 +431,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
         @Override
         public synchronized void flush() throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (writeToSocket) {
                 sendCache(false);
@@ -447,7 +447,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             closed = true;
             if (writeToSocket) {
                 if (limit > 0) {
-                    throw new IOException(Msg.getString("K00a4")); //$NON-NLS-1$
+                    throw new IOException(Messages.getString("luni.25")); //$NON-NLS-1$
                 }
                 sendCache(closed);
             }
@@ -457,11 +457,11 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
         @Override
         public synchronized void write(int data) throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (limit >= 0) {
                 if (limit == 0) {
-                    throw new IOException(Msg.getString("K00b2")); //$NON-NLS-1$
+                    throw new IOException(Messages.getString("luni.26")); //$NON-NLS-1$
                 }
                 limit--;
             }
@@ -475,7 +475,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
         public synchronized void write(byte[] buffer, int offset, int count)
                 throws IOException {
             if (closed) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (buffer == null) {
                 throw new NullPointerException();
@@ -483,12 +483,12 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             // avoid int overflow
             if (offset < 0 || count < 0 || offset > buffer.length
                     || buffer.length - offset < count) {
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.13")); //$NON-NLS-1$
             }
 
             if (limit >= 0) {
                 if (count > limit) {
-                    throw new IOException(Msg.getString("K00b2")); //$NON-NLS-1$
+                    throw new IOException(Messages.getString("luni.26")); //$NON-NLS-1$
                 }
                 limit -= count;
                 cache.write(buffer, offset, count);
@@ -859,7 +859,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
     @Override
     public Map<String, List<String>> getRequestProperties() {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0091")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.27")); //$NON-NLS-1$
         }
         return reqHeader.getFieldMap();
     }
@@ -867,7 +867,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
     @Override
     public InputStream getInputStream() throws IOException {
         if (!doInput) {
-            throw new ProtocolException(Msg.getString("K008d")); //$NON-NLS-1$
+            throw new ProtocolException(Messages.getString("luni.28")); //$NON-NLS-1$
         }
 
         // connect before sending requests
@@ -911,12 +911,12 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
     @Override
     public OutputStream getOutputStream() throws IOException {
         if (!doOutput) {
-            throw new ProtocolException(Msg.getString("K008e")); //$NON-NLS-1$
+            throw new ProtocolException(Messages.getString("luni.29")); //$NON-NLS-1$
         }
 
         // you can't write after you read
         if (sentRequest) {
-            throw new ProtocolException(Msg.getString("K0090")); //$NON-NLS-1$
+            throw new ProtocolException(Messages.getString("luni.2A")); //$NON-NLS-1$
         }
 
         if (os != null) {
@@ -930,7 +930,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
 
         // If the request method is neither PUT or POST, then you're not writing
         if (method != PUT && method != POST) {
-            throw new ProtocolException(Msg.getString("K008f", method)); //$NON-NLS-1$
+            throw new ProtocolException(Messages.getString("luni.2B", method)); //$NON-NLS-1$
         }
 
         int limit = -1;
@@ -1266,7 +1266,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
     @Override
     public void setRequestProperty(String field, String newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0092")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.2C")); //$NON-NLS-1$
         }
         if (field == null) {
             throw new NullPointerException();
@@ -1277,7 +1277,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
     @Override
     public void addRequestProperty(String field, String value) {
         if (connected) {
-            throw new IllegalAccessError(Msg.getString("K0092")); //$NON-NLS-1$
+            throw new IllegalAccessError(Messages.getString("luni.2C")); //$NON-NLS-1$
         }
         if (field == null) {
             throw new NullPointerException();
@@ -1374,16 +1374,16 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             // proxy authorization failed ?
             if (responseCode == HTTP_PROXY_AUTH) {
                 if (!usingProxy()) {
-                    // KA017=Received HTTP_PROXY_AUTH (407) code while not using
-                    // proxy
-                    throw new IOException(Msg.getString("KA017")); //$NON-NLS-1$
+                    // luni.2D=Received HTTP_PROXY_AUTH (407) code while not
+                    // using proxy
+                    throw new IOException(Messages.getString("luni.2D")); //$NON-NLS-1$
                 }
                 // username/password
                 // until authorized
                 String challenge = resHeader.get("Proxy-Authenticate"); //$NON-NLS-1$
                 if (challenge == null) {
-                    // KA016=Received authentication challenge is null.
-                    throw new IOException(Msg.getString("KA016")); //$NON-NLS-1$
+                    // luni.2E=Received authentication challenge is null.
+                    throw new IOException(Messages.getString("luni.2E")); //$NON-NLS-1$
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
@@ -1405,8 +1405,8 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
                 // keep asking for username/password until authorized
                 String challenge = resHeader.get("WWW-Authenticate"); //$NON-NLS-1$
                 if (challenge == null) {
-                    // KA018=Received authentication challenge is null
-                    throw new IOException(Msg.getString("KA018")); //$NON-NLS-1$
+                    // luni.2E=Received authentication challenge is null
+                    throw new IOException(Messages.getString("luni.2E")); //$NON-NLS-1$
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1
@@ -1436,7 +1436,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
                         && os == null) {
 
                     if (++redirect > 4) {
-                        throw new ProtocolException(Msg.getString("K0093")); //$NON-NLS-1$
+                        throw new ProtocolException(Messages.getString("luni.2F")); //$NON-NLS-1$
                     }
                     String location = getHeaderField("Location"); //$NON-NLS-1$
                     if (location != null) {
@@ -1517,10 +1517,10 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             try {
                 hostPort = Integer.parseInt(port);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(Msg.getString("K00af", port)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("luni.30", port)); //$NON-NLS-1$
             }
             if (hostPort < 0 || hostPort > 65535) {
-                throw new IllegalArgumentException(Msg.getString("K00b0")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("luni.31")); //$NON-NLS-1$
             }
         }
     }
