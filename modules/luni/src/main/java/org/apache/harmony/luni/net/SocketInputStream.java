@@ -78,7 +78,7 @@ class SocketInputStream extends InputStream {
         }
 
         if (0 > offset || offset >= buffer.length) {
-            // K002e=Offset out of bounds \: {0}
+            // luni.12=Offset out of bounds \: {0}
             throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset));//$NON-NLS-1$
         }
         if (0 > count || offset + count > buffer.length) {
