@@ -21,7 +21,7 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URI;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * An <code>HttpConfiguration</code> contains all the details needed to create an http connection
@@ -59,8 +59,8 @@ public class HttpConfiguration {
         if (proxy.type() == Proxy.Type.HTTP) {
             SocketAddress proxyAddr = proxy.address();
             if (!(proxyAddr instanceof InetSocketAddress)) {
-               throw new IllegalArgumentException(Msg.getString(
-                   "K0316", proxyAddr.getClass())); //$NON-NLS-1$
+               throw new IllegalArgumentException(Messages.getString(
+                   "luni.49", proxyAddr.getClass())); //$NON-NLS-1$
             }
             InetSocketAddress iProxyAddr = (InetSocketAddress) proxyAddr;
             this.hostName = iProxyAddr.getHostName();
@@ -80,8 +80,8 @@ public class HttpConfiguration {
         this.uri = uri;
         SocketAddress proxyAddr = proxy.address();
         if (!(proxyAddr instanceof InetSocketAddress)) {
-           throw new IllegalArgumentException(Msg.getString(
-               "K0316", proxyAddr.getClass())); //$NON-NLS-1$
+           throw new IllegalArgumentException(Messages.getString(
+               "luni.49", proxyAddr.getClass())); //$NON-NLS-1$
         }
         InetSocketAddress iProxyAddr = (InetSocketAddress) proxyAddr;
         this.hostName = iProxyAddr.getHostName();
