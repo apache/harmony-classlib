@@ -17,7 +17,7 @@
 
 package java.net;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A {@code URISyntaxException} will be thrown if some information could not be parsed
@@ -127,10 +127,10 @@ public class URISyntaxException extends Exception {
         String reason = super.getMessage();
 
         if (index != -1) {
-            return Msg.getString("K0326", //$NON-NLS-1$
+            return Messages.getString("luni.92", //$NON-NLS-1$
                     new String[] { reason, Integer.toString(index), input });
         }
-        return Msg.getString("K0327", //$NON-NLS-1$
+        return Messages.getString("luni.93", //$NON-NLS-1$
                 new String[] { reason, input });
     }
 }

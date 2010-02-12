@@ -26,7 +26,7 @@ import java.security.AccessController;
 import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.net.PlainSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -106,8 +106,8 @@ public class Socket {
      */
     public Socket(Proxy proxy) {
         if (null == proxy || Proxy.Type.HTTP == proxy.type()) {
-            // KA023=Proxy is null or invalid type
-            throw new IllegalArgumentException(Msg.getString("KA023")); //$NON-NLS-1$
+            // luni.73=Proxy is null or invalid type
+            throw new IllegalArgumentException(Messages.getString("luni.73")); //$NON-NLS-1$
         }
         InetSocketAddress address = (InetSocketAddress) proxy.address();
         if (null != address) {
@@ -315,7 +315,7 @@ public class Socket {
      */
     void checkDestination(InetAddress destAddr, int dstPort) {
         if (dstPort < 0 || dstPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0032")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.38")); //$NON-NLS-1$
         }
         checkConnectPermission(destAddr.getHostName(), dstPort);
     }
@@ -371,7 +371,7 @@ public class Socket {
     public InputStream getInputStream() throws IOException {
         checkClosedAndCreate(false);
         if (isInputShutdown()) {
-            throw new SocketException(Msg.getString("K0321")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.74")); //$NON-NLS-1$
         }
         return impl.getInputStream();
     }
@@ -429,7 +429,7 @@ public class Socket {
     public OutputStream getOutputStream() throws IOException {
         checkClosedAndCreate(false);
         if (isOutputShutdown()) {
-            throw new SocketException(Msg.getString("KA00f")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.75")); //$NON-NLS-1$
         }
         return impl.getOutputStream();
     }
@@ -550,7 +550,7 @@ public class Socket {
             security.checkSetFactory();
         }
         if (factory != null) {
-            throw new SocketException(Msg.getString("K0044")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.5C")); //$NON-NLS-1$
         }
         factory = fac;
     }
@@ -569,7 +569,7 @@ public class Socket {
     public synchronized void setSendBufferSize(int size) throws SocketException {
         checkClosedAndCreate(true);
         if (size < 1) {
-            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5A")); //$NON-NLS-1$
         }
         impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
     }
@@ -589,7 +589,7 @@ public class Socket {
             throws SocketException {
         checkClosedAndCreate(true);
         if (size < 1) {
-            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5A")); //$NON-NLS-1$
         }
         impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
     }
@@ -610,7 +610,7 @@ public class Socket {
     public void setSoLinger(boolean on, int timeout) throws SocketException {
         checkClosedAndCreate(true);
         if (on && timeout < 0) {
-            throw new IllegalArgumentException(Msg.getString("K0045")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.76")); //$NON-NLS-1$
         }
         int val = on ? (65535 < timeout ? 65535 : timeout) : -1;
         impl.setOption(SocketOptions.SO_LINGER, Integer.valueOf(val));
@@ -632,7 +632,7 @@ public class Socket {
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         checkClosedAndCreate(true);
         if (timeout < 0) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
     }
@@ -672,7 +672,7 @@ public class Socket {
             throws IOException {
 
         if (localPort < 0 || localPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0046")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.77")); //$NON-NLS-1$
         }
 
         InetAddress addr = localAddress == null ? InetAddress.ANY
@@ -720,7 +720,7 @@ public class Socket {
      */
     public void shutdownInput() throws IOException {
         if (isInputShutdown()) {
-            throw new SocketException(Msg.getString("K0321")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.74")); //$NON-NLS-1$
         }
         checkClosedAndCreate(false);
         impl.shutdownInput();
@@ -739,7 +739,7 @@ public class Socket {
      */
     public void shutdownOutput() throws IOException {
         if (isOutputShutdown()) {
-            throw new SocketException(Msg.getString("KA00f")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.75")); //$NON-NLS-1$
         }
         checkClosedAndCreate(false);
         impl.shutdownOutput();
@@ -755,11 +755,11 @@ public class Socket {
      */
     private void checkClosedAndCreate(boolean create) throws SocketException {
         if (isClosed()) {
-            throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0C")); //$NON-NLS-1$
         }
         if (!create) {
             if (!isConnected()) {
-                throw new SocketException(Msg.getString("K0320")); //$NON-NLS-1$
+                throw new SocketException(Messages.getString("luni.78")); //$NON-NLS-1$
                 // a connected socket must be created
             }
 
@@ -859,20 +859,20 @@ public class Socket {
     public void bind(SocketAddress localAddr) throws IOException {
         checkClosedAndCreate(true);
         if (isBound()) {
-            throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+            throw new BindException(Messages.getString("luni.71")); //$NON-NLS-1$
         }
 
         int port = 0;
         InetAddress addr = InetAddress.ANY;
         if (localAddr != null) {
             if (!(localAddr instanceof InetSocketAddress)) {
-                throw new IllegalArgumentException(Msg.getString(
-                        "K0316", localAddr.getClass())); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "luni.49", localAddr.getClass())); //$NON-NLS-1$
             }
             InetSocketAddress inetAddr = (InetSocketAddress) localAddr;
             if ((addr = inetAddr.getAddress()) == null) {
-                throw new SocketException(Msg.getString(
-                        "K0317", inetAddr.getHostName())); //$NON-NLS-1$
+                throw new SocketException(Messages.getString(
+                        "luni.1A", inetAddr.getHostName())); //$NON-NLS-1$
             }
             port = inetAddr.getPort();
         }
@@ -926,23 +926,23 @@ public class Socket {
             throws IOException {
         checkClosedAndCreate(true);
         if (timeout < 0) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         if (isConnected()) {
-            throw new SocketException(Msg.getString("K0079")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.5F")); //$NON-NLS-1$
         }
         if (remoteAddr == null) {
-            throw new IllegalArgumentException(Msg.getString("K0318")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5D")); //$NON-NLS-1$
         }
 
         if (!(remoteAddr instanceof InetSocketAddress)) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0316", remoteAddr.getClass())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.49", remoteAddr.getClass())); //$NON-NLS-1$
         }
         InetSocketAddress inetAddr = (InetSocketAddress) remoteAddr;
         InetAddress addr;
         if ((addr = inetAddr.getAddress()) == null) {
-            throw new UnknownHostException(Msg.getString("K0317", remoteAddr));//$NON-NLS-1$
+            throw new UnknownHostException(Messages.getString("luni.1A", remoteAddr));//$NON-NLS-1$
         }
         int port = inetAddr.getPort();
 
@@ -1096,7 +1096,7 @@ public class Socket {
      */
     public void sendUrgentData(int value) throws IOException {
         if (!impl.supportsUrgentData()) {
-            throw new SocketException(Msg.getString("K0333")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.79")); //$NON-NLS-1$
         }
         impl.sendUrgentData(value);
     }

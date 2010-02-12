@@ -25,7 +25,7 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 
 import org.apache.harmony.luni.util.Inet6Util;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Regulates the access to network operations available through sockets through
@@ -232,7 +232,7 @@ public final class SocketPermission extends Permission implements Serializable {
             } else if (action.equals(actionNames[SP_RESOLVE])) {
                 // do nothing
             } else {
-                throw new IllegalArgumentException(Msg.getString("K0048", //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("luni.7A", //$NON-NLS-1$
                         action));
             }
         }
@@ -338,12 +338,12 @@ public final class SocketPermission extends Permission implements Serializable {
            portMax = Integer.valueOf(strPortMax).intValue();
            
            if (portMin > portMax) {
-               // K0049=MinPort is greater than MaxPort\: {0}
-               throw new IllegalArgumentException(Msg.getString("K0049", port)); //$NON-NLS-1$
+               // luni.7B=MinPort is greater than MaxPort\: {0}
+               throw new IllegalArgumentException(Messages.getString("luni.7B", port)); //$NON-NLS-1$
            }
        } catch (NumberFormatException e) {
-           // K004a=Invalid port number specified\: {0}
-           throw new IllegalArgumentException(Msg.getString("K004a", port)); //$NON-NLS-1$
+           // luni.7C=Invalid port number specified\: {0}
+           throw new IllegalArgumentException(Messages.getString("luni.7C", port)); //$NON-NLS-1$
        }
     }
 
@@ -450,22 +450,22 @@ public final class SocketPermission extends Permission implements Serializable {
             if (Inet6Util.isIP6AddressInFullForm(host)) {
                 return host.toLowerCase();
             }
-            // K004a=Invalid port number specified\: {0}
-            throw new IllegalArgumentException(Msg.getString("K004a", host));
+            // luni.7C=Invalid port number specified\: {0}
+            throw new IllegalArgumentException(Messages.getString("luni.7C", host));
         }
         // forward bracket found
         int bbracketIdx = host.indexOf(']');
         if (-1 == bbracketIdx) {
             // no back bracket found, wrong
-            // K004a=Invalid port number specified\: {0}
-            throw new IllegalArgumentException(Msg.getString("K004a", host));
+            // luni.7C=Invalid port number specified\: {0}
+            throw new IllegalArgumentException(Messages.getString("luni.7C", host));
         }
         host = host.substring(0, bbracketIdx + 1);
         if (Inet6Util.isValidIP6Address(host)) {
             return host.toLowerCase();
         }
-        // K004a=Invalid port number specified\: {0}
-        throw new IllegalArgumentException(Msg.getString("K004a", host));
+        // luni.7C=Invalid port number specified\: {0}
+        throw new IllegalArgumentException(Messages.getString("luni.7C", host));
     }
 
     /**

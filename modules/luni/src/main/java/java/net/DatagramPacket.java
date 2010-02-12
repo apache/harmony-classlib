@@ -17,7 +17,7 @@
 
 package java.net;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class represents a datagram packet which contains data either to be sent
@@ -192,7 +192,7 @@ public final class DatagramPacket {
     public synchronized void setData(byte[] buf, int anOffset, int aLength) {
         if (0 > anOffset || anOffset > buf.length || 0 > aLength
                 || aLength > buf.length - anOffset) {
-            throw new IllegalArgumentException(Msg.getString("K002f")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.13")); //$NON-NLS-1$
         }
         data = buf;
         offset = anOffset;
@@ -232,7 +232,7 @@ public final class DatagramPacket {
      */
     public synchronized void setLength(int len) {
         if (0 > len || offset + len > data.length) {
-            throw new IllegalArgumentException(Msg.getString("K002f")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.13")); //$NON-NLS-1$
         }
         length = len;
         capacity = len;
@@ -246,7 +246,7 @@ public final class DatagramPacket {
      */
     synchronized void setLengthOnly(int len) {
         if (0 > len || offset + len > data.length) {
-            throw new IllegalArgumentException(Msg.getString("K002f")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.13")); //$NON-NLS-1$
         }
         length = len;
     }
@@ -259,7 +259,7 @@ public final class DatagramPacket {
      */
     public synchronized void setPort(int aPort) {
         if (aPort < 0 || aPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0325", aPort)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.56", aPort)); //$NON-NLS-1$
         }
         port = aPort;
     }
@@ -326,12 +326,12 @@ public final class DatagramPacket {
      */
     public synchronized void setSocketAddress(SocketAddress sockAddr) {
         if (!(sockAddr instanceof InetSocketAddress)) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0316", sockAddr == null ? null : sockAddr.getClass())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.49", sockAddr == null ? null : sockAddr.getClass())); //$NON-NLS-1$
         }
         InetSocketAddress inetAddr = (InetSocketAddress) sockAddr;
         if(inetAddr.isUnresolved()){
-            throw new IllegalArgumentException(Msg.getString("K0353"));
+            throw new IllegalArgumentException(Messages.getString("luni.57"));
         }
         port = inetAddr.getPort();
         address = inetAddr.getAddress();

@@ -24,7 +24,7 @@ import java.io.OutputStream;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class is the base of all streaming socket implementation classes.
@@ -294,8 +294,8 @@ public abstract class SocketImpl implements SocketOptions {
      *             always because this method should be overridden.
      */
     protected void shutdownInput() throws IOException {
-        // KA025=Method has not been implemented
-        throw new IOException(Msg.getString("KA025"));//$NON-NLS-1$
+        // luni.72=Method has not been implemented
+        throw new IOException(Messages.getString("luni.72"));//$NON-NLS-1$
     }
 
     /**
@@ -308,8 +308,8 @@ public abstract class SocketImpl implements SocketOptions {
      *             always because this method should be overridden.
      */
     protected void shutdownOutput() throws IOException {
-        // KA025=Method has not been implemented
-        throw new IOException(Msg.getString("KA025"));//$NON-NLS-1$
+        // luni.72=Method has not been implemented
+        throw new IOException(Messages.getString("luni.72"));//$NON-NLS-1$
     }
 
     /**

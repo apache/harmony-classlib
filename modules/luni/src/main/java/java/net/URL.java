@@ -24,7 +24,7 @@ import java.security.AccessController;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.Util;
 
@@ -136,7 +136,7 @@ public final class URL implements java.io.Serializable {
     public static synchronized void setURLStreamHandlerFactory(
             URLStreamHandlerFactory streamFactory) {
         if (streamHandlerFactory != null) {
-            throw new Error(Msg.getString("K004b")); //$NON-NLS-1$
+            throw new Error(Messages.getString("luni.9A")); //$NON-NLS-1$
         }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -273,8 +273,8 @@ public final class URL implements java.io.Serializable {
             // by the values in the ("relative") spec.
             if (context == null) {
                 throw new MalformedURLException(
-                        org.apache.harmony.luni.util.Msg.getString(
-                                "K00d8", spec)); //$NON-NLS-1$
+                        Messages.getString(
+                                "luni.9B", spec)); //$NON-NLS-1$
             }
             set(context.getProtocol(), context.getHost(), context.getPort(),
                     context.getAuthority(), context.getUserInfo(), context
@@ -290,8 +290,8 @@ public final class URL implements java.io.Serializable {
             setupStreamHandler();
             if (strmHandler == null) {
                 throw new MalformedURLException(
-                        org.apache.harmony.luni.util.Msg.getString(
-                                "K00b3", protocol)); //$NON-NLS-1$
+                        Messages.getString(
+                                "luni.9C", protocol)); //$NON-NLS-1$
             }
         }
 
@@ -310,8 +310,8 @@ public final class URL implements java.io.Serializable {
         }
 
         if (port < -1) {
-            throw new MalformedURLException(org.apache.harmony.luni.util.Msg
-                    .getString("K0325", port)); //$NON-NLS-1$
+            throw new MalformedURLException(Messages
+                    .getString("luni.56", port)); //$NON-NLS-1$
         }
     }
 
@@ -382,7 +382,7 @@ public final class URL implements java.io.Serializable {
     public URL(String protocol, String host, int port, String file,
             URLStreamHandler handler) throws MalformedURLException {
         if (port < -1) {
-            throw new MalformedURLException(Msg.getString("K0325", port)); //$NON-NLS-1$
+            throw new MalformedURLException(Messages.getString("luni.56", port)); //$NON-NLS-1$
         }
 
         if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') { //$NON-NLS-1$
@@ -390,7 +390,7 @@ public final class URL implements java.io.Serializable {
         }
 
         if (protocol == null) {
-            throw new NullPointerException(Msg.getString("K00b3", "null")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new NullPointerException(Messages.getString("luni.9C", "null")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         this.protocol = protocol;
@@ -416,7 +416,7 @@ public final class URL implements java.io.Serializable {
             setupStreamHandler();
             if (strmHandler == null) {
                 throw new MalformedURLException(
-                        Msg.getString("K00b3", protocol)); //$NON-NLS-1$
+                        Messages.getString("luni.9C", protocol)); //$NON-NLS-1$
             }
         } else {
             SecurityManager sm = System.getSecurityManager();
@@ -698,8 +698,8 @@ public final class URL implements java.io.Serializable {
      */
     public URLConnection openConnection(Proxy proxy) throws IOException {
         if (proxy == null) {
-            // K034c=proxy should not be null
-            throw new IllegalArgumentException(Msg.getString("K034c")); //$NON-NLS-1$
+            // luni.9D=proxy should not be null
+            throw new IllegalArgumentException(Messages.getString("luni.9D")); //$NON-NLS-1$
         }
 
         SecurityManager sm = System.getSecurityManager();
@@ -769,7 +769,7 @@ public final class URL implements java.io.Serializable {
             }
             setupStreamHandler();
             if (strmHandler == null) {
-                throw new IOException(Msg.getString("K00b3", protocol)); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.9C", protocol)); //$NON-NLS-1$
             }
         } catch (ClassNotFoundException e) {
             throw new IOException(e.toString());

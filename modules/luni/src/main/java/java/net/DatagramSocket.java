@@ -22,7 +22,7 @@ import java.nio.channels.DatagramChannel;
 
 import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class implements a UDP socket for sending and receiving {@code
@@ -112,7 +112,7 @@ public class DatagramSocket {
      */
     void checkListen(int aPort) {
         if (aPort < 0 || aPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0325", aPort)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.56", aPort)); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -144,7 +144,7 @@ public class DatagramSocket {
      */
     public void connect(InetAddress anAddress, int aPort) {
         if (anAddress == null || aPort < 0 || aPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0032")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.38")); //$NON-NLS-1$
         }
 
         synchronized (lock) {
@@ -433,7 +433,7 @@ public class DatagramSocket {
         if (address != null) { // The socket is connected
             if (packAddr != null) {
                 if (!address.equals(packAddr) || port != pack.getPort()) {
-                    throw new IllegalArgumentException(Msg.getString("K0034")); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString("luni.58")); //$NON-NLS-1$
                 }
             } else {
                 pack.setAddress(address);
@@ -444,7 +444,7 @@ public class DatagramSocket {
             if (packAddr == null) {
                 if (pack.getPort() == -1) {
                     // KA019 Destination address is null
-                    throw new NullPointerException(Msg.getString("KA019")); //$NON-NLS-1$
+                    throw new NullPointerException(Messages.getString("luni.59")); //$NON-NLS-1$
                 }
                 return;
             }
@@ -474,7 +474,7 @@ public class DatagramSocket {
      */
     public synchronized void setSendBufferSize(int size) throws SocketException {
         if (size < 1) {
-            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5A")); //$NON-NLS-1$
         }
         checkClosedAndBind(false);
         impl.setOption(SocketOptions.SO_SNDBUF, Integer.valueOf(size));
@@ -494,7 +494,7 @@ public class DatagramSocket {
     public synchronized void setReceiveBufferSize(int size)
             throws SocketException {
         if (size < 1) {
-            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5A")); //$NON-NLS-1$
         }
         checkClosedAndBind(false);
         impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
@@ -515,7 +515,7 @@ public class DatagramSocket {
      */
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         if (timeout < 0) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         checkClosedAndBind(false);
         impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
@@ -542,7 +542,7 @@ public class DatagramSocket {
             security.checkSetFactory();
         }
         if (factory != null) {
-            throw new SocketException(Msg.getString("K0044")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.5C")); //$NON-NLS-1$
         }
         factory = fac;
     }
@@ -577,8 +577,8 @@ public class DatagramSocket {
     public DatagramSocket(SocketAddress localAddr) throws SocketException {
         if (localAddr != null) {
             if (!(localAddr instanceof InetSocketAddress)) {
-                throw new IllegalArgumentException(Msg.getString(
-                        "K0316", localAddr.getClass())); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "luni.49", localAddr.getClass())); //$NON-NLS-1$
             }
             checkListen(((InetSocketAddress) localAddr).getPort());
         }
@@ -599,7 +599,7 @@ public class DatagramSocket {
 
     void checkClosedAndBind(boolean bind) throws SocketException {
         if (isClosed()) {
-            throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0C")); //$NON-NLS-1$
         }
         if (bind && !isBound()) {
             checkListen(0);
@@ -627,14 +627,14 @@ public class DatagramSocket {
         InetAddress addr = InetAddress.ANY;
         if (localAddr != null) {
             if (!(localAddr instanceof InetSocketAddress)) {
-                throw new IllegalArgumentException(Msg.getString(
-                        "K0316", localAddr.getClass())); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "luni.49", localAddr.getClass())); //$NON-NLS-1$
             }
             InetSocketAddress inetAddr = (InetSocketAddress) localAddr;
             addr = inetAddr.getAddress();
             if (addr == null) {
-                throw new SocketException(Msg.getString(
-                        "K0317", inetAddr.getHostName())); //$NON-NLS-1$
+                throw new SocketException(Messages.getString(
+                        "luni.1A", inetAddr.getHostName())); //$NON-NLS-1$
             }
             localPort = inetAddr.getPort();
             checkListen(localPort);
@@ -656,18 +656,18 @@ public class DatagramSocket {
      */
     public void connect(SocketAddress remoteAddr) throws SocketException {
         if (remoteAddr == null) {
-            throw new IllegalArgumentException(Msg.getString("K0318")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5D")); //$NON-NLS-1$
         }
 
         if (!(remoteAddr instanceof InetSocketAddress)) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0316", remoteAddr.getClass())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.49", remoteAddr.getClass())); //$NON-NLS-1$
         }
 
         InetSocketAddress inetAddr = (InetSocketAddress) remoteAddr;
         if (inetAddr.getAddress() == null) {
-            throw new SocketException(Msg.getString(
-                    "K0317", inetAddr.getHostName())); //$NON-NLS-1$
+            throw new SocketException(Messages.getString(
+                    "luni.1A", inetAddr.getHostName())); //$NON-NLS-1$
         }
 
         synchronized (lock) {

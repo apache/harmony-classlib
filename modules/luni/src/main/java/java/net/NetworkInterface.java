@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class is used to represent a network interface of the local device. An
@@ -217,7 +217,7 @@ public final class NetworkInterface extends Object {
             throws SocketException {
 
         if (interfaceName == null) {
-            throw new NullPointerException(Msg.getString("K0330")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.6D")); //$NON-NLS-1$
         }
 
         /*
@@ -253,7 +253,7 @@ public final class NetworkInterface extends Object {
             throws SocketException {
 
         if (address == null) {
-            throw new NullPointerException(Msg.getString("K0331")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.68")); //$NON-NLS-1$
         }
 
         /*

@@ -22,7 +22,7 @@ import java.nio.channels.ServerSocketChannel;
 
 import org.apache.harmony.luni.net.PlainServerSocketImpl;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class represents a server-side socket that waits for incoming client
@@ -147,7 +147,7 @@ public class ServerSocket {
     public Socket accept() throws IOException {
         checkClosedAndCreate(false);
         if (!isBound()) {
-            throw new SocketException(Msg.getString("K031f")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.6F")); //$NON-NLS-1$
         }
 
         Socket aSocket = new Socket();
@@ -173,7 +173,7 @@ public class ServerSocket {
      */
     void checkListen(int aPort) {
         if (aPort < 0 || aPort > 65535) {
-            throw new IllegalArgumentException(Msg.getString("K0325", aPort)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.56", aPort)); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -296,7 +296,7 @@ public class ServerSocket {
             security.checkSetFactory();
         }
         if (factory != null) {
-            throw new SocketException(Msg.getString("K0042")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.70")); //$NON-NLS-1$
         }
         factory = aFactory;
     }
@@ -314,7 +314,7 @@ public class ServerSocket {
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         checkClosedAndCreate(true);
         if (timeout < 0) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         impl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(timeout));
     }
@@ -380,19 +380,19 @@ public class ServerSocket {
     public void bind(SocketAddress localAddr, int backlog) throws IOException {
         checkClosedAndCreate(true);
         if (isBound()) {
-            throw new BindException(Msg.getString("K0315")); //$NON-NLS-1$
+            throw new BindException(Messages.getString("luni.71")); //$NON-NLS-1$
         }
         int port = 0;
         InetAddress addr = InetAddress.ANY;
         if (localAddr != null) {
             if (!(localAddr instanceof InetSocketAddress)) {
-                throw new IllegalArgumentException(Msg.getString(
-                        "K0316", localAddr.getClass())); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "luni.49", localAddr.getClass())); //$NON-NLS-1$
             }
             InetSocketAddress inetAddr = (InetSocketAddress) localAddr;
             if ((addr = inetAddr.getAddress()) == null) {
-                throw new SocketException(Msg.getString(
-                        "K0317", inetAddr.getHostName())); //$NON-NLS-1$
+                throw new SocketException(Messages.getString(
+                        "luni.1A", inetAddr.getHostName())); //$NON-NLS-1$
             }
             port = inetAddr.getPort();
         }
@@ -450,7 +450,7 @@ public class ServerSocket {
      */
     private void checkClosedAndCreate(boolean create) throws SocketException {
         if (isClosed()) {
-            throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0C")); //$NON-NLS-1$
         }
 
         if (!create || isCreated) {
@@ -512,7 +512,7 @@ public class ServerSocket {
     public void setReceiveBufferSize(int size) throws SocketException {
         checkClosedAndCreate(true);
         if (size < 1) {
-            throw new IllegalArgumentException(Msg.getString("K0035")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5A")); //$NON-NLS-1$
         }
         impl.setOption(SocketOptions.SO_RCVBUF, Integer.valueOf(size));
     }

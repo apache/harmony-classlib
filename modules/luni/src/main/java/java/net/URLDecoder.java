@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class is used to decode a string which is encoded in the {@code
@@ -96,8 +96,8 @@ public class URLDecoder {
         // If the given encoding is an empty string throw an exception.
         if (enc.length() == 0) {
             throw new UnsupportedEncodingException(
-                    // K00a5=Invalid parameter - {0}
-                    Msg.getString("K00a5", "enc")); //$NON-NLS-1$ //$NON-NLS-2$
+                    // luni.99=Invalid parameter - {0}
+                    Messages.getString("luni.99", "enc")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (s.indexOf('%') == -1) {
@@ -141,16 +141,16 @@ public class URLDecoder {
                 do {
                     if (i + 2 >= s.length()) {
                         throw new IllegalArgumentException(
-                                // K01fe=Incomplete % sequence at\: {0}
-                                Msg.getString("K01fe", i)); //$NON-NLS-1$
+                                // luni.80=Incomplete % sequence at\: {0}
+                                Messages.getString("luni.80", i)); //$NON-NLS-1$
                     }
                     int d1 = Character.digit(s.charAt(i + 1), 16);
                     int d2 = Character.digit(s.charAt(i + 2), 16);
                     if (d1 == -1 || d2 == -1) {
                         throw new IllegalArgumentException(
-                                // K01ff=Invalid % sequence ({0}) at\: {1}
-                                Msg.getString(
-                                        "K01ff", //$NON-NLS-1$
+                                // luni.81=Invalid % sequence ({0}) at\: {1}
+                                Messages.getString(
+                                        "luni.81", //$NON-NLS-1$
                                         s.substring(i, i + 3),
                                         String.valueOf(i)));
                     }

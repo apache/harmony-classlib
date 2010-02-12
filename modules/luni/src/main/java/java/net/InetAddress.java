@@ -33,7 +33,7 @@ import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.Inet6Util;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -813,7 +813,7 @@ public class InetAddress extends Object implements Serializable {
     public boolean isReachable(NetworkInterface netif, final int ttl,
             final int timeout) throws IOException {
         if (0 > ttl || 0 > timeout) {
-            throw new IllegalArgumentException(Msg.getString("K0051")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.61")); //$NON-NLS-1$
         }
         boolean reachable = false;
         if (null == netif) {
@@ -1038,8 +1038,8 @@ public class InetAddress extends Object implements Serializable {
             return new Inet6Address(copy_address, scope_id);
         }
 
-        // K0339=Invalid IP Address is neither 4 or 16 bytes
-        throw new UnknownHostException(Msg.getString("K0339")); //$NON-NLS-1$
+        // luni.64=Invalid IP Address is neither 4 or 16 bytes
+        throw new UnknownHostException(Messages.getString("luni.64")); //$NON-NLS-1$
     }
 
     private static boolean isIPv4MappedAddress(byte ipAddress[]) {
@@ -1137,7 +1137,7 @@ public class InetAddress extends Object implements Serializable {
             return new Inet6Address(ipAddress, hostName, scope_id);
         }
 
-        throw new UnknownHostException(Msg.getString("K0332", hostName)); //$NON-NLS-1$
+        throw new UnknownHostException(Messages.getString("luni.65", hostName)); //$NON-NLS-1$
     }
 
     /**

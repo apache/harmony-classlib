@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.harmony.luni.internal.net.www.MimeTable;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -439,7 +439,7 @@ public abstract class URLConnection {
      */
     public Map<String, List<String>> getRequestProperties() {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         return Collections.emptyMap();
     }
@@ -460,10 +460,10 @@ public abstract class URLConnection {
      */
     public void addRequestProperty(String field, String newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         if (field == null) {
-            throw new NullPointerException(Msg.getString("KA007")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.95")); //$NON-NLS-1$
         }
     }
 
@@ -559,7 +559,7 @@ public abstract class URLConnection {
      *             if no InputStream could be created.
      */
     public InputStream getInputStream() throws IOException {
-        throw new UnknownServiceException(Msg.getString("K004d")); //$NON-NLS-1$
+        throw new UnknownServiceException(Messages.getString("luni.96")); //$NON-NLS-1$
     }
 
     /**
@@ -585,7 +585,7 @@ public abstract class URLConnection {
      *             if no OutputStream could be created.
      */
     public OutputStream getOutputStream() throws IOException {
-        throw new UnknownServiceException(Msg.getString("K005f")); //$NON-NLS-1$
+        throw new UnknownServiceException(Messages.getString("luni.97")); //$NON-NLS-1$
     }
 
     /**
@@ -618,7 +618,7 @@ public abstract class URLConnection {
      */
     public String getRequestProperty(String field) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         return null;
     }
@@ -782,7 +782,7 @@ public abstract class URLConnection {
      */
     public void setAllowUserInteraction(boolean newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         this.allowUserInteraction = newValue;
     }
@@ -801,7 +801,7 @@ public abstract class URLConnection {
     public static synchronized void setContentHandlerFactory(
             ContentHandlerFactory contentFactory) {
         if (contentHandlerFactory != null) {
-            throw new Error(Msg.getString("K004e")); //$NON-NLS-1$
+            throw new Error(Messages.getString("luni.98")); //$NON-NLS-1$
         }
         SecurityManager sManager = System.getSecurityManager();
         if (sManager != null) {
@@ -851,7 +851,7 @@ public abstract class URLConnection {
      */
     public void setDefaultUseCaches(boolean newValue) {
         if (connected) {
-            throw new IllegalAccessError(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalAccessError(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         defaultUseCaches = newValue;
     }
@@ -869,7 +869,7 @@ public abstract class URLConnection {
      */
     public void setDoInput(boolean newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         this.doInput = newValue;
     }
@@ -887,7 +887,7 @@ public abstract class URLConnection {
      */
     public void setDoOutput(boolean newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         this.doOutput = newValue;
     }
@@ -923,7 +923,7 @@ public abstract class URLConnection {
      */
     public void setIfModifiedSince(long newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         this.ifModifiedSince = newValue;
     }
@@ -944,10 +944,10 @@ public abstract class URLConnection {
      */
     public void setRequestProperty(String field, String newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         if (field == null) {
-            throw new NullPointerException(Msg.getString("KA007")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.95")); //$NON-NLS-1$
         }
     }
 
@@ -965,7 +965,7 @@ public abstract class URLConnection {
      */
     public void setUseCaches(boolean newValue) {
         if (connected) {
-            throw new IllegalStateException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         this.useCaches = newValue;
     }
@@ -984,7 +984,7 @@ public abstract class URLConnection {
      */
     public void setConnectTimeout(int timeout) {
         if (0 > timeout) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         this.connectTimeout = timeout;
     }
@@ -1012,7 +1012,7 @@ public abstract class URLConnection {
      */
     public void setReadTimeout(int timeout) {
         if (0 > timeout) {
-            throw new IllegalArgumentException(Msg.getString("K0036")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5B")); //$NON-NLS-1$
         }
         this.readTimeout = timeout;
     }

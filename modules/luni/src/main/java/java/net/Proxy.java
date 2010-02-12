@@ -15,7 +15,7 @@
  */
 package java.net;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class represents proxy server settings. A created instance of {@code
@@ -61,8 +61,8 @@ public class Proxy {
          * SocketAddress must NOT be null.
          */
         if (type == Type.DIRECT || null == sa) {
-            // KA022=Illegal Proxy.Type or SocketAddress argument
-            throw new IllegalArgumentException(Msg.getString("KA022")); //$NON-NLS-1$
+            // luni.6E=Illegal Proxy.Type or SocketAddress argument
+            throw new IllegalArgumentException(Messages.getString("luni.6E")); //$NON-NLS-1$
         }
         this.type = type;
         address = sa;

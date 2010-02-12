@@ -24,7 +24,7 @@ import java.io.ObjectStreamField;
 import java.util.Enumeration;
 
 import org.apache.harmony.luni.util.Inet6Util;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class represents a 128 bit long IPv6 address.
@@ -105,8 +105,8 @@ public final class Inet6Address extends InetAddress {
     public static Inet6Address getByAddress(String host, byte[] addr,
             int scope_id) throws UnknownHostException {
         if (null == addr || 16 != addr.length) {
-            // KA020=Illegal IPv6 address
-            throw new UnknownHostException(Msg.getString("KA020")); //$NON-NLS-1$
+            // luni.62=Illegal IPv6 address
+            throw new UnknownHostException(Messages.getString("luni.62")); //$NON-NLS-1$
         }
         if (scope_id < 0) {
             scope_id = 0;
@@ -163,8 +163,8 @@ public final class Inet6Address extends InetAddress {
         // if no address matches the type of addr, throws an
         // UnknownHostException.
         if (!address.scope_id_set) {
-            // KA021=Scope id is not found for the given address
-            throw new UnknownHostException(Msg.getString("KA021")); //$NON-NLS-1$
+            // luni.63=Scope id is not found for the given address
+            throw new UnknownHostException(Messages.getString("luni.63")); //$NON-NLS-1$
         }
         return address;
     }

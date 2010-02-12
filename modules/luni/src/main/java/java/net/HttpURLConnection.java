@@ -19,7 +19,7 @@ package java.net;
 
 import java.io.IOException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This abstract subclass of {@code URLConnection} defines methods for managing
@@ -426,7 +426,7 @@ public abstract class HttpURLConnection extends URLConnection {
      */
     public void setRequestMethod(String method) throws ProtocolException {
         if (connected) {
-            throw new ProtocolException(Msg.getString("K0037")); //$NON-NLS-1$
+            throw new ProtocolException(Messages.getString("luni.5E")); //$NON-NLS-1$
         }
         for (int i = 0; i < methodTokens.length; i++) {
             if (methodTokens[i].equals(method)) {
@@ -502,13 +502,13 @@ public abstract class HttpURLConnection extends URLConnection {
      */
     public void setFixedLengthStreamingMode(int contentLength) {
         if (super.connected) {
-            throw new IllegalStateException(Msg.getString("K0079")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5F")); //$NON-NLS-1$
         }
         if (0 < chunkLength) {
-            throw new IllegalStateException(Msg.getString("KA003")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.60")); //$NON-NLS-1$
         }
         if (0 > contentLength) {
-            throw new IllegalArgumentException(Msg.getString("K0051")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.61")); //$NON-NLS-1$
         }
         this.fixedContentLength = contentLength;
     }
@@ -527,10 +527,10 @@ public abstract class HttpURLConnection extends URLConnection {
      */
     public void setChunkedStreamingMode(int chunklen) {
         if (super.connected) {
-            throw new IllegalStateException(Msg.getString("K0079")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.5F")); //$NON-NLS-1$
         }
         if (0 <= fixedContentLength) {
-            throw new IllegalStateException(Msg.getString("KA003")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("luni.60")); //$NON-NLS-1$
         }
         if (0 >= chunklen) {
             chunkLength = DEFAULT_CHUNK_LENGTH;

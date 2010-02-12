@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class represents an instance of a URI as defined by RFC 2396.
@@ -163,7 +163,7 @@ public final class URI implements Comparable<URI>, Serializable {
 
         if (scheme != null && path != null && path.length() > 0
                 && path.charAt(0) != '/') {
-            throw new URISyntaxException(path, Msg.getString("K0302")); //$NON-NLS-1$
+            throw new URISyntaxException(path, Messages.getString("luni.82")); //$NON-NLS-1$
         }
 
         StringBuilder uri = new StringBuilder();
@@ -267,7 +267,7 @@ public final class URI implements Comparable<URI>, Serializable {
             String fragment) throws URISyntaxException {
         if (scheme != null && path != null && path.length() > 0
                 && path.charAt(0) != '/') {
-            throw new URISyntaxException(path, Msg.getString("K0302")); //$NON-NLS-1$
+            throw new URISyntaxException(path, Messages.getString("luni.82")); //$NON-NLS-1$
         }
 
         StringBuilder uri = new StringBuilder();
@@ -332,13 +332,13 @@ public final class URI implements Comparable<URI>, Serializable {
                 absolute = true;
                 scheme = temp.substring(0, index);
                 if (scheme.length() == 0) {
-                    throw new URISyntaxException(uri, Msg.getString("K0342"), //$NON-NLS-1$
+                    throw new URISyntaxException(uri, Messages.getString("luni.83"), //$NON-NLS-1$
                             index);
                 }
                 validateScheme(uri, scheme, 0);
                 schemespecificpart = temp.substring(index + 1);
                 if (schemespecificpart.length() == 0) {
-                    throw new URISyntaxException(uri, Msg.getString("K0303"), //$NON-NLS-1$
+                    throw new URISyntaxException(uri, Messages.getString("luni.84"), //$NON-NLS-1$
                             index + 1);
                 }
             } else {
@@ -370,8 +370,8 @@ public final class URI implements Comparable<URI>, Serializable {
                         authority = temp.substring(2);
                         if (authority.length() == 0 && query == null
                                 && fragment == null) {
-                            throw new URISyntaxException(uri, Msg
-                                    .getString("K0304"), uri.length()); //$NON-NLS-1$
+                            throw new URISyntaxException(uri, Messages
+                                    .getString("luni.9F"), uri.length()); //$NON-NLS-1$
                         }
 
                         path = ""; //$NON-NLS-1$
@@ -409,13 +409,13 @@ public final class URI implements Comparable<URI>, Serializable {
             // first char needs to be an alpha char
             char ch = scheme.charAt(0);
             if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))) {
-                throw new URISyntaxException(uri, Msg.getString("K0305"), 0); //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.85"), 0); //$NON-NLS-1$
             }
 
             try {
                 URIEncoderDecoder.validateSimple(scheme, "+-."); //$NON-NLS-1$
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K0305"), index //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.85"), index //$NON-NLS-1$
                         + e.getIndex());
             }
         }
@@ -425,7 +425,7 @@ public final class URI implements Comparable<URI>, Serializable {
             try {
                 URIEncoderDecoder.validate(ssp, allLegal);
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K0306", e //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.86", e //$NON-NLS-1$
                         .getReason()), index + e.getIndex());
             }
         }
@@ -435,7 +435,7 @@ public final class URI implements Comparable<URI>, Serializable {
             try {
                 URIEncoderDecoder.validate(authority, "@[]" + someLegal); //$NON-NLS-1$
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K0307", e //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.87", e //$NON-NLS-1$
                         .getReason()), index + e.getIndex());
             }
         }
@@ -445,7 +445,7 @@ public final class URI implements Comparable<URI>, Serializable {
             try {
                 URIEncoderDecoder.validate(path, "/@" + someLegal); //$NON-NLS-1$
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K0308", e //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.88", e //$NON-NLS-1$
                         .getReason()), index + e.getIndex());
             }
         }
@@ -455,7 +455,7 @@ public final class URI implements Comparable<URI>, Serializable {
             try {
                 URIEncoderDecoder.validate(query, allLegal);
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K0309", e //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.89", e //$NON-NLS-1$
                         .getReason()), index + e.getIndex());
 
             }
@@ -466,7 +466,7 @@ public final class URI implements Comparable<URI>, Serializable {
             try {
                 URIEncoderDecoder.validate(fragment, allLegal);
             } catch (URISyntaxException e) {
-                throw new URISyntaxException(uri, Msg.getString("K030a", e //$NON-NLS-1$
+                throw new URISyntaxException(uri, Messages.getString("luni.8A", e //$NON-NLS-1$
                         .getReason()), index + e.getIndex());
             }
         }
@@ -517,14 +517,14 @@ public final class URI implements Comparable<URI>, Serializable {
                             if (forceServer) {
                                 throw new URISyntaxException(
                                         authority,
-                                        Msg.getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
+                                        Messages.getString("luni.8B"), hostindex + index + 1); //$NON-NLS-1$
                             }
                             return;
                         }
                     } catch (NumberFormatException e) {
                         if (forceServer) {
-                            throw new URISyntaxException(authority, Msg
-                                    .getString("K00b1"), hostindex + index + 1); //$NON-NLS-1$
+                            throw new URISyntaxException(authority, Messages
+                                    .getString("luni.8B"), hostindex + index + 1); //$NON-NLS-1$
                         }
                         return;
                     }
@@ -535,8 +535,8 @@ public final class URI implements Comparable<URI>, Serializable {
 
             if (tempHost.equals("")) { //$NON-NLS-1$
                 if (forceServer) {
-                    throw new URISyntaxException(authority, Msg
-                            .getString("K030c"), hostindex); //$NON-NLS-1$
+                    throw new URISyntaxException(authority, Messages
+                            .getString("luni.A0"), hostindex); //$NON-NLS-1$
                 }
                 return;
             }
@@ -558,7 +558,7 @@ public final class URI implements Comparable<URI>, Serializable {
             for (int i = 0; i < userinfo.length(); i++) {
                 char ch = userinfo.charAt(i);
                 if (ch == ']' || ch == '[') {
-                    throw new URISyntaxException(uri, Msg.getString("K030d"), //$NON-NLS-1$
+                    throw new URISyntaxException(uri, Messages.getString("luni.8C"), //$NON-NLS-1$
                             index + i);
                 }
             }
@@ -574,10 +574,10 @@ public final class URI implements Comparable<URI>, Serializable {
                 // ipv6 address
                 if (host.charAt(host.length() - 1) != ']') {
                     throw new URISyntaxException(host,
-                            Msg.getString("K030e"), 0); //$NON-NLS-1$
+                            Messages.getString("luni.8D"), 0); //$NON-NLS-1$
                 }
                 if (!isValidIP6Address(host)) {
-                    throw new URISyntaxException(host, Msg.getString("K030f")); //$NON-NLS-1$
+                    throw new URISyntaxException(host, Messages.getString("luni.8E")); //$NON-NLS-1$
                 }
                 return true;
             }
@@ -585,7 +585,7 @@ public final class URI implements Comparable<URI>, Serializable {
             // '[' and ']' can only be the first char and last char
             // of the host name
             if (host.indexOf('[') != -1 || host.indexOf(']') != -1) {
-                throw new URISyntaxException(host, Msg.getString("K0310"), 0); //$NON-NLS-1$
+                throw new URISyntaxException(host, Messages.getString("luni.8F"), 0); //$NON-NLS-1$
             }
 
             int index = host.lastIndexOf('.');
@@ -597,7 +597,7 @@ public final class URI implements Comparable<URI>, Serializable {
                 }
                 if (forceServer) {
                     throw new URISyntaxException(host,
-                            Msg.getString("K0310"), 0); //$NON-NLS-1$
+                            Messages.getString("luni.8F"), 0); //$NON-NLS-1$
                 }
                 return false;
             }
@@ -607,7 +607,7 @@ public final class URI implements Comparable<URI>, Serializable {
                 return true;
             }
             if (forceServer) {
-                throw new URISyntaxException(host, Msg.getString("K0311"), 0); //$NON-NLS-1$
+                throw new URISyntaxException(host, Messages.getString("luni.90"), 0); //$NON-NLS-1$
             }
             return false;
         }
@@ -1721,7 +1721,7 @@ public final class URI implements Comparable<URI>, Serializable {
      */
     public URL toURL() throws MalformedURLException {
         if (!absolute) {
-            throw new IllegalArgumentException(Msg.getString("K0312") + ": " //$NON-NLS-1$//$NON-NLS-2$
+            throw new IllegalArgumentException(Messages.getString("luni.91") + ": " //$NON-NLS-1$//$NON-NLS-2$
                     + toString());
         }
         return new URL(toString());

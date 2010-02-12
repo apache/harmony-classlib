@@ -46,7 +46,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class loader is responsible for loading classes and resources from a
@@ -255,8 +255,8 @@ public class URLClassLoader extends SecureClassLoader {
                             null, null, null, null, null);
                 } else {
                     if (packageObj.isSealed()) {
-                        throw new SecurityException(Msg
-                                .getString("K004c")); //$NON-NLS-1$
+                        throw new SecurityException(Messages
+                                .getString("luni.A1")); //$NON-NLS-1$
                     }
                 }
             }
@@ -431,8 +431,8 @@ public class URLClassLoader extends SecureClassLoader {
                         }
                     }
                     if (exception) {
-                        throw new SecurityException(Msg
-                                .getString("K0352", packageName)); //$NON-NLS-1$
+                        throw new SecurityException(Messages
+                                .getString("luni.A2", packageName)); //$NON-NLS-1$
                     }
                 }
             }
@@ -1002,8 +1002,8 @@ public class URLClassLoader extends SecureClassLoader {
     private synchronized void makeNewHandler() {
         while (!searchList.isEmpty()) {
             URL nextCandidate = searchList.remove(0);
-            if (nextCandidate == null) {  // KA024=One of urls is null
-                throw new NullPointerException(Msg.getString("KA024")); //$NON-NLS-1$
+            if (nextCandidate == null) {  // luni.94=One of urls is null
+                throw new NullPointerException(Messages.getString("luni.94")); //$NON-NLS-1$
             }
             if (!handlerMap.containsKey(nextCandidate)) {
                 URLHandler result;

@@ -20,7 +20,7 @@ package java.net;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class is used to encode a string using the format required by {@code
@@ -54,13 +54,13 @@ class URIEncoderDecoder {
             if (ch == '%') {
                 do {
                     if (i + 2 >= s.length()) {
-                        throw new URISyntaxException(s, Msg.getString("K0313"), //$NON-NLS-1$
+                        throw new URISyntaxException(s, Messages.getString("luni.7D"), //$NON-NLS-1$
                                 i);
                     }
                     int d1 = Character.digit(s.charAt(i + 1), 16);
                     int d2 = Character.digit(s.charAt(i + 2), 16);
                     if (d1 == -1 || d2 == -1) {
-                        throw new URISyntaxException(s, Msg.getString("K0314", //$NON-NLS-1$
+                        throw new URISyntaxException(s, Messages.getString("luni.7E", //$NON-NLS-1$
                                 s.substring(i, i + 3)), i);
                     }
 
@@ -73,7 +73,7 @@ class URIEncoderDecoder {
                     || (ch >= '0' && ch <= '9') || legal.indexOf(ch) > -1 || (ch > 127
                     && !Character.isSpaceChar(ch) && !Character
                     .isISOControl(ch)))) {
-                throw new URISyntaxException(s, Msg.getString("K00c1"), i); //$NON-NLS-1$
+                throw new URISyntaxException(s, Messages.getString("luni.7F"), i); //$NON-NLS-1$
             }
             i++;
         }
@@ -85,7 +85,7 @@ class URIEncoderDecoder {
             char ch = s.charAt(i);
             if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
                     || (ch >= '0' && ch <= '9') || legal.indexOf(ch) > -1)) {
-                throw new URISyntaxException(s, Msg.getString("K00c1"), i); //$NON-NLS-1$
+                throw new URISyntaxException(s, Messages.getString("luni.7F"), i); //$NON-NLS-1$
             }
             i++;
         }
@@ -191,14 +191,14 @@ class URIEncoderDecoder {
                 out.reset();
                 do {
                     if (i + 2 >= s.length()) {
-                        throw new IllegalArgumentException(Msg.getString(
-                                "K01fe", i)); //$NON-NLS-1$
+                        throw new IllegalArgumentException(Messages.getString(
+                                "luni.80", i)); //$NON-NLS-1$
                     }
                     int d1 = Character.digit(s.charAt(i + 1), 16);
                     int d2 = Character.digit(s.charAt(i + 2), 16);
                     if (d1 == -1 || d2 == -1) {
-                        throw new IllegalArgumentException(Msg.getString(
-                                "K01ff", s.substring(i, i + 3), //$NON-NLS-1$
+                        throw new IllegalArgumentException(Messages.getString(
+                                "luni.81", s.substring(i, i + 3), //$NON-NLS-1$
                                 String.valueOf(i)));
                     }
                     out.write((byte) ((d1 << 4) + d2));

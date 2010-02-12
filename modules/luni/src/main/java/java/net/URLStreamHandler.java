@@ -19,7 +19,7 @@ package java.net;
 
 import java.io.IOException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.URLUtil;
 
 /**
@@ -61,7 +61,7 @@ public abstract class URLStreamHandler {
      */
     protected URLConnection openConnection(URL u, Proxy proxy)
             throws IOException {
-        throw new UnsupportedOperationException(Msg.getString("K034d")); //$NON-NLS-1$
+        throw new UnsupportedOperationException(Messages.getString("luni.9E")); //$NON-NLS-1$
     }
 
     /**

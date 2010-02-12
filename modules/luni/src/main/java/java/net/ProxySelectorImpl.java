@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -75,8 +75,8 @@ class ProxySelectorImpl extends ProxySelector {
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         if (null == uri || null == sa || null == ioe) {
-            // "KA001=Argument must not be null"
-            throw new IllegalArgumentException(Msg.getString("KA001")); //$NON-NLS-1$
+            // luni.4D=Argument must not be null"
+            throw new IllegalArgumentException(Messages.getString("luni.4D")); //$NON-NLS-1$
         }
     }
 
@@ -84,8 +84,8 @@ class ProxySelectorImpl extends ProxySelector {
     public List<Proxy> select(URI uri) {
         // argument check
         if (null == uri) {
-            // KA001=Argument must not be null
-            throw new IllegalArgumentException(Msg.getString("KA001")); //$NON-NLS-1$
+            // luni.4D=Argument must not be null
+            throw new IllegalArgumentException(Messages.getString("luni.4D")); //$NON-NLS-1$
         }
         // check scheme
         String scheme = uri.getScheme();

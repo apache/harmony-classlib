@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import org.apache.harmony.luni.net.PlainDatagramSocketImpl;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class implements a multicast socket for sending and receiving IP
@@ -196,7 +196,7 @@ public class MulticastSocket extends DatagramSocket {
     public void joinGroup(InetAddress groupAddr) throws IOException {
         checkClosedAndBind(false);
         if (!groupAddr.isMulticastAddress()) {
-            throw new IOException(Msg.getString("K0039")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.66")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -227,27 +227,27 @@ public class MulticastSocket extends DatagramSocket {
             NetworkInterface netInterface) throws IOException {
         checkClosedAndBind(false);
         if (null == groupAddress) {
-            throw new IllegalArgumentException(Msg.getString("K0318")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5D")); //$NON-NLS-1$
         }
 
         if ((netInterface != null) && (netInterface.getFirstAddress() == null)) {
             // this is ok if we could set it at the
-            throw new SocketException(Msg.getString("K0335")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.67")); //$NON-NLS-1$
         }
 
         if (!(groupAddress instanceof InetSocketAddress)) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0316", groupAddress.getClass())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.49", groupAddress.getClass())); //$NON-NLS-1$
         }
 
         InetAddress groupAddr = ((InetSocketAddress) groupAddress).getAddress();
 
         if (groupAddr == null) {
-            throw new SocketException(Msg.getString("K0331")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.68")); //$NON-NLS-1$
         }
 
         if (!groupAddr.isMulticastAddress()) {
-            throw new IOException(Msg.getString("K0039")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.66")); //$NON-NLS-1$
         }
 
         SecurityManager security = System.getSecurityManager();
@@ -272,7 +272,7 @@ public class MulticastSocket extends DatagramSocket {
     public void leaveGroup(InetAddress groupAddr) throws IOException {
         checkClosedAndBind(false);
         if (!groupAddr.isMulticastAddress()) {
-            throw new IOException(Msg.getString("K003a")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.69")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -301,27 +301,27 @@ public class MulticastSocket extends DatagramSocket {
             NetworkInterface netInterface) throws IOException {
         checkClosedAndBind(false);
         if (null == groupAddress) {
-            throw new IllegalArgumentException(Msg.getString("K0318")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.5D")); //$NON-NLS-1$
         }
 
         if ((netInterface != null) && (netInterface.getFirstAddress() == null)) {
             // this is ok if we could set it at the
-            throw new SocketException(Msg.getString("K0335")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.67")); //$NON-NLS-1$
         }
 
         if (!(groupAddress instanceof InetSocketAddress)) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0316", groupAddress.getClass())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.49", groupAddress.getClass())); //$NON-NLS-1$
         }
 
         InetAddress groupAddr = ((InetSocketAddress) groupAddress).getAddress();
 
         if (groupAddr == null) {
-            throw new SocketException(Msg.getString("K0331")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.68")); //$NON-NLS-1$
         }
 
         if (!groupAddr.isMulticastAddress()) {
-            throw new IOException(Msg.getString("K003a")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.69")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -415,7 +415,7 @@ public class MulticastSocket extends DatagramSocket {
                 // Ignored
             }
         } else if (addr instanceof Inet6Address) {
-            throw new SocketException(Msg.getString("K0338")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.6A")); //$NON-NLS-1$
         }
     }
 
@@ -437,13 +437,13 @@ public class MulticastSocket extends DatagramSocket {
 
         if (netInterface == null) {
             // throw a socket exception indicating that we do not support this
-            throw new SocketException(Msg.getString("K0334")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.6B")); //$NON-NLS-1$
         }
 
         InetAddress firstAddress = netInterface.getFirstAddress();
         if (firstAddress == null) {
             // this is ok if we could set it at the
-            throw new SocketException(Msg.getString("K0335")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.67")); //$NON-NLS-1$
         }
 
         if (netInterface.getIndex() == NetworkInterface.UNSET_INTERFACE_INDEX) {
@@ -490,7 +490,7 @@ public class MulticastSocket extends DatagramSocket {
                  * interfaces which have no IPV4 address and which does not have
                  * the network interface index not set correctly
                  */
-                throw new SocketException(Msg.getString("K0335")); //$NON-NLS-1$
+                throw new SocketException(Messages.getString("luni.67")); //$NON-NLS-1$
             }
         } else {
             // set the address using IP_MULTICAST_IF to make sure this
@@ -526,7 +526,7 @@ public class MulticastSocket extends DatagramSocket {
     public void setTimeToLive(int ttl) throws IOException {
         checkClosedAndBind(false);
         if (ttl < 0 || ttl > 255) {
-            throw new IllegalArgumentException(Msg.getString("K003c")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.6C")); //$NON-NLS-1$
         }
         impl.setTimeToLive(ttl);
     }
