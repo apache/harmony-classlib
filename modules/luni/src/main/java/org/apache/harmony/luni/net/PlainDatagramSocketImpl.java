@@ -34,7 +34,7 @@ import java.security.AccessController;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -368,7 +368,7 @@ public class PlainDatagramSocketImpl extends DatagramSocketImpl {
         } catch (UnknownHostException e) {
             // this is never expected to happen as we should not have gotten
             // here if the address is not resolvable
-            throw new SocketException(Msg.getString("K0317", inetAddr.getHostName())); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.1A", inetAddr.getHostName())); //$NON-NLS-1$
         }
         connectedPort = port;
         isNativeConnected = true;

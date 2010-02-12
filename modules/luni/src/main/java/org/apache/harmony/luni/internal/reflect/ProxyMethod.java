@@ -19,7 +19,7 @@ package org.apache.harmony.luni.internal.reflect;
 
 import java.lang.reflect.Method;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 class ProxyMethod {
     Method method;
@@ -86,7 +86,7 @@ class ProxyMethod {
                 // substitute returnType of method with that of otherMethod
                 method = otherMethod;
             } else {
-                throw new IllegalArgumentException(Msg.getString("K00f2",
+                throw new IllegalArgumentException(Messages.getString("luni.19",
                         method.getName()));
             }
         }        
