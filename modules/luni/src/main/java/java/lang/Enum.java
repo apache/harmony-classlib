@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * The superclass of all enumerated types. Actual enumeration types inherit from
@@ -113,8 +113,8 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      */
     @Override
     protected final Object clone() throws CloneNotSupportedException {
-        // KA004=Enums may not be cloned
-        throw new CloneNotSupportedException(Msg.getString("KA004")); //$NON-NLS-1$
+        // luni.4C=Enums may not be cloned
+        throw new CloneNotSupportedException(Messages.getString("luni.4C")); //$NON-NLS-1$
     }
 
     /**
@@ -167,21 +167,21 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
      */
     public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name) {
         if ((enumType == null) || (name == null)) {
-            // KA001=Argument must not be null
-            throw new NullPointerException(Msg.getString("KA001")); //$NON-NLS-1$
+            // luni.4D=Argument must not be null
+            throw new NullPointerException(Messages.getString("luni.4D")); //$NON-NLS-1$
         }
         T[] values = getValues(enumType);
         if (values == null) {
-            // KA005={0} is not an enum type
-            throw new IllegalArgumentException(Msg.getString("KA005", enumType)); //$NON-NLS-1$
+            // luni.4E={0} is not an enum type
+            throw new IllegalArgumentException(Messages.getString("luni.4E", enumType)); //$NON-NLS-1$
         }
         for (T enumConst : values) {
             if (enumConst.name.equals(name)) {
                 return enumConst;
             }
         }
-        // KA006={0} is not a constant in the enum type {1}
-        throw new IllegalArgumentException(Msg.getString("KA006", name, //$NON-NLS-1$
+        // luni.4F={0} is not a constant in the enum type {1}
+        throw new IllegalArgumentException(Messages.getString("luni.4F", name, //$NON-NLS-1$
                 enumType));
     }
 

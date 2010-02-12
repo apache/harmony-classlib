@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 
 import org.apache.harmony.luni.internal.reflect.ProxyClassFile;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code Proxy} defines methods for creating dynamic proxy classes and instances.
@@ -102,22 +102,22 @@ public class Proxy implements Serializable {
             }
             String name = next.getName();
             if (!next.isInterface()) {
-                throw new IllegalArgumentException(Msg.getString("K00ed", name)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("luni.50", name)); //$NON-NLS-1$
             }
             if (loader != next.getClassLoader()) {
                 try {
                     if (next != Class.forName(name, false, loader)) {
-                        throw new IllegalArgumentException(Msg.getString(
-                                "K00ee", name)); //$NON-NLS-1$
+                        throw new IllegalArgumentException(Messages.getString(
+                                "luni.51", name)); //$NON-NLS-1$
                     }
                 } catch (ClassNotFoundException ex) {
-                    throw new IllegalArgumentException(Msg.getString("K00ee", //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString("luni.51", //$NON-NLS-1$
                             name));
                 }
             }
             for (int j = i + 1; j < length; j++) {
                 if (next == interfaces[j]) {
-                    throw new IllegalArgumentException(Msg.getString("K00ef", //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString("luni.52", //$NON-NLS-1$
                             name));
                 }
             }
@@ -127,7 +127,7 @@ public class Proxy implements Serializable {
                 if (commonPackageName == null) {
                     commonPackageName = p;
                 } else if (!commonPackageName.equals(p)) {
-                    throw new IllegalArgumentException(Msg.getString("K00f0")); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString("luni.53")); //$NON-NLS-1$
                 }
             }
         }
@@ -269,7 +269,7 @@ public class Proxy implements Serializable {
             return ((Proxy) proxy).h;
         }
 
-        throw new IllegalArgumentException(Msg.getString("K00f1")); //$NON-NLS-1$
+        throw new IllegalArgumentException(Messages.getString("luni.54")); //$NON-NLS-1$
     }
 
     private static native Class<?> defineClassImpl(ClassLoader classLoader,

@@ -17,7 +17,7 @@
 
 package java.lang;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Thrown when a program attempts to cast a an object to a type with which it is
@@ -55,7 +55,7 @@ public class ClassCastException extends RuntimeException {
      *            the class being cast to.
      */
     ClassCastException(Class<?> instanceClass, Class<?> castClass) {
-        super(Msg.getString("K0340", instanceClass.getName(), castClass //$NON-NLS-1$
+        super(Messages.getString("luni.4B", instanceClass.getName(), castClass //$NON-NLS-1$
                 .getName()));
     }
 }

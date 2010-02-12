@@ -16,7 +16,7 @@
 
 package java.lang;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Thrown if an {@code enum} constant does not exist for a particular name.
@@ -46,7 +46,7 @@ public class EnumConstantNotPresentException extends RuntimeException {
     public EnumConstantNotPresentException(Class<? extends Enum> enumType,
             String constantName) {
         // luni.03=The enum constant {0}.{1} is missing
-        super(Msg.getString("luni.03", enumType.getName(), constantName)); //$NON-NLS-1$
+        super(Messages.getString("luni.03", enumType.getName(), constantName)); //$NON-NLS-1$
         this.enumType = enumType;
         this.constantName = constantName;
     }

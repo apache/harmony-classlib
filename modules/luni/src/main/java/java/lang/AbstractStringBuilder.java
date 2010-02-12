@@ -20,7 +20,7 @@ package java.lang;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A modifiable {@link CharSequence sequence of characters} for use in creating
@@ -64,7 +64,7 @@ abstract class AbstractStringBuilder {
             val = new char[0];
         }
         if (val.length < len) {
-            throw new InvalidObjectException(Msg.getString("K0199")); //$NON-NLS-1$
+            throw new InvalidObjectException(Messages.getString("luni.4A")); //$NON-NLS-1$
         }
 
         shared = false;
@@ -121,12 +121,12 @@ abstract class AbstractStringBuilder {
     final void append0(char[] chars, int offset, int length) {
         // Force null check of chars first!
         if (offset > chars.length || offset < 0) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         }
         if (length < 0 || chars.length - offset < length) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
 
         int newSize = count + length;

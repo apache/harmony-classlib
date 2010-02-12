@@ -18,7 +18,7 @@
 package java.lang;
 
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Thrown when the a string is indexed with a value less than zero, or greater
@@ -45,7 +45,7 @@ public class StringIndexOutOfBoundsException extends IndexOutOfBoundsException {
      *            the index which is out of bounds.
      */    
     public StringIndexOutOfBoundsException(int index) {
-        super(Msg.getString("K0055", index)); //$NON-NLS-1$
+        super(Messages.getString("luni.55", index)); //$NON-NLS-1$
     }
 
     /**
