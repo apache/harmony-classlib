@@ -123,11 +123,11 @@ class ProcessInputStream extends java.io.InputStream {
                 return -1;
             }
             if (nbytes > buffer.length  || nbytes < 0) {
-                // K0031=Length out of bounds \: {0}
+                // luni.18=Length out of bounds \: {0}
                 throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", nbytes)); //$NON-NLS-1$
             }
             if (offset < 0 || offset > buffer.length - nbytes) {
-                // K002e=Offset out of bounds \: {0}
+                // luni.12=Offset out of bounds \: {0}
                 throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
             }
             return readImpl(buffer, offset, nbytes, handle);
