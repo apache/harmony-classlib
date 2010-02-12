@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketImpl;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * The SocketInputStream supports the streamed reading of bytes from a socket.
@@ -70,7 +70,7 @@ class SocketInputStream extends InputStream {
     @Override
     public int read(byte[] buffer, int offset, int count) throws IOException {
         if (null == buffer) {
-            throw new IOException(Msg.getString("K0047"));//$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.11"));//$NON-NLS-1$
         }
 
         if (0 == count) {
@@ -79,10 +79,10 @@ class SocketInputStream extends InputStream {
 
         if (0 > offset || offset >= buffer.length) {
             // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset));//$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset));//$NON-NLS-1$
         }
         if (0 > count || offset + count > buffer.length) {
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));//$NON-NLS-1$
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.13"));//$NON-NLS-1$
         }
 
         return socket.read(buffer, offset, count);

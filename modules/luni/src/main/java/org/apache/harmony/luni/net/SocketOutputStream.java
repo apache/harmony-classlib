@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketImpl;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 class SocketOutputStream extends OutputStream {
 
@@ -58,10 +58,10 @@ class SocketOutputStream extends OutputStream {
                     && count <= buffer.length - offset) {
                 socket.write(buffer, offset, count);
             } else {
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f"));//$NON-NLS-1$
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.13"));//$NON-NLS-1$
             }
         } else {
-            throw new NullPointerException(Msg.getString("K0047"));//$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.11"));//$NON-NLS-1$
         }
     }
 

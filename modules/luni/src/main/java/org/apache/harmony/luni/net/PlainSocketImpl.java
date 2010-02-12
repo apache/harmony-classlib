@@ -38,7 +38,7 @@ import java.security.PrivilegedAction;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A concrete connected-socket implementation.
@@ -271,7 +271,7 @@ public class PlainSocketImpl extends SocketImpl {
     @Override
     protected synchronized InputStream getInputStream() throws IOException {
         if (!fd.valid()) {
-            throw new SocketException(Msg.getString("K003d"));
+            throw new SocketException(Messages.getString("luni.0C"));
         }
 
         return new SocketInputStream(this);
@@ -298,7 +298,7 @@ public class PlainSocketImpl extends SocketImpl {
     @Override
     protected synchronized OutputStream getOutputStream() throws IOException {
         if (!fd.valid()) {
-            throw new SocketException(Msg.getString("K003d")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0C")); //$NON-NLS-1$
         }
         return new SocketOutputStream(this);
     }
@@ -394,7 +394,7 @@ public class PlainSocketImpl extends SocketImpl {
             }
 
         } catch (Exception e) {
-            throw new SocketException(Msg.getString("K003e", e)); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0D", e)); //$NON-NLS-1$
         }
 
         socksRequestConnection(applicationServerAddress, applicationServerPort);
@@ -454,13 +454,13 @@ public class PlainSocketImpl extends SocketImpl {
             netImpl.connect(fd, trafficClass, socksGetServerAddress(),
                     socksGetServerPort());
         } catch (Exception e) {
-            throw new IOException(Msg.getString("K003f", e)); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.0E", e)); //$NON-NLS-1$
         }
 
         // There must be a connection to an application host for the bind to
         // work.
         if (lastConnectedAddress == null) {
-            throw new SocketException(Msg.getString("K0040")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.0F")); //$NON-NLS-1$
         }
 
         // Use the last connected address and port in the bind request.
@@ -517,7 +517,7 @@ public class PlainSocketImpl extends SocketImpl {
             bytesRead += count;
         }
         if (Socks4Message.REPLY_LENGTH != bytesRead) {
-            throw new SocketException(Msg.getString("KA011")); //$NON-NLS-1$
+            throw new SocketException(Messages.getString("luni.10")); //$NON-NLS-1$
         }
         return reply;
     }

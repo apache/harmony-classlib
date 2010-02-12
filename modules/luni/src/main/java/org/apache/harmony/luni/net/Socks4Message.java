@@ -19,7 +19,7 @@ package org.apache.harmony.luni.net;
 
 import java.io.UnsupportedEncodingException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 class Socks4Message {
     static final int COMMAND_CONNECT = 1;
@@ -162,13 +162,13 @@ class Socks4Message {
     public String getErrorString(int error) {
         switch (error) {
             case RETURN_FAILURE:
-                return Msg.getString("K00cd"); //$NON-NLS-1$
+                return Messages.getString("luni.14"); //$NON-NLS-1$
             case RETURN_CANNOT_CONNECT_TO_IDENTD:
-                return Msg.getString("K00ce"); //$NON-NLS-1$
+                return Messages.getString("luni.15"); //$NON-NLS-1$
             case RETURN_DIFFERENT_USER_IDS:
-                return Msg.getString("K00cf"); //$NON-NLS-1$
+                return Messages.getString("luni.16"); //$NON-NLS-1$
             default:
-                return Msg.getString("K00d0"); //$NON-NLS-1$
+                return Messages.getString("luni.17"); //$NON-NLS-1$
         }
     }
 
