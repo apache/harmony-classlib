@@ -708,7 +708,23 @@ public final class Math {
      *            the exponent of the operation.
      * @return {@code x} to the power of {@code y}.
      */
-    public static native double pow(double x, double y);
+    public static double pow(double x, double y) {
+        if (x < 0.0 && x != Double.NEGATIVE_INFINITY) {
+            if (y != Double.NEGATIVE_INFINITY && y != Double.POSITIVE_INFINITY) {  // is finit
+                if (y == Math.ceil(y)) {  // is integer
+                    double absx = Math.abs(x);
+                    if (y % 2 == 0.0) {
+                        return doPow(absx, y);
+                    }
+                    return -1.0 * doPow(absx, y);
+                }
+                return Double.NaN;
+            }
+        }
+        return doPow(x, y);
+    }
+
+    private static native double doPow(double x, double y);
 
     /**
      * Returns the double conversion of the result of rounding the argument to

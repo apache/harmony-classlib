@@ -542,7 +542,7 @@ Java_java_lang_StrictMath_pow (JNIEnv * env, jclass jclazz, jdouble arg1,
 }
 
 JNIEXPORT jdouble JNICALL
-Java_java_lang_Math_pow (JNIEnv * env, jclass jclazz, jdouble arg1,
+Java_java_lang_Math_doPow (JNIEnv * env, jclass jclazz, jdouble arg1,
                          jdouble arg2)
 {
   return internal_pow (arg1, arg2);
