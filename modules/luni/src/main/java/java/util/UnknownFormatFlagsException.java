@@ -16,7 +16,7 @@
 
 package java.util;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * An {@code UnknownFormatFlagsException} will be thrown if there is
@@ -60,7 +60,7 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
      */
     @Override
     public String getMessage() {
-        // K034a=The flags are {0}
-        return Msg.getString("K034a", flags); //$NON-NLS-1$
+        // luni.46=The flags are {0}
+        return Messages.getString("luni.46", flags); //$NON-NLS-1$
     }
 }

@@ -24,7 +24,7 @@ import java.io.ObjectStreamField;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code SimpleTimeZone} is a concrete subclass of {@code TimeZone}
@@ -252,8 +252,8 @@ public class SimpleTimeZone extends TimeZone {
         setID(name);
         rawOffset = offset;
         if (daylightSavings <= 0) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K00e9", daylightSavings)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "luni.3B", daylightSavings)); //$NON-NLS-1$
         }
         dstSavings = daylightSavings;
 
@@ -378,7 +378,7 @@ public class SimpleTimeZone extends TimeZone {
     public int getOffset(int era, int year, int month, int day, int dayOfWeek,
             int time) {
         if (era != GregorianCalendar.BC && era != GregorianCalendar.AD) {
-            throw new IllegalArgumentException(Msg.getString("K00ea", era)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.3C", era)); //$NON-NLS-1$
         }
         checkRange(month, dayOfWeek, time);
         if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year)) {
@@ -464,20 +464,20 @@ public class SimpleTimeZone extends TimeZone {
 
     private void checkRange(int month, int dayOfWeek, int time) {
         if (month < Calendar.JANUARY || month > Calendar.DECEMBER) {
-            throw new IllegalArgumentException(Msg.getString("K00e5", month)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.3D", month)); //$NON-NLS-1$
         }
         if (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY) {
-            throw new IllegalArgumentException(Msg
-                    .getString("K00e7", dayOfWeek)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.48", dayOfWeek)); //$NON-NLS-1$
         }
         if (time < 0 || time >= 24 * 3600000) {
-            throw new IllegalArgumentException(Msg.getString("K00e8", time)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.3E", time)); //$NON-NLS-1$
         }
     }
 
     private void checkDay(int month, int day) {
         if (day <= 0 || day > GregorianCalendar.DaysInMonth[month]) {
-            throw new IllegalArgumentException(Msg.getString("K00e6", day)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.3F", day)); //$NON-NLS-1$
         }
     }
 
@@ -503,8 +503,8 @@ public class SimpleTimeZone extends TimeZone {
                 checkDay(endMonth, endDay);
             } else {
                 if (endDay < -5 || endDay > 5) {
-                    throw new IllegalArgumentException(Msg.getString(
-                            "K00f8", endDay)); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString(
+                            "luni.40", endDay)); //$NON-NLS-1$
                 }
             }
         }
@@ -627,8 +627,8 @@ public class SimpleTimeZone extends TimeZone {
                 checkDay(startMonth, startDay);
             } else {
                 if (startDay < -5 || startDay > 5) {
-                    throw new IllegalArgumentException(Msg.getString(
-                            "K00f8", startDay)); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString(
+                            "luni.40", startDay)); //$NON-NLS-1$
                 }
             }
         }

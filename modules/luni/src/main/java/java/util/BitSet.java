@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * The {@code BitSet} class implements a bit field. Each element in a
@@ -240,7 +240,7 @@ public class BitSet implements Serializable, Cloneable {
     public boolean get(int pos) {
         if (pos < 0) {
             // Negative index specified
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         int arrayPos = pos >> OFFSET;
@@ -267,7 +267,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public BitSet get(int pos1, int pos2) {
         if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         int last = actualArrayLength << OFFSET;
@@ -338,7 +338,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void set(int pos) {
         if (pos < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         int len = (pos >> OFFSET) + 1;
@@ -388,7 +388,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void set(int pos1, int pos2) {
         if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         if (pos1 == pos2) {
@@ -477,7 +477,7 @@ public class BitSet implements Serializable, Cloneable {
     public void clear(int pos) {
         if (pos < 0) {
             // Negative index specified
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         if (!needClear) {
@@ -507,7 +507,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void clear(int pos1, int pos2) {
         if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         if (!needClear) {
@@ -552,7 +552,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void flip(int pos) {
         if (pos < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         int len = (pos >> OFFSET) + 1;
@@ -582,7 +582,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void flip(int pos1, int pos2) {
         if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         if (pos1 == pos2) {
@@ -851,7 +851,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public int nextSetBit(int pos) {
         if (pos < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         if (pos >= actualArrayLength << OFFSET) {
@@ -897,7 +897,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public int nextClearBit(int pos) {
         if (pos < 0) {
-            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.37")); //$NON-NLS-1$
         }
 
         int length = actualArrayLength;

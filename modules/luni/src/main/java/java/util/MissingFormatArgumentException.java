@@ -16,7 +16,7 @@
 
 package java.util;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A {@code MissingFormatArgumentException} will be thrown if there is no
@@ -60,6 +60,6 @@ public class MissingFormatArgumentException extends IllegalFormatException {
      */
     @Override
     public String getMessage() {
-        return Msg.getString("K0348", s);
+        return Messages.getString("luni.39", s);
     }
 }

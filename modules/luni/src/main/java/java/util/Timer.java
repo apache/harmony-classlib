@@ -17,7 +17,7 @@
 
 package java.util;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code Timer}s are used to schedule jobs for execution in a background process. A
@@ -563,22 +563,22 @@ public class Timer {
             boolean fixed) {
         synchronized (impl) {
             if (impl.cancelled) {
-                throw new IllegalStateException(Msg.getString("K00f3")); //$NON-NLS-1$
+                throw new IllegalStateException(Messages.getString("luni.41")); //$NON-NLS-1$
             }
 
             long when = delay + System.currentTimeMillis();
 
             if (when < 0) {
-                throw new IllegalArgumentException(Msg.getString("K00f5")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("luni.42")); //$NON-NLS-1$
             }
 
             synchronized (task.lock) {
                 if (task.isScheduled()) {
-                    throw new IllegalStateException(Msg.getString("K00f6")); //$NON-NLS-1$
+                    throw new IllegalStateException(Messages.getString("luni.43")); //$NON-NLS-1$
                 }
 
                 if (task.cancelled) {
-                    throw new IllegalStateException(Msg.getString("K00f7")); //$NON-NLS-1$
+                    throw new IllegalStateException(Messages.getString("luni.44")); //$NON-NLS-1$
                 }
 
                 task.when = when;

@@ -23,7 +23,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.harmony.kernel.vm.VM;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code ResourceBundle} is an abstract class which is the superclass of classes which
@@ -209,7 +209,7 @@ public abstract class ResourceBundle {
                     "_" + Locale.getDefault(), true, loader)) != null) { //$NON-NLS-1$
                 return bundle;
             }
-            throw new MissingResourceException(Msg.getString("KA029", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
+            throw new MissingResourceException(Messages.getString("luni.3A", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
                     ""); //$NON-NLS-1$
         }
         throw new NullPointerException();
@@ -236,7 +236,7 @@ public abstract class ResourceBundle {
             if ((bundle = handleGetBundle(bundleName, localeName, true, loader)) != null) {
                 return bundle;
             }
-            throw new MissingResourceException(Msg.getString("KA029", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
+            throw new MissingResourceException(Messages.getString("luni.3A", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
                     ""); //$NON-NLS-1$
         }
         throw new NullPointerException();
@@ -282,7 +282,7 @@ public abstract class ResourceBundle {
             last = theParent;
             theParent = theParent.parent;
         } while (theParent != null);
-        throw new MissingResourceException(Msg.getString("KA029", last.getClass().getName(), key), last.getClass().getName(), key); //$NON-NLS-1$
+        throw new MissingResourceException(Messages.getString("luni.3A", last.getClass().getName(), key), last.getClass().getName(), key); //$NON-NLS-1$
     }
 
     /**

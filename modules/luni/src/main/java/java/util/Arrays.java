@@ -20,7 +20,7 @@ package java.util;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code Arrays} contains static methods which operate on arrays.
@@ -1667,17 +1667,17 @@ public class Arrays {
 
     private static void checkBounds(int arrLength, int start, int end) {
         if (start > end) {
-            // K0033=Start index ({0}) is greater than end index ({1})
-            throw new IllegalArgumentException(Msg.getString("K0033", //$NON-NLS-1$
+            // luni.35=Start index ({0}) is greater than end index ({1})
+            throw new IllegalArgumentException(Messages.getString("luni.35", //$NON-NLS-1$
                     Integer.valueOf(start), Integer.valueOf(end)));
         }
         if (start < 0) {
-            // K0052=Array index out of range\: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0052", start)); //$NON-NLS-1$
+            // luni.36=Array index out of range\: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.36", start)); //$NON-NLS-1$
         }
         if (end > arrLength) {
-            // K0052=Array index out of range\: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0052", end)); //$NON-NLS-1$
+            // luni.36=Array index out of range\: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.36", end)); //$NON-NLS-1$
         }
     }
 

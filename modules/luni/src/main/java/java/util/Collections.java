@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 
 import org.apache.harmony.luni.internal.nls.Messages;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * {@code Collections} contains static methods which operate on
@@ -1596,8 +1596,8 @@ public class Collections {
     public static <T> void copy(List<? super T> destination,
             List<? extends T> source) {
         if (destination.size() < source.size()) {
-            // K0032=Source size {0} does not fit into destination
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0032", source.size())); //$NON-NLS-1$
+            // luni.38=Source size {0} does not fit into destination
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.38", source.size())); //$NON-NLS-1$
         }
         Iterator<? extends T> srcIt = source.iterator();
         ListIterator<? super T> destIt = destination.listIterator();
@@ -1605,8 +1605,8 @@ public class Collections {
             try {
                 destIt.next();
             } catch (NoSuchElementException e) {
-                // K0032=Source size {0} does not fit into destination
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0032", source.size())); //$NON-NLS-1$
+                // luni.38=Source size {0} does not fit into destination
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.38", source.size())); //$NON-NLS-1$
             }
             destIt.set(srcIt.next());
         }
